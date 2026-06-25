@@ -1,0 +1,317 @@
+/*
+  Allow angular.js to be loaded in body, hiding cloaked elements until
+  templates compile.  The !important is important given that there may be
+  other selectors that are more specific or come later and might alter display.
+ */
+[ng\:cloak], [ng-cloak], .ng-cloak {
+    display: none !important;
+}
+h1 small {
+    font-size: .4em;
+    vertical-align: super;
+}
+h1 small.diputados {
+    color: #3498DB;
+}
+h1 small.senadores {
+    color: #E74C3C;
+}
+#cuadrantes {
+}
+.circulo {
+    width: 20px;
+    height: 20px;
+    border-radius: 10px;
+    display: inline-block;
+    vertical-align: bottom;
+    margin-right: 0.5em;
+}
+#divH {
+    position: absolute;
+    width: 100%;
+    height: 1px;
+    background: #ccc;
+    top: 50%;
+    left: 0;
+}
+#divV {
+    position: absolute;
+    height: 100%;
+    width: 1px;
+    background: #ccc;
+    left: 50%;
+    top: 0;
+}
+.referencia {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 10em;
+    height: 2em;
+    text-align: center;
+}
+#aus {
+}
+#pos {
+    margin-top: -2em;
+    margin-left: -10em;
+}
+#neg {
+    margin-top: -2em;
+}
+#abs {
+    margin-left: -10em;
+}
+#main {
+    width: 700px;
+    margin: 0 auto;
+}
+.axis path,
+.axis line {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+}
+.quadrant {
+    opacity: 0.2;
+    stroke: #333;
+}
+.dropdown-menu {
+    max-height: 330px;
+    overflow-y: scroll;
+}
+.resultItem {
+    font-weight: 700;
+    margin-left: -13px;
+    margin-right: -13px;
+    padding: 6px 13px 8px;
+    text-shadow: none;
+    border-radius: 0;
+    color: #526476;
+    font-size: 14px;
+}
+.row-selects {
+    margin-bottom: 10px;
+}
+.btn-group {
+    margin-bottom: 3px;
+    margin-left: 0;
+}
+.btn-group + .btn-group {
+    margin-left: 0;
+}
+.dropdown-menu {
+    overflow: auto;
+}
+.ul-select-exp {
+    width: 700px;
+}
+.results h6 {
+    margin-top: 0;
+}
+.ul-resultados li {
+    line-height: normal;
+    padding: 7px 0;
+}
+.nav-list-vivid {
+    padding: 5px 10px;
+}
+.nav-header {
+    color: #3498DB;
+}
+.nav-counter {
+    color: #000;
+    text-align: right;
+}
+.nav-counter-num {
+    width: 25px;
+    font-weight: bold;
+}
+.nav-counter-porcentaje {
+    width: 50px;
+    background: none;
+}
+.nav-counter-presentes {
+    background-color: #000;
+    color: #fff;
+}
+.nav-counter-afirmativos {
+    background-color: #468847;
+    color: #fff;
+}
+.nav-counter-negativos {
+    background-color: #B94A48;
+    color: #fff;
+}
+.nav-counter-abstenciones {
+    background-color: #CCCC00;
+    color: #fff;
+}
+.logo {
+    padding-top: 26px;
+}
+.quadrant0 {
+    fill: #468847;
+}
+.quadrant1 {
+    fill: #B94A48;
+}
+.quadrant2 {
+    fill: #CCCC00;
+}
+.quadrant3 {
+    fill: #999;
+}
+.voto0 {
+    color: #468847;
+}
+.voto1 {
+    color: #B94A48;
+}
+.voto2 {
+    color: #9D9D00;
+}
+.voto3 {
+    color: #999;
+}
+
+.block-list {
+    max-height: 240px;
+    overflow-y: auto;
+}
+.block-list li div p {
+    line-height: normal;
+    font-size: 13px;
+    display: inline-block;
+    width: 155px;
+    margin: 0;
+}
+.block-list .key {
+    width: 18px;
+    height: 18px;
+}
+.block-list input,
+.block-list .key {
+    display: inline-block;
+    margin: 0;
+    vertical-align: top;
+}
+.block-list input {
+    margin-top: 1px;
+}
+.circle-blur {
+    opacity: 0.3;
+    stroke-width: 0;
+}
+.circle-focus {
+    opacity: 1;
+    stroke-width: 1;
+    stroke: #000;
+}
+#referencetable {
+    float: right;
+    margin: 0 0 0 10px;
+    font-size: 13px;
+}
+#referencetable td {
+    border: 1px solid #333;
+    color: #fff;
+    text-align: center;
+    width: 85px;
+    height: 85px;
+}
+#referencetable .quadrant0 {
+    background: #468847;
+}
+#referencetable .quadrant1 {
+    background: #B94A48;
+}
+#referencetable .quadrant2 {
+    background: #CCCC00;
+}
+#referencetable .quadrant3 {
+    background: #999;
+}
+.modal-body span.quadrant0 {
+    color: #468847;
+}
+.modal-body span.quadrant1 {
+    color: #B94A48;
+}
+.modal-body span.quadrant2 {
+    color: #CCCC00;
+}
+.modal-body span.quadrant3 {
+    color: #999;
+}
+.modal-body p {
+    font-size: 15px;
+    line-height: normal;
+}
+.modal-footer {
+    text-align: center;
+}
+.bottom-menu {
+    padding: 20px 0;
+}
+.doc-img {
+    padding-bottom: 10px;
+}
+.nav-tabs {
+    padding-top: 10px;
+}
+.nav-tabs li {
+    font-size: 20px;
+}
+.nav-tabs li a {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+.tab-content {
+    border: 0;
+    border-radius: 0;
+    padding: 0;
+    margin: 0;
+}
+p.archivo {
+    line-height: normal;
+    margin-top: 32px;
+}
+.bottom-links li {
+    float: none;
+}
+.bottom-links li.lead {
+    font-size: 1.1em;
+    font-weight: bold;
+    line-height: 1.1em;
+}
+.bottom-icons li {
+    text-align: center;
+    float: none;
+    margin: 0 0 30px;
+}
+.btn.btn-short {
+    padding: 2px 6px;
+    margin: 0 0 0 4px;
+}
+.btn.btn-permalink {
+    padding: 2px 21px;
+    margin: 4px 0 0 4px;
+}
+.btn.disabled {
+  cursor: not-allowed;
+}
+.popover-title,
+.popover-content {
+    padding: 5px;
+}
+.popover-title {
+    text-align: center;
+    font-weight: normal;
+    border-bottom: 1px solid #aaa;
+    background-color: #F5D313;
+    color: #000;
+}
+.popover-content {
+    border: 1px solid #ccc;
+}

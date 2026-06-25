@@ -1,0 +1,29 @@
+# Datos (se regeneran con los scripts de ingesta; no se versionan)
+**/data/raw/
+**/data/clean/
+*.parquet
+*.csv
+*.part
+!**/.gitkeep
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+.ipynb_checkpoints/
+
+# Outputs pesados / temporales
+*.log
+.DS_Store
+Thumbs.db
+
+# Node (skill docx build)
+node_modules/
+package-lock.json
+
+# Conservar documentos del proyecto (docx/html/md) — NO ignorar
+!*.docx
+!*.html
+!*.md

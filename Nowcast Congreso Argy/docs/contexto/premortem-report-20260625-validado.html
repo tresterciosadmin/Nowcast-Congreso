@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Premortem validado — Nowcast-Congreso</title>
+<style>
+  :root{--bg:#0a0e1a;--card:#121829;--card2:#0f1422;--ink:#e7ecf5;--mut:#9aa6bd;--line:#1e2740;
+    --red:#ff5a6e;--org:#ff9f43;--yel:#ffd166;--grn:#36d399;--blu:#5aa9ff;--vio:#b388ff;--cya:#3ddbd9;}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;padding:32px 18px}
+  .wrap{max-width:1040px;margin:0 auto}
+  h1{font-size:26px;margin:0 0 4px}
+  .sub{color:var(--mut);margin:0 0 6px}
+  .tag{display:inline-block;background:#16203a;border:1px solid var(--line);color:var(--blu);font-size:12px;padding:2px 9px;border-radius:999px;margin:2px 4px 2px 0}
+  h2{font-size:18px;margin:30px 0 12px;border-left:3px solid var(--blu);padding-left:10px}
+  .grid{display:grid;gap:14px}
+  .syn{grid-template-columns:1fr 1fr}
+  @media(max-width:720px){.syn{grid-template-columns:1fr}}
+  .box{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px}
+  .box h3{margin:0 0 6px;font-size:14px;letter-spacing:.04em;text-transform:uppercase}
+  .prob h3{color:var(--org)} .dang h3{color:var(--red)} .assu h3{color:var(--vio)} .fix h3{color:var(--grn)}
+  ol,ul{margin:6px 0 0;padding-left:20px} li{margin:5px 0}
+  table{width:100%;border-collapse:collapse;margin-top:8px;font-size:13.5px}
+  th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{color:var(--mut);font-weight:600}
+  .ok{color:var(--grn)} .bad{color:var(--red)} .warn{color:var(--yel)}
+  .cards{grid-template-columns:1fr 1fr;margin-top:6px}
+  @media(max-width:720px){.cards{grid-template-columns:1fr}}
+  .fcard{background:var(--card2);border:1px solid var(--line);border-left-width:4px;border-radius:12px;padding:14px 16px}
+  .fcard .num{font-size:12px;color:var(--mut)}
+  .fcard h4{margin:2px 0 8px;font-size:15px}
+  .fcard p{margin:6px 0;font-size:13.5px;color:#cfd8ea}
+  .lab{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--mut)}
+  .sev{float:right;font-size:11px;padding:2px 8px;border-radius:999px;border:1px solid var(--line)}
+  .c1{border-left-color:var(--red)} .c2{border-left-color:var(--org)} .c3{border-left-color:var(--yel)}
+  .c4{border-left-color:var(--grn)} .c5{border-left-color:var(--blu)} .c6{border-left-color:var(--vio)}
+  .c7{border-left-color:var(--cya)} .c8{border-left-color:#ff7eb6} .c9{border-left-color:var(--red)}
+  .c10{border-left-color:var(--org)} .c11{border-left-color:var(--blu)}
+  .foot{color:var(--mut);font-size:12px;margin-top:30px;border-top:1px solid var(--line);padding-top:14px}
+  .pill{display:inline-block;font-size:11px;padding:1px 8px;border-radius:999px;margin-left:6px}
+  .new{background:#3a1622;color:#ff9bb0;border:1px solid #5a2030}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Premortem validado — Nowcast-Congreso</h1>
+  <p class="sub">Sistema B2B que estima la probabilidad de sanción de un proyecto de ley en el Congreso argentino, agregando la probabilidad de voto individual de cada legislador.</p>
+  <div>
+    <span class="tag">25-jun-2026 · v2 con investigación</span>
+    <span class="tag">11 modos de fallo (8 originales + 3 nuevos)</span>
+    <span class="tag">5 afirmaciones validadas contra fuentes</span>
+  </div>
+
+  <h2>Qué dijo la validación</h2>
+  <div class="box">
+  <table>
+    <tr><th>Afirmación del proyecto</th><th>Veredicto</th><th>Evidencia</th></tr>
+    <tr><td>CKAN HCDN: votaciones nominales, expedientes, legisladores — vivos</td><td class="ok">Confirmado</td><td>Dataset períodos 129–137 (137 en curso), composición actual activa</td></tr>
+    <tr><td>Senado menos estructurado que Diputados</td><td class="ok">Confirmado</td><td>DatosAbiertos Senado + argentinadatos.com como agregador</td></tr>
+    <tr><td>Drift por recambio legislativo</td><td class="warn">Confirmado y agravado</td><td>Elecciones 26-oct-2025; nueva cámara desde ~10-dic-2025</td></tr>
+    <tr><td>Mercado cubierto por consultoras cualitativas</td><td class="ok">Confirmado</td><td>EGES (20+ años), Directorio Legislativo (desde 2000), CIPPEC</td></tr>
+    <tr><td>Baseline "votá con tu bloque" &gt;90%</td><td class="bad">Mal calibrado</td><td>Cohesión académica: Diputados 76,9% / Senado 74,3% (UDESA). &gt;90% solo con votaciones unánimes</td></tr>
+  </table>
+  </div>
+
+  <h2>Síntesis</h2>
+  <div class="grid syn">
+    <div class="box prob"><h3>Fallo más probable</h3><p>Sobre-ingeniería (arquitectura v2.1) + el pipeline ETL devorando el cronograma. Se construye mucho antes de medir el baseline y antes de tener un pagador.</p></div>
+    <div class="box dang"><h3>Fallo más peligroso</h3><p>Sesgo de selección: un nowcast entrenado solo con lo votado no aplica al universo real de proyectos (la mayoría muere en comisión) y nadie lo nota hasta una decisión cara del cliente.</p></div>
+    <div class="box assu"><h3>Supuesto oculto</h3><p>"El resultado de una ley es función de los atributos del proyecto." En realidad es función de la negociación de cúpula, exógena a los datos abiertos. El modelo captura disciplina de bloque, no el deal político.</p></div>
+    <div class="box fix"><h3>Corrección #1</h3><p>Medir el baseline de bloque separando votaciones <b>unánimes</b> de <b>disputadas</b> en la semana 1, antes de construir nada. El piso en el subconjunto disputado (~77%, no &gt;90%) decide si hay producto.</p></div>
+  </div>
+
+  <div class="box fix" style="margin-top:14px"><h3>Plan revisado</h3>
+    <ol>
+      <li><b>Semana 1:</b> baseline de bloque en dos cortes (todas / disputadas) + tamaño del sesgo de selección (% de proyectos que llegan a votación nominal). Antes de cualquier ML o infra.</li>
+      <li><b>Elegir UN comprador-ancla</b> (recomendado: consultoras de asuntos públicos, como <i>augmentation</i>) y diseñar para ese, no para los cuatro segmentos.</li>
+      <li><b>Congelar la arquitectura v2.1.</b> Notebooks locales hasta tener baseline medido + 1 LOI/piloto pago. La nube es decisión comercial, no técnica.</li>
+      <li><b>Modelar el embudo completo</b> (presentado→comisión→dictamen→recinto), no solo el voto final.</li>
+      <li><b>Encuadre:</b> vender radar + pivotes + explicabilidad. P(aprobación) es un feature interno, no el titular.</li>
+    </ol>
+  </div>
+
+  <div class="box" style="margin-top:14px"><h3 style="color:var(--cya)">Checklist pre-lanzamiento</h3>
+    <ul>
+      <li>Baseline en cortes todas/disputadas; piso del subconjunto disputado fijado como benchmark.</li>
+      <li>% de proyectos con votación nominal cuantificado (tamaño del sesgo de selección).</li>
+      <li>ID estable legislador↔bloque↔proyecto↔votación verificado, o costo de entity resolution presupuestado.</li>
+      <li>1 comprador-ancla elegido y 1 LOI/piloto pago antes de gastar en nube.</li>
+      <li>Términos de uso B2B + disclaimer antes de exponer predicciones nominales por persona.</li>
+    </ul>
+  </div>
+
+  <h2>Los 11 modos de fallo</h2>
+  <div class="grid cards">
+    <div class="fcard c1"><span class="sev">probable</span><div class="num">01</div><h4>Datos ex-post · sesgo de selección</h4><p>Las votaciones nominales solo existen tras el recinto; la mayoría de los proyectos mueren en comisión. El modelo entrenado solo con lo votado no generaliza.</p><p class="lab">Señal:</p><p>&lt;10% de proyectos con votación nominal; no hay label para "no tratado".</p></div>
+    <div class="fcard c2"><span class="sev">media</span><div class="num">02</div><h4>La disciplina de bloque domina</h4><p>El valor incremental vive en los votos cruzados, escasos y ruidosos. Si el ML no le gana al bloque ahí, no hay producto.</p><p class="lab">Señal:</p><p>error concentrado en votos cruzados; ganancia &lt;1pt sobre baseline.</p></div>
+    <div class="fcard c3"><span class="sev">alta</span><div class="num">03</div><h4>Volatilidad institucional (drift)</h4><p>Recambio dic-2025, fracturas de bloque y monobloques dejan obsoletas las probabilidades por legislador.</p><p class="lab">Señal:</p><p>cambios de bloque entre train y presente; caída de accuracy tras cada recambio.</p></div>
+    <div class="fcard c4"><span class="sev">alta</span><div class="num">04</div><h4>El pipeline ETL se come el proyecto</h4><p>Estructuras Diputados/Senado heterogéneas, IDs inconsistentes, proyectos en PDF. El ETL consume el cronograma y el modelado nunca arranca.</p><p class="lab">Señal:</p><p>&gt;50% del sprint en ETL; sin ID estable entre cámaras.</p></div>
+    <div class="fcard c5"><span class="sev">media</span><div class="num">05</div><h4>Mercado cubierto por consultoras</h4><p>El cliente confía en la persona con contactos y juicio, no en una probabilidad no auditable. Desconfianza de la caja negra.</p><p class="lab">Señal:</p><p>el cliente pide "el porqué"; nadie paga sin analista humano.</p></div>
+    <div class="fcard c6"><span class="sev">media</span><div class="num">06</div><h4>Éxito no verificable a tiempo</h4><p>Pocas votaciones relevantes por año; demostrar valor predictivo lleva meses; el cash se agota antes del primer caso de éxito.</p><p class="lab">Señal:</p><p>&lt;15 votaciones importantes/año; demo solo con backtesting.</p></div>
+    <div class="fcard c7"><span class="sev">media-baja</span><div class="num">07</div><h4>Riesgo reputacional / legal</h4><p>Publicar probabilidades nominales por persona genera fricción; una predicción desmentida quema credibilidad.</p><p class="lab">Señal:</p><p>salida nombra individuos con probabilidades; sin términos de uso/disclaimer.</p></div>
+    <div class="fcard c8"><span class="sev">media</span><div class="num">08</div><h4>Scope creep local→nube sin pagador</h4><p>Se monta infra cloud + MLOps antes de cerrar cliente; el costo fijo corre sin ingreso.</p><p class="lab">Señal:</p><p>gasto cloud &gt;$0 sin cliente; roadmap de infra antes de LOI.</p></div>
+    <div class="fcard c9"><span class="sev">alta</span><div class="num">09 <span class="pill new">nuevo</span></div><h4>Trampa del baseline mal medido</h4><p>Medir el bloque sobre todas las votaciones da ~90%+ (inflado por unánimes) y "mata" el producto por error; sobre disputadas da ~77% y hay lugar para el ML. Mal corte → decisión equivocada.</p><p class="lab">Señal:</p><p>baseline reportado sin separar unánimes de disputadas.</p></div>
+    <div class="fcard c10"><span class="sev">probable</span><div class="num">10 <span class="pill new">nuevo</span></div><h4>Sobre-ingeniería v2.1 antes de validar</h4><p>5 servicios en Oracle Cloud, Context Engine LLM, conformal prediction — todo antes de un cliente o un baseline. El tiempo se va en arquitectura, no en señal.</p><p class="lab">Señal:</p><p>commits de infra/MLOps antes del primer notebook de baseline.</p></div>
+    <div class="fcard c11"><span class="sev">media</span><div class="num">11 <span class="pill new">nuevo</span></div><h4>Mercado B2B demasiado amplio</h4><p>Consultoras + individuos + empresas + fondos quieren cosas distintas. Sin comprador-ancla, el producto no tiene foco ni pricing.</p><p class="lab">Señal:</p><p>4 buyer personas en el pipeline; cada reunión pide otra feature.</p></div>
+  </div>
+
+  <p class="foot">Premortem validado · Nowcast-Congreso · 25-jun-2026. Revisa y agrega 3 modos al premortem original del mismo día tras investigación de fuentes (CKAN HCDN, DatosAbiertos Senado, literatura de cohesión legislativa UDESA, panorama de consultoras AR). Acompaña a <b>premortem-transcript-20260625-validado.md</b> y al informe ejecutivo en Word.</p>
+</div>
+</body>
+</html>

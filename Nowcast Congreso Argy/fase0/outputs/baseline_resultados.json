@@ -1,0 +1,26 @@
+{
+  "fuente": "CKAN HCDN votaciones_nominales periodos 129-137 (2011-03..2020-01)",
+  "n_actas_total": 899,
+  "n_votos_substantivos": 175628,
+  "n_bloques": 113,
+  "umbral_disputada_minoria_pct": 0.1,
+  "baseline": {
+    "substantivo_todas": {
+      "accuracy": 0.9892,
+      "n_votos": 163587
+    },
+    "substantivo_disputadas": {
+      "accuracy": 0.9841,
+      "n_votos": 89229
+    },
+    "total_todas": {
+      "accuracy": 0.8074,
+      "n_votos": 215433
+    },
+    "total_disputadas": {
+      "accuracy": 0.82,
+      "n_votos": 110399
+    }
+  },
+  "lectura": "El benchmark a superar por el ML es 'substantivo_disputadas'. 'substantivo_todas' suele estar inflado por votaciones cuasi-unanimes."
+}

@@ -2,6 +2,8 @@
 
 > Cualquier Claude (o persona) que abra este repo lee este archivo **primero y completo** antes de tocar nada. Está pensado para que varios trabajemos en simultáneo sin pisarnos.
 
+**Repositorio (fuente de verdad):** https://github.com/tresterciosadmin/Nowcast-Congreso
+
 ## Qué es este proyecto
 Nowcast Legislativo Argentino: estima la probabilidad de sanción de proyectos de ley en el Congreso. Contexto de negocio, metodología y reglas de dominio están en `docs/contexto/INSTRUCTIVO-MAESTRO.md` y `docs/contexto/Nowcast-Congreso_viabilidad_y_plan.md`. **No los repitas; citalos.**
 
@@ -29,7 +31,10 @@ Todo avance relevante (terminar algo, cambiar un contrato, tomar una decisión) 
 5. Actualizá ESTADO-DEL-PROYECTO.md.
 6. PR chico, descripción clara, mergeá apenas pase. Liberá el módulo en TABLERO.
 
+## Estrategia de datos (ver ADR-0002)
+**Semilla → canónica propia → bot.** Andy Tow ("La Década Votada" / legislAr) se usa como **semilla histórica de un solo uso**; no se copia ni se depende en vivo de su dataset. Sobre esa semilla + CKAN + argentinadatos construimos una **base canónica propia** (`datos/canonica`, la fuente de verdad) y un **bot** (`datos/bot_recoleccion`) que recolecta las votaciones nuevas de las fuentes oficiales. legislAr corre en R solo para el export; el resto en Python.
+
 ## Estado actual (resumen — el detalle está en ESTADO)
 - **Fase 0 cerrada:** baseline de bloque medido. Predecir la *dirección* del voto individual por bloque ≈ 0,99 (callejón sin salida para ML). La incertidumbre vive en **asistencia/quórum**, **embudo** y **posición de bloque**.
-- **Corrección de datos:** el CKAN de votaciones se congeló en 2020; lo reciente (→2025) sale de `argentinadatos.com`. Hay que combinar ambas fuentes.
-- **Prioridades abiertas:** `variables/embudo`, `variables/asistencia_quorum`, `datos/argentinadatos`, `datos/expedientes`.
+- **Datos:** CKAN de votaciones congelado en 2020; lo reciente (→2025) sale de `argentinadatos.com`; la historia profunda (1998–, Senado 2004–2013) de la semilla Andy Tow. Hueco conocido: **Senado 2014–2023**.
+- **Prioridades abiertas:** `docs/schemas`, `datos/decada_votada`, `datos/canonica`, `variables/embudo`, `variables/asistencia_quorum`.

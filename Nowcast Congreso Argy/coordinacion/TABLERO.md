@@ -2,22 +2,27 @@
 
 > Antes de empezar a trabajar un módulo, **reclamalo acá**: movelo a "En curso" con tu nombre/ID y fecha. Al terminar, movelo a "Hecho" y liberá el módulo. Regla: **un módulo lo trabaja una sola persona/Claude a la vez.**
 
-Cómo reclamar: editá este archivo en tu rama, agregá la fila, y mencioná en el PR "claim: <módulo>". Si dos PRs reclaman lo mismo, gana el que mergea primero; el otro reelige.
+Cómo reclamar: editá este archivo en tu rama, agregá la fila, y mencioná en el PR "claim: <módulo>".
 
 ---
 
 ## Disponible (libre para reclamar)
 
-Prioridad alta (desbloquean el valor según el gate de Fase 0):
+Prioridad alta — datos (estrategia semilla → canónica → bot, ver ADR-0002):
 
-- [ ] **datos/argentinadatos** — ingestar Diputados 2020–2025 y Senado 2024–2025, normalizado al esquema CKAN. _Desbloquea el cross-check de drift y todo lo reciente._
+- [ ] **datos/canonica** — base propia única: unificar todas las fuentes, deduplicar solapamientos y resolver entidades. Fuente de verdad del proyecto. _Necesita al menos una fuente cargada (semilla o CKAN)._
+- [ ] **datos/argentinadatos** — ingestar Diputados 2020–2025 y Senado 2024–2025, normalizado al esquema canónico.
 - [ ] **datos/expedientes** — ingestar proyectos presentados; medir % que llega a votación nominal (sesgo de selección).
+
+Prioridad alta — modelo (gate de Fase 0):
+
 - [ ] **variables/embudo** — P(proyecto llega al recinto): comisión→dictamen→tratamiento. _Diferencial del nowcast._
 - [ ] **variables/asistencia_quorum** — modelar asistencia/ausencia/abstención (el ~19% que el bloque no explica).
-- [ ] **docs/schemas** — definir el contrato de datos (schema_version) por tipo. _Transversal; hacelo temprano para que nadie improvise esquemas._
 
 Prioridad media:
 
+- [ ] **datos/senado** — Senado: **huecos 2014–2023 y 2001–2003** + resolver bloque (padrón→bloque por fecha).
+- [ ] **datos/diputados_oficial** — completar Diputados 2020–2023 desde `votaciones.hcdn.gob.ar` (argentinadatos está incompleto).
 - [ ] **variables/legislador** — feature store por legislador (point-in-time).
 - [ ] **variables/proyecto** — feature store por proyecto (tema, autor, mayoría, NLP de texto).
 - [ ] **variables/bloque** — cohesión/posición/fracturas por bloque en el tiempo.
@@ -26,6 +31,7 @@ Prioridad media:
 
 Depende de otros (no empezar hasta que su dependencia esté HECHA):
 
+- [ ] **datos/bot_recoleccion** — bot que trae votaciones nuevas a la canónica. Necesita `datos/canonica` cargada.
 - [ ] **modelo/ensemble** — necesita embudo + agregador.
 - [ ] **evaluacion/backtesting** — necesita al menos un modelo nuevo.
 - [ ] **producto/dashboard** — necesita ensemble.
@@ -34,12 +40,15 @@ Depende de otros (no empezar hasta que su dependencia esté HECHA):
 
 | Módulo | Quién | Desde | Rama |
 |---|---|---|---|
-| _(vacío)_ | | | |
+| datos/decada_votada | Claude+Franco | 2026-06-25 | export_seed.R listo; falta correrlo en R |
+| datos/canonica | Claude+Franco | 2026-06-25 | cubre Diputados 2011–2025 + Senado 2024–2025 |
+| datos/argentinadatos | Claude+Franco | 2026-06-25 | integrado; falta bloque del Senado |
 
 ## Hecho
 
 | Módulo | Quién | Fecha | Nota |
 |---|---|---|---|
+| docs/schemas | Claude+Franco | 2026-06-25 | Esquema canónico schema_version=1 (acta + voto) |
 | evaluacion/baseline | Claude+Franco | 2026-06-25 | Baseline ~0,99 dirección / ~0,81 con asistencia |
 | datos/ckan_diputados | Claude+Franco | 2026-06-25 | En `fase0/`, pendiente migrar a su carpeta |
 

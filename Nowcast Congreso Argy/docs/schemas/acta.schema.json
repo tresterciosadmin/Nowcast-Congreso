@@ -1,0 +1,104 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://nowcast-congreso/schemas/acta.schema.json",
+  "title": "acta",
+  "description": "Una votacion nominal. schema_version=1.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "acta_id",
+    "camara",
+    "titulo",
+    "fuente"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "acta_id": {
+      "type": "string",
+      "pattern": "^[a-z_]+:.+"
+    },
+    "camara": {
+      "type": "string",
+      "enum": [
+        "diputados",
+        "senado"
+      ]
+    },
+    "fecha": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date"
+    },
+    "periodo": {
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "titulo": {
+      "type": "string",
+      "minLength": 1
+    },
+    "expediente": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "tipo_mayoria": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "resultado": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "n_afirmativos": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "n_negativos": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "n_abstenciones": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "n_ausentes": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "fuente": {
+      "type": "string",
+      "enum": [
+        "decada_votada",
+        "ckan_diputados",
+        "argentinadatos",
+        "senado"
+      ]
+    }
+  }
+}

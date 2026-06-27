@@ -3,9 +3,8 @@
 Plan estructurado para trabajo en paralelo. Para cada bloque: **qué** hay que hacer y **cómo**. El orden de prioridad sale del gate de Fase 0 (predecir el voto-dirección por bloque ya da ~0,99; el valor está en asistencia, embudo y posición de bloque).
 
 ## Cómo se trabaja (resumen operativo)
-- Cada ítem de abajo mapea a un módulo/carpeta con su `README.md` (contrato).
+- Cada ítem mapea a un módulo/carpeta con su `README.md` (contrato).
 - Reclamás el módulo en `TABLERO.md`, trabajás en rama propia, registrás en `ESTADO-DEL-PROYECTO.md`, abrís PR. Detalle en `PROTOCOLO-GIT.md`.
-- "Cómo" = el enfoque técnico mínimo; el detalle fino se decide dentro del módulo y se documenta en ESTADO.
 
 ---
 
@@ -14,69 +13,91 @@ Plan estructurado para trabajo en paralelo. Para cada bloque: **qué** hay que h
 
 ---
 
-## Fase 1 — Las tres fuentes de incertidumbre (paralelizable)
-Estos cuatro módulos se pueden trabajar **en simultáneo** por personas distintas porque no comparten archivos. Dependencia única: que `docs/schemas` exista primero.
+## Fase 1A — Base de datos propia: semilla → canónica → bot (ver ADR-0002)
+**Principio:** Andy Tow es **semilla de un solo uso**, no dependencia viva. Construimos nuestra base y la mantenemos con un bot. Paralelizable salvo donde se indica.
 
-### 1.0 docs/schemas — contrato de datos *(hacelo primero, transversal)*
-- **Qué:** definir el esquema y `schema_version` de cada tipo: votación (cabecera), voto (detalle), legislador, proyecto, feature.
-- **Cómo:** un markdown + json-schema por tipo en `docs/schemas/`. Tomá como base las columnas reales ya vistas en `fase0` (acta_id, bloque, voto, tipo_mayoria, resultado, fecha...). Todo parquet en `data/clean` debe validar contra su schema.
-- **Gate:** los demás módulos pueden escribir parquet que valida.
+### 1A.0 docs/schemas — contrato de datos *(primero, transversal)*
+- **Qué:** definir esquema y `schema_version` por tipo (votación, voto, legislador, proyecto, feature). Base del esquema canónico.
+- **Cómo:** markdown + json-schema por tipo, partiendo de las columnas reales de `fase0`. Todo parquet valida contra su schema.
+- **Gate:** los demás módulos escriben parquet que valida.
 
-### 1.1 datos/argentinadatos — datos recientes 2020–2025
-- **Qué:** ingestar Diputados (2020→oct-2025) y Senado (2024→nov-2025) desde `api.argentinadatos.com`, normalizado al MISMO esquema que CKAN.
-- **Cómo:** endpoints `/v1/diputados/actas/` y `/v1/senado/actas/` (cada acta trae `votos[]` por legislador con bloque). Aplanar a cabecera+detalle, mapear nombres de campos al schema, guardar parquet. Reusar el patrón resiliente de `fase0/src/common.py` (reintentos/backoff/logging).
-- **Gate:** serie continua 2011→2025 sin huecos al concatenar con CKAN.
+### 1A.1 datos/decada_votada — semilla histórica
+- **Qué:** exportar una vez los datos de Andy Tow vía legislAr (Diputados 1998–2019, Senado 2004–2013) a parquet canónico.
+- **Cómo:** R + legislAr (`show_available_bills` → `get_bill_votes`), escribir parquet con `schema_version`. **R solo acá**; el resto en Python.
+- **Gate:** export reproducible y validado; cobertura documentada.
 
-### 1.2 datos/expedientes — universo de proyectos (sesgo de selección)
-- **Qué:** ingestar proyectos presentados (CKAN `expedientes`) y cuantificar cuántos llegan a votación nominal.
-- **Cómo:** bajar el dataset `expedientes`, cruzar con las actas por número de expediente parseado del `titulo`. Métrica: % de proyectos presentados que tienen votación nominal.
-- **Gate:** número de sesgo de selección publicado en `ESTADO`.
+### 1A.2 datos/argentinadatos — datos recientes
+- **Qué:** Diputados 2020–2025 y Senado 2024–2025 desde `api.argentinadatos.com`, al esquema canónico.
+- **Cómo:** endpoints `/v1/diputados/actas/` y `/v1/senado/actas/` (traen `votos[]` por legislador). Aplanar a cabecera+detalle. Reusar patrón resiliente de `fase0/src/common.py`.
+- **Gate:** serie continua al concatenar con semilla y CKAN.
 
-### 1.3 variables/embudo — supervivencia del proyecto *(prioritario)*
-- **Qué:** modelar P(un proyecto llega al recinto): presentado→comisión→dictamen→tratamiento.
-- **Cómo:** etiquetar el ciclo de vida de cada expediente; modelo de supervivencia / clasificador temporal. Backtesting walk-forward (entrenar t, validar t+1), sin leakage.
-- **Gate:** mejora medible sobre predecir solo el voto final.
+### 1A.3 datos/canonica — base propia única *(cuello de botella: dueño único)*
+- **Qué:** unificar semilla + CKAN + argentinadatos + senado + expedientes en una sola tabla; deduplicar solapamientos y resolver entidades (legislador/bloque).
+- **Cómo:** precedencia de fuentes, clave estable por acta, entity resolution; carga idempotente. Es la fuente de verdad de `variables/` y `modelo/`.
+- **Gate:** sin duplicados en períodos solapados; entity resolution validada en muestra.
 
-### 1.4 variables/asistencia_quorum — quién aparece y se abstiene *(prioritario)*
-- **Qué:** modelar P(asiste) y P(abstiene) por legislador-acta. Es el ~19% que el bloque no explica.
-- **Cómo:** features de presentismo histórico por legislador + atributos de la sesión; clasificador. Baseline a superar: tasa de presentismo histórica por legislador.
-- **Gate:** supera ese baseline de presentismo.
+### 1A.4 datos/bot_recoleccion — el bot *(depende de canonica)*
+- **Qué:** proceso programado que detecta votaciones nuevas en fuentes oficiales y las agrega a la canónica (upsert idempotente).
+- **Cómo:** leer último acta conocido por cámara; pedir a cada fuente solo lo posterior; cron local primero, Cloud Scheduler en nube. Resiliencia obligatoria.
+- **Gate:** corrida idempotente; detecta actas nuevas en ventana de prueba; alerta ante caída de fuente.
+
+### 1A.5 datos/expedientes — universo de proyectos (sesgo de selección)
+- **Qué:** ingestar proyectos presentados (CKAN `expedientes`); medir % que llega a votación nominal.
+- **Cómo:** cruzar por número de expediente parseado del título de cada acta.
+- **Gate:** número de sesgo de selección publicado en ESTADO.
+
+### 1A.6 datos/senado — cerrar el hueco 2014–2023
+- **Qué:** conseguir Senado 2014–2023 (no está ni en la semilla ni en argentinadatos).
+- **Cómo:** DatosAbiertos Senado + scraping del portal de votaciones del Senado si hace falta.
+- **Gate:** mapeo de bloques del Senado resuelto; franja cubierta o documentada como faltante.
 
 ---
 
-## Fase 2 — Composición del nowcast
-Depende de Fase 1. No empezar hasta que sus insumos estén HECHOS.
+## Fase 1B — Las tres fuentes de incertidumbre (paralelizable, leen de la canónica)
+### 1B.1 variables/embudo — supervivencia del proyecto *(prioritario)*
+- **Qué:** P(un proyecto llega al recinto): presentado→comisión→dictamen→tratamiento.
+- **Cómo:** etiquetar ciclo de vida del expediente; modelo de supervivencia / clasificador temporal; backtesting walk-forward sin leakage.
+- **Gate:** mejora sobre predecir solo el voto final.
 
+### 1B.2 variables/asistencia_quorum — quién aparece y se abstiene *(prioritario)*
+- **Qué:** P(asiste) y P(abstiene) por legislador-acta (el ~19% que el bloque no explica).
+- **Cómo:** presentismo histórico + atributos de la sesión; clasificador. Baseline: tasa de presentismo histórica por legislador.
+- **Gate:** supera ese baseline.
+
+### 1B.3 variables/legislador · proyecto · bloque — feature stores
+- **Qué/Cómo:** features point-in-time por legislador, por proyecto (tema/autor/mayoría/NLP) y series por bloque (cohesión/posición/fracturas). Independientes entre sí.
+- **Gate:** sin leakage; features validadas en muestra.
+
+---
+
+## Fase 2 — Composición del nowcast (depende de Fase 1)
 ### 2.1 modelo/agregador_institucional
-- **Qué:** convertir votos individuales + asistencia en P(mayoría|recinto) aplicando quórum y tipo de mayoría (simple, absoluta, 2/3).
-- **Cómo:** simulación: combinar P(asiste)·P(voto) por legislador, agregar por cámara, aplicar la regla de `tipo_mayoria` de la cabecera. Validar contra resultados históricos reales.
+- **Qué:** P(mayoría|recinto) combinando voto + asistencia con reglas de quórum y tipo de mayoría (simple, absoluta, 2/3).
 - **Gate:** reproduce el `resultado` histórico dentro de tolerancia.
 
-### 2.2 modelo/ensemble
-- **Qué:** P(aprobación) = P(llega al recinto) × P(mayoría|recinto).
-- **Cómo:** componer salidas de `embudo` y `agregador`; calibrar (Brier/reliability).
+### 2.2 modelo/ensemble *(cuello de botella: dueño único)*
+- **Qué:** P(aprobación) = P(llega al recinto) × P(mayoría|recinto); calibrar (Brier/reliability).
 - **Gate:** calibración dentro de tolerancia en backtesting.
 
 ---
 
 ## Fase 3 — Producto y validación comercial (en paralelo a Fase 2)
 ### 3.1 producto/dashboard
-- **Qué:** tablero interno radar de tracción + mapa de pivotes + escenarios (encuadre *augmentation*, no oráculo).
-- **Cómo:** Streamlit o notebook sobre las salidas del ensemble; foco en explicabilidad.
-- **Gate:** una consultora valida utilidad en entrevista; buscar 1 LOI/piloto pago.
+- **Qué:** tablero interno radar de tracción + mapa de pivotes + escenarios (encuadre *augmentation*).
+- **Gate:** una consultora valida utilidad; buscar 1 LOI/piloto pago.
 
 ---
 
 ## Fase 4 — Nube *(NO abrir sin pagador validado)*
-`producto/api` (FastAPI), ingesta programada, Postgres, monitoreo de drift, auth/multi-tenant, términos de uso + disclaimer. La migración es decisión comercial, no técnica.
+`producto/api` (FastAPI), el bot en Cloud Scheduler, Postgres, monitoreo de drift, auth/multi-tenant, términos de uso + disclaimer. La migración es decisión comercial, no técnica.
 
 ---
 
-## Mapa de paralelización (quién puede trabajar a la vez)
+## Mapa de paralelización
 | Pueden ir en simultáneo | Por qué |
 |---|---|
-| docs/schemas → luego argentinadatos, expedientes, embudo, asistencia_quorum | módulos sin archivos compartidos |
-| legislador, proyecto, bloque | feature stores independientes |
+| docs/schemas → luego decada_votada, argentinadatos, expedientes, senado | fuentes sin archivos compartidos |
+| embudo, asistencia_quorum, legislador, proyecto, bloque | leen de la canónica, escriben en su carpeta |
 | dashboard mientras se cierra ensemble | consume contrato, no código |
 
-**Cuellos de botella (un solo dueño, coordinar):** `docs/schemas` (transversal), `modelo/ensemble` (junta todo). Hacelos con dueño único y avisando en TABLERO.
+**Cuellos de botella (un solo dueño, coordinar):** `docs/schemas` (transversal), `datos/canonica` (junta las fuentes), `modelo/ensemble` (junta los modelos).

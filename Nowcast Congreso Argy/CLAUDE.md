@@ -23,6 +23,9 @@ Nowcast Legislativo Argentino: estima la probabilidad de sanción de proyectos d
 ## Regla de oro de trazabilidad: **cada cambio se registra**
 Todo avance relevante (terminar algo, cambiar un contrato, tomar una decisión) **agrega una entrada a `coordinacion/ESTADO-DEL-PROYECTO.md`** en el mismo PR. Un PR que cambia código y no actualiza ESTADO no se mergea. Formato en ese archivo.
 
+## Régimen de archivos descartables: **todo lo borrable va a `Archivos_Borrar/`**
+La carpeta está en OneDrive y el entorno no puede borrar archivos. Por eso, todo lo temporal o regenerable (cachés, descargas crudas, logs de validación, salidas intermedias, pruebas) se escribe en `Archivos_Borrar/` para que el dueño humano lo borre a mano. Nada ahí es fuente de verdad.
+
 ## Flujo mínimo por sesión
 1. `git pull` → leé ESTADO + TABLERO.
 2. Reclamá un módulo/tarea en TABLERO.
@@ -37,4 +40,8 @@ Todo avance relevante (terminar algo, cambiar un contrato, tomar una decisión) 
 ## Estado actual (resumen — el detalle está en ESTADO)
 - **Fase 0 cerrada:** baseline de bloque medido. Predecir la *dirección* del voto individual por bloque ≈ 0,99 (callejón sin salida para ML). La incertidumbre vive en **asistencia/quórum**, **embudo** y **posición de bloque**.
 - **Datos:** CKAN de votaciones congelado en 2020; lo reciente (→2025) sale de `argentinadatos.com`; la historia profunda (1998–, Senado 2004–2013) de la semilla Andy Tow. Hueco conocido: **Senado 2014–2023**.
-- **Prioridades abiertas:** `docs/schemas`, `datos/decada_votada`, `datos/canonica`, `variables/embudo`, `variables/asistencia_quorum`.
+- **Esquema canónico** definido en `docs/schemas` (schema_version=1).
+- **Prioridades abiertas:** `datos/decada_votada` (export listo, falta correr), `datos/canonica`, `variables/embudo`, `variables/asistencia_quorum`.
+
+## Regla de explicación en humano: **cada cambio se cuenta sin tecnicismos**
+Además de la entrada técnica en `ESTADO-DEL-PROYECTO.md`, todo cambio relevante se explica en lenguaje claro en `coordinacion/EN-HUMANO.md` (qué se hizo y por qué, con analogías si ayuda). El objetivo es que cualquiera entienda el sistema sin leer código. Si algo no se entiende leyendo ese archivo, está mal redactado: arreglalo.

@@ -19,3 +19,6 @@
 
 ## Convenciones de código
 Resiliencia obligatoria: errores específicos, reintentos con backoff en I/O de red, parsing defensivo, logging estructurado. Reusá `datos/_common/` cuando exista.
+
+## Nota (2026-06-25): clasificación por TEMA — prioridad confirmada
+El usuario confirmó que hay que **separar/clasificar por tema del proyecto** (materia del expediente: económico, penal, laboral, salud, etc.). Es una feature central de este módulo: a partir del `titulo`/texto del expediente, asignar una taxonomía de temas (reglas + NLP), validada en una muestra etiquetada. Habilita análisis y modelos por materia.

@@ -16,7 +16,7 @@ except ImportError:  # entornos con jsonschema viejo
     from jsonschema import Draft7Validator as _Validator
 
 # Precedencia de fuentes para deduplicar periodos solapados (mayor = gana).
-PRECEDENCIA = {"decada_votada": 1, "argentinadatos": 2, "senado": 2, "ckan_diputados": 3}
+PRECEDENCIA = {"decada_votada": 1, "argentinadatos": 2, "senado": 2, "ckan_diputados": 3, "manual_2026": 4}
 VOTOS_OK = {"AFIRMATIVO", "NEGATIVO", "ABSTENCION", "AUSENTE"}
 
 def _load(sources: Path, kind: str) -> pd.DataFrame:
@@ -34,7 +34,7 @@ def _checks(df: pd.DataFrame, required: list[str], name: str) -> None:
     for c in required:
         nn = df[c].isna().sum()
         assert nn == 0, f"{name}: {nn} nulos en columna requerida '{c}'"
-    assert df["acta_id"].str.match(r"^[a-z_]+:.+").all(), f"{name}: acta_id con formato inválido"
+    assert df["acta_id"].str.match(r"^[a-z0-9_]+:.+").all(), f"{name}: acta_id con formato inválido"
 
 def _sample_jsonschema(df: pd.DataFrame, schema: dict, n: int = 500) -> None:
     v = _Validator(schema)

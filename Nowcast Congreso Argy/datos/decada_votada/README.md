@@ -24,3 +24,11 @@
 
 ## Importante
 Esta es la **semilla**, no la fuente viva. Una vez cargada en `datos/canonica`, este módulo no se vuelve a correr salvo para auditar/rellenar historia. Las votaciones nuevas las trae `datos/bot_recoleccion` desde fuentes oficiales.
+
+## ACTUALIZACIÓN: vía CSV (preferida, sin R)
+Los Aportes incluyen `DecadaVotadaCSV.zip` (dump crudo de Andy Tow, 2014) con votaciones
+de **ambas cámaras**. Es más rápido y confiable que el scraping de R, e incluye el **Senado**.
+- Script: `src/from_csv.py`. Pasos: descomprimir el zip a una carpeta y `CSV=<carpeta> python src/from_csv.py`.
+- Códigos de voto decodificados: 0=AFIRMATIVO, 1=NEGATIVO, 2=ABSTENCION, 3=AUSENTE.
+- Cobertura: Diputados 2001–2014 (se **recorta a ≤2010** para no solapar con CKAN), Senado 2004–2014 (completo).
+- `export_seed.R` queda como alternativa (llega hasta ~2019 en Diputados, pero CKAN ya cubre ese tramo).

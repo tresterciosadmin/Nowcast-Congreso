@@ -48,6 +48,86 @@ Mantené esta tabla sincronizada con la bitácora.
 ---
 
 ## Bitácora (más reciente arriba)
+### [2026-06-27] datos/decada_votada — Semilla vía CSV (sin R); base 2001-2025 completa
+- **Quién:** Claude (con Franco)
+- **Qué:** integrada la Década Votada desde el CSV local (Aportes/towlandia), Diputados 2001-2010 + Senado 2004-2014. La corrida de R no es necesaria (su test de 25 funcionó, pero el CSV es más rápido e incluye Senado). Base canónica: 4.584 actas / 780.839 votos, 2001-2025 ambas cámaras. Baseline Senado robusto: 0,971 (n=26.359).
+- **Cómo:** `datos/decada_votada/src/from_csv.py`; voto 0/1/2/3 -> AFIRMATIVO/NEGATIVO/ABSTENCION/AUSENTE. Diputados recortado a <=2010 para no solapar con CKAN.
+- **Archivos:** `datos/decada_votada/src/from_csv.py`, README, COBERTURA, RESULTADOS, EN-HUMANO.
+- **Estado del módulo:** decada_votada HECHO (vía CSV).
+- **Próximo paso:** hueco Senado 2015-2023; retro-completar bloque argentinadatos Senado 2024-25.
+
+### [2026-06-27] datos/manual_2026 — Excel 2026 integrado; primer baseline de Senado
+- **Quién:** Claude (con Franco)
+- **Qué:** integrado el Excel curado (período 2025-2027) como fuente manual_2026: 17 actas (10 Dip + 7 Sen), votos 2026 de ambas cámaras + padrón con bloque del Senado. Canónica: 1.431 actas / 343.964 votos. Primer baseline de Senado: 0,938 disputadas (n=388).
+- **Cómo:** `datos/manual_2026/src/to_canonical.py` (PRESIDENTE→ausente, PENDIENTE→excluido). Fixes de esquema: acta_id admite dígitos; fuente enum suma manual_2026; precedencia manual_2026=máxima.
+- **Archivos:** `datos/manual_2026/*`, `docs/schemas/*`, `datos/canonica/src/build.py`, `datos/canonica/COBERTURA.md`, `evaluacion/baseline/RESULTADOS.md`.
+- **Estado del módulo:** datos/manual_2026 HECHO; canonica EN CURSO.
+- **Próximo paso:** retro-completar bloque Senado 2024-25 con el padrón; sumar la semilla (R) cuando termine.
+
+### [2026-06-27] variables/proyecto — Clasificador sobre texto de leyes (validado 13/15)
+- **Quién:** Claude (con Franco)
+- **Qué:** taxonomía granular v1 aprobada (16 áreas/~55 subtemas). Clasificador por puntaje sobre el TEXTO de los proyectos (18 PDFs), validado contra las etiquetas de Franco: 13/15 en el mismo grupo temático. 2 casos de frontera (ludopatía, sociedades). 2 PDFs escaneados → OCR pendiente.
+- **Cómo:** `classify_tema_v1.py` cuenta keywords por subtema sobre texto extraído con pdftotext. Reforzado el detector de Sociedades.
+- **Archivos:** `variables/proyecto/{src/classify_tema_v1.py,TAXONOMIA.md,RESULTADOS-tema.md}`.
+- **Estado del módulo:** EN CURSO. Próximo: OCR, integrar Excel 2026 como fuente, clasificar historia vía expedientes.
+- **Próximo paso:** definir 2 fronteras con Franco; integrar datos/manual_2026.
+
+### [2026-06-27] variables/proyecto — Clasificación por tema v0 (esqueleto)
+- **Quién:** Claude (con Franco)
+- **Qué:** taxonomía base (15 materias + trámite/homenajes/sin clasificar) y clasificador v0 por palabras clave. Sobre los títulos actuales: 65pct trámite, 24pct sin clasificar -> confirma que hace falta el texto del expediente.
+- **Cómo:** reglas regex en `classify_tema.py`; el acta ya tiene el nº de expediente para unir con datos/expedientes.
+- **Archivos:** `variables/proyecto/{src/classify_tema.py,TAXONOMIA.md}`.
+- **Estado del módulo:** EN CURSO (v0). Depende de `datos/expedientes` para texto descriptivo.
+- **Próximo paso:** que Franco confirme/ajuste la taxonomía; luego ingestar expedientes y clasificar sobre su texto.
+
+
+### [2026-06-27] evaluacion/baseline — Baseline re-medido sobre canónica (2011–2025)
+- **Quién:** Claude (con Franco)
+- **Qué:** baseline votá-con-tu-grupo sobre la base ampliada. bloque_norm 0,969 (disputadas) — confirma callejón sin salida del voto-dirección. Coalición/linaje caen a ~0,92 (disidencia intra-coalición = señal). DRIFT: 2024–2025 baja a 0,946/0,923. Senado sin medir (SIN BLOQUE).
+- **Cómo:** LOO sobre votos_resuelto; por nivel/cámara/año. `evaluacion/baseline/src/baseline_canonico.py`.
+- **Archivos:** `evaluacion/baseline/{src/baseline_canonico.py,RESULTADOS.md,outputs/baseline_canonico.json}`.
+- **Estado del módulo:** evaluacion/baseline HECHO (sobre canónica).
+- **Próximo paso:** clasificación por tema (variables/proyecto); resolver bloque del Senado para medir su baseline.
+
+### [2026-06-27] datos/senado — Hallazgo: diarios 2001–2003 sin voto nominal (pendiente)
+- **Quién:** Claude (con Franco)
+- **Qué:** revisada una muestra de diario de sesiones del Senado (2002). Son HTML (taquigráfico) con .pdf mal puesto. Tienen asistencia (PRESENTES/AUSENTES) y resultados agregados, pero NO voto nominal por senador (votación a mano alzada). Decisión de uso: pendiente.
+- **Cómo:** detalle, ejemplo y notas de parsing en `datos/senado/NOTA-2001-2003.md`; muestra guardada en `datos/senado/muestras/`.
+- **Archivos:** `datos/senado/NOTA-2001-2003.md`, `datos/senado/muestras/Senado_2002-03-05_muestra.html`.
+- **Estado del módulo:** ANOTADO, sin parser todavía.
+- **Próximo paso:** decidir entre asistencia+resultados / solo resultados / dejarlo. Senado nominal sigue arrancando en 2004 (semilla).
+
+### [2026-06-25] datos/canonica — Capa de coaliciones (JxC time-aware)
+- **Quién:** Claude (con decisiones de Franco)
+- **Qué:** agregado el campo `coalicion`: Juntos por el Cambio/Cambiemos (UCR+PRO+CC+Evolución Radical) acotado 2015-12-10→2023-12-10 (53.768 votos); fuera de ventana los miembros vuelven a su espacio. Control: JxC arranca en 2016, sin anacronismo.
+- **Cómo:** regla por rango de fechas en `entity_resolution.py`; unificadas variantes de Coalición Cívica por prefijo. Flags (aliados provinciales, PRO-LLA 2024–2025) en `BLOQUES.md`.
+- **Archivos:** `datos/canonica/src/entity_resolution.py`, `datos/canonica/BLOQUES.md`.
+- **Estado del módulo:** canonica EN CURSO.
+- **Próximo paso:** sumar semilla y re-correr todo; tema (variables/proyecto); Senado por PDF.
+
+### [2026-06-25] datos/canonica — Linaje time-aware + tema en agenda
+- **Quién:** Claude (con decisiones de Franco)
+- **Qué:** finalizado bloque_linaje (8 grupos): aliados K (Peronismo para la Victoria, Nuevo Encuentro, Libres del Sur) fundidos en FdT-UxP; Frente Renovador time-aware (massismo hasta 2019-12-10, kirchnerismo después). Registrado que falta separación por TEMA del proyecto.
+- **Cómo:** mapas + regla por fecha en `entity_resolution.py`; join de fecha desde actas. Detalle y banderas en `BLOQUES.md`.
+- **Archivos:** `datos/canonica/src/entity_resolution.py`, `datos/canonica/BLOQUES.md`, `variables/proyecto/README.md`.
+- **Estado del módulo:** canonica EN CURSO.
+- **Próximo paso:** tema (variables/proyecto), JxC por ventanas, Senado por PDF, sumar semilla.
+
+### [2026-06-25] datos/canonica — Agrupamiento de bloques (norm + linaje)
+- **Quién:** Claude (sesión con Franco)
+- **Qué:** ampliada la resolución de bloques en dos niveles: `bloque_norm` (166→143, variantes del mismo bloque) y `bloque_linaje` (7 espacios; FpV/FdT/UxP unificados = 116.635 votos). `bloque` crudo intacto.
+- **Cómo:** mapas curados `BLOQUE_ALIAS` y `LINAJE` en `entity_resolution.py`; decisiones y exclusiones (Frente Renovador, JxC time-dependent) documentadas en `BLOQUES.md`.
+- **Archivos:** `datos/canonica/src/entity_resolution.py`, `datos/canonica/BLOQUES.md`.
+- **Estado del módulo:** EN CURSO.
+- **Próximo paso:** mapeo temporal de coaliciones (JxC); ampliar alias con la semilla cuando entre.
+
+### [2026-06-25] datos/canonica — Resolución de entidades (1er pase)
+- **Quién:** Claude (sesión con Franco)
+- **Qué:** `entity_resolution.py` asigna un legislador_id canónico invariante al formato del nombre y normaliza bloques. Sobre CKAN+argentinadatos: 1.358 nombres → 1.131 legisladores; 225 unidos cross-fuente; bloques 166→148.
+- **Cómo:** clave por tokens ordenados/únicos sin partículas (une "APELLIDO Nombre" y "Apellido, Nombre"); alias de bloque ampliable. Crosswalks a `Archivos_Borrar/`.
+- **Archivos:** `datos/canonica/src/entity_resolution.py`.
+- **Estado del módulo:** EN CURSO. Limitación: nombres con 2º nombre presente en una sola fuente no se unen (a refinar con padrón/fuzzy); alias de bloque a ampliar.
+- **Próximo paso:** refinar con el padrón de Diputados; sumar la semilla cuando esté; ampliar alias de bloque.
 
 ### [2026-06-25] datos/argentinadatos + ckan_diputados — Cobertura 2011–2025
 - **Quién:** Claude (sesión con Franco)

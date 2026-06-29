@@ -5,15 +5,60 @@
   "description": "Voto de un legislador en un acta. schema_version=1.",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema_version", "acta_id", "legislador_nombre", "bloque", "voto", "fuente"],
+  "required": [
+    "schema_version",
+    "acta_id",
+    "legislador_nombre",
+    "bloque",
+    "voto",
+    "fuente"
+  ],
   "properties": {
-    "schema_version": {"type": "integer", "const": 1},
-    "acta_id": {"type": "string", "pattern": "^[a-z_]+:.+"},
-    "legislador_id": {"type": ["string", "null"]},
-    "legislador_nombre": {"type": "string", "minLength": 1},
-    "bloque": {"type": "string"},
-    "distrito": {"type": ["string", "null"]},
-    "voto": {"type": "string", "enum": ["AFIRMATIVO", "NEGATIVO", "ABSTENCION", "AUSENTE"]},
-    "fuente": {"type": "string", "enum": ["decada_votada", "ckan_diputados", "argentinadatos", "senado"]}
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "acta_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9_]+:.+"
+    },
+    "legislador_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "legislador_nombre": {
+      "type": "string",
+      "minLength": 1
+    },
+    "bloque": {
+      "type": "string"
+    },
+    "distrito": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "voto": {
+      "type": "string",
+      "enum": [
+        "AFIRMATIVO",
+        "NEGATIVO",
+        "ABSTENCION",
+        "AUSENTE"
+      ]
+    },
+    "fuente": {
+      "type": "string",
+      "enum": [
+        "decada_votada",
+        "ckan_diputados",
+        "argentinadatos",
+        "senado",
+        "manual_2026"
+      ]
+    }
   }
 }

@@ -19,7 +19,7 @@
     },
     "acta_id": {
       "type": "string",
-      "pattern": "^[a-z_]+:.+"
+      "pattern": "^[a-z0-9_]+:.+"
     },
     "camara": {
       "type": "string",
@@ -97,7 +97,8 @@
         "decada_votada",
         "ckan_diputados",
         "argentinadatos",
-        "senado"
+        "senado",
+        "manual_2026"
       ]
     }
   }

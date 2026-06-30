@@ -1,55 +1,95 @@
 {
-  "n_votos_sustantivos": 258376,
+  "n_votos_sustantivos": 557823,
   "por_nivel": {
     "bloque_norm": {
-      "todas": 0.979,
-      "n_todas": 240551,
-      "disputadas": 0.9689,
-      "n_disputadas": 149453
+      "todas": 0.9796,
+      "n_todas": 510146,
+      "disputadas": 0.9658,
+      "n_disputadas": 276113
     },
     "bloque_linaje": {
-      "todas": 0.9457,
-      "n_todas": 258226,
-      "disputadas": 0.9188,
-      "n_disputadas": 160665
+      "todas": 0.9344,
+      "n_todas": 557082,
+      "disputadas": 0.8867,
+      "n_disputadas": 299327
     },
     "coalicion": {
-      "todas": 0.9453,
-      "n_todas": 258238,
-      "disputadas": 0.9182,
-      "n_disputadas": 160669
+      "todas": 0.9342,
+      "n_todas": 557094,
+      "disputadas": 0.8863,
+      "n_disputadas": 299331
     }
   },
   "por_camara": {
     "diputados": {
-      "todas": 0.979,
-      "n_todas": 240551,
-      "disputadas": 0.9689,
-      "n_disputadas": 149453
+      "todas": 0.9778,
+      "n_todas": 424357,
+      "disputadas": 0.9652,
+      "n_disputadas": 249754
     },
     "senado": {
-      "todas": NaN,
-      "n_todas": 0,
-      "disputadas": NaN,
-      "n_disputadas": 0
+      "todas": 0.9885,
+      "n_todas": 85789,
+      "disputadas": 0.971,
+      "n_disputadas": 26359
     }
   },
   "por_anio_disputadas": {
+    "2001": {
+      "acc": 0.9368,
+      "n": 3291
+    },
+    "2002": {
+      "acc": 0.872,
+      "n": 6102
+    },
+    "2003": {
+      "acc": 0.9386,
+      "n": 5329
+    },
+    "2004": {
+      "acc": 0.9767,
+      "n": 21079
+    },
+    "2005": {
+      "acc": 0.9562,
+      "n": 13478
+    },
+    "2006": {
+      "acc": 0.9711,
+      "n": 20319
+    },
+    "2007": {
+      "acc": 0.9611,
+      "n": 11787
+    },
+    "2008": {
+      "acc": 0.9712,
+      "n": 17509
+    },
+    "2009": {
+      "acc": 0.9631,
+      "n": 9673
+    },
+    "2010": {
+      "acc": 0.9786,
+      "n": 8547
+    },
     "2011": {
-      "acc": 0.9747,
-      "n": 3636
+      "acc": 0.9782,
+      "n": 5140
     },
     "2012": {
-      "acc": 0.9895,
-      "n": 7868
+      "acc": 0.9882,
+      "n": 10157
     },
     "2013": {
-      "acc": 0.979,
-      "n": 8652
+      "acc": 0.9763,
+      "n": 10585
     },
     "2014": {
-      "acc": 0.9866,
-      "n": 10918
+      "acc": 0.9846,
+      "n": 12011
     },
     "2015": {
       "acc": 0.9954,

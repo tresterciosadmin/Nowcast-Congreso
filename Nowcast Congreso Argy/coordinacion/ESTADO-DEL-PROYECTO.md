@@ -51,6 +51,14 @@ Mantené esta tabla sincronizada con la bitácora.
 ---
 
 ## Bitácora (más reciente arriba)
+### [2026-06-27] Reconciliación temas + lado votos listo para commit
+- **Quién:** Claude (con Franco)
+- **Qué:** (1) Temas: se mantiene SOLO el sistema del equipo (docs/taxonomias/taxonomias.json + variables/proyecto/agente_taxonomias.py). Mi clasificador por keywords y mi TAXONOMIA.md quedaron deprecados (stubs/punteros); mis 2 reglas de frontera ya están en el vocabulario controlado. (2) Lado votos: orquestador reproducible `datos/canonica/src/run_pipeline.py` que reconstruye la base de cero (4.584 actas / 780.839 votos, 2001-2025). .gitignore suma *.db/*.sqlite y Archivos_Borrar.
+- **Cómo:** ver `datos/canonica/RECONSTRUIR.md`. Probado de punta a punta.
+- **Archivos:** `datos/canonica/{src/run_pipeline.py,RECONSTRUIR.md}`, `.gitignore`, `variables/proyecto/{TAXONOMIA.md,RESULTADOS-tema.md,src/classify_tema*.py}` (deprecados).
+- **Estado:** lado votos COMPLETO y reproducible; temas en manos del equipo.
+- **Próximo paso:** commitear desde el clon limpio (git de esta carpeta OneDrive está corrupto). Pendiente real: Senado 2015-2023.
+
 ### [2026-06-30] modelo/voto_individual — Descongelado y reformulado (desvío individual + pivotes)
 - **Quién:** Claude (con Valle)
 - **Qué:** se descongela `modelo/voto_individual` y se reformula su objetivo. NO es predecir el voto medio (eso lo resuelve la regla de bloque ~0,99); es **separar dos comportamientos** y modelar el desvío del legislador respecto de su bloque. Razón (replanteo de Valle): el conteo agregado es un punto, pero la varianza real de ese punto la cargan 10–20 bisagras cuya (in)disciplina puede mover contundentemente la P(aprobación) en votaciones ajustadas. El ~0,99 es un PROMEDIO que tapa a los díscolos; y en 2024–25 la disciplina se afloja (más espacio para el modelo). Por ahora es solo actualización del plan; sin código todavía.
@@ -234,4 +242,4 @@ Mantené esta tabla sincronizada con la bitácora.
 - **Cómo:** WebSearch + inspección de fuentes. Hallazgo: CKAN de votaciones congelado en 2020.
 - **Archivos:** `docs/contexto/Nowcast-Congreso_informe_validacion.docx`, `docs/contexto/premortem-*-validado.*`.
 - **Estado del módulo:** HECHO (documentación).
-- **Próximo paso:** ninguno; insumo para el plan.
+- **Próximo paso:** ningun

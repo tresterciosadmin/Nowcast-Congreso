@@ -27,3 +27,12 @@ package-lock.json
 !*.docx
 !*.html
 !*.md
+
+# Bases SQLite (binarios; no versionar) — datos/proyectos
+*.db
+*.sqlite
+*.sqlite3
+
+# Carpeta de descarte: ignorar contenido, conservar el README
+Archivos_Borrar/*
+!Archivos_Borrar/README.md

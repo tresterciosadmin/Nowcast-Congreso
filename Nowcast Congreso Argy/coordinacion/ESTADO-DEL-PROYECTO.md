@@ -39,7 +39,7 @@ Mantené esta tabla sincronizada con la bitácora.
 | variables/asistencia_quorum | PENDIENTE (prioritario) | — |
 | variables/embudo | PENDIENTE (prioritario) | — |
 | variables/contexto | FUTURO | — |
-| modelo/voto_individual | CONGELADO (baseline ~0,99) | — |
+| modelo/voto_individual | DESCONGELADO / reformulado (desvío individual + pivotes) | — |
 | modelo/agregador_institucional | PENDIENTE | — |
 | modelo/ensemble | PENDIENTE | — |
 | evaluacion/baseline | HECHO | — |
@@ -51,6 +51,14 @@ Mantené esta tabla sincronizada con la bitácora.
 ---
 
 ## Bitácora (más reciente arriba)
+### [2026-06-30] modelo/voto_individual — Descongelado y reformulado (desvío individual + pivotes)
+- **Quién:** Claude (con Valle)
+- **Qué:** se descongela `modelo/voto_individual` y se reformula su objetivo. NO es predecir el voto medio (eso lo resuelve la regla de bloque ~0,99); es **separar dos comportamientos** y modelar el desvío del legislador respecto de su bloque. Razón (replanteo de Valle): el conteo agregado es un punto, pero la varianza real de ese punto la cargan 10–20 bisagras cuya (in)disciplina puede mover contundentemente la P(aprobación) en votaciones ajustadas. El ~0,99 es un PROMEDIO que tapa a los díscolos; y en 2024–25 la disciplina se afloja (más espacio para el modelo). Por ahora es solo actualización del plan; sin código todavía.
+- **Cómo:** dos productos distintos. (1) **Partidario/bloque** = posición esperada del bloque, para recuento agregado y análisis macro (ya medido). (2) **Individual/parlamentario** = (a) índice de disciplina individual por legislador (tasa de desvío vs. bloque, global y por tema, time-aware); (b) modelo de defección P(desvía | tema, cercanía de la votación, período, provincia, ciclo electoral); (c) recuento como DISTRIBUCIÓN (simular cada voto Bernoulli(pᵢ)=bloque ajustado por desvío) con intervalo, no número puntual; (d) detección de pivotes (qué legisladores son bisagra para una ley y cuánto mueve cada uno la P). Distinguir partido ≠ bloque ≠ parlamentario.
+- **Archivos:** `coordinacion/{ESTADO-DEL-PROYECTO.md, TABLERO.md, EN-HUMANO.md, PLAN-DE-TRABAJO.md}`.
+- **Estado del módulo:** modelo/voto_individual DESCONGELADO / reformulado (en plan, sin empezar el código). Conviene un ADR en `coordinacion/DECISIONES/` que formalice el cambio de rumbo.
+- **Próximo paso:** reclamar el módulo en TABLERO; medir contra los ~781k votos cuántos legisladores superan un umbral de divergencia (dimensionar el set pivote); arrancar por el índice de disciplina individual. Depende de `datos/canonica`.
+
 ### [2026-06-30] variables/proyecto — Agente de taxonomías (LLM / Claude API)
 - **Quién:** Claude (con Valle)
 - **Qué:** agente que clasifica un proyecto leyendo su PDF y asignando taxonomías del vocabulario controlado (`docs/taxonomias`), escribiéndolas en `datos/proyectos.proyecto_taxonomias`. Motor elegido: **solo LLM (Claude API)**. La llamada al modelo está aislada (inyectable) → todo el resto (prompt, parseo, validación, persistencia) se testea sin red: 14 chequeos OK con LLM falso.

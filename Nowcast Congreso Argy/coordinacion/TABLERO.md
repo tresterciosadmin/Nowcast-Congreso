@@ -18,6 +18,7 @@ Prioridad alta — modelo (gate de Fase 0):
 
 - [ ] **variables/embudo** — P(proyecto llega al recinto): comisión→dictamen→tratamiento. _Diferencial del nowcast._
 - [ ] **variables/asistencia_quorum** — modelar asistencia/ausencia/abstención (el ~19% que el bloque no explica).
+- [ ] **modelo/voto_individual** _(descongelado/reformulado 2026-06-30)_ — separar comportamiento **partidario** (nivel bloque, macro) del **individual** (desvío del legislador vs. su bloque). Piezas: índice de disciplina individual, modelo de defección, recuento como distribución, **detección de pivotes**. El conteo agregado esconde 10–20 bisagras que mueven la P(aprobación). _Depende de `datos/canonica`. Conviene ADR de cambio de rumbo._
 
 Prioridad media:
 
@@ -58,5 +59,5 @@ Depende de otros (no empezar hasta que su dependencia esté HECHA):
 
 ## Congelado / no abrir aún
 
-- **modelo/voto_individual** — baseline cerrado, no invertir más esfuerzo.
+- ~~**modelo/voto_individual** — baseline cerrado, no invertir más esfuerzo.~~ **DESCONGELADO 2026-06-30:** reformulado (desvío individual + pivotes); movido a "Disponible". Lo cerrado era predecir el voto MEDIO; el valor está en el desvío del parlamentario y en los pivotes.
 - **variables/contexto**, **producto/api** — futuros; no abrir sin cerrar prioridades / sin pagador.

@@ -1,6 +1,6 @@
 # PLAN DE TRABAJO — Nowcast Legislativo
 
-Plan estructurado para trabajo en paralelo. Para cada bloque: **qué** hay que hacer y **cómo**. El orden de prioridad sale del gate de Fase 0 (predecir el voto-dirección por bloque ya da ~0,99; el valor está en asistencia, embudo y posición de bloque).
+Plan estructurado para trabajo en paralelo. Para cada bloque: **qué** hay que hacer y **cómo**. El orden de prioridad sale del gate de Fase 0 (predecir el voto-dirección por bloque ya da ~0,99 **en promedio**; el valor está en asistencia, embudo, posición de bloque y —matiz 2026-06-30— en el **desvío individual vs. bloque** de los pocos legisladores bisagra que el promedio esconde; ver 1B.4).
 
 ## Cómo se trabaja (resumen operativo)
 - Cada ítem mapea a un módulo/carpeta con su `README.md` (contrato).
@@ -67,6 +67,14 @@ Plan estructurado para trabajo en paralelo. Para cada bloque: **qué** hay que h
 ### 1B.3 variables/legislador · proyecto · bloque — feature stores
 - **Qué/Cómo:** features point-in-time por legislador, por proyecto (tema/autor/mayoría/NLP) y series por bloque (cohesión/posición/fracturas). Independientes entre sí.
 - **Gate:** sin leakage; features validadas en muestra.
+
+### 1B.4 modelo/voto_individual — desvío individual + pivotes *(reformulado 2026-06-30)*
+- **Replanteo:** el voto-dirección por bloque acierta ~0,99, pero ese número es un **promedio** que tapa a los díscolos. El conteo agregado (p.ej. 120/257) es un punto; su varianza la cargan **10–20 bisagras** cuya (in)disciplina mueve la P(aprobación) en votaciones ajustadas. Por eso `modelo/voto_individual` se descongela: el objetivo no es predecir el voto medio, sino **separar el comportamiento partidario del individual** y modelar el desvío del legislador vs. su bloque. En 2024–25 la disciplina se afloja → más espacio para este modelo.
+- **Qué (dos productos):** (1) **partidario/bloque** = posición esperada del bloque, para recuento agregado y análisis macro; (2) **individual/parlamentario** = el desvío respecto del bloque.
+- **Cómo (cuatro piezas):** (a) **índice de disciplina individual** por legislador (tasa de desvío vs. bloque, global y por tema, time-aware); (b) **modelo de defección** P(desvía | tema, cercanía de la votación, período, provincia, ciclo electoral); (c) **recuento como distribución** — simular cada voto Bernoulli(pᵢ)=posición de bloque ajustada por desvío → distribución del conteo con intervalo, no número puntual; (d) **detección de pivotes** — qué legisladores son bisagra para una ley y cuánto mueve cada uno la P(aprobación). Distinguir partido ≠ bloque ≠ parlamentario.
+- **Lee de:** `datos/canonica` (~781k votos) + `variables/legislador` y `variables/bloque` cuando existan.
+- **Gate:** (1) dimensionar el set pivote: cuántos legisladores superan un umbral de divergencia vs. su bloque; (2) el recuento como distribución calibra mejor que el punto del baseline en votaciones ajustadas (backtesting walk-forward, sin leakage).
+- **Nota de gobernanza:** cambia el rumbo de un módulo antes congelado → conviene un **ADR** en `coordinacion/DECISIONES/`.
 
 ---
 

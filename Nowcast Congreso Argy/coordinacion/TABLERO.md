@@ -45,6 +45,7 @@ Depende de otros (no empezar hasta que su dependencia esté HECHA):
 | datos/argentinadatos | Claude+Franco | 2026-06-25 | integrado; falta bloque del Senado |
 | datos/seguimiento | Claude+Valle | 2026-06-29 | extractor de giros/trámite Dip+Sen — VALIDADO EN VIVO |
 | datos/proyectos | Claude+Valle | 2026-06-29 | base SQLite de PdL + export Excel; upsert idempotente por denominador |
+| variables/proyecto | Claude+Valle | 2026-06-30 | agente de taxonomías (LLM/Claude API): PDF→etiquetas en proyecto_taxonomias |
 
 ## Hecho
 

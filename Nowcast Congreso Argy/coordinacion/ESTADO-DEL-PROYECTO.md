@@ -34,7 +34,7 @@ Mantené esta tabla sincronizada con la bitácora.
 | docs/taxonomias | HECHO (vocabulario controlado v1, 74 ids) | Valle |
 | datos/expedientes | PENDIENTE | — |
 | variables/legislador | PENDIENTE | — |
-| variables/proyecto | PENDIENTE | — |
+| variables/proyecto | EN CURSO (agente de taxonomías LLM) | Valle |
 | variables/bloque | PENDIENTE | — |
 | variables/asistencia_quorum | PENDIENTE (prioritario) | — |
 | variables/embudo | PENDIENTE (prioritario) | — |
@@ -51,6 +51,14 @@ Mantené esta tabla sincronizada con la bitácora.
 ---
 
 ## Bitácora (más reciente arriba)
+### [2026-06-30] variables/proyecto — Agente de taxonomías (LLM / Claude API)
+- **Quién:** Claude (con Valle)
+- **Qué:** agente que clasifica un proyecto leyendo su PDF y asignando taxonomías del vocabulario controlado (`docs/taxonomias`), escribiéndolas en `datos/proyectos.proyecto_taxonomias`. Motor elegido: **solo LLM (Claude API)**. La llamada al modelo está aislada (inyectable) → todo el resto (prompt, parseo, validación, persistencia) se testea sin red: 14 chequeos OK con LLM falso.
+- **Cómo:** `src/pdf_text.py` (baja PDF + extrae texto con pypdf; detecta escaneados→OCR pendiente) y `src/agente_taxonomias.py` (prompt con la lista controlada + reglas de frontera; parseo tolerante de JSON; **valida ids contra el vocabulario y descarta los inventados**; multi-etiqueta; fallback AUX.SINCLASIF + candidatos para revisión humana). Persistencia: **el humano gana** (no pisa taxonomías fuente='humano') y re-clasificar no duplica. Config: `ANTHROPIC_API_KEY`, `TAXO_MODEL` (default claude-haiku-4-5-20251001; tarea acotada + validación de ids → Haiku alcanza). CLI: `probar <pdf>` / `clasificar <db> <denominador>`.
+- **Archivos:** `variables/proyecto/{src/agente_taxonomias.py, src/pdf_text.py, src/requirements.txt, tests/test_agente.py, README.md}`.
+- **Estado del módulo:** variables/proyecto EN CURSO (agente listo; falta corrida en vivo con API key).
+- **Próximo paso:** correr en vivo sobre PDFs reales; OCR para escaneados; conectar el flujo completo seguimiento→proyectos→agente en lote; clasificar la historia vía expedientes.
+
 ### [2026-06-29] docs/taxonomias — Documento controlado de taxonomías (con id estable)
 - **Quién:** Claude (con Valle)
 - **Qué:** vocabulario controlado único de temas de PdL, construido sobre la v1 de `variables/proyecto` y ampliado con ejemplos de Valle (IA, ciberseguridad, software, subsidios energéticos/transporte). 16 áreas + ~55 subtemas + 3 auxiliares = **74 ids**. Cada taxonomía tiene **id estable** (`ECON.TRIB`) que no cambia aunque se renombre. Multi-etiqueta. El agente elegirá solo de esta lista y propondrá candidatos sin inventar ids. Supersede a `variables/proyecto/TAXONOMIA.md` (queda como apunte).

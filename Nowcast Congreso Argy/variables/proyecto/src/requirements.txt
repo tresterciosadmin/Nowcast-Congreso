@@ -1,0 +1,4 @@
+anthropic>=0.40
+pypdf>=4.0
+requests>=2.31
+tenacity>=8.2

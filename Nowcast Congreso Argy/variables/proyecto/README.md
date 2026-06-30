@@ -2,8 +2,31 @@
 
 **Propósito.** Features por proyecto: tema/materia, autor, cámara de origen, tipo de mayoría requerida, parsing de texto (NLP).
 
-**Estado:** PENDIENTE
-**Owner actual:** _(vacante — reclamalo en coordinacion/TABLERO.md antes de empezar)_
+**Estado:** EN CURSO
+**Owner actual:** Valle (con Claude)
+
+## Agente de taxonomías (LLM) — `src/agente_taxonomias.py` + `src/pdf_text.py`
+Clasifica un proyecto leyendo su PDF y asignándole taxonomías del vocabulario controlado
+(`docs/taxonomias/`). Motor: **Claude API** (LLM).
+
+- **Flujo:** `pdf_text` baja el PDF (de `pdf_url`) y extrae texto → `agente_taxonomias`
+  arma el prompt con la lista controlada, llama al LLM, valida que los ids existan
+  (descarta inventados), y escribe en `datos/proyectos` → `proyecto_taxonomias`.
+- **El humano gana:** el agente nunca pisa una taxonomía cargada a mano (fuente `humano`).
+- **Escaneados:** si el PDF no tiene texto (es imagen), se marca y se saltea (OCR pendiente).
+- **Config:** `ANTHROPIC_API_KEY` (obligatoria en vivo) y `TAXO_MODEL` (default `claude-haiku-4-5-20251001`;
+  la tarea es acotada y validamos los ids, así que Haiku alcanza y es barato. Subí a Sonnet si algún caso ambiguo lo amerita).
+- **Correr:**
+  ```bash
+  pip install -r src/requirements.txt
+  setx ANTHROPIC_API_KEY "sk-ant-..."   # (en PowerShell; reabrí la terminal)
+  python src/agente_taxonomias.py probar https://www.hcdn.gob.ar/.../documento.pdf
+  python src/agente_taxonomias.py clasificar ..\..\datos\proyectos\data\proyectos.db 1091-S-2026
+  ```
+- **Test sin red:** `python tests/test_agente.py` (LLM falso inyectado; valida prompt,
+  parseo/validación, persistencia humano-gana y detección de escaneado).
+- **Pendiente:** OCR para PDFs escaneados; clasificar la historia vía `datos/expedientes`;
+  el viejo `classify_tema_v1.py` (keywords) queda como fallback/baseline.
 
 ## Contrato
 - **Entradas:** datos/expedientes, cabecera

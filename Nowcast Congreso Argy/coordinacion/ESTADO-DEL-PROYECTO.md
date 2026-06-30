@@ -29,6 +29,9 @@ Mantené esta tabla sincronizada con la bitácora.
 | datos/ckan_diputados | HECHO (en `fase0/`, migrar) | — |
 | datos/argentinadatos | PENDIENTE | — |
 | datos/senado | PENDIENTE (hueco 2014–2023) | — |
+| datos/seguimiento | EN CURSO (extractor de giros Dip+Sen, validado en vivo) | Valle |
+| datos/proyectos | EN CURSO (base SQLite + export Excel) | Valle |
+| docs/taxonomias | HECHO (vocabulario controlado v1, 74 ids) | Valle |
 | datos/expedientes | PENDIENTE | — |
 | variables/legislador | PENDIENTE | — |
 | variables/proyecto | PENDIENTE | — |
@@ -48,6 +51,30 @@ Mantené esta tabla sincronizada con la bitácora.
 ---
 
 ## Bitácora (más reciente arriba)
+### [2026-06-29] docs/taxonomias — Documento controlado de taxonomías (con id estable)
+- **Quién:** Claude (con Valle)
+- **Qué:** vocabulario controlado único de temas de PdL, construido sobre la v1 de `variables/proyecto` y ampliado con ejemplos de Valle (IA, ciberseguridad, software, subsidios energéticos/transporte). 16 áreas + ~55 subtemas + 3 auxiliares = **74 ids**. Cada taxonomía tiene **id estable** (`ECON.TRIB`) que no cambia aunque se renombre. Multi-etiqueta. El agente elegirá solo de esta lista y propondrá candidatos sin inventar ids. Supersede a `variables/proyecto/TAXONOMIA.md` (queda como apunte).
+- **Cómo:** `docs/taxonomias/taxonomias.json` (fuente de verdad) + `TAXONOMIAS.md` (vista humana + gobernanza: cómo agregar/quitar/editar, reglas de frontera) + `loader.py` (cargar/validar ids únicos/lista para el prompt del agente). Test: 7 chequeos OK (`python test_loader.py`). Reglas de frontera conservadas: ludopatía→SALUD.ADICC; códigos de fondo→JUST.*.
+- **Archivos:** `docs/taxonomias/{taxonomias.json, TAXONOMIAS.md, loader.py, test_loader.py}`, `variables/proyecto/TAXONOMIA.md` (puntero).
+- **Estado del módulo:** docs/taxonomias HECHO (v1 lista para usar y editar).
+- **Próximo paso:** el **agente de taxonomías**: lee el PDF del proyecto + este JSON y escribe en `datos/proyectos.proyecto_taxonomias`.
+
+### [2026-06-29] datos/proyectos — Base de Proyectos de Ley (SQLite) + export a Excel
+- **Quién:** Claude (con Valle)
+- **Qué:** módulo nuevo `datos/proyectos`: la base de PdL, fuente de verdad del embudo. Guarda una fila por proyecto (PK = denominador) + tablas hijas (autores, giros, trámite, taxonomías). Consume la salida de `datos/seguimiento` (dict FichaExpediente; no importa su código, respeta el contrato). Upsert idempotente: re-cargar un proyecto no duplica, actualiza estado/giros/autores/trámite y preserva `creado_en`. Las taxonomías (que llena el agente) sobreviven al re-scrape. Export a Excel legible para consultoría. Test sin red: 18 chequeos OK.
+- **Cómo:** `src/schema.sql` (SQLite, FKs ON DELETE CASCADE, índices) + `src/store.py` (conectar/upsert_proyecto/export_excel/export_csv + CLI init|cargar|export|csv). **Export universal sin separadores en celdas:** Excel con una hoja por tabla (Proyectos/Autores/Giros/Tramite/Taxonomias) y CSV (utf-8-sig) por tabla, todo unido por denominador. Estado = el derivado por seguimiento (ingresado→en_comision→con_dictamen→media_sancion→sancionado / rechazado).
+- **Archivos:** `datos/proyectos/{README.md, src/schema.sql, src/store.py, src/requirements.txt, tests/test_store.py}`.
+- **Estado del módulo:** datos/proyectos EN CURSO.
+- **Próximo paso:** conectar el flujo seguimiento→upsert en lote; agente de taxonomías que llene `proyecto_taxonomias`; decidir versionado del .db (no commitear binario).
+
+### [2026-06-29] datos/seguimiento — Extractor de giros/trámite de PdL (Diputados + Senado)
+- **Quién:** Claude (con Valle)
+- **Qué:** módulo nuevo `datos/seguimiento`: dado un expediente conocido, baja su ficha oficial y extrae estado de avance (giros a comisiones, trámite, fechas, autores, link al PDF) a un objeto común `FichaExpediente`. Insumo del embudo. **Validado EN VIVO** contra las webs reales de ambas cámaras (Senado 1091/26 y Diputados 2832-D-2026): trae bien sumario, fecha, giros con orden/fecha, firmantes (Dip con distrito+bloque; Sen el autor por link al perfil) y PDF absoluto. Tests offline contra fixtures: todos pasan. Fuentes confirmadas jun-2026.
+- **Cómo:** `src/giros.py`. Diputados = página del autor `hcdn.gov.ar/diputados/<slug>/proyecto.html?exp=<exp>` (requiere slug del autor). Senado = `senado.gob.ar/parlamentario/comisiones/verExp/<NRO>.<AA>/S/PL` (más completa, sin slug, trae orden de giro y fecha ingreso/egreso). Parsing defensivo por firma de encabezados de tabla; reintentos con backoff; denominador normalizado a NNNN-X-AAAA. Correr en vivo (PC con internet): `python src/giros.py senado 1091 2026` / `python src/giros.py diputados 2832-D-2026 sajmechet`. Test sin red: `python tests/test_giros.py`.
+- **Archivos:** `datos/seguimiento/{README.md, src/giros.py, src/requirements.txt, tests/test_giros.py, tests/fixtures/*}`.
+- **Estado del módulo:** datos/seguimiento EN CURSO.
+- **Próximo paso:** validar selectores en vivo; plan B Diputados cuando el slug no resuelve; persistir a la base de Proyectos (módulo aparte); el slug del autor debe vivir en el dataset de parlamentarios.
+
 ### [2026-06-27] datos/decada_votada — Semilla vía CSV (sin R); base 2001-2025 completa
 - **Quién:** Claude (con Franco)
 - **Qué:** integrada la Década Votada desde el CSV local (Aportes/towlandia), Diputados 2001-2010 + Senado 2004-2014. La corrida de R no es necesaria (su test de 25 funcionó, pero el CSV es más rápido e incluye Senado). Base canónica: 4.584 actas / 780.839 votos, 2001-2025 ambas cámaras. Baseline Senado robusto: 0,971 (n=26.359).

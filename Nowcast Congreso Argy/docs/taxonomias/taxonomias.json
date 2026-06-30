@@ -1,0 +1,119 @@
+{
+  "schema_version": 1,
+  "actualizado": "2026-06-29",
+  "nota": "Vocabulario CONTROLADO de temas de proyectos de ley. El agente clasifica eligiendo SOLO ids de esta lista. El 'id' es estable: no cambia aunque cambie el 'nombre'. Multi-etiqueta: un proyecto suele tener varios subtemas. Para agregar/quitar/editar ver TAXONOMIAS.md.",
+  "reglas_frontera": [
+    {"regla": "Juego / apuestas / ludopatía", "asignar": "SALUD.ADICC", "no": "JUST.*"},
+    {"regla": "Reforma de un código de fondo (Penal, Civil, Comercial, de Sociedades)", "asignar": "JUST.CIVCOM o JUST.PENAL", "no": "el área económica de la materia"}
+  ],
+  "areas": [
+    {"id": "ECON", "nombre": "Economía y Finanzas Públicas", "subtemas": [
+      {"id": "ECON.PRESU", "nombre": "Presupuesto y gasto público"},
+      {"id": "ECON.TRIB", "nombre": "Tributario / Impuestos"},
+      {"id": "ECON.DEUDA", "nombre": "Deuda y financiamiento"},
+      {"id": "ECON.MON", "nombre": "Monetario y cambiario"},
+      {"id": "ECON.COPART", "nombre": "Coparticipación / Federalismo fiscal"},
+      {"id": "ECON.EMERG", "nombre": "Emergencia económica"}
+    ]},
+    {"id": "PROD", "nombre": "Producción, Comercio e Inversión", "subtemas": [
+      {"id": "PROD.INVER", "nombre": "Promoción de inversiones (RIGI)"},
+      {"id": "PROD.INDPYME", "nombre": "Industria y PyMEs"},
+      {"id": "PROD.AGRO", "nombre": "Agro, ganadería y pesca"},
+      {"id": "PROD.COMEX", "nombre": "Comercio interior y exterior"},
+      {"id": "PROD.REGESP", "nombre": "Regímenes especiales (p. ej. Zonas Frías)"}
+    ]},
+    {"id": "DESREG", "nombre": "Desregulación y Reforma del Estado", "subtemas": [
+      {"id": "DESREG.DESECO", "nombre": "Desregulación económica"},
+      {"id": "DESREG.MODEST", "nombre": "Modernización del Estado"},
+      {"id": "DESREG.EMPUB", "nombre": "Empresas públicas / Privatizaciones"},
+      {"id": "DESREG.SOCIED", "nombre": "Régimen de sociedades / comercial"}
+    ]},
+    {"id": "TRAB", "nombre": "Trabajo y Seguridad Social", "subtemas": [
+      {"id": "TRAB.LABOR", "nombre": "Relaciones laborales (reforma laboral)"},
+      {"id": "TRAB.PREV", "nombre": "Previsional / Jubilaciones"},
+      {"id": "TRAB.SINDIC", "nombre": "Sindical"},
+      {"id": "TRAB.ART", "nombre": "Riesgos del trabajo (ART)"},
+      {"id": "TRAB.EMPLEOPUB", "nombre": "Empleo público"}
+    ]},
+    {"id": "ENER", "nombre": "Energía", "subtemas": [
+      {"id": "ENER.HIDRO", "nombre": "Hidrocarburos (petróleo y gas)"},
+      {"id": "ENER.ELEC", "nombre": "Energía eléctrica"},
+      {"id": "ENER.RENOV", "nombre": "Renovables"},
+      {"id": "ENER.TARIFA", "nombre": "Tarifas y subsidios energéticos"},
+      {"id": "ENER.COMBUS", "nombre": "Combustibles"}
+    ]},
+    {"id": "AMB", "nombre": "Ambiente y Recursos Naturales", "subtemas": [
+      {"id": "AMB.BOSQUE", "nombre": "Bosques / Glaciares / Áreas protegidas"},
+      {"id": "AMB.AGUA", "nombre": "Agua"},
+      {"id": "AMB.MINER", "nombre": "Minería"},
+      {"id": "AMB.RESID", "nombre": "Residuos"},
+      {"id": "AMB.CLIMA", "nombre": "Cambio climático"}
+    ]},
+    {"id": "INFRA", "nombre": "Infraestructura, Obras y Transporte", "subtemas": [
+      {"id": "INFRA.OBRA", "nombre": "Obra pública"},
+      {"id": "INFRA.TRANSP", "nombre": "Transporte (incl. subsidios al transporte, trenes)"},
+      {"id": "INFRA.VIVIENDA", "nombre": "Vivienda y hábitat"},
+      {"id": "INFRA.TELECOM", "nombre": "Telecomunicaciones / Conectividad"}
+    ]},
+    {"id": "SALUD", "nombre": "Salud", "subtemas": [
+      {"id": "SALUD.SISTEMA", "nombre": "Sistema de salud / Hospitales / Obras sociales"},
+      {"id": "SALUD.MENTAL", "nombre": "Salud mental"},
+      {"id": "SALUD.MEDIC", "nombre": "Medicamentos y vacunas"},
+      {"id": "SALUD.DISCAP", "nombre": "Discapacidad"},
+      {"id": "SALUD.ADICC", "nombre": "Adicciones / Ludopatía"}
+    ]},
+    {"id": "EDU", "nombre": "Educación", "subtemas": [
+      {"id": "EDU.BASICA", "nombre": "Educación básica y media"},
+      {"id": "EDU.SUPERIOR", "nombre": "Educación superior / Universidades / Financiamiento"}
+    ]},
+    {"id": "CYT", "nombre": "Ciencia y Tecnología", "subtemas": [
+      {"id": "CYT.CIENCIA", "nombre": "Ciencia y técnica"},
+      {"id": "CYT.INNOV", "nombre": "Innovación / Economía del conocimiento / Software"},
+      {"id": "CYT.IA", "nombre": "Inteligencia artificial"},
+      {"id": "CYT.CIBER", "nombre": "Ciberseguridad y datos"},
+      {"id": "CYT.PI", "nombre": "Propiedad intelectual / Patentes"}
+    ]},
+    {"id": "CULT", "nombre": "Cultura, Deporte y Medios", "subtemas": [
+      {"id": "CULT.CULTURA", "nombre": "Cultura / Patrimonio"},
+      {"id": "CULT.DEPORTE", "nombre": "Deporte"},
+      {"id": "CULT.MEDIOS", "nombre": "Medios / Comunicación"}
+    ]},
+    {"id": "JUST", "nombre": "Justicia y Seguridad", "subtemas": [
+      {"id": "JUST.PENAL", "nombre": "Derecho penal / Código penal"},
+      {"id": "JUST.PENALJUV", "nombre": "Régimen penal juvenil"},
+      {"id": "JUST.JUDIC", "nombre": "Organización judicial / Magistratura"},
+      {"id": "JUST.SEGINT", "nombre": "Seguridad interior"},
+      {"id": "JUST.NARCO", "nombre": "Narcotráfico"},
+      {"id": "JUST.CIVCOM", "nombre": "Derecho civil / comercial (códigos de fondo)"},
+      {"id": "JUST.PROPIED", "nombre": "Propiedad (inviolabilidad)"}
+    ]},
+    {"id": "DEF", "nombre": "Defensa y Relaciones Exteriores", "subtemas": [
+      {"id": "DEF.DEFENSA", "nombre": "Defensa / Fuerzas Armadas"},
+      {"id": "DEF.TRATADO", "nombre": "Tratados y acuerdos internacionales"},
+      {"id": "DEF.EXTERIOR", "nombre": "Política exterior"}
+    ]},
+    {"id": "DERSOC", "nombre": "Derechos, Género y Sociedad", "subtemas": [
+      {"id": "DERSOC.DDHH", "nombre": "Derechos humanos"},
+      {"id": "DERSOC.GENERO", "nombre": "Género / Diversidad"},
+      {"id": "DERSOC.NINEZ", "nombre": "Niñez e infancia"},
+      {"id": "DERSOC.ORIGIN", "nombre": "Pueblos originarios"},
+      {"id": "DERSOC.MIGRA", "nombre": "Migraciones"}
+    ]},
+    {"id": "POLINST", "nombre": "Régimen Político e Institucional", "subtemas": [
+      {"id": "POLINST.ELECT", "nombre": "Reforma electoral"},
+      {"id": "POLINST.PARTIDOS", "nombre": "Partidos políticos"},
+      {"id": "POLINST.CONST", "nombre": "Reforma constitucional"},
+      {"id": "POLINST.ETICA", "nombre": "Transparencia / Lobby / Ética pública"},
+      {"id": "POLINST.ORGEST", "nombre": "Organización del Estado / Ministerios"}
+    ]},
+    {"id": "DESSOC", "nombre": "Desarrollo Social", "subtemas": [
+      {"id": "DESSOC.ASIST", "nombre": "Asistencia social / Planes"},
+      {"id": "DESSOC.PNC", "nombre": "Pensiones no contributivas"}
+    ]}
+  ],
+  "auxiliares": [
+    {"id": "AUX.HOMENAJE", "nombre": "Homenajes y declaraciones (de interés, beneplácito)"},
+    {"id": "AUX.TRAMITE", "nombre": "Trámite parlamentario (sin contenido sustantivo)"},
+    {"id": "AUX.SINCLASIF", "nombre": "Sin clasificar (no encaja en ninguna; revisar)"}
+  ]
+}

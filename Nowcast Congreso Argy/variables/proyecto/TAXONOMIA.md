@@ -1,3 +1,7 @@
+> **SUPERSEDIDO (2026-06-29):** la fuente de verdad ahora es el documento controlado
+> `docs/taxonomias/taxonomias.json` (con id estable por taxonomía) + `docs/taxonomias/TAXONOMIAS.md`.
+> Este archivo queda como apunte histórico de la v1. El clasificador puede migrar a leer ese JSON.
+
 # Taxonomía de temas — v1 GRANULAR (2 niveles, a ajustar)
 
 Estructura **Área → Subtema**. Se clasifica al subtema; el área se deriva. Pensada

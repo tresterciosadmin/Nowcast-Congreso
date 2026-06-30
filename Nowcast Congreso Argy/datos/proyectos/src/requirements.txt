@@ -1,0 +1,2 @@
+openpyxl>=3.1
+# sqlite3 es parte de la librería estándar de Python (no se instala).

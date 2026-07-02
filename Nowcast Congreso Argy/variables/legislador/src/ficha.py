@@ -237,9 +237,10 @@ def hoja_metodologia(w) -> None:
     ws = w.sheets["Metodologia"]
     for col, ancho in (("A", 14), ("B", 38), ("C", 120)):
         ws.column_dimensions[col].width = ancho
+    from openpyxl.styles import Alignment
     for row in ws.iter_rows(min_row=2, min_col=3, max_col=3):
         for c in row:
-            c.alignment = c.alignment.copy(wrap_text=True, vertical="top")
+            c.alignment = Alignment(wrap_text=True, vertical="top")
 
 
 def export_excel(out: Path, f: pd.DataFrame, periodos: pd.DataFrame,

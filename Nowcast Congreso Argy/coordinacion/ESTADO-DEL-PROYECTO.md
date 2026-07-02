@@ -51,6 +51,22 @@ Mantené esta tabla sincronizada con la bitácora.
 ---
 
 ## Bitácora (más reciente arriba)
+### [2026-07-02] modelo/voto_individual + variables/legislador — Re-corrida sobre base ampliada (con Senado 2015-2023)
+- **Quién:** Claude (con Valle; corrida en PC de Valle)
+- **Qué:** disciplina y fichas re-medidas sobre la base con las 5 fuentes: 474.744 votos medibles / 5.206 actas; desvío global 1,76%; set pivote ≥10% en disputadas = 112. Fichas: 1.972 legisladores (232 senadores, +37), 4.795 filas legislador×período (14 períodos). Conclusiones del gate 1 estables. **Hallazgo nuevo:** García, Virginia María (Senado 2016-17) con 75% de desvío en disputadas — cae en la ventana de la ruptura FpV/FpV-PJ que el padrón marca `REVISAR` → primera candidata de la auditoría de etiquetas. Fix menor: openpyxl Alignment (deprecation).
+- **Cómo:** cerrar los Excel antes de re-correr (Windows bloquea los CSV abiertos — causó un PermissionError con salidas mezcladas; re-corrida limpia después). `RESULTADOS.md` actualizado con los números nuevos.
+- **Archivos:** `modelo/voto_individual/{RESULTADOS.md, outputs/*}`, `variables/legislador/{src/ficha.py, data/*}`.
+- **Estado del módulo:** sin cambios (gate 1 sigue APROBADO; datos al día con la base ampliada).
+- **Próximo paso:** auditar García 2016-17 y demás filas REVISAR del padrón con Franco; luego piezas b-d del ADR-0003.
+
+### [2026-07-02] .gitignore — Entregables versionados TRANSITORIAMENTE
+- **Quién:** Claude (con Valle)
+- **Qué:** decisión de Valle: mientras el sistema no esté en funcionamiento, los entregables de análisis viajan por git para que el equipo los vea sin correr scripts: `modelo/voto_individual/outputs/*.csv`, `variables/legislador/data/legisladores.csv` y `legisladores.xlsx` (se quitó su regla de ignore). Marcado como TRANSITORIO en el propio .gitignore: cuando el sistema esté operativo, revertir el bloque.
+- **Cómo:** excepciones `!` targeted en `.gitignore` (no se des-ignora `*.csv` global: las cachés y datos crudos siguen fuera). Quien regenere debe commitear también los archivos regenerados para no dejar versiones viejas en el repo.
+- **Archivos:** `.gitignore`.
+- **Estado del módulo:** n/a (régimen de repo).
+- **Próximo paso:** revertir cuando haya pipeline en funcionamiento (bot/nube).
+
 ### [2026-07-02] datos/canonica + evaluacion/baseline — Senado integrado al pipeline; baseline re-medido
 - **Quién:** Claude (con Franco)
 - **Qué:** la fuente `senado` quedó integrada a `run_pipeline.py` (paso 4b: scrape con caché → bloque histórico → copia de parquet a SOURCES; el padrón versionado evita regenerar). Pipeline corrido de punta a punta: **base canónica 5.333 actas / 834.749 votos, 2001-2026 ambas cámaras** (senado 2.887 / diputados 2.446). Baseline re-medido: global bloque_norm 0,979 todas / 0,964 disputadas; **Senado (por primera vez con serie completa y bloque de época): 0,983 todas / 0,957 disputadas (n=40.646)** — en peleadas es algo MENOS disciplinado que Diputados (0,965), consistente con la tesis de pivotes/díscolos del replanteo de voto_individual. Drift 2024-25 confirmado (0,946/0,923). Fixes de compatibilidad pandas 4 en `baseline_canonico.py` (array read-only + axis keyword).

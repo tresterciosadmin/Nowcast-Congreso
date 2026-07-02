@@ -36,9 +36,6 @@ package-lock.json
 # Carpeta de descarte: ignorar contenido, conservar el README
 Archivos_Borrar/*
 !Archivos_Borrar/README.md
-
-# variables/legislador: la base de fichas se regenera con ficha.py (no versionar el Excel derivado)
-variables/legislador/data/*.xlsx
 # Carpetas de descarte anidadas (ej. datos/Archivos_Borrar): mismo régimen
 **/Archivos_Borrar/*
 !**/Archivos_Borrar/README.md
@@ -46,3 +43,10 @@ variables/legislador/data/*.xlsx
 # Padrón de bloques del Senado: CURADO A MANO, es fuente de verdad -> SÍ versionar
 !datos/senado/data/padron_bloques_senado.csv
 !datos/senado/data/padron_manual_2015_2017.csv
+
+# TRANSITORIO (decisión Valle 2026-07-02): los entregables de disciplina y fichas SÍ se
+# versionan mientras el sistema no esté en funcionamiento, para que el equipo los vea sin
+# correr los scripts. Cuando esté operativo, revertir este bloque (volver a ignorarlos).
+# El que regenere estos archivos debe commitearlos también, para no dejar versiones viejas.
+!modelo/voto_individual/outputs/*.csv
+!variables/legislador/data/legisladores.csv

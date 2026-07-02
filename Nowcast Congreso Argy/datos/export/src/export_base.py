@@ -164,6 +164,17 @@ def cargar(root: Path) -> tuple[pd.DataFrame, pd.DataFrame]:
     cols_v = ["acta_id", "camara", "fecha", "periodo", "gobierno", "legislador_id", "legislador_nombre",
               "bloque", "bloque_norm", "bloque_linaje", "coalicion", "distrito", "voto", "fuente"]
     votos = v[[c for c in cols_v if c in v.columns]]
+
+    # desvío v2 (si modelo/voto_individual ya corrió; si no, columnas vacías — NUNCA cero)
+    fdesv = root / "modelo" / "voto_individual" / "outputs" / "desvios_por_voto.parquet"
+    if fdesv.exists():
+        desv = pd.read_parquet(fdesv).drop_duplicates(["acta_id", "legislador_id"])
+        votos = votos.merge(desv[["acta_id", "legislador_id", "conducta", "linea", "desvio"]],
+                            on=["acta_id", "legislador_id"], how="left")
+        log.info("desvío v2 incorporado a votos: %d filas con dato", int(votos["desvio"].notna().sum()))
+    else:
+        votos = votos.assign(conducta=pd.NA, linea=pd.NA, desvio=pd.NA)
+        log.warning("sin desvios_por_voto.parquet (correr antes disciplina.py); votos sale sin desvío")
     log.info("actas: %d | votos: %d | disputadas: %s", len(actas), len(votos),
              actas["disputada"].sum())
     return actas, votos
@@ -212,6 +223,16 @@ METODOLOGIA = [
     ("Votos", "coalicion", "Coalición de época (ej. JxC solo entre 2015-12-10 y 2023-12-10)."),
     ("Votos", "distrito", "Provincia por la que ocupa la banca."),
     ("Votos", "voto", "AFIRMATIVO / NEGATIVO / ABSTENCION / AUSENTE."),
+    ("Votos", "conducta", "El voto agrupado en tres conductas: AFIRMATIVO / NEGATIVO / NO_ACOMPANA "
+     "(abstenerse o ausentarse: usar el escaño es una decisión)."),
+    ("Votos", "linea", "La bajada de línea del bloque en esa votación: la conducta con mayoría simple "
+     "sobre TODOS los escaños del bloque (incluidos ausentes). Si el bloque empata, se desempata con la "
+     "línea del espacio político (linaje); vacía si tampoco la hubo."),
+    ("Votos", "desvio", "Indisciplina en esta votación: 1 = conducta distinta de la línea (estricta: "
+     "abstenerse o ausentarse contra la línea también computa; votar cuando el bloque se ausenta, también); "
+     "0 = alineado. Valores intermedios (ej. 0.5) = bloque sin línea (desvío parcial: fracción de pares con "
+     "otra conducta). Vacío = no calculado. Excluidos: presidentes de Diputados (no votan por costumbre). "
+     "Definición completa: ADR-0004."),
     ("Votos", "fuente", "Origen del dato."),
 ]
 
@@ -227,7 +248,8 @@ def export_db(out: Path, actas: pd.DataFrame, votos: pd.DataFrame, root: Path) -
     import shutil, tempfile
     db = out / "congreso.db"
     tmp = Path(tempfile.mkstemp(suffix=".db")[1])
-    with sqlite3.connect(tmp) as con:
+    con = sqlite3.connect(tmp)
+    try:
         actas.to_sql("actas", con, index=False)
         votos.astype({"fecha": "string"}).to_sql("votos", con, index=False)
         con.execute("CREATE INDEX ix_votos_acta ON votos(acta_id)")
@@ -239,8 +261,14 @@ def export_db(out: Path, actas: pd.DataFrame, votos: pd.DataFrame, root: Path) -
                 pd.read_parquet(ldir / f).to_sql(tabla, con, index=False)
             else:
                 log.warning("no está %s; el .db sale sin la tabla %s", f, tabla)
+        con.commit()
+    finally:
+        con.close()  # en Windows hay que cerrar explícito antes de copiar/borrar el temporal
     shutil.copyfile(tmp, db)  # copyfile sobreescribe (algunos entornos no permiten borrar)
-    tmp.unlink()
+    try:
+        tmp.unlink()
+    except OSError:
+        log.warning("no pude borrar el temporal %s (lo limpia el sistema)", tmp)
     log.info("SQLite listo: %s (%.1f MB)", db, db.stat().st_size / 1e6)
 
 

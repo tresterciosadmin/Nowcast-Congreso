@@ -33,6 +33,7 @@ Mantené esta tabla sincronizada con la bitácora.
 | datos/proyectos | EN CURSO (base SQLite + export Excel) | Valle |
 | docs/taxonomias | HECHO (vocabulario controlado v1, 74 ids) | Valle |
 | datos/expedientes | PENDIENTE | — |
+| datos/licencias_suspensiones | PENDIENTE (nuevo — registro+notificador; decisión ADR-0004) | — |
 | datos/export | EN CURSO (SQLite + Excel por gobierno; disputada = ±5% de emitidos vs umbral) | Valle |
 | variables/legislador | EN CURSO (ficha + por período; PorTema bloqueada por taxonomías) | Valle |
 | variables/proyecto | EN CURSO (agente de taxonomías LLM) | Valle |
@@ -40,7 +41,7 @@ Mantené esta tabla sincronizada con la bitácora.
 | variables/asistencia_quorum | PENDIENTE (prioritario) | — |
 | variables/embudo | PENDIENTE (prioritario) | — |
 | variables/contexto | FUTURO | — |
-| modelo/voto_individual | EN CURSO (gate 1 APROBADO sobre base completa, ADR-0003) | Valle |
+| modelo/voto_individual | EN CURSO (desvío v2 = indisciplina total, ADR-0004) | Valle |
 | modelo/agregador_institucional | PENDIENTE | — |
 | modelo/ensemble | PENDIENTE | — |
 | evaluacion/baseline | HECHO | — |
@@ -52,6 +53,14 @@ Mantené esta tabla sincronizada con la bitácora.
 ---
 
 ## Bitácora (más reciente arriba)
+### [2026-07-02] modelo/voto_individual — Suspendidos excluidos + herramienta de licencias anotada; disciplina.py reparado
+- **Quién:** Claude (con Valle)
+- **Qué:** (1) decisión de Valle: presidentes, SUSPENDIDOS y LICENCIAS se excluyen del índice de indisciplina. Los suspendidos ya quedan fuera (la fuente los anota en el nombre, ej. De Vido "Suspendido Art 70 C.N." — 520 filas); las licencias no son detectables hoy → **anotado módulo futuro `datos/licencias_suspensiones`**: registro + herramienta que detecte y NOTIFIQUE licencias/suspensiones (en PLAN 1A.6b, TABLERO y ADR-0004). (2) **Incidente:** el pull del tablero de Franco pisó `disciplina.py` v2 sin commitear (quedó corrupto con bytes nulos, mezcla v1/v2); reescrito completo desde la copia de la sesión — el resto del v2 (ADR, README, RESULTADOS, outputs, export) había sobrevivido. Regla práctica reforzada: pushear apenas se cierra una sesión de trabajo.
+- **Cómo:** filtro por nombre "SUSPENDID" en `excluir_no_medibles()`; tests 18 chequeos OK; corrida completa verificada (2.110 filas excluidas; desvío medio 18,9%). Tablero de control actualizado (regla nueva de Franco: hito v2 agregado a `tablero_datos.js`, sintaxis validada).
+- **Archivos:** `modelo/voto_individual/{src/disciplina.py, tests/test_disciplina.py, outputs/*}`, `coordinacion/{DECISIONES/0004-*.md, PLAN-DE-TRABAJO.md, TABLERO.md}`, `tablero_datos.js`.
+- **Estado del módulo:** modelo/voto_individual EN CURSO (v2 estable); datos/licencias_suspensiones PENDIENTE (nuevo, sin dueño).
+- **Próximo paso:** Valle regenera y pushea; descomposición tasa_desvio_voto/ausencia (propuesta, a confirmar); reclasificación OTRO/PROVINCIAL con Franco.
+
 ### [2026-07-02] coordinacion — TABLERO-CONTROL.html: tablero ejecutivo del proyecto (regla nueva)
 - **Quién:** Claude (con Franco)
 - **Qué:** el plan original de la plataforma ("Propuesta Técnica y Operativa.docx") quedó fusionado con TODO lo hecho hasta hoy en un tablero de control interactivo en la raíz: `TABLERO-CONTROL.html` (doble click, sin servidor). 7 pestañas: La Plataforma (módulos A-D con sus variables y estado), Hoja de Ruta (6 etapas con avance), Módulos del Repo (semáforo de los 27 módulos con filtros), Datos y Métricas (cobertura + baselines), Bitácora (línea de tiempo humana), Pendientes y Revisiones, Presupuesto (CAPEX/OPEX del plan). Lenguaje humano primero, detalle técnico desplegable. Plan vivo fusionado: los replanteos (ej. regresión→embudo/pivotes tras Fase 0, Hermes/Ollama→agente Claude) están incorporados como rumbo vigente.
@@ -59,6 +68,13 @@ Mantené esta tabla sincronizada con la bitácora.
 - **Archivos:** `TABLERO-CONTROL.html`, `tablero_datos.js`, `CLAUDE.md` (regla + orden de lectura), `README.md` (punto 0).
 - **Estado del módulo:** coordinacion HECHO (tablero operativo).
 - **Próximo paso:** que cada Claude lo mantenga al día; revisar en equipo si los avances por etapa reflejan la percepción de todos.
+### [2026-07-02] modelo/voto_individual + datos/export — DESVÍO v2: indisciplina total (ADR-0004)
+- **Quién:** Claude (con Valle — definición de Valle)
+- **Qué:** reformulación completa del desvío (ADR-0004): tres conductas (aprobar/rechazar/NO ACOMPAÑAR=abstención+ausencia); línea del bloque = mayoría simple sobre TODOS los escaños (bottom-up, los ausentes cuentan); desvío = conducta ≠ línea, ESTRICTA (abstenerse contra línea de rechazo computa; votar cuando el bloque se ausenta, también); empates → desempate por linaje real, y desvío PARCIAL (fraccional) en la bolsa OTRO/PROVINCIAL. Disputada unificada (±5% emitidos). **Hallazgo de la validación:** el top estaba dominado por los presidentes de la Cámara de Diputados (85-95% de falso desvío: no votan por costumbre) → lista curada PRESIDENCIAS_DIPUTADOS y exclusión; también placeholders "NO INCORPORADO". Resultado (823.001 votos): desvío medio 18,9% — ahora es indisciplina TOTAL (domina el ausentismo individual); top nuevo = los que no usan la banca (NK diputado 2010, Insaurralde 2014, licencias, De Vido suspendido); los díscolos de voto resaltan en disputadas (Fernández E. 91%, Manes 79%). datos/export suma columnas conducta/linea/desvio a la tabla Votos vía `desvios_por_voto.parquet` (contrato nuevo entre módulos).
+- **Cómo:** `disciplina.py` reescrito (vectorizado, 3 métodos: bloque/linaje/parcial); tests 17 chequeos v2 (todos los casos de Valle); export merge verificado (823.001/834.749 filas con dato). Pendientes que abre: reclasificar OTRO/PROVINCIAL (45% de votos) a linajes; tratamiento de suspensiones/licencias; ponderación por trascendencia; disciplina ideológica por taxonomía.
+- **Archivos:** `coordinacion/DECISIONES/0004-*.md`, `modelo/voto_individual/{src/disciplina.py, tests/test_disciplina.py, README.md, RESULTADOS.md, outputs/*}`, `datos/export/src/export_base.py`, `variables/legislador/src/ficha.py` (Metodologia), `coordinacion/PLAN-DE-TRABAJO.md`.
+- **Estado del módulo:** modelo/voto_individual EN CURSO (v2 corrido sobre base completa); datos/export EN CURSO (falta regenerar entregables con desvío).
+- **Próximo paso:** Valle corre disciplina→ficha→export y pushea; decidir suspensiones/licencias; reclasificación OTRO/PROVINCIAL (coordinar con Franco); disciplina ideológica cuando haya taxonomías.
 
 ### [2026-07-02] datos/export — Columna margen_votos + cierre de la definición de disputada
 - **Quién:** Claude (con Valle)
@@ -351,8 +367,7 @@ Mantené esta tabla sincronizada con la bitácora.
 - **Estado del módulo:** docs/schemas HECHO; datos/decada_votada EN CURSO (falta correr el export en R).
 - **Próximo paso:** correr el export, validar parquet contra schema, y arrancar `datos/canonica` (merge/dedup).
 
-### [2026-06-25] datos — Estrategia semilla → canónica → bot (aportes Andy Tow)
-- **Quién:** Claude (
+#### [2026-06-25] datos — Estrategia semilla → canónica → bot (aportes Andy Tow)
 - **Quién:** Claude (sesión con Franco)
 - **Qué:** revisados los "Aportes sobre dataset congreso" (legislAr + Década Votada/towlandia). Andy Tow = semilla histórica de un solo uso; base canónica propia (`datos/canonica`) + bot (`datos/bot_recoleccion`). No se copia ni se depende en vivo.
 - **Cómo:** legislAr (R) exporta parquet una vez; canónica unifica/deduplica/resuelve entidades; bot hace upsert idempotente. Límite R↔Python y cobertura en ADR-0002.
@@ -382,4 +397,4 @@ Mantené esta tabla sincronizada con la bitácora.
 - **Cómo:** WebSearch + inspección de fuentes. Hallazgo: CKAN de votaciones congelado en 2020.
 - **Archivos:** `docs/contexto/Nowcast-Congreso_informe_validacion.docx`, `docs/contexto/premortem-*-validado.*`.
 - **Estado del módulo:** HECHO (documentación).
-- **Próximo paso
+- **Próximo paso:** ninguno.

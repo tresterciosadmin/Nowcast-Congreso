@@ -1,35 +1,36 @@
 {
+  "definicion": "desvío v2 (ADR-0004): conducta vs línea del bloque (mayoría de TODOS los escaños); estricta con abstenciones/ausencias; desempate por linaje; parcial en OTRO/PROVINCIAL; excluidos presidentes de Diputados y suspendidos",
   "min_votos": 50,
-  "legisladores_medibles": 1255,
-  "tasa_desvio_mediana": 0.0081,
-  "tasa_desvio_p90": 0.0637,
+  "legisladores_medibles": 1591,
+  "tasa_desvio_mediana": 0.1642,
+  "tasa_desvio_p90": 0.3621,
   "por_umbral": {
     ">=2%": {
-      "n_legisladores": 344,
-      "pct_de_medibles": 27.4
+      "n_legisladores": 1446,
+      "pct_de_medibles": 90.9
     },
     ">=5%": {
-      "n_legisladores": 163,
-      "pct_de_medibles": 13.0
+      "n_legisladores": 1324,
+      "pct_de_medibles": 83.2
     },
     ">=10%": {
-      "n_legisladores": 67,
-      "pct_de_medibles": 5.3
+      "n_legisladores": 1104,
+      "pct_de_medibles": 69.4
     },
     ">=15%": {
-      "n_legisladores": 35,
-      "pct_de_medibles": 2.8
+      "n_legisladores": 877,
+      "pct_de_medibles": 55.1
     }
   },
   "disputadas": {
-    ">=2%": 469,
-    ">=5%": 232,
-    ">=10%": 112,
-    ">=15%": 58
+    ">=2%": 1118,
+    ">=5%": 991,
+    ">=10%": 751,
+    ">=15%": 578
   },
   "cobertura": {
-    "n_votos_medidos": 474744,
-    "n_actas": 5206,
+    "n_votos_medidos": 822481,
+    "n_actas": 5212,
     "anios": "2001-2026",
     "fuentes": [
       "argentinadatos",
@@ -37,6 +38,11 @@
       "decada_votada",
       "manual_2026",
       "senado"
-    ]
+    ],
+    "metodo": {
+      "bloque": 784542,
+      "parcial": 36959,
+      "linaje": 980
+    }
   }
 }

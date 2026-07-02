@@ -6,6 +6,8 @@
 
 **Unidad de análisis temporal: el período parlamentario** (entre recambios del 10 de diciembre de años impares). Cada recambio —incluso con reelección— reconfigura los escaños y cambia la disciplina; el desvío se mide por período además de global.
 
+**Definición vigente del desvío: v2 (ADR-0004).** Tres conductas (aprobar / rechazar / no acompañar = abstenerse o ausentarse); línea del bloque = mayoría simple sobre TODOS sus escaños (bottom-up); desvío = conducta ≠ línea, estricta; empates → desempate por linaje real, y desvío parcial en OTRO/PROVINCIAL; presidentes de Diputados excluidos. El índice mide **indisciplina total**, no solo voto cruzado.
+
 **Estado:** EN CURSO — pieza (a) implementada; gate 1 APROBADO sobre base completa (ver `RESULTADOS.md`)
 **Owner actual:** Claude+Valle (desde 2026-07-01)
 
@@ -15,6 +17,7 @@
   - `disciplina_individual.csv` — índice por legislador (tasas global / disputadas / tramo reciente)
   - `disciplina_por_periodo.csv` — legislador × período parlamentario × cámara (la unidad de análisis)
   - `disciplina_por_anio.csv` — legislador × año
+  - `desvios_por_voto.parquet` — una fila por VOTO (conducta, línea, método, desvío): contrato para la columna `desvio` de datos/export
   - `set_pivote.json` — dimensionamiento del set pivote (gate 1)
 - **Depende de:** datos/canonica (+ variables/legislador y variables/bloque cuando existan)
 - **Gate de pase:** (1) set pivote dimensionado ✅ APROBADO (2) recuento-como-distribución calibra mejor que el punto en disputadas (pendiente)

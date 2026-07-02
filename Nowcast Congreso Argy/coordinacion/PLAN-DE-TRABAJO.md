@@ -46,6 +46,11 @@ Plan estructurado para trabajo en paralelo. Para cada bloque: **qué** hay que h
 - **Cómo:** cruzar por número de expediente parseado del título de cada acta.
 - **Gate:** número de sesgo de selección publicado en ESTADO.
 
+### 1A.6b datos/licencias_suspensiones — registro y notificador *(a crear; decisión ADR-0004)*
+- **Qué:** registro histórico + herramienta que detecte y NOTIFIQUE suspensiones y pedidos de licencia de legisladores (con fechas desde/hasta), para excluirlos del índice de indisciplina (su "no acompañar" no es una decisión libre) y alimentar asistencia_quorum.
+- **Cómo:** fuentes candidatas: resoluciones de cámara, versiones taquigráficas, Boletín Oficial; formato tipo padrón curado (como `datos/senado/data/padron_*`). El notificador avisa cuando aparece una licencia/suspensión nueva.
+- **Gate:** los casos conocidos (De Vido Art. 70, bancas en licencia de ministros/gobernadores) quedan cubiertos con fechas correctas.
+
 ### 1A.6 datos/senado — cerrar el hueco 2014–2023
 - **Qué:** conseguir Senado 2014–2023 (no está ni en la semilla ni en argentinadatos).
 - **Cómo:** DatosAbiertos Senado + scraping del portal de votaciones del Senado si hace falta.
@@ -74,6 +79,8 @@ Plan estructurado para trabajo en paralelo. Para cada bloque: **qué** hay que h
 - **Qué (dos productos):** (1) **partidario/bloque** = posición esperada del bloque, para recuento agregado y análisis macro; (2) **individual/parlamentario** = el desvío respecto del bloque.
 - **Cómo (cuatro piezas):** (a) **índice de disciplina individual** por legislador (tasa de desvío vs. bloque, global y por tema, time-aware); (b) **modelo de defección** P(desvía | tema, cercanía de la votación, período, provincia, ciclo electoral); (c) **recuento como distribución** — simular cada voto Bernoulli(pᵢ)=posición de bloque ajustada por desvío → distribución del conteo con intervalo, no número puntual; (d) **detección de pivotes** — qué legisladores son bisagra para una ley y cuánto mueve cada uno la P(aprobación). Distinguir partido ≠ bloque ≠ parlamentario.
 - **Lee de:** `datos/canonica` (~781k votos) + `variables/legislador` y `variables/bloque` cuando existan.
+- **Definición vigente del desvío: v2 (ADR-0004, 2026-07-02)** — indisciplina total: conductas aprobar/rechazar/no-acompañar; línea = mayoría de TODOS los escaños del bloque; estricta; desempate por linaje; parcial en OTRO/PROVINCIAL; presidencias de Diputados excluidas.
+- **Pendientes que abre el v2:** (a) **reclasificar la bolsa OTRO/PROVINCIAL hacia linajes** (manual y/o automática; toca entity_resolution=canonica, coordinar con Franco); (b) decidir tratamiento de **suspensiones y licencias**; (c) **ponderación por trascendencia** de la votación (sesión futura); (d) **disciplina ideológica por taxonomía** (consistencia de voto por tema; mitiga monobloques — ver 1B.3).
 - **Gate:** (1) dimensionar el set pivote: cuántos legisladores superan un umbral de divergencia vs. su bloque; (2) el recuento como distribución calibra mejor que el punto del baseline en votaciones ajustadas (backtesting walk-forward, sin leakage).
 - **Nota de gobernanza:** cambia el rumbo de un módulo antes congelado → conviene un **ADR** en `coordinacion/DECISIONES/`.
 
@@ -109,4 +116,4 @@ Plan estructurado para trabajo en paralelo. Para cada bloque: **qué** hay que h
 | embudo, asistencia_quorum, legislador, proyecto, bloque | leen de la canónica, escriben en su carpeta |
 | dashboard mientras se cierra ensemble | consume contrato, no código |
 
-**Cuellos de botella (un solo dueño, coordinar):** `docs/schemas` (transversal), `datos/canonica` (junta las fuentes), `modelo/ensemble` (junta los modelos).
+**Cuellos de botella (un solo dueño, coordina

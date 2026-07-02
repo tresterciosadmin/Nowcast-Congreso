@@ -191,8 +191,11 @@ METODOLOGIA = [
     ("(general)", "", "Base: votaciones nominales del Congreso 2001-2026 (fuente: base canónica propia). "
      "PERÍODO PARLAMENTARIO = entre recambios del 10-dic de años impares; cada recambio (incluso reelectos) "
      "reconfigura los escaños, por eso el análisis fino es por período (hoja PorPeriodo). "
-     "DESVÍO = votar contra la mayoría del propio bloque en esa votación (mayoría calculada sin el voto propio; "
-     "solo cuenta si el resto del bloque tiene 5+ votos y no empata). "
+     "DESVÍO (v2, ADR-0004) = conducta distinta de la bajada de línea del bloque. Conductas: aprobar / rechazar / "
+     "no acompañar (abstenerse o ausentarse). Línea = conducta con mayoría simple sobre TODOS los escaños del bloque "
+     "(los ausentes cuentan). Estricta: abstenerse o ausentarse contra la línea computa; votar cuando el bloque se "
+     "ausenta, también. Empates: desempata la línea del espacio político; si no hay, desvío parcial (fraccional). "
+     "Presidentes de Diputados excluidos (no votan por costumbre). "
      "DISPUTADA = votación donde la minoría juntó 10%+ de los votos (las peleadas, donde desviarse importa). "
      "Celda vacía = sin dato (NUNCA significa cero). Cuidado con tasas calculadas sobre pocos votos."),
     ("Fichas", "legislador_id", "Identificador único de la persona (unifica variantes del nombre entre fuentes)."),

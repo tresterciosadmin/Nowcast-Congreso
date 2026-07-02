@@ -48,6 +48,7 @@ Depende de otros (no empezar hasta que su dependencia esté HECHA):
 | variables/proyecto | Claude+Valle | 2026-06-30 | agente de taxonomías (LLM/Claude API): PDF→etiquetas en proyecto_taxonomias |
 | modelo/voto_individual | Claude+Valle | 2026-07-01 | índice de disciplina individual + dimensionamiento del set pivote (gate 1 de 1B.4) |
 | variables/legislador | Claude+Valle | 2026-07-01 | ficha individual por legislador (identidad, bloques, presentismo, perfil de voto, desvío) |
+| datos/export | Claude+Valle | 2026-07-02 | base unificada: SQLite completo + Excel por gobierno; disputada = ±5% del umbral de mayoría |
 
 ## Hecho
 

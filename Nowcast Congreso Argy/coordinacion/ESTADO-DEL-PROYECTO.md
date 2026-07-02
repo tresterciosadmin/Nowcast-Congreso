@@ -33,6 +33,7 @@ Mantené esta tabla sincronizada con la bitácora.
 | datos/proyectos | EN CURSO (base SQLite + export Excel) | Valle |
 | docs/taxonomias | HECHO (vocabulario controlado v1, 74 ids) | Valle |
 | datos/expedientes | PENDIENTE | — |
+| datos/export | EN CURSO (SQLite + Excel por gobierno; disputada = ±5% de emitidos vs umbral) | Valle |
 | variables/legislador | EN CURSO (ficha + por período; PorTema bloqueada por taxonomías) | Valle |
 | variables/proyecto | EN CURSO (agente de taxonomías LLM) | Valle |
 | variables/bloque | PENDIENTE | — |
@@ -51,6 +52,30 @@ Mantené esta tabla sincronizada con la bitácora.
 ---
 
 ## Bitácora (más reciente arriba)
+### [2026-07-02] datos/export — Columna margen_votos + cierre de la definición de disputada
+- **Quién:** Claude (con Valle)
+- **Qué:** Valle auditó la lógica de disputada con 4 casos reales (jubilaciones 109 vs umbral 110 → sí; Consejo Magistratura 2003 140 vs 128 con 2/3 → no por 2,4 votos; unanimidad 70-0 → no; DNU 2025 132 vs 112,5 → no) y la validó. Se agrega **`margen_votos`** a la tabla Actas: afirmativos − umbral CON SIGNO, para que cualquier analista filtre con la vara que quiera sin recalcular; `disputada` queda como corte oficial (±5% de emitidos, 190 casos).
+- **Cómo:** una línea en `calcular_disputada()` + Metodologia; tests 26 chequeos OK.
+- **Archivos:** `datos/export/{src/export_base.py, tests/test_export.py, README.md}`.
+- **Estado del módulo:** datos/export EN CURSO — código cerrado; falta corrida completa en PC de Valle + push.
+- **Próximo paso:** corrida `all` + push; después, columna desvío en Votos (definición de Valle).
+
+### [2026-07-02] datos/export — Ajuste de DISPUTADA: margen sobre los votos emitidos (96 → 190)
+- **Quién:** Claude (con Valle)
+- **Qué:** Valle objetó que 96 disputadas en 25 años era demasiado poco. Diagnóstico: no había bug (las votaciones del Congreso son mayormente cómodas: distancia mediana al umbral 54 votos en Dip / 21 en Sen — la pelea real pasa antes, por quórum), pero el ±5% calculado sobre el UMBRAL era demasiado duro, sobre todo en el Senado (±2 votos). Se midieron 4 interpretaciones (5% del umbral / de los emitidos / de los miembros / margen fijo 10 votos → 96/190/248/516) y **Valle eligió: ±5% de los votos emitidos ese día** → **190 disputadas**, con distribución por gobierno consistente (Milei 57, Macri 28, CFK-1 34, CFK-2 11).
+- **Cómo:** una línea en `calcular_disputada()`; tests re-validados (24 OK); Metodologia y README actualizados con la decisión y las alternativas medidas.
+- **Archivos:** `datos/export/{src/export_base.py, tests/test_export.py, README.md}`.
+- **Estado del módulo:** datos/export EN CURSO (falta corrida completa en PC de Valle + push).
+- **Próximo paso:** los mismos de la entrada anterior (columna desvío, unificar disputada hacia atrás, corrida + push).
+
+### [2026-07-02] datos/export — Base unificada: SQLite + Excel por gobierno; nueva definición de DISPUTADA
+- **Quién:** Claude (con Valle)
+- **Qué:** módulo nuevo `datos/export` (solo LEE la canónica): (1) `congreso.db` — SQLite único con actas/votos/legisladores/legislador_periodo (5.333/834.749/1.972/4.795 filas; ~250MB, NO se versiona); (2) un Excel POR GOBIERNO (cortes por fecha exacta de asunción, 2001-03 irregulares por la crisis) con hojas Metodologia/Actas/Votos — separado por gobierno porque 835k votos no entran en una hoja. (3) **Nueva definición de DISPUTADA (Valle):** resultado a ±5% del umbral de la mayoría requerida (sensible a presentes y tipo_mayoria; umbral: SIMPLE=emitidos/2, ABSOLUTA=129/37, 2/3, 3/4). Reemplaza al proxy "minoría ≥10%". Resultado: **96 disputadas en 25 años** — validación externa perfecta: Ley Bases feb-2024 (132 vs umbral 127), jubilaciones jun-2024 (109 vs 110, perdida por 1 voto), mociones ajustadas.
+- **Cómo:** `src/export_base.py` (normaliza 16 variantes de tipo_mayoria; completa totales faltantes contando votos nominales; escribe el .db a temporal y copia — SQLite falla sobre carpetas sincronizadas). Tests: 24 chequeos OK incl. los ejemplos de Valle. Correr: `pip install xlsxwriter && python datos/export/src/export_base.py all`.
+- **Archivos:** `datos/export/{README.md, src/export_base.py, tests/test_export.py}`, `.gitignore` (+excepción xlsx transitoria), `coordinacion/TABLERO.md`.
+- **Estado del módulo:** datos/export EN CURSO (código y tests listos; falta corrida completa de los Excel en PC con recursos).
+- **Próximo paso:** columna `desvio` en tabla Votos (definición de Valle en próximo prompt); unificar "disputada" hacia atrás en voto_individual/baseline (coordinar con Franco — el baseline es suyo); corrida completa + push.
+
 ### [2026-07-02] modelo/voto_individual + variables/legislador — Re-corrida sobre base ampliada (con Senado 2015-2023)
 - **Quién:** Claude (con Valle; corrida en PC de Valle)
 - **Qué:** disciplina y fichas re-medidas sobre la base con las 5 fuentes: 474.744 votos medibles / 5.206 actas; desvío global 1,76%; set pivote ≥10% en disputadas = 112. Fichas: 1.972 legisladores (232 senadores, +37), 4.795 filas legislador×período (14 períodos). Conclusiones del gate 1 estables. **Hallazgo nuevo:** García, Virginia María (Senado 2016-17) con 75% de desvío en disputadas — cae en la ventana de la ruptura FpV/FpV-PJ que el padrón marca `REVISAR` → primera candidata de la auditoría de etiquetas. Fix menor: openpyxl Alignment (deprecation).
@@ -348,4 +373,4 @@ Mantené esta tabla sincronizada con la bitácora.
 - **Cómo:** WebSearch + inspección de fuentes. Hallazgo: CKAN de votaciones congelado en 2020.
 - **Archivos:** `docs/contexto/Nowcast-Congreso_informe_validacion.docx`, `docs/contexto/premortem-*-validado.*`.
 - **Estado del módulo:** HECHO (documentación).
-- **Próximo paso:** ninguno.
+- **Próximo paso

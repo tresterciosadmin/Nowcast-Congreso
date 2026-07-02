@@ -50,3 +50,4 @@ Archivos_Borrar/*
 # El que regenere estos archivos debe commitearlos también, para no dejar versiones viejas.
 !modelo/voto_individual/outputs/*.csv
 !variables/legislador/data/legisladores.csv
+!datos/export/data/*.xlsx

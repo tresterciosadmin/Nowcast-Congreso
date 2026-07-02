@@ -3,6 +3,7 @@
 Sistema que estima la probabilidad de sanción de proyectos de ley en el Congreso argentino.
 
 ## Empezar acá (lectura obligatoria)
+0. **`TABLERO-CONTROL.html`** — el tablero ejecutivo del proyecto (doble click, se abre en el navegador): plan completo de la plataforma + estado real de cada pieza. Se actualiza editando SOLO `tablero_datos.js` (regla en CLAUDE.md).
 1. **`CLAUDE.md`** — bootstrap para trabajar en paralelo sin pisarse.
 2. **`coordinacion/ESTADO-DEL-PROYECTO.md`** — qué se hizo hasta ahora (documento vivo).
 3. **`coordinacion/PLAN-DE-TRABAJO.md`** — qué hacer y cómo, por módulo y fase.

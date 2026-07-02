@@ -52,6 +52,14 @@ Mantené esta tabla sincronizada con la bitácora.
 ---
 
 ## Bitácora (más reciente arriba)
+### [2026-07-02] coordinacion — TABLERO-CONTROL.html: tablero ejecutivo del proyecto (regla nueva)
+- **Quién:** Claude (con Franco)
+- **Qué:** el plan original de la plataforma ("Propuesta Técnica y Operativa.docx") quedó fusionado con TODO lo hecho hasta hoy en un tablero de control interactivo en la raíz: `TABLERO-CONTROL.html` (doble click, sin servidor). 7 pestañas: La Plataforma (módulos A-D con sus variables y estado), Hoja de Ruta (6 etapas con avance), Módulos del Repo (semáforo de los 27 módulos con filtros), Datos y Métricas (cobertura + baselines), Bitácora (línea de tiempo humana), Pendientes y Revisiones, Presupuesto (CAPEX/OPEX del plan). Lenguaje humano primero, detalle técnico desplegable. Plan vivo fusionado: los replanteos (ej. regresión→embudo/pivotes tras Fase 0, Hermes/Ollama→agente Claude) están incorporados como rumbo vigente.
+- **Cómo:** diseño fijo en el HTML (NO se edita) + datos en `tablero_datos.js` (lo ÚNICO que se toca: fecha, estados, hito nuevo, kpis). **REGLA NUEVA en CLAUDE.md:** actualizar `tablero_datos.js` es obligatorio en el mismo PR, mismo régimen que ESTADO y EN-HUMANO. Validado con node (sintaxis + estados válidos + conteos).
+- **Archivos:** `TABLERO-CONTROL.html`, `tablero_datos.js`, `CLAUDE.md` (regla + orden de lectura), `README.md` (punto 0).
+- **Estado del módulo:** coordinacion HECHO (tablero operativo).
+- **Próximo paso:** que cada Claude lo mantenga al día; revisar en equipo si los avances por etapa reflejan la percepción de todos.
+
 ### [2026-07-02] datos/export — Columna margen_votos + cierre de la definición de disputada
 - **Quién:** Claude (con Valle)
 - **Qué:** Valle auditó la lógica de disputada con 4 casos reales (jubilaciones 109 vs umbral 110 → sí; Consejo Magistratura 2003 140 vs 128 con 2/3 → no por 2,4 votos; unanimidad 70-0 → no; DNU 2025 132 vs 112,5 → no) y la validó. Se agrega **`margen_votos`** a la tabla Actas: afirmativos − umbral CON SIGNO, para que cualquier analista filtre con la vara que quiera sin recalcular; `disputada` queda como corte oficial (±5% de emitidos, 190 casos).
@@ -344,6 +352,7 @@ Mantené esta tabla sincronizada con la bitácora.
 - **Próximo paso:** correr el export, validar parquet contra schema, y arrancar `datos/canonica` (merge/dedup).
 
 ### [2026-06-25] datos — Estrategia semilla → canónica → bot (aportes Andy Tow)
+- **Quién:** Claude (
 - **Quién:** Claude (sesión con Franco)
 - **Qué:** revisados los "Aportes sobre dataset congreso" (legislAr + Década Votada/towlandia). Andy Tow = semilla histórica de un solo uso; base canónica propia (`datos/canonica`) + bot (`datos/bot_recoleccion`). No se copia ni se depende en vivo.
 - **Cómo:** legislAr (R) exporta parquet una vez; canónica unifica/deduplica/resuelve entidades; bot hace upsert idempotente. Límite R↔Python y cobertura en ADR-0002.

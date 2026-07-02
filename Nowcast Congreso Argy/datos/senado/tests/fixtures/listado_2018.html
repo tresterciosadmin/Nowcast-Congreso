@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<!-- Fixture SINTÉTICO: replica la estructura observada en
+     senado.gob.ar/votaciones/actas (jul-2026): form busqueda_actas + tabla.
+     No es una página real; validar el parser EN VIVO antes de confiar. -->
+<html><body>
+<form action="/votaciones/actas" method="post" name="busqueda_actas">
+  <input type="hidden" name="busqueda_actas[_token]" value="tok123"/>
+  <select id="busqueda_actas_anio" name="busqueda_actas[anio]">
+    <option value="2026" selected="selected">2026</option>
+    <option value="2018">2018</option>
+    <option value="2015">2015</option>
+  </select>
+  <input type="text" name="busqueda_actas[palabra]" value=""/>
+  <input type="submit" title="Realizar Búsqueda" value="Buscar"/>
+</form>
+<table id="actasTable">
+  <thead><tr>
+    <th>Fecha de Sesi&oacute;n</th><th>Nro. Acta</th><th>T&iacute;tulo</th><th>Tipo</th>
+    <th>Resultado</th><th>Acta de votaci&oacute;n</th><th>Mayoria Requerida</th>
+    <th>Detalle de votaci&oacute;n</th><th>Video</th>
+  </tr></thead>
+  <tbody>
+    <tr>
+      <td>14/11/2018 - 02:11</td><td>7</td>
+      <td>Presupuesto General 2019. PE-50/18-PL</td>
+      <td>PROYECTO DE LEY</td><td>AFIRMATIVO</td>
+      <td><a href="/votaciones/verActaVotacion/1000"><img src="ver.fw.png"/></a></td>
+      <td>MAYORIA ABSOLUTA</td>
+      <td><a href="/votaciones/detalleActa/1000"><img src="ver.fw.png"/></a></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>10/10/2018 - 21:30</td><td>6</td>
+      <td>Acuerdo: designaci&oacute;n de juez. PE-33/18</td>
+      <td>ACUERDO</td><td>AFIRMATIVO</td>
+      <td><a href="/votaciones/verActaVotacion/999"><img src="ver.fw.png"/></a></td>
+      <td>SIMPLE</td>
+      <td><a href="/votaciones/detalleActa/999"><img src="ver.fw.png"/></a></td>
+      <td></td>
+    </tr>
+  </tbody>
+</table>
+</body></html>

@@ -22,7 +22,6 @@ Prioridad alta — modelo (gate de Fase 0):
 
 Prioridad media:
 
-- [ ] **datos/senado** — Senado: **huecos 2014–2023 y 2001–2003** + resolver bloque (padrón→bloque por fecha).
 - [ ] **datos/diputados_oficial** — completar Diputados 2020–2023 desde `votaciones.hcdn.gob.ar` (argentinadatos está incompleto).
 - [x] ~~**variables/legislador**~~ → reclamado 2026-07-01 (ver "En curso").
 - [ ] **variables/proyecto** — feature store por proyecto (tema, autor, mayoría, NLP de texto).
@@ -55,6 +54,7 @@ Depende de otros (no empezar hasta que su dependencia esté HECHA):
 | Módulo | Quién | Fecha | Nota |
 |---|---|---|---|
 | docs/schemas | Claude+Franco | 2026-06-25 | Esquema canónico schema_version=1 (acta + voto) |
+| datos/senado | Claude+Franco | 2026-07-02 | 2015–2023 completo: 749 actas / 53.910 votos, validado vs nahuelhds (0 discrepancias), bloque histórico 100% / 0 anacronismos. **PARA EL EQUIPO: revisar filas `REVISAR` en `datos/senado/data/padron_manual_2015_2017.csv`** (bloques 2015-17 inferidos + sub-bloques FdT de los futuros Unidad Federal + Rodríguez TdF). Pendiente de otros módulos: integrar a run_pipeline (canonica) + 2 ADRs |
 | docs/taxonomias | Claude+Valle | 2026-06-29 | Vocabulario controlado v1 (74 ids, id estable, multi-etiqueta) |
 | evaluacion/baseline | Claude+Franco | 2026-06-25 | Baseline ~0,99 dirección / ~0,81 con asistencia |
 | datos/ckan_diputados | Claude+Franco | 2026-06-25 | En `fase0/`, pendiente migrar a su carpeta |

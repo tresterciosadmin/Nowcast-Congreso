@@ -1,23 +1,23 @@
 {
-  "n_votos_sustantivos": 557823,
+  "n_votos_sustantivos": 600649,
   "por_nivel": {
     "bloque_norm": {
-      "todas": 0.9796,
-      "n_todas": 510146,
-      "disputadas": 0.9658,
-      "n_disputadas": 276113
+      "todas": 0.9789,
+      "n_todas": 545866,
+      "disputadas": 0.9641,
+      "n_disputadas": 290400
     },
     "bloque_linaje": {
-      "todas": 0.9344,
-      "n_todas": 557082,
-      "disputadas": 0.8867,
-      "n_disputadas": 299327
+      "todas": 0.9339,
+      "n_todas": 599903,
+      "disputadas": 0.8837,
+      "n_disputadas": 316653
     },
     "coalicion": {
-      "todas": 0.9342,
-      "n_todas": 557094,
-      "disputadas": 0.8864,
-      "n_disputadas": 299331
+      "todas": 0.9337,
+      "n_todas": 599915,
+      "disputadas": 0.8833,
+      "n_disputadas": 316657
     }
   },
   "por_camara": {
@@ -28,10 +28,10 @@
       "n_disputadas": 249754
     },
     "senado": {
-      "todas": 0.9885,
-      "n_todas": 85789,
-      "disputadas": 0.971,
-      "n_disputadas": 26359
+      "todas": 0.9826,
+      "n_todas": 121509,
+      "disputadas": 0.9571,
+      "n_disputadas": 40646
     }
   },
   "por_anio_disputadas": {
@@ -92,40 +92,40 @@
       "n": 12011
     },
     "2015": {
-      "acc": 0.9954,
-      "n": 4537
+      "acc": 0.9916,
+      "n": 6159
     },
     "2016": {
-      "acc": 0.9842,
-      "n": 24777
+      "acc": 0.9669,
+      "n": 29891
     },
     "2017": {
-      "acc": 0.9759,
-      "n": 14825
+      "acc": 0.968,
+      "n": 16650
     },
     "2018": {
-      "acc": 0.9895,
-      "n": 14323
+      "acc": 0.9859,
+      "n": 16345
     },
     "2019": {
-      "acc": 0.9802,
-      "n": 10116
+      "acc": 0.9806,
+      "n": 10636
     },
     "2020": {
-      "acc": 0.9659,
-      "n": 410
+      "acc": 0.9701,
+      "n": 1837
     },
     "2021": {
-      "acc": 0.9755,
-      "n": 204
+      "acc": 0.9837,
+      "n": 1045
     },
     "2022": {
-      "acc": 0.9975,
-      "n": 403
+      "acc": 0.9825,
+      "n": 858
     },
     "2023": {
-      "acc": 0.9799,
-      "n": 797
+      "acc": 0.9722,
+      "n": 1258
     },
     "2024": {
       "acc": 0.9462,

@@ -39,3 +39,10 @@ Archivos_Borrar/*
 
 # variables/legislador: la base de fichas se regenera con ficha.py (no versionar el Excel derivado)
 variables/legislador/data/*.xlsx
+# Carpetas de descarte anidadas (ej. datos/Archivos_Borrar): mismo régimen
+**/Archivos_Borrar/*
+!**/Archivos_Borrar/README.md
+
+# Padrón de bloques del Senado: CURADO A MANO, es fuente de verdad -> SÍ versionar
+!datos/senado/data/padron_bloques_senado.csv
+!datos/senado/data/padron_manual_2015_2017.csv

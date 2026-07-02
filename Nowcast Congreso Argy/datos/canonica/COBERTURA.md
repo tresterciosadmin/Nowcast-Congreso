@@ -30,3 +30,11 @@ Hoy: **1.414 actas / 340.892 votos**, Diputados 2011–2025 y Senado 2024–2025
 - Base canónica: **4.584 actas, 780.839 votos**, cobertura **2001–2025 en ambas cámaras**.
 - Baseline Senado ahora robusto: **0,971** (n=26.359).
 - Hueco que queda: **Senado 2015–2023** (entre el fin de la Década Votada y el Excel 2026). Senado 2001–2003 no existe como nominal.
+
+
+## Actualización (2026-07-02): Senado oficial 2015-2023 integrado — hueco CERRADO
+- Nueva fuente `senado` (scraper oficial, módulo `datos/senado`): 749 actas / 53.910 votos 2015-2023, con **bloque contemporáneo al voto** (padrón Wikipedia 2017-25 + curación manual 2015-17; 100% cobertura, 0 anacronismos). Validación externa: 43.684 votos cruzados vs nahuelhds, 0 discrepancias.
+- Base canónica: **5.333 actas / 834.749 votos**, 2001-2026 ambas cámaras (senado 2.887 actas / diputados 2.446).
+- Baseline re-medido (LOO bloque_norm): global 0,979 todas / 0,964 disputadas. **Senado por primera vez completo: 0,983 todas / 0,957 disputadas (n=40.646)** — algo más de indisciplina que Diputados (0,965) en votaciones peleadas. Drift 2024-25 se sostiene (0,946 / 0,923).
+- Tabla de arriba queda superada en la fila Senado: 2015-2023 ✅ fuente `senado`.
+- Huecos restantes: **Diputados 2020-2023** (argentinadatos incompleto → `datos/diputados_oficial`); bloque Senado 2024-25 en argentinadatos sigue "SIN BLOQUE" (retro-completable con el padrón de `datos/senado`).

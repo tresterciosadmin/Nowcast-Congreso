@@ -17,7 +17,8 @@ def loo_acc(df, group):
     cnt = (d.groupby(["acta_id", group, "voto"], observed=True).size()
              .unstack(fill_value=0).reindex(columns=SUST, fill_value=0))
     d = d.merge(cnt, left_on=["acta_id", group], right_index=True, how="left")
-    mat = d[SUST].to_numpy(float)
+    # copy=True: pandas con Copy-on-Write puede devolver arrays de solo-lectura
+    mat = d[SUST].to_numpy(dtype=float, copy=True)
     own = d["voto"].map({c: i for i, c in enumerate(SUST)}).to_numpy()
     mat[np.arange(len(d)), own] -= 1
     valid = mat.sum(1) > 0
@@ -29,7 +30,7 @@ def contested(df):
     sub = df[df["voto"].isin(SUST)]
     pa = (sub.groupby("acta_id")["voto"].value_counts().unstack(fill_value=0)
             .reindex(columns=SUST, fill_value=0))
-    tot, mino = pa.sum(1), pa.min(1)
+    tot, mino = pa.sum(axis=1), pa.min(axis=1)
     return set(((mino / tot).where(tot > 0, 0) >= CONT).loc[lambda s: s].index)
 
 def main():

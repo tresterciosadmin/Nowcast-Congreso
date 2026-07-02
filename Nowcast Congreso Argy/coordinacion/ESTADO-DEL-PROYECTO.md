@@ -33,13 +33,13 @@ Mantené esta tabla sincronizada con la bitácora.
 | datos/proyectos | EN CURSO (base SQLite + export Excel) | Valle |
 | docs/taxonomias | HECHO (vocabulario controlado v1, 74 ids) | Valle |
 | datos/expedientes | PENDIENTE | — |
-| variables/legislador | PENDIENTE | — |
+| variables/legislador | EN CURSO (ficha + por período; PorTema bloqueada por taxonomías) | Valle |
 | variables/proyecto | EN CURSO (agente de taxonomías LLM) | Valle |
 | variables/bloque | PENDIENTE | — |
 | variables/asistencia_quorum | PENDIENTE (prioritario) | — |
 | variables/embudo | PENDIENTE (prioritario) | — |
 | variables/contexto | FUTURO | — |
-| modelo/voto_individual | DESCONGELADO / reformulado (desvío individual + pivotes) | — |
+| modelo/voto_individual | EN CURSO (gate 1 APROBADO sobre base completa, ADR-0003) | Valle |
 | modelo/agregador_institucional | PENDIENTE | — |
 | modelo/ensemble | PENDIENTE | — |
 | evaluacion/baseline | HECHO | — |
@@ -51,6 +51,70 @@ Mantené esta tabla sincronizada con la bitácora.
 ---
 
 ## Bitácora (más reciente arriba)
+### [2026-07-02] (cierre de sesión) — Estado consolidado y próximos pasos priorizados
+- **Quién:** Claude (con Valle)
+- **Qué:** cierre de la sesión 2026-07-01/02. Quedó: (1) base canónica completa corrida en PC de Valle (781k votos); (2) gate 1 de voto_individual APROBADO (bisagras concentradas + drift 2024-26); (3) ficha individual de 1.935 legisladores con análisis por período parlamentario; (4) reglas nuevas en CLAUDE.md (hoja Metodologia en todo Excel) y resumen de estado refrescado; (5) perfil temático explicitado como pieza central (PLAN 1B.3).
+- **Cómo:** para regenerar todo tras el pull: `python datos/canonica/src/run_pipeline.py && python modelo/voto_individual/src/disciplina.py && python variables/legislador/src/ficha.py`.
+- **Archivos:** esta entrada + `CLAUDE.md` (resumen refrescado).
+- **Estado del módulo:** ver tabla.
+- **Próximo paso (en orden de prioridad):** (1) **corrida en vivo del agente de taxonomías** (variables/proyecto; solo necesita ANTHROPIC_API_KEY, todo lo demás está listo) → desbloquea el perfil temático; (2) **datos/expedientes** para el cruce acta→proyecto→taxonomía (segunda llave del perfil temático); (3) auditar etiquetas de bloque de los top díscolos (caveat del gate 1); (4) piezas b–d de voto_individual (defección, recuento como distribución, pivotes); (5) huecos de datos: Senado 2015–2023; (6) embudo y asistencia_quorum siguen prioritarios y sin dueño.
+
+### [2026-07-02] coordinacion/PLAN + variables/legislador — Perfil temático por legislador, explicitado
+- **Quién:** Claude (con Valle)
+- **Qué:** Valle plantea una pieza central que el plan tenía solo implícita ("por tema" en 1B.4): el **desagregado del voto por taxonomía** — para cada legislador, además del consolidado afirmativos/negativos, su tendencia a aprobar/rechazar DENTRO de cada categoría temática (legislador × período × taxonomía). Es el diferencial vs. las páginas que solo muestran consolidados. Queda explicitado en PLAN 1B.3 y como pendiente en el README de variables/legislador (futura hoja "PorTema" del Excel).
+- **Cómo:** todavía NO calculable: depende de (1) corrida a escala del agente de taxonomías (variables/proyecto, falta API key) y (2) cruce acta→expediente→proyecto para etiquetar cada votación con su tema. Solo documentación; sin código nuevo.
+- **Archivos:** `coordinacion/PLAN-DE-TRABAJO.md`, `variables/legislador/README.md`.
+- **Estado del módulo:** sin cambios (diseño registrado).
+- **Próximo paso:** correr el agente de taxonomías en vivo; avanzar datos/expedientes para el cruce acta→proyecto; recién entonces implementar la hoja PorTema.
+
+### [2026-07-02] variables/legislador + CLAUDE.md — Hoja "Metodologia" en todo Excel entregable (regla nueva)
+- **Quién:** Claude (con Valle)
+- **Qué:** pedido de Valle: los Excel van a ser muchos y extensos, así que **todo .xlsx entregable arranca con una hoja "Metodologia"** que explica cada columna de cada hoja (tabla hoja|columna|significado + definiciones generales: período parlamentario, desvío, disputada, vacío≠cero). Implementado en `legisladores.xlsx` (ahora 5 hojas: Metodologia/Fichas/PorPeriodo/Bloques/PorAnio) y elevado a regla de la casa en `CLAUDE.md`. Aclarado además que los CSV de `outputs/` no se borran: son contrato entre módulos (disciplina_individual.csv alimenta la ficha) y no se versionan.
+- **Cómo:** constante `METODOLOGIA` + `hoja_metodologia()` en `ficha.py` (ancho de columnas + wrap). Los módulos con export propio (p. ej. datos/proyectos) adoptan la regla la próxima vez que se toquen.
+- **Archivos:** `variables/legislador/src/ficha.py`, `CLAUDE.md`.
+- **Estado del módulo:** variables/legislador EN CURSO.
+- **Próximo paso:** re-correr `ficha.py` para regenerar el Excel con la hoja; replicar en el export de datos/proyectos cuando se retome ese módulo.
+
+### [2026-07-02] variables/legislador + modelo/voto_individual — Período parlamentario como unidad de análisis
+- **Quién:** Claude (con Valle)
+- **Qué:** replanteo de Valle: el comportamiento se evalúa POR PERÍODO PARLAMENTARIO (entre recambios del 10-dic de años impares), porque cada recambio —incluso con reelección— es una nueva configuración de escaños que interviene en la disciplina. Se agregó la dimensión período en los dos módulos: `disciplina.py` emite `disciplina_por_periodo.csv` (legislador × período × cámara) y `ficha.py` emite `legislador_periodo.parquet` + hoja PorPeriodo en el Excel + columnas `periodos`/`n_periodos` en la ficha. Documentado que `anio_desde/hasta` es actividad observada, no mandato formal (el mandato exacto requiere el padrón oficial — pendiente).
+- **Cómo:** `periodo_parlamentario(fecha, anio)`: límite exacto 10-dic en años impares con fecha; aproximación por año cuando falta (los pares son inequívocos). Definición duplicada y sincronizada en ambos módulos (regla un-módulo-un-dueño; unificar en `datos/_common` cuando exista). Tests: 12 chequeos disciplina + 18 ficha, OK.
+- **Archivos:** `modelo/voto_individual/{src/disciplina.py, tests/test_disciplina.py, README.md, RESULTADOS.md}`, `variables/legislador/{src/ficha.py, tests/test_ficha.py, README.md}`.
+- **Estado del módulo:** ambos EN CURSO; falta re-correr en PC con internet para regenerar salidas con la dimensión período.
+- **Próximo paso:** correr `disciplina.py` y luego `ficha.py`; mandato formal desde el padrón oficial; auditar bloques de top díscolos.
+
+### [2026-07-01] modelo/voto_individual — Gate 1 re-medido sobre base COMPLETA: APROBADO
+- **Quién:** Claude (con Valle; corrida en PC de Valle)
+- **Qué:** con la base completa (445.134 votos medibles, 4.463 actas, 2001–2026, 4 fuentes): desvío global 1,69%, mediana 0,77%, p90 6,55%. Set pivote: ≥10% en disputadas = 105 legisladores en 25 años → hipótesis de bisagras concentradas CONFIRMADA. Drift confirmado: top díscolos dominado por 2022–2026 (Monzó 45%, Massot 45%, Manes 30%, etc.) y baseline anual en disputadas cae a 0,946 (2024) / 0,923 (2025), mínimos salvo 2002. Fichas actualizadas: 1.935 legisladores, 1.642 con tasa de desvío. Caveat documentado: tasas >40% pueden reflejar etiqueta de bloque desactualizada → auditar top-20.
+- **Cómo:** `disciplina.py` + `ficha.py` + `baseline_canonico.py` sobre la canónica completa. Fixes de compatibilidad pandas 4: `sum/min(axis=1)` explícito además del `copy=True` ya registrado.
+- **Archivos:** `modelo/voto_individual/{RESULTADOS.md, src/disciplina.py, outputs/*}`, `evaluacion/baseline/src/baseline_canonico.py`, `variables/legislador/data/*` (regenerados).
+- **Estado del módulo:** modelo/voto_individual EN CURSO — gate 1 APROBADO; variables/legislador v1 completa.
+- **Próximo paso:** auditar etiquetas de bloque de los top díscolos; pieza (b) modelo de defección; luego (c) recuento como distribución y (d) pivotes (gate 2).
+
+### [2026-07-01] fix — compatibilidad pandas nuevo (arrays de solo-lectura)
+- **Quién:** Claude (con Valle)
+- **Qué:** en la PC de Valle (pandas más nuevo, Copy-on-Write) `to_numpy()` devuelve arrays de solo-lectura y rompía el cálculo leave-one-out con `ValueError: assignment destination is read-only`. Corregido con `to_numpy(dtype=float, copy=True)` en los dos lugares que usan ese patrón.
+- **Cómo:** una línea en cada script; tests de disciplina siguen OK (10 chequeos).
+- **Archivos:** `modelo/voto_individual/src/disciplina.py`, `evaluacion/baseline/src/baseline_canonico.py`.
+- **Estado del módulo:** sin cambios (fix de compatibilidad).
+- **Próximo paso:** re-correr `disciplina.py` y `ficha.py` sobre la base completa ya reconstruida.
+
+### [2026-07-01] variables/legislador — Base de datos individual de legisladores (ficha v1)
+- **Quién:** Claude (con Valle)
+- **Qué:** **corrección de encuadre de Valle:** el objetivo del análisis individual es la BASE DE DATOS de legisladores (la ficha completa de cada diputado/senador), no solo los díscolos — eso era el ejemplo motivador. Se construyó `variables/legislador` v1: 1.294 fichas (1.054 dip / 201 sen / 39 ambas cámaras) con identidad, cámara(s), distrito, años activos, trayectoria de bloques (con desde–hasta), presentismo, perfil de voto (afirm/neg/abst sobre presentes) y tasa de desvío tomada de `modelo/voto_individual` (1.095 con dato). Sanity check: Carrió presentismo 0,45 (su ausentismo conocido), Pichetto 2001–2026 ambas cámaras.
+- **Cómo:** `src/ficha.py` lee la canónica y escribe `data/{legisladores,legislador_bloques,legislador_anio}.parquet` + CSV + Excel (regenerables, no se versionan). La tasa de desvío se integra si existe la salida de voto_individual; si no, queda NA (nunca 0). Tests sin red: 11 chequeos OK (`tests/test_ficha.py`). Aclaración de alcance agregada al ADR-0003 y al README de voto_individual para que nadie confunda pieza con todo.
+- **Archivos:** `variables/legislador/{README.md, src/ficha.py, tests/test_ficha.py}`, `modelo/voto_individual/README.md`, `coordinacion/DECISIONES/0003-*.md`, `.gitignore`, `coordinacion/{TABLERO,EN-HUMANO}.md`.
+- **Estado del módulo:** variables/legislador EN CURSO (v1 sobre base parcial 2001–2014+2026; re-correr con base completa).
+- **Próximo paso:** re-correr con base completa; sumar slug web del diputado (desde datos/seguimiento); versión point-in-time (legislador-fecha) para el feature store.
+
+### [2026-07-01] modelo/voto_individual — Gate 1 medido: índice de disciplina + set pivote (ADR-0003)
+- **Quién:** Claude (con Valle)
+- **Qué:** (1) ADR-0003 formaliza el cambio de rumbo del módulo (desvío individual + pivotes). (2) Implementada la pieza (a): `src/disciplina.py` calcula la tasa de desvío de cada legislador vs. la mayoría leave-one-out de su bloque por acta (misma vara que el baseline). (3) **Gate 1 medido** sobre base parcial (237.089 votos medibles, 2001–2014 + 2026): desvío global 1,54%; a ≥10% de divergencia en disputadas quedan ~56 legisladores en 25 años → la hipótesis de las 10–20 bisagras por período se sostiene. **Hallazgo:** en 2026 la tasa de desvío es 5,11%, un orden de magnitud sobre 2011–2014 (0,1–0,5%) — la disciplina se afloja como suponía el replanteo (caveat: 17 actas de alta saliencia).
+- **Cómo:** base reconstruida OFFLINE con `run_pipeline.py` parcial (semilla CSV + Excel 2026; CKAN/argentinadatos requieren internet que este entorno no tiene → base 3.170 actas / 439.947 votos). Correr completo en PC con internet: `python datos/canonica/src/run_pipeline.py && python modelo/voto_individual/src/disciplina.py`. Detalle en `modelo/voto_individual/RESULTADOS.md`.
+- **Archivos:** `coordinacion/DECISIONES/0003-voto-individual-desvio-y-pivotes.md`, `modelo/voto_individual/{README.md, RESULTADOS.md, src/disciplina.py, outputs/*}`, `coordinacion/{TABLERO.md, EN-HUMANO.md}`.
+- **Estado del módulo:** modelo/voto_individual EN CURSO (pieza a hecha; b–d pendientes).
+- **Próximo paso:** re-correr sobre base completa (2015–2025); modelo de defección P(desvía|tema,…); recuento como distribución + pivotes por ley.
+
 ### [2026-06-27] Reconciliación temas + lado votos listo para commit
 - **Quién:** Claude (con Franco)
 - **Qué:** (1) Temas: se mantiene SOLO el sistema del equipo (docs/taxonomias/taxonomias.json + variables/proyecto/agente_taxonomias.py). Mi clasificador por keywords y mi TAXONOMIA.md quedaron deprecados (stubs/punteros); mis 2 reglas de frontera ya están en el vocabulario controlado. (2) Lado votos: orquestador reproducible `datos/canonica/src/run_pipeline.py` que reconstruye la base de cero (4.584 actas / 780.839 votos, 2001-2025). .gitignore suma *.db/*.sqlite y Archivos_Borrar.
@@ -242,4 +306,4 @@ Mantené esta tabla sincronizada con la bitácora.
 - **Cómo:** WebSearch + inspección de fuentes. Hallazgo: CKAN de votaciones congelado en 2020.
 - **Archivos:** `docs/contexto/Nowcast-Congreso_informe_validacion.docx`, `docs/contexto/premortem-*-validado.*`.
 - **Estado del módulo:** HECHO (documentación).
-- **Próximo paso:** ningun
+- **Próximo paso:** ninguno.

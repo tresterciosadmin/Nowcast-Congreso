@@ -36,3 +36,6 @@ package-lock.json
 # Carpeta de descarte: ignorar contenido, conservar el README
 Archivos_Borrar/*
 !Archivos_Borrar/README.md
+
+# variables/legislador: la base de fichas se regenera con ficha.py (no versionar el Excel derivado)
+variables/legislador/data/*.xlsx

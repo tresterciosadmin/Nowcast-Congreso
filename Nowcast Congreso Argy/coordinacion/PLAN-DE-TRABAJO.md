@@ -66,6 +66,7 @@ Plan estructurado para trabajo en paralelo. Para cada bloque: **qué** hay que h
 
 ### 1B.3 variables/legislador · proyecto · bloque — feature stores
 - **Qué/Cómo:** features point-in-time por legislador, por proyecto (tema/autor/mayoría/NLP) y series por bloque (cohesión/posición/fracturas). Independientes entre sí.
+- **Perfil temático por legislador (central, pedido de Valle 2026-07-02):** además del consolidado afirmativos/negativos (que cualquier página ya muestra), el diferencial es el **desagregado por taxonomía**: para cada legislador × período × taxonomía (`docs/taxonomias`), pct_afirmativo / pct_negativo / tasa_desvio → detectar tendencia a aprobar o rechazar dentro de cada tema. Sale como hoja "PorTema" en `legisladores.xlsx`. **Depende de:** (1) corrida a escala del agente de taxonomías (`variables/proyecto`, necesita API key) que llena `proyecto_taxonomias`; (2) cruce acta→expediente→proyecto para etiquetar cada votación con su tema (`datos/expedientes` + columna `expediente` de las actas).
 - **Gate:** sin leakage; features validadas en muestra.
 
 ### 1B.4 modelo/voto_individual — desvío individual + pivotes *(reformulado 2026-06-30)*

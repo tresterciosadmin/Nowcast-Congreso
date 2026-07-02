@@ -18,13 +18,13 @@ Prioridad alta — modelo (gate de Fase 0):
 
 - [ ] **variables/embudo** — P(proyecto llega al recinto): comisión→dictamen→tratamiento. _Diferencial del nowcast._
 - [ ] **variables/asistencia_quorum** — modelar asistencia/ausencia/abstención (el ~19% que el bloque no explica).
-- [ ] **modelo/voto_individual** _(descongelado/reformulado 2026-06-30)_ — separar comportamiento **partidario** (nivel bloque, macro) del **individual** (desvío del legislador vs. su bloque). Piezas: índice de disciplina individual, modelo de defección, recuento como distribución, **detección de pivotes**. El conteo agregado esconde 10–20 bisagras que mueven la P(aprobación). _Depende de `datos/canonica`. Conviene ADR de cambio de rumbo._
+- [x] ~~**modelo/voto_individual**~~ → reclamado 2026-07-01 (ver "En curso"). ADR-0003 formaliza el cambio de rumbo.
 
 Prioridad media:
 
 - [ ] **datos/senado** — Senado: **huecos 2014–2023 y 2001–2003** + resolver bloque (padrón→bloque por fecha).
 - [ ] **datos/diputados_oficial** — completar Diputados 2020–2023 desde `votaciones.hcdn.gob.ar` (argentinadatos está incompleto).
-- [ ] **variables/legislador** — feature store por legislador (point-in-time).
+- [x] ~~**variables/legislador**~~ → reclamado 2026-07-01 (ver "En curso").
 - [ ] **variables/proyecto** — feature store por proyecto (tema, autor, mayoría, NLP de texto).
 - [ ] **variables/bloque** — cohesión/posición/fracturas por bloque en el tiempo.
 - [ ] **modelo/agregador_institucional** — reglas de quórum y mayorías.
@@ -47,6 +47,8 @@ Depende de otros (no empezar hasta que su dependencia esté HECHA):
 | datos/seguimiento | Claude+Valle | 2026-06-29 | extractor de giros/trámite Dip+Sen — VALIDADO EN VIVO |
 | datos/proyectos | Claude+Valle | 2026-06-29 | base SQLite de PdL + export Excel; upsert idempotente por denominador |
 | variables/proyecto | Claude+Valle | 2026-06-30 | agente de taxonomías (LLM/Claude API): PDF→etiquetas en proyecto_taxonomias |
+| modelo/voto_individual | Claude+Valle | 2026-07-01 | índice de disciplina individual + dimensionamiento del set pivote (gate 1 de 1B.4) |
+| variables/legislador | Claude+Valle | 2026-07-01 | ficha individual por legislador (identidad, bloques, presentismo, perfil de voto, desvío) |
 
 ## Hecho
 

@@ -1,0 +1,41 @@
+{
+  "min_votos": 50,
+  "legisladores_medibles": 1201,
+  "tasa_desvio_mediana": 0.0077,
+  "tasa_desvio_p90": 0.0655,
+  "por_umbral": {
+    ">=2%": {
+      "n_legisladores": 332,
+      "pct_de_medibles": 27.6
+    },
+    ">=5%": {
+      "n_legisladores": 160,
+      "pct_de_medibles": 13.3
+    },
+    ">=10%": {
+      "n_legisladores": 65,
+      "pct_de_medibles": 5.4
+    },
+    ">=15%": {
+      "n_legisladores": 34,
+      "pct_de_medibles": 2.8
+    }
+  },
+  "disputadas": {
+    ">=2%": 425,
+    ">=5%": 219,
+    ">=10%": 105,
+    ">=15%": 54
+  },
+  "cobertura": {
+    "n_votos_medidos": 445134,
+    "n_actas": 4463,
+    "anios": "2001-2026",
+    "fuentes": [
+      "argentinadatos",
+      "ckan_diputados",
+      "decada_votada",
+      "manual_2026"
+    ]
+  }
+}

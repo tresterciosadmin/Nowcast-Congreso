@@ -29,6 +29,7 @@ BLOQUE_ALIAS = {
     "UNIDOS POR UNA NUEVA ARGENTINA": "UNIDOS POR UNA NUEVA ARGENTINA",
     # Sucesión de etiquetas del MISMO frente kirchnerista (caso pedido):
     "FRENTE PARA LA VICTORIA - PJ": "FRENTE PARA LA VICTORIA",
+    "FRENTE PARA LA VICTORIA-PJ": "FRENTE PARA LA VICTORIA",  # variante sin espacios (padrón wiki Senado)
     "FRENTE PARA LA VICTORIA": "FRENTE PARA LA VICTORIA",
 }
 
@@ -48,6 +49,51 @@ LINAJE = {
     "PERONISMO PARA LA VICTORIA": "FdT-UxP (kirchnerismo)",
     "NUEVO ENCUENTRO": "FdT-UxP (kirchnerismo)",
     "LIBRES DEL SUR": "FdT-UxP (kirchnerismo)",
+    # ---- Reclasificación OTRO/PROVINCIAL (ADR-0005, decisión Franco 2026-07-10) ----
+    # Variantes claras de linajes existentes:
+    "JUSTICIALISTA-FRENTE PARA LA VICTORIA": "FdT-UxP (kirchnerismo)",  # bloque Sen 2004-2014 (semilla)
+    "DE LA CONCERTACION": "FdT-UxP (kirchnerismo)",  # radicales K 2007-2011 (aliado, ver BLOQUES.md)
+    "FRENTE PRO": "PRO",
+    "A.R.I": "COALICION CIVICA",  # el ARI de Carrió 2001-2007, antecesor directo de la CC
+    "UNIDOS POR UNA NUEVA ARGENTINA": "FRENTE RENOVADOR (massismo)",  # UNA (Massa) 2015-2019
+    # Linaje NUEVO: PERONISMO FEDERAL (peronismo no kirchnerista; eras verificadas en datos)
+    "PERONISTA FEDERAL": "PERONISMO FEDERAL",           # 2005-09 (Villaverde, duhaldismo)
+    "PERONISMO FEDERAL": "PERONISMO FEDERAL",           # 2009-11 (Cremer de Busti)
+    "JUSTICIALISTA NACIONAL": "PERONISMO FEDERAL",      # 2006-09 (Sarghini)
+    "FRENTE PERONISTA": "PERONISMO FEDERAL",            # 2011-23 (Thomas)
+    "UNION PERONISTA": "PERONISMO FEDERAL",             # 2008-13 (F. Solá pre-massismo)
+    "JUSTICIALISTA 8 DE OCTUBRE": "PERONISMO FEDERAL",  # 2009-21 (J.C. Romero, Salta)
+    "SANTA FE FEDERAL": "PERONISMO FEDERAL",            # 2009-21 (Reutemann)
+    "CORDOBA FEDERAL": "PERONISMO FEDERAL",             # 2010-25 (schiarettismo)
+    "COMPROMISO FEDERAL": "PERONISMO FEDERAL",          # 2013-23 (rodriguezsaaísmo)
+    "FRENTE DEL MOVIMIENTO POPULAR": "PERONISMO FEDERAL",  # 2003-07 (Lemme, San Luis)
+    "FEDERALISMO Y LIBERACION": "PERONISMO FEDERAL",    # 2005-17 (Menem tardío)
+    "PARTIDO UNIDAD FEDERALISTA": "PERONISMO FEDERAL",  # 2001-09 (PAUFE)
+    "JUNTOS POR ARGENTINA": "PERONISMO FEDERAL",        # 2013-17 (Giustozzi ex-FR)
+    "PRODUCCION Y TRABAJO": "PERONISMO FEDERAL",        # 2005-25 (Basualdo, San Juan)
+    "UNIDAD FEDERAL": "PERONISMO FEDERAL",              # 2023 (ex-FdT: Snopek, Vigo, etc.)
+    "JUSTICIALISTA SAN LUIS": "PERONISMO FEDERAL",      # rodriguezsaaísmo
+    # Linaje NUEVO: PROGRESISMO (progresismo no kirchnerista)
+    "PARTIDO SOCIALISTA": "PROGRESISMO",
+    "SOCIALISTA": "PROGRESISMO",
+    "GEN": "PROGRESISMO",                               # 2010-25 (Stolbizer)
+    "FREPASO": "PROGRESISMO",                           # 2001-05
+    "UNIDAD POPULAR": "PROGRESISMO",                    # 2011-15 (Lozano, CTA)
+    "PROYECTO SUR - UNEN": "PROGRESISMO",               # Solanas
+    "PROYECTO SUR-UNEN": "PROGRESISMO",
+    "PROYECTO SUR": "PROGRESISMO",
+}
+
+# JUSTICIALISTA a secas: tres animales con el mismo nombre -> ventanas por fecha
+# (ADR-0005; eras verificadas: Dip 2001-05 + Sen 2004-08 = PJ unificado;
+#  2016-19 = disidencia Bossio/Pichetto; 2024+ = sello del tronco UxP en el Senado)
+LINAJE_VENTANAS = {
+    "JUSTICIALISTA": [
+        ("1900-01-01", "2003-05-25", "PERONISMO FEDERAL"),          # pre-Néstor (Duhalde)
+        ("2003-05-25", "2015-12-10", "FdT-UxP (kirchnerismo)"),     # PJ oficialista K
+        ("2015-12-10", "2019-12-10", "PERONISMO FEDERAL"),          # Bossio/Pichetto
+        ("2019-12-10", "2100-01-01", "FdT-UxP (kirchnerismo)"),     # vuelve al tronco (UxP)
+    ],
 }
 
 # Frente Renovador: opositor hasta 2019, kirchnerista desde dic-2019 (time-aware)
@@ -78,10 +124,19 @@ def _bloque_norm(b):
 
 def _linaje_vec(bnorm: pd.Series, fecha: pd.Series) -> pd.Series:
     out = bnorm.map(LINAJE).fillna("OTRO / PROVINCIAL")
+    fe = pd.to_datetime(fecha, errors="coerce")
     fr = bnorm.eq("FRENTE RENOVADOR")
-    post = pd.to_datetime(fecha, errors="coerce") >= pd.Timestamp(CUTOFF_FR)
+    post = fe >= pd.Timestamp(CUTOFF_FR)
     out = out.mask(fr & post, "FdT-UxP (kirchnerismo)")
     out = out.mask(fr & ~post, "FRENTE RENOVADOR (massismo)")
+    # ventanas temporales por bloque (mismo nombre, distintas eras políticas)
+    for blo, ventanas in LINAJE_VENTANAS.items():
+        es = bnorm.eq(blo)
+        if not es.any():
+            continue
+        for desde, hasta, lin in ventanas:
+            out = out.mask(es & (fe >= pd.Timestamp(desde)) & (fe < pd.Timestamp(hasta)), lin)
+        # sin fecha no hay ventana aplicable: queda OTRO (conservador, se reporta)
     return out
 
 def main():

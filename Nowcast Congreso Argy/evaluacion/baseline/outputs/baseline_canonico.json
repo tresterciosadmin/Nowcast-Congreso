@@ -2,22 +2,22 @@
   "n_votos_sustantivos": 600649,
   "por_nivel": {
     "bloque_norm": {
-      "todas": 0.9789,
-      "n_todas": 545866,
-      "disputadas": 0.9641,
-      "n_disputadas": 290400
+      "todas": 0.9784,
+      "n_todas": 545954,
+      "disputadas": 0.9632,
+      "n_disputadas": 290436
     },
     "bloque_linaje": {
-      "todas": 0.9339,
-      "n_todas": 599903,
-      "disputadas": 0.8837,
-      "n_disputadas": 316653
+      "todas": 0.9501,
+      "n_todas": 598233,
+      "disputadas": 0.9133,
+      "n_disputadas": 316052
     },
     "coalicion": {
-      "todas": 0.9337,
-      "n_todas": 599915,
-      "disputadas": 0.8833,
-      "n_disputadas": 316657
+      "todas": 0.9499,
+      "n_todas": 598245,
+      "disputadas": 0.913,
+      "n_disputadas": 316056
     }
   },
   "por_camara": {
@@ -28,10 +28,10 @@
       "n_disputadas": 249754
     },
     "senado": {
-      "todas": 0.9826,
-      "n_todas": 121509,
-      "disputadas": 0.9571,
-      "n_disputadas": 40646
+      "todas": 0.9805,
+      "n_todas": 121597,
+      "disputadas": 0.9505,
+      "n_disputadas": 40682
     }
   },
   "por_anio_disputadas": {
@@ -93,14 +93,14 @@
     },
     "2015": {
       "acc": 0.9916,
-      "n": 6159
+      "n": 6194
     },
     "2016": {
-      "acc": 0.9669,
-      "n": 29891
+      "acc": 0.9593,
+      "n": 29892
     },
     "2017": {
-      "acc": 0.968,
+      "acc": 0.9654,
       "n": 16650
     },
     "2018": {

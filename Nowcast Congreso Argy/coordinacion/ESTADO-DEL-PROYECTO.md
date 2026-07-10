@@ -53,6 +53,14 @@ Mantené esta tabla sincronizada con la bitácora.
 ---
 
 ## Bitácora (más reciente arriba)
+### [2026-07-10] datos/canonica — Linajes v2: reclasificación de OTRO/PROVINCIAL (ADR-0005)
+- **Quién:** Claude (con Franco)
+- **Qué:** respondido el pedido del ADR-0004: la bolsa OTRO/PROVINCIAL cae de **45,5% a ~19%** de los votos. Decisiones de Franco: (1) dos linajes nuevos — **PERONISMO FEDERAL** (~71k votos: Reutemann, Romero, Solá, schiarettismo, rodriguezsaaísmo, PAUFE, Menem tardío, Unidad Federal…) y **PROGRESISMO** (~23k: socialismo, GEN, Frepaso, Lozano, Solanas); (2) **JUSTICIALISTA a secas partido por fecha** (nuevo mecanismo `LINAJE_VENTANAS`): Duhalde→PF, 25/05/2003-2015→FdT-UxP, 2016-19 Bossio/Pichetto→PF, ≥2019→FdT-UxP; (3) variantes claras a linajes existentes (Justicialista-FpV y Concertación→FdT-UxP; Frente PRO→PRO; A.R.I→CC; UNA→FR). Cada asignación verificada contra los datos (era + legislador ejemplar) antes de mapear. Taxonomía: 10 linajes.
+- **Cómo:** `entity_resolution.py` (+40 entradas LINAJE, alias FpV-PJ sin espacios, `LINAJE_VENTANAS` genérico por rangos de fecha). Dry-run validado sobre los 834.749 votos. Detalle y trazabilidad en `BLOQUES.md`; decisión en ADR-0005. **Regenerar:** `python datos/canonica/src/entity_resolution.py` y re-medir baseline; avisar a Valle para re-correr disciplina v2 y export (el desempate por linaje gana ~200k votos de universo).
+- **Archivos:** `datos/canonica/{src/entity_resolution.py, BLOQUES.md}`, `coordinacion/DECISIONES/0005-*.md`, `tablero_datos.js`.
+- **Estado del módulo:** datos/canonica EN CURSO (linajes v2 listos; falta regenerar parquet).
+- **Próximo paso:** correr entity_resolution + baseline (Franco); Valle re-corre disciplina/export; pendientes previos siguen (Dip 2020-23, bloque Senado 24-25, auditoría García/REVISAR).
+
 ### [2026-07-02] modelo/voto_individual — Suspendidos excluidos + herramienta de licencias anotada; disciplina.py reparado
 - **Quién:** Claude (con Valle)
 - **Qué:** (1) decisión de Valle: presidentes, SUSPENDIDOS y LICENCIAS se excluyen del índice de indisciplina. Los suspendidos ya quedan fuera (la fuente los anota en el nombre, ej. De Vido "Suspendido Art 70 C.N." — 520 filas); las licencias no son detectables hoy → **anotado módulo futuro `datos/licencias_suspensiones`**: registro + herramienta que detecte y NOTIFIQUE licencias/suspensiones (en PLAN 1A.6b, TABLERO y ADR-0004). (2) **Incidente:** el pull del tablero de Franco pisó `disciplina.py` v2 sin commitear (quedó corrupto con bytes nulos, mezcla v1/v2); reescrito completo desde la copia de la sesión — el resto del v2 (ADR, README, RESULTADOS, outputs, export) había sobrevivido. Regla práctica reforzada: pushear apenas se cierra una sesión de trabajo.

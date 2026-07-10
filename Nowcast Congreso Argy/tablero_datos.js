@@ -15,7 +15,7 @@
 // =====================================================================
 
 const TABLERO = {
-  actualizado: "2026-07-02",
+  actualizado: "2026-07-10",
   actualizado_por: "Claude (con Valle)",
 
   proyecto: {
@@ -203,7 +203,7 @@ const TABLERO = {
     { modulo: "datos/decada_votada", estado: "HECHO", owner: "—", nota: "Semilla integrada vía CSV (Dip 2001-2010 + Sen 2004-2014). El export R quedó innecesario." },
     { modulo: "datos/senado", estado: "HECHO", owner: "Claude+Franco", nota: "2015-2023 completo: 749 actas / 53.910 votos, bloque histórico 100%. Padrón curado versionado con filas REVISAR para el equipo." },
     { modulo: "datos/manual_2026", estado: "HECHO", owner: "—", nota: "Excel curado 2026 integrado (máxima precedencia)." },
-    { modulo: "datos/canonica", estado: "EN CURSO", owner: "Claude+Franco", nota: "Base 2001-2026 ambas cámaras, 835k votos, reproducible. Faltan: Dip 2020-23, alias bloques nuevos." },
+    { modulo: "datos/canonica", estado: "EN CURSO", owner: "Claude+Franco", nota: "Base 2001-2026 ambas cámaras, 835k votos, reproducible. Linajes v2 (ADR-0005): 10 linajes, OTRO/PROVINCIAL 45%→19%. Falta: Dip 2020-23, regenerar parquet." },
     { modulo: "datos/argentinadatos", estado: "EN CURSO", owner: "Claude+Franco", nota: "Integrado; el Senado 2024-25 sigue SIN BLOQUE (retro-completar con padrón de datos/senado)." },
     { modulo: "datos/seguimiento", estado: "EN CURSO", owner: "Valle", nota: "Extractor de giros/trámite Dip+Sen, validado en vivo. Insumo del embudo." },
     { modulo: "datos/proyectos", estado: "EN CURSO", owner: "Valle", nota: "Base SQLite de PdL + export Excel; upsert idempotente." },
@@ -256,6 +256,7 @@ const TABLERO = {
   // ============ HITOS (línea de tiempo humana; el más nuevo ARRIBA) ============
   hitos: [
     { fecha: "2026-07-02", titulo: "El desvío, versión 2: la silla vacía también cuenta (ADR-0004)", texto: "Valle redefinió la indisciplina de raíz: tres conductas (aprobar/rechazar/no acompañar), la línea del bloque emerge de la mayoría de TODOS sus escaños (ausentes incluidos), regla estricta en ambos sentidos, desempate por espacio político y desvío fraccional donde no hay línea. El índice pasó a medir indisciplina total (~19% promedio). Exclusiones curadas: presidentes de Diputados (no votan por costumbre — dominaban el top con falso desvío), suspendidos, placeholders. Pendiente anotado: herramienta que detecte y notifique licencias y suspensiones." },
+    { fecha: "2026-07-10", titulo: "La bolsa de los \"sin familia\" bajó del 45% al 19%", texto: "Reclasificación de linajes (ADR-0005): nacieron PERONISMO FEDERAL y PROGRESISMO, y el bloque \"Justicialista\" —que fue tres cosas distintas según el año— ahora se asigna por fecha. El desempate del desvío v2 gana ~200 mil votos de universo. Falta regenerar la base y que se re-corran disciplina y export." },
     { fecha: "2026-07-02", titulo: "Nace este tablero de control", texto: "El plan original (Word) quedó fusionado con todo lo hecho en un tablero vivo. Regla nueva: quien cambia algo en el repo, actualiza tablero_datos.js en el mismo PR." },
     { fecha: "2026-07-02", titulo: "La base entera, en formatos que cualquier analista puede abrir", texto: "Módulo nuevo datos/export: toda la canónica en un SQLite único y en Excel cortados por gobierno. Y quedó la definición oficial de votación \"disputada\" (resultado a ±5% de los votos emitidos: 190 en 25 años, validada con casos reales como las jubilaciones perdidas por 1 voto), más el margen exacto de cada acta para que cada analista use su propia vara." },
     { fecha: "2026-07-02", titulo: "Los díscolos, re-medidos con el Senado completo", texto: "Disciplina y fichas re-corridas sobre las 5 fuentes: 1.972 legisladores, desvío global 1,76%, y un set pivote de 112 nombres. Apareció el primer caso a auditar: una senadora con 75% de desvío justo en la ventana donde el padrón de bloques pide revisión humana." },

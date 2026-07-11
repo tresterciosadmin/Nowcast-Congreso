@@ -18,7 +18,7 @@ Prioridad alta — datos (estrategia semilla → canónica → bot, ver ADR-0002
 Prioridad alta — modelo (gate de Fase 0):
 
 - [ ] **variables/embudo** — P(proyecto llega al recinto): comisión→dictamen→tratamiento. _Diferencial del nowcast._
-- [ ] **variables/asistencia_quorum** — modelar asistencia/ausencia/abstención (el ~19% que el bloque no explica).
+- [x] ~~**variables/asistencia_quorum**~~ → reclamado 2026-07-11 (ver "En curso"). Escalón 1: presentismo → alimentar el agregador.
 - [x] ~~**modelo/voto_individual**~~ → reclamado 2026-07-01 (ver "En curso"). ADR-0003 formaliza el cambio de rumbo.
 
 Prioridad media:
@@ -46,12 +46,13 @@ Depende de otros (no empezar hasta que su dependencia esté HECHA):
 | datos/argentinadatos | Claude+Franco | 2026-06-25 | integrado; falta bloque del Senado |
 | datos/seguimiento | Claude+Valle | 2026-06-29 | extractor de giros/trámite Dip+Sen — VALIDADO EN VIVO |
 | datos/proyectos | Claude+Valle | 2026-06-29 | base SQLite de PdL + export Excel; upsert idempotente por denominador |
-| variables/proyecto | Claude+Valle | 2026-06-30 | agente de taxonomías (LLM/Claude API): PDF→etiquetas en proyecto_taxonomias |
+| variables/proyecto | Claude+Valle | 2026-06-30 | agente de taxonomías listo + vocabulario validado a mano (88 actas, RESULTADOS-muestra-manual.md) + ICG Di Tella corrido (icg_mensual.csv, 296 meses) |
 | modelo/voto_individual | Claude+Valle | 2026-07-01 | índice de disciplina individual + dimensionamiento del set pivote (gate 1 de 1B.4) |
 | variables/legislador | Claude+Valle | 2026-07-01 | ficha individual por legislador (identidad, bloques, presentismo, perfil de voto, desvío) |
 | datos/export | Claude+Valle | 2026-07-02 | base unificada: SQLite completo + Excel por gobierno; disputada = ±5% del umbral de mayoría |
 | modelo/agregador_institucional | Claude+Valle | 2026-07-10 | motor de recuento como distribución (P aprobación con banda); tests 12 OK; falta backtest a escala |
 | producto/dashboard | Claude+Valle | 2026-07-10 | PANEL-NOWCAST.html (raíz, doble clic): estado del sistema + simulador de votación (motor JS) |
+| variables/asistencia_quorum | Claude+Valle | 2026-07-11 | escalón 1: presentismo por legislador + modo asistencia del agregador (arreglo del sesgo pesimista); falta backtest a escala |
 
 ## Hecho
 

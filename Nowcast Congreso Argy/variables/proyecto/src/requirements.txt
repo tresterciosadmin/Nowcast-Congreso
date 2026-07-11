@@ -2,3 +2,8 @@ anthropic>=0.40
 pypdf>=4.0
 requests>=2.31
 tenacity>=8.2
+# ingesta_icg (serie ICG Di Tella)
+pandas>=2.0
+xlrd>=2.0       # el Excel de UTDT es .xls viejo
+openpyxl>=3.1   # y por si migran a .xlsx (tests usan este engine)
+pyreadstat>=1.2 # solo para la vía fallback (.dta de microdatos)

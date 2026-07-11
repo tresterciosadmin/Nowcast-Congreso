@@ -28,6 +28,31 @@ Clasifica un proyecto leyendo su PDF y asignándole taxonomías del vocabulario 
 - **Pendiente:** OCR para PDFs escaneados; clasificar la historia vía `datos/expedientes`;
   el viejo `classify_tema_v1.py` (keywords) queda como fallback/baseline.
 
+## Validación manual del vocabulario (2026-07-11)
+Muestra estratificada de 88 actas de la canónica clasificada a mano contra los 74 ids:
+82% clasificable por título, 89% con confianza alta/media, 22% multi-etiqueta.
+Resultados y huecos/fronteras propuestos en `RESULTADOS-muestra-manual.md`;
+datos en `outputs/muestra_manual_taxonomias.csv` (queda como set de referencia para
+medir el acuerdo agente-vs-humano cuando corra el batch).
+
+## Ingesta ICG Di Tella — `src/ingesta_icg.py` (familia E del feature store)
+Serie mensual del Índice de Confianza en el Gobierno (UTDT, escala 0-5, nov-2001→hoy).
+No hay API: el script scrapea la página oficial de descarga (el `fname` del Excel rota
+cada mes) y normaliza a `data/icg_mensual.csv` (contrato: fecha/anio/mes/icg). Fallback:
+microdatos `.dta` espejados en GitHub (PoliticaArgentina/data_warehouse, vía `opinAr`).
+- **Correr (local):** `python src/ingesta_icg.py` — imprime los últimos 12 meses para
+  validar a ojo contra los informes de UTDT.
+- **Actualización mensual liviana:** `python src/ingesta_icg.py ultimo` — scrapea la
+  página de INFORMES (que publica el mes nuevo ANTES de que rote el Excel: "El ICG de
+  junio fue de 2,07 puntos") y AGREGA al CSV solo los meses que falten. No pisa valores
+  existentes (el Excel es más preciso; el informe redondea a 2 decimales). Idempotente:
+  correrlo dos veces no duplica. Es la pieza que el bot de recolección puede invocar
+  cada mes (UTDT publica según su cronograma, ~mitad de mes).
+- **Test sin red:** `python tests/test_ingesta_icg.py` (21 chequeos: layouts del Excel
+  incl. el transpuesto real de UTDT + scraper de informes con ambas redacciones +
+  merge idempotente).
+- **Cita:** Índice de Confianza en el Gobierno. Escuela de Gobierno. UTDT. https://www.utdt.edu/icg
+
 ## Contrato
 - **Entradas:** datos/expedientes, cabecera
 - **Salida (contrato estable):** feature store proyecto (parquet, una fila por proyecto)

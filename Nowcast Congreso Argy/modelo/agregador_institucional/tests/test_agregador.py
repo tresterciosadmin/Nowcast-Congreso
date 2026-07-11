@@ -64,11 +64,43 @@ simple = ag.simular_votacion(lineas, desvios, "SIMPLE", "diputados", n_sims=500,
 dost = ag.simular_votacion(lineas, desvios, "DOS_TERCIOS", "diputados", n_sims=500, seed=3)
 check(simple["p_aprobacion"] >= dost["p_aprobacion"], "2/3 nunca aprueba más fácil que simple")
 
+# --- modo asistencia: p_presente escala la emisión ---
+li = np.array(["AFIRMATIVO"] * 200); dv = np.zeros(200)
+full = ag.simular_votacion(li, dv, "SIMPLE", "diputados", n_sims=800, seed=1, p_presente=np.ones(200))
+half = ag.simular_votacion(li, dv, "SIMPLE", "diputados", n_sims=800, seed=1, p_presente=np.full(200, 0.5))
+check(full["afirm_medio"] > 195, "presentismo 1.0 -> casi todos emiten (~200)")
+check(90 < half["afirm_medio"] < 110, f"presentismo 0.5 -> ~mitad emite (fue {half['afirm_medio']:.0f})")
+
+# --- el arreglo del sesgo: bloque con ausentismo mayoritario cuyos presentes votan SÍ ---
+rows = ([("acta:x", "A", f"leg:a{i}", "AFIRMATIVO") for i in range(70)] +
+        [("acta:x", "A", f"leg:a{200+i}", "AUSENTE") for i in range(80)] +
+        [("acta:x", "B", f"leg:b{i}", "NEGATIVO") for i in range(60)] +
+        [("acta:x", "B", f"leg:b{200+i}", "AUSENTE") for i in range(47)])
+import pandas as pd  # noqa: E402
+vv = pd.DataFrame(rows, columns=["acta_id", "bloque_norm", "legislador_id", "voto"])
+lv = ag._linea_bloque_por_acta(vv).set_index("bloque_norm")["linea"].to_dict()
+dr = ag._direccion_bloque_por_acta(vv).set_index("bloque_norm")["linea"].to_dict()
+check(lv["A"] == "NO_ACOMPANA", "línea VIEJA cuenta ausentes -> bloque A 'no acompaña' (el bug)")
+check(dr["A"] == "AFIRMATIVO", "DIRECCIÓN nueva entre presentes -> bloque A 'afirmativo'")
+p_viejo = ag.simular_votacion(vv["bloque_norm"].map(lv).to_numpy(), np.zeros(len(vv)),
+                              "SIMPLE", "diputados", n_sims=1200, seed=1)["p_aprobacion"]
+pp = vv["bloque_norm"].map({"A": 70/150, "B": 60/107}).to_numpy(dtype=float)
+p_nuevo = ag.simular_votacion(vv["bloque_norm"].map(dr).to_numpy(), np.zeros(len(vv)),
+                              "SIMPLE", "diputados", n_sims=1200, seed=1, p_presente=pp)["p_aprobacion"]
+check(p_viejo < 0.05, f"motor viejo: pesimista y equivocado (P={p_viejo:.2f}, real=aprueba)")
+check(p_nuevo > p_viejo + 0.3, f"modo asistencia corrige el sesgo (P={p_nuevo:.2f} >> {p_viejo:.2f})")
+
 # --- errores defensivos ---
 try:
     ag.simular_votacion(np.array([]), np.array([]), "SIMPLE", "diputados")
     check(False, "roster vacío debe fallar")
 except ValueError:
     check(True, "roster vacío lanza ValueError")
+try:
+    ag.simular_votacion(np.array(["AFIRMATIVO"] * 3), np.zeros(3), "SIMPLE", "diputados",
+                        p_presente=np.ones(5))
+    check(False, "p_presente de largo distinto debe fallar")
+except ValueError:
+    check(True, "p_presente mal dimensionado lanza ValueError")
 
 print(f"OK — {ok} chequeos pasaron")

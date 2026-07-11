@@ -2,8 +2,13 @@
 
 **Propósito.** Modelo de asistencia/ausencia/abstención por legislador. Es donde vive la incertidumbre (el ~19% que el bloque NO explica).
 
-**Estado:** PENDIENTE — PRIORITARIO
-**Owner actual:** _(vacante — reclamalo en coordinacion/TABLERO.md antes de empezar)_
+**Estado:** EN CURSO — Owner: Valle (reclamado 2026-07-11). **Escalón 1 hecho:** `asistencia.py`
+calcula el presentismo por legislador (global + por período; salida en `outputs/`), y el
+agregador (`modelo/agregador_institucional`) tiene un **modo asistencia** que lo consume
+(`backtest_asistencia`). Validado en unidad: en votaciones mal asistidas que se aprueban, el
+motor viejo predecía P=0,00 (contaba ausentes como "no acompaña") y el modo asistencia lo
+corrige (P sube a ~0,5+). Falta la corrida histórica completa para cuantificar la mejora de
+calibración (comparar con el backtest sin asistencia: Brier 0,011 pero pesimista en disputadas).
 
 ## Contrato
 - **Entradas:** datos/* (detalle), variables/legislador

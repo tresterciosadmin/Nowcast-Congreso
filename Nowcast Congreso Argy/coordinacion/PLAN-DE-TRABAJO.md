@@ -64,13 +64,15 @@ Plan estructurado para trabajo en paralelo. Para cada bloque: **qué** hay que h
 - **Cómo:** etiquetar ciclo de vida del expediente; modelo de supervivencia / clasificador temporal; backtesting walk-forward sin leakage.
 - **Gate:** mejora sobre predecir solo el voto final.
 
-### 1B.2 variables/asistencia_quorum — quién aparece y se abstiene *(prioritario)*
+### 1B.2 variables/asistencia_quorum — quién aparece y se abstiene *(prioritario; escalón 1 HECHO)*
 - **Qué:** P(asiste) y P(abstiene) por legislador-acta (el ~19% que el bloque no explica).
 - **Cómo:** presentismo histórico + atributos de la sesión; clasificador. Baseline: tasa de presentismo histórica por legislador.
 - **Gate:** supera ese baseline.
+- **Estado (2026-07-11):** escalón 1 construido (`asistencia.py`: presentismo por legislador, global 74,7%) y conectado al agregador (modo asistencia). **Resultado del backtest — informativo/negativo:** alimentar el motor con el presentismo PROMEDIO (aun individual) EMPEORA la calibración (Brier 0,011→0,034): mete ausencias falsas, porque en una votación que efectivamente ocurrió la asistencia fue mayor que el promedio (sesgo de selección). En cambio, un subproducto SÍ sirvió y se adoptó: leer la posición del bloque **entre presentes** (no contar ausentes como "no acompaña") mejora el motor (Brier 0,011→0,0089). **Conclusión:** el presentismo a secas es el baseline a SUPERAR; la asistencia debe ser **CONDICIONAL al proyecto** (tema, origen, incomodidad) → **escalón 2, en pausa hasta tener el feature store** (ver 1B.3 y `variables/proyecto/FEATURE-STORE.md`). Escalones futuros: (2) P(presente | tema/origen/saliencia/año electoral); (3) quórum como jugada estratégica de bloque.
 
 ### 1B.3 variables/legislador · proyecto · bloque — feature stores
 - **Qué/Cómo:** features point-in-time por legislador, por proyecto (tema/autor/mayoría/NLP) y series por bloque (cohesión/posición/fracturas). Independientes entre sí.
+- **Diseño del feature store por proyecto (2026-07-11, decisión de Valle: diseñar antes de recolectar):** `variables/proyecto/FEATURE-STORE.md` define las 6 familias de rasgos por proyecto/votación (A identidad/trámite, B tema/taxonomías, C autoría+origen oficialismo/oposición, D institucionales, E contexto ICG Di Tella/electoral, F derivadas CONDICIONADAS: posición de bloque por tema, presentismo condicionado, disciplina por tema) y a qué etapa alimenta cada una. Es el desbloqueo de todo el condicionamiento (asistencia y posición de bloque). **Orden:** (1) correr el agente de taxonomías [desbloqueo #1: API key batch o clasificar muestra a mano], (2) regla origen oficialismo/oposición por fecha, (3) ingesta ICG Di Tella (serie mensual UTDT), (4) derivadas condicionadas, (5) calendario electoral.
 - **Perfil temático por legislador (central, pedido de Valle 2026-07-02):** además del consolidado afirmativos/negativos (que cualquier página ya muestra), el diferencial es el **desagregado por taxonomía**: para cada legislador × período × taxonomía (`docs/taxonomias`), pct_afirmativo / pct_negativo / tasa_desvio → detectar tendencia a aprobar o rechazar dentro de cada tema. Sale como hoja "PorTema" en `legisladores.xlsx`. **Depende de:** (1) corrida a escala del agente de taxonomías (`variables/proyecto`, necesita API key) que llena `proyecto_taxonomias`; (2) cruce acta→expediente→proyecto para etiquetar cada votación con su tema (`datos/expedientes` + columna `expediente` de las actas).
 - **Gate:** sin leakage; features validadas en muestra.
 
@@ -87,9 +89,10 @@ Plan estructurado para trabajo en paralelo. Para cada bloque: **qué** hay que h
 ---
 
 ## Fase 2 — Composición del nowcast (depende de Fase 1)
-### 2.1 modelo/agregador_institucional
+### 2.1 modelo/agregador_institucional *(v1 CONSTRUIDO 2026-07-10)*
 - **Qué:** P(mayoría|recinto) combinando voto + asistencia con reglas de quórum y tipo de mayoría (simple, absoluta, 2/3).
 - **Gate:** reproduce el `resultado` histórico dentro de tolerancia.
+- **Estado (2026-07-10/11):** motor construido (`agregador.py`): recuento como DISTRIBUCIÓN (Monte Carlo por legislador) → P(aprobación) con banda. Tests OK. **Backtest 4.890 actas: Brier 0,0089, skill 0,81, acc 0,990** (con la lectura de bloque entre presentes adoptada por default). Fuerte en agregado; residual chico en las disputadas (bin de rechazo seguro con 9% de aprobación real). Panel interactivo: `PANEL-NOWCAST.html`. Falta: proyectar la posición de bloque desde el feature store (hoy usa la observada) para nowcast de proyectos no votados.
 
 ### 2.2 modelo/ensemble *(cuello de botella: dueño único)*
 - **Qué:** P(aprobación) = P(llega al recinto) × P(mayoría|recinto); calibrar (Brier/reliability).

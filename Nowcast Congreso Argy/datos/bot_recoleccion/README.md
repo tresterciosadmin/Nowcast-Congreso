@@ -1,30 +1,44 @@
 # Módulo: datos/bot_recoleccion
 
-**Propósito.** Bot programado que **detecta y recolecta las votaciones nuevas** de las fuentes oficiales y las agrega a `datos/canonica`. Es lo que nos independiza de Andy Tow: una vez sembrada la historia, la base la mantenemos nosotros, sola, hacia adelante.
+**Propósito.** El PADRÓN VIVO (idea de Franco, 11-07-2026): un bot diario que
+trae lo nuevo de ambas cámaras — proyectos ingresados con firmantes y giros —
+y (fase posterior) las votaciones nuevas, con upsert idempotente.
 
-**Estado:** PENDIENTE
-**Owner actual:** _(vacante — reclamalo en coordinacion/TABLERO.md antes de empezar)_
+**Estado:** EN CURSO (adaptador Senado listo con tests; Diputados en exploración)
+**Owner actual:** Claude+Franco (2026-07-11)
 
-## Qué hace
-- Corre periódicamente (cron local primero; Cloud Scheduler en la fase nube).
-- Consulta las fuentes vivas: CKAN HCDN, API argentinadatos, y los portales `votaciones.hcdn.gob.ar` / Senado para lo que no esté en datos abiertos.
-- Detecta actas nuevas (no presentes en la canónica), las normaliza al esquema y hace **upsert idempotente** en `datos/canonica`.
-- Deja un registro de corrida (qué trajo, desde cuándo, errores).
+## Arquitectura (diseño en README de datos/expedientes, fase 2)
+- **Senado → `src/dae_senado.py`** (LISTO): lee el DAE Digital (diario oficial de
+  ingresos, numeración secuencial por año). Estado local en `data/estado_bot.json`
+  (último DAE visto) → trae solo lo nuevo → `data/clean/dae_entradas.parquet`
+  (fecha_mesa, dae, expediente, GIROS, extracto, urls). Idempotente.
+- **Diputados → Trámite Parlamentario** (EXPLORACIÓN): `src/explorar_tp.py` baja
+  índice + muestras desde la PC (el dominio no responde al entorno de Claude).
+- **Votaciones nuevas** (fase 3): reutiliza scrape_votaciones (Senado, plan
+  `--ids` incremental) + fuente Diputados.
+- Los firmantes por expediente salen del propio diario (TP) o de la ficha
+  verExp (contrato de datos/seguimiento) — NO de las páginas personales.
 
-## Contrato
-- **Entradas:** fuentes oficiales vivas + estado actual de `datos/canonica` (para saber el último acta conocida).
-- **Salida (contrato estable):** nuevas filas en `votos_canonico` / `actas_canonico`, vía la interfaz de `datos/canonica`. Log de corrida en `outputs/`.
-- **Depende de:** `datos/canonica` (esquema y clave), `docs/schemas`.
-- **Gate de pase:** corrida idempotente (re-ejecutar no duplica), detección correcta de actas nuevas en una ventana de prueba, alertas ante caída de fuente.
+## Cómo correr
+```bash
+python datos/bot_recoleccion/src/dae_senado.py          # trae DAEs nuevos
+python datos/bot_recoleccion/src/dae_senado.py 30 2026  # un DAE puntual (debug)
+python datos/bot_recoleccion/tests/test_dae.py          # 13 chequeos offline
+```
 
-## Diseño (resiliencia obligatoria)
-- Reintentos con backoff y manejo específico de errores por fuente (una fuente caída no frena al resto).
-- Parsing defensivo + validación contra schema antes de escribir.
-- Logging estructurado; marca de "última acta vista" por cámara para arranques incrementales.
-- Idempotencia por clave de acta: si una corrida se repite, no inserta duplicados.
+## Dónde corre: GitHub Actions (decisión 11-07-2026)
+El bot vive en `.github/workflows/bot-diario.yml` (raíz del repo git): cron
+diario 07:00 ARG (lun-sáb) + botón manual en la pestaña Actions. Corre
+`dae_senado.py` y, si hay DAE nuevos, commitea `dae_entradas.parquet` +
+`estado_bot.json` (excepciones en .gitignore). Sin novedades = sin commit.
+Es el ejecutor 24/7 interino hasta la Etapa 4 (Oracle); la base se completa
+sola en el propio repo. Al hacer `git pull` te traés lo que el bot juntó.
 
-## Cómo trabajar acá
-1. Reclamá el módulo en `coordinacion/TABLERO.md`.
-2. Empezá leyendo desde la canónica el último acta conocido por cámara; pedí a cada fuente solo lo posterior.
-3. No abrir hasta tener `datos/canonica` con al menos una fuente cargada (necesitás el esquema y la clave).
-4. Registrá el avance en `coordinacion/ESTADO-DEL-PROYECTO.md`.
+## Pendientes
+Adaptador TP Diputados; tipo ACUERDOS del DAE; upsert hacia datos/proyectos
+(contrato de Valle) y capa expedientes; programación diaria (cron/Tarea de
+Windows) cuando haya entorno 24/7 (Etapa 4 del plan).
+
+## Convenciones
+Resiliencia obligatoria (errores específicos, backoff, parsing defensivo por
+firma de encabezados, logging). Consumir contratos de otros módulos, no su código.

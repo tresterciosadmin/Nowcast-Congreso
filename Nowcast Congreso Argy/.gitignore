@@ -51,3 +51,11 @@ Archivos_Borrar/*
 !modelo/voto_individual/outputs/*.csv
 !variables/legislador/data/legisladores.csv
 !datos/export/data/*.xlsx
+
+# Bot de recolección: su salida y su memoria SÍ se versionan (es la base viva
+# que completa GitHub Actions; ver datos/bot_recoleccion/README.md)
+!datos/bot_recoleccion/data/
+!datos/bot_recoleccion/data/clean/
+datos/bot_recoleccion/data/clean/*
+!datos/bot_recoleccion/data/clean/dae_entradas.parquet
+!datos/bot_recoleccion/data/estado_bot.json

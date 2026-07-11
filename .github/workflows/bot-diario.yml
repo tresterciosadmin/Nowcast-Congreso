@@ -1,0 +1,52 @@
+# =====================================================================
+# BOT DIARIO (padrón vivo) — corre en GitHub Actions, sin servidor propio.
+# Cada mañana trae los DAE nuevos del Senado y commitea el parquet + estado.
+# Módulo: datos/bot_recoleccion (ver su README). Idempotente: si no hay DAE
+# nuevos, no commitea nada.
+# Correr a mano: pestaña Actions -> "Bot diario (padrón vivo)" -> Run workflow.
+# =====================================================================
+name: Bot diario (padrón vivo)
+
+on:
+  schedule:
+    - cron: "0 10 * * 1-6"   # 07:00 Argentina, lunes a sábado
+  workflow_dispatch: {}       # botón manual
+
+permissions:
+  contents: write
+
+concurrency:
+  group: bot-diario
+  cancel-in-progress: false
+
+jobs:
+  dae-senado:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Dependencias
+        run: pip install -r "Nowcast Congreso Argy/datos/bot_recoleccion/src/requirements.txt"
+
+      - name: Traer DAE nuevos del Senado
+        run: python "Nowcast Congreso Argy/datos/bot_recoleccion/src/dae_senado.py"
+
+      - name: Commit si hay novedades
+        run: |
+          git config user.name "bot-recoleccion"
+          git config user.email "bot-recoleccion@users.noreply.github.com"
+          git add "Nowcast Congreso Argy/datos/bot_recoleccion/data"
+          if git diff --cached --quiet; then
+            echo "Sin novedades: no se commitea."
+            exit 0
+          fi
+          git commit -m "bot: DAE Senado $(date -u +%Y-%m-%d) [automatico]"
+          git pull --rebase origin main
+          git push origin main

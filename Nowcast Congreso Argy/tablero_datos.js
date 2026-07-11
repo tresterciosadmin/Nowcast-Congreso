@@ -16,7 +16,7 @@
 
 const TABLERO = {
   actualizado: "2026-07-11",
-  actualizado_por: "Claude (con Franco) — auditoría 17/17 + expedientes (embudo 3,22%) + bloque Senado 24-25 saldado (OTRO 17,4%)",
+  actualizado_por: "Claude (con Franco) — auditoría 17/17 + expedientes + bloque Senado 24-25 + bot diario (DAE Senado listo)",
 
   proyecto: {
     nombre: "Nowcast Legislativo Argentino — Plataforma de Inteligencia Política",
@@ -219,7 +219,7 @@ const TABLERO = {
     { modulo: "variables/bloque", estado: "PENDIENTE", owner: "libre", nota: "Cohesión/posición/fracturas por bloque en el tiempo." },
     { modulo: "modelo/agregador_institucional", estado: "EN CURSO", owner: "Valle", nota: "Motor de recuento como DISTRIBUCIÓN: roster + línea de bloque + desvío → P(aprobación) con banda, aplicando quórum/umbral. Tests 12 OK. Backtest 4.890 actas: Brier 0,011, skill 0,76, acc 0,987 — fuerte en agregado; falta calibrar las disputadas (subestima aprobación por ausentismo → necesita asistencia_quorum)." },
     { modulo: "evaluacion/metricas", estado: "PENDIENTE", owner: "libre", nota: "Brier, calibración → insumo del Factor μ." },
-    { modulo: "datos/bot_recoleccion", estado: "PENDIENTE", owner: "bloqueado", nota: "Necesita canonica estable. Trae solo lo nuevo (upsert)." },
+    { modulo: "datos/bot_recoleccion", estado: "EN CURSO", owner: "Claude+Franco", nota: "AUTOMATIZADO en GitHub Actions (cron diario): DAE Senado corriendo solo, 1.004 expedientes en el estreno. Falta: TP Diputados + upsert + fase votaciones." },
     { modulo: "modelo/ensemble", estado: "PENDIENTE", owner: "bloqueado", nota: "Necesita embudo + agregador." },
     { modulo: "evaluacion/backtesting", estado: "PENDIENTE", owner: "bloqueado", nota: "Necesita al menos un modelo nuevo corriendo." },
     { modulo: "producto/dashboard", estado: "EN CURSO", owner: "Valle", nota: "PANEL-NOWCAST.html (raíz, doble clic, autocontenido): tarjetas de estado + simulador interactivo de una votación (motor JS réplica del agregador). v1." },
@@ -256,6 +256,7 @@ const TABLERO = {
 
   // ============ HITOS (línea de tiempo humana; el más nuevo ARRIBA) ============
   hitos: [
+    { fecha: "2026-07-11", titulo: "El robot ya corre solo en GitHub Actions", texto: "Estreno del bot: 1.004 expedientes del Senado (51 DAEs de 2026) en un minuto, con memoria incremental. Y quedó programado en GitHub Actions: cada mañana trae lo nuevo y lo commitea al repo solo — la primera pieza 100% automática del sistema, sin servidor propio. Falta la mitad de Diputados (TP, URLs ya ubicadas)." },
     { fecha: "2026-07-11", titulo: "Cero votos sin bloque en el Senado (deuda saldada)", texto: "Los votos 2024-25 del Senado ahora toman el bloque del padrón histórico propio + el Excel curado de Franco proyectado con corrección de época. El baseline ganó 2.000 votos justo en los años del drift, y la bolsa de \"sin familia\" cerró en 17,4% (empezó en 45,5%)." },
     { fecha: "2026-07-11", titulo: "El iceberg completo: 112.793 proyectos presentados y el embudo dio 3,22%", texto: "Backfill del CKAN de Diputados (2008-2026) con giros, dictámenes y resultados. De cada 100 proyectos de ley, se sancionan 3 — y en 18 años hubo solo 4 rechazos formales: el Congreso deja morir, no rechaza. El denominador del embudo existe, más el enlace acta→expediente (89%) y los integrantes de comisiones. Anotado el diseño del bot diario (Trámite Parlamentario + DAE)." },
     { fecha: "2026-07-11", titulo: "Los rebeldes del Senado son de verdad (auditoría cerrada)", texto: "Las 17 filas dudosas del padrón de bloques quedaron validadas: cero errores de etiqueta. Los desvíos altos resultaron ser la fractura real del FpV-PJ 2016-17 — el ala cristinista votando NO a las leyes de Macri mientras la conducción de Pichetto acompañaba. El medidor de díscolos queda certificado." },
@@ -319,5 +320,4 @@ const TABLERO = {
   reglas: [
     "Este tablero es OBLIGATORIO: todo cambio relevante en el repo actualiza tablero_datos.js en el mismo PR (regla en CLAUDE.md, mismo régimen que ESTADO-DEL-PROYECTO y EN-HUMANO).",
     "Solo se edita tablero_datos.js. TABLERO-CONTROL.html es el diseño y NO se toca.",
-    "Qué actualizar: fecha y autor, el estado de lo que cambió, un hito nuevo arriba de todo (1-3 frases en humano), y los números si cambiaron (kpis/metricas).",
-    "Estados válidos: HECHO, EN CURSO, PARCIAL
+    "Qué actualizar: fecha y autor, el estado de lo que cambió, un hito nuevo arriba de todo (1-3 frases en humano), y los números si cambia

@@ -25,7 +25,7 @@ Mantené esta tabla sincronizada con la bitácora.
 | docs/schemas | HECHO (schema_version=1) | — |
 | datos/decada_votada | EN CURSO (export_seed.R listo, falta correrlo en R) | — |
 | datos/canonica | PENDIENTE (base propia, fuente de verdad) | — |
-| datos/bot_recoleccion | PENDIENTE (depende de canonica) | — |
+| datos/bot_recoleccion | EN CURSO (adaptador DAE Senado listo; TP Diputados en exploración) | Claude+Franco |
 | datos/ckan_diputados | HECHO (en `fase0/`, migrar) | — |
 | datos/argentinadatos | HECHO (bloque Senado 24-25 resuelto vía padrón; queda sin_bloque menor en Dip) | Claude+Franco |
 | datos/senado | HECHO (2015–2023: 749 actas / 53.910 votos, bloque histórico 100%; padrón con filas REVISAR) | Claude+Franco |
@@ -53,6 +53,22 @@ Mantené esta tabla sincronizada con la bitácora.
 ---
 
 ## Bitácora (más reciente arriba)
+### [2026-07-11] datos/bot_recoleccion — Estreno en vivo (1.004 expedientes) + el bot queda corriendo en GitHub Actions
+- **Quién:** Claude (con Franco)
+- **Qué:** (1) primera corrida real del adaptador DAE: **51 DAEs del 2026, 1.004 expedientes con giros y extracto en ~1 minuto**, memoria incremental funcionando (la próxima corrida trae solo lo nuevo). (2) **Decisión de Franco: el bot corre en GitHub Actions en el propio repo** — `.github/workflows/bot-diario.yml`: cron 07:00 ARG (lun-sáb) + disparo manual, corre `dae_senado.py` y commitea el parquet + estado solo si hay novedades (idempotente; `git pull --rebase` antes del push para no pisar a nadie). Excepciones nuevas en `.gitignore` (el parquet del bot y su estado SÍ se versionan: son la base viva). Es el ejecutor 24/7 interino hasta la Etapa 4. (3) URLs reales del Trámite Parlamentario de Diputados encontradas (`tramites-parlamentarios.html` + `www2.../tp_NNN.html`); `explorar_tp.py` corregido para la próxima corrida de Franco.
+- **Cómo:** workflow con permissions contents:write, concurrency para no solaparse, timeout 20 min. Verificar el estreno: pestaña Actions → "Bot diario (padrón vivo)" → Run workflow → debe decir "Sin novedades" (Franco ya trajo todo hoy).
+- **Archivos:** `.github/workflows/bot-diario.yml` (raíz del repo git), `.gitignore`, `datos/bot_recoleccion/{README.md, src/explorar_tp.py, data/clean/dae_entradas.parquet, data/estado_bot.json}`, `tablero_datos.js`.
+- **Estado del módulo:** datos/bot_recoleccion EN CURSO (Senado AUTOMATIZADO; Diputados en exploración).
+- **Próximo paso:** push + corrida manual del workflow para validar el runner (si el Senado bloqueara IPs de GitHub, se documenta y evalúa proxy/self-hosted); correr `explorar_tp.py` corregido; adaptador TP; upsert hacia datos/proyectos.
+
+### [2026-07-11] datos/bot_recoleccion — Nace el bot diario (padrón vivo): adaptador DAE Senado listo
+- **Quién:** Claude (con Franco)
+- **Qué:** reclamado el módulo (su dependencia — canónica cargada — está cumplida) y construida la primera pieza del padrón vivo: `src/dae_senado.py` lee el **DAE Digital del Senado** (diario oficial de ingresos, verificado en vivo: tabla con expediente + GIROS + extracto, numeración secuencial 32/2026) recordando el último número visto en `data/estado_bot.json` y trayendo solo lo nuevo (idempotente, dedup por expediente+dae). Salida `data/clean/dae_entradas.parquet`. Estrategia confirmada del diseño: diarios oficiales (1 request/día) y NO páginas personales de diputados; firmantes vía el propio diario o la ficha verExp (contrato de seguimiento). Descubrimiento del camino descartado: el export JSON de "Asuntos Entrados" del Senado es solo un índice de PDFs (inútil); el DAE Digital es la fuente estructurada.
+- **Cómo:** parsing por firma de encabezados; form POST del buscador con fallback a rutas GET; 4 directivas. Tests offline con fixture sintética del HTML real: **13 chequeos OK**. `src/explorar_tp.py` listo para explorar el Trámite Parlamentario de Diputados desde PC (el dominio hcdn no responde al entorno).
+- **Archivos:** `datos/bot_recoleccion/{README.md, src/dae_senado.py, src/explorar_tp.py, src/requirements.txt, tests/test_dae.py, tests/fixtures/*}`, `coordinacion/TABLERO.md`, `tablero_datos.js`.
+- **Estado del módulo:** datos/bot_recoleccion EN CURSO (Senado listo, falta corrida en vivo; Diputados en exploración).
+- **Próximo paso:** Franco corre `dae_senado.py` en vivo + `explorar_tp.py`; con las muestras del TP se escribe el adaptador Diputados; después upsert hacia datos/proyectos (contrato Valle) y fase votaciones.
+
 ### [2026-07-11] datos/argentinadatos + datos/canonica — Bloque Senado 2024-25 retro-completado: SIN BLOQUE = 0
 - **Quién:** Claude (con Franco)
 - **Qué:** cerrada la deuda más vieja de la canónica. (1) `datos/argentinadatos` ahora resuelve el bloque del Senado consumiendo el **padrón versionado de datos/senado** (contrato publicado: manual > automático, clave de tokens + fallback por variantes, ventana por fecha): de 9.863 SIN BLOQUE a **0 en el Senado** (quedan 1.367 de Diputados, roster de la fuente, tema aparte). Para los 20 senadores que el anexo wiki 2023-25 omite se agregaron filas retro al padrón (+20, total 131): 12 proyectados desde el Excel 2026 de Franco **con corrección de época** (los peronistas van como UNIÓN POR LA PATRIA — "Justicialista" es rename 2026; Juez era FRENTE PRO antes de LLA; Vigo UNIDAD FEDERAL — "Provincias Unidas" es 2026) y 8 con mandato terminado en dic-2025 curados a mano (UC en su mayoría; Kueider con nota de suspensión; Ledesma con su clave-variante). (2) **Omisión de linajes corregida:** UNIDAD CIUDADANA y FRENTE NACIONAL Y POPULAR (sub-bloques FdT del padrón wiki) caían en OTRO → FdT-UxP; PERONISMO REPUBLICANO (Pichetto post-2019) → PERONISMO FEDERAL.

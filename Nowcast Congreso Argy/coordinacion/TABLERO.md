@@ -11,7 +11,7 @@ Cómo reclamar: editá este archivo en tu rama, agregá la fila, y mencioná en 
 Prioridad alta — datos (estrategia semilla → canónica → bot, ver ADR-0002):
 
 - [ ] **datos/canonica** — base propia única: unificar todas las fuentes, deduplicar solapamientos y resolver entidades. Fuente de verdad del proyecto. _Necesita al menos una fuente cargada (semilla o CKAN)._
-- [ ] **datos/argentinadatos** — ingestar Diputados 2020–2025 y Senado 2024–2025, normalizado al esquema canónico.
+- [x] ~~**datos/argentinadatos**~~ → HECHO 2026-07-11 (ver "Hecho").
 - [x] ~~**datos/expedientes**~~ → reclamado 2026-07-11 por Claude+Franco (ver "En curso").
 - [ ] **datos/licencias_suspensiones** — registro + notificador de licencias y suspensiones de legisladores (decisión ADR-0004: se excluyen del índice de indisciplina; hoy solo los suspendidos son detectables).
 
@@ -32,7 +32,7 @@ Prioridad media:
 
 Depende de otros (no empezar hasta que su dependencia esté HECHA):
 
-- [ ] **datos/bot_recoleccion** — bot que trae votaciones nuevas a la canónica. Necesita `datos/canonica` cargada.
+- [x] ~~**datos/bot_recoleccion**~~ → reclamado 2026-07-11 por Claude+Franco (dependencia cumplida; ver "En curso").
 - [ ] **modelo/ensemble** — necesita embudo + agregador.
 - [ ] **evaluacion/backtesting** — necesita al menos un modelo nuevo.
 - [ ] **producto/dashboard** — necesita ensemble.
@@ -43,7 +43,6 @@ Depende de otros (no empezar hasta que su dependencia esté HECHA):
 |---|---|---|---|
 | datos/decada_votada | Claude+Franco | 2026-06-25 | export_seed.R listo; falta correrlo en R |
 | datos/canonica | Claude+Franco | 2026-06-25 | cubre Diputados 2011–2025 + Senado 2024–2025 |
-| datos/argentinadatos | Claude+Franco | 2026-06-25 | integrado; falta bloque del Senado |
 | datos/seguimiento | Claude+Valle | 2026-06-29 | extractor de giros/trámite Dip+Sen — VALIDADO EN VIVO |
 | datos/proyectos | Claude+Valle | 2026-06-29 | base SQLite de PdL + export Excel; upsert idempotente por denominador |
 | variables/proyecto | Claude+Valle | 2026-06-30 | agente de taxonomías listo + vocabulario validado a mano (88 actas, RESULTADOS-muestra-manual.md) + ICG Di Tella corrido (icg_mensual.csv, 296 meses) |
@@ -53,7 +52,8 @@ Depende de otros (no empezar hasta que su dependencia esté HECHA):
 | modelo/agregador_institucional | Claude+Valle | 2026-07-10 | motor de recuento como distribución (P aprobación con banda); tests 12 OK; falta backtest a escala |
 | producto/dashboard | Claude+Valle | 2026-07-10 | PANEL-NOWCAST.html (raíz, doble clic): estado del sistema + simulador de votación (motor JS) |
 | variables/asistencia_quorum | Claude+Valle | 2026-07-11 | escalón 1: presentismo por legislador + modo asistencia del agregador (arreglo del sesgo pesimista); falta backtest a escala |
-| datos/expedientes | Claude+Franco | 2026-07-11 | ingesta masiva de proyectos presentados: embudo (denominador) + red de firmas (Mód. B/C) + enlace acta→expediente |
+| datos/expedientes | Claude+Franco | 2026-07-11 | backfill CKAN HECHO (112.793 proyectos; embudo bruto 3,22%); fase 2 = cofirmantes vía bot |
+| datos/bot_recoleccion | Claude+Franco | 2026-07-11 | bot diario AUTOMATIZADO en GitHub Actions (cron 07:00 ARG): DAE Senado corriendo solo (1.004 exp. en el estreno); TP Diputados en exploración |
 
 ## Hecho
 
@@ -61,6 +61,7 @@ Depende de otros (no empezar hasta que su dependencia esté HECHA):
 |---|---|---|---|
 | docs/schemas | Claude+Franco | 2026-06-25 | Esquema canónico schema_version=1 (acta + voto) |
 | datos/senado | Claude+Franco | 2026-07-02 | 2015–2023 completo: 749 actas / 53.910 votos, validado vs nahuelhds (0 discrepancias), bloque histórico 100% / 0 anacronismos. **Padrón AUDITADO 11-07: 17/17 filas validadas, cero errores** (los desvíos altos son fractura real del FpV-PJ 2016-17). Pendiente de otros módulos: integrar a run_pipeline (canonica) + 2 ADRs |
+| datos/argentinadatos | Claude+Franco | 2026-07-11 | Integrado con bloque del Senado 24-25 resuelto vía padrón versionado (SIN BLOQUE=0 en Senado; residuo menor en Dip) |
 | docs/taxonomias | Claude+Valle | 2026-06-29 | Vocabulario controlado v1 (74 ids, id estable, multi-etiqueta) |
 | evaluacion/baseline | Claude+Franco | 2026-06-25 | Baseline ~0,99 dirección / ~0,81 con asistencia |
 | datos/ckan_diputados | Claude+Franco | 2026-06-25 | En `fase0/`, pendiente migrar a su carpeta |

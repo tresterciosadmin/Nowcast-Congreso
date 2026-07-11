@@ -23,11 +23,11 @@ Prioridad alta — modelo (gate de Fase 0):
 
 Prioridad media:
 
-- [ ] **datos/diputados_oficial** — completar Diputados 2020–2023 desde `votaciones.hcdn.gob.ar` (argentinadatos está incompleto).
+- [ ] **datos/diputados_oficial** — completar Diputados 2020–2023 desde `votaciones.hcdn.gob.ar`. **PAUSADO 2026-07-10** (decisión de Valle: priorizar puesta en marcha; se reanuda después).
 - [x] ~~**variables/legislador**~~ → reclamado 2026-07-01 (ver "En curso").
 - [ ] **variables/proyecto** — feature store por proyecto (tema, autor, mayoría, NLP de texto).
 - [ ] **variables/bloque** — cohesión/posición/fracturas por bloque en el tiempo.
-- [ ] **modelo/agregador_institucional** — reglas de quórum y mayorías.
+- [x] ~~**modelo/agregador_institucional**~~ → reclamado 2026-07-10 (ver "En curso").
 - [ ] **evaluacion/metricas** — Brier, calibración, accuracy en votos cruzados.
 
 Depende de otros (no empezar hasta que su dependencia esté HECHA):
@@ -50,6 +50,8 @@ Depende de otros (no empezar hasta que su dependencia esté HECHA):
 | modelo/voto_individual | Claude+Valle | 2026-07-01 | índice de disciplina individual + dimensionamiento del set pivote (gate 1 de 1B.4) |
 | variables/legislador | Claude+Valle | 2026-07-01 | ficha individual por legislador (identidad, bloques, presentismo, perfil de voto, desvío) |
 | datos/export | Claude+Valle | 2026-07-02 | base unificada: SQLite completo + Excel por gobierno; disputada = ±5% del umbral de mayoría |
+| modelo/agregador_institucional | Claude+Valle | 2026-07-10 | motor de recuento como distribución (P aprobación con banda); tests 12 OK; falta backtest a escala |
+| producto/dashboard | Claude+Valle | 2026-07-10 | PANEL-NOWCAST.html (raíz, doble clic): estado del sistema + simulador de votación (motor JS) |
 
 ## Hecho
 

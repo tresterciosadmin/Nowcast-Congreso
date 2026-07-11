@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panel Nowcast — Congreso</title>
+<style>
+  :root{
+    --bg:#0f1420; --panel:#1a2130; --panel2:#222b3d; --line:#2f3a50;
+    --txt:#e7ecf5; --muted:#9aa7bd; --accent:#4f9cff; --good:#37d39b;
+    --bad:#ff6b6b; --warn:#ffcf5c;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--txt);
+    font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;line-height:1.5}
+  .wrap{max-width:1080px;margin:0 auto;padding:28px 20px 60px}
+  header h1{margin:0 0 4px;font-size:26px;letter-spacing:.2px}
+  header p{margin:0;color:var(--muted);font-size:14px}
+  h2{font-size:18px;margin:34px 0 14px;border-left:3px solid var(--accent);padding-left:10px}
+  .grid{display:grid;gap:14px}
+  .kpis{grid-template-columns:repeat(auto-fit,minmax(210px,1fr))}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px}
+  .kpi .v{font-size:24px;font-weight:700}
+  .kpi .l{color:var(--muted);font-size:12.5px;margin-top:3px}
+  .kpi .d{color:#7d8aa2;font-size:11.5px;margin-top:6px}
+  .muted{color:var(--muted)}
+  /* nowcast */
+  .nc{grid-template-columns:1.15fr .85fr}
+  @media(max-width:820px){.nc{grid-template-columns:1fr}}
+  table{width:100%;border-collapse:collapse;font-size:13.5px}
+  th,td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--line)}
+  th{color:var(--muted);font-weight:600;font-size:12px}
+  td.n{text-align:right;font-variant-numeric:tabular-nums}
+  select,input[type=number]{background:var(--panel2);color:var(--txt);
+    border:1px solid var(--line);border-radius:7px;padding:4px 6px;font-size:13px}
+  input[type=number]{width:62px;text-align:right}
+  .stance select{width:120px}
+  .controls{display:flex;flex-wrap:wrap;gap:14px;align-items:center;margin:6px 0 14px}
+  .controls label{font-size:13px;color:var(--muted);display:flex;gap:6px;align-items:center}
+  button{background:var(--accent);color:#04122b;border:0;border-radius:8px;
+    padding:9px 16px;font-weight:700;font-size:14px;cursor:pointer}
+  button.ghost{background:var(--panel2);color:var(--txt);border:1px solid var(--line);font-weight:600}
+  .result{text-align:center;padding:6px 0}
+  .prob{font-size:52px;font-weight:800;line-height:1}
+  .band{color:var(--muted);font-size:14px;margin-top:8px}
+  .verdict{font-size:15px;margin-top:10px;font-weight:600}
+  .totrow td{border-top:2px solid var(--line);border-bottom:0;font-weight:700}
+  .warnbox{background:#231b12;border:1px solid #4a3a1e;color:#ffd98a;
+    border-radius:10px;padding:10px 12px;font-size:13px;margin-top:14px}
+  .foot{color:#6f7d95;font-size:12px;margin-top:40px;border-top:1px solid var(--line);padding-top:16px}
+  .pill{display:inline-block;background:var(--panel2);border:1px solid var(--line);
+    border-radius:999px;padding:2px 10px;font-size:12px;color:var(--muted);margin-left:8px}
+  a{color:var(--accent)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Panel Nowcast — Congreso Argentino <span class="pill" id="fecha"></span></h1>
+    <p>Estado del sistema y simulador de probabilidad de aprobación de una votación. Se abre con doble clic; corre todo en tu máquina, sin internet.</p>
+  </header>
+
+  <h2>Lo construido (estado del sistema)</h2>
+  <div class="grid kpis" id="kpis"></div>
+
+  <h2>Nowcast de un proyecto <span class="muted" style="font-size:13px;font-weight:400">— simulá una votación</span></h2>
+  <p class="muted" style="font-size:13.5px;margin-top:-4px">
+    Elegí la cámara y el tipo de mayoría, indicá cómo votaría cada bloque y tocá <b>Calcular</b>.
+    El motor simula la votación miles de veces (cada legislador puede desviarse de su bloque) y
+    devuelve la probabilidad de aprobación como un <b>rango</b>, no un número seco.
+    Los escaños vienen precargados con una composición representativa y son <b>editables</b>.
+  </p>
+
+  <div class="controls">
+    <label>Cámara
+      <select id="camara" onchange="cargarRoster()">
+        <option value="diputados">Diputados (257)</option>
+        <option value="senado">Senado (72)</option>
+      </select>
+    </label>
+    <label>Mayoría requerida
+      <select id="mayoria">
+        <option value="SIMPLE">Simple (mitad de los presentes)</option>
+        <option value="ABSOLUTA">Absoluta (129 / 37)</option>
+        <option value="DOS_TERCIOS">Dos tercios de presentes</option>
+      </select>
+    </label>
+    <label>Indisciplina (desvío) <span id="dLbl">5%</span>
+      <input type="range" id="desvio" min="0" max="30" value="5" oninput="document.getElementById('dLbl').textContent=this.value+'%'">
+    </label>
+    <button onclick="calcular()">Calcular</button>
+    <button class="ghost" onclick="cargarRoster()">Reset escaños</button>
+  </div>
+
+  <div class="grid nc">
+    <div class="card">
+      <table>
+        <thead><tr><th>Bloque / espacio</th><th style="text-align:right">Escaños</th><th style="text-align:right">Postura</th></tr></thead>
+        <tbody id="roster"></tbody>
+        <tfoot><tr class="totrow"><td>Total</td><td class="n" id="totSeats">0</td><td></td></tr></tfoot>
+      </table>
+    </div>
+    <div class="card">
+      <div class="result">
+        <div class="muted" style="font-size:13px">Probabilidad de aprobación</div>
+        <div class="prob" id="prob">—</div>
+        <div class="band" id="band">Tocá «Calcular»</div>
+        <div class="verdict" id="verdict"></div>
+      </div>
+      <svg id="hist" viewBox="0 0 340 150" style="width:100%;height:150px;margin-top:10px"></svg>
+      <div class="muted" style="font-size:12px;text-align:center">Distribución de votos afirmativos simulados · la línea marca el umbral</div>
+    </div>
+  </div>
+  <div class="warnbox">
+    Demo del motor de agregación. Simplificaciones de esta versión: el quórum se trata de
+    forma laxa y la postura de cada bloque la ponés vos (en el sistema final la proyecta el
+    módulo de posición de bloque + embudo). El desvío es un nivel global; el módulo de
+    disciplina ya lo mide legislador por legislador.
+  </div>
+
+  <div class="foot">
+    Motor idéntico a <code>modelo/agregador_institucional/src/agregador.py</code> (validado con 12 tests).
+    Métricas de «Lo construido»: base canónica y baseline al 2026-07-10 (linajes v2). Este panel es el
+    mapa; el detalle vive en <code>ESTADO-DEL-PROYECTO.md</code> y <code>TABLERO-CONTROL.html</code>.
+  </div>
+</div>
+
+<script>
+// ---------- datos embebidos (editables; refrescables con datos reales) ----------
+const KPIS = [
+  {v:"834.749", l:"Votos en la base canónica", d:"5.333 actas · 2001-2026 · ambas cámaras"},
+  {v:"97,8% / 96,3%", l:"Disciplina de bloque (todas / disputadas)", d:"El voto-dirección casi no tiene incertidumbre: el valor está en el resto"},
+  {v:"753", l:"Set pivote (bisagras)", d:"Legisladores con ≥10% de desvío en votaciones disputadas"},
+  {v:"1.972", l:"Fichas de legisladores", d:"Con presentismo, perfil de voto y desvío, por período parlamentario"},
+  {v:"10", l:"Linajes políticos (v2)", d:"«Sin familia» bajó de 45% a 19% de los votos (ADR-0005)"},
+  {v:"190", l:"Votaciones disputadas", d:"Resultado a ±5% de los emitidos — donde el modelo agrega valor"},
+  {v:"Brier 0,011 · 99% acc", l:"Motor validado (backtest, 4.890 actas)", d:"Skill 0,76 sobre la tasa base. Falta calibrar las peleadas (hoy subestima la aprobación)"},
+];
+// composición representativa (editable en pantalla). [nombre, escaños]
+const ROSTERS = {
+  diputados:{total:257, blends:[
+    ["Unión por la Patria",99,"AFIRMATIVO"],
+    ["La Libertad Avanza",39,"AFIRMATIVO"],
+    ["PRO",37,"AFIRMATIVO"],
+    ["UCR",34,"NO_ACOMPANA"],
+    ["Hacemos Coalición Federal",23,"NO_ACOMPANA"],
+    ["Innovación Federal",8,"NO_ACOMPANA"],
+    ["Coalición Cívica",6,"NEGATIVO"],
+    ["Izquierda (FIT)",5,"NEGATIVO"],
+    ["Otros / provinciales",6,"NO_ACOMPANA"],
+  ]},
+  senado:{total:72, blends:[
+    ["Unión por la Patria",34,"AFIRMATIVO"],
+    ["UCR",13,"NO_ACOMPANA"],
+    ["La Libertad Avanza",7,"AFIRMATIVO"],
+    ["PRO",7,"AFIRMATIVO"],
+    ["Otros / provinciales",11,"NO_ACOMPANA"],
+  ]},
+};
+const MIEMBROS = {diputados:257, senado:72};
+document.getElementById("fecha").textContent = "actualizado 2026-07-10";
+
+// ---------- render ----------
+function renderKpis(){
+  document.getElementById("kpis").innerHTML = KPIS.map(k=>
+    `<div class="card kpi"><div class="v">${k.v}</div><div class="l">${k.l}</div><div class="d">${k.d}</div></div>`).join("");
+}
+const OPCIONES = [["AFIRMATIVO","A favor"],["NEGATIVO","En contra"],["NO_ACOMPANA","No acompaña"]];
+function cargarRoster(){
+  const cam = document.getElementById("camara").value;
+  const r = ROSTERS[cam];
+  document.getElementById("roster").innerHTML = r.blends.map((b,i)=>
+    `<tr><td>${b[0]}</td>
+      <td class="n"><input type="number" min="0" max="257" value="${b[1]}" data-i="${i}" oninput="sumar()"></td>
+      <td class="stance" style="text-align:right"><select data-i="${i}">
+        ${OPCIONES.map(o=>`<option value="${o[0]}" ${o[0]===b[2]?"selected":""}>${o[1]}</option>`).join("")}
+      </select></td></tr>`).join("");
+  sumar();
+  document.getElementById("prob").textContent="—";
+  document.getElementById("band").textContent="Tocá «Calcular»";
+  document.getElementById("verdict").textContent="";
+  document.getElementById("hist").innerHTML="";
+}
+function sumar(){
+  let t=0; document.querySelectorAll("#roster input[type=number]").forEach(x=>t+=(+x.value||0));
+  document.getElementById("totSeats").textContent=t;
+}
+
+// ---------- motor (réplica de agregador.py) ----------
+function probConductas(linea,d,reparto=0.5){
+  d=Math.min(Math.max(d,0),1);
+  const idx={AFIRMATIVO:0,NEGATIVO:1,NO_ACOMPANA:2};
+  let p=[0,0,0], li=idx[linea]??2;
+  p[li]=1-d; const otros=[0,1,2].filter(i=>i!==li);
+  p[otros[0]]+=d*reparto; p[otros[1]]+=d*(1-reparto);
+  return p;
+}
+function umbral(tipo,emitidos,miembros){
+  if(tipo==="ABSOLUTA")return Math.floor(miembros/2)+1;
+  if(tipo==="DOS_TERCIOS")return Math.ceil(emitidos*2/3);
+  return emitidos/2;
+}
+function calcular(){
+  const cam=document.getElementById("camara").value;
+  const miembros=MIEMBROS[cam];
+  const tipo=document.getElementById("mayoria").value;
+  const d=(+document.getElementById("desvio").value||0)/100;
+  // armar roster por legislador (línea + prob acumulada)
+  const seats=[...document.querySelectorAll("#roster input[type=number]")];
+  const sels=[...document.querySelectorAll("#roster select")];
+  let legis=[];
+  seats.forEach((s,i)=>{const n=+s.value||0, linea=sels[i].value;
+    const p=probConductas(linea,d); const cum=[p[0],p[0]+p[1],1];
+    for(let k=0;k<n;k++)legis.push(cum);});
+  const N=legis.length;
+  if(N===0){alert("El roster está vacío.");return;}
+  const nSims=3000, afirmArr=new Int16Array(nSims);
+  const quorumMin=Math.floor(miembros/2)+1;
+  let aprob=0, sumEmit=0;
+  for(let s=0;s<nSims;s++){
+    let af=0,ng=0;
+    for(let i=0;i<N;i++){const u=Math.random(),c=legis[i];
+      if(u<c[0])af++; else if(u<c[1])ng++;}
+    afirmArr[s]=af;
+    const emit=af+ng, um=umbral(tipo,emit,miembros);
+    sumEmit+=emit;
+    if(af>=um && emit>=Math.min(quorumMin,N))aprob++;
+  }
+  const P=aprob/nSims;
+  const sorted=Array.from(afirmArr).sort((a,b)=>a-b);
+  const pct=q=>sorted[Math.min(sorted.length-1,Math.floor(q*sorted.length))];
+  const p5=pct(.05),p50=pct(.5),p95=pct(.95);
+  const umbMed=umbral(tipo, sumEmit/nSims, miembros); // umbral al promedio de emitidos
+  // pintar
+  const probEl=document.getElementById("prob");
+  probEl.textContent=(P*100).toFixed(0)+"%";
+  probEl.style.color = P>=.66?"var(--good)":P<=.33?"var(--bad)":"var(--warn)";
+  document.getElementById("band").textContent=
+    `Afirmativos simulados: ${p50} (rango 90%: ${p5}–${p95}) · umbral ≈ ${Math.round(umbMed)}`;
+  const v=document.getElementById("verdict");
+  v.textContent = P>=.66?"Aprobación probable":P<=.33?"Rechazo probable":"Votación peleada — resultado incierto";
+  v.style.color = probEl.style.color;
+  dibujarHist(sorted, Math.round(umbMed));
+}
+function dibujarHist(sorted,um){
+  const W=340,H=150,pad=6, nbins=34;
+  const min=sorted[0], max=sorted[sorted.length-1], span=Math.max(1,max-min);
+  const bins=new Array(nbins).fill(0);
+  sorted.forEach(x=>{let b=Math.floor((x-min)/span*(nbins-1));bins[b]++;});
+  const mx=Math.max(...bins), bw=(W-2*pad)/nbins;
+  let bars="";
+  for(let i=0;i<nbins;i++){const h=(bins[i]/mx)*(H-28);
+    bars+=`<rect x="${pad+i*bw}" y="${H-20-h}" width="${bw-1}" height="${h}" fill="#4f9cff" opacity="0.75"/>`;}
+  // línea de umbral
+  let uline="";
+  if(um>=min-2 && um<=max+2){const ux=pad+((um-min)/span)*(W-2*pad);
+    uline=`<line x1="${ux}" y1="4" x2="${ux}" y2="${H-20}" stroke="#ffcf5c" stroke-width="2" stroke-dasharray="4 3"/>
+           <text x="${Math.min(W-40,ux+3)}" y="14" fill="#ffcf5c" font-size="10">umbral</text>`;}
+  document.getElementById("hist").innerHTML=bars+uline+
+    `<text x="${pad}" y="${H-4}" fill="#9aa7bd" font-size="10">${min}</text>
+     <text x="${W-pad}" y="${H-4}" fill="#9aa7bd" font-size="10" text-anchor="end">${max}</text>`;
+}
+renderKpis(); cargarRoster();
+</script>
+</body>
+</html>

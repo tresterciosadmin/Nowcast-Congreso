@@ -16,7 +16,7 @@
 
 const TABLERO = {
   actualizado: "2026-07-10",
-  actualizado_por: "Claude (con Valle)",
+  actualizado_por: "Claude (con Valle) — motor de agregación + Panel Nowcast",
 
   proyecto: {
     nombre: "Nowcast Legislativo Argentino — Plataforma de Inteligencia Política",
@@ -34,7 +34,7 @@ const TABLERO = {
     { etiqueta: "Disciplina de bloque (disputadas)", valor: "96,4%", detalle: "Diputados 96,5% · Senado 95,7% — el Senado es la cámara menos disciplinada en votaciones peleadas" },
     { etiqueta: "Drift 2024-25", valor: "94,6% → 92,3%", detalle: "La disciplina se afloja: más espacio para el modelo de desvíos y pivotes" },
     { etiqueta: "Fichas de legisladores", valor: "1.972", detalle: "Identidad, bloques, presentismo, perfil de voto y desvío, por período parlamentario (14 períodos)" },
-    { etiqueta: "Módulos del repo", valor: "7 HECHOS · 8 en curso", detalle: "Ver pestaña Módulos del repo" }
+    { etiqueta: "Módulos del repo", valor: "7 HECHOS · 10 en curso", detalle: "Ver pestaña Módulos del repo" }
   ],
 
   // ============ LOS 4 MÓDULOS DE LA PLATAFORMA (las "pestañas" del producto) ============
@@ -203,25 +203,25 @@ const TABLERO = {
     { modulo: "datos/decada_votada", estado: "HECHO", owner: "—", nota: "Semilla integrada vía CSV (Dip 2001-2010 + Sen 2004-2014). El export R quedó innecesario." },
     { modulo: "datos/senado", estado: "HECHO", owner: "Claude+Franco", nota: "2015-2023 completo: 749 actas / 53.910 votos, bloque histórico 100%. Padrón curado versionado con filas REVISAR para el equipo." },
     { modulo: "datos/manual_2026", estado: "HECHO", owner: "—", nota: "Excel curado 2026 integrado (máxima precedencia)." },
-    { modulo: "datos/canonica", estado: "EN CURSO", owner: "Claude+Franco", nota: "Base 2001-2026 ambas cámaras, 835k votos, reproducible. Linajes v2 (ADR-0005): 10 linajes, OTRO/PROVINCIAL 45%→19%. Falta: Dip 2020-23, regenerar parquet." },
+    { modulo: "datos/canonica", estado: "EN CURSO", owner: "Claude+Franco", nota: "Base 2001-2026 ambas cámaras, 835k votos, reproducible. Linajes v2 (ADR-0005): 10 linajes, OTRO/PROVINCIAL 45%→19%, parquet regenerado + baseline re-medido. Falta: Dip 2020-23." },
     { modulo: "datos/argentinadatos", estado: "EN CURSO", owner: "Claude+Franco", nota: "Integrado; el Senado 2024-25 sigue SIN BLOQUE (retro-completar con padrón de datos/senado)." },
     { modulo: "datos/seguimiento", estado: "EN CURSO", owner: "Valle", nota: "Extractor de giros/trámite Dip+Sen, validado en vivo. Insumo del embudo." },
     { modulo: "datos/proyectos", estado: "EN CURSO", owner: "Valle", nota: "Base SQLite de PdL + export Excel; upsert idempotente." },
-    { modulo: "datos/export", estado: "EN CURSO", owner: "Valle", nota: "Base unificada para analistas: SQLite + Excel por gobierno (solo LEE la canónica). Definición oficial de DISPUTADA: ±5% de los emitidos → 190 en 25 años, + margen_votos por acta." },
+    { modulo: "datos/export", estado: "EN CURSO", owner: "Valle", nota: "Base unificada para analistas: SQLite + Excel por gobierno (solo LEE la canónica). Definición oficial de DISPUTADA: ±5% de los emitidos → 190 en 25 años, + margen_votos por acta. Entregables regenerados con linajes v2 (congreso.db 266,8 MB + 8 Excel, verificados)." },
     { modulo: "variables/proyecto", estado: "EN CURSO", owner: "Valle", nota: "Agente de taxonomías (Claude API) listo; falta corrida en vivo con API key." },
     { modulo: "variables/legislador", estado: "EN CURSO", owner: "Valle", nota: "Ficha de 1.935 legisladores por período parlamentario. Hoja PorTema bloqueada por taxonomías." },
     { modulo: "modelo/voto_individual", estado: "EN CURSO", owner: "Valle", nota: "Gate 1 APROBADO (ADR-0003). Re-corrido con Senado 2015-23: set pivote = 112 legisladores (≥10% desvío en disputadas). Faltan defección, distribución y pivotes por ley." },
-    { modulo: "datos/diputados_oficial", estado: "PENDIENTE", owner: "libre", nota: "Diputados 2020-2023 desde votaciones.hcdn.gob.ar. EL HUECO MÁS GRANDE HOY." },
+    { modulo: "datos/diputados_oficial", estado: "PENDIENTE", owner: "PAUSADO", nota: "Diputados 2020-2023 desde votaciones.hcdn.gob.ar. PAUSADO por decisión de Valle (2026-07-10): se prioriza poner en marcha el sistema con lo ya obtenido; se reanuda después." },
     { modulo: "datos/expedientes", estado: "PENDIENTE", owner: "libre", nota: "Ingesta masiva de proyectos: cruce acta→proyecto→tema + red de firmas (Módulos B/C)." },
     { modulo: "variables/embudo", estado: "PENDIENTE", owner: "libre", nota: "P(proyecto llega al recinto). PRIORITARIO: el diferencial del Nowcast." },
     { modulo: "variables/asistencia_quorum", estado: "PENDIENTE", owner: "libre", nota: "PRIORITARIO: el ~19% que el bloque no explica. El Senado ya trae ausentes nominales." },
     { modulo: "variables/bloque", estado: "PENDIENTE", owner: "libre", nota: "Cohesión/posición/fracturas por bloque en el tiempo." },
-    { modulo: "modelo/agregador_institucional", estado: "PENDIENTE", owner: "libre", nota: "Reglas de quórum y mayorías." },
+    { modulo: "modelo/agregador_institucional", estado: "EN CURSO", owner: "Valle", nota: "Motor de recuento como DISTRIBUCIÓN: roster + línea de bloque + desvío → P(aprobación) con banda, aplicando quórum/umbral. Tests 12 OK. Backtest 4.890 actas: Brier 0,011, skill 0,76, acc 0,987 — fuerte en agregado; falta calibrar las disputadas (subestima aprobación por ausentismo → necesita asistencia_quorum)." },
     { modulo: "evaluacion/metricas", estado: "PENDIENTE", owner: "libre", nota: "Brier, calibración → insumo del Factor μ." },
     { modulo: "datos/bot_recoleccion", estado: "PENDIENTE", owner: "bloqueado", nota: "Necesita canonica estable. Trae solo lo nuevo (upsert)." },
     { modulo: "modelo/ensemble", estado: "PENDIENTE", owner: "bloqueado", nota: "Necesita embudo + agregador." },
     { modulo: "evaluacion/backtesting", estado: "PENDIENTE", owner: "bloqueado", nota: "Necesita al menos un modelo nuevo corriendo." },
-    { modulo: "producto/dashboard", estado: "PENDIENTE", owner: "bloqueado", nota: "Necesita ensemble." },
+    { modulo: "producto/dashboard", estado: "EN CURSO", owner: "Valle", nota: "PANEL-NOWCAST.html (raíz, doble clic, autocontenido): tarjetas de estado + simulador interactivo de una votación (motor JS réplica del agregador). v1." },
     { modulo: "variables/contexto", estado: "FUTURO", owner: "—", nota: "ICG, proximidad electoral, ATN. No abrir sin cerrar prioridades." },
     { modulo: "producto/api", estado: "FUTURO", owner: "—", nota: "No abrir sin pagador." }
   ],
@@ -255,8 +255,10 @@ const TABLERO = {
 
   // ============ HITOS (línea de tiempo humana; el más nuevo ARRIBA) ============
   hitos: [
+    { fecha: "2026-07-10", titulo: "El sistema arranca: motor de agregación + Panel Nowcast", texto: "Decisión de foco: se pausa Diputados 2020-23 y se prioriza poner en marcha el sistema con lo que ya hay. Nace el motor de agregación institucional (roster + postura de bloque + desvío → probabilidad de aprobación como RANGO, no número seco, con quórum y mayorías) y un Panel Nowcast en HTML que se abre con doble clic: muestra el estado del sistema y deja simular una votación a mano. Prueba de que funciona: el mismo reparto de votos aprueba por mayoría simple y se cae por dos tercios." },
+    { fecha: "2026-07-10", titulo: "Base regenerada con los linajes v2: la reclasificación es señal real", texto: "Se corrió entity_resolution + baseline sobre los 834.749 votos: la bolsa \"sin familia\" quedó efectivamente en 18,6% (antes 45,5%) y el baseline confirma que reconocer PERONISMO FEDERAL y PROGRESISMO mejora la predicción por espacio político (linaje 94,6%→95,0% en general, 90,5%→91,3% en disputadas). El voto-dirección por bloque no se mueve (97,8%). Cadena cerrada: se re-corrieron disciplina v2 (822.481 votos, set pivote 753), fichas (1.972 legisladores) y export (congreso.db 266,8 MB + 8 Excel por gobierno, que suman exactos los 5.333 actas / 834.749 votos)." },
     { fecha: "2026-07-02", titulo: "El desvío, versión 2: la silla vacía también cuenta (ADR-0004)", texto: "Valle redefinió la indisciplina de raíz: tres conductas (aprobar/rechazar/no acompañar), la línea del bloque emerge de la mayoría de TODOS sus escaños (ausentes incluidos), regla estricta en ambos sentidos, desempate por espacio político y desvío fraccional donde no hay línea. El índice pasó a medir indisciplina total (~19% promedio). Exclusiones curadas: presidentes de Diputados (no votan por costumbre — dominaban el top con falso desvío), suspendidos, placeholders. Pendiente anotado: herramienta que detecte y notifique licencias y suspensiones." },
-    { fecha: "2026-07-10", titulo: "La bolsa de los \"sin familia\" bajó del 45% al 19%", texto: "Reclasificación de linajes (ADR-0005): nacieron PERONISMO FEDERAL y PROGRESISMO, y el bloque \"Justicialista\" —que fue tres cosas distintas según el año— ahora se asigna por fecha. El desempate del desvío v2 gana ~200 mil votos de universo. Falta regenerar la base y que se re-corran disciplina y export." },
+    { fecha: "2026-07-10", titulo: "La bolsa de los \"sin familia\" bajó del 45% al 19%", texto: "Reclasificación de linajes (ADR-0005): nacieron PERONISMO FEDERAL y PROGRESISMO, y el bloque \"Justicialista\" —que fue tres cosas distintas según el año— ahora se asigna por fecha. El desempate del desvío v2 gana ~200 mil votos de universo. (Base ya regenerada; ver hito de arriba)." },
     { fecha: "2026-07-02", titulo: "Nace este tablero de control", texto: "El plan original (Word) quedó fusionado con todo lo hecho en un tablero vivo. Regla nueva: quien cambia algo en el repo, actualiza tablero_datos.js en el mismo PR." },
     { fecha: "2026-07-02", titulo: "La base entera, en formatos que cualquier analista puede abrir", texto: "Módulo nuevo datos/export: toda la canónica en un SQLite único y en Excel cortados por gobierno. Y quedó la definición oficial de votación \"disputada\" (resultado a ±5% de los votos emitidos: 190 en 25 años, validada con casos reales como las jubilaciones perdidas por 1 voto), más el margen exacto de cada acta para que cada analista use su propia vara." },
     { fecha: "2026-07-02", titulo: "Los díscolos, re-medidos con el Senado completo", texto: "Disciplina y fichas re-corridas sobre las 5 fuentes: 1.972 legisladores, desvío global 1,76%, y un set pivote de 112 nombres. Apareció el primer caso a auditar: una senadora con 75% de desvío justo en la ventana donde el padrón de bloques pide revisión humana." },

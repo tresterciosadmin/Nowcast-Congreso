@@ -12,8 +12,12 @@ y (fase posterior) las votaciones nuevas, con upsert idempotente.
   ingresos, numeración secuencial por año). Estado local en `data/estado_bot.json`
   (último DAE visto) → trae solo lo nuevo → `data/clean/dae_entradas.parquet`
   (fecha_mesa, dae, expediente, GIROS, extracto, urls). Idempotente.
-- **Diputados → Trámite Parlamentario** (EXPLORACIÓN): `src/explorar_tp.py` baja
-  índice + muestras desde la PC (el dominio no responde al entorno de Claude).
+- **Diputados → `src/tp_diputados.py`** (LISTO): lee el Trámite Parlamentario
+  (`tp.html?periodo=<P>&numero=<N>`, numeración secuencial por período
+  parlamentario; histórico desde el período 137). Por proyecto: **firmantes
+  COMPLETOS (autor + cofirmantes)** — el dato que el CKAN no publica —, tipo,
+  sumario, expediente (link al PDF), sección de origen y giros. Estado
+  incremental e idempotente igual que el DAE → `data/clean/tp_entradas.parquet`.
 - **Votaciones nuevas** (fase 3): reutiliza scrape_votaciones (Senado, plan
   `--ids` incremental) + fuente Diputados.
 - Los firmantes por expediente salen del propio diario (TP) o de la ficha
@@ -35,7 +39,7 @@ Es el ejecutor 24/7 interino hasta la Etapa 4 (Oracle); la base se completa
 sola en el propio repo. Al hacer `git pull` te traés lo que el bot juntó.
 
 ## Pendientes
-Adaptador TP Diputados; tipo ACUERDOS del DAE; upsert hacia datos/proyectos
+Tipo ACUERDOS del DAE; backfill TP períodos 137-143 (cofirmantes históricos); upsert hacia datos/proyectos
 (contrato de Valle) y capa expedientes; programación diaria (cron/Tarea de
 Windows) cuando haya entorno 24/7 (Etapa 4 del plan).
 

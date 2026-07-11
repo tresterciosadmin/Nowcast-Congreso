@@ -53,6 +53,14 @@ Mantené esta tabla sincronizada con la bitácora.
 ---
 
 ## Bitácora (más reciente arriba)
+### [2026-07-11] datos/bot_recoleccion — Adaptador TP Diputados: el bot quedó BICAMERAL (con cofirmantes completos)
+- **Quién:** Claude (con Franco)
+- **Qué:** segunda mitad del padrón vivo: `src/tp_diputados.py` lee el **Trámite Parlamentario** (`tp.html?periodo=P&numero=N`, secuencial por período parlamentario; el índice publica hasta el 144 actual e histórico desde el 137). Por proyecto extrae: **lista COMPLETA de firmantes (autor + cofirmantes — el dato que el CKAN no publica y que necesitan los Módulos B/C)**, tipo, sumario, expediente con link al PDF, sección (Diputados/PE/Senado) y giros. Parser validado contra dos TP reales (87: 13 proyectos; 1: 49 proyectos; cofirmantes separados correctamente incl. el "Y" final). Workflow de Actions actualizado: el bot corre AMBAS cámaras cada mañana. Bonus descubierto: el TP histórico por período habilita un futuro backfill de cofirmantes 2019→hoy.
+- **Cómo:** parsing por markup real (h1 número+fecha castellano→ISO, h3 secciones, un <p> por proyecto con strongs antes/después del link como firmantes/giros); estado incremental por período con corte seguro si un TP falla (no avanza el puntero más allá de lo logrado). Fixture RECORTADA de la página real + **13 chequeos OK**. `.gitignore`: excepción para `tp_entradas.parquet`.
+- **Archivos:** `datos/bot_recoleccion/{src/tp_diputados.py, tests/test_tp.py, tests/fixtures/tp_87_144.html, README.md}`, `.github/workflows/bot-diario.yml`, `.gitignore`, `tablero_datos.js`.
+- **Estado del módulo:** datos/bot_recoleccion EN CURSO (ambas cámaras automatizadas; falta estreno en vivo del TP + upsert hacia datos/proyectos).
+- **Próximo paso:** Franco corre `py datos\bot_recoleccion\src\tp_diputados.py` (estreno: ~87 TPs del período 144, unos minutos) y commitea todo; verificar el workflow manual en Actions; luego backfill TP 137-143 y fase votaciones.
+
 ### [2026-07-11] datos/bot_recoleccion — Estreno en vivo (1.004 expedientes) + el bot queda corriendo en GitHub Actions
 - **Quién:** Claude (con Franco)
 - **Qué:** (1) primera corrida real del adaptador DAE: **51 DAEs del 2026, 1.004 expedientes con giros y extracto en ~1 minuto**, memoria incremental funcionando (la próxima corrida trae solo lo nuevo). (2) **Decisión de Franco: el bot corre en GitHub Actions en el propio repo** — `.github/workflows/bot-diario.yml`: cron 07:00 ARG (lun-sáb) + disparo manual, corre `dae_senado.py` y commitea el parquet + estado solo si hay novedades (idempotente; `git pull --rebase` antes del push para no pisar a nadie). Excepciones nuevas en `.gitignore` (el parquet del bot y su estado SÍ se versionan: son la base viva). Es el ejecutor 24/7 interino hasta la Etapa 4. (3) URLs reales del Trámite Parlamentario de Diputados encontradas (`tramites-parlamentarios.html` + `www2.../tp_NNN.html`); `explorar_tp.py` corregido para la próxima corrida de Franco.

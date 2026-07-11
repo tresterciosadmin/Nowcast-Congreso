@@ -38,6 +38,9 @@ jobs:
       - name: Traer DAE nuevos del Senado
         run: python "Nowcast Congreso Argy/datos/bot_recoleccion/src/dae_senado.py"
 
+      - name: Traer TP nuevos de Diputados
+        run: python "Nowcast Congreso Argy/datos/bot_recoleccion/src/tp_diputados.py"
+
       - name: Commit si hay novedades
         run: |
           git config user.name "bot-recoleccion"

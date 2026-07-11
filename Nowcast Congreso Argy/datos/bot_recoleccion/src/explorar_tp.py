@@ -10,16 +10,17 @@ import requests, time
 H={"User-Agent":"nowcast-congreso/0.1 (datos/bot_recoleccion)"}
 OUT=Path(__file__).resolve().parents[3]/"datos"/"Archivos_Borrar"/"tp_diputados"
 OUT.mkdir(parents=True,exist_ok=True)
-CANDIDATAS=[  # URLs reales (verificadas por búsqueda 11-07-2026)
+CANDIDATAS=[  # patrón real confirmado en el índice (periodo + numero secuencial)
  "https://www.hcdn.gob.ar/secparl/dsecretaria/s_t_parlamentario/tramites-parlamentarios.html",
- "https://www2.hcdn.gob.ar/secparl/dsecretaria/s_t_parlamentario/2026/tp_001.html",
- "https://www2.hcdn.gob.ar/secparl/dsecretaria/s_t_parlamentario/2026/tp_080.html",
- "https://www.hcdn.gob.ar/proyectos/boletin-de-asuntos-entrados",
+ "https://www.hcdn.gob.ar/secparl/dsecretaria/s_t_parlamentario/tp.html?periodo=144&numero=087",
+ "https://www.hcdn.gob.ar/secparl/dsecretaria/s_t_parlamentario/tp.html?periodo=144&numero=001",
 ]
 for url in CANDIDATAS:
     try:
         r=requests.get(url,headers=H,timeout=60); r.raise_for_status()
-        dest=OUT/("indice_"+url.split("/")[-2 if url.endswith('/') else -1].replace(".html","")+".html")
+        import re as _re
+        nombre=_re.sub(r"[^A-Za-z0-9]+","_",url.split("/")[-1])[:60]
+        dest=OUT/("muestra_"+nombre+".html")
         dest.write_text(r.text,encoding=r.encoding or "utf-8")
         print(f"OK {url} -> {dest.name} ({len(r.text)//1024} KB)")
     except requests.RequestException as e:

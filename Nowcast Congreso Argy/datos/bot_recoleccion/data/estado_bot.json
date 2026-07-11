@@ -2,5 +2,9 @@
   "dae_normal": {
     "anio": 2026,
     "numero": 51
+  },
+  "tp_diputados": {
+    "periodo": 144,
+    "numero": 87
   }
 }

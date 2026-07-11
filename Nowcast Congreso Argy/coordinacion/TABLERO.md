@@ -53,7 +53,7 @@ Depende de otros (no empezar hasta que su dependencia esté HECHA):
 | producto/dashboard | Claude+Valle | 2026-07-10 | PANEL-NOWCAST.html (raíz, doble clic): estado del sistema + simulador de votación (motor JS) |
 | variables/asistencia_quorum | Claude+Valle | 2026-07-11 | escalón 1: presentismo por legislador + modo asistencia del agregador (arreglo del sesgo pesimista); falta backtest a escala |
 | datos/expedientes | Claude+Franco | 2026-07-11 | backfill CKAN HECHO (112.793 proyectos; embudo bruto 3,22%); fase 2 = cofirmantes vía bot |
-| datos/bot_recoleccion | Claude+Franco | 2026-07-11 | bot diario AUTOMATIZADO en GitHub Actions (cron 07:00 ARG): DAE Senado corriendo solo (1.004 exp. en el estreno); TP Diputados en exploración |
+| datos/bot_recoleccion | Claude+Franco | 2026-07-11 | bot diario BICAMERAL en GitHub Actions: DAE Senado (1.004 exp.) + TP Diputados con COFIRMANTES completos (13+13 tests) |
 
 ## Hecho
 

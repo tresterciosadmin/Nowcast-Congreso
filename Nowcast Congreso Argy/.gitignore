@@ -59,3 +59,4 @@ Archivos_Borrar/*
 datos/bot_recoleccion/data/clean/*
 !datos/bot_recoleccion/data/clean/dae_entradas.parquet
 !datos/bot_recoleccion/data/estado_bot.json
+!datos/bot_recoleccion/data/clean/tp_entradas.parquet

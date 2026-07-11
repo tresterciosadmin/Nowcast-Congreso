@@ -1,23 +1,23 @@
 {
-  "n_votos_sustantivos": 600649,
+  "n_votos_sustantivos": 608002,
   "por_nivel": {
     "bloque_norm": {
-      "todas": 0.9784,
-      "n_todas": 545954,
-      "disputadas": 0.9632,
-      "n_disputadas": 290436
+      "todas": 0.9783,
+      "n_todas": 552595,
+      "disputadas": 0.9631,
+      "n_disputadas": 294209
     },
     "bloque_linaje": {
       "todas": 0.9501,
-      "n_todas": 598233,
-      "disputadas": 0.9133,
-      "n_disputadas": 316052
+      "n_todas": 605577,
+      "disputadas": 0.9134,
+      "n_disputadas": 320214
     },
     "coalicion": {
       "todas": 0.9499,
-      "n_todas": 598245,
-      "disputadas": 0.913,
-      "n_disputadas": 316056
+      "n_todas": 605589,
+      "disputadas": 0.9131,
+      "n_disputadas": 320218
     }
   },
   "por_camara": {
@@ -28,10 +28,10 @@
       "n_disputadas": 249754
     },
     "senado": {
-      "todas": 0.9805,
-      "n_todas": 121597,
-      "disputadas": 0.9505,
-      "n_disputadas": 40682
+      "todas": 0.98,
+      "n_todas": 128238,
+      "disputadas": 0.9508,
+      "n_disputadas": 44455
     }
   },
   "por_anio_disputadas": {
@@ -128,12 +128,12 @@
       "n": 1258
     },
     "2024": {
-      "acc": 0.9462,
-      "n": 30772
+      "acc": 0.9468,
+      "n": 32127
     },
     "2025": {
-      "acc": 0.9225,
-      "n": 17215
+      "acc": 0.9258,
+      "n": 19633
     }
   }
 }

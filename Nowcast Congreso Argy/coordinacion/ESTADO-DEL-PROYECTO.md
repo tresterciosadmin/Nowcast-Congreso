@@ -27,7 +27,7 @@ Mantené esta tabla sincronizada con la bitácora.
 | datos/canonica | PENDIENTE (base propia, fuente de verdad) | — |
 | datos/bot_recoleccion | PENDIENTE (depende de canonica) | — |
 | datos/ckan_diputados | HECHO (en `fase0/`, migrar) | — |
-| datos/argentinadatos | PENDIENTE | — |
+| datos/argentinadatos | HECHO (bloque Senado 24-25 resuelto vía padrón; queda sin_bloque menor en Dip) | Claude+Franco |
 | datos/senado | HECHO (2015–2023: 749 actas / 53.910 votos, bloque histórico 100%; padrón con filas REVISAR) | Claude+Franco |
 | datos/seguimiento | EN CURSO (extractor de giros Dip+Sen, validado en vivo) | Valle |
 | datos/proyectos | EN CURSO (base SQLite + export Excel) | Valle |
@@ -53,6 +53,14 @@ Mantené esta tabla sincronizada con la bitácora.
 ---
 
 ## Bitácora (más reciente arriba)
+### [2026-07-11] datos/argentinadatos + datos/canonica — Bloque Senado 2024-25 retro-completado: SIN BLOQUE = 0
+- **Quién:** Claude (con Franco)
+- **Qué:** cerrada la deuda más vieja de la canónica. (1) `datos/argentinadatos` ahora resuelve el bloque del Senado consumiendo el **padrón versionado de datos/senado** (contrato publicado: manual > automático, clave de tokens + fallback por variantes, ventana por fecha): de 9.863 SIN BLOQUE a **0 en el Senado** (quedan 1.367 de Diputados, roster de la fuente, tema aparte). Para los 20 senadores que el anexo wiki 2023-25 omite se agregaron filas retro al padrón (+20, total 131): 12 proyectados desde el Excel 2026 de Franco **con corrección de época** (los peronistas van como UNIÓN POR LA PATRIA — "Justicialista" es rename 2026; Juez era FRENTE PRO antes de LLA; Vigo UNIDAD FEDERAL — "Provincias Unidas" es 2026) y 8 con mandato terminado en dic-2025 curados a mano (UC en su mayoría; Kueider con nota de suspensión; Ledesma con su clave-variante). (2) **Omisión de linajes corregida:** UNIDAD CIUDADANA y FRENTE NACIONAL Y POPULAR (sub-bloques FdT del padrón wiki) caían en OTRO → FdT-UxP; PERONISMO REPUBLICANO (Pichetto post-2019) → PERONISMO FEDERAL.
+- **Cómo:** `_padron_senado()`/`_bloque_sen()` en `to_canonical.py` (lee los CSV del padrón, no toca código de datos/senado) + 3 entradas en LINAJE. Resultado en la base: baseline Senado +2.008 medibles (128.238), drift 2024-25 con más base (0,947/0,926, se sostiene), **OTRO/PROVINCIAL 17,4%** (vs. 45,5% pre-ADR-0005). *Incidente de entorno documentado:* una variable OUT heredada en la consola hizo que entity_resolution escribiera en `_sources/` y el baseline leyera parquet viejo (dos corridas idénticas byte a byte); limpiar env o consola nueva.
+- **Archivos:** `datos/argentinadatos/src/to_canonical.py`, `datos/senado/data/padron_manual_2015_2017.csv` (+20), `datos/canonica/src/entity_resolution.py`, `coordinacion/*`, `tablero_datos.js`.
+- **Estado del módulo:** datos/argentinadatos HECHO (bloque Senado resuelto); canonica EN CURSO (queda Dip 2020-23 y el sin_bloque menor de Diputados).
+- **Próximo paso (para Valle):** re-correr disciplina/ficha/export — el Senado 2024-25 entra por primera vez al índice de desvío con bloques reales (era el período del drift, el más valioso). Nuestro siguiente: bot diario o embudo.
+
 ### [2026-07-11] datos/expedientes — Backfill CKAN corrido: 112.793 proyectos (2008-2026); EMBUDO BRUTO = 3,22%
 - **Quién:** Claude (con Franco)
 - **Qué:** módulo reclamado y backfill completo desde el CKAN de Diputados (7 datasets vivos + 1 congelado): **112.793 proyectos 2008-2026** con su cadena de vida completa (422.143 giros, 23.801 dictámenes, 140.903 movimientos, 117.026 resultados, 1.335 leyes) + integrantes de comisiones (Committee Overlap) + **enlace acta→expediente oficial** (89,1% de las actas CKAN de la canónica matcheadas). Primer número del embudo: **de 41.339 proyectos de ley presentados, 1.332 sancionados = 3,22%**, y SOLO 4 rechazados explícitos en 18 años — el Congreso no rechaza, deja morir: eso es exactamente lo que variables/embudo va a modelar. Limitación: `autor` = firmante primario (el CKAN no publica cofirmantes).

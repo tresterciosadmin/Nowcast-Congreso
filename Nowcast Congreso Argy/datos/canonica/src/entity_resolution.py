@@ -49,6 +49,12 @@ LINAJE = {
     "PERONISMO PARA LA VICTORIA": "FdT-UxP (kirchnerismo)",
     "NUEVO ENCUENTRO": "FdT-UxP (kirchnerismo)",
     "LIBRES DEL SUR": "FdT-UxP (kirchnerismo)",
+    # Sub-bloques del FdT-UxP en el Senado (etiquetas del padrón wiki; omisión
+    # detectada 2026-07-11: caían en OTRO siendo kirchnerismo puro)
+    "UNIDAD CIUDADANA": "FdT-UxP (kirchnerismo)",
+    "FRENTE NACIONAL Y POPULAR": "FdT-UxP (kirchnerismo)",
+    # Bloque de Pichetto post-2019 (misma omisión, lado peronismo federal)
+    "PERONISMO REPUBLICANO": "PERONISMO FEDERAL",
     # ---- Reclasificación OTRO/PROVINCIAL (ADR-0005, decisión Franco 2026-07-10) ----
     # Variantes claras de linajes existentes:
     "JUSTICIALISTA-FRENTE PARA LA VICTORIA": "FdT-UxP (kirchnerismo)",  # bloque Sen 2004-2014 (semilla)

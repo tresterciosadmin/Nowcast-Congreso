@@ -16,7 +16,7 @@
 
 const TABLERO = {
   actualizado: "2026-07-11",
-  actualizado_por: "Claude (con Franco) — auditoría 17/17 + backfill de expedientes (embudo bruto 3,22%)",
+  actualizado_por: "Claude (con Franco) — auditoría 17/17 + expedientes (embudo 3,22%) + bloque Senado 24-25 saldado (OTRO 17,4%)",
 
   proyecto: {
     nombre: "Nowcast Legislativo Argentino — Plataforma de Inteligencia Política",
@@ -204,7 +204,7 @@ const TABLERO = {
     { modulo: "datos/senado", estado: "HECHO", owner: "Claude+Franco", nota: "2015-2023 completo: 749 actas / 53.910 votos, bloque histórico 100%. Padrón curado versionado con filas REVISAR para el equipo." },
     { modulo: "datos/manual_2026", estado: "HECHO", owner: "—", nota: "Excel curado 2026 integrado (máxima precedencia)." },
     { modulo: "datos/canonica", estado: "EN CURSO", owner: "Claude+Franco", nota: "Base 2001-2026 ambas cámaras, 835k votos, reproducible. Linajes v2 (ADR-0005): 10 linajes, OTRO/PROVINCIAL 45%→19%, parquet regenerado + baseline re-medido. Falta: Dip 2020-23." },
-    { modulo: "datos/argentinadatos", estado: "EN CURSO", owner: "Claude+Franco", nota: "Integrado; el Senado 2024-25 sigue SIN BLOQUE (retro-completar con padrón de datos/senado)." },
+    { modulo: "datos/argentinadatos", estado: "HECHO", owner: "Claude+Franco", nota: "Bloque Senado 2024-25 resuelto vía padrón versionado (SIN BLOQUE=0 en Senado). Queda un residuo menor en Diputados (roster de la fuente)." },
     { modulo: "datos/seguimiento", estado: "EN CURSO", owner: "Valle", nota: "Extractor de giros/trámite Dip+Sen, validado en vivo. Insumo del embudo." },
     { modulo: "datos/proyectos", estado: "EN CURSO", owner: "Valle", nota: "Base SQLite de PdL + export Excel; upsert idempotente." },
     { modulo: "datos/export", estado: "EN CURSO", owner: "Valle", nota: "Base unificada para analistas: SQLite + Excel por gobierno (solo LEE la canónica). Definición oficial de DISPUTADA: ±5% de los emitidos → 190 en 25 años, + margen_votos por acta. Entregables regenerados con linajes v2 (congreso.db 266,8 MB + 8 Excel, verificados)." },
@@ -249,13 +249,14 @@ const TABLERO = {
     { nombre: "Disciplina bloque_norm (disputadas)", valor: "96,4%", contexto: "290.400 votos en votaciones peleadas (minoría ≥10%)" },
     { nombre: "Senado disputadas", valor: "95,7%", contexto: "n=40.646 — menos disciplinado que Diputados (96,5%)" },
     { nombre: "Drift de disciplina", valor: "2024: 94,6% · 2025: 92,3%", contexto: "La disciplina se afloja: crece el espacio de las bisagras" },
-    { nombre: "Disidencia intra-coalición", valor: "~11,7%", contexto: "Linaje/coalición aciertan ~88,3% en disputadas: la interna es señal" },
+    { nombre: "Disidencia intra-espacio", valor: "~8,7%", contexto: "Linaje/coalición aciertan 91,3% en disputadas (linajes v2 + bolsa OTRO en 17,4%): la interna que queda es señal pura" },
     { nombre: "Desvío individual global", valor: "1,76%", contexto: "474.744 votos medibles — el legislador típico casi no se desvía" },
     { nombre: "Set pivote", valor: "112 legisladores", contexto: "≥10% de desvío en votaciones disputadas: la lista corta de bisagras a modelar" }
   ],
 
   // ============ HITOS (línea de tiempo humana; el más nuevo ARRIBA) ============
   hitos: [
+    { fecha: "2026-07-11", titulo: "Cero votos sin bloque en el Senado (deuda saldada)", texto: "Los votos 2024-25 del Senado ahora toman el bloque del padrón histórico propio + el Excel curado de Franco proyectado con corrección de época. El baseline ganó 2.000 votos justo en los años del drift, y la bolsa de \"sin familia\" cerró en 17,4% (empezó en 45,5%)." },
     { fecha: "2026-07-11", titulo: "El iceberg completo: 112.793 proyectos presentados y el embudo dio 3,22%", texto: "Backfill del CKAN de Diputados (2008-2026) con giros, dictámenes y resultados. De cada 100 proyectos de ley, se sancionan 3 — y en 18 años hubo solo 4 rechazos formales: el Congreso deja morir, no rechaza. El denominador del embudo existe, más el enlace acta→expediente (89%) y los integrantes de comisiones. Anotado el diseño del bot diario (Trámite Parlamentario + DAE)." },
     { fecha: "2026-07-11", titulo: "Los rebeldes del Senado son de verdad (auditoría cerrada)", texto: "Las 17 filas dudosas del padrón de bloques quedaron validadas: cero errores de etiqueta. Los desvíos altos resultaron ser la fractura real del FpV-PJ 2016-17 — el ala cristinista votando NO a las leyes de Macri mientras la conducción de Pichetto acompañaba. El medidor de díscolos queda certificado." },
     { fecha: "2026-07-11", titulo: "El diccionario de temas aprobó su examen (y llegó el clima político)", texto: "Antes de gastar en clasificar miles de proyectos con IA, se probó el vocabulario de 74 temas a mano sobre 88 votaciones reales de 25 años: funciona (82% clasificable por título, con alta confianza). La prueba dejó además la lista de retoques: 5 temas que faltan (el más frecuente: el control del Congreso al Ejecutivo — DNU, interpelaciones) y 4 reglas de frontera a fijar. Y el Índice de Confianza en el Gobierno de Di Tella ya está adentro: 296 meses (nov-2001→jun-2026, sin huecos, verificado contra los informes oficiales) — la 'gravedad presidencial' que mide cuánto cuesta oponerse al gobierno de turno. El Excel de Di Tella tenía un formato rebuscado (fechas en una fila, valores abajo, dos hojas) y la primera corrida lo destapó; el lector quedó arreglado y con examen de regresión." },

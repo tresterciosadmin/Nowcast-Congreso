@@ -12,7 +12,7 @@ Prioridad alta — datos (estrategia semilla → canónica → bot, ver ADR-0002
 
 - [ ] **datos/canonica** — base propia única: unificar todas las fuentes, deduplicar solapamientos y resolver entidades. Fuente de verdad del proyecto. _Necesita al menos una fuente cargada (semilla o CKAN)._
 - [ ] **datos/argentinadatos** — ingestar Diputados 2020–2025 y Senado 2024–2025, normalizado al esquema canónico.
-- [ ] **datos/expedientes** — ingestar proyectos presentados; medir % que llega a votación nominal (sesgo de selección).
+- [x] ~~**datos/expedientes**~~ → reclamado 2026-07-11 por Claude+Franco (ver "En curso").
 - [ ] **datos/licencias_suspensiones** — registro + notificador de licencias y suspensiones de legisladores (decisión ADR-0004: se excluyen del índice de indisciplina; hoy solo los suspendidos son detectables).
 
 Prioridad alta — modelo (gate de Fase 0):
@@ -53,13 +53,14 @@ Depende de otros (no empezar hasta que su dependencia esté HECHA):
 | modelo/agregador_institucional | Claude+Valle | 2026-07-10 | motor de recuento como distribución (P aprobación con banda); tests 12 OK; falta backtest a escala |
 | producto/dashboard | Claude+Valle | 2026-07-10 | PANEL-NOWCAST.html (raíz, doble clic): estado del sistema + simulador de votación (motor JS) |
 | variables/asistencia_quorum | Claude+Valle | 2026-07-11 | escalón 1: presentismo por legislador + modo asistencia del agregador (arreglo del sesgo pesimista); falta backtest a escala |
+| datos/expedientes | Claude+Franco | 2026-07-11 | ingesta masiva de proyectos presentados: embudo (denominador) + red de firmas (Mód. B/C) + enlace acta→expediente |
 
 ## Hecho
 
 | Módulo | Quién | Fecha | Nota |
 |---|---|---|---|
 | docs/schemas | Claude+Franco | 2026-06-25 | Esquema canónico schema_version=1 (acta + voto) |
-| datos/senado | Claude+Franco | 2026-07-02 | 2015–2023 completo: 749 actas / 53.910 votos, validado vs nahuelhds (0 discrepancias), bloque histórico 100% / 0 anacronismos. **PARA EL EQUIPO: revisar filas `REVISAR` en `datos/senado/data/padron_manual_2015_2017.csv`** (bloques 2015-17 inferidos + sub-bloques FdT de los futuros Unidad Federal + Rodríguez TdF). Pendiente de otros módulos: integrar a run_pipeline (canonica) + 2 ADRs |
+| datos/senado | Claude+Franco | 2026-07-02 | 2015–2023 completo: 749 actas / 53.910 votos, validado vs nahuelhds (0 discrepancias), bloque histórico 100% / 0 anacronismos. **Padrón AUDITADO 11-07: 17/17 filas validadas, cero errores** (los desvíos altos son fractura real del FpV-PJ 2016-17). Pendiente de otros módulos: integrar a run_pipeline (canonica) + 2 ADRs |
 | docs/taxonomias | Claude+Valle | 2026-06-29 | Vocabulario controlado v1 (74 ids, id estable, multi-etiqueta) |
 | evaluacion/baseline | Claude+Franco | 2026-06-25 | Baseline ~0,99 dirección / ~0,81 con asistencia |
 | datos/ckan_diputados | Claude+Franco | 2026-06-25 | En `fase0/`, pendiente migrar a su carpeta |

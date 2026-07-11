@@ -32,7 +32,7 @@ Mantené esta tabla sincronizada con la bitácora.
 | datos/seguimiento | EN CURSO (extractor de giros Dip+Sen, validado en vivo) | Valle |
 | datos/proyectos | EN CURSO (base SQLite + export Excel) | Valle |
 | docs/taxonomias | HECHO (vocabulario controlado v1, 74 ids) | Valle |
-| datos/expedientes | PENDIENTE | — |
+| datos/expedientes | EN CURSO (backfill CKAN 112.793 proyectos 2008-2026; embudo bruto 3,22%) | Claude+Franco |
 | datos/licencias_suspensiones | PENDIENTE (nuevo — registro+notificador; decisión ADR-0004) | — |
 | datos/export | EN CURSO (SQLite + Excel por gobierno; disputada = ±5% de emitidos vs umbral) | Valle |
 | variables/legislador | EN CURSO (ficha + por período; PorTema bloqueada por taxonomías) | Valle |
@@ -53,6 +53,22 @@ Mantené esta tabla sincronizada con la bitácora.
 ---
 
 ## Bitácora (más reciente arriba)
+### [2026-07-11] datos/expedientes — Backfill CKAN corrido: 112.793 proyectos (2008-2026); EMBUDO BRUTO = 3,22%
+- **Quién:** Claude (con Franco)
+- **Qué:** módulo reclamado y backfill completo desde el CKAN de Diputados (7 datasets vivos + 1 congelado): **112.793 proyectos 2008-2026** con su cadena de vida completa (422.143 giros, 23.801 dictámenes, 140.903 movimientos, 117.026 resultados, 1.335 leyes) + integrantes de comisiones (Committee Overlap) + **enlace acta→expediente oficial** (89,1% de las actas CKAN de la canónica matcheadas). Primer número del embudo: **de 41.339 proyectos de ley presentados, 1.332 sancionados = 3,22%**, y SOLO 4 rechazados explícitos en 18 años — el Congreso no rechaza, deja morir: eso es exactamente lo que variables/embudo va a modelar. Limitación: `autor` = firmante primario (el CKAN no publica cofirmantes).
+- **Cómo:** `src/explorar_ckan.py` (paso 0: inventario + muestras para diseñar sobre estructura real) y `src/ingesta_ckan.py` (descarga con caché/backoff → 8 parquet de contrato en `data/clean/`). Corrida y verificación en PC de Franco. Detalle en el README del módulo.
+- **Archivos:** `datos/expedientes/{README.md, src/explorar_ckan.py, src/ingesta_ckan.py}`, `coordinacion/{TABLERO.md, ESTADO, EN-HUMANO}`, `tablero_datos.js`.
+- **Estado del módulo:** datos/expedientes EN CURSO (backfill hecho; fase 2 = cofirmantes + origen Senado).
+- **Próximo paso — DISEÑO DEL BOT DIARIO ANOTADO (idea de Franco, no perder):** para el padrón vivo, el bot NO debe scrapear las páginas personales de los diputados (257 requests/día + slugs frágiles) sino los **diarios oficiales de ingreso: Trámite Parlamentario (Diputados) y DAE (Senado)** — todo lo presentado cada día con TODOS los firmantes y giros en un solo documento; la ficha de `datos/seguimiento` (Valle) como fallback puntual, consumiendo su contrato. Vive en `datos/bot_recoleccion` (dependencia ya cumplida) y de paso trae las votaciones nuevas. Candidato natural a próximo claim. Para variables/embudo: el insumo ya está servido.
+
+### [2026-07-11] datos/senado — Auditoría del padrón de bloques COMPLETA: 17/17 filas validadas, cero errores
+- **Quién:** Claude (con Franco)
+- **Qué:** cerrado el caveat del gate 1 de voto_individual. Las 17 filas `REVISAR` del padrón manual del Senado se auditaron comparando la conducta de cada senador contra la línea de su bloque asignado en su ventana: 14 con desvío ≤5,6% (etiqueta trivialmente correcta, incl. Rodríguez→UC y los FNyP pre-Unidad Federal) y 3 casos con desvío alto que resultaron **SEÑAL POLÍTICA REAL, no error**: García (33,9% contra línea) desvía igual que TODA el ala cristinista del FpV-PJ 2016-17 (F. Sagasti 36,7%, Pilatti Vergara 38,4%, Almirón 34,4%) en las leyes calientes de la era (reforma previsional, capital emprendedor, resp. penal empresaria — el ala K votando NO mientras la mayoría de Pichetto acompañaba); Espínola 10,7% = disidencia leve de peronista dialoguista (aclarado: Camau ES senador desde 2015, no 2017). **El ranking de díscolos del equipo queda certificado: mide fracturas reales de bloque.**
+- **Cómo:** barrido contra `votos_resuelto.parquet` (línea = mayoría A/N del bloque por acta; % de votos emitidos contra línea por senador-ventana). Notas del CSV actualizadas de REVISAR → AUDITADO con el detalle.
+- **Archivos:** `datos/senado/data/padron_manual_2015_2017.csv` (notas), `coordinacion/{ESTADO,EN-HUMANO,TABLERO}`, `tablero_datos.js`.
+- **Estado del módulo:** datos/senado HECHO (padrón auditado al 100%).
+- **Próximo paso (para Valle):** el caveat "auditar etiquetas de los top díscolos" del gate 1 puede darse por cerrado en el Senado 2015-23; García y las camporistas son díscolas legítimas del período. Nuestro siguiente frente: datos/expedientes.
+
 ### [2026-07-11] variables/proyecto — Vocabulario VALIDADO con muestra manual + ingesta ICG Di Tella lista
 - **Quién:** Claude (con Valle)
 - **Qué:** ejecutados los pasos 1 y 3 del orden del feature store. (1) **Validación manual del vocabulario** (decisión de Valle: muestra a mano antes de gastar en batch): 88 actas de la canónica (estratificadas por año 2001-2025) clasificadas a mano contra los 74 ids. Resultado: **el vocabulario funciona** — 82% clasificable por título, 89% de ellas con confianza alta/media, 22% multi-etiqueta; la regla juego→SALUD.ADICC aplicó perfecto. Hallazgos: 18% de actas NO clasificables por título (opacos del CKAN + procedimentales) → para la historia hará falta el enlace acta→expediente o etiqueta `_PROCEDIMENTAL`; 5 huecos candidatos (control parlamentario, bienes del Estado, sistema financiero, biodiversidad, federalismo) y 4 fronteras a fijar (detalle en `variables/proyecto/RESULTADOS-muestra-manual.md`). (2) **Ingesta ICG Di Tella** (`src/ingesta_icg.py`): no hay API; el script scrapea la página oficial de descarga de UTDT (el `fname` del Excel de la serie mensual 2001-presente ROTA cada mes) y normaliza a `data/icg_mensual.csv` (fecha/anio/mes/icg, escala 0-5); fallback a los microdatos `.dta` espejados por PoliticaArgentina/data_warehouse (mecanismo tomado de `opinAr`, punta de Valle). Tests offline 9 chequeos OK (layouts largo/ancho/meses-texto/encabezado desplazado + limpieza defensiva).

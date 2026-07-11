@@ -16,7 +16,7 @@
 
 const TABLERO = {
   actualizado: "2026-07-11",
-  actualizado_por: "Claude (con Valle) — vocabulario validado a mano + ingesta ICG Di Tella",
+  actualizado_por: "Claude (con Franco) — auditoría 17/17 + backfill de expedientes (embudo bruto 3,22%)",
 
   proyecto: {
     nombre: "Nowcast Legislativo Argentino — Plataforma de Inteligencia Política",
@@ -50,7 +50,7 @@ const TABLERO = {
         "El diseño original preveía una regresión logística directa sobre el voto; quedó reformulado tras la Fase 0 (baseline bloque ≈ 0,99 la volvía redundante). Las variables previstas siguen vigentes como features del embudo y del agregador."
       ],
       variables: [
-        { nombre: "Embudo legislativo", desc: "P(comisión → dictamen → tratamiento). El diferencial del producto: la mayoría de los proyectos muere sin votarse.", estado: "PENDIENTE" },
+        { nombre: "Embudo legislativo", desc: "P(comisión → dictamen → tratamiento). Medido en bruto: solo el 3,22% de los proyectos de ley se sanciona (y casi nada se rechaza: muere en cajón). El insumo ya está servido por datos/expedientes.", estado: "PENDIENTE" },
         { nombre: "Asistencia / quórum", desc: "Quién está presente el día de la votación (el ~19% que el bloque no explica). El Senado 2015-2023 ya trae ausentes nominales.", estado: "PENDIENTE" },
         { nombre: "Desvío individual y pivotes", desc: "Índice de disciplina por legislador + detección de las 10-20 bisagras que mueven la P en votaciones ajustadas.", estado: "EN CURSO" },
         { nombre: "Gravedad Presidencial (ICG - Di Tella)", desc: "El costo social de oponerse al Ejecutivo.", estado: "FUTURO" },
@@ -164,7 +164,7 @@ const TABLERO = {
       pendiente: [
         "Modelo de defección: P(desvía | tema, cercanía de la votación, período, provincia, ciclo electoral).",
         "Recuento como distribución + detección de pivotes por ley.",
-        "Auditoría de etiquetas de bloque de los top díscolos (1er candidato: García 2016-17, 75% de desvío en ventana REVISAR del padrón)."
+        "✅ Auditoría de etiquetas de los top díscolos: CERRADA 11-07 (17/17 validadas; García y las camporistas son fractura real del FpV-PJ 2016-17, no error)."
       ]
     },
     {
@@ -212,7 +212,8 @@ const TABLERO = {
     { modulo: "variables/legislador", estado: "EN CURSO", owner: "Valle", nota: "Ficha de 1.935 legisladores por período parlamentario. Hoja PorTema bloqueada por taxonomías." },
     { modulo: "modelo/voto_individual", estado: "EN CURSO", owner: "Valle", nota: "Gate 1 APROBADO (ADR-0003). Re-corrido con Senado 2015-23: set pivote = 112 legisladores (≥10% desvío en disputadas). Faltan defección, distribución y pivotes por ley." },
     { modulo: "datos/diputados_oficial", estado: "PENDIENTE", owner: "PAUSADO", nota: "Diputados 2020-2023 desde votaciones.hcdn.gob.ar. PAUSADO por decisión de Valle (2026-07-10): se prioriza poner en marcha el sistema con lo ya obtenido; se reanuda después." },
-    { modulo: "datos/expedientes", estado: "PENDIENTE", owner: "libre", nota: "Ingesta masiva de proyectos: cruce acta→proyecto→tema + red de firmas (Módulos B/C)." },
+    { modulo: "datos/expedientes", estado: "EN CURSO", owner: "Claude+Franco", nota: "Backfill CKAN hecho: 112.793 proyectos 2008-2026, embudo bruto 3,22%, enlace acta→expediente 89%. Fase 2: cofirmantes + origen Senado (bot diario TP+DAE anotado)." },
+    { modulo: "datos/licencias_suspensiones", estado: "PENDIENTE", owner: "libre", nota: "Registro + notificador de licencias/suspensiones (ADR-0004: se excluyen del índice de indisciplina; hoy solo los suspendidos son detectables)." },
     { modulo: "variables/embudo", estado: "PENDIENTE", owner: "libre", nota: "P(proyecto llega al recinto). PRIORITARIO: el diferencial del Nowcast." },
     { modulo: "variables/asistencia_quorum", estado: "EN CURSO", owner: "Valle", nota: "Escalón 1 (presentismo por legislador + modo asistencia del agregador) construido y backtesteado: el presentismo PROMEDIO uniforme empeoró la calibración (Brier 0,011→0,034; volvió dudosas ~1.000 votaciones cómodas). Aprendizaje: la asistencia es CONDICIONAL (sesgo de selección: se vota lo que junta gente) → escalón 2. Motor sin asistencia queda de default." },
     { modulo: "variables/bloque", estado: "PENDIENTE", owner: "libre", nota: "Cohesión/posición/fracturas por bloque en el tiempo." },
@@ -255,6 +256,8 @@ const TABLERO = {
 
   // ============ HITOS (línea de tiempo humana; el más nuevo ARRIBA) ============
   hitos: [
+    { fecha: "2026-07-11", titulo: "El iceberg completo: 112.793 proyectos presentados y el embudo dio 3,22%", texto: "Backfill del CKAN de Diputados (2008-2026) con giros, dictámenes y resultados. De cada 100 proyectos de ley, se sancionan 3 — y en 18 años hubo solo 4 rechazos formales: el Congreso deja morir, no rechaza. El denominador del embudo existe, más el enlace acta→expediente (89%) y los integrantes de comisiones. Anotado el diseño del bot diario (Trámite Parlamentario + DAE)." },
+    { fecha: "2026-07-11", titulo: "Los rebeldes del Senado son de verdad (auditoría cerrada)", texto: "Las 17 filas dudosas del padrón de bloques quedaron validadas: cero errores de etiqueta. Los desvíos altos resultaron ser la fractura real del FpV-PJ 2016-17 — el ala cristinista votando NO a las leyes de Macri mientras la conducción de Pichetto acompañaba. El medidor de díscolos queda certificado." },
     { fecha: "2026-07-11", titulo: "El diccionario de temas aprobó su examen (y llegó el clima político)", texto: "Antes de gastar en clasificar miles de proyectos con IA, se probó el vocabulario de 74 temas a mano sobre 88 votaciones reales de 25 años: funciona (82% clasificable por título, con alta confianza). La prueba dejó además la lista de retoques: 5 temas que faltan (el más frecuente: el control del Congreso al Ejecutivo — DNU, interpelaciones) y 4 reglas de frontera a fijar. Y el Índice de Confianza en el Gobierno de Di Tella ya está adentro: 296 meses (nov-2001→jun-2026, sin huecos, verificado contra los informes oficiales) — la 'gravedad presidencial' que mide cuánto cuesta oponerse al gobierno de turno. El Excel de Di Tella tenía un formato rebuscado (fechas en una fila, valores abajo, dos hojas) y la primera corrida lo destapó; el lector quedó arreglado y con examen de regresión." },
     { fecha: "2026-07-11", titulo: "El plano de los datos: qué sabe el sistema de cada proyecto", texto: "El experimento de asistencia dejó clara una idea: la presencia (y casi todo) depende del TIPO de proyecto — un legislador falta cuando el tema lo incomoda o cuando lo presenta su oposición. Para condicionar así hace falta saber de qué es cada proyecto y quién lo impulsa. Se diseñó en papel el 'feature store': la ficha de rasgos de cada proyecto (tema, quién lo presenta y si es oficialismo u oposición, tipo de mayoría, clima político con el índice de confianza de Di Tella, cercanía de elecciones) y cómo cada rasgo alimenta la predicción. Es el mapa que ordena lo que viene: primero correr el agente que le pone temas a los proyectos." },
     { fecha: "2026-07-11", titulo: "Asistencia (escalón 1): probamos, midió, y nos enseñó algo", texto: "Conectamos el presentismo de cada legislador al motor (leer la postura del bloque entre los presentes, y hacer votar a cada uno según cuánto suele asistir). En casos de prueba corregía el pesimismo. PERO el backtest histórico completo dio peor: usar el presentismo PROMEDIO para todas las votaciones mete ausencias falsas y volvió 'dudosas' ~1.000 votaciones que en realidad eran cómodas (el motor pasó de pesimista a inseguro). La lección era la que anticipaba el plan: la asistencia no es pareja, es más alta en las votaciones que importan. El presentismo a secas es el piso a superar; el próximo escalón es modelar la asistencia CONDICIONADA. Mientras tanto el motor sin asistencia (Brier 0,011) sigue de default." },
@@ -282,15 +285,14 @@ const TABLERO = {
     { prioridad: 1, titulo: "Corrida en vivo del agente de taxonomías", detalle: "Solo falta la ANTHROPIC_API_KEY. Desbloquea el perfil temático (PLAN 1B.3) y la Consistencia Temática del Módulo A.", depende: "variables/proyecto" },
     { prioridad: 2, titulo: "datos/expedientes", detalle: "Ingesta masiva de proyectos: segunda llave del perfil temático y única llave de la red de co-firmas (Módulos B y C).", depende: "libre para reclamar" },
     { prioridad: 3, titulo: "Diputados 2020-2023", detalle: "El hueco de datos más grande que queda. Scraper de votaciones.hcdn.gob.ar (datos/diputados_oficial).", depende: "libre para reclamar" },
-    { prioridad: 4, titulo: "Auditar etiquetas de bloque de los top díscolos", detalle: "Hecha la re-corrida con el Senado (set pivote = 112), apareció el 1er sospechoso: García, Virginia María (75% de desvío, Senado 2016-17) cae en la ventana de la ruptura FpV que el padrón marca REVISAR. Auditar con Franco antes de confiar en el ranking.", depende: "padrón datos/senado + Franco" },
+    { prioridad: 4, titulo: "datos/expedientes (nuevo frente Franco+Claude)", detalle: "Ingesta masiva de proyectos: enlace acta→expediente (18% de actas opacas por título), red de co-firmas para los Módulos B/C, e insumo del embudo. La auditoría del padrón quedó CERRADA 11-07 (17/17 validadas, ranking de díscolos certificado).", depende: "libre — próximo claim nuestro" },
     { prioridad: 5, titulo: "Embudo y asistencia/quórum", detalle: "Los dos módulos PRIORITARIOS del Nowcast siguen sin dueño.", depende: "libres para reclamar" },
     { prioridad: 6, titulo: "Piezas b-d de voto_individual", detalle: "Modelo de defección, recuento como distribución, pivotes por ley.", depende: "gate 1 aprobado ✓" }
   ],
 
   // ============ REVISIONES HUMANAS PENDIENTES ============
   revisiones: [
-    { que: "Padrón de bloques del Senado: filas marcadas REVISAR", donde: "datos/senado/data/padron_manual_2015_2017.csv", detalle: "11 bloques 2015-17 inferidos (casi todos FpV-PJ pre-ruptura) + sub-bloques FdT de los futuros Unidad Federal + Rodríguez (TdF) por analogía con Duré. Franco ya validó Caserio/Perotti y Catalfamo/Espínola. Editar el CSV directamente: lo curado ahí gana." },
-    { que: "Auditar etiquetas de bloque de los top díscolos", donde: "modelo/voto_individual", detalle: "Caveat del gate 1: verificar que los díscolos no sean artefactos de etiquetas de bloque mal resueltas. Primer candidato concreto: García, Virginia María (75% de desvío, Senado 2016-17) — cae en fila REVISAR del padrón." },
+    { que: "✅ RESUELTO 11-07 — Padrón del Senado auditado: 17/17 filas validadas, cero errores", donde: "datos/senado/data/padron_manual_2015_2017.csv", detalle: "14 filas con desvío ≤5,6% (etiqueta trivialmente correcta) y 3 de desvío alto que son SEÑAL REAL: García (33,9% contra línea) desvía igual que toda el ala cristinista del FpV-PJ 2016-17 (F. Sagasti, Pilatti, Almirón) en las leyes de la era Macri — fractura interna del bloque, no error. El caveat del gate 1 (auditar díscolos) queda cerrado para Senado 2015-23: el ranking es confiable." },
     { que: "ADRs pendientes de formalizar", donde: "coordinacion/DECISIONES/", detalle: "(1) Wikipedia como fuente del padrón de bloques del Senado; (2) precedencia senado vs. argentinadatos en 2024-25 (hoy empatan)." }
   ],
 
@@ -317,7 +319,4 @@ const TABLERO = {
     "Este tablero es OBLIGATORIO: todo cambio relevante en el repo actualiza tablero_datos.js en el mismo PR (regla en CLAUDE.md, mismo régimen que ESTADO-DEL-PROYECTO y EN-HUMANO).",
     "Solo se edita tablero_datos.js. TABLERO-CONTROL.html es el diseño y NO se toca.",
     "Qué actualizar: fecha y autor, el estado de lo que cambió, un hito nuevo arriba de todo (1-3 frases en humano), y los números si cambiaron (kpis/metricas).",
-    "Estados válidos: HECHO, EN CURSO, PARCIAL, PENDIENTE, FUTURO, REPLANTEADO.",
-    "El detalle fino vive donde siempre: ESTADO-DEL-PROYECTO (técnico), EN-HUMANO (relato), README de cada módulo (contrato). Este tablero es el mapa, no el territorio."
-  ]
-};
+    "Estados válidos: HECHO, EN CURSO, PARCIAL

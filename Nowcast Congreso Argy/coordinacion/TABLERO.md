@@ -17,7 +17,7 @@ Prioridad alta — datos (estrategia semilla → canónica → bot, ver ADR-0002
 
 Prioridad alta — modelo (gate de Fase 0):
 
-- [ ] **variables/embudo** — P(proyecto llega al recinto): comisión→dictamen→tratamiento. _Diferencial del nowcast._
+- [x] ~~**variables/embudo**~~ → reclamado 2026-07-12 por Valle (ver "En curso"). Diferencial del nowcast.
 - [x] ~~**variables/asistencia_quorum**~~ → reclamado 2026-07-11 (ver "En curso"). Escalón 1: presentismo → alimentar el agregador.
 - [x] ~~**modelo/voto_individual**~~ → reclamado 2026-07-01 (ver "En curso"). ADR-0003 formaliza el cambio de rumbo.
 
@@ -33,7 +33,7 @@ Prioridad media:
 Depende de otros (no empezar hasta que su dependencia esté HECHA):
 
 - [x] ~~**datos/bot_recoleccion**~~ → reclamado 2026-07-11 por Claude+Franco (dependencia cumplida; ver "En curso").
-- [ ] **modelo/ensemble** — necesita embudo + agregador.
+- [x] ~~**modelo/ensemble**~~ → reclamado 2026-07-12 por Valle (ver "En curso"). Dependencias cumplidas: embudo v1 + agregador.
 - [ ] **evaluacion/backtesting** — necesita al menos un modelo nuevo.
 - [ ] **producto/dashboard** — necesita ensemble.
 
@@ -54,6 +54,8 @@ Depende de otros (no empezar hasta que su dependencia esté HECHA):
 | variables/asistencia_quorum | Claude+Valle | 2026-07-11 | escalón 1: presentismo por legislador + modo asistencia del agregador (arreglo del sesgo pesimista); falta backtest a escala |
 | datos/expedientes | Claude+Franco | 2026-07-11 | backfill CKAN HECHO (112.793 proyectos; embudo bruto 3,22%); fase 2 = cofirmantes vía bot |
 | datos/bot_recoleccion | Claude+Franco | 2026-07-11 | bot diario BICAMERAL en GitHub Actions: DAE Senado (1.004 exp.) + TP Diputados con COFIRMANTES completos (13+13 tests) |
+| variables/embudo | Claude+Valle | 2026-07-12 | supervivencia del proyecto de ley: embudo por etapas + modelo v1 (rasgos al presentar, sin leakage) + backtest temporal; consume contrato de datos/expedientes |
+| modelo/ensemble | Claude+Valle | 2026-07-12 | composición end-to-end: P(aprobación)=P(llega al recinto)×P(mayoría). Conecta p_embudo (variables/embudo) con simular_votacion (agregador). Nowcast de un proyecto |
 
 ## Hecho
 

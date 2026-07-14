@@ -52,6 +52,7 @@ SUSTANTIVAS = ("AFIRMATIVO", "NEGATIVO")  # las que "emiten" dirección
 
 DEFAULT_CANON = Path("datos/canonica/data/clean")
 OUT_DEFAULT = Path("variables/bloque/outputs/serie_bloque.parquet")
+DEFAULT_PADRON_DIR = Path(__file__).resolve().parents[3] / "datos" / "padron" / "data"
 
 
 # --------------------------------------------------------------------------- #
@@ -161,16 +162,43 @@ def serie_bloque(mab: pd.DataFrame) -> pd.DataFrame:
 # --------------------------------------------------------------------------- #
 # Proyector point-in-time (lo que consume el escenario del ensemble)          #
 # --------------------------------------------------------------------------- #
+def _bancas_padron(camara: str, fecha, padron_path=None):
+    """Composicion REAL a la fecha desde datos/padron: {bloque_linaje: bancas}.
+    Cuenta legisladores con mandato vigente (desde <= fecha <= hasta). None si no hay
+    padron (entonces el proyector cae al conteo por ventana, con aviso)."""
+    p = Path(padron_path) if padron_path else DEFAULT_PADRON_DIR / f"padron_{camara}.csv"
+    if not p.exists():
+        logger.warning("sin padron %s (%s): uso conteo por ventana (roster inflado)", camara, p)
+        return None
+    pad = pd.read_csv(p, dtype=str)
+    if "bloque_linaje" not in pad.columns:
+        logger.warning("padron %s sin columna bloque_linaje; ignoro", p)
+        return None
+    fecha = pd.to_datetime(fecha)
+    d = pd.to_datetime(pad.get("desde"), errors="coerce")
+    h = pd.to_datetime(pad.get("hasta"), errors="coerce")
+    vig = pad[(d <= fecha) & (h.isna() | (h >= fecha))]
+    if vig.empty:
+        logger.warning("padron %s sin bancas vigentes a %s; uso ventana", camara, fecha.date())
+        return None
+    return vig.groupby("bloque_linaje").size().astype(int).to_dict()
+
+
 def proyectar_postura(votos: pd.DataFrame, fecha, camara: str,
-                      ventana_dias: int = 730, min_actas: int = 3) -> list[dict]:
-    """Escenario por bloque para una votación en `fecha`/`camara`, usando SOLO
-    actas ANTERIORES a `fecha` dentro de una ventana móvil (walk-forward, sin
-    leakage). Devuelve [{bloque, bancas, linea, desvio}, ...] listo para el
-    ensemble. `linea` = dirección modal reciente; `desvio` = desvío interno medio.
+                      ventana_dias: int = 730, min_actas: int = 3,
+                      padron_path=None) -> list[dict]:
+    """Escenario por bloque para una votacion en `fecha`/`camara`.
+
+    COMPOSICION (bancas) = padron OFICIAL vigente a la fecha (datos/padron): la camara
+    real (257 Dip / 72 Sen). COMPORTAMIENTO (linea, desvio) = historia ANTERIOR a la
+    fecha dentro de una ventana movil (walk-forward, sin leakage). Asi se separa la
+    foto de la camara (quien ocupa las bancas hoy) de la trayectoria (como vota cada
+    espacio). Si no hay padron, cae al conteo de votantes por ventana (roster inflado).
+    Devuelve [{bloque, bancas, linea, desvio}, ...] listo para el ensemble.
     """
     fecha = pd.to_datetime(fecha)
     if pd.isna(fecha):
-        raise ValueError("fecha inválida para proyectar")
+        raise ValueError("fecha invalida para proyectar")
     desde = fecha - pd.Timedelta(days=int(ventana_dias))
 
     hist = votos[(votos["camara"] == camara) &
@@ -180,27 +208,41 @@ def proyectar_postura(votos: pd.DataFrame, fecha, camara: str,
                          f"[{desde.date()}, {fecha.date()})")
     mab = metricas_acta_bloque(hist, min_emit=1)  # ventana chica: no exigir 3
     mab["dir_afirm"] = (mab["direccion"] == "AFIRMATIVO").astype(int)
+    comp = mab.groupby("bloque_linaje", observed=True).agg(
+        share_afirm=("dir_afirm", "mean"),
+        desvio=("desvio", "mean"),
+        n_actas=("acta_id", "nunique"),
+    )
 
-    # bancas: legisladores distintos vistos en la ventana por bloque
-    bancas = (hist.groupby("bloque_linaje")["legislador_id"].nunique()
-              .rename("bancas"))
+    # composicion a la fecha: padron oficial si esta; si no, conteo por ventana
+    base = _bancas_padron(camara, fecha, padron_path)
+    fuente_bancas = "padron"
+    if base is None:
+        base = (hist.groupby("bloque_linaje")["legislador_id"].nunique().to_dict())
+        fuente_bancas = "ventana"
 
     out = []
-    for bloque, g in mab.groupby("bloque_linaje", observed=True):
-        if g["acta_id"].nunique() < int(min_actas):
-            continue
-        share_afirm = float(g["dir_afirm"].mean())
-        linea = "AFIRMATIVO" if share_afirm >= 0.5 else "NEGATIVO"
-        desvio = float(np.clip(g["desvio"].mean(), 0.0, 1.0))
-        nb = int(bancas.get(bloque, 0))
+    for linaje, nb in base.items():
+        nb = int(nb)
         if nb <= 0:
             continue
-        out.append({"bloque": str(bloque), "bancas": nb, "linea": linea,
+        if linaje in comp.index:
+            r = comp.loc[linaje]
+            share = float(r["share_afirm"])
+            desvio = float(np.clip(r["desvio"], 0.0, 1.0))
+            nact = int(r["n_actas"])
+            if nact < int(min_actas):
+                # poca historia: mantengo la banca pero marco baja confianza
+                pass
+        else:
+            share, desvio, nact = 0.5, 0.15, 0  # sin historia: neutro, desvio tipico
+        linea = "AFIRMATIVO" if share >= 0.5 else "NEGATIVO"
+        out.append({"bloque": str(linaje), "bancas": nb, "linea": linea,
                     "desvio": round(desvio, 4),
-                    "_share_afirm": round(share_afirm, 4),
-                    "_n_actas": int(g["acta_id"].nunique())})
+                    "_share_afirm": round(share, 4),
+                    "_n_actas": nact, "_bancas_de": fuente_bancas})
     if not out:
-        raise ValueError("ningún bloque superó min_actas en la ventana")
+        raise ValueError("ningun bloque con bancas para proyectar")
     return sorted(out, key=lambda d: d["bancas"], reverse=True)
 
 

@@ -14,6 +14,7 @@ Prioridad alta — datos (estrategia semilla → canónica → bot, ver ADR-0002
 - [x] ~~**datos/argentinadatos**~~ → HECHO 2026-07-11 (ver "Hecho").
 - [x] ~~**datos/expedientes**~~ → reclamado 2026-07-11 por Claude+Franco (ver "En curso").
 - [ ] **datos/licencias_suspensiones** — registro + notificador de licencias y suspensiones de legisladores (decisión ADR-0004: se excluyen del índice de indisciplina; hoy solo los suspendidos son detectables).
+- [x] ~~**datos/padron**~~ → NUEVO, reclamado 2026-07-14 por Valle (ver "En curso"). Nómina oficial individual = composición de la cámara a la fecha.
 
 Prioridad alta — modelo (gate de Fase 0):
 
@@ -26,7 +27,7 @@ Prioridad media:
 - [ ] **datos/diputados_oficial** — completar Diputados 2020–2023 desde `votaciones.hcdn.gob.ar`. **PAUSADO 2026-07-10** (decisión de Valle: priorizar puesta en marcha; se reanuda después).
 - [x] ~~**variables/legislador**~~ → reclamado 2026-07-01 (ver "En curso").
 - [ ] **variables/proyecto** — feature store por proyecto (tema, autor, mayoría, NLP de texto).
-- [ ] **variables/bloque** — cohesión/posición/fracturas por bloque en el tiempo.
+- [x] ~~**variables/bloque**~~ → reclamado 2026-07-12 por Valle, REGISTRADO 2026-07-14 (ver "En curso").
 - [x] ~~**modelo/agregador_institucional**~~ → reclamado 2026-07-10 (ver "En curso").
 - [ ] **evaluacion/metricas** — Brier, calibración, accuracy en votos cruzados.
 
@@ -55,7 +56,9 @@ Depende de otros (no empezar hasta que su dependencia esté HECHA):
 | datos/expedientes | Claude+Franco | 2026-07-11 | backfill CKAN HECHO (112.793 proyectos; embudo bruto 3,22%); fase 2 = cofirmantes vía bot |
 | datos/bot_recoleccion | Claude+Franco | 2026-07-11 | bot diario BICAMERAL en GitHub Actions: DAE Senado (1.004 exp.) + TP Diputados con COFIRMANTES completos (13+13 tests) |
 | variables/embudo | Claude+Valle | 2026-07-12 | supervivencia del proyecto de ley: embudo por etapas + modelo v1 (rasgos al presentar, sin leakage) + backtest temporal; consume contrato de datos/expedientes |
-| modelo/ensemble | Claude+Valle | 2026-07-12 | composición end-to-end: P(aprobación)=P(llega al recinto)×P(mayoría). Conecta p_embudo (variables/embudo) con simular_votacion (agregador). Nowcast de un proyecto |
+| modelo/ensemble | Claude+Valle | 2026-07-12 | P(aprob)=P(llega)×P(mayoría). nowcast_auto arma el escenario desde el padrón+histórico (sin JSON a mano). 1er end-to-end real: 1167-D-2025 = 15%. Falta dirección condicionada v2 |
+| variables/bloque | Claude+Valle | 2026-07-12 | v1: serie temporal por bloque (tamaño/cohesión-Rice/desvío/fractura) + proyector point-in-time de postura (escenario del ensemble). SERIE CORRIDA (272) + proyector enchufado al padrón (bancas reales a fecha). Falta v2 dirección por tema/origen. Registrado 2026-07-14 |
+| datos/padron | Valle | 2026-07-14 | nómina oficial individual: Diputados 257 + Senado 72 vigentes (mandato desde-hasta, clave canónica, linaje). Composición a la fecha; enchufada al proyector (roster 375→257). Falta histórico de mandatos |
 
 ## Hecho
 
@@ -70,5 +73,4 @@ Depende de otros (no empezar hasta que su dependencia esté HECHA):
 
 ## Congelado / no abrir aún
 
-- ~~**modelo/voto_individual** — baseline cerrado, no invertir más esfuerzo.~~ **DESCONGELADO 2026-06-30:** reformulado (desvío individual + pivotes); movido a "Disponible". Lo cerrado era predecir el voto MEDIO; el valor está en el desvío del parlamentario y en los pivotes.
-- **variables/contexto**, **producto/api** — futuros; no abrir sin cerrar prioridades / sin pagador.
+- ~~**modelo/voto_individual** — baseline cerrado, no invertir más esfuerzo.~~ **DESCONGELADO 2026-06-30:** re

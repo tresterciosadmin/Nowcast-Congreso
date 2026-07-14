@@ -15,8 +15,8 @@
 // =====================================================================
 
 const TABLERO = {
-  actualizado: "2026-07-12",
-  actualizado_por: "Claude (con Valle) — segmentación por tipo de proyecto: origen (ejecutivo/oficialismo/oposición) + liderazgo, enchufados al embudo",
+  actualizado: "2026-07-14",
+  actualizado_por: "Valle (con Claude) — puesta en marcha con la cámara REAL: nace datos/padron (nómina oficial individual, Dip 257 + Sen 72), se enchufa al proyector (roster 375→257) y el Nowcast corre end-to-end sobre 1167-D-2025",
 
   proyecto: {
     nombre: "Nowcast Legislativo Argentino — Plataforma de Inteligencia Política",
@@ -50,8 +50,9 @@ const TABLERO = {
         "El diseño original preveía una regresión logística directa sobre el voto; quedó reformulado tras la Fase 0 (baseline bloque ≈ 0,99 la volvía redundante). Las variables previstas siguen vigentes como features del embudo y del agregador."
       ],
       variables: [
-        { nombre: "Embudo legislativo", desc: "P(comisión → dictamen → tratamiento). Medido en bruto: solo el 3,22% de los proyectos de ley se sanciona (y casi nada se rechaza: muere en cajón). El insumo ya está servido por datos/expedientes.", estado: "PENDIENTE" },
-        { nombre: "Asistencia / quórum", desc: "Quién está presente el día de la votación (el ~19% que el bloque no explica). El Senado 2015-2023 ya trae ausentes nominales.", estado: "PENDIENTE" },
+        { nombre: "Embudo legislativo", desc: "P(comisión → dictamen → tratamiento). Medido en bruto: solo el 3,22% de los proyectos de ley se sanciona (y casi nada se rechaza: muere en cajón). Modelo v1 con GATE APROBADO (skill 0,34-0,39, AUC ~0,95) sobre 41.339 proyectos, segmentado por origen/líder; falta enchufar el tema. El insumo lo sirve datos/expedientes.", estado: "EN CURSO" },
+        { nombre: "Asistencia / quórum", desc: "Quién está presente el día de la votación (el ~19% que el bloque no explica). Escalón 1 (presentismo por legislador) construido y backtesteado: el presentismo promedio empeora la calibración → la asistencia debe ser CONDICIONAL al proyecto (escalón 2). El Senado 2015-2023 ya trae ausentes nominales.", estado: "EN CURSO" },
+        { nombre: "Posición de bloque (variables/bloque)", desc: "Tamaño, cohesión (Rice), desvío interno y fracturas por bloque en el tiempo + proyector point-in-time. CORRIDO y ENCHUFADO: las bancas salen del padrón OFICIAL (composición real a la fecha, 257/72) y el desvío/postura del histórico; arreglado el roster inflado (375→257). Falta la dirección por tema/origen (v2).", estado: "EN CURSO" },
         { nombre: "Desvío individual y pivotes", desc: "Índice de disciplina por legislador + detección de las 10-20 bisagras que mueven la P en votaciones ajustadas.", estado: "EN CURSO" },
         { nombre: "Gravedad Presidencial (ICG - Di Tella)", desc: "El costo social de oponerse al Ejecutivo.", estado: "FUTURO" },
         { nombre: "Proximidad Electoral", desc: "Penalización de la probabilidad a medida que se acercan las urnas.", estado: "FUTURO" },
@@ -203,6 +204,7 @@ const TABLERO = {
     { modulo: "datos/decada_votada", estado: "HECHO", owner: "—", nota: "Semilla integrada vía CSV (Dip 2001-2010 + Sen 2004-2014). El export R quedó innecesario." },
     { modulo: "datos/senado", estado: "HECHO", owner: "Claude+Franco", nota: "2015-2023 completo: 749 actas / 53.910 votos, bloque histórico 100%. Padrón curado versionado con filas REVISAR para el equipo." },
     { modulo: "datos/manual_2026", estado: "HECHO", owner: "—", nota: "Excel curado 2026 integrado (máxima precedencia)." },
+    { modulo: "datos/padron", estado: "EN CURSO", owner: "Valle", nota: "Padrón OFICIAL de bancas a nivel LEGISLADOR (no bloque): Diputados 257 + Senado 72 vigentes, con mandato desde-hasta individual, clave canónica (join con voto_individual) y linaje consistente con la canónica. Es la composición de la cámara A LA FECHA: reemplaza el conteo por ventana móvil del proyector (que inflaba el roster a 375). Fuente: nómina oficial de cada cámara (bajada aparte; el módulo solo normaliza). Flag: 4 bancas del FIT + algunos federales del Senado caen hoy en OTRO/PROVINCIAL (mapeo de entity_resolution = ADR). Falta: histórico profundo de mandatos (fase 2)." },
     { modulo: "datos/canonica", estado: "EN CURSO", owner: "Claude+Franco", nota: "Base 2001-2026 ambas cámaras, 835k votos, reproducible. Linajes v2 (ADR-0005): 10 linajes, OTRO/PROVINCIAL 45%→19%, parquet regenerado + baseline re-medido. Falta: Dip 2020-23." },
     { modulo: "datos/argentinadatos", estado: "HECHO", owner: "Claude+Franco", nota: "Bloque Senado 2024-25 resuelto vía padrón versionado (SIN BLOQUE=0 en Senado). Queda un residuo menor en Diputados (roster de la fuente)." },
     { modulo: "datos/seguimiento", estado: "EN CURSO", owner: "Valle", nota: "Extractor de giros/trámite Dip+Sen, validado en vivo. Insumo del embudo." },
@@ -216,11 +218,11 @@ const TABLERO = {
     { modulo: "datos/licencias_suspensiones", estado: "PENDIENTE", owner: "libre", nota: "Registro + notificador de licencias/suspensiones (ADR-0004: se excluyen del índice de indisciplina; hoy solo los suspendidos son detectables)." },
     { modulo: "variables/embudo", estado: "EN CURSO", owner: "Claude+Valle", nota: "v1 GATE APROBADO: embudo por etapas (el cuello está en el dictamen: solo 7,8% lo consigue) + modelo de supervivencia sin leakage. Backtest a escala (41.339 proyectos): skill 0,34-0,39, AUC ~0,95 vs tasa base. Ahora SEGMENTA por origen (ejecutivo/oficialismo/oposición) y liderazgo (embudo_por_origen/lider) y los suma al modelo. Falta el tema." },
     { modulo: "variables/asistencia_quorum", estado: "EN CURSO", owner: "Valle", nota: "Escalón 1 (presentismo por legislador + modo asistencia del agregador) construido y backtesteado: el presentismo PROMEDIO uniforme empeoró la calibración (Brier 0,011→0,034; volvió dudosas ~1.000 votaciones cómodas). Aprendizaje: la asistencia es CONDICIONAL (sesgo de selección: se vota lo que junta gente) → escalón 2. Motor sin asistencia queda de default." },
-    { modulo: "variables/bloque", estado: "PENDIENTE", owner: "libre", nota: "Cohesión/posición/fracturas por bloque en el tiempo." },
+    { modulo: "variables/bloque", estado: "EN CURSO", owner: "Claude+Valle", nota: "v1 CORRIDO Y ENCHUFADO: serie temporal por bloque (272 filas: tamaño, postura, cohesión de Rice, desvío, fracturas) + proyector point-in-time (proyectar_postura) que ahora toma las bancas del PADRÓN oficial (datos/padron): composición real a la fecha (257 Dip / 72 Sen), desvío/postura del histórico. Arreglado el roster inflado (375→257). La DIRECCIÓN proyectada sigue incondicional (v2 = por tema/origen)." },
     { modulo: "modelo/agregador_institucional", estado: "EN CURSO", owner: "Valle", nota: "Motor de recuento como DISTRIBUCIÓN: roster + línea de bloque + desvío → P(aprobación) con banda, aplicando quórum/umbral. Tests 12 OK. Backtest 4.890 actas: Brier 0,011, skill 0,76, acc 0,987 — fuerte en agregado; falta calibrar las disputadas (subestima aprobación por ausentismo → necesita asistencia_quorum)." },
     { modulo: "evaluacion/metricas", estado: "PENDIENTE", owner: "libre", nota: "Brier, calibración → insumo del Factor μ." },
     { modulo: "datos/bot_recoleccion", estado: "EN CURSO", owner: "Claude+Franco", nota: "BICAMERAL y AUTOMATIZADO en GitHub Actions: DAE Senado (1.004 exp.) + TP Diputados con cofirmantes completos. Falta: estreno TP en vivo, upsert, fase votaciones, backfill TP 2019-25." },
-    { modulo: "modelo/ensemble", estado: "EN CURSO", owner: "Claude+Valle", nota: "v1 puesta en marcha: P(aprobación) = P(llega al recinto) × P(mayoría). Compone el embudo (p_embudo por proyecto) con el agregador (simular_votacion) y devuelve la tarjeta de nowcast descompuesta. Demo: 12% × 58% = 7% al filo. 16 tests OK. Falta posición de bloque proyectada para automatizar y calibrar la cadena." },
+    { modulo: "modelo/ensemble", estado: "EN CURSO", owner: "Claude+Valle", nota: "v1 puesta en marcha: P(aprobación) = P(llega al recinto) × P(mayoría). Nuevo comando nowcast_auto: arma el escenario SOLO desde variables/bloque (composición del padrón + postura histórica), sin escenario a mano. Primer end-to-end con cámara real: 1167-D-2025 → 15% (llega) × 100% (mayoría) = 15%, 137 afirmativos (banda 131-143) vs umbral 123, roster 257. Falta: dirección de bloque condicionada (v2) y p_llega del embudo por id." },
     { modulo: "evaluacion/backtesting", estado: "PENDIENTE", owner: "bloqueado", nota: "Necesita al menos un modelo nuevo corriendo." },
     { modulo: "producto/dashboard", estado: "EN CURSO", owner: "Valle", nota: "PANEL-NOWCAST.html (raíz, doble clic, autocontenido): tarjetas de estado + simulador interactivo de una votación (motor JS réplica del agregador). v1." },
     { modulo: "variables/contexto", estado: "FUTURO", owner: "—", nota: "ICG, proximidad electoral, ATN. No abrir sin cerrar prioridades." },
@@ -256,6 +258,8 @@ const TABLERO = {
 
   // ============ HITOS (línea de tiempo humana; el más nuevo ARRIBA) ============
   hitos: [
+    { fecha: "2026-07-14", titulo: "Puesta en marcha con la cámara REAL: nace el padrón oficial y el Nowcast corre de punta a punta sobre un proyecto", texto: "Faltaba un dato de base sorprendentemente ausente: quién ocupa cada banca HOY. El proyector de bloques venía contando 'bancas' mirando quién votó en los últimos dos años, y con el recambio del 10 de diciembre eso inflaba la cámara a 375 diputados (hay 257). Se creó un módulo nuevo, datos/padron, con la nómina OFICIAL a nivel de cada legislador —Diputados 257 y Senado 72, con su mandato y su bloque— y se enchufó al motor: ahora la composición es la real del día y el comportamiento (cuánto se desvía cada espacio) sigue saliendo de la historia. Con eso, por primera vez el circuito completo corrió sobre un proyecto de verdad (1167-D-2025): 15% de llegar al recinto × mayoría prácticamente asegurada = 15% de aprobación, con 137 votos esperados sobre un umbral de 123. La dirección de cada bloque todavía es la de su promedio reciente (falta condicionarla al tema del proyecto: próximo paso)." },
+    { fecha: "2026-07-14", titulo: "Puesta a punto del tablero de coordinación: todo el estado quedó al día y sin trabajo 'invisible'", texto: "Se revisó módulo por módulo comparando lo que hay en disco contra lo que decían los tres tableros. Apareció un caso de trabajo hecho pero no anotado —el módulo de bloques (variables/bloque), que ya tenía su versión 1 programada y probada— y varias casillas de estado que habían quedado viejas (base canónica, asistencia, motor de agregación y el panel figuraban como 'pendientes' cuando ya estaban en curso). Se corrigió todo para que el mapa del proyecto refleje la realidad. No se tocó código ni datos: es orden y trazabilidad." },
     { fecha: "2026-07-13", titulo: "El clasificador de temas por IA quedó listo de punta a punta (y ya no le hace falta OCR)", texto: "Se consolidó el agente que le pone temas a cada proyecto de ley: lee el PDF, elige del diccionario de 74 temas (sin inventar), puede proponer temas nuevos para revisión humana y nunca pisa lo que cargó una persona. Novedad clave: los PDF escaneados ya no se saltean — el modelo los lee con su visión (el 'OCR' viene incorporado), mandando texto cuando lo hay (barato) y el PDF entero solo cuando es imagen. Se agregó una corrida en lote idempotente para clasificar todo de una y quedó decidido que corre por API desde el código (no depende de la consola). 23 chequeos en verde. Falta la corrida masiva sobre los proyectos vivos." },
     { fecha: "2026-07-12", titulo: "El embudo ahora distingue quién empuja el proyecto (Gobierno, oficialismo, oposición, líderes)", texto: "No todos los proyectos juegan el mismo torneo: uno del Poder Ejecutivo o de un jefe de bloque oficialista tiene otra llegada que uno de un diputado de a pie de la oposición. Se etiqueta cada proyecto por origen (ejecutivo / oficialismo / oposición, mirando el bloque del autor EN LA FECHA y quién gobernaba) y por liderazgo del firmante, y el embudo ya se lee por segmento y usa esas pistas. La definición de 'líder' y el listado de jefes de bloque quedan para afinar (nota para el equipo de Franco)." },
     { fecha: "2026-07-12", titulo: "Puesta en marcha: el Nowcast ya da un número de aprobación para un proyecto", texto: "Se conectaron las piezas: P(aprobación) = P(llega al recinto) × P(mayoría en el recinto). El sistema toma un proyecto y un escenario de bloques y devuelve la probabilidad descompuesta, con los votos esperados y su banda. En la prueba: 58% de mayoría pero 12% de llegar al recinto = 7% de aprobación, con la votación al filo del umbral. Por primera vez el circuito completo produce un número explicado. Falta que la postura de cada bloque se proyecte sola (hoy va a mano)." },
@@ -307,24 +311,4 @@ const TABLERO = {
   presupuesto: {
     nota: "El Factor μ y el backtesting se resuelven dentro de PostgreSQL/Python, sin aumentar consumo de API. Gasto real actual: solo la suscripción de IA (fase de desarrollo in-house). La infraestructura 24/7 recién se contrata en la Etapa 4.",
     capex: [
-      { item: "Suscripción IA (asistente de código)", desc: "Licencia Claude para estructurar código, SQL del backtesting y prompts de agentes.", rango: "USD 20-30 / mes" },
-      { item: "Infraestructura de pruebas", desc: "Oracle Cloud Always Free.", rango: "USD 0" },
-      { item: "Horas de desarrollo", desc: "Ejecución in-house.", rango: "USD 0" },
-      { item: "TOTAL DESARROLLO (meses 1-3)", desc: "Gasto directo durante la construcción.", rango: "USD 20-30 / mes" }
-    ],
-    opex: [
-      { item: "Servidor principal (nube)", desc: "Oracle ARM 24GB RAM, 24/7.", optimo: "USD 0", conservador: "USD 0" },
-      { item: "Procesamiento NLP + backtesting", desc: "Modelo local + varianza estocástica en base de datos.", optimo: "USD 0", conservador: "USD 0" },
-      { item: "Consumo API (Claude)", desc: "Agente agregador y redactor, 1 vez/semana, con prompt caching.", optimo: "USD 5", conservador: "USD 25" },
-      { item: "Servidor de contingencia", desc: "VPS adicional opcional si el volumen de lectura exige más CPU.", optimo: "USD 0", conservador: "USD 20" },
-      { item: "TOTAL OPERATIVO", desc: "Costo de mantener el Nowcast actualizado.", optimo: "USD 5 / mes", conservador: "USD 45 / mes" }
-    ]
-  },
-
-  // ============ CÓMO SE ACTUALIZA ESTE TABLERO (para humanos y Claudes) ============
-  reglas: [
-    "Este tablero es OBLIGATORIO: todo cambio relevante en el repo actualiza tablero_datos.js en el mismo PR (regla en CLAUDE.md, mismo régimen que ESTADO-DEL-PROYECTO y EN-HUMANO).",
-    "Solo se edita tablero_datos.js. TABLERO-CONTROL.html es el diseño y NO se toca.",
-    "Qué actualizar: fecha y autor, el estado de lo que cambió, un hito nuevo arriba de todo (1-3 frases en humano), y los números/KPIs si cambian."
-  ]
-};
+      { item: "Suscripción IA (asistente de 

@@ -64,6 +64,18 @@ def _cargar_simulador():
 # --------------------------------------------------------------------------- #
 # Composición (el corazón del ensemble)                                        #
 # --------------------------------------------------------------------------- #
+def _cargar_proyector():
+    """Importa cargar + proyectar_postura de variables/bloque (contrato publico)."""
+    blo = Path(__file__).resolve().parents[3] / "variables" / "bloque" / "src"
+    if str(blo) not in sys.path:
+        sys.path.insert(0, str(blo))
+    try:
+        from bloque import cargar as cargar_bloque, proyectar_postura  # type: ignore
+        return cargar_bloque, proyectar_postura
+    except ImportError as e:
+        raise RuntimeError(f"no pude importar proyectar_postura desde {blo}: {e}") from e
+
+
 def componer(p_llega: float, p_mayoria: float) -> float:
     """P(aprobación) = P(llega al recinto) × P(mayoría | recinto)."""
     if not (0.0 <= p_llega <= 1.0):
@@ -145,6 +157,30 @@ def nowcast_proyecto(proyecto_id: str, escenario: dict, p_embudo_path: Path,
     }
 
 
+def nowcast_auto(proyecto_id: str, fecha: str, camara: str, tipo_mayoria: str,
+                 p_embudo_path: Path, p_llega=None, canon_dir=None,
+                 n_sims: int = 2000) -> dict:
+    """Nowcast end-to-end con el escenario ARMADO por variables/bloque (proyector
+    point-in-time) en vez de a mano: bancas = padron oficial vigente a la fecha
+    (257/72), postura/desvio = historia. p_llega del embudo (o override)."""
+    cargar_bloque, proyectar_postura = _cargar_proyector()
+    root = Path(__file__).resolve().parents[3]
+    canon = Path(canon_dir) if canon_dir else root / "datos" / "canonica" / "data" / "clean"
+    votos = cargar_bloque(canon)
+    bloques = proyectar_postura(votos, fecha, camara)
+    n_bancas = sum(int(b["bancas"]) for b in bloques)
+    logger.info("escenario auto: %d bloques, %d bancas (%s)", len(bloques), n_bancas,
+                bloques[0].get("_bancas_de", "?"))
+    escenario = {"tipo_mayoria": tipo_mayoria, "camara": camara, "bloques": bloques}
+    if p_llega is not None:
+        escenario["p_llega_recinto"] = float(p_llega)
+    nc = nowcast_proyecto(proyecto_id, escenario, p_embudo_path, n_sims=n_sims)
+    nc["fecha_escenario"] = fecha
+    nc["bancas_totales"] = n_bancas
+    nc["escenario_auto"] = True
+    return nc
+
+
 def imprimir_tarjeta(nc: dict) -> None:
     print("\n" + "=" * 56)
     print(f"  NOWCAST — proyecto {nc['proyecto_id']}  ({nc['camara']}, mayoría {nc['tipo_mayoria']})")
@@ -200,6 +236,20 @@ def main(argv: list[str]) -> None:
         proyecto_id, ruta = argv[2], Path(argv[3])
         escenario = json.loads(ruta.read_text(encoding="utf-8"))
         nc = nowcast_proyecto(proyecto_id, escenario, _p_embudo_path())
+        imprimir_tarjeta(nc)
+        out = Path(__file__).resolve().parents[1] / "outputs"
+        out.mkdir(exist_ok=True)
+        (out / f"nowcast_{proyecto_id}.json").write_text(
+            json.dumps(nc, ensure_ascii=False, indent=2), encoding="utf-8")
+        print(f"\n  -> outputs/nowcast_{proyecto_id}.json")
+        return
+    if cmd == "nowcast_auto":
+        if len(argv) < 5:
+            raise SystemExit("uso: python ensemble.py nowcast_auto <proyecto_id> <YYYY-MM-DD> <camara> [tipo_mayoria] [p_llega]")
+        proyecto_id, fecha, camara = argv[2], argv[3], argv[4]
+        tipo = argv[5] if len(argv) > 5 else "SIMPLE"
+        p_llega = float(argv[6]) if len(argv) > 6 else None
+        nc = nowcast_auto(proyecto_id, fecha, camara, tipo, _p_embudo_path(), p_llega=p_llega)
         imprimir_tarjeta(nc)
         out = Path(__file__).resolve().parents[1] / "outputs"
         out.mkdir(exist_ok=True)

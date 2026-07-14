@@ -1,0 +1,18 @@
+{
+  "proyecto_id": "1167-D-2025",
+  "camara": "senado",
+  "tipo_mayoria": "SIMPLE",
+  "n_roster": 72,
+  "p_llega_recinto": 1.0,
+  "p_mayoria_recinto": 1.0,
+  "p_aprobacion": 1.0,
+  "afirmativos_medio": 61.4,
+  "afirmativos_banda_5_95": [
+    56.0,
+    66.0
+  ],
+  "umbral_medio": 33.3,
+  "fecha_escenario": "2026-07-14",
+  "bancas_totales": 72,
+  "escenario_auto": true
+}

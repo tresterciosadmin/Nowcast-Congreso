@@ -23,36 +23,53 @@ Mantené esta tabla sincronizada con la bitácora.
 | Módulo | Estado | Owner |
 |---|---|---|
 | docs/schemas | HECHO (schema_version=1) | — |
-| datos/decada_votada | EN CURSO (export_seed.R listo, falta correrlo en R) | — |
-| datos/canonica | PENDIENTE (base propia, fuente de verdad) | — |
-| datos/bot_recoleccion | EN CURSO (adaptador DAE Senado listo; TP Diputados en exploración) | Claude+Franco |
+| datos/decada_votada | HECHO (semilla integrada vía CSV: Dip 2001-2010 + Sen 2004-2014; export R quedó innecesario) | Claude+Franco |
+| datos/canonica | EN CURSO (base 2001-2026 ambas cámaras, 835k votos, reproducible; linajes v2 ADR-0005; falta Dip 2020-23) | Claude+Franco |
+| datos/bot_recoleccion | EN CURSO (bicameral automatizado en GitHub Actions: DAE Senado + TP Diputados con cofirmantes; falta estreno TP en vivo, upsert, fase votaciones) | Claude+Franco |
 | datos/ckan_diputados | HECHO (en `fase0/`, migrar) | — |
 | datos/argentinadatos | HECHO (bloque Senado 24-25 resuelto vía padrón; queda sin_bloque menor en Dip) | Claude+Franco |
 | datos/senado | HECHO (2015–2023: 749 actas / 53.910 votos, bloque histórico 100%; padrón con filas REVISAR) | Claude+Franco |
+| datos/manual_2026 | HECHO (Excel curado 2026 integrado al esquema canónico, máxima precedencia; fuente viva que Franco completa a mano) | Claude+Franco |
+| datos/padron | EN CURSO (NUEVO: nómina oficial individual Dip 257 + Sen 72 vigentes, con mandato desde-hasta y linaje; composición a la fecha; reemplaza el roster inflado del proyector) | Valle |
 | datos/seguimiento | EN CURSO (extractor de giros Dip+Sen, validado en vivo) | Valle |
 | datos/proyectos | EN CURSO (base SQLite + export Excel) | Valle |
 | docs/taxonomias | HECHO (vocabulario controlado v1, 74 ids) | Valle |
-| datos/expedientes | EN CURSO (backfill CKAN 112.793 proyectos 2008-2026; embudo bruto 3,22%) | Claude+Franco |
+| datos/expedientes | EN CURSO (backfill CKAN 112.793 proyectos 2008-2026; embudo bruto 3,22%; enlace acta→expediente 89%) | Claude+Franco |
 | datos/licencias_suspensiones | PENDIENTE (nuevo — registro+notificador; decisión ADR-0004) | — |
 | datos/export | EN CURSO (SQLite + Excel por gobierno; disputada = ±5% de emitidos vs umbral) | Valle |
 | variables/legislador | EN CURSO (ficha + por período; PorTema bloqueada por taxonomías) | Valle |
 | variables/proyecto | EN CURSO (vocabulario validado; ICG vivo; origen+líder por proyecto listos; falta batch del agente/tema) | Valle |
-| variables/bloque | PENDIENTE | — |
-| variables/asistencia_quorum | PENDIENTE (prioritario) | — |
+| variables/bloque | EN CURSO (v1 CORRIDO: serie 272 filas + proyector ENCHUFADO al padrón oficial → bancas reales a fecha 257/72; roster 375→257; falta v2 dirección por tema/origen) | Claude+Valle |
+| variables/asistencia_quorum | EN CURSO (escalón 1 construido y backtesteado: presentismo promedio empeora → asistencia CONDICIONAL = escalón 2; motor sin asistencia queda de default) | Valle |
 | variables/embudo | EN CURSO (v1 GATE APROBADO: skill 0,34-0,39; segmentación origen/líder enchufada; falta tema) | Valle |
 | variables/contexto | FUTURO | — |
-| modelo/voto_individual | EN CURSO (desvío v2 = indisciplina total, ADR-0004) | Valle |
-| modelo/agregador_institucional | PENDIENTE | — |
-| modelo/ensemble | EN CURSO (v1: composición P(aprob)=P(llega)×P(mayoría) + nowcast por proyecto; falta posición de bloque proyectada) | Valle |
+| modelo/voto_individual | EN CURSO (desvío v2 = indisciplina total, ADR-0004; gate 1 aprobado, set pivote = 112 legisladores) | Valle |
+| modelo/agregador_institucional | EN CURSO (v1: motor de recuento como distribución; tests 12 OK; backtest 4.890 actas Brier 0,011 / skill 0,76 / acc 0,987; falta calibrar disputadas) | Valle |
+| modelo/ensemble | EN CURSO (v1: P(aprob)=P(llega)×P(mayoría); nowcast_auto arma el escenario desde el padrón+histórico; 1er end-to-end real 1167-D-2025 = 15%; falta dirección condicionada v2) | Claude+Valle |
 | evaluacion/baseline | HECHO | — |
-| evaluacion/backtesting | PENDIENTE | — |
+| evaluacion/backtesting | PENDIENTE (bloqueado: necesita al menos un modelo nuevo corriendo) | — |
 | evaluacion/metricas | PENDIENTE | — |
-| producto/dashboard | PENDIENTE | — |
+| producto/dashboard | EN CURSO (PANEL-NOWCAST.html v1: tarjetas de estado + simulador interactivo de votación) | Valle |
 | producto/api | FUTURO | — |
 
 ---
 
 ## Bitácora (más reciente arriba)
+### [2026-07-14] datos/padron (NUEVO) + variables/bloque + modelo/ensemble — PUESTA EN MARCHA con la cámara REAL: padrón oficial individual → proyector → nowcast end-to-end de 1167-D-2025
+- **Quién:** Valle (con Claude)
+- **Qué:** al correr la serie de `variables/bloque` y probar `proyectar_postura` se detectó que el proyector **inflaba el roster** (375 diputados vs 257 reales): contaba `nunique(legislador_id)` en una ventana de 2 años, sumando el recambio del 10-dic como si fueran bancas simultáneas. Distorsiona umbral/quórum del agregador. Decisión de Valle: **no** parchear con un proxy por bloque, sino construir el padrón **a nivel legislador individual** (el enfoque del proyecto: el valor está en las bisagras de las disputadas, no en el promedio del bloque). Se creó el módulo **`datos/padron`**: nómina OFICIAL con mandato desde-hasta por legislador. Cargadas ambas cámaras vigentes: **Diputados 257** (nómina oficial, incluye camada 2025-2029 post recambio dic-2025) y **Senado 72** (export `.xls` oficial, convertido con LibreOffice). Contrato = molde del padrón de Senado + claves individuales: `legislador, clave (join canónica/voto_individual), legislador_id, camara, distrito, bloque, bloque_norm, bloque_linaje, desde, hasta, fuente, nota`. El linaje reusa `entity_resolution` (sin drift). Luego se **enchufó el proyector al padrón** (bancas = composición vigente a la fecha; desvío/postura siguen del histórico → separación limpia foto-de-cámara vs. trayectoria) y se agregó **`nowcast_auto`** al ensemble (arma el escenario solo, sin JSON a mano). **Primer nowcast end-to-end con composición real:** `1167-D-2025` (Diputados) → P(llega)=15% (embudo, a mano: el proyecto no está en p_embudo) × P(mayoría)=100% = **15%**, con **137 afirmativos esperados (banda 131-143) vs umbral 123**, roster **257** ✓.
+- **Cómo:** `datos/padron/src/ingesta_padron.py <camara>` normaliza la nómina cruda (`data/raw/nomina_<camara>.csv`) → `data/padron_<camara>.csv` (parsing defensivo: fechas dd/mm/YYYY e ISO, acentos, comillas internas; valida total 257/72, dup, y reporta los bloques que caen a OTRO/PROVINCIAL). `variables/bloque/proyectar_postura` suma `padron_path` opcional (default `datos/padron/data/`) y cuenta bancas vigentes (`desde<=F<=hasta`) por linaje; fallback al conteo por ventana si no hay padrón. `modelo/ensemble` importa `cargar`+`proyectar_postura` de bloque (contrato público, como ya importa `simular_votacion` del agregador). Verificado en sandbox el cargador de padrón (257/72 a 2026-07-14; para fechas pasadas da menos = el padrón es la foto vigente, histórico = fase 2). La corrida completa (proyectar + nowcast_auto) la hizo Valle local (canónica en parquet).
+- **Archivos:** `datos/padron/{README.md, src/ingesta_padron.py, data/raw/nomina_{diputados,senado}.csv, data/padron_{diputados,senado}.csv}`, `variables/bloque/src/bloque.py` (proyectar_postura + _bancas_padron), `modelo/ensemble/src/ensemble.py` (nowcast_auto + _cargar_proyector), `coordinacion/{ESTADO,TABLERO,EN-HUMANO}`, `tablero_datos.js`.
+- **Estado del módulo:** datos/padron EN CURSO (Dip+Sen vigentes; falta histórico de mandatos); variables/bloque EN CURSO (serie corrida + proyector enchufado al padrón); modelo/ensemble EN CURSO (nowcast_auto + 1er end-to-end real).
+- **Próximo paso:** (1) enganchar 1167-D-2025 al `p_embudo` (chequear formato de id) para el p_llega real; (2) dirección de bloque condicionada por tema/origen (v2, depende del batch de taxonomías) — es lo que falta para que el 100% de mayoría deje de ser "cada bloque vota su promedio"; (3) decidir con Franco el mapeo de las 4 bancas del FIT + federales del Senado que hoy caen en OTRO/PROVINCIAL (cambio de `entity_resolution` = ADR); (4) padrón histórico de mandatos para nowcast de fechas pasadas/backtest.
+### [2026-07-14] coordinación + variables/bloque — ARMONIZACIÓN: sincronizada la tabla de estado con la realidad; registrado bloque v1 (trabajo hecho sin asentar)
+- **Quién:** Valle (con Claude)
+- **Qué:** auditoría cruzada disco vs. las tres fuentes de verdad (tabla de estado del ESTADO, TABLERO, `tablero_datos.js`). Hallazgo principal: **`variables/bloque` tenía v1 completo en disco** (`bloque.py` 256 líneas: `serie_bloque` + `proyectar_postura` point-in-time; README "EN CURSO v1" owner Claude+Valle 2026-07-12; tests) **pero sin entrada de bitácora y figurando como PENDIENTE/libre en las tres fuentes** — viola "cada cambio se registra". Además la **tabla de estado (líneas 23-51) estaba sistemáticamente desfasada** respecto de `tablero_datos.js` (que sí estaba al día): daba PENDIENTE a `datos/canonica`, `variables/asistencia_quorum`, `modelo/agregador_institucional`, `producto/dashboard` (todos EN CURSO), EN CURSO a `datos/decada_votada` (ya HECHO por CSV), y le faltaba la fila de `datos/manual_2026` (HECHO). Se corrigieron las 6 filas + se agregó `manual_2026`, y se registró `bloque` en bitácora, TABLERO (En curso) y `tablero_datos.js` (PENDIENTE→EN CURSO). El resto de módulos ya estaba consistente entre las tres fuentes; los ADR-0001…0005 existen y están referenciados.
+- **Cómo:** sin cambios de código ni de contratos — solo bookkeeping de coordinación. `variables/bloque` sigue con `outputs/` vacío (nunca se corrió la serie); queda como próximo paso técnico correrla y enchufar el proyector al ensemble (reemplaza la postura de bloque puesta a mano).
+- **Archivos:** `coordinacion/ESTADO-DEL-PROYECTO.md` (tabla + esta entrada), `coordinacion/TABLERO.md` (bloque a En curso), `tablero_datos.js` (estado de bloque + fecha/autor + hito).
+- **Estado del módulo:** variables/bloque EN CURSO (v1 en disco, registrado; falta correr la serie); resto de módulos sin cambio de fondo (solo sincronización de estado).
+- **Próximo paso:** correr `python variables\bloque\src\bloque.py serie` (llena `outputs\serie_bloque.parquet`) y luego enchufar `proyectar_postura` al ensemble para automatizar la banda del nowcast.
+
 ### [2026-07-14] variables/proyecto — prueba en vivo OK (texto + visión) y nueva mejora M1: cola de revisión + tablero de curación semanal
 - **Quién:** Franco (con Claude)
 - **Qué:** (1) **prueba en vivo del agente end-to-end**, ambas rutas: TEXTO sobre 1167-D-2025 (reforma de vacaciones LCT) → `TRAB.LABOR` 0.95 correcto; y VISIÓN sobre un PDF **escaneado** (S1279 Senado, 4 págs, 0 chars de texto) → se enrutó solo a `pdf_documento`, Haiku lo leyó por visión y dio `SALUD.MEDIC` 0.95 / `DERSOC.NINEZ` 0.9 / `SALUD.SISTEMA` 0.75 / `ECON.PRESU` 0.6 (vacuna antimeningocócica en calendario) — todo correcto, sin escalar a Sonnet. El "OCR incorporado" queda demostrado. (2) **Decisión operativa:** las etiquetas marginales de baja confianza se DEJAN entrar (no se filtran en el momento); se resuelven después en equipo. (3) **Mejora M1 anotada** en `variables/proyecto/MEJORAS-Y-PENDIENTES.md`: cola de revisión + tablero de curación semanal, con **régimen diario→semanal** definido (el bot carga y cataloga a diario; lo que resuelve con confianza entra solo; los dudosos van a la cola; el tablero se actualiza 1×/semana y el equipo termina de afinar). Criterios de cola: confianza gris **0.30–0.70**, candidatos nuevos, AUX.SINCLASIF, multi-etiqueta débil, desacuerdo agente-vs-humano. Lo que el equipo decide queda como `fuente='humano'`. **Requisito nuevo de Franco — trazabilidad:** el tablero tiene DOS vistas: (A) cola de dudas y (B) **panel de auditoría** con TODO lo que hizo el agente (qué catalogó solo, qué mandó a cola y por qué motivo, ids inventados que descartó, candidatos que propuso, qué leyó por visión, errores) + resumen agregado, para controlar qué hace y con qué criterio.
@@ -431,28 +448,4 @@ Mantené esta tabla sincronizada con la bitácora.
 
 ### [2026-06-29] datos/seguimiento — Extractor de giros/trámite de PdL (Diputados + Senado)
 - **Quién:** Claude (con Valle)
-- **Qué:** módulo nuevo `datos/seguimiento`: dado un expediente conocido, baja su ficha oficial y extrae estado de avance (giros a comisiones, trámite, fechas, autores, link al PDF) a un objeto común `FichaExpediente`. Insumo del embudo. **Validado EN VIVO** contra las webs reales de ambas cámaras (Senado 1091/26 y Diputados 2832-D-2026): trae bien sumario, fecha, giros con orden/fecha, firmantes (Dip con distrito+bloque; Sen el autor por link al perfil) y PDF absoluto. Tests offline contra fixtures: todos pasan. Fuentes confirmadas jun-2026.
-- **Cómo:** `src/giros.py`. Diputados = página del autor `hcdn.gov.ar/diputados/<slug>/proyecto.html?exp=<exp>` (requiere slug del autor). Senado = `senado.gob.ar/parlamentario/comisiones/verExp/<NRO>.<AA>/S/PL` (más completa, sin slug, trae orden de giro y fecha ingreso/egreso). Parsing defensivo por firma de encabezados de tabla; reintentos con backoff; denominador normalizado a NNNN-X-AAAA. Correr en vivo (PC con internet): `python src/giros.py senado 1091 2026` / `python src/giros.py diputados 2832-D-2026 sajmechet`. Test sin red: `python tests/test_giros.py`.
-- **Archivos:** `datos/seguimiento/{README.md, src/giros.py, src/requirements.txt, tests/test_giros.py, tests/fixtures/*}`.
-- **Estado del módulo:** datos/seguimiento EN CURSO.
-- **Próximo paso:** validar selectores en vivo; plan B Diputados cuando el slug no resuelve; persistir a la base de Proyectos (módulo aparte); el slug del autor debe vivir en el dataset de parlamentarios.
-
-### [2026-06-27] datos/decada_votada — Semilla vía CSV (sin R); base 2001-2025 completa
-- **Quién:** Claude (con Franco)
-- **Qué:** integrada la Década Votada desde el CSV local (Aportes/towlandia), Diputados 2001-2010 + Senado 2004-2014. La corrida de R no es necesaria (su test de 25 funcionó, pero el CSV es más rápido e incluye Senado). Base canónica: 4.584 actas / 780.839 votos, 2001-2025 ambas cámaras. Baseline Senado robusto: 0,971 (n=26.359).
-- **Cómo:** `datos/decada_votada/src/from_csv.py`; voto 0/1/2/3 -> AFIRMATIVO/NEGATIVO/ABSTENCION/AUSENTE. Diputados recortado a <=2010 para no solapar con CKAN.
-- **Archivos:** `datos/decada_votada/src/from_csv.py`, README, COBERTURA, RESULTADOS, EN-HUMANO.
-- **Estado del módulo:** decada_votada HECHO (vía CSV).
-- **Próximo paso:** hueco Senado 2015-2023; retro-completar bloque argentinadatos Senado 2024-25.
-
-### [2026-06-27] datos/manual_2026 — Excel 2026 integrado; primer baseline de Senado
-- **Quién:** Claude (con Franco)
-- **Qué:** integrado el Excel curado (período 2025-2027) como fuente manual_2026: 17 actas (10 Dip + 7 Sen), votos 2026 de ambas cámaras + padrón con bloque del Senado. Canónica: 1.431 actas / 343.964 votos. Primer baseline de Senado: 0,938 disputadas (n=388).
-- **Cómo:** `datos/manual_2026/src/to_canonical.py` (PRESIDENTE→ausente, PENDIENTE→excluido). Fixes de esquema: acta_id admite dígitos; fuente enum suma manual_2026; precedencia manual_2026=máxima.
-- **Archivos:** `datos/manual_2026/*`, `docs/schemas/*`, `datos/canonica/src/build.py`, `datos/canonica/COBERTURA.md`, `evaluacion/baseline/RESULTADOS.md`.
-- **Estado del módulo:** datos/manual_2026 HECHO; canonica EN CURSO.
-- **Próximo paso:** retro-completar bloque Senado 2024-25 con el padrón; sumar la semilla (R) cuando termine.
-
-### [2026-06-27] variables/proyecto — Clasificador sobre texto de leyes (validado 13/15)
-- **Quién:** Claude (con Franco)
-- **Qué:** taxonomía granular v1 aprobada (16 áreas/~55 subtemas). Clasificador por puntaje sobre el TEXTO de los proyectos (18 PDFs), validado contra las etiquetas de Franco: 13/15 en el mismo 
+- **Qué:** módulo nuevo `datos/seguimiento`: dado un expediente conocido, baja su ficha oficial y extrae estado de avance (giros a comisiones, trámite, fechas, autores, link al PDF) a un objeto común `FichaExpediente`. Insumo del embudo. **Validado EN VIVO** contra las webs reales de ambas cámaras (Senado 1091/26 y Diputados 2832-D-2026): trae bien sumario, fecha, giros con orden/fecha, firmantes (Dip con distrito+bloque; Sen el autor por link al perfil) y PDF absoluto. Tests offline contra fixtures:

@@ -84,6 +84,25 @@ def main():
     chk(0 <= d["p_aprobacion"] <= 1 and d["p_aprobacion"] <= d["p_llega_recinto"] + 1e-9,
         "demo end-to-end produce tarjeta válida")
 
+    # --- resolver denominador -> proyecto_id interno ---
+    import tempfile, pandas as pd
+    tmp = Path(tempfile.mkdtemp()) / "expedientes.parquet"
+    pd.DataFrame({
+        "proyecto_id": ["HCDN283397", "HCDN990001"],
+        "exp_diputados": ["1167-D-2025", "None"],
+        "exp_senado": ["None", "45-S-2024"],
+    }).to_parquet(tmp)
+    chk(E._resolver_proyecto_id("1167-D-2025", tmp) == "HCDN283397",
+        "resolver: denominador Diputados -> id interno")
+    chk(E._resolver_proyecto_id("45-S-2024", tmp) == "HCDN990001",
+        "resolver: denominador Senado -> id interno")
+    chk(E._resolver_proyecto_id(" 1167 - D - 2025 ", tmp) == "HCDN283397",
+        "resolver: tolera espacios y mayúsculas en el denominador")
+    chk(E._resolver_proyecto_id("HCDN283397", tmp) == "HCDN283397",
+        "resolver: un id interno pasa sin tocar")
+    chk(E._resolver_proyecto_id("9999-D-2025", tmp) == "9999-D-2025",
+        "resolver: denominador inexistente vuelve tal cual (el embudo avisará)")
+
     print(f"\n{OK} chequeos OK")
 
 

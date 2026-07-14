@@ -13,14 +13,9 @@ Entrega el **nowcast de un proyecto**: dado su `proyecto_id` (para el embudo) y 
 escenario de votación (postura esperada de cada bloque, para el agregador), devuelve
 P(aprobación) descompuesta en sus dos factores + la banda de votos.
 
-CLI:
-  python ensemble.py nowcast <proyecto_id> <escenario.json>
-  python ensemble.py demo                      # ejemplo end-to-end autocontenido
-
-Escenario JSON:
-  { "tipo_mayoria": "SIMPLE", "camara": "Diputados",
-    "p_llega_recinto": 0.12,          // opcional: si falta, se busca por proyecto_id en p_embudo
-    "bloques": [ {"bloque":"UxP","bancas":99,"linea":"NEGATIVO","desvio":0.03}, ... ] }
+El `proyecto_id` puede venir como DENOMINADOR humano (ej. 1167-D-2025) o como id
+interno del embudo (HCDN...). Si es denominador, se traduce con el contrato de
+datos/expedientes antes de buscar el p_llega.
 
 SIMPLIFICACIÓN v1 (documentada, heredada del agregador): la POSTURA de cada bloque es
 un dato de entrada (elegida a mano / observada). En el sistema final la proyecta un
@@ -35,6 +30,7 @@ from __future__ import annotations
 import json
 import logging
 import os
+import re
 import sys
 from pathlib import Path
 
@@ -43,6 +39,10 @@ import numpy as np
 logger = logging.getLogger("ensemble")
 
 CONDUCTAS = {"AFIRMATIVO", "NEGATIVO", "NO_ACOMPANA"}
+
+# Denominador parlamentario, ej. "1167-D-2025" / "45-S-2024" (nro-letra-anio).
+# Es como lo escribe el humano; el embudo indexa por proyecto_id interno (HCDN...).
+_RE_DENOMINADOR = re.compile(r"^\s*\d+\s*-\s*[A-Za-z]+\s*-\s*\d{4}\s*$")
 
 
 # --------------------------------------------------------------------------- #
@@ -104,6 +104,40 @@ def _expandir_roster(bloques: list[dict]) -> tuple[np.ndarray, np.ndarray]:
     return np.array(lineas), np.array(desvios, dtype=float)
 
 
+def _expedientes_path() -> Path:
+    """Ruta del contrato de datos/expedientes (mapa denominador -> proyecto_id interno)."""
+    root = Path(__file__).resolve().parents[3]
+    return Path(os.environ.get(
+        "EXPEDIENTES",
+        root / "datos" / "expedientes" / "data" / "clean" / "expedientes.parquet"))
+
+
+def _resolver_proyecto_id(entrada: str, expedientes_path: Path | None = None) -> str:
+    """Traduce un denominador humano (1167-D-2025) al proyecto_id interno del embudo
+    (HCDN...). Si ya es un id interno, o no se puede resolver, devuelve la entrada
+    sin tocar (el embudo hará su propio fallback y logueará el faltante)."""
+    pid = str(entrada).strip()
+    if not _RE_DENOMINADOR.match(pid):
+        return pid  # ya es id interno (o algo no-denominador): no hay nada que mapear
+    deno = re.sub(r"\s+", "", pid).upper()
+    ruta = expedientes_path or _expedientes_path()
+    if not ruta.exists():
+        logger.warning("no encontré %s: no puedo resolver el denominador %s (uso tal cual)",
+                       ruta, deno)
+        return pid
+    import pandas as pd
+    df = pd.read_parquet(ruta, columns=["proyecto_id", "exp_diputados", "exp_senado"])
+    for col in ("exp_diputados", "exp_senado"):
+        fila = df[df[col].astype(str).str.strip().str.upper() == deno]
+        if not fila.empty:
+            interno = str(fila["proyecto_id"].iloc[0])
+            logger.info("denominador %s -> proyecto_id interno %s (%s)", deno, interno, col)
+            return interno
+    logger.warning("denominador %s no está en expedientes (uso tal cual; el embudo dirá si falta)",
+                   deno)
+    return pid
+
+
 def _p_llega_de_embudo(proyecto_id: str, p_embudo_path: Path) -> float | None:
     """Busca p_llega_recinto del proyecto en el contrato del embudo."""
     if not p_embudo_path.exists():
@@ -124,14 +158,18 @@ def nowcast_proyecto(proyecto_id: str, escenario: dict, p_embudo_path: Path,
     """Nowcast end-to-end de un proyecto: P(aprobación) descompuesta."""
     simular = _cargar_simulador()
 
-    # factor 1: P(llega al recinto) — del embudo (o del escenario como override)
+    # factor 1: P(llega al recinto) — del embudo (o del escenario como override).
+    # El embudo indexa por proyecto_id interno; si vino un denominador (1167-D-2025)
+    # lo traducimos antes de buscar. Guardamos ambos para la tarjeta y la trazabilidad.
+    proyecto_id_interno = _resolver_proyecto_id(proyecto_id)
     p_llega = escenario.get("p_llega_recinto")
     if p_llega is None:
-        p_llega = _p_llega_de_embudo(proyecto_id, p_embudo_path)
+        p_llega = _p_llega_de_embudo(proyecto_id_interno, p_embudo_path)
     if p_llega is None:
         raise ValueError(
-            f"sin p_llega_recinto para {proyecto_id}: no está en p_embudo y no vino "
-            "en el escenario. Corré variables/embudo o pasá 'p_llega_recinto' en el JSON.")
+            f"sin p_llega_recinto para {proyecto_id} (interno {proyecto_id_interno}): no "
+            "está en p_embudo y no vino en el escenario. Corré variables/embudo, verificá "
+            "el denominador, o pasá 'p_llega_recinto' en el JSON.")
     p_llega = float(np.clip(p_llega, 0.0, 1.0))
 
     # factor 2: P(mayoría | recinto) — del agregador sobre el escenario de bloques
@@ -145,6 +183,7 @@ def nowcast_proyecto(proyecto_id: str, escenario: dict, p_embudo_path: Path,
     p_aprob = componer(p_llega, p_mayoria)
     return {
         "proyecto_id": proyecto_id,
+        "proyecto_id_interno": proyecto_id_interno,
         "camara": sim["camara"],
         "tipo_mayoria": sim["tipo_mayoria"],
         "n_roster": sim["n_roster"],
@@ -184,6 +223,8 @@ def nowcast_auto(proyecto_id: str, fecha: str, camara: str, tipo_mayoria: str,
 def imprimir_tarjeta(nc: dict) -> None:
     print("\n" + "=" * 56)
     print(f"  NOWCAST — proyecto {nc['proyecto_id']}  ({nc['camara']}, mayoría {nc['tipo_mayoria']})")
+    if nc.get("proyecto_id_interno") and nc["proyecto_id_interno"] != nc["proyecto_id"]:
+        print(f"  (id interno embudo: {nc['proyecto_id_interno']})")
     print("=" * 56)
     print(f"  P(llega al recinto)   {nc['p_llega_recinto']*100:6.1f}%   (embudo)")
     print(f"  P(mayoría | recinto)  {nc['p_mayoria_recinto']*100:6.1f}%   (agregador)")
@@ -257,7 +298,7 @@ def main(argv: list[str]) -> None:
             json.dumps(nc, ensure_ascii=False, indent=2), encoding="utf-8")
         print(f"\n  -> outputs/nowcast_{proyecto_id}.json")
         return
-    raise SystemExit(f"comando desconocido: {cmd} (usá demo | nowcast)")
+    raise SystemExit(f"comando desconocido: {cmd} (usá demo | nowcast | nowcast_auto)")
 
 
 if __name__ == "__main__":

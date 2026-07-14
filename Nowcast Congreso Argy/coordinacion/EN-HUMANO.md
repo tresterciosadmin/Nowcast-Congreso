@@ -258,3 +258,14 @@ La idea que ordena todo: la **foto** de la cámara (quién está sentado hoy) sa
 Con eso enchufado, por primera vez el circuito completo corrió sobre un proyecto de verdad, el **1167-D-2025** (una reforma laboral): 15% de probabilidad de llegar al recinto, mayoría prácticamente asegurada si llega, y **15% de aprobación final**, con unos 137 votos esperados sobre un umbral de 123, ya con la cámara de 257 bien contada. 
 
 Lo honesto que falta: la "dirección" de cada bloque todavía es la de su promedio reciente (por eso da mayoría casi segura); el siguiente paso es que esa postura dependa del **tema y de quién impulsa** cada proyecto. Y hay un detalle a resolver con Franco: cuatro bancas de la izquierda y algunos bloques federales del Senado, por cómo se escriben sus nombres en 2025, hoy caen en la bolsa "otros/provincial" — se arregla ampliando el diccionario de bloques (que es un contrato compartido, así que se decide en equipo).
+
+## Caso testigo: probamos un proyecto en las DOS cámaras y quedó clarísimo qué falta
+Le hicimos al sistema la pregunta completa: ¿qué chance tiene 1167-D-2025 (una reforma laboral) de conseguir **media sanción** en Diputados y después **sanción completa** en el Senado? Para aislar el motor de recuento, imaginamos que el proyecto ya llegó a los dos recintos (salteamos el "embudo" de las comisiones).
+
+El sistema respondió: media sanción prácticamente asegurada (137 votos sobre un umbral de 123 en Diputados) y Senado también (61 de 72). O sea, ley cantada: casi 100%.
+
+Y **ese "casi 100%" es justo la lección**, porque es irreal para una reforma laboral polémica. Lo que pasa es que hoy el sistema asume que **cada bloque vota como su promedio reciente**, y como en la historia "lo que llega al recinto casi siempre se aprueba", termina poniendo "a favor" a casi todos **sin leer de qué trata el proyecto**. Por eso el Senado da una paliza de 61 a 11 que en la vida real no ocurre en un tema que divide.
+
+Lo bueno, que quedó demostrado: el motor **cuenta bien la estructura** de las dos cámaras —las bancas reales (257 y 72), el quórum, los umbrales y la incertidumbre— y **encadena** correctamente las dos votaciones (sanción = pasar en las dos). Lo que todavía **no** hace es leer el proyecto para inclinar las posturas.
+
+Ese es el próximo gran paso (lo llamamos **v2**): que la postura de cada bloque dependa del **tema** y de **quién impulsa** el proyecto. Es lo que convierte ese "61 a 11" irreal del Senado en lo que de verdad pasa: una pelea que se define por las ~27 bancas de provinciales y radicales que son el fiel de la balanza, muchas veces por dos o tres votos. Este par de números (Diputados 137/123 · Senado 61/33) queda guardado como **caso testigo**: cuando el v2 esté, vamos a poder medir el antes y el después sobre el mismo proyecto.

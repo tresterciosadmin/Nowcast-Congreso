@@ -1,18 +1,16 @@
 {
   "proyecto_id": "1167-D-2025",
-  "camara": "senado",
+  "proyecto_id_interno": "HCDN283397",
+  "camara": "Diputados",
   "tipo_mayoria": "SIMPLE",
-  "n_roster": 72,
-  "p_llega_recinto": 1.0,
-  "p_mayoria_recinto": 1.0,
-  "p_aprobacion": 1.0,
-  "afirmativos_medio": 61.4,
+  "n_roster": 257,
+  "p_llega_recinto": 0.0014,
+  "p_mayoria_recinto": 0.581,
+  "p_aprobacion": 0.0008,
+  "afirmativos_medio": 109.6,
   "afirmativos_banda_5_95": [
-    56.0,
-    66.0
+    104.0,
+    115.0
   ],
-  "umbral_medio": 33.3,
-  "fecha_escenario": "2026-07-14",
-  "bancas_totales": 72,
-  "escenario_auto": true
+  "umbral_medio": 109.4
 }

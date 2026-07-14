@@ -56,7 +56,7 @@ Depende de otros (no empezar hasta que su dependencia esté HECHA):
 | datos/expedientes | Claude+Franco | 2026-07-11 | backfill CKAN HECHO (112.793 proyectos; embudo bruto 3,22%); fase 2 = cofirmantes vía bot |
 | datos/bot_recoleccion | Claude+Franco | 2026-07-11 | bot diario BICAMERAL en GitHub Actions: DAE Senado (1.004 exp.) + TP Diputados con COFIRMANTES completos (13+13 tests) |
 | variables/embudo | Claude+Valle | 2026-07-12 | supervivencia del proyecto de ley: embudo por etapas + modelo v1 (rasgos al presentar, sin leakage) + backtest temporal; consume contrato de datos/expedientes |
-| modelo/ensemble | Claude+Valle | 2026-07-12 | P(aprob)=P(llega)×P(mayoría). nowcast_auto arma el escenario desde el padrón+histórico (sin JSON a mano). 1er end-to-end real: 1167-D-2025 = 15%. Falta dirección condicionada v2 |
+| modelo/ensemble | Claude+Valle | 2026-07-12 | P(aprob)=P(llega)×P(mayoría). nowcast_auto (escenario desde padrón+histórico). CASO TESTIGO bicameral 1167-D-2025: Dip 137/123 · Sen 61/33, ambas ~100% = artefacto de dirección incondicional. PRIORIDAD = v2 (dirección por tema/origen) |
 | variables/bloque | Claude+Valle | 2026-07-12 | v1: serie temporal por bloque (tamaño/cohesión-Rice/desvío/fractura) + proyector point-in-time de postura (escenario del ensemble). SERIE CORRIDA (272) + proyector enchufado al padrón (bancas reales a fecha). Falta v2 dirección por tema/origen. Registrado 2026-07-14 |
 | datos/padron | Valle | 2026-07-14 | nómina oficial individual: Diputados 257 + Senado 72 vigentes (mandato desde-hasta, clave canónica, linaje). Composición a la fecha; enchufada al proyector (roster 375→257). Falta histórico de mandatos |
 

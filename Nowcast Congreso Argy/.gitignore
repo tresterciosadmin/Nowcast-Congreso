@@ -60,3 +60,11 @@ datos/bot_recoleccion/data/clean/*
 !datos/bot_recoleccion/data/clean/dae_entradas.parquet
 !datos/bot_recoleccion/data/estado_bot.json
 !datos/bot_recoleccion/data/clean/tp_entradas.parquet
+
+# datos/expedientes: salidas del backfill SÍ se versionan (régimen TRANSITORIO
+# de Valle 02-07: los entregables viajan por git hasta que el sistema corra solo.
+# Omisión del 11-07 corregida el 13-07: el equipo no veía los datos del embudo)
+!datos/expedientes/data/
+!datos/expedientes/data/clean/
+datos/expedientes/data/clean/*
+!datos/expedientes/data/clean/*.parquet

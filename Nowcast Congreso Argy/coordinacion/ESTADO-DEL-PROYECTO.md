@@ -53,6 +53,45 @@ Mantené esta tabla sincronizada con la bitácora.
 ---
 
 ## Bitácora (más reciente arriba)
+### [2026-07-14] variables/proyecto — prueba en vivo OK (texto + visión) y nueva mejora M1: cola de revisión + tablero de curación semanal
+- **Quién:** Franco (con Claude)
+- **Qué:** (1) **prueba en vivo del agente end-to-end**, ambas rutas: TEXTO sobre 1167-D-2025 (reforma de vacaciones LCT) → `TRAB.LABOR` 0.95 correcto; y VISIÓN sobre un PDF **escaneado** (S1279 Senado, 4 págs, 0 chars de texto) → se enrutó solo a `pdf_documento`, Haiku lo leyó por visión y dio `SALUD.MEDIC` 0.95 / `DERSOC.NINEZ` 0.9 / `SALUD.SISTEMA` 0.75 / `ECON.PRESU` 0.6 (vacuna antimeningocócica en calendario) — todo correcto, sin escalar a Sonnet. El "OCR incorporado" queda demostrado. (2) **Decisión operativa:** las etiquetas marginales de baja confianza se DEJAN entrar (no se filtran en el momento); se resuelven después en equipo. (3) **Mejora M1 anotada** en `variables/proyecto/MEJORAS-Y-PENDIENTES.md`: cola de revisión + tablero de curación semanal, con **régimen diario→semanal** definido (el bot carga y cataloga a diario; lo que resuelve con confianza entra solo; los dudosos van a la cola; el tablero se actualiza 1×/semana y el equipo termina de afinar). Criterios de cola: confianza gris **0.30–0.70**, candidatos nuevos, AUX.SINCLASIF, multi-etiqueta débil, desacuerdo agente-vs-humano. Lo que el equipo decide queda como `fuente='humano'`. **Requisito nuevo de Franco — trazabilidad:** el tablero tiene DOS vistas: (A) cola de dudas y (B) **panel de auditoría** con TODO lo que hizo el agente (qué catalogó solo, qué mandó a cola y por qué motivo, ids inventados que descartó, candidatos que propuso, qué leyó por visión, errores) + resumen agregado, para controlar qué hace y con qué criterio.
+- **Cómo:** prueba con `python src/agente_taxonomias.py probar <url|ruta>` (no toca base). M1 tiene decisiones abiertas: **persistir un log por corrida** (candidatos, ids descartados, via, modelo, motivo de cola, timestamp — hoy se pierden; prerequisito para la Vista B de auditoría), estado de revisión (tabla `proyecto_revision` → toca schema = ADR, o derivar la cola al vuelo sin tocar contrato), dónde vive el tablero (Streamlit en `producto/dashboard` con skill `ui-ux-web-moderno`, o artifact HTML), umbrales configurables (0.30/0.70). Encaje: alimenta la hoja PorTema (1B.3) y usa `outputs/muestra_manual_taxonomias.csv` como referencia agente-vs-humano.
+- **Archivos:** `variables/proyecto/MEJORAS-Y-PENDIENTES.md` (nuevo), este ESTADO.
+- **Estado del módulo:** EN CURSO (agente probado en vivo; M1 en backlog).
+- **Próximo paso:** priorizar M1 con el equipo (empezar por persistir candidatos + cola read-only); en paralelo, la corrida masiva del batch cuando esté la `proyectos.db`.
+
+### [2026-07-13] variables/proyecto — CONSOLIDADO el agente de taxonomías: modelo híbrido de PDF (sin OCR aparte) + batch + tests
+- **Quién:** Franco (con Claude)
+- **Qué:** se cerró el agente clasificador de extremo a extremo. (1) **Modelo híbrido de PDF:** los escaneados dejan de saltearse — si el PDF tiene texto va por la ruta TEXTO (barata), y si es imagen va por la ruta VISIÓN (se manda el PDF como documento y Claude lo lee con su visión nativa; el OCR queda incorporado al modelo). (2) **Batch idempotente y resiliente** para clasificar toda la base de una. (3) **Prompt del código alineado** con el de Console (system estático; lista + reglas de frontera se inyectan desde `taxonomias.json`). (4) Tests ampliados: 23 asserts en verde sin red.
+- **Cómo:** `pdf_text.TextoProyecto` ahora conserva los bytes crudos (`datos`) para la ruta de visión. Nuevos en `agente_taxonomias.py`: `SYSTEM_PROMPT` (constante), `construir_prompt_documento`, `llamar_claude_pdf` (bloque `document` base64), `clasificar_pdf_documento`, `clasificar_lote` + `_ya_clasificado_por_agente`; `clasificar_pdf` bifurca texto/visión (`usar_vision`, `modelo_ocr`); `ResultadoClasificacion` suma `via` y `clasificado`. Modelo de visión configurable con `TAXO_MODEL_OCR` (default = `TAXO_MODEL`; sugerido `claude-sonnet-5` para escaneados densos). CLI nuevo: `python src/agente_taxonomias.py batch <db> [--limite N] [--todos] [--sin-vision]`. Tests corridos OK (reconstruidos en entorno limpio por lag de sync de OneDrive; sin red, LLM/visión falsos inyectados). Contrato `proyecto_taxonomias` (docs/schemas) SIN cambios.
+- **Archivos:** `variables/proyecto/src/agente_taxonomias.py`, `variables/proyecto/src/pdf_text.py`, `variables/proyecto/src/requirements.txt` (python-dotenv), `variables/proyecto/tests/test_agente.py`, `variables/proyecto/README.md`, `docs/taxonomias/AGENTE-CONSOLE-descripcion.md`, `tablero_datos.js` (hito), este ESTADO.
+- **Estado del módulo:** EN CURSO (agente consolidado y testeado; falta la corrida masiva).
+- **Próximo paso:** correr el batch sobre los proyectos vivos con la API key, medir acuerdo agente-vs-humano contra `outputs/muestra_manual_taxonomias.csv`, y decidir los huecos/fronteras propuestos (cambia `taxonomias.json` = contrato compartido).
+
+### [2026-07-13] raíz + variables/proyecto — manejo de secretos: `.env` local + `.env.example` versionado; en la nube lo inyecta el host
+- **Quién:** Franco (con Claude)
+- **Qué:** se definió cómo se guarda y comparte `ANTHROPIC_API_KEY`. Local: archivo `.env` en la raíz (ya en `.gitignore`, NO se commitea, NO se comparte). Se versiona `.env.example` como plantilla; cada persona copia a `.env` y pone SU key. El código ahora carga el `.env` solo.
+- **Cómo:** `agente_taxonomias.py` hace `load_dotenv(_RAIZ/".env")` (opcional: si falta `python-dotenv` usa las env vars del sistema). Se agregó `python-dotenv>=1.0` a `variables/proyecto/src/requirements.txt`. **Equipo:** una key por persona (Console → Settings → API keys), compartir por gestor de contraseñas, nunca por git/OneDrive/Slack. **Nube:** NO se sube `.env`; las variables las inyecta el host (config vars de Railway/Render/Fly, o Secret Manager de AWS/GCP/Azure, o secrets de CI). El código no cambia: sigue leyendo `os.environ`. **Ojo OneDrive:** el `.env`, aun ignorado por git, igual se sincroniza a la nube de OneDrive; si molesta, usar variable de entorno de usuario (`setx`) en vez de archivo.
+- **Archivos:** `.env.example` (nuevo, versionado), `.env` (nuevo, ignorado, con placeholder), `variables/proyecto/src/agente_taxonomias.py` (load_dotenv), `variables/proyecto/src/requirements.txt` (python-dotenv), este ESTADO.
+- **Estado del módulo:** EN CURSO (sin cambios de fondo).
+- **Próximo paso:** al pasar a la nube, cargar la key en el secret manager del host elegido.
+
+### [2026-07-13] variables/proyecto — DECISIÓN: el agente de taxonomías corre por API, con el system prompt en el código (NO depende de un "agente" de Console)
+- **Quién:** Franco (con Claude)
+- **Qué:** se definió cómo corre en producción el clasificador de taxonomías. Corre **enteramente dentro del sistema**, vía llamadas a la API de Messages desde `agente_taxonomias.py`. El `system` prompt vive en el CÓDIGO (`construir_prompt`), única fuente de verdad. Claude Console NO es una pieza de runtime: se usa solo como *playground* para diseñar/probar/comparar modelos y correr evals; no hay un "agente de Console" del que dependa el pipeline.
+- **Cómo:** la conexión con Claude es solo (1) `ANTHROPIC_API_KEY` (generada en Console → Settings → API keys, no la da la creación de ningún agente) + (2) `model` + (3) `system` + (4) mensaje de usuario. Se descartó la variante "agente de Console referenciado por ID / prompt management" para no depender de un recurso externo y mantener el prompt versionado con el código. **Regla para los otros Claudes:** si tocás el prompt del clasificador, editá `construir_prompt` en `variables/proyecto/src/agente_taxonomias.py` — es EL lugar. No hay que sincronizar contra nada en Console. Vocabulario y reglas de frontera se siguen inyectando desde `docs/taxonomias/taxonomias.json` en tiempo de corrida (no se hardcodean). Nota relacionada: PDFs escaneados dejan de necesitar OCR aparte → modelo híbrido (texto cuando hay; PDF-como-documento por visión nativa cuando está escaneado), documentado en `docs/taxonomias/AGENTE-CONSOLE-descripcion.md` bloque 6.
+- **Archivos:** `docs/taxonomias/AGENTE-CONSOLE-descripcion.md` (reframe: Console = borrador, no runtime), `variables/proyecto/README.md` (nota), este ESTADO.
+- **Estado del módulo:** EN CURSO (sin cambios de fondo; falta correr el batch del agente).
+- **Próximo paso:** implementar la bifurcación híbrida texto/PDF-documento en el pipeline y correr el batch sobre proyectos vivos.
+
+### [2026-07-13] datos/expedientes + .gitignore — FE DE ERRATAS: los parquet del backfill ahora SÍ viajan por git
+- **Quién:** Claude (con Franco)
+- **Qué:** corrección de una omisión del 11-07 que afectó al equipo: los 8 parquet de `datos/expedientes/data/clean/` (112.793 proyectos + cadena de vida, 16,5 MB) quedaron atrapados por las reglas ORIGINALES del .gitignore (`**/data/clean/` + `*.parquet`, régimen Fase 0 "lo regenerable no se versiona") y el equipo del embudo no los veía tras el pull — tuvieron que regenerarlos corriendo la ingesta. Inconsistente con el régimen TRANSITORIO de Valle (02-07: los entregables viajan por git) y con las excepciones que sí se le hicieron al bot ese mismo día. **Fix:** excepciones explícitas en .gitignore para `datos/expedientes/data/clean/*.parquet`. Regla práctica que queda: al crear salidas de un módulo nuevo, decidir EXPLÍCITAMENTE si entran al régimen transitorio y documentarlo en el commit.
+- **Archivos:** `.gitignore`, los 8 parquet (entran al repo con este commit).
+- **Estado del módulo:** sin cambios de fondo.
+- **Próximo paso:** ninguno (correctivo).
+
 ### [2026-07-12] variables/proyecto + variables/embudo — Segmentación por TIPO de proyecto: origen (ejecutivo/oficialismo/oposición) + liderazgo
 - **Quién:** Claude (con Valle)
 - **Qué:** punto de fondo de Valle — no juega el mismo torneo un proyecto del Poder Ejecutivo, uno de un jefe de bloque oficialista o uno de un diputado de a pie de la oposición. Se construyó el rasgo de tipo de proyecto (feature store paso 2). `variables/proyecto/src/origen_lider.py` produce `data/features_proyecto.parquet` con: **origen** ∈ {EJECUTIVO (tipo MENSAJE), OFICIALISMO, OPOSICION, DESCONOCIDO} — cruzando **autor → bloque (contrato de `variables/legislador`: `legislador_bloques`) → fecha → linaje** contra la regla de quién gobernaba (CFK ≤2015 · Macri 2015-19 · A.Fernández 2019-23 · Milei ≥2023); y **lider** = jefe de bloque (`data/jefes_bloque.csv` CURADO) OR presidente de comisión (de `comisiones_integrantes`, defensivo si trae el rol) OR **alto productor** (nº de leyes sancionadas de su autoría en años ESTRICTAMENTE previos — walk-forward, sin leakage). El embudo ya lo **absorbe**: mergea origen/lider al cohorte, saca `embudo_por_origen.csv` y `embudo_por_lider.csv` (mide el efecto por segmento) y agrega los rasgos `origen_{ejecutivo,oficialismo,oposicion}` y `lider` al modelo de supervivencia.
@@ -416,129 +455,4 @@ Mantené esta tabla sincronizada con la bitácora.
 
 ### [2026-06-27] variables/proyecto — Clasificador sobre texto de leyes (validado 13/15)
 - **Quién:** Claude (con Franco)
-- **Qué:** taxonomía granular v1 aprobada (16 áreas/~55 subtemas). Clasificador por puntaje sobre el TEXTO de los proyectos (18 PDFs), validado contra las etiquetas de Franco: 13/15 en el mismo grupo temático. 2 casos de frontera (ludopatía, sociedades). 2 PDFs escaneados → OCR pendiente.
-- **Cómo:** `classify_tema_v1.py` cuenta keywords por subtema sobre texto extraído con pdftotext. Reforzado el detector de Sociedades.
-- **Archivos:** `variables/proyecto/{src/classify_tema_v1.py,TAXONOMIA.md,RESULTADOS-tema.md}`.
-- **Estado del módulo:** EN CURSO. Próximo: OCR, integrar Excel 2026 como fuente, clasificar historia vía expedientes.
-- **Próximo paso:** definir 2 fronteras con Franco; integrar datos/manual_2026.
-
-### [2026-06-27] variables/proyecto — Clasificación por tema v0 (esqueleto)
-- **Quién:** Claude (con Franco)
-- **Qué:** taxonomía base (15 materias + trámite/homenajes/sin clasificar) y clasificador v0 por palabras clave. Sobre los títulos actuales: 65pct trámite, 24pct sin clasificar -> confirma que hace falta el texto del expediente.
-- **Cómo:** reglas regex en `classify_tema.py`; el acta ya tiene el nº de expediente para unir con datos/expedientes.
-- **Archivos:** `variables/proyecto/{src/classify_tema.py,TAXONOMIA.md}`.
-- **Estado del módulo:** EN CURSO (v0). Depende de `datos/expedientes` para texto descriptivo.
-- **Próximo paso:** que Franco confirme/ajuste la taxonomía; luego ingestar expedientes y clasificar sobre su texto.
-
-
-### [2026-06-27] evaluacion/baseline — Baseline re-medido sobre canónica (2011–2025)
-- **Quién:** Claude (con Franco)
-- **Qué:** baseline votá-con-tu-grupo sobre la base ampliada. bloque_norm 0,969 (disputadas) — confirma callejón sin salida del voto-dirección. Coalición/linaje caen a ~0,92 (disidencia intra-coalición = señal). DRIFT: 2024–2025 baja a 0,946/0,923. Senado sin medir (SIN BLOQUE).
-- **Cómo:** LOO sobre votos_resuelto; por nivel/cámara/año. `evaluacion/baseline/src/baseline_canonico.py`.
-- **Archivos:** `evaluacion/baseline/{src/baseline_canonico.py,RESULTADOS.md,outputs/baseline_canonico.json}`.
-- **Estado del módulo:** evaluacion/baseline HECHO (sobre canónica).
-- **Próximo paso:** clasificación por tema (variables/proyecto); resolver bloque del Senado para medir su baseline.
-
-### [2026-06-27] datos/senado — Hallazgo: diarios 2001–2003 sin voto nominal (pendiente)
-- **Quién:** Claude (con Franco)
-- **Qué:** revisada una muestra de diario de sesiones del Senado (2002). Son HTML (taquigráfico) con .pdf mal puesto. Tienen asistencia (PRESENTES/AUSENTES) y resultados agregados, pero NO voto nominal por senador (votación a mano alzada). Decisión de uso: pendiente.
-- **Cómo:** detalle, ejemplo y notas de parsing en `datos/senado/NOTA-2001-2003.md`; muestra guardada en `datos/senado/muestras/`.
-- **Archivos:** `datos/senado/NOTA-2001-2003.md`, `datos/senado/muestras/Senado_2002-03-05_muestra.html`.
-- **Estado del módulo:** ANOTADO, sin parser todavía.
-- **Próximo paso:** decidir entre asistencia+resultados / solo resultados / dejarlo. Senado nominal sigue arrancando en 2004 (semilla).
-
-### [2026-06-25] datos/canonica — Capa de coaliciones (JxC time-aware)
-- **Quién:** Claude (con decisiones de Franco)
-- **Qué:** agregado el campo `coalicion`: Juntos por el Cambio/Cambiemos (UCR+PRO+CC+Evolución Radical) acotado 2015-12-10→2023-12-10 (53.768 votos); fuera de ventana los miembros vuelven a su espacio. Control: JxC arranca en 2016, sin anacronismo.
-- **Cómo:** regla por rango de fechas en `entity_resolution.py`; unificadas variantes de Coalición Cívica por prefijo. Flags (aliados provinciales, PRO-LLA 2024–2025) en `BLOQUES.md`.
-- **Archivos:** `datos/canonica/src/entity_resolution.py`, `datos/canonica/BLOQUES.md`.
-- **Estado del módulo:** canonica EN CURSO.
-- **Próximo paso:** sumar semilla y re-correr todo; tema (variables/proyecto); Senado por PDF.
-
-### [2026-06-25] datos/canonica — Linaje time-aware + tema en agenda
-- **Quién:** Claude (con decisiones de Franco)
-- **Qué:** finalizado bloque_linaje (8 grupos): aliados K (Peronismo para la Victoria, Nuevo Encuentro, Libres del Sur) fundidos en FdT-UxP; Frente Renovador time-aware (massismo hasta 2019-12-10, kirchnerismo después). Registrado que falta separación por TEMA del proyecto.
-- **Cómo:** mapas + regla por fecha en `entity_resolution.py`; join de fecha desde actas. Detalle y banderas en `BLOQUES.md`.
-- **Archivos:** `datos/canonica/src/entity_resolution.py`, `datos/canonica/BLOQUES.md`, `variables/proyecto/README.md`.
-- **Estado del módulo:** canonica EN CURSO.
-- **Próximo paso:** tema (variables/proyecto), JxC por ventanas, Senado por PDF, sumar semilla.
-
-### [2026-06-25] datos/canonica — Agrupamiento de bloques (norm + linaje)
-- **Quién:** Claude (sesión con Franco)
-- **Qué:** ampliada la resolución de bloques en dos niveles: `bloque_norm` (166→143, variantes del mismo bloque) y `bloque_linaje` (7 espacios; FpV/FdT/UxP unificados = 116.635 votos). `bloque` crudo intacto.
-- **Cómo:** mapas curados `BLOQUE_ALIAS` y `LINAJE` en `entity_resolution.py`; decisiones y exclusiones (Frente Renovador, JxC time-dependent) documentadas en `BLOQUES.md`.
-- **Archivos:** `datos/canonica/src/entity_resolution.py`, `datos/canonica/BLOQUES.md`.
-- **Estado del módulo:** EN CURSO.
-- **Próximo paso:** mapeo temporal de coaliciones (JxC); ampliar alias con la semilla cuando entre.
-
-### [2026-06-25] datos/canonica — Resolución de entidades (1er pase)
-- **Quién:** Claude (sesión con Franco)
-- **Qué:** `entity_resolution.py` asigna un legislador_id canónico invariante al formato del nombre y normaliza bloques. Sobre CKAN+argentinadatos: 1.358 nombres → 1.131 legisladores; 225 unidos cross-fuente; bloques 166→148.
-- **Cómo:** clave por tokens ordenados/únicos sin partículas (une "APELLIDO Nombre" y "Apellido, Nombre"); alias de bloque ampliable. Crosswalks a `Archivos_Borrar/`.
-- **Archivos:** `datos/canonica/src/entity_resolution.py`.
-- **Estado del módulo:** EN CURSO. Limitación: nombres con 2º nombre presente en una sola fuente no se unen (a refinar con padrón/fuzzy); alias de bloque a ampliar.
-- **Próximo paso:** refinar con el padrón de Diputados; sumar la semilla cuando esté; ampliar alias de bloque.
-
-### [2026-06-25] datos/argentinadatos + ckan_diputados — Cobertura 2011–2025
-- **Quién:** Claude (sesión con Franco)
-- **Qué:** integrado argentinadatos (Diputados 2020–2025, Senado 2024–2025) a la canónica y sumado el recurso CKAN período 137 para tapar 2019. Base: 1.414 actas, 340.892 votos.
-- **Cómo:** bloque de Diputados resuelto cruzando el padrón (`periodoBloque` por fecha); Senado sin bloque en el detalle → "SIN BLOQUE" (a resolver). Reproducir: correr los dos `to_canonical.py` y `build.py`.
-- **Archivos:** `datos/argentinadatos/src/to_canonical.py`, `datos/ckan_diputados/src/to_canonical.py`, `datos/canonica/COBERTURA.md`, `docs/schemas/acta.schema.json` (fecha pasó a opcional).
-- **Estado del módulo:** argentinadatos EN CURSO (falta bloque Senado); canonica EN CURSO (2 fuentes).
-- **Próximo paso:** semilla (pre-2011 y Senado 2004–2013), Diputados 2020–2023 oficial, Senado 2014–2023, entity resolution.
-
-### [2026-06-25] datos/canonica + datos/ckan_diputados — Base canónica corriendo con CKAN
-- **Quién:** Claude (sesión con Franco)
-- **Qué:** CKAN Diputados normalizado al esquema canónico y base canónica construida y validada: 899 actas, 230.938 votos.
-- **Cómo:** `datos/ckan_diputados/src/to_canonical.py` baja y traduce; `datos/canonica/src/build.py` une, deduplica (precedencia oficial>agregador>semilla), chequea FK y valida contra json-schema. Reproducir: correr to_canonical.py y luego build.py (deps en `datos/canonica/src/requirements.txt`).
-- **Archivos:** `datos/ckan_diputados/src/to_canonical.py`, `datos/canonica/src/{build.py,requirements.txt}`.
-- **Estado del módulo:** ckan_diputados→canónico HECHO; datos/canonica EN CURSO (corre con 1 fuente).
-- **Próximo paso:** sumar la semilla (export R) y argentinadatos; resolución de entidades legislador/bloque.
-
-### [2026-06-25] coordinacion/EN-HUMANO — Régimen de explicación en humano
-- **Quién:** Claude (sesión con Franco)
-- **Qué:** se creó `coordinacion/EN-HUMANO.md` (documento vivo que explica el sistema sin tecnicismos) y se volvió regla en `CLAUDE.md`: cada cambio se cuenta también en humano.
-- **Cómo:** doc con analogías (semilla/huerta/bot, estaciones de cocina, idioma común). Se actualiza en cada cambio junto con este ESTADO.
-- **Archivos:** `coordinacion/EN-HUMANO.md`, `CLAUDE.md`.
-- **Estado del módulo:** HECHO (parte del régimen de trabajo).
-- **Próximo paso:** mantenerlo actualizado en cada cambio.
-
-### [2026-06-25] docs/schemas + datos/decada_votada — Esquema canónico v1 y export de la semilla
-- **Quién:** Claude (sesión con Franco)
-- **Qué:** definido el esquema canónico (schema_version=1) con tablas `acta` y `voto` + enum de voto; escrito `export_seed.R` que vuelca la semilla de Andy Tow (legislAr) al esquema canónico. Adoptado el régimen `Archivos_Borrar/` para descartables.
-- **Cómo:** `docs/schemas/{README.md,acta.schema.json,voto.schema.json}`. El script R instala deps, itera `show_available_bills` → `get_bill_votes` por cámara, normaliza voto y escribe parquet. Correr local: `Rscript datos/decada_votada/export_seed.R 25` (prueba) o sin arg (completo).
-- **Archivos:** `docs/schemas/*`, `datos/decada_votada/export_seed.R`, `Archivos_Borrar/README.md`, `CLAUDE.md`.
-- **Estado del módulo:** docs/schemas HECHO; datos/decada_votada EN CURSO (falta correr el export en R).
-- **Próximo paso:** correr el export, validar parquet contra schema, y arrancar `datos/canonica` (merge/dedup).
-
-#### [2026-06-25] datos — Estrategia semilla → canónica → bot (aportes Andy Tow)
-- **Quién:** Claude (sesión con Franco)
-- **Qué:** revisados los "Aportes sobre dataset congreso" (legislAr + Década Votada/towlandia). Andy Tow = semilla histórica de un solo uso; base canónica propia (`datos/canonica`) + bot (`datos/bot_recoleccion`). No se copia ni se depende en vivo.
-- **Cómo:** legislAr (R) exporta parquet una vez; canónica unifica/deduplica/resuelve entidades; bot hace upsert idempotente. Límite R↔Python y cobertura en ADR-0002.
-- **Archivos:** `datos/decada_votada/`, `datos/canonica/`, `datos/bot_recoleccion/`, `coordinacion/DECISIONES/0002-*.md`, `TABLERO.md`, `PLAN-DE-TRABAJO.md`, `CLAUDE.md`.
-- **Estado del módulo:** los tres nuevos en PENDIENTE/EN CURSO.
-- **Próximo paso:** schema + export (hecho); luego canónica.
-
-### [2026-06-25] coordinacion — Estructura para trabajo en paralelo
-- **Quién:** Claude (sesión inicial con Franco)
-- **Qué:** estructura de carpetas por variable/módulo + documentos de coordinación (CLAUDE.md, PLAN, ESTADO, TABLERO, PROTOCOLO-GIT, ADR-0001).
-- **Cómo:** monorepo, un módulo por unidad de trabajo; regla "un módulo, un dueño, una rama".
-- **Archivos:** `CLAUDE.md`, `coordinacion/*`, `datos/*`, `variables/*`, `modelo/*`, `evaluacion/*`, `producto/*`, `docs/schemas/`.
-- **Estado del módulo:** HECHO.
-- **Próximo paso:** elegir prioridad de Fase 1 y reclamar módulos.
-
-### [2026-06-25] evaluacion/baseline — Gate de Fase 0 medido
-- **Quién:** Claude (sesión inicial con Franco)
-- **Qué:** baseline "votá con tu bloque" sobre 231k votos (CKAN Diputados 2011–2020). Dirección sustantiva ≈ 0,989 (todas) / 0,984 (disputadas); 4 clases ≈ 0,807 / 0,820.
-- **Cómo:** leave-one-out por bloque; corte disputadas = minoría ≥10%. Reproducir: `python fase0/src/ingesta.py && python fase0/src/baseline_bloque.py`.
-- **Archivos:** `fase0/src/*`, `fase0/outputs/baseline_resultados.*`.
-- **Estado del módulo:** HECHO. Redirige el producto a asistencia/embudo/posición de bloque.
-- **Próximo paso:** migrar a `datos/ckan_diputados/` y `evaluacion/baseline/`.
-
-### [2026-06-25] (análisis) — Validación crítica + premortem v2
-- **Quién:** Claude (sesión inicial con Franco)
-- **Qué:** validación de afirmaciones del estudio de viabilidad; premortem a 11 modos; informe Word.
-- **Cómo:** WebSearch + inspección de fuentes. Hallazgo: CKAN de votaciones congelado en 2020.
-- **Archivos:** `docs/contexto/Nowcast-Congreso_informe_validacion.docx`, `docs/contexto/premortem-*-validado.*`.
-- **Estado del módulo:** HECHO (documentación).
-- **Próximo paso:** ninguno.
+- **Qué:** taxonomía granular v1 aprobada (16 áreas/~55 subtemas). Clasificador por puntaje sobre el TEXTO de los proyectos (18 PDFs), validado contra las etiquetas de Franco: 13/15 en el mismo 

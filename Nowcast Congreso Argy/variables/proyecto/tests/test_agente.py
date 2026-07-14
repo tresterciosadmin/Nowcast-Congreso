@@ -51,7 +51,49 @@ def test_clasificar_con_llm_falso():
     fake = lambda s, u: '{"asignaciones":[{"id":"SALUD.ADICC","confianza":0.88}],"comentario":"juego"}'
     res = ag.clasificar_texto("proyecto sobre ludopatía y apuestas online", tx=tx, llm=fake)
     _ok([a.taxonomia_id for a in res.asignaciones] == ["SALUD.ADICC"], "clasifica con LLM inyectado")
+    _ok(res.via == "texto", "marca la vía 'texto'")
     print(" --> clasificar OK\n")
+
+
+def test_ruta_vision_pdf_documento():
+    """Ruta híbrida: un PDF escaneado (poco texto) se manda como documento y se clasifica."""
+    tx = ag.tx_loader.cargar()
+
+    # el prompt-documento incluye la lista y NO pide pegar texto del proyecto
+    system, user = ag.construir_prompt_documento(tx)
+    _ok("AMB.MINER=" in user, "el prompt-documento incluye la lista controlada")
+    _ok("PDF adjunto" in user, "el prompt-documento remite al PDF adjunto")
+
+    # LLM de visión falso: recibe (system, user, bytes) y devuelve JSON
+    vistos = {}
+    def fake_doc(s, u, b):
+        vistos["bytes"] = b
+        return '{"asignaciones":[{"id":"JUST.PENAL","confianza":0.9}],"comentario":"penal"}'
+    res = ag.clasificar_pdf_documento(b"%PDF-fake-bytes", tx=tx, llm_doc=fake_doc)
+    _ok(vistos["bytes"] == b"%PDF-fake-bytes", "le pasa los bytes crudos del PDF al LLM de visión")
+    _ok([a.taxonomia_id for a in res.asignaciones] == ["JUST.PENAL"], "clasifica por visión")
+    _ok(res.via == "pdf_documento", "marca la vía 'pdf_documento'")
+
+    # clasificar_pdf ruta un 'escaneado' con datos hacia la vía visión (monkeypatch de extracción)
+    orig = ag.pdf_text.extraer_de_archivo
+    ag.pdf_text.extraer_de_archivo = lambda ruta: ag.pdf_text.TextoProyecto(
+        texto="", paginas=3, escaneado=True, fuente=str(ruta), datos=b"%PDF-fake")
+    try:
+        r2 = ag.clasificar_pdf("cualquier.pdf", tx=tx, llm_doc=fake_doc)
+    finally:
+        ag.pdf_text.extraer_de_archivo = orig
+    _ok(r2.via == "pdf_documento" and r2.escaneado and r2.clasificado,
+        "clasificar_pdf enruta el escaneado a visión y queda clasificado")
+
+    # con usar_vision=False, el escaneado NO se clasifica (comportamiento viejo)
+    ag.pdf_text.extraer_de_archivo = lambda ruta: ag.pdf_text.TextoProyecto(
+        texto="", paginas=3, escaneado=True, fuente=str(ruta), datos=b"%PDF-fake")
+    try:
+        r3 = ag.clasificar_pdf("cualquier.pdf", tx=tx, usar_vision=False)
+    finally:
+        ag.pdf_text.extraer_de_archivo = orig
+    _ok(not r3.clasificado and r3.via == "no_clasificado", "usar_vision=False saltea el escaneado")
+    print(" --> ruta visión OK\n")
 
 
 def test_persistencia():
@@ -99,9 +141,46 @@ def test_escaneado():
     print(" --> escaneado OK\n")
 
 
+def test_batch_idempotente():
+    """El batch clasifica los que faltan, saltea los ya hechos y no corta por un error."""
+    tmp = Path(tempfile.mkdtemp())
+    db = tmp / "p.db"
+    con = sqlite3.connect(db)
+    con.executescript(SCHEMA.read_text(encoding="utf-8"))
+    for d in ("1-D-2026", "2-D-2026"):
+        con.execute("INSERT INTO proyectos (denominador,camara,pdf_url,creado_en) VALUES (?,?,?,?)",
+                    (d, "diputados", f"https://x/{d}.pdf", "2026-06-30T00:00:00+00:00"))
+    # uno sin pdf_url: no debe entrar al lote
+    con.execute("INSERT INTO proyectos (denominador,camara,creado_en) VALUES (?,?,?)",
+                ("3-D-2026", "diputados", "2026-06-30T00:00:00+00:00"))
+    con.commit(); con.close()
+
+    # monkeypatch: en vez de bajar PDF, devolvemos texto; el LLM da una etiqueta fija
+    orig = ag.pdf_text.extraer_de_url
+    ag.pdf_text.extraer_de_url = lambda url, session=None: ag.pdf_text.TextoProyecto(
+        texto="proyecto sobre presupuesto", paginas=1, escaneado=False, fuente=url)
+    fake = lambda s, u: '{"asignaciones":[{"id":"ECON.PRESU","confianza":0.8}]}'
+    # inyectamos el LLM vía clasificar_pdf -> clasificar_texto: parcheamos llamar_claude
+    orig_llm = ag.llamar_claude
+    ag.llamar_claude = lambda s, u, **k: fake(s, u)
+    try:
+        r1 = ag.clasificar_lote(db, solo_faltantes=True)
+        r2 = ag.clasificar_lote(db, solo_faltantes=True)  # segunda vuelta: todo saltado
+    finally:
+        ag.pdf_text.extraer_de_url = orig
+        ag.llamar_claude = orig_llm
+
+    _ok(r1["clasificados"] == 2 and r1["guardados_tax"] == 2, f"batch clasifica los 2 con pdf ({r1})")
+    _ok(r1["total"] == 2, "el proyecto sin pdf_url no entra al lote")
+    _ok(r2["saltados_ya"] == 2 and r2["clasificados"] == 0, f"segunda vuelta idempotente ({r2})")
+    print(" --> batch OK\n")
+
+
 if __name__ == "__main__":
     test_prompt_y_parseo()
     test_clasificar_con_llm_falso()
+    test_ruta_vision_pdf_documento()
     test_persistencia()
     test_escaneado()
+    test_batch_idempotente()
     print("TODOS LOS TESTS PASARON")

@@ -4,8 +4,10 @@ Entrada típica: el `pdf_url` que trae la ficha de `datos/seguimiento`.
 Salida: el texto del proyecto (articulado + considerandos) para que el agente lo clasifique.
 
 Detección de escaneados: si el PDF casi no tiene texto extraíble, es una imagen
-(escaneo) y necesita OCR. No hacemos OCR acá todavía: se marca `escaneado=True`
-para que el agente lo saltee y quede pendiente (caso de borde conocido).
+(escaneo). Se marca `escaneado=True` y se conservan los bytes crudos en `datos`
+para la RUTA DE VISIÓN: el agente manda el PDF como documento y Claude lo lee con
+su visión nativa (OCR incorporado al modelo). No hace falta una librería de OCR
+aparte. Ver `agente_taxonomias.clasificar_pdf` (modelo híbrido texto / PDF-documento).
 """
 from __future__ import annotations
 
@@ -38,6 +40,7 @@ class TextoProyecto:
     paginas: int
     escaneado: bool
     fuente: str  # url o ruta de la que salió
+    datos: Optional[bytes] = None  # bytes crudos del PDF (para la ruta de visión si es escaneado)
 
 
 def _bajar(url: str, session: Optional[requests.Session] = None) -> bytes:
@@ -81,8 +84,9 @@ def extraer_de_bytes(data: bytes, fuente: str = "bytes") -> TextoProyecto:
     texto = _limpiar("\n".join(partes))
     escaneado = len(texto) < MIN_CHARS_TEXTO
     if escaneado:
-        logger.warning("PDF con poco texto (%d chars) → probable escaneo (OCR pendiente)", len(texto))
-    return TextoProyecto(texto=texto, paginas=len(reader.pages), escaneado=escaneado, fuente=fuente)
+        logger.warning("PDF con poco texto (%d chars) → probable escaneo (ruta de visión)", len(texto))
+    return TextoProyecto(texto=texto, paginas=len(reader.pages), escaneado=escaneado,
+                         fuente=fuente, datos=data)
 
 
 def extraer_de_url(url: str, session: Optional[requests.Session] = None) -> TextoProyecto:

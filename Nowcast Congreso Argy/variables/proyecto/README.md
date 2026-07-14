@@ -9,11 +9,23 @@
 Clasifica un proyecto leyendo su PDF y asignándole taxonomías del vocabulario controlado
 (`docs/taxonomias/`). Motor: **Claude API** (LLM).
 
+> **Cómo corre (decisión 2026-07-13):** todo por API desde este código. El `system` prompt
+> vive acá, en `construir_prompt` — es la única fuente de verdad; NO depende de ningún
+> "agente" de Claude Console (Console es solo playground para diseñar/testear). Conectar =
+> setear `ANTHROPIC_API_KEY`. Referencia legible del prompt + modelo híbrido de PDF (texto /
+> PDF-como-documento por visión, sin OCR aparte) en `docs/taxonomias/AGENTE-CONSOLE-descripcion.md`.
+
 - **Flujo:** `pdf_text` baja el PDF (de `pdf_url`) y extrae texto → `agente_taxonomias`
   arma el prompt con la lista controlada, llama al LLM, valida que los ids existan
   (descarta inventados), y escribe en `datos/proyectos` → `proyecto_taxonomias`.
 - **El humano gana:** el agente nunca pisa una taxonomía cargada a mano (fuente `humano`).
-- **Escaneados:** si el PDF no tiene texto (es imagen), se marca y se saltea (OCR pendiente).
+- **Escaneados (modelo híbrido, sin OCR aparte):** si el PDF tiene texto, ruta TEXTO (barata).
+  Si es imagen/escaneado, ruta VISIÓN: se manda el PDF como documento y Claude lo lee con su
+  visión nativa. `TAXO_MODEL_OCR` escala el modelo solo para escaneados (default = `TAXO_MODEL`;
+  sugerido `claude-sonnet-5`). `--sin-vision` vuelve al viejo comportamiento de saltearlos.
+- **Batch:** `python src/agente_taxonomias.py batch <db> [--limite N] [--todos] [--sin-vision]`.
+  Recorre `proyectos` con `pdf_url`, es idempotente (saltea los que ya tienen taxonomías del
+  agente salvo `--todos`) y resiliente (un proyecto roto no corta el lote). Imprime un resumen.
 - **Config:** `ANTHROPIC_API_KEY` (obligatoria en vivo) y `TAXO_MODEL` (default `claude-haiku-4-5-20251001`;
   la tarea es acotada y validamos los ids, así que Haiku alcanza y es barato. Subí a Sonnet si algún caso ambiguo lo amerita).
 - **Correr:**
@@ -25,8 +37,9 @@ Clasifica un proyecto leyendo su PDF y asignándole taxonomías del vocabulario 
   ```
 - **Test sin red:** `python tests/test_agente.py` (LLM falso inyectado; valida prompt,
   parseo/validación, persistencia humano-gana y detección de escaneado).
-- **Pendiente:** OCR para PDFs escaneados; clasificar la historia vía `datos/expedientes`;
-  el viejo `classify_tema_v1.py` (keywords) queda como fallback/baseline.
+- **Pendiente:** clasificar la historia vía `datos/expedientes`; el viejo
+  `classify_tema_v1.py` (keywords) queda como fallback/baseline. (OCR ya resuelto por la
+  ruta de visión del modelo híbrido.)
 
 ## Validación manual del vocabulario (2026-07-11)
 Muestra estratificada de 88 actas de la canónica clasificada a mano contra los 74 ids:

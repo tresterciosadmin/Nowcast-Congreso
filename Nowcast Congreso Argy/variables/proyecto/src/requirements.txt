@@ -1,4 +1,5 @@
 anthropic>=0.40
+python-dotenv>=1.0   # carga ANTHROPIC_API_KEY / TAXO_MODEL desde el .env de la raíz
 pypdf>=4.0
 requests>=2.31
 tenacity>=8.2

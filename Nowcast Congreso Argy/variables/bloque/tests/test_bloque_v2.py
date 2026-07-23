@@ -96,10 +96,53 @@ def test_cond_map_acepta_dict_y_df():
     print("OK _cond_map acepta dict y DataFrame por igual")
 
 
+def test_excluir_aux_no_infla_la_postura():
+    """Las actas AUX (consenso: todos afirmativo) no deben moldear la postura. OPO vota
+    NEGATIVO en 5 actas ECON y AFIRMATIVO en 5 AUX. Con AUX incluidas su share sube a
+    0,5; excluyéndolas (default) queda 0,0 = NEGATIVO (la señal real)."""
+    filas, cond = [], []
+    base = pd.Timestamp("2020-01-01")
+    for k in range(10):
+        aid = f"x{k}"
+        tema = "ECON" if k < 5 else "AUX"
+        cond.append({"acta_id": aid, "tema_area": tema, "origen": "OPOSICION"})
+        opo_dir = "NEGATIVO" if tema == "ECON" else "AFIRMATIVO"
+        for L in range(3):
+            filas.append(dict(acta_id=aid, fecha=base + pd.Timedelta(days=k), camara="diputados",
+                              bloque_linaje="OPO", legislador_id=f"o{L}", conducta=opo_dir))
+    votos, cond = pd.DataFrame(filas), pd.DataFrame(cond)
+    con_aux = _idx(B.proyectar_postura(votos, "2020-06-01", "diputados",
+                                       cond_por_acta=cond, padron_path="__no__", excluir_aux=False))
+    sin_aux = _idx(B.proyectar_postura(votos, "2020-06-01", "diputados",
+                                       cond_por_acta=cond, padron_path="__no__", excluir_aux=True))
+    assert abs(con_aux["OPO"]["_share_afirm"] - 0.5) < 1e-9, con_aux["OPO"]
+    assert sin_aux["OPO"]["_share_afirm"] == 0.0 and sin_aux["OPO"]["linea"] == "NEGATIVO", sin_aux["OPO"]
+    print("OK excluir AUX: OPO %.2f (con AUX) -> %.2f NEGATIVO (sin AUX)"
+          % (con_aux["OPO"]["_share_afirm"], sin_aux["OPO"]["_share_afirm"]))
+
+
+def test_excluir_aux_no_vacia_la_ventana():
+    """Si TODAS las actas son AUX, no se excluye nada (no dejar el proyector sin datos)."""
+    filas, cond = [], []
+    for k in range(4):
+        aid = f"z{k}"
+        cond.append({"acta_id": aid, "tema_area": "AUX", "origen": "OPOSICION"})
+        for L in range(3):
+            filas.append(dict(acta_id=aid, fecha=pd.Timestamp("2020-01-01") + pd.Timedelta(days=k),
+                              camara="diputados", bloque_linaje="OPO", legislador_id=f"o{L}",
+                              conducta="AFIRMATIVO"))
+    esc = _idx(B.proyectar_postura(pd.DataFrame(filas), "2020-06-01", "diputados",
+                                   cond_por_acta=pd.DataFrame(cond), padron_path="__no__"))
+    assert esc["OPO"]["_n_actas"] == 4, "no debe vaciar la ventana si todo es AUX"
+    print("OK excluir AUX no vacía la ventana cuando todo es AUX")
+
+
 if __name__ == "__main__":
     test_sin_tema_es_v1()
     test_condicionar_da_vuelta_la_direccion()
     test_shrinkage_no_da_vuelta_con_pocas()
     test_tema_sin_match_cae_a_incondicional()
     test_cond_map_acepta_dict_y_df()
-    print("\n== 5 chequeos v2 OK ==")
+    test_excluir_aux_no_infla_la_postura()
+    test_excluir_aux_no_vacia_la_ventana()
+    print("\n== 7 chequeos v2 OK ==")

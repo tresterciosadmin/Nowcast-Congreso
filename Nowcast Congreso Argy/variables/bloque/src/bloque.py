@@ -53,14 +53,176 @@ DEFAULT_CANON = Path("datos/canonica/data/clean")
 OUT_DEFAULT = Path("variables/bloque/outputs/serie_bloque.parquet")
 DEFAULT_PADRON_DIR = Path(__file__).resolve().parents[3] / "datos" / "padron" / "data"
 
+# --------------------------------------------------------------------------- #
+# Enriquecimiento de LINAJE del Senado (contribución al entity_resolution).    #
+# Los votos del Senado 2024+ (fuente argentinadatos) llegan con bloque="SIN    #
+# BLOQUE" -> linaje "OTRO / PROVINCIAL" para TODOS: la ingesta no resolvió el   #
+# bloque. Acá se recupera el linaje real por NOMBRE contra el padrón oficial    #
+# (datos/padron, contrato que ya consumimos), RESPETANDO EL MANDATO (la fecha   #
+# del voto cae en [desde,hasta] del senador) para no anacronizar. Los que ya no #
+# están en el padrón (dejaron banca en un recambio) se completan a mano en      #
+# senado_linaje_manual.csv (curado). NO edita datos/canonica; es una capa de    #
+# consumo. Propuesta: que datos/canonica/entity_resolution (Franco) lo absorba. #
+_LINAJE_GENERICO = {"", "OTRO / PROVINCIAL", "SIN BLOQUE", "OTRO", "NONE", "NAN"}
+
+# Linajes canónicos (los strings EXACTOS que usa datos/canonica). El override manual
+# del Senado se completa a mano, así que toleramos variantes (ej. "FdT-UxP" sin el
+# sufijo) y las llevamos al canónico para no partir un bloque en dos al agregar.
+_LINAJES_CANON = {
+    "FdT-UxP (kirchnerismo)", "OTRO / PROVINCIAL", "RADICALISMO", "PERONISMO FEDERAL",
+    "PRO", "COALICION CIVICA", "PROGRESISMO", "FRENTE RENOVADOR (massismo)",
+    "LA LIBERTAD AVANZA", "IZQUIERDA",
+}
+
+
+def _canon_linaje(v):
+    """Lleva una etiqueta de linaje escrita a mano a su forma canónica. Devuelve el
+    string tal cual si ya es canónico; None si viene vacío/genérico."""
+    if v is None:
+        return None
+    t = " ".join(str(v).strip().split())
+    if not t or t.upper() in _LINAJE_GENERICO:
+        return None
+    if t in _LINAJES_CANON:
+        return t
+    u = t.upper()
+    if "KIRCHner".upper() in u or u.startswith("FDT") or "UXP" in u or "UNION POR LA PATRIA" in u:
+        return "FdT-UxP (kirchnerismo)"
+    if "LIBERTAD AVANZA" in u or u == "LLA":
+        return "LA LIBERTAD AVANZA"
+    if "RADICAL" in u or u == "UCR":
+        return "RADICALISMO"
+    if "PERONISMO FEDERAL" in u:
+        return "PERONISMO FEDERAL"
+    if "COALICION CIVICA" in u or u == "CC":
+        return "COALICION CIVICA"
+    if "PROGRESISMO" in u:
+        return "PROGRESISMO"
+    if "RENOVADOR" in u or "MASSISMO" in u:
+        return "FRENTE RENOVADOR (massismo)"
+    if u == "PRO" or "PROPUESTA REPUBLICANA" in u:
+        return "PRO"
+    if "IZQUIERDA" in u:
+        return "IZQUIERDA"
+    return t  # desconocido: se respeta tal cual (mejor no perder el dato)
+
+
+def _norm_nombre(s) -> str:
+    """APELLIDO NOMBRE sin acentos/puntuación (misma convención que origen_lider)."""
+    import unicodedata
+    if s is None or (isinstance(s, float) and pd.isna(s)):
+        return ""
+    t = str(s).strip()
+    if "," in t:
+        ap, _, no = t.partition(",")
+        t = f"{ap} {no}"
+    t = unicodedata.normalize("NFKD", t).encode("ascii", "ignore").decode()
+    t = "".join(c if c.isalnum() or c.isspace() else " " for c in t)
+    return " ".join(t.upper().split())
+
+
+def _cargar_padron_linaje_senado(padron_dir=None):
+    """Devuelve (tramos, manual): tramos = lista (nn, desde, hasta, linaje) del padrón
+    del Senado; manual = dict nn->linaje del override curado (senadores que ya no están
+    en el padrón). Ambos vacíos si faltan los archivos (degradación limpia)."""
+    base = Path(padron_dir or DEFAULT_PADRON_DIR)
+    tramos, manual = [], {}
+    pcsv = base / "padron_senado.csv"
+    if pcsv.exists():
+        pad = pd.read_csv(pcsv, dtype=str, encoding="utf-8-sig")
+        if {"legislador", "bloque_linaje"} <= set(pad.columns):
+            for _, r in pad.iterrows():
+                tramos.append((_norm_nombre(r["legislador"]),
+                               pd.to_datetime(r.get("desde"), errors="coerce"),
+                               pd.to_datetime(r.get("hasta"), errors="coerce"),
+                               r.get("bloque_linaje")))
+    mcsv = base / "senado_linaje_manual.csv"
+    if mcsv.exists():
+        man = pd.read_csv(mcsv, dtype=str, encoding="utf-8-sig", comment="#")
+        col_clave = "clave_norm" if "clave_norm" in man.columns else man.columns[0]
+        if "linaje" in man.columns:
+            for _, r in man.iterrows():
+                lin = _canon_linaje(r.get("linaje"))
+                if lin:
+                    manual[_norm_nombre(r[col_clave])] = lin
+    return tramos, manual
+
+
+def _enriquecer_linaje_senado(df, padron_dir=None):
+    """Reasigna bloque_linaje de las filas del SENADO cuyo linaje es genérico
+    (OTRO/PROVINCIAL, SIN BLOQUE, vacío) usando el nombre del legislador contra el
+    padrón (mandate-aware) y el override manual. Solo mueve hacia un linaje ESPECÍFICO:
+    si el padrón también dice OTRO/PROVINCIAL, no cambia nada. Requiere columnas
+    'camara', 'bloque_linaje', 'legislador_nombre', 'fecha'. Devuelve (df, n_cambiadas)."""
+    if df.empty or "legislador_nombre" not in df.columns:
+        return df, 0
+    tramos, manual = _cargar_padron_linaje_senado(padron_dir)
+    if not tramos and not manual:
+        return df, 0
+    from collections import defaultdict
+    def _k2(nn):  # apellido + primer nombre (fallback robusto: el padrón abrevia)
+        t = nn.split(); return " ".join(t[:2])
+    por_nn = defaultdict(list)
+    por_k2 = defaultdict(list)
+    for nn, desde, hasta, lin in tramos:
+        por_nn[nn].append((desde, hasta, lin))
+        por_k2[_k2(nn)].append((desde, hasta, lin))
+
+    es_sen = df["camara"].astype(str).str.lower().eq("senado")
+    generico = df["bloque_linaje"].astype(str).str.strip().str.upper().isin(_LINAJE_GENERICO)
+    objetivo = es_sen & generico
+    if not objetivo.any():
+        return df, 0
+    nn_col = df["legislador_nombre"].map(_norm_nombre)
+    fechas = pd.to_datetime(df["fecha"], errors="coerce")
+
+    def _en_ventana(f, desde, hasta):
+        return ((pd.isna(desde) or (pd.notna(f) and f >= desde)) and
+                (pd.isna(hasta) or (pd.notna(f) and f <= hasta)))
+
+    def _resolver(nn, f):
+        for desde, hasta, lin in por_nn.get(nn, ()):
+            if _en_ventana(f, desde, hasta) and str(lin).strip().upper() not in _LINAJE_GENERICO:
+                return lin
+        # fallback: apellido + primer nombre (el padrón suele abreviar el 2º nombre)
+        cand = por_k2.get(_k2(nn), ())
+        if len(cand) == 1 or len({l for _, _, l in cand}) == 1:  # sin ambigüedad
+            for desde, hasta, lin in cand:
+                if _en_ventana(f, desde, hasta) and str(lin).strip().upper() not in _LINAJE_GENERICO:
+                    return lin
+        m = manual.get(nn)
+        if m and str(m).strip().upper() not in _LINAJE_GENERICO:
+            return m
+        return None
+
+    nuevos = df["bloque_linaje"].copy()
+    n = 0
+    for i in df.index[objetivo]:
+        r = _resolver(nn_col.at[i], fechas.at[i])
+        if r is not None:
+            nuevos.at[i] = r
+            n += 1
+    df = df.copy()
+    df["bloque_linaje"] = nuevos
+    if n:
+        logger.info("enriquecí linaje del Senado: %d votos reasignados desde el padrón/override", n)
+    return df, n
+
+
 
 # --------------------------------------------------------------------------- #
 # Carga (contrato de la canónica)                                             #
 # --------------------------------------------------------------------------- #
-def cargar(canon_dir: Path = DEFAULT_CANON) -> pd.DataFrame:
+def cargar(canon_dir: Path = DEFAULT_CANON, enriquecer_senado: bool = True,
+           padron_dir=None) -> pd.DataFrame:
     """Lee votos_resuelto + actas_canonico y devuelve el detalle voto-a-voto con
     fecha y cámara resueltas. Parsing defensivo: si falta una columna esperada,
-    error específico; filas sin fecha/bloque/linaje se descartan con aviso."""
+    error específico; filas sin fecha/bloque/linaje se descartan con aviso.
+
+    enriquecer_senado (default True): recupera el linaje real de los votos del Senado
+    que llegan con bloque genérico (SIN BLOQUE -> OTRO/PROVINCIAL) uniendo por nombre
+    al padrón oficial, mandate-aware (ver _enriquecer_linaje_senado). Ponelo en False
+    para reproducir el comportamiento crudo de la canónica."""
     canon_dir = Path(canon_dir)
     fv = canon_dir / "votos_resuelto.parquet"
     fa = canon_dir / "actas_canonico.parquet"
@@ -90,6 +252,12 @@ def cargar(canon_dir: Path = DEFAULT_CANON) -> pd.DataFrame:
         df["fecha"] = pd.to_datetime(df["fecha"], errors="coerce")
 
     df["conducta"] = df["voto"].map(CONDUCTA_MAP)
+    df["camara"] = df["camara"].fillna("desconocida").astype(str)
+    # enriquecimiento de linaje del Senado (recupera bloque desde el padrón antes de
+    # filtrar/agrupar; ver _enriquecer_linaje_senado). Requiere legislador_nombre, que
+    # votos_resuelto trae; si no está, es no-op.
+    if enriquecer_senado:
+        df, _ = _enriquecer_linaje_senado(df, padron_dir=padron_dir)
     n0 = len(df)
     df = df[df["fecha"].notna() & df["bloque_linaje"].notna() & df["conducta"].notna()]
     df = df[df["bloque_linaje"].astype(str).str.strip().ne("")]
@@ -97,7 +265,6 @@ def cargar(canon_dir: Path = DEFAULT_CANON) -> pd.DataFrame:
         logger.warning("descarté %d/%d filas sin fecha/linaje/conducta", n0 - len(df), n0)
     if df.empty:
         raise ValueError("no quedaron votos utilizables tras el filtrado")
-    df["camara"] = df["camara"].fillna("desconocida").astype(str)
     return df[["acta_id", "fecha", "camara", "bloque_linaje",
                "legislador_id", "conducta"]].reset_index(drop=True)
 
@@ -183,10 +350,31 @@ def _bancas_padron(camara: str, fecha, padron_path=None):
     return vig.groupby("bloque_linaje").size().astype(int).to_dict()
 
 
+# Recambios presidenciales (10-dic). MANTENER SINCRONIZADAS con
+# variables/proyecto/src/origen_lider.py (GOBIERNOS) y origen_por_acta (nombres).
+_GOBIERNOS = [
+    ("1900-01-01", "2015-12-10", "KIRCHNER"),
+    ("2015-12-10", "2019-12-10", "MACRI"),
+    ("2019-12-10", "2023-12-10", "AF"),
+    ("2023-12-10", "2100-01-01", "MILEI"),
+]
+
+
+def _gobierno_por_fecha(fecha):
+    f = pd.to_datetime(fecha, errors="coerce")
+    if pd.isna(f):
+        return None
+    for desde, hasta, nombre in _GOBIERNOS:
+        if pd.Timestamp(desde) <= f < pd.Timestamp(hasta):
+            return nombre
+    return None
+
+
 def _cond_map(cond_por_acta) -> dict:
-    """Normaliza el insumo tema/origen por acta a dict acta_id -> {'tema_area', 'origen'}.
-    Acepta un dict ya armado o un DataFrame con columna acta_id + tema_area/origen
-    (el contrato de variables/proyecto/data/tema_por_acta.parquet)."""
+    """Normaliza el insumo tema/origen por acta a dict acta_id ->
+    {'tema_area','origen','origen_lado','gobierno'}. Acepta un dict ya armado o un
+    DataFrame con acta_id + esas columnas (contratos tema_por_acta y origen_por_acta
+    de variables/proyecto, ya fusionados por cargar_tema_por_acta)."""
     if cond_por_acta is None:
         return {}
     if isinstance(cond_por_acta, dict):
@@ -195,7 +383,7 @@ def _cond_map(cond_por_acta) -> dict:
     if "acta_id" not in getattr(df, "columns", []):
         logger.warning("cond_por_acta sin columna acta_id; ignoro condicionamiento")
         return {}
-    campos = [c for c in ("tema_area", "origen") if c in df.columns]
+    campos = [c for c in ("tema_area", "origen", "origen_lado", "gobierno") if c in df.columns]
     m = {}
     for _, r in df.iterrows():
         info = {c: r[c] for c in campos if pd.notna(r.get(c))}
@@ -209,20 +397,38 @@ def cargar_tema_por_acta(path=None):
     todavía (entonces el proyector cae a la dirección INCONDICIONAL = v1)."""
     p = Path(path) if path else (Path(__file__).resolve().parents[3] /
                                  "variables" / "proyecto" / "data" / "tema_por_acta.parquet")
-    if not p.exists():
-        logger.info("sin tema_por_acta (%s): dirección incondicional (v1)", p)
-        return None
-    try:
-        return pd.read_parquet(p)
-    except (OSError, ValueError) as e:
-        logger.warning("no pude leer tema_por_acta %s: %s", p, e)
-        return None
+    df = None
+    if p.exists():
+        try:
+            df = pd.read_parquet(p)
+        except (OSError, ValueError) as e:
+            logger.warning("no pude leer tema_por_acta %s: %s", p, e)
+    # v2b (2026-07-22): fusionar el contrato ORIGEN por acta (quién impulsa + gobierno)
+    po = p.parent / "origen_por_acta.parquet"
+    if po.exists():
+        try:
+            ori = pd.read_parquet(po)
+            cols = [c for c in ("acta_id", "origen", "origen_lado", "gobierno")
+                    if c in ori.columns]
+            ori = ori[cols].drop_duplicates("acta_id")
+            if df is None:
+                df = ori
+            else:
+                df = df.drop(columns=[c for c in ("origen", "origen_lado", "gobierno")
+                                      if c in df.columns], errors="ignore")
+                df = df.merge(ori, on="acta_id", how="outer")
+        except (OSError, ValueError, KeyError) as e:
+            logger.warning("no pude fusionar origen_por_acta %s: %s", po, e)
+    if df is None:
+        logger.info("sin tema_por_acta ni origen_por_acta (%s): dirección incondicional (v1)", p)
+    return df
 
 
 def proyectar_postura(votos: pd.DataFrame, fecha, camara: str,
                       ventana_dias: int = 730, min_actas: int = 3,
                       padron_path=None, tema=None, origen=None,
-                      cond_por_acta=None, k_shrink: float = 5.0) -> list[dict]:
+                      cond_por_acta=None, k_shrink: float = 5.0,
+                      excluir_aux: bool = True) -> list[dict]:
     """Escenario por bloque para una votacion en `fecha`/`camara`.
 
     COMPOSICION (bancas) = padron OFICIAL vigente a la fecha (datos/padron): la camara
@@ -230,7 +436,10 @@ def proyectar_postura(votos: pd.DataFrame, fecha, camara: str,
     fecha dentro de una ventana movil (walk-forward, sin leakage).
 
     v2 — DIRECCION CONDICIONADA POR TEMA/ORIGEN (2026-07-22): si se pasa `tema` (area,
-    ej. 'TRAB') y/o `origen` (ej. 'OPOSICION') del proyecto objetivo, MAS un mapa
+    ej. 'TRAB') y/o `origen` del proyecto objetivo — fino (EJECUTIVO/OFICIALISMO/
+    OPOSICION) o por LADO (GOBIERNO/OPOSICION, recomendado: agrupa EJECUTIVO+
+    OFICIALISMO y junta mas actas) —, MAS un mapa. Al condicionar por origen solo
+    cuentan actas del MISMO gobierno que `fecha` (guard del recambio del 10-dic),
     `cond_por_acta` (acta_id -> {tema_area, origen}; el contrato tema_por_acta de
     variables/proyecto), la direccion de cada bloque se calcula sobre las actas de la
     ventana que comparten ese tema/origen, y se mezcla con la incondicional por
@@ -252,6 +461,20 @@ def proyectar_postura(votos: pd.DataFrame, fecha, camara: str,
                          f"[{desde.date()}, {fecha.date()})")
     mab = metricas_acta_bloque(hist, min_emit=1)  # ventana chica: no exigir 3
     mab["dir_afirm"] = (mab["direccion"] == "AFIRMATIVO").astype(int)
+
+    # v2b (2026-07-23): las actas AUX (homenajes, trámite, declaraciones de interés,
+    # y en la práctica tratados/pliegos que se aprueban por consenso) NO informan la
+    # postura política de ningún bloque: todos votan que sí. Se excluyen del cálculo de
+    # postura (condicional E incondicional) para que ese consenso no infle el share
+    # afirmativo. Requiere el tema por acta (cond_map); sin él no se puede filtrar.
+    cond_map = _cond_map(cond_por_acta)
+    if excluir_aux and cond_map:
+        es_aux = mab["acta_id"].map(
+            lambda a: str(cond_map.get(str(a), {}).get("tema_area", "")).upper() == "AUX")
+        if es_aux.any() and (~es_aux).any():  # no vaciar la ventana entera
+            logger.info("excluí %d actas AUX (consenso) del cálculo de postura", int(es_aux.sum()))
+            mab = mab[~es_aux]
+
     comp = mab.groupby("bloque_linaje", observed=True).agg(
         share_afirm=("dir_afirm", "mean"),
         desvio=("desvio", "mean"),
@@ -259,12 +482,15 @@ def proyectar_postura(votos: pd.DataFrame, fecha, camara: str,
     )
 
     # v2: subconjunto de la ventana que comparte tema/origen con el proyecto objetivo
-    cond_map = _cond_map(cond_por_acta)
     condicionar = (tema is not None or origen is not None) and len(cond_map) > 0
     cond_share: dict = {}
     if condicionar:
         tgt_t = str(tema).upper() if tema is not None else None
         tgt_o = str(origen).upper() if origen is not None else None
+        # al condicionar por ORIGEN, solo actas del MISMO gobierno que la fecha
+        # objetivo (un bloque cambia de lado con el recambio del 10-dic; decision
+        # de Valle 2026-07-22: no mezclar eras dentro de la ventana)
+        gob_objetivo = _gobierno_por_fecha(fecha) if tgt_o is not None else None
 
         def _match(aid) -> bool:
             info = cond_map.get(str(aid))
@@ -272,8 +498,14 @@ def proyectar_postura(votos: pd.DataFrame, fecha, camara: str,
                 return False
             if tgt_t is not None and str(info.get("tema_area", "")).upper() != tgt_t:
                 return False
-            if tgt_o is not None and str(info.get("origen", "")).upper() != tgt_o:
-                return False
+            if tgt_o is not None:
+                fino = str(info.get("origen", "")).upper()
+                lado = str(info.get("origen_lado", "")).upper()
+                if tgt_o not in (fino, lado):
+                    return False
+                if gob_objetivo is not None and info.get("gobierno") is not None \
+                        and str(info.get("gobierno")).upper() != gob_objetivo:
+                    return False
             return True
 
         sel = mab[mab["acta_id"].map(_match)]

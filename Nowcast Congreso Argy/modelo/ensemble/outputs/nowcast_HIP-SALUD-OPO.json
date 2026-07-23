@@ -1,0 +1,115 @@
+{
+  "proyecto_id": "HIP-SALUD-OPO",
+  "proyecto_id_interno": "HIP-SALUD-OPO",
+  "camara": "diputados",
+  "tipo_mayoria": "SIMPLE",
+  "n_roster": 257,
+  "p_llega_recinto": 1.0,
+  "p_mayoria_recinto": 1.0,
+  "p_aprobacion": 1.0,
+  "afirmativos_medio": 143.3,
+  "afirmativos_banda_5_95": [
+    136.0,
+    150.0
+  ],
+  "umbral_medio": 121.7,
+  "fecha_escenario": "2026-07-23",
+  "bancas_totales": 257,
+  "escenario_auto": true,
+  "roster_nominal": {
+    "n": 257,
+    "ficha_reciente": 141,
+    "ficha_global": 12,
+    "fallback_bloque": 104,
+    "sin_linea_proyectada": 0,
+    "min_votos_ficha": 20
+  },
+  "tema": "SALUD",
+  "origen": "OPOSICION",
+  "bloques_proyectados": [
+    {
+      "bloque": "LA LIBERTAD AVANZA",
+      "bancas": 95,
+      "linea": "NEGATIVO",
+      "desvio": 0.043,
+      "_share_afirm": 0.3087,
+      "_share_incond": 0.4107,
+      "_n_actas": 112,
+      "_n_cond": 47,
+      "_cond": "tema=SALUD;origen=OPOSICION",
+      "_bancas_de": "padron"
+    },
+    {
+      "bloque": "FdT-UxP (kirchnerismo)",
+      "bancas": 93,
+      "linea": "AFIRMATIVO",
+      "desvio": 0.0179,
+      "_share_afirm": 0.9828,
+      "_share_incond": 0.8214,
+      "_n_actas": 112,
+      "_n_cond": 47,
+      "_cond": "tema=SALUD;origen=OPOSICION",
+      "_bancas_de": "padron"
+    },
+    {
+      "bloque": "OTRO / PROVINCIAL",
+      "bancas": 47,
+      "linea": "AFIRMATIVO",
+      "desvio": 0.2398,
+      "_share_afirm": 0.9773,
+      "_share_incond": 0.9643,
+      "_n_actas": 112,
+      "_n_cond": 47,
+      "_cond": "tema=SALUD;origen=OPOSICION",
+      "_bancas_de": "padron"
+    },
+    {
+      "bloque": "PRO",
+      "bancas": 12,
+      "linea": "AFIRMATIVO",
+      "desvio": 0.0815,
+      "_share_afirm": 0.5917,
+      "_share_incond": 0.5536,
+      "_n_actas": 112,
+      "_n_cond": 47,
+      "_cond": "tema=SALUD;origen=OPOSICION",
+      "_bancas_de": "padron"
+    },
+    {
+      "bloque": "RADICALISMO",
+      "bancas": 6,
+      "linea": "AFIRMATIVO",
+      "desvio": 0.1166,
+      "_share_afirm": 0.7337,
+      "_share_incond": 0.8304,
+      "_n_actas": 112,
+      "_n_cond": 47,
+      "_cond": "tema=SALUD;origen=OPOSICION",
+      "_bancas_de": "padron"
+    },
+    {
+      "bloque": "COALICION CIVICA",
+      "bancas": 2,
+      "linea": "AFIRMATIVO",
+      "desvio": 0.0735,
+      "_share_afirm": 0.9923,
+      "_share_incond": 0.9196,
+      "_n_actas": 112,
+      "_n_cond": 47,
+      "_cond": "tema=SALUD;origen=OPOSICION",
+      "_bancas_de": "padron"
+    },
+    {
+      "bloque": "PERONISMO FEDERAL",
+      "bancas": 2,
+      "linea": "AFIRMATIVO",
+      "desvio": 0.1697,
+      "_share_afirm": 0.9965,
+      "_share_incond": 0.964,
+      "_n_actas": 111,
+      "_n_cond": 47,
+      "_cond": "tema=SALUD;origen=OPOSICION",
+      "_bancas_de": "padron"
+    }
+  ]
+}

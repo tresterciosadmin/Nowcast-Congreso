@@ -1,0 +1,91 @@
+{
+  "proyecto_id": "HIP-ECON-PE",
+  "proyecto_id_interno": "HIP-ECON-PE",
+  "camara": "senado",
+  "tipo_mayoria": "SIMPLE",
+  "n_roster": 72,
+  "p_llega_recinto": 1.0,
+  "p_mayoria_recinto": 1.0,
+  "p_aprobacion": 1.0,
+  "afirmativos_medio": 64.6,
+  "afirmativos_banda_5_95": [
+    61.0,
+    68.0
+  ],
+  "umbral_medio": 34.1,
+  "fecha_escenario": "2026-07-23",
+  "bancas_totales": 72,
+  "escenario_auto": true,
+  "roster_nominal": {
+    "n": 72,
+    "ficha_reciente": 0,
+    "ficha_global": 34,
+    "fallback_bloque": 38,
+    "sin_linea_proyectada": 0,
+    "min_votos_ficha": 20
+  },
+  "tema": null,
+  "origen": "GOBIERNO",
+  "bloques_proyectados": [
+    {
+      "bloque": "FdT-UxP (kirchnerismo)",
+      "bancas": 21,
+      "linea": "AFIRMATIVO",
+      "desvio": 0.0093,
+      "_share_afirm": 0.7048,
+      "_share_incond": 0.8421,
+      "_n_actas": 114,
+      "_n_cond": 18,
+      "_cond": "tema=None;origen=GOBIERNO",
+      "_bancas_de": "padron"
+    },
+    {
+      "bloque": "LA LIBERTAD AVANZA",
+      "bancas": 21,
+      "linea": "AFIRMATIVO",
+      "desvio": 0.0476,
+      "_share_afirm": 0.6085,
+      "_share_incond": 0.5556,
+      "_n_actas": 108,
+      "_n_cond": 16,
+      "_cond": "tema=None;origen=GOBIERNO",
+      "_bancas_de": "padron"
+    },
+    {
+      "bloque": "OTRO / PROVINCIAL",
+      "bancas": 17,
+      "linea": "AFIRMATIVO",
+      "desvio": 0.0894,
+      "_share_afirm": 0.6687,
+      "_share_incond": 0.8761,
+      "_n_actas": 113,
+      "_n_cond": 18,
+      "_cond": "tema=None;origen=GOBIERNO",
+      "_bancas_de": "padron"
+    },
+    {
+      "bloque": "RADICALISMO",
+      "bancas": 10,
+      "linea": "AFIRMATIVO",
+      "desvio": 0.0371,
+      "_share_afirm": 0.661,
+      "_share_incond": 0.8407,
+      "_n_actas": 113,
+      "_n_cond": 18,
+      "_cond": "tema=None;origen=GOBIERNO",
+      "_bancas_de": "padron"
+    },
+    {
+      "bloque": "PRO",
+      "bancas": 3,
+      "linea": "AFIRMATIVO",
+      "desvio": 0.0885,
+      "_share_afirm": 0.778,
+      "_share_incond": 0.7788,
+      "_n_actas": 113,
+      "_n_cond": 18,
+      "_cond": "tema=None;origen=GOBIERNO",
+      "_bancas_de": "padron"
+    }
+  ]
+}

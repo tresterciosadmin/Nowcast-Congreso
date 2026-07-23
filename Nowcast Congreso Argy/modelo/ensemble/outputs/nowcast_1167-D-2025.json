@@ -1,16 +1,115 @@
 {
   "proyecto_id": "1167-D-2025",
   "proyecto_id_interno": "HCDN283397",
-  "camara": "Diputados",
+  "camara": "diputados",
   "tipo_mayoria": "SIMPLE",
   "n_roster": 257,
-  "p_llega_recinto": 0.0014,
-  "p_mayoria_recinto": 0.581,
-  "p_aprobacion": 0.0008,
-  "afirmativos_medio": 109.6,
+  "p_llega_recinto": 1.0,
+  "p_mayoria_recinto": 1.0,
+  "p_aprobacion": 1.0,
+  "afirmativos_medio": 144.3,
   "afirmativos_banda_5_95": [
-    104.0,
-    115.0
+    137.0,
+    151.0
   ],
-  "umbral_medio": 109.4
+  "umbral_medio": 121.7,
+  "fecha_escenario": "2026-07-14",
+  "bancas_totales": 257,
+  "escenario_auto": true,
+  "roster_nominal": {
+    "n": 257,
+    "ficha_reciente": 141,
+    "ficha_global": 12,
+    "fallback_bloque": 104,
+    "sin_linea_proyectada": 0,
+    "min_votos_ficha": 20
+  },
+  "tema": null,
+  "origen": "GOBIERNO",
+  "bloques_proyectados": [
+    {
+      "bloque": "LA LIBERTAD AVANZA",
+      "bancas": 95,
+      "linea": "AFIRMATIVO",
+      "desvio": 0.0449,
+      "_share_afirm": 0.8803,
+      "_share_incond": 0.3299,
+      "_n_actas": 194,
+      "_n_cond": 23,
+      "_cond": "tema=None;origen=GOBIERNO",
+      "_bancas_de": "padron"
+    },
+    {
+      "bloque": "FdT-UxP (kirchnerismo)",
+      "bancas": 93,
+      "linea": "NEGATIVO",
+      "desvio": 0.0148,
+      "_share_afirm": 0.4367,
+      "_share_incond": 0.8454,
+      "_n_actas": 194,
+      "_n_cond": 23,
+      "_cond": "tema=None;origen=GOBIERNO",
+      "_bancas_de": "padron"
+    },
+    {
+      "bloque": "OTRO / PROVINCIAL",
+      "bancas": 47,
+      "linea": "AFIRMATIVO",
+      "desvio": 0.2697,
+      "_share_afirm": 0.9514,
+      "_share_incond": 0.9278,
+      "_n_actas": 194,
+      "_n_cond": 23,
+      "_cond": "tema=None;origen=GOBIERNO",
+      "_bancas_de": "padron"
+    },
+    {
+      "bloque": "PRO",
+      "bancas": 12,
+      "linea": "AFIRMATIVO",
+      "desvio": 0.0854,
+      "_share_afirm": 0.8987,
+      "_share_incond": 0.433,
+      "_n_actas": 194,
+      "_n_cond": 23,
+      "_cond": "tema=None;origen=GOBIERNO",
+      "_bancas_de": "padron"
+    },
+    {
+      "bloque": "RADICALISMO",
+      "bancas": 6,
+      "linea": "AFIRMATIVO",
+      "desvio": 0.1439,
+      "_share_afirm": 0.9595,
+      "_share_incond": 0.7732,
+      "_n_actas": 194,
+      "_n_cond": 23,
+      "_cond": "tema=None;origen=GOBIERNO",
+      "_bancas_de": "padron"
+    },
+    {
+      "bloque": "COALICION CIVICA",
+      "bancas": 2,
+      "linea": "AFIRMATIVO",
+      "desvio": 0.0924,
+      "_share_afirm": 0.9074,
+      "_share_incond": 0.8814,
+      "_n_actas": 194,
+      "_n_cond": 23,
+      "_cond": "tema=None;origen=GOBIERNO",
+      "_bancas_de": "padron"
+    },
+    {
+      "bloque": "PERONISMO FEDERAL",
+      "bancas": 2,
+      "linea": "AFIRMATIVO",
+      "desvio": 0.1563,
+      "_share_afirm": 0.9449,
+      "_share_incond": 0.8912,
+      "_n_actas": 193,
+      "_n_cond": 23,
+      "_cond": "tema=None;origen=GOBIERNO",
+      "_bancas_de": "padron"
+    }
+  ]
 }

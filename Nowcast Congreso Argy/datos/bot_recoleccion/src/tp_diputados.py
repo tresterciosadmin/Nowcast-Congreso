@@ -64,9 +64,23 @@ MESES = {"ENERO": 1, "FEBRERO": 2, "MARZO": 3, "ABRIL": 4, "MAYO": 5, "JUNIO": 6
 RE_EXP = re.compile(r"^\d{1,4}-[A-Z]{1,3}-\d{4}$")
 
 
+# hcdn.gob.ar suele servir la cadena TLS incompleta (falta el certificado
+# intermedio): en un entorno limpio (CI) la verificación falla con
+# "unable to get local issuer certificate". Se intenta SIEMPRE con verificación
+# y, solo si esta falla por SSL, se reintenta sin verificar (plan B defensivo
+# para no frenar el bot). Forzar con TLS_VERIFY=0.
+_VERIFY = os.environ.get("TLS_VERIFY", "1") != "0"
+
+
 def _pedir(session: requests.Session, url: str) -> str:
     def _do() -> str:
-        r = session.get(url, headers=HEADERS, timeout=TIMEOUT)
+        try:
+            r = session.get(url, headers=HEADERS, timeout=TIMEOUT, verify=_VERIFY)
+        except requests.exceptions.SSLError:
+            import urllib3
+            urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+            logger.warning("SSL verify falló en %s; reintento con verify=False", url)
+            r = session.get(url, headers=HEADERS, timeout=TIMEOUT, verify=False)
         r.raise_for_status()
         return r.text
     if _HAS_TENACITY:

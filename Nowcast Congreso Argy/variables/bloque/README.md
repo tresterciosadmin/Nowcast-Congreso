@@ -52,3 +52,15 @@ Tests offline (sin datos reales, desde /tmp por el protocolo de sync):
 ## Convenciones
 Resiliencia: errores específicos, parsing defensivo, logging estructurado (no hay I/O
 de red acá). No editar archivos de otros módulos; se consume su contrato (parquet).
+
+## v2 — dirección condicionada por tema/origen (2026-07-22)
+`proyectar_postura(...)` acepta ahora `tema` (área, ej. `ECON`), `origen` (ej. `OPOSICION`)
+y `cond_por_acta` (el contrato `variables/proyecto/data/tema_por_acta.parquet`, acta_id→tema).
+Con eso, la DIRECCIÓN de cada bloque se calcula sobre las actas de la ventana que comparten
+tema/origen y se mezcla con la incondicional por **encogimiento** (`k_shrink=5`), para no dar
+vuelta una postura con 2-3 actas. **Sin `tema`/`origen` el resultado es IDÉNTICO al v1**
+(campo `_share_incond` lo evidencia) → no rompe el contrato ni el ensemble.
+Resuelve el límite del caso testigo 1167 (dirección incondicional → 100% irreal).
+- CLI: `python variables\bloque\src\bloque.py proyectar <YYYY-MM-DD> <camara> --tema ECON [--origen OPOSICION]`
+- Insumo: correr antes `variables\proyecto\src\tema_por_acta.py` (necesita API key) para generar el contrato.
+- Tests: `python variables\bloque\tests\test_bloque_v2.py` (5 chequeos, sin red).

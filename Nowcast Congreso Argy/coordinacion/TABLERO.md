@@ -46,7 +46,7 @@ Depende de otros (no empezar hasta que su dependencia esté HECHA):
 | datos/canonica | Claude+Franco | 2026-06-25 | cubre Diputados 2011–2025 + Senado 2024–2025 |
 | datos/seguimiento | Claude+Valle | 2026-06-29 | extractor de giros/trámite Dip+Sen — VALIDADO EN VIVO |
 | datos/proyectos | Claude+Valle | 2026-06-29 | base SQLite de PdL + export Excel; upsert idempotente por denominador |
-| variables/proyecto | Claude+Valle | 2026-06-30 | agente de taxonomías listo + vocabulario validado a mano (88 actas, RESULTADOS-muestra-manual.md) + ICG Di Tella corrido (icg_mensual.csv, 296 meses) |
+| variables/proyecto | Claude+Valle | 2026-06-30 | agente de taxonomías + vocabulario validado (88 actas) + ICG (296 meses) + origen/líder. NUEVO (2026-07-22): tema_por_acta.py = puente que clasifica por TEXTO ~890 títulos de actas votadas → acta_id→tema para el v2 de bloque (4 tests). Falta corrida con API key |
 | modelo/voto_individual | Claude+Valle | 2026-07-01 | índice de disciplina individual + dimensionamiento del set pivote (gate 1 de 1B.4) |
 | variables/legislador | Claude+Valle | 2026-07-01 | ficha individual por legislador (identidad, bloques, presentismo, perfil de voto, desvío) |
 | datos/export | Claude+Valle | 2026-07-02 | base unificada: SQLite completo + Excel por gobierno; disputada = ±5% del umbral de mayoría |
@@ -57,7 +57,7 @@ Depende de otros (no empezar hasta que su dependencia esté HECHA):
 | datos/bot_recoleccion | Claude+Franco | 2026-07-11 | bot diario BICAMERAL en GitHub Actions: DAE Senado (1.004 exp.) + TP Diputados con COFIRMANTES completos (13+13 tests) |
 | variables/embudo | Claude+Valle | 2026-07-12 | supervivencia del proyecto de ley: embudo por etapas + modelo v1 (rasgos al presentar, sin leakage) + backtest temporal; consume contrato de datos/expedientes |
 | modelo/ensemble | Claude+Valle | 2026-07-12 | P(aprob)=P(llega)×P(mayoría). nowcast_auto (escenario desde padrón+histórico). CASO TESTIGO bicameral 1167-D-2025: Dip 137/123 · Sen 61/33, ambas ~100% = artefacto de dirección incondicional. PRIORIDAD = v2 (dirección por tema/origen) |
-| variables/bloque | Claude+Valle | 2026-07-12 | v1: serie temporal por bloque (tamaño/cohesión-Rice/desvío/fractura) + proyector point-in-time de postura (escenario del ensemble). SERIE CORRIDA (272) + proyector enchufado al padrón (bancas reales a fecha). Falta v2 dirección por tema/origen. Registrado 2026-07-14 |
+| variables/bloque | Claude+Valle | 2026-07-12 | v2 (2026-07-22): dirección de bloque CONDICIONADA por tema/origen (proyectar_postura con tema/origen/cond_por_acta + shrinkage); sin tema = v1 idéntico. Consume el puente tema_por_acta. 16 tests OK. Falta correr con temas reales + enchufar al ensemble |
 | datos/padron | Valle | 2026-07-14 | nómina oficial individual: Diputados 257 + Senado 72 vigentes (mandato desde-hasta, clave canónica, linaje). Composición a la fecha; enchufada al proyector (roster 375→257). Falta histórico de mandatos |
 
 ## Hecho

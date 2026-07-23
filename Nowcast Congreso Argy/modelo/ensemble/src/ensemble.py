@@ -70,8 +70,9 @@ def _cargar_proyector():
     if str(blo) not in sys.path:
         sys.path.insert(0, str(blo))
     try:
-        from bloque import cargar as cargar_bloque, proyectar_postura  # type: ignore
-        return cargar_bloque, proyectar_postura
+        from bloque import (cargar as cargar_bloque, proyectar_postura,  # type: ignore
+                            cargar_tema_por_acta)
+        return cargar_bloque, proyectar_postura, cargar_tema_por_acta
     except ImportError as e:
         raise RuntimeError(f"no pude importar proyectar_postura desde {blo}: {e}") from e
 
@@ -198,19 +199,27 @@ def nowcast_proyecto(proyecto_id: str, escenario: dict, p_embudo_path: Path,
 
 def nowcast_auto(proyecto_id: str, fecha: str, camara: str, tipo_mayoria: str,
                  p_embudo_path: Path, p_llega=None, canon_dir=None,
-                 n_sims: int = 2000) -> dict:
+                 n_sims: int = 2000, tema=None, origen=None) -> dict:
     """Nowcast end-to-end con el escenario ARMADO por variables/bloque (proyector
     point-in-time) en vez de a mano: bancas = padron oficial vigente a la fecha
-    (257/72), postura/desvio = historia. p_llega del embudo (o override)."""
-    cargar_bloque, proyectar_postura = _cargar_proyector()
+    (257/72), postura/desvio = historia. p_llega del embudo (o override).
+
+    v2: si se pasa `tema` (area, ej. 'TRAB') y/o `origen` del proyecto, la DIRECCIÓN
+    de cada bloque se condiciona a las votaciones del mismo tema/origen (consumiendo
+    variables/proyecto/data/tema_por_acta.parquet). Sin tema/origen = incondicional (v1)."""
+    cargar_bloque, proyectar_postura, cargar_tema_por_acta = _cargar_proyector()
     root = Path(__file__).resolve().parents[3]
     canon = Path(canon_dir) if canon_dir else root / "datos" / "canonica" / "data" / "clean"
     votos = cargar_bloque(canon)
-    bloques = proyectar_postura(votos, fecha, camara)
+    cond = cargar_tema_por_acta() if (tema or origen) else None
+    bloques = proyectar_postura(votos, fecha, camara, tema=tema, origen=origen,
+                                cond_por_acta=cond)
     n_bancas = sum(int(b["bancas"]) for b in bloques)
-    logger.info("escenario auto: %d bloques, %d bancas (%s)", len(bloques), n_bancas,
-                bloques[0].get("_bancas_de", "?"))
-    escenario = {"tipo_mayoria": tipo_mayoria, "camara": camara, "bloques": bloques}
+    logger.info("escenario auto: %d bloques, %d bancas (%s)%s", len(bloques), n_bancas,
+                bloques[0].get("_bancas_de", "?"),
+                f" | condicionado tema={tema} origen={origen}" if (tema or origen) else "")
+    escenario = {"tipo_mayoria": tipo_mayoria, "camara": camara, "bloques": bloques,
+                 "tema": tema, "origen": origen}
     if p_llega is not None:
         escenario["p_llega_recinto"] = float(p_llega)
     nc = nowcast_proyecto(proyecto_id, escenario, p_embudo_path, n_sims=n_sims)
@@ -286,11 +295,23 @@ def main(argv: list[str]) -> None:
         return
     if cmd == "nowcast_auto":
         if len(argv) < 5:
-            raise SystemExit("uso: python ensemble.py nowcast_auto <proyecto_id> <YYYY-MM-DD> <camara> [tipo_mayoria] [p_llega]")
-        proyecto_id, fecha, camara = argv[2], argv[3], argv[4]
-        tipo = argv[5] if len(argv) > 5 else "SIMPLE"
-        p_llega = float(argv[6]) if len(argv) > 6 else None
-        nc = nowcast_auto(proyecto_id, fecha, camara, tipo, _p_embudo_path(), p_llega=p_llega)
+            raise SystemExit("uso: python ensemble.py nowcast_auto <proyecto_id> <YYYY-MM-DD> <camara> [tipo_mayoria] [p_llega] [--tema AREA] [--origen ORIGEN]")
+        tema = origen = None
+        rest = list(argv[2:])
+        pos = []
+        i = 0
+        while i < len(rest):
+            if rest[i] == "--tema" and i + 1 < len(rest):
+                tema = rest[i + 1]; i += 2
+            elif rest[i] == "--origen" and i + 1 < len(rest):
+                origen = rest[i + 1]; i += 2
+            else:
+                pos.append(rest[i]); i += 1
+        proyecto_id, fecha, camara = pos[0], pos[1], pos[2]
+        tipo = pos[3] if len(pos) > 3 else "SIMPLE"
+        p_llega = float(pos[4]) if len(pos) > 4 else None
+        nc = nowcast_auto(proyecto_id, fecha, camara, tipo, _p_embudo_path(),
+                          p_llega=p_llega, tema=tema, origen=origen)
         imprimir_tarjeta(nc)
         out = Path(__file__).resolve().parents[1] / "outputs"
         out.mkdir(exist_ok=True)

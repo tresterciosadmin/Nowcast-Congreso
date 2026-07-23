@@ -83,3 +83,13 @@ Resiliencia obligatoria: errores específicos, reintentos con backoff en I/O de 
 
 ## Nota (2026-06-25): clasificación por TEMA — prioridad confirmada
 El usuario confirmó que hay que **separar/clasificar por tema del proyecto** (materia del expediente: económico, penal, laboral, salud, etc.). Es una feature central de este módulo: a partir del `titulo`/texto del expediente, asignar una taxonomía de temas (reglas + NLP), validada en una muestra etiquetada. Habilita análisis y modelos por materia.
+
+## Puente tema_por_acta — tema de cada VOTACIÓN para el v2 de bloque (2026-07-22) — `src/tema_por_acta.py`
+Clasifica por TEXTO el TÍTULO de las ~890 actas VOTADAS (de `datos/expedientes/acta_expediente.parquet`,
+que traen título DESCRIPTIVO) reusando la interfaz pública del agente (`clasificar_texto`).
+Produce el contrato `data/tema_por_acta.parquet` (acta_id, tema_id, tema_area, confianza, todas_ids, via).
+Es el subconjunto que desbloquea el v2 de `variables/bloque` SIN esperar el batch masivo de 112k PDFs:
+para condicionar la postura de bloque sólo importan las actas que efectivamente se votaron.
+Idempotente (no reclasifica lo ya resuelto) y resiliente (una fila rota no corta el lote).
+- Correr (local, necesita `ANTHROPIC_API_KEY`): `python variables\proyecto\src\tema_por_acta.py [--limite N] [--todos]`
+- Test sin red/API (LLM inyectado): `python variables\proyecto\tests\test_tema_por_acta.py` (4 chequeos).

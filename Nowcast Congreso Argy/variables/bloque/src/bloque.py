@@ -19,12 +19,11 @@ SEMÁNTICA (idéntica al agregador, para que el escenario encaje sin traducir):
   desvio in [0,1]                                -> tasa de ruptura interna (cohesión inversa).
 El agregador reparte ese desvío entre las otras conductas (reparto_desvio).
 
-SIMPLIFICACIÓN v1 (documentada): la proyección de la DIRECCIÓN es INCONDICIONAL
-(tendencia reciente del bloque). La versión POR TEMA/ORIGEN —la que de verdad
-discrimina la postura— queda para v2, cuando variables/proyecto publique el tema
-(batch de taxonomías) y el origen del proyecto. El DESVÍO/cohesión, en cambio, ya
-sale bien acá: es exactamente lo que el ensemble necesita para calibrar su banda
-en vez de inventarlo a mano.
+v2 (2026-07-22): la DIRECCIÓN puede CONDICIONARSE por TEMA/ORIGEN del proyecto
+(parámetros tema/origen/cond_por_acta de proyectar_postura), consumiendo el contrato
+variables/proyecto/data/tema_por_acta.parquet. Sin tema/origen la dirección es la
+INCONDICIONAL del v1 (tendencia reciente) -> retrocompatible. El DESVÍO/cohesión ya
+salía bien en v1: es lo que el ensemble necesita para calibrar su banda.
 
 4 directivas: errores específicos, parsing defensivo, logging estructurado.
 (No hay I/O de red en este módulo; por eso no hay backoff de red.)
@@ -184,17 +183,62 @@ def _bancas_padron(camara: str, fecha, padron_path=None):
     return vig.groupby("bloque_linaje").size().astype(int).to_dict()
 
 
+def _cond_map(cond_por_acta) -> dict:
+    """Normaliza el insumo tema/origen por acta a dict acta_id -> {'tema_area', 'origen'}.
+    Acepta un dict ya armado o un DataFrame con columna acta_id + tema_area/origen
+    (el contrato de variables/proyecto/data/tema_por_acta.parquet)."""
+    if cond_por_acta is None:
+        return {}
+    if isinstance(cond_por_acta, dict):
+        return {str(k): v for k, v in cond_por_acta.items()}
+    df = cond_por_acta
+    if "acta_id" not in getattr(df, "columns", []):
+        logger.warning("cond_por_acta sin columna acta_id; ignoro condicionamiento")
+        return {}
+    campos = [c for c in ("tema_area", "origen") if c in df.columns]
+    m = {}
+    for _, r in df.iterrows():
+        info = {c: r[c] for c in campos if pd.notna(r.get(c))}
+        if info:
+            m[str(r["acta_id"])] = info
+    return m
+
+
+def cargar_tema_por_acta(path=None):
+    """Lee el contrato tema_por_acta.parquet (variables/proyecto). None si no está
+    todavía (entonces el proyector cae a la dirección INCONDICIONAL = v1)."""
+    p = Path(path) if path else (Path(__file__).resolve().parents[3] /
+                                 "variables" / "proyecto" / "data" / "tema_por_acta.parquet")
+    if not p.exists():
+        logger.info("sin tema_por_acta (%s): dirección incondicional (v1)", p)
+        return None
+    try:
+        return pd.read_parquet(p)
+    except (OSError, ValueError) as e:
+        logger.warning("no pude leer tema_por_acta %s: %s", p, e)
+        return None
+
+
 def proyectar_postura(votos: pd.DataFrame, fecha, camara: str,
                       ventana_dias: int = 730, min_actas: int = 3,
-                      padron_path=None) -> list[dict]:
+                      padron_path=None, tema=None, origen=None,
+                      cond_por_acta=None, k_shrink: float = 5.0) -> list[dict]:
     """Escenario por bloque para una votacion en `fecha`/`camara`.
 
     COMPOSICION (bancas) = padron OFICIAL vigente a la fecha (datos/padron): la camara
     real (257 Dip / 72 Sen). COMPORTAMIENTO (linea, desvio) = historia ANTERIOR a la
-    fecha dentro de una ventana movil (walk-forward, sin leakage). Asi se separa la
-    foto de la camara (quien ocupa las bancas hoy) de la trayectoria (como vota cada
-    espacio). Si no hay padron, cae al conteo de votantes por ventana (roster inflado).
-    Devuelve [{bloque, bancas, linea, desvio}, ...] listo para el ensemble.
+    fecha dentro de una ventana movil (walk-forward, sin leakage).
+
+    v2 — DIRECCION CONDICIONADA POR TEMA/ORIGEN (2026-07-22): si se pasa `tema` (area,
+    ej. 'TRAB') y/o `origen` (ej. 'OPOSICION') del proyecto objetivo, MAS un mapa
+    `cond_por_acta` (acta_id -> {tema_area, origen}; el contrato tema_por_acta de
+    variables/proyecto), la direccion de cada bloque se calcula sobre las actas de la
+    ventana que comparten ese tema/origen, y se mezcla con la incondicional por
+    ENCOGIMIENTO (shrinkage empirico-bayesiano, pseudo-conteo k_shrink) para no dar
+    vuelta la direccion con 2-3 actas. Sin `tema`/`origen` (o sin mapa), el resultado
+    es IDENTICO al v1 incondicional -> no rompe el contrato ni el ensemble.
+
+    Devuelve [{bloque, bancas, linea, desvio, ...}], listo para el ensemble.
     """
     fecha = pd.to_datetime(fecha)
     if pd.isna(fecha):
@@ -214,6 +258,38 @@ def proyectar_postura(votos: pd.DataFrame, fecha, camara: str,
         n_actas=("acta_id", "nunique"),
     )
 
+    # v2: subconjunto de la ventana que comparte tema/origen con el proyecto objetivo
+    cond_map = _cond_map(cond_por_acta)
+    condicionar = (tema is not None or origen is not None) and len(cond_map) > 0
+    cond_share: dict = {}
+    if condicionar:
+        tgt_t = str(tema).upper() if tema is not None else None
+        tgt_o = str(origen).upper() if origen is not None else None
+
+        def _match(aid) -> bool:
+            info = cond_map.get(str(aid))
+            if not info:
+                return False
+            if tgt_t is not None and str(info.get("tema_area", "")).upper() != tgt_t:
+                return False
+            if tgt_o is not None and str(info.get("origen", "")).upper() != tgt_o:
+                return False
+            return True
+
+        sel = mab[mab["acta_id"].map(_match)]
+        if sel.empty:
+            logger.warning("condicionamiento tema=%s origen=%s: 0 actas en ventana; "
+                           "caigo a incondicional", tema, origen)
+            condicionar = False
+        else:
+            cg = sel.groupby("bloque_linaje", observed=True).agg(
+                share_cond=("dir_afirm", "mean"),
+                n_cond=("acta_id", "nunique"),
+            )
+            cond_share = cg.to_dict("index")
+            logger.info("v2: %d actas condicionadas (tema=%s origen=%s) sobre %d de la ventana",
+                        sel["acta_id"].nunique(), tema, origen, mab["acta_id"].nunique())
+
     # composicion a la fecha: padron oficial si esta; si no, conteo por ventana
     base = _bancas_padron(camara, fecha, padron_path)
     fuente_bancas = "padron"
@@ -226,21 +302,31 @@ def proyectar_postura(votos: pd.DataFrame, fecha, camara: str,
         nb = int(nb)
         if nb <= 0:
             continue
+        n_cond_used = 0
         if linaje in comp.index:
             r = comp.loc[linaje]
-            share = float(r["share_afirm"])
+            share_u = float(r["share_afirm"])
             desvio = float(np.clip(r["desvio"], 0.0, 1.0))
             nact = int(r["n_actas"])
-            if nact < int(min_actas):
-                # poca historia: mantengo la banca pero marco baja confianza
-                pass
+            share = share_u
+            cs = cond_share.get(linaje)
+            if cs is not None:
+                n_c = float(cs["n_cond"])
+                s_c = float(cs["share_cond"])
+                # encogimiento hacia la incondicional: pocas actas del tema -> confia
+                # menos en el condicionado; muchas -> lo domina.
+                share = (n_c * s_c + float(k_shrink) * share_u) / (n_c + float(k_shrink))
+                n_cond_used = int(n_c)
         else:
-            share, desvio, nact = 0.5, 0.15, 0  # sin historia: neutro, desvio tipico
+            share_u, share, desvio, nact = 0.5, 0.5, 0.15, 0  # sin historia: neutro
         linea = "AFIRMATIVO" if share >= 0.5 else "NEGATIVO"
         out.append({"bloque": str(linaje), "bancas": nb, "linea": linea,
                     "desvio": round(desvio, 4),
                     "_share_afirm": round(share, 4),
-                    "_n_actas": nact, "_bancas_de": fuente_bancas})
+                    "_share_incond": round(share_u, 4),
+                    "_n_actas": nact, "_n_cond": n_cond_used,
+                    "_cond": (f"tema={tema};origen={origen}" if condicionar else None),
+                    "_bancas_de": fuente_bancas})
     if not out:
         raise ValueError("ningun bloque con bancas para proyectar")
     return sorted(out, key=lambda d: d["bancas"], reverse=True)
@@ -259,10 +345,14 @@ def _cli_serie(canon_dir: Path, out: Path) -> None:
     print(s.tail(20).to_string(index=False))
 
 
-def _cli_proyectar(fecha: str, camara: str, canon_dir: Path) -> None:
+def _cli_proyectar(fecha: str, camara: str, canon_dir: Path,
+                   tema=None, origen=None) -> None:
     votos = cargar(canon_dir)
-    esc = proyectar_postura(votos, fecha, camara)
-    print(json.dumps({"fecha": fecha, "camara": camara, "bloques": esc},
+    cpa = cargar_tema_por_acta() if (tema or origen) else None
+    esc = proyectar_postura(votos, fecha, camara, tema=tema, origen=origen,
+                            cond_por_acta=cpa)
+    print(json.dumps({"fecha": fecha, "camara": camara, "tema": tema,
+                      "origen": origen, "bloques": esc},
                      ensure_ascii=False, indent=2))
 
 
@@ -281,10 +371,22 @@ def main(argv: list[str] | None = None) -> int:
             _cli_serie(canon, OUT_DEFAULT)
         elif cmd == "proyectar":
             if len(argv) < 3:
-                print("uso: bloque.py proyectar <YYYY-MM-DD> <camara> [canon_dir]")
+                print("uso: bloque.py proyectar <YYYY-MM-DD> <camara> "
+                      "[--tema AREA] [--origen ORIGEN] [canon_dir]")
                 return 2
-            canon = Path(argv[3]) if len(argv) > 3 else DEFAULT_CANON
-            _cli_proyectar(argv[1], argv[2], canon)
+            tema = origen = None
+            rest = argv[3:]
+            pos = []
+            i = 0
+            while i < len(rest):
+                if rest[i] == "--tema" and i + 1 < len(rest):
+                    tema = rest[i + 1]; i += 2
+                elif rest[i] == "--origen" and i + 1 < len(rest):
+                    origen = rest[i + 1]; i += 2
+                else:
+                    pos.append(rest[i]); i += 1
+            canon = Path(pos[0]) if pos else DEFAULT_CANON
+            _cli_proyectar(argv[1], argv[2], canon, tema=tema, origen=origen)
         else:
             print(f"comando desconocido: {cmd}")
             return 2

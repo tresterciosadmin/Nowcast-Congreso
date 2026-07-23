@@ -121,3 +121,9 @@ Plan estructurado para trabajo en paralelo. Para cada bloque: **qué** hay que h
 | dashboard mientras se cierra ensemble | consume contrato, no código |
 
 **Cuellos de botella (un solo dueño, coordina
+---
+
+## Backlog anotado (pendientes, no abrir aún)
+
+### Proyectos MULTITEMÁTICOS (leyes ómnibus) — pendiente (anotado 2026-07-22, Valle)
+El tagger de temas (`variables/proyecto/tema_por_acta.py`) y el v2 de bloque usan hoy **un solo tema primario** por votación. Las leyes ómnibus mezclan varias materias en una sola votación y no encajan en un tema único: p. ej. **Ley Bases** (economía + desregulación + laboral + energía + privatizaciones), **Ley de Glaciares** (ambiente + minería + federalismo), y la **ley de desregulación difundida hoy en el Congreso**. El tagger YA guarda todas las etiquetas (`todas_ids`, multi-label), pero el condicionamiento del v2 sólo lee la primaria. **Pendiente:** decidir cómo condiciona la dirección de bloque cuando un proyecto es multitemático (¿promedio ponderado de las posturas por cada tema?, ¿el tema dominante?, ¿la materia más conflictiva?). **Por ahora se omite** — se usa el tema primario. Retomar cuando el v2 esté validado con temas de un solo eje.

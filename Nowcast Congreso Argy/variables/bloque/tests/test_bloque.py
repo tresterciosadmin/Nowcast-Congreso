@@ -78,7 +78,7 @@ def test_serie_agrega_por_periodo():
 
 def test_proyector_formato_ensemble():
     v = _votos_sinteticos()
-    esc = B.proyectar_postura(v, "2023-06-01", "diputados", ventana_dias=730, min_actas=2)
+    esc = B.proyectar_postura(v, "2023-06-01", "diputados", ventana_dias=730, min_actas=2, padron_path="__no__")
     assert isinstance(esc, list) and esc
     for b in esc:
         assert set(["bloque", "bancas", "linea", "desvio"]).issubset(b)
@@ -94,12 +94,12 @@ def test_proyector_walk_forward_sin_leakage():
     # Con fecha temprana solo ve las primeras actas; nunca el futuro.
     v = _votos_sinteticos()
     # corte justo después de 3 actas (~2022-05-02); ventana amplia
-    esc = B.proyectar_postura(v, "2022-05-10", "diputados", ventana_dias=3650, min_actas=1)
+    esc = B.proyectar_postura(v, "2022-05-10", "diputados", ventana_dias=3650, min_actas=1, padron_path="__no__")
     # el nº de actas usadas por OFI no puede exceder las anteriores a la fecha
     ofi = [b for b in esc if b["bloque"] == "OFI"][0]
     assert ofi["_n_actas"] <= 3
     # y mover la fecha hacia adelante nunca reduce la historia disponible
-    esc2 = B.proyectar_postura(v, "2023-12-31", "diputados", ventana_dias=3650, min_actas=1)
+    esc2 = B.proyectar_postura(v, "2023-12-31", "diputados", ventana_dias=3650, min_actas=1, padron_path="__no__")
     ofi2 = [b for b in esc2 if b["bloque"] == "OFI"][0]
     assert ofi2["_n_actas"] >= ofi["_n_actas"]
 

@@ -8,6 +8,7 @@
 Nowcast Legislativo Argentino: estima la probabilidad de sanción de proyectos de ley en el Congreso. Contexto de negocio, metodología y reglas de dominio están en `docs/contexto/INSTRUCTIVO-MAESTRO.md` y `docs/contexto/Nowcast-Congreso_viabilidad_y_plan.md`. **No los repitas; citalos.**
 
 ## Orden de lectura obligatorio
+0. **`coordinacion/URGENTE.md`** — 🔴 **SIEMPRE PRIMERO.** Si tiene algo, se resuelve (o se decide postergar explícitamente) ANTES de reclamar tarea nueva. Ver la regla más abajo.
 1. Este `CLAUDE.md`.
 2. `coordinacion/ESTADO-DEL-PROYECTO.md` — qué se hizo hasta ahora (documento vivo).
 3. `coordinacion/TABLERO.md` — qué tareas están libres / tomadas.
@@ -23,6 +24,11 @@ Nowcast Legislativo Argentino: estima la probabilidad de sanción de proyectos d
 
 ## Regla de oro de trazabilidad: **cada cambio se registra**
 Todo avance relevante (terminar algo, cambiar un contrato, tomar una decisión) **agrega una entrada a `coordinacion/ESTADO-DEL-PROYECTO.md`** en el mismo PR. Un PR que cambia código y no actualiza ESTADO no se mergea. Formato en ese archivo.
+
+## Regla de URGENCIAS: **lo urgente salta al principio de cada sesión**
+`coordinacion/URGENTE.md` es la bandeja de lo que **bloquea o ensucia trabajo de otros**: datos que hay que regenerar tras un pull, filas dudosas que pueden contaminar un modelo, contratos rotos. **Cualquiera del equipo —persona o Claude— lo abre al EMPEZAR, antes de elegir en qué trabajar.** Si hay algo, se resuelve; si se posterga, se deja escrito por qué. Al resolver, se BORRA de URGENTE (el registro permanente queda en `ESTADO-DEL-PROYECTO.md`): el archivo debe estar vacío la mayor parte del tiempo. Quien detecta algo urgente lo agrega ahí en el mismo PR, con fecha, qué hacer y por qué es urgente.
+
+**Por qué existe:** dos incidentes reales. (1) El equipo diagnosticó el linaje del Senado sobre un parquet anterior a un fix ya pusheado y construyó un corrector que no cambia ninguna fila. (2) Una fila mal curada metió 610 proyectos falsos en una señal del modelo. En ambos casos el aviso existía en la bitácora, pero enterrado entre entradas: **lo urgente necesita un lugar donde no se pueda no verlo.**
 
 ## Regla del TABLERO DE CONTROL: **el mapa se actualiza en cada cambio**
 En la raíz vive `TABLERO-CONTROL.html` (se abre con doble click), el tablero ejecutivo que consolida el plan de la plataforma con el estado real. Su única fuente de datos es **`tablero_datos.js`** — ese archivo es OBLIGATORIO actualizarlo en el mismo PR que ESTADO y EN-HUMANO cuando cambia algo relevante: (1) fecha y autor, (2) el `estado` de lo que tocaste (modulos_plataforma / etapas / modulos_repo), (3) un hito nuevo arriba de todo en `hitos` (1-3 frases, en humano), (4) kpis/metricas si cambiaron los números. **NO edites `TABLERO-CONTROL.html`** (es el diseño, fijo). Estados válidos: HECHO | EN CURSO | PARCIAL | PENDIENTE | FUTURO | REPLANTEADO. Un PR que cambia el estado del proyecto y no actualiza el tablero no se mergea.

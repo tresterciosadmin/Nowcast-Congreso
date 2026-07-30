@@ -68,3 +68,10 @@ datos/bot_recoleccion/data/clean/*
 !datos/expedientes/data/clean/
 datos/expedientes/data/clean/*
 !datos/expedientes/data/clean/*.parquet
+
+# variables/proyecto: el ROSTER DE JEFES DE BLOQUE es fuente de verdad CURADA a
+# mano (no se regenera con un script) -> SÍ se versiona. Mismo criterio que el
+# padrón de datos/senado. (Omisión detectada antes del commit del 30-07: la
+# regla *.csv lo atrapaba, igual que había pasado con los parquet de expedientes.)
+!variables/proyecto/data/jefes_bloque.csv
+!variables/proyecto/data/jefes_bloque_oficial.csv

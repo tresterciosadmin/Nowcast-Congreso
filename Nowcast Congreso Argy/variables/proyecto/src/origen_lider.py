@@ -123,7 +123,13 @@ def cargar(exp_clean: Path, leg_data: Path) -> dict:
         "exp": exp,
         "giros": _pq(exp_clean / "expedientes_giros.parquet"),
         "leyes": _pq(exp_clean / "expedientes_leyes.parquet"),
-        "comis": _pq(exp_clean / "comisiones_integrantes.parquet"),
+        # AUTORIDADES primero (trae la columna `cargo` con Presidente/Vice/Secretario:
+        # es la que destraba lider_pdte_comision). `comisiones_integrantes` queda de
+        # fallback: es la nómina completa pero SIN rol. Bajar con
+        # `python variables/proyecto/src/bajar_autoridades_comisiones.py`.
+        "comis": (_pq(exp_clean / "comisiones_autoridades.parquet")
+                  if (exp_clean / "comisiones_autoridades.parquet").exists()
+                  else _pq(exp_clean / "comisiones_integrantes.parquet")),
         "legis": pd.read_csv(leg_data / "legisladores.csv", dtype=str, encoding="utf-8-sig")
                  if (leg_data / "legisladores.csv").exists() else None,
         "leg_bloques": _pq(leg_data / "legislador_bloques.parquet"),
@@ -178,13 +184,66 @@ def _set_pdte_comision(comis: pd.DataFrame | None):
 
 
 def _jefes_bloque(jefes_csv: Path):
-    """nombres_norm de jefes de bloque (curado). Sin período por ahora (v1)."""
-    if not jefes_csv.exists():
-        logger.warning("no hay jefes_bloque.csv: lider_jefe_bloque = 0 (a curar)")
-        return set()
-    df = pd.read_csv(jefes_csv, dtype=str, encoding="utf-8-sig", comment="#")
-    col = next((c for c in df.columns if "nombre" in c.lower()), df.columns[0])
-    return {_norm(x) for x in df[col].dropna()}
+    """nombres_norm de jefes de bloque. Une DOS fuentes (sin período aún, v1):
+      1. `jefes_bloque_oficial.csv` — SNAPSHOTS de la web oficial de Diputados,
+         que marca "Presidente" en cada bloque. Lo genera (y acumula)
+         `scrape_jefes_bloque.py`; cubre TODOS los bloques del período vigente
+         sin curación manual. Correrlo ~1×/mes construye la serie hacia adelante.
+      2. `jefes_bloque.csv` — curación MANUAL para el histórico 2008-2025, que
+         no tiene fuente estructurada (ver README del módulo)."""
+    TRAMOS: dict[str, list] = {}
+    fuentes = []
+    for f, etiqueta in ((jefes_csv.parent / "jefes_bloque_oficial.csv", "oficial"),
+                        (jefes_csv, "curado")):
+        if not f.exists():
+            continue
+        df = pd.read_csv(f, dtype=str, encoding="utf-8-sig", comment="#")
+        col = next((c for c in df.columns if "nombre" in c.lower()), df.columns[0])
+        n = 0
+        for _, r in df.dropna(subset=[col]).iterrows():
+            desde = str(r.get("desde") or "").strip() or "1900-01-01"
+            hasta = str(r.get("hasta") or "").strip() or "2100-01-01"
+            TRAMOS.setdefault(_norm(r[col]), []).append((desde, hasta))
+            n += 1
+        fuentes.append(f"{etiqueta}={n}")
+    if not TRAMOS:
+        logger.warning("sin jefes de bloque (ni oficial ni curado): "
+                       "lider_jefe_bloque = 0. Correr scrape_jefes_bloque.py")
+    else:
+        logger.info("jefes de bloque: %d nombres, %d tramos (%s)", len(TRAMOS),
+                    sum(len(v) for v in TRAMOS.values()), ", ".join(fuentes))
+    return TRAMOS
+
+
+def _clave_nom(nombre_norm: str) -> frozenset:
+    """Tokens del nombre sin partículas, para matching tolerante al 2º nombre.
+    El CKAN escribe 'ROSSI, AGUSTIN OSCAR' y el roster curado 'ROSSI, AGUSTIN'."""
+    _PART = {"DE", "DEL", "LA", "LAS", "LOS", "Y", "E", "VAN", "VON", "DI", "DA"}
+    limpio = "".join(c if c.isalpha() else " " for c in str(nombre_norm))
+    return frozenset(t for t in limpio.split() if len(t) > 1 and t not in _PART)
+
+
+def _es_jefe_en(tramos: dict, nombre_norm: str, fecha, _cache: dict = {}) -> bool:
+    """TIME-AWARE: ¿era jefe de bloque a la FECHA del proyecto? Sin fecha (o sin
+    tramos) → False, para no inflar la señal atribuyendo jefaturas fuera de
+    período (caveat 2026-07-30: un ex jefe contaba en TODOS sus proyectos).
+
+    Matching por SUBCONJUNTO de tokens (2026-07-30): el nombre del roster debe
+    estar contenido en el del autor o viceversa ('ROSSI AGUSTIN' ⊂ 'ROSSI
+    AGUSTIN OSCAR'), y solo si el candidato es ÚNICO — así no se unen homónimos
+    (ej. 'SOLA, FELIPE' vs 'SOLARI QUINTANA'; 'GONZALEZ' a secas)."""
+    if not tramos or pd.isna(fecha):
+        return False
+    key = tramos.get(nombre_norm)
+    if key is None:
+        if nombre_norm not in _cache:
+            toks = _clave_nom(nombre_norm)
+            cands = [v for k, v in tramos.items()
+                     if (c := _clave_nom(k)) and (c <= toks or toks <= c)]
+            _cache[nombre_norm] = cands[0] if len(cands) == 1 else []
+        key = _cache[nombre_norm]
+    f = str(pd.Timestamp(fecha).date())
+    return any(d <= f <= h for d, h in (key or ()))
 
 
 def construir_features(dfs: dict, jefes_csv: Path) -> pd.DataFrame:
@@ -249,9 +308,10 @@ def construir_features(dfs: dict, jefes_csv: Path) -> pd.DataFrame:
         exp["lider_pdte_comision"] = [
             _es_pdte(pid, nn) for pid, nn in zip(exp["proyecto_id"], exp["autor_nn"])]
 
-    # --- jefe de bloque (curado) ---
+    # --- jefe de bloque (TIME-AWARE: solo cuenta si presidía a la fecha) ---
     jefes = _jefes_bloque(jefes_csv)
-    exp["lider_jefe_bloque"] = exp["autor_nn"].isin(jefes) if jefes else False
+    exp["lider_jefe_bloque"] = [
+        _es_jefe_en(jefes, nn, f) for nn, f in zip(exp["autor_nn"], exp["fecha"])]
 
     exp["lider"] = (exp["lider_alto_productor"] | exp["lider_pdte_comision"]
                     | exp["lider_jefe_bloque"])

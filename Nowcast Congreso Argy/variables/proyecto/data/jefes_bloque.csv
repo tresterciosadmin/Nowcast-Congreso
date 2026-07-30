@@ -1,0 +1,74 @@
+﻿# ROSTER HISTÓRICO DE JEFES DE BLOQUE — curación manual (pedido de Valle, nota 2026-07-12)
+# ALCANCE (acordado con Franco 2026-07-30): BLOQUES GRANDES 2005-2025. El período
+#   vigente NO se cura acá: lo trae `jefes_bloque_oficial.csv` (scraper de la web
+#   oficial, que marca "Presidente" por bloque). Los MONOBLOQUES históricos quedan
+#   fuera a propósito: el jefe es el único integrante → señal nula.
+# Consumido por origen_lider.py (señal lider_jefe_bloque), que UNE ambos CSV.
+# confianza: ALTA (fuente explícita) | MEDIA (inferido) | REVISAR (validar Franco)
+# hasta vacío = en el cargo al momento de la curación.
+nombre,camara,bloque,desde,hasta,periodo,confianza,fuente,nota
+# ---------- KIRCHNERISMO (FpV -> FdT -> UxP): el bloque de gobierno u oposición mayor
+"ROSSI, AGUSTIN",diputados,FRENTE PARA LA VICTORIA,2005-12-10,2013-05-30,2005-2013,ALTA,"Infobae 28-11-2017; Perfil","7 años y 5 meses al frente; deja el cargo al ser ministro de Defensa"
+"DI TULLIO, JULIANA",diputados,FRENTE PARA LA VICTORIA,2013-05-30,2015-12-09,2013-2015,ALTA,"Diario de Cuyo 30-05-2013","reemplaza a Rossi (ministro); jefa hasta el fin del mandato de CFK"
+"RECALDE, HECTOR",diputados,FRENTE PARA LA VICTORIA - PJ,2015-12-10,2017-12-09,2015-2017,ALTA,"Infobae 28-11-2017","jefe del bloque K durante los 2 primeros años de Macri"
+"ROSSI, AGUSTIN",diputados,FRENTE PARA LA VICTORIA - PJ,2017-12-10,2019-12-09,2017-2019,ALTA,"Infobae 28-11-2017; Perfil","segundo mandato como jefe de bloque"
+"KIRCHNER, MAXIMO",diputados,FRENTE DE TODOS,2019-12-10,2022-02-01,2019-2022,ALTA,"Diario de Cuyo 03-12-2019; Infobae 01-02-2022","renuncia por el acuerdo con el FMI"
+"MARTINEZ, GERMAN",diputados,FRENTE DE TODOS,2022-02-01,2023-12-09,2022-2023,ALTA,"Infobae 01-02-2022","asume tras la renuncia de Máximo Kirchner"
+"MARTINEZ, GERMAN",diputados,UNION POR LA PATRIA,2023-12-10,,2023-,ALTA,"Infobae 07-12-2023 + web oficial HCDN","continúa; ratificado en 2025"
+# ---------- PRO / CAMBIEMOS / JxC
+"PINEDO, FEDERICO",diputados,PRO,2013-12-10,2015-12-01,2013-2015,MEDIA,"Río Negro (sucesión Massot)","antecesor de Massot; a validar la fecha de inicio"
+"MASSOT, NICOLAS",diputados,PRO,2015-12-01,2019-12-09,2015-2019,ALTA,"Río Negro; Infobae 17-03-2019","jefe del bloque PRO durante todo el gobierno de Macri"
+"NEGRI, MARIO",diputados,UCR,2015-12-10,2021-12-09,2015-2021,ALTA,"La Nación 06-12-2021; Télam 2019","jefe de la UCR y del interbloque Cambiemos/JxC"
+"RITONDO, CRISTIAN",diputados,PRO,2019-12-10,,2019-,ALTA,"Infobae 05-01-2022 + web oficial HCDN","jefe del bloque PRO; desde 2022 también del interbloque JxC"
+"NEGRI, MARIO",diputados,UCR,2021-12-10,2023-12-09,2021-2023,ALTA,"La Nación 06-12-2021","ratificado por los radicales orgánicos"
+"DE LOREDO, RODRIGO",diputados,UCR,2023-12-10,2025-12-09,2023-2025,ALTA,"prensa 2024-2025","jefe UCR del período previo al actual"
+# ---------- COALICIÓN CÍVICA
+"FERRARO, MAXIMILIANO",diputados,COALICION CIVICA,2019-12-10,,2019-,MEDIA,"Infobae 28-11-2019 + web oficial HCDN","jefe histórico del bloque CC-ARI"
+# ---------- FRENTE RENOVADOR / MASSISMO
+"CAMAÑO, GRACIELA",diputados,FRENTE RENOVADOR,2015-12-10,2019-12-09,2015-2019,MEDIA,"prensa 2016-2018","jefa del bloque massista (luego UNA/Consenso Federal)"
+# ---------- LA LIBERTAD AVANZA
+"ZAGO, OSCAR",diputados,LA LIBERTAD AVANZA,2023-12-10,2024-05-01,2023-2024,ALTA,"prensa 2023-2024","primer jefe del bloque LLA; desplazado en mayo 2024"
+"BORNORONI, GABRIEL",diputados,LA LIBERTAD AVANZA,2024-05-01,,2024-,ALTA,"prensa 2024-2025 + web oficial HCDN","sucede a Zago; continúa en 2026"
+# ================= SENADO =================
+# ---------- PERONISMO (FpV -> FdT -> UxP): el bloque mayor del Senado
+"PICHETTO, MIGUEL ANGEL",senado,FRENTE PARA LA VICTORIA - PJ,2002-12-30,2017-12-09,2002-2017,ALTA,"Ámbito; La Capital; Wikipedia ERF","15 años al frente del bloque peronista; en dic-2017 encabeza la salida de 25 senadores"
+"PICHETTO, MIGUEL ANGEL",senado,ARGENTINA FEDERAL,2017-12-10,2019-12-09,2017-2019,ALTA,"Wikipedia Encuentro Republicano Federal","preside el interbloque peronista NO kirchnerista tras la ruptura"
+"MAYANS, JOSE MIGUEL ANGEL",senado,FRENTE DE TODOS,2019-12-10,2023-12-09,2019-2023,ALTA,"La Nación 23-08-2019; Perfil; Diario de Cuyo 26-11-2019","impulsado por CFK; bloque unificado con quórum propio"
+"MAYANS, JOSE MIGUEL ANGEL",senado,UNION POR LA PATRIA,2023-12-10,,2023-,ALTA,"La Nación 16-06-2025 + web oficial Senado","continúa; en 2026 el bloque figura como JUSTICIALISTA (21 bancas)"
+# ---------- UCR
+"PETCOFF NAIDENOFF, LUIS CARLOS",senado,UCR,2011-12-10,2021-12-09,2011-2021,ALTA,"La Nación (elección 2011); Filo News 2018","jefe del bloque radical una década; también del interbloque Cambiemos/JxC"
+"LOSADA, CAROLINA",senado,UCR,2021-12-10,2023-12-09,2021-2023,MEDIA,"prensa 2022-2023","sucede a Naidenoff — VALIDAR fechas exactas"
+"VISCHI, EDUARDO ALEJANDRO",senado,UCR,2023-12-10,,2023-,ALTA,"web oficial Senado (snapshot 2026)","jefe del bloque UCR (10 bancas)"
+# ---------- PRO / CAMBIEMOS
+"PINEDO, FEDERICO",senado,PRO,2015-12-10,2019-12-09,2015-2019,MEDIA,"prensa 2016-2019","presidente provisional del Senado y referencia del PRO — VALIDAR si presidía el bloque"
+"BULLRICH, PATRICIA",senado,LA LIBERTAD AVANZA,2025-12-10,,2025-,ALTA,"web oficial Senado (snapshot 2026)","jefa del bloque LLA (21 bancas)"
+"ATAUCHE, EZEQUIEL",senado,LA LIBERTAD AVANZA,2023-12-10,2025-12-09,2023-2025,MEDIA,"prensa 2023-2025","primer jefe del bloque LLA en el Senado — VALIDAR"
+# ================= AMPLIACIÓN: bloques medianos (por volumen de votos 2008+) =================
+# ---------- DIPUTADOS
+"MASSA, SERGIO",diputados,UNIDOS POR UNA NUEVA ARGENTINA,2015-12-10,2017-12-09,2015-2017,MEDIA,"La Nación 2015 (alianza Massa-De la Sota); Wikipedia UNA","UNA = 3ª fuerza en Diputados con 15 bancas; Massa su referente — VALIDAR si presidía formalmente el bloque"
+"CAMAÑO, GRACIELA",diputados,UNIDOS POR UNA NUEVA ARGENTINA,2017-12-10,2019-12-09,2017-2019,MEDIA,"prensa 2018-2019","el bloque massista mantiene a Camaño en la conducción — VALIDAR"
+"BOSSIO, DIEGO",diputados,JUSTICIALISTA,2016-02-03,2019-12-09,2016-2019,ALTA,"El Destape 03-02-2016; Infobae 04-02-2016; Perfil","comanda la ruptura del FpV con 12 diputados y crea el Bloque Justicialista"
+"SOLA, FELIPE",diputados,PERONISMO FEDERAL,2009-12-10,2011-12-09,2009-2011,ALTA,"La Nación; LaNoticia1 (jefe del bloque en 2010)","el peronismo disidente del Congreso de CFK"
+"STOLBIZER, MARGARITA",diputados,GEN,2009-12-10,2017-12-09,2009-2017,ALTA,"Página/12 30-11-2009; Infobae 08-10-2009","funda el bloque GEN tras romper con Carrió"
+"BINNER, HERMES",diputados,PARTIDO SOCIALISTA,2013-12-10,2017-12-09,2013-2017,ALTA,"La Política Online (unifica bloques); Diario de Cuyo 2013","preside el bloque del Frente Amplio Progresista"
+"CICILIANI, ALICIA",diputados,PARTIDO SOCIALISTA,2017-12-10,2019-12-09,2017-2019,MEDIA,"Wikipedia Ciciliani; prensa 2018","referente socialista tras el paso de Binner — VALIDAR"
+"DEL CAÑO, NICOLAS",diputados,FRENTE DE IZQUIERDA,2014-12-10,,2014-,MEDIA,"composición del FIT en Diputados","el FIT ROTA la jefatura entre PTS y PO — REVISAR: puede requerir tramos más finos"
+# ---------- SENADO
+"PICHETTO, MIGUEL ANGEL",senado,JUSTICIALISTA-FRENTE PARA LA VICTORIA,2009-12-10,2014-12-09,2009-2014,ALTA,"Ámbito; La Capital (mismo tramo que FpV-PJ)","etiqueta alternativa del MISMO bloque que presidía Pichetto (fuente semilla decada_votada)"
+"PICHETTO, MIGUEL ANGEL",senado,JUSTICIALISTA,2008-01-01,2017-12-09,2008-2017,MEDIA,"Ámbito; La Capital","variante de nombre del bloque peronista del Senado bajo Pichetto — VALIDAR el alcance de la etiqueta"
+"GOERLING LARA, ENRIQUE MARTIN",senado,FRENTE PRO,2023-12-10,,2023-,ALTA,"web oficial Senado (snapshot 2026)","jefe del Frente PRO en el Senado (3 bancas)"
+"ZAMORA, GERARDO",senado,FRENTE CIVICO POR SANTIAGO,2013-12-10,,2013-,MEDIA,"web oficial Senado (snapshot 2026); prensa","jefe histórico del bloque santiagueño — VALIDAR fecha de inicio"
+# ================= AMPLIACIÓN 2: provinciales y federales =================
+# ---------- DIPUTADOS
+"COMELLI, ALICIA MARCELA",diputados,MOVIMIENTO POPULAR NEUQUINO,2008-01-01,2019-12-09,2008-2019,ALTA,"Chequeado (mujeres al frente de bloques); La Política Online","jefa del bloque MPN en Diputados; CONFIRMADA 30-07: preside el bloque MPN desde 2008 (3 legisladores)"
+"GUTIERREZ, CARLOS",diputados,CORDOBA FEDERAL,2010-01-01,2025-12-09,2010-2025,ALTA,"Infobae 23-10-2023; Wikipedia Carlos Gutiérrez","preside el bloque cordobés (schiarettismo); en 2025 pasa a Provincias Unidas"
+"THOMAS, ENRIQUE LUIS",diputados,FRENTE PERONISTA,2011-12-10,2015-12-09,2011-2015,MEDIA,"composición del bloque (autor principal en la base)","peronismo disidente mendocino — VALIDAR jefatura formal"
+# ELIMINADA 2026-07-30 (investigación): "BIANCHI, IVANA MARIA" NO presidía Compromiso Federal.
+# Era la diputada con MÁS proyectos de toda la Cámara en 2017 (240) = perfil "alto productor",
+# que ya mide otra señal. Presidentes reales del bloque: Asseff y luego Sancassani (Agencia San Luis;
+# Diario de Cuyo 18-12-2017). Aportaba 610 proyectos = 27% de la señal: habría duplicado alto_productor.
+# ---------- SENADO
+"RODRIGUEZ SAA, ADOLFO",senado,JUSTICIALISTA SAN LUIS,2005-12-10,2017-12-09,2005-2017,ALTA,"senado.gob.ar/senadores/senador/365 (ficha oficial)","preside el bloque Justicialista San Luis; desde 2010 también el Interbloque Federal"
+"ROMERO, JUAN CARLOS",senado,JUSTICIALISTA 8 DE OCTUBRE,2009-12-10,2025-12-09,2009-2025,ALTA,"senado.gob.ar/senadores/senador/35 (ficha oficial); Wikipedia","bloque propio salteño durante todo el período"
+"MAYANS, JOSE MIGUEL ANGEL",senado,FRENTE NACIONAL Y POPULAR,2022-04-01,2023-12-09,2022-2023,MEDIA,"Página/12 (división del FdT abr-2022); La Política Online","el FdT se parte en FNyP + Unidad Ciudadana; Mayans conduce el mayor — VALIDAR"
+"FERNANDEZ SAGASTI, ANABEL",senado,UNIDAD CIUDADANA,2022-04-01,2025-12-09,2022-2025,MEDIA,"Página/12 (división del FdT abr-2022)","el ala cristinista arma bloque propio — VALIDAR quién lo presidía"

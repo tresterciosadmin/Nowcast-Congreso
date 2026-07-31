@@ -75,3 +75,50 @@ datos/expedientes/data/clean/*
 # regla *.csv lo atrapaba, igual que había pasado con los parquet de expedientes.)
 !variables/proyecto/data/jefes_bloque.csv
 !variables/proyecto/data/jefes_bloque_oficial.csv
+
+# ---------------------------------------------------------------------------
+# 2026-07-31 — TERCERA vez que las reglas de arriba (*.csv / *.parquet /
+# **/data/clean/) esconden trabajo nuevo. Antes pasó con los parquet de
+# expedientes (11-07) y con el roster de jefes (30-07). Regla de la casa, ya en
+# CLAUDE.md: **al crear la salida de un módulo nuevo, decidir explícitamente si
+# entra al régimen transitorio y agregar la excepción EN EL MISMO commit.**
+# Chequeo antes de commitear:  git check-ignore -q <archivo> && echo IGNORADO
+# ---------------------------------------------------------------------------
+
+# El bot ahora también trae VOTACIONES: su salida debe viajar por git o el
+# workflow de GitHub Actions no commitea nada (el bot corre sin humano).
+!datos/bot_recoleccion/data/clean/votaciones_nuevas.parquet
+
+# Salidas del feature store y del embudo: el equipo las mira sin correr nada
+# (mismo régimen transitorio de Valle 02-07). features_proyecto es el contrato
+# que consume el embudo; los CSV del embudo son las tablas del informe.
+!variables/proyecto/data/features_proyecto.parquet
+!variables/embudo/outputs/*.csv
+!variables/embudo/outputs/*.json
+
+# Padrón de bancas: es lo que arregla el conteo de la cámara (sin él el proyector
+# suma los padrones de antes y después de un recambio: 383 bancas sobre 257).
+# `nomina_*` es el crudo bajado; `padron_*` es el contrato que consume
+# variables/bloque. Chicos y de alto valor -> se versionan.
+!datos/padron/data/nomina_diputados.csv
+!datos/padron/data/padron_diputados.csv
+
+# Base CANÓNICA de votaciones (~6 MB). Decisión 31-07: SÍ se versiona.
+# Es regenerable (`run_pipeline.py`, ~20 min + red), pero dos incidentes ya
+# nacieron de que alguien trabajó sobre una copia vieja: el corrector de linaje
+# del Senado del 23-07 (construido sobre un parquet previo a un fix, terminó
+# siendo un no-op sobre 831.677 filas) y el efecto líder medido sobre datos que
+# ya no existían. Que el equipo pullee la base y trabaje sobre lo mismo vale
+# más que 6 MB. Quien la regenere DEBE commitearla.
+# OJO con el orden: `**/data/clean/` ignora el DIRECTORIO, y git no puede
+# des-ignorar un archivo dentro de un directorio excluido. Hay que reabrir el
+# camino carpeta por carpeta primero (mismo patrón que datos/expedientes).
+!datos/canonica/data/
+!datos/canonica/data/clean/
+datos/canonica/data/clean/*
+!datos/canonica/data/clean/actas_canonico.parquet
+!datos/canonica/data/clean/votos_canonico.parquet
+!datos/canonica/data/clean/votos_resuelto.parquet
+# los intermedios (_sources, _decada_csv) NO: son regenerables y pesados
+datos/canonica/data/clean/_sources/
+datos/canonica/data/clean/_decada_csv/

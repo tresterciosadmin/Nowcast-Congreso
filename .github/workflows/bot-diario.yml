@@ -41,6 +41,13 @@ jobs:
       - name: Traer TP nuevos de Diputados
         run: python "Nowcast Congreso Argy/datos/bot_recoleccion/src/tp_diputados.py"
 
+      # Agregado 2026-07-31. El bot traía QUÉ SE PRESENTA pero no QUÉ SE VOTA:
+      # la base de votaciones quedó parada en oct-2025 (229 actas sin ingestar,
+      # 113 de la Cámara nueva) mientras los expedientes seguían al día, y el
+      # proyector de posturas devolvía la Cámara vieja sin avisar.
+      - name: Traer votaciones nuevas (ambas cámaras)
+        run: python "Nowcast Congreso Argy/datos/bot_recoleccion/src/votaciones.py"
+
       - name: Commit si hay novedades
         run: |
           git config user.name "bot-recoleccion"
@@ -50,6 +57,6 @@ jobs:
             echo "Sin novedades: no se commitea."
             exit 0
           fi
-          git commit -m "bot: DAE Senado $(date -u +%Y-%m-%d) [automatico]"
+          git commit -m "bot: expedientes + votaciones $(date -u +%Y-%m-%d) [automatico]"
           git pull --rebase origin main
           git push origin main

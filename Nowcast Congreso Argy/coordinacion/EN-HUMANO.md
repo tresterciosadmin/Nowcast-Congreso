@@ -332,3 +332,43 @@ Sumamos las conducciones de los bloques provinciales y federales (el neuquino, e
 
 ## Regla nueva: lo urgente se lee antes de empezar, siempre
 Nos pasó dos veces en el mismo mes: alguien del equipo trabajó sobre datos viejos y construyó algo que ya no hacía falta, y una ficha mal cargada metió cientos de casos falsos en el modelo. Las dos veces el aviso estaba escrito… enterrado entre decenas de anotaciones. Así que ahora hay un archivo aparte, URGENTE, con lo poquito que realmente bloquea o ensucia el trabajo de los demás, y quedó como la primera cosa que cualquiera —persona o asistente— abre al sentarse a trabajar, antes incluso del manual del proyecto. Cuando algo se resuelve, se borra de ahí (queda registrado en la bitácora de siempre): la idea es que ese archivo esté vacío casi todo el tiempo, y que cuando tenga algo, sea imposible no verlo. Hoy arranca con dos cosas: que el equipo vuelva a correr dos programas después de bajarse los cambios —porque el código viaja solo, pero los resultados no— y que revise quince nombres del listado de jefes que quedaron sin confirmar.
+
+
+## Probamos el modelo con una ley de verdad, y encontramos dos cosas
+Franco trajo el proyecto de Ley de Lobby que mandó el Ejecutivo en mayo y pidió que el sistema hiciera el recorrido completo: entenderlo, clasificarlo, calcular sus chances y decir a quién hay que convencer. El resultado es que tiene un 39% de probabilidad de convertirse en ley — doce veces lo normal, pero la mitad de lo que suele conseguir un proyecto del Ejecutivo. Y se define en dos comisiones donde al oficialismo le falta una sola firma ajena para poder dictaminar; hay un diputado radical que está en las dos y las vicepreside, así que una sola persona destraba el camino.
+
+Pero el caso sirvió sobre todo para encontrar dos problemas nuestros. El primero: veníamos diciendo que un proyecto firmado por un líder tiene siete veces más chances. Es falso. Ese número estaba inflado porque casi todos los proyectos del Presidente contaban como "de líder", y los del Presidente se aprueban muchísimo. Cuando comparás peras con peras, el efecto real es de dos veces, y ser jefe de bloque solo, apenas 1,25. Lo tranquilizador es que el número da casi idéntico en el oficialismo y en la oposición, que son mundos distintos: eso indica que ahora sí estamos midiendo algo real.
+
+El segundo problema es más serio y ya quedó anotado como urgente: nuestra base de votaciones se quedó en octubre del año pasado, antes de que asumieran los diputados nuevos. Hubo sesiones extraordinarias en diciembre y febrero y sesiones todo este año, y hay 229 votaciones publicadas que nunca cargamos. Eso significa que el sistema hoy no puede calcular cuántos votos junta un proyecto en el recinto: si le preguntás, te contesta con la Cámara vieja y ni siquiera avisa que está desactualizado.
+
+Y una lección que vale guardar: limpiar los errores del dato de líder no mejoró en nada la capacidad de acertar del modelo. Lo que mejoró fue la capacidad de explicar por qué predice lo que predice — que es, al final, lo que promete el producto.
+
+
+## Le pusimos ojos nuevos al sistema (y le enseñamos a mantenerlos abiertos)
+Ayer descubrimos que nuestra base de votaciones se había quedado en octubre, antes de que asumieran los diputados nuevos. Hoy la pusimos al día: entraron casi novecientas votaciones y ciento ochenta mil votos, y la Cámara que aparece ahora es otra — La Libertad Avanza pasó de tercera a primera minoría, con noventa y cinco bancas contra noventa y tres del peronismo.
+
+Apareció un problema escondido detrás del primero. El sistema contaba las bancas mirando quiénes habían votado en los últimos dos años, y como en ese lapso hubo un recambio, estaba sumando la Cámara vieja más la nueva: daba 383 diputados sobre 257 que existen. Ahora armamos un padrón de verdad, con la fecha en que cada diputado entra y sale de cada bloque, y el conteo da 256. Falta uno, probablemente una banca vacante.
+
+Lo más importante para el futuro es que el bot que corre solo cada mañana ahora también trae las votaciones, no solo los proyectos presentados. Esa era la causa de fondo: teníamos automatizada la mitad del trabajo, y la otra mitad dependía de que alguien se acordara.
+
+Queda una cosa sin resolver, y es del Senado: los senadores que asumieron en diciembre no tienen bloque asignado, porque —curiosamente— ninguna fuente oficial publica a qué bloque pertenece cada senador. Publican el partido por el que se presentaron, que muchas veces es otro. Así que el nowcast de Diputados ya se puede usar y el del Senado todavía no.
+
+Y quedaron anotadas dos decisiones de Franco para más adelante. Una: las leyes grandes que manda el Ejecutivo, tipo Ley Bases, no deberían analizarse como un bloque único, porque cada título tiene su propio tema y su propia suerte — los títulos de reforma política se cayeron mientras otros avanzaban. La otra: fijamos qué tiene que responder el sistema ante cada proyecto nuevo, siempre lo mismo, la probabilidad y a quién hay que convencer. El informe de la Ley de Lobby quedó como el modelo a seguir.
+
+
+## Qué mira el modelo, y qué todavía no mira
+Franco preguntó qué tiene en cuenta el sistema para estimar si una ley va a salir. Hoy mira siete cosas, y casi todas son de trámite: a cuántas comisiones fue girada (lo más determinante de todo), cuáles son esas comisiones, qué tan exitoso fue históricamente quien la firma, si la manda el Ejecutivo o un legislador, si es un jefe de bloque, en qué mes entró y si es año electoral. Nada de eso mide el clima político del momento.
+
+Existe un programa listo para traer el Índice de Confianza en el Gobierno de Di Tella, bien hecho, pero nunca se corrió y el modelo no lo usa. Vale la pena: sería la única variable que capta el contexto político, y probablemente explique cosas que hoy quedan sin explicar — como que el Ejecutivo de Cristina convirtiera el 87% de sus proyectos en leyes y el actual el 42%.
+
+Sobre la banca que faltaba: la encontramos. Es Néstor Pitrola, de Buenos Aires, que asumió el 27 de abril y en la base de donde sacamos los datos figura con fecha de salida el mismo día que entró. Hay otro caso, Matzkin, que directamente no aparece. Intentamos corregirlo automáticamente y salió peor: según cómo lo arreglábamos, terminábamos con 278 o con 263 diputados en vez de 257, porque la fuente no permite distinguir a quien asumió de quien se fue. Así que preferimos dejarlo como está y avisar: falta una banca real en lugar de inventar seis. El arreglo de verdad es usar la nómina oficial de la Cámara.
+
+También apareció un detalle técnico que conviene recordar: usábamos el año 9999 para decir "mandato sin fecha de fin", y resulta que la herramienta de cálculo no soporta fechas más allá del año 2262 — así que esos registros se volvían invisibles. Ya está corregido.
+
+
+## Lo que queda para la próxima
+Franco revisó las variables que usa el modelo y no le cerraron varias. Quedó anotado como lo primero a mirar, y con razón: la más importante de todas —a cuántas comisiones fue girado el proyecto— podría estar haciendo trampa sin que nos diéramos cuenta. Si los giros se agregan después de que el proyecto se presenta, entonces el modelo está espiando el futuro, y buena parte de su aparente puntería sería falsa. Es verificable y hay que hacerlo antes de seguir construyendo encima.
+
+También quedó anotado conectar el índice de confianza en el gobierno, que daría al modelo lo único que hoy le falta: alguna noción de cómo está el clima político.
+
+Y una idea de Franco que cierra un círculo: que el bot revise cada tanto la lista de diputados para avisar si alguien renunció, asumió o se cambió de bloque. Hoy los proyectos y las votaciones entran solos, pero la composición de la Cámara todavía depende de que alguien se acuerde de mirarla — que es exactamente el tipo de olvido que nos costó nueve meses de votaciones sin cargar.

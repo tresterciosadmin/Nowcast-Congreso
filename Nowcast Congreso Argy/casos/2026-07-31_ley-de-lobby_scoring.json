@@ -1,0 +1,104 @@
+{
+  "scoring": {
+    "proyecto_id": "HCDN292179",
+    "titulo": "",
+    "anio": 2026,
+    "comisiones": [
+      "ASUNTOS CONSTITUCIONALES",
+      "LEGISLACION GENERAL"
+    ],
+    "escenarios": {
+      "Poder Ejecutivo (real)": {
+        "sancionado": 0.3925,
+        "autor_tasa_hist": 0.7308,
+        "llega_recinto": 0.4938
+      },
+      "Jefe de bloque OFICIALISTA": {
+        "sancionado": 0.0133,
+        "autor_tasa_hist": 0.074,
+        "llega_recinto": 0.0199
+      },
+      "Diputado común OFICIALISTA": {
+        "sancionado": 0.0134,
+        "autor_tasa_hist": 0.0148,
+        "llega_recinto": 0.0131
+      },
+      "Jefe de bloque OPOSITOR": {
+        "sancionado": 0.0056,
+        "autor_tasa_hist": 0.0265,
+        "llega_recinto": 0.0059
+      },
+      "Diputado común OPOSITOR": {
+        "sancionado": 0.0056,
+        "autor_tasa_hist": 0.0068,
+        "llega_recinto": 0.005
+      }
+    }
+  },
+  "observado": [
+    {
+      "origen": "EJECUTIVO",
+      "lider": true,
+      "n": 542,
+      "pct_dictamen": 80.44,
+      "pct_recinto": 81.73,
+      "pct_sancion": 78.78
+    },
+    {
+      "origen": "EJECUTIVO",
+      "lider": false,
+      "n": 153,
+      "pct_dictamen": 76.47,
+      "pct_recinto": 79.08,
+      "pct_sancion": 71.24
+    },
+    {
+      "origen": "DESCONOCIDO",
+      "lider": true,
+      "n": 20,
+      "pct_dictamen": 55.0,
+      "pct_recinto": 30.0,
+      "pct_sancion": 30.0
+    },
+    {
+      "origen": "OFICIALISMO",
+      "lider": true,
+      "n": 1017,
+      "pct_dictamen": 28.52,
+      "pct_recinto": 11.8,
+      "pct_sancion": 5.41
+    },
+    {
+      "origen": "OFICIALISMO",
+      "lider": false,
+      "n": 10070,
+      "pct_dictamen": 9.19,
+      "pct_recinto": 5.37,
+      "pct_sancion": 2.83
+    },
+    {
+      "origen": "OPOSICION",
+      "lider": true,
+      "n": 3045,
+      "pct_dictamen": 6.01,
+      "pct_recinto": 3.45,
+      "pct_sancion": 2.73
+    },
+    {
+      "origen": "DESCONOCIDO",
+      "lider": false,
+      "n": 1458,
+      "pct_dictamen": 6.38,
+      "pct_recinto": 3.29,
+      "pct_sancion": 2.13
+    },
+    {
+      "origen": "OPOSICION",
+      "lider": false,
+      "n": 22392,
+      "pct_dictamen": 5.12,
+      "pct_recinto": 2.28,
+      "pct_sancion": 1.42
+    }
+  ]
+}

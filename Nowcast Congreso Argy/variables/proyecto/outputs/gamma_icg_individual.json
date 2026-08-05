@@ -1,0 +1,46 @@
+{
+  "umbral_pivote": 0.2,
+  "con_vol": true,
+  "resultado": {
+    "TODOS": {
+      "n": 409841,
+      "p": 0.6138,
+      "gamma_0": {
+        "punto": -0.031,
+        "ic95": [
+          -0.2001,
+          0.2647
+        ],
+        "significativo": false
+      },
+      "gamma_0*lambda": {
+        "punto": 0.0756,
+        "ic95": [
+          -0.1372,
+          0.1301
+        ],
+        "significativo": false
+      }
+    },
+    "BISAGRAS": {
+      "n": 93439,
+      "p": 0.5398,
+      "gamma_0": {
+        "punto": 0.235,
+        "ic95": [
+          0.0768,
+          0.5413
+        ],
+        "significativo": true
+      },
+      "gamma_0*lambda": {
+        "punto": 0.0449,
+        "ic95": [
+          -0.1211,
+          0.0911
+        ],
+        "significativo": false
+      }
+    }
+  }
+}

@@ -18,9 +18,20 @@ construcción.
 
 ⚠️ SENADO: esta fuente **no da el bloque parlamentario** (solo la alianza por la
 que ingresó, que no es lo mismo: p.ej. Atauche entra por el Partido Renovador
-Federal y bloquea en LLA). El padrón del Senado se mantiene a mano en
-`datos/senado/data/padron_bloques_senado.csv` y hoy **llega al 2025-12-09**: los
-senadores que asumieron el 10-dic-2025 no tienen bloque. Ver URGENTE.md.
+Federal y bloquea en LLA), así que el Senado NO tiene bajador automático.
+
+CORRECCIÓN 2026-08-04 — esta nota decía antes que "los senadores que asumieron el
+10-dic-2025 no tienen bloque", y eso mandó a URGENTE.md un ítem para curar 72
+filas a mano. **Era falso.** El export oficial `data/raw/nomina_senado.csv` trae
+columna BLOQUE, y `data/padron_senado.csv` tiene los 72 senadores vigentes con
+bloque y linaje, incluidos los 24 del recambio. Lo que pasaba es que el
+`.gitignore` se comía esos archivos y nunca llegaban al repo: quien miraba el
+repo concluía, con razón, que el dato no existía. Excepciones agregadas el 04-08.
+
+Lo que SÍ sigue abierto es la INGESTA: `datos/argentinadatos/src/to_canonical.py`
+resuelve el bloque contra `datos/senado/data/padron_bloques_senado.csv`, que
+termina el 2025-12-09 — por eso los votos del Senado 2026 entran a la canónica
+sin bloque. El fix es apuntarla también a `padron_senado.csv`, mandate-aware.
 
 Uso:
   python datos/padron/src/bajar_nomina.py diputados          # -> nomina_diputados.csv

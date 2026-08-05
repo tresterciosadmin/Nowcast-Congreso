@@ -31,3 +31,17 @@ Fase 0 cerrada: el baseline de bloque predice la dirección del voto individual 
 
 ## Contexto de negocio y metodología
 En `docs/contexto/`: `INSTRUCTIVO-MAESTRO.md`, `Nowcast-Congreso_viabilidad_y_plan.md`, `Nowcast-Congreso_informe_validacion.docx`, el premortem validado y los documentos de diseño v2.1 (referencia histórica).
+
+
+## Los paneles (doble clic)
+
+| Archivo | Para qué |
+|---|---|
+| `TABLERO-CONTROL.html` | mapa ejecutivo del proyecto — se alimenta de `tablero_datos.js` |
+| `PANEL-NOWCAST.html` | simulador de una votación (motor JS) |
+| `PANEL-MOVIL.html` | **coyuntura política en el teléfono** — 12 proyectos que se recalculan en vivo |
+| `PANEL-COYUNTURA.html` | lo mismo para escritorio, con más detalle |
+| `COMPARADOR-ICG.html` | las dos vías del ICG y las decisiones abiertas, para el equipo |
+
+Los tres últimos salieron de la sesión del 04-08-2026 (ver ADR-0008). Ninguno
+necesita internet.

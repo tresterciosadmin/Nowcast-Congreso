@@ -13,6 +13,14 @@ Idempotente y defensivo. Toca ESTADO, TABLERO, EN-HUMANO, tablero_datos.js.
 El código (variables/bloque/src/bloque.py) ya quedó aplicado y testeado (9 chequeos
 nuevos + regresión completa 119) en la sesión.
 """
+# ============================================================================
+# NEUTRALIZADO 2026-08-04 — YA SE EJECUTO. Volver a correrlo DUPLICARIA entradas
+# de bitacora. Copia en Archivos_Borrar/; anotado en PENDIENTES-DE-BORRAR.md.
+import sys as _sys
+print("Este script ya se aplico en su momento. Esta neutralizado: no hace nada.")
+print("Si de verdad necesitas re-aplicarlo, borra este bloque a mano.")
+_sys.exit(0)
+# ============================================================================
 from pathlib import Path
 RAIZ = Path(__file__).resolve().parents[1]
 

@@ -38,7 +38,7 @@ largo del tiempo — y, sobre esa serie, un **proyector point-in-time** que arma
   al recinto se aprueba, la dirección proyectada sin condicionar da AFIRMATIVO para
   casi todos los bloques. **La postura que de verdad discrimina es POR TEMA/ORIGEN**
   y es el **v2**: depende de que `variables/proyecto` publique el tema (batch del
-  agente de taxonomías, necesita API key) y el origen del proyecto. El proyector deja
+  agente de taxonomías; la API key ya está resuelta desde el 14-jul) y el origen del proyecto. El proyector deja
   el hook para condicionar por esos rasgos sin cambiar el contrato.
 
 ## Cómo correr (local, PC de Valle)
@@ -62,5 +62,5 @@ vuelta una postura con 2-3 actas. **Sin `tema`/`origen` el resultado es IDÉNTIC
 (campo `_share_incond` lo evidencia) → no rompe el contrato ni el ensemble.
 Resuelve el límite del caso testigo 1167 (dirección incondicional → 100% irreal).
 - CLI: `python variables\bloque\src\bloque.py proyectar <YYYY-MM-DD> <camara> --tema ECON [--origen OPOSICION]`
-- Insumo: correr antes `variables\proyecto\src\tema_por_acta.py` (necesita API key) para generar el contrato.
+- Insumo: correr antes `variables\proyecto\src\tema_por_acta.py` (la API key ya está; falta correrlo) para generar el contrato.
 - Tests: `python variables\bloque\tests\test_bloque_v2.py` (5 chequeos, sin red).

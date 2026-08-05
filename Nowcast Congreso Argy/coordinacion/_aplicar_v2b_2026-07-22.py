@@ -8,6 +8,14 @@ completa (1537 actas 2011-2026) y el HALLAZGO del origen. Corre LOCAL:
 Idempotente y defensivo. Toca ESTADO, TABLERO, EN-HUMANO, tablero_datos.js.
 El código (ensemble.py, tema_por_acta.py) ya quedó aplicado y testeado en la sesión.
 """
+# ============================================================================
+# NEUTRALIZADO 2026-08-04 — YA SE EJECUTO. Volver a correrlo DUPLICARIA entradas
+# de bitacora. Copia en Archivos_Borrar/; anotado en PENDIENTES-DE-BORRAR.md.
+import sys as _sys
+print("Este script ya se aplico en su momento. Esta neutralizado: no hace nada.")
+print("Si de verdad necesitas re-aplicarlo, borra este bloque a mano.")
+_sys.exit(0)
+# ============================================================================
 from pathlib import Path
 RAIZ = Path(__file__).resolve().parents[1]
 

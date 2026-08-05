@@ -122,3 +122,58 @@ datos/canonica/data/clean/*
 # los intermedios (_sources, _decada_csv) NO: son regenerables y pesados
 datos/canonica/data/clean/_sources/
 datos/canonica/data/clean/_decada_csv/
+
+# ---------------------------------------------------------------------------
+# 2026-08-04 — CUARTA vez, y esta escondió una URGENCIA ENTERA.
+#
+# `URGENTE.md` ítem 3 dice que el Senado no tiene bloques desde el 10-dic-2025
+# y que "ninguna fuente publica el bloque parlamentario del Senado". Es falso:
+# `datos/padron/data/padron_senado.csv` tiene los 72 senadores vigentes CON su
+# bloque y linaje, incluidos los 24 que asumieron el 10-dic-2025. Lo que pasó
+# es que las reglas `*.csv` y `**/data/raw/` de arriba se lo comieron, así que
+# ese archivo vive SOLO en el disco de Valle y nunca llegó al repo. Cualquiera
+# que mire el repo concluye, con razón, que el dato no existe.
+#
+# Es el mismo bug que ya escondió los parquet de expedientes (11-07), el roster
+# de jefes (30-07) y las salidas del embudo (31-07). La diferencia es que esta
+# vez el archivo invisible generó trabajo de investigación sobre un problema
+# que ya estaba resuelto — exactamente lo que URGENTE.md existe para evitar.
+# ---------------------------------------------------------------------------
+
+# Padrón del SENADO: no tiene bajador automático (la API da la alianza por la
+# que ingresó, no el bloque), así que el export oficial y el contrato derivado
+# son FUENTE DE VERDAD curada, no salida regenerable. Van al repo sí o sí.
+!datos/padron/data/padron_senado.csv
+!datos/padron/data/senado_linaje_manual.csv
+!datos/padron/data/
+!datos/padron/data/raw/
+datos/padron/data/raw/*
+!datos/padron/data/raw/nomina_senado.csv
+# el crudo de Diputados sí se regenera con la API: se ignora el fresco temporal
+
+# ICG (UTDT): única variable de contexto político del modelo. Serie mensual
+# chica (297 filas) que el workflow icg-mensual.yml actualiza y commitea.
+!variables/proyecto/data/icg_mensual.csv
+
+# Memoria del vigilante del padrón: sin esto, el bot avisa lo mismo cada semana
+# (no puede saber qué ya avisó). Mismo criterio que estado_bot.json.
+!datos/padron/data/estado_vigilancia.json
+!datos/padron/outputs/vigilancia_padron.md
+
+# Calendario electoral: curado a mano contra fuentes (Wikipedia/DINE/Ley 27.783),
+# no se regenera con ningun script -> fuente de verdad, va al repo. Se usa para
+# limpiar el ICG de los saltos de traspaso presidencial, que NO son clima
+# politico del gobierno de turno sino luna de miel del que entra.
+!variables/proyecto/data/calendario_electoral.csv
+# Contexto ICG: serie limpia (imputacion plana en traspasos + neutro por gobierno
+# point-in-time + volatilidad). Es el insumo del modulador; chica y de alto valor.
+!variables/proyecto/data/icg_contexto.parquet
+
+# Curva del ciclo presidencial: promedio de las 6 presidencias alineadas por mes
+# de mandato. Curada (truncada en el mes 41), no se regenera sola -> va al repo.
+!variables/proyecto/data/curva_ciclo_presidencial.csv
+# Estimaciones de gamma del ICG: el equipo tiene que poder verlas sin correr nada.
+!variables/proyecto/outputs/*.json
+# Muestra manual de taxonomias: 88 actas clasificadas A MANO por Valle. Es el set
+# de referencia agente-vs-humano, no se regenera -> va al repo.
+!variables/proyecto/outputs/muestra_manual_taxonomias.csv

@@ -38,6 +38,19 @@ Depende de otros (no empezar hasta que su dependencia esté HECHA):
 - [ ] **evaluacion/backtesting** — necesita al menos un modelo nuevo.
 - [ ] **producto/dashboard** — necesita ensemble.
 
+## Sesion 2026-08-04 (Valle+Claude) — CERRADA, modulos liberados
+
+| Modulo | Que se hizo | Estado |
+|---|---|---|
+| variables/embudo | ICG enchufado + ablacion; bug del one-hot de comisiones corregido | LIBRE |
+| datos/padron | vigilar_padron.py (padron vivo) + padron a 257 | LIBRE |
+| datos/bot_recoleccion | 2 workflows nuevos (padron lunes, ICG dia 5) | LIBRE |
+| variables/proyecto | **ICG como modulador de coyuntura (ADR-0008)** + 3 paneles HTML | LIBRE |
+| coordinacion | memorias consolidadas, CLAUDE.md destruncado, reglas nuevas en el PLAN | LIBRE |
+
+**Sin reclamar:** `datos/argentinadatos` (el bloque del Senado 2026 en la ingesta,
+ver URGENTE) y `variables/proyecto` para la auditoria de `n_giros` (URGENTE 0).
+
 ## En curso
 
 | Módulo | Quién | Desde | Rama |

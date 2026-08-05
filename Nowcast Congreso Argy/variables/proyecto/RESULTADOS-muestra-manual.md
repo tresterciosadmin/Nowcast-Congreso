@@ -59,6 +59,6 @@ Por frecuencia en la muestra:
 
 1. Valle/equipo decide sobre huecos y fronteras (cambiar `docs/taxonomias` es contrato
    compartido: versionado según TAXONOMIAS.md).
-2. Con el vocabulario ajustado, correr el **agente en batch** (necesita API key) sobre los
+2. Con el vocabulario ajustado, correr el **agente en batch** (la API key ya está resuelta; el blocker es `proyectos.db` + M1) sobre los
    proyectos vivos; esta muestra manual queda como set de referencia para medir el acuerdo
    agente-vs-humano.

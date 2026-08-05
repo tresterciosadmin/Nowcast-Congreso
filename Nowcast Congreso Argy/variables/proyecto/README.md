@@ -93,3 +93,53 @@ para condicionar la postura de bloque sólo importan las actas que efectivamente
 Idempotente (no reclasifica lo ya resuelto) y resiliente (una fila rota no corta el lote).
 - Correr (local, necesita `ANTHROPIC_API_KEY`): `python variables\proyecto\src\tema_por_acta.py [--limite N] [--todos]`
 - Test sin red/API (LLM inyectado): `python variables\proyecto\tests\test_tema_por_acta.py` (4 chequeos).
+
+---
+
+## ICG — modulador de coyuntura (2026-08-04, ADR-0008)
+
+El ICG **no es un rasgo del modelo**: es un modulador que corrige el resultado
+según el clima político, con signo contrario según quién impulsa el proyecto.
+Contrato y decisiones completas en `coordinacion/DECISIONES/0008-icg-modulador-de-coyuntura.md`.
+
+### Cadena
+
+```
+ingesta_icg.py        -> data/icg_mensual.csv           serie cruda (296 meses)
+icg_contexto.py       -> data/icg_contexto.parquet      serie limpia + neutro point-in-time
+estimar_gamma_individual.py -> outputs/gamma_icg_individual.json
+modulador_icg.py      -> los dos mecanismos (se importa, no se corre)
+comparar_vias_icg.py  -> COMPARADOR-ICG.html
+```
+
+### Los dos mecanismos
+
+| | Mecanismo 1 — variación | Mecanismo 2 — nivel |
+|---|---|---|
+| qué mide | ICG del mes vs. promedio del propio gobierno | ICG vs. break-even 1,90 |
+| dónde se aplica | cada legislador, antes de agregar | la probabilidad final |
+| de dónde sale γ | **estimado** (0,22 a 0,56 según desvío) | **lo asigna un analista** |
+| corre solo | sí | no — requiere registro |
+
+### Cómo correr
+
+```bash
+python variables/proyecto/src/icg_contexto.py --resumen
+python variables/proyecto/src/estimar_gamma_individual.py --umbral 0.20 --boot 200
+python variables/proyecto/src/comparar_vias_icg.py       # regenera el comparador
+python variables/proyecto/tests/test_icg_contexto.py     # 20 chequeos
+```
+
+### Requisito operativo
+
+**Ningún nowcast se publica sin evaluación de coyuntura registrada.** Se hace en
+`PANEL-COYUNTURA.html` (escritorio) o `PANEL-MOVIL.html` (teléfono), que generan
+el texto del registro con fecha, ICG, γ y justificación.
+
+### Datos curados a mano (no se regeneran solos)
+
+- `data/calendario_electoral.csv` — 30 hitos 2001-2025: elecciones, PASO, balotajes,
+  asunciones, la crisis de 2001. Incluye la legislativa de 2009 adelantada a junio
+  y la suspensión de las PASO 2025 (Ley 27.783).
+- `data/curva_ciclo_presidencial.csv` — el ICG normal según el mes de mandato,
+  truncada en el mes 41. Se usa sólo en `modo="ciclo"`, que quedó como alternativa.

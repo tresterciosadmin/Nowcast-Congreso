@@ -9,6 +9,14 @@ Correr LOCAL (PC de Valle), donde el mount no trunca:
 Idempotente y defensivo. Toca: tablero_datos.js, ESTADO-DEL-PROYECTO.md, TABLERO.md, EN-HUMANO.md.
 El CÓDIGO (bloque.py v2, tema_por_acta.py, tests) YA quedó aplicado y testeado en la sesión (16 tests OK).
 """
+# ============================================================================
+# NEUTRALIZADO 2026-08-04 — YA SE EJECUTO. Volver a correrlo DUPLICARIA entradas
+# de bitacora. Copia en Archivos_Borrar/; anotado en PENDIENTES-DE-BORRAR.md.
+import sys as _sys
+print("Este script ya se aplico en su momento. Esta neutralizado: no hace nada.")
+print("Si de verdad necesitas re-aplicarlo, borra este bloque a mano.")
+_sys.exit(0)
+# ============================================================================
 from pathlib import Path
 
 RAIZ = Path(__file__).resolve().parents[1]

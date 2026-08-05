@@ -11,6 +11,14 @@ Idempotente. Toca ESTADO, TABLERO, EN-HUMANO, tablero_datos.js. El código
 (variables/bloque/src/bloque.py: proyectar_postura excluir_aux=True) ya quedó aplicado
 y testeado (test_bloque_v2 7 chequeos + regresión completa) en la sesión.
 """
+# ============================================================================
+# NEUTRALIZADO 2026-08-04 — YA SE EJECUTO. Volver a correrlo DUPLICARIA entradas
+# de bitacora. Copia en Archivos_Borrar/; anotado en PENDIENTES-DE-BORRAR.md.
+import sys as _sys
+print("Este script ya se aplico en su momento. Esta neutralizado: no hace nada.")
+print("Si de verdad necesitas re-aplicarlo, borra este bloque a mano.")
+_sys.exit(0)
+# ============================================================================
 from pathlib import Path
 RAIZ = Path(__file__).resolve().parents[1]
 

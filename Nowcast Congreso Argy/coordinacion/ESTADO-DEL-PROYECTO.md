@@ -55,6 +55,276 @@ Mantené esta tabla sincronizada con la bitácora.
 ---
 
 ## Bitácora (más reciente arriba)
+
+### [2026-08-04 · orden] coordinación — revisión completa de la carpeta antes de publicar
+- **Quién:** Valle (lo pide) · Claude (lo ejecuta) · **Módulo:** coordinación
+
+**Barrido de la carpeta entera** buscando lo que sobra, con el régimen de `Archivos_Borrar/` aplicado como manda `CLAUDE.md`: copia + **neutralización del original** + anotación.
+
+**14 archivos mandados a `Archivos_Borrar/`:**
+- **8 scripts `_aplicar_*.py`** de las sesiones de julio (los parches con los que se aplicaban bitácoras cuando el mount truncaba los archivos grandes). **Ya se ejecutaron**; volver a correrlos duplicaría entradas de bitácora. Neutralizados con una guarda al principio: imprimen un aviso y salen sin tocar nada. Verificado que siguen siendo Python válido.
+- **Basura suelta:** `_wtest` (0 bytes, de junio), `_patch_tablero_v2.py` (107 bytes, su propio contenido dice "OBSOLETO"), `_prueba.txt` (lo dejé al verificar permisos).
+- **El workflow duplicado** `bot-diario.yml` y su nota, ya neutralizados en la tanda anterior.
+- **El `.bak` del padrón**, marcado como "esperar": no se borra hasta confirmar el padrón contra la API.
+
+**Tres cosas de orden que aparecieron en el barrido:**
+1. `datos/padron/outputs/` estaba **vacía**, y es donde el workflow semanal escribe el reporte. Git no versiona carpetas vacías → agregado `.gitkeep`.
+2. `variables/proyecto/outputs/muestra_manual_taxonomias.csv` estaba **ignorada**. Son las 88 actas que Valle clasificó a mano: es el set de referencia agente-vs-humano y no se regenera. Excepción agregada.
+3. El `README.md` de la raíz no mencionaba **ninguno** de los 5 paneles HTML. Agregada una tabla con el propósito de cada uno.
+
+**Las 12 carpetas `__pycache__` se dejan:** el `.gitignore` ya las ignora y Python las regenera solas.
+
+- **Estado del módulo:** coordinación HECHO.
+- **Próximo paso:** ninguno acá. La checklist para publicar está en `CIERRE-SESION-2026-08-04.md`.
+
+
+### [2026-08-04 · cierre] variables/proyecto — EL ICG QUEDA OPERATIVO: modulador de dos mecanismos + panel de coyuntura (ADR-0008)
+- **Quién:** Valle (todo el diseño y las decisiones) · Claude (estimación e implementación) · **Módulo:** variables/proyecto
+
+**El giro.** El ICG entraba al embudo como una columna más y aportaba **cero** (−0,0003 de skill, 0,3% de la ponderación). Diagnóstico de Valle: *no es un atributo del proyecto, es el estado del sistema en el que ese proyecto se juega*. Pasa a ser **modulador**, con dos mecanismos que se aplican en momentos distintos. Formalizado en **ADR-0008**.
+
+**Mecanismo 1 — VARIACIÓN (medido).** `z = log(ICG del mes / promedio del propio gobierno)`, aplicado legislador por legislador antes de agregar. Estimado sobre **409.841 votos, 1.618 legisladores, 167 meses**, con efectos fijos por legislador y bootstrap de bloque por mes:
+
+| desvío | γ | IC 95% | signif. |
+|---|---:|---|---|
+| ≥0,40 | 0,555 | [0,39; 0,78] | sí |
+| ≥0,30 | 0,354 | [0,17; 0,51] | sí |
+| ≥0,20 | 0,333 | [0,13; 0,46] | sí |
+| ≥0,10 | 0,220 | [0,06; 0,34] | sí |
+| <0,10 | 0,094 | [−0,03; 0,24] | no |
+
+**Dosis-respuesta:** γ crece monótonamente con el desvío y se fortalece mientras la muestra cae de 410k votos a 22k. **Validación cualitativa fuerte:** sin darle ninguna información política, el modelo ordenó la cámara poniendo a los bloques provinciales y federales (Schiaretti, de la Sota, Massot, Lousteau) como los más sensibles al clima, y a LLA, el kirchnerismo y el PRO como núcleo duro. Hoy: **51 legisladores con γ>0, 206 en cero.**
+
+**Mecanismo 2 — NIVEL (declarado).** Break-even fijo en **1,90**, con forma `z = d^1,5` al subir y `z = −2,0·|d|^1,5` al bajar. Acelera hacia arriba y castiga 1,4-1,8x más de lo que premia. Razonamiento de Valle: *"las personas no son sensibles a éxitos a menos que sean notables; mientras que son muy sensibles a la pérdida"* — es la función de valor de la teoría prospectiva, reconstruida desde el razonamiento político. **γ lo asigna un analista humano; no hay default silencioso.**
+
+**Requisito operativo NUEVO.** Ningún nowcast se publica sin evaluación de coyuntura registrada (fecha, ICG, γ, justificación). Se hace en `PANEL-COYUNTURA.html` (escritorio) o `PANEL-MOVIL.html` (teléfono), que generan el texto del registro.
+
+**Preparación de la serie.** (a) Traspasos presidenciales **imputados plano** con el promedio de los últimos 12 meses del saliente: el ICG de nov-2015 califica a Macri, no a CFK, y aplicárselo a un proyecto kirchnerista invierte el signo. **Los 8 meses más volátiles de la serie son 8 de 8 pegados a un traspaso.** Plano y no tendencia porque ahí hay MÁS votaciones peleadas (7,8% vs 4,3%). (b) **Sólo el traspaso presidencial contamina** (0,325 vs 0,171 midterm, 0,156 normal, 0,146 campaña PASO): las legislativas no mueven el ICG. (c) Crisis 2002-03 excluida por fuera de escala. (d) Neutro **point-in-time** (expandido), nunca el promedio completo del gobierno — eso sería leakage.
+
+**Entregables nuevos.** `icg_contexto.py` (serie limpia, 296 meses, 216 aptos) · `estimar_gamma.py` y `estimar_gamma_individual.py` · `modulador_icg.py` (los dos mecanismos) · `comparar_vias_icg.py` · `calendario_electoral.csv` (30 hitos 2001-2025) · `curva_ciclo_presidencial.csv` · `test_icg_contexto.py` (**20 chequeos**, foco anti-leakage) · **`COMPARADOR-ICG.html`**, **`PANEL-COYUNTURA.html`** y **`PANEL-MOVIL.html`** (este último recalcula los 12 proyectos en vivo sobre los 257 diputados reales, funciona sin internet).
+
+**Lo que se midió y NO funcionó, dicho sin adornos.** (1) **La volatilidad no modula:** γ₀·λ = +0,045 con IC [−0,12; +0,09]. (2) **No hay efecto a nivel cámara:** γ sobre el share de afirmativos da −0,19 [−0,56; +0,26] y se achica al restringir a las peleadas. Con ~69 votos emitidos por acta, 10-20 bisagras mueven 4% del share contra un ruido de 18% — el promedio no tiene resolución para verlo. Eso fue lo que redirigió el análisis al nivel individual.
+
+**Dos correcciones de Valle que evitaron errores publicables.** (1) La correlación de −0,54 entre bancas del oficialismo e ICG **no** significa que los gobiernos con buen clima lleguen sin bancas: es el **calendario de recambio** (Diputados por mitades, Senado por tercios). Un presidente asume habiendo ganado pero hereda un Congreso de ciclos anteriores, y eso coincide con la luna de miel. Se corrigió en 3 HTML y 2 módulos. (2) El γ de los disciplinados que se estaba usando (+0,094) era el promedio de **todos** los legisladores, contaminado por las bisagras; su estimación propia es −0,03 con P(γ>0)=50%.
+
+- **Estado del módulo:** variables/proyecto EN CURSO. Los dos mecanismos existen y están testeados; **ninguno está enchufado al ensemble todavía.**
+- **Próximo paso:** (1) que el equipo mire `PANEL-MOVIL.html` y fije γ; (2) enchufar el mecanismo 1 a `modelo/ensemble` (el 2 entra por el panel); (3) decidir qué hacer con los **104 legisladores sin historial**, hoy tratados como núcleo duro por defecto.
+
+
+### [2026-08-04] variables/proyecto — γ EXISTE en las bisagras: los dos mecanismos del ICG quedan armados + comparador para el equipo
+- **Quién:** Valle (hipótesis, diseño y decisión de no descartar ninguna vía) · Claude (estimación e implementación)
+
+**1) El efecto aparece donde Valle dijo.** A nivel legislador × acta, con **efectos fijos por legislador** (cada uno se compara consigo mismo) y bootstrap de bloque por mes:
+
+| set | n votos | legisladores | γ₀ | IC 95% | signif. |
+|---|---:|---:|---:|---|---|
+| todos | 409.841 | 1.618 | +0,094 | [−0,03; +0,24] | no |
+| desvío ≥0,10 | 189.706 | 678 | +0,220 | [+0,06; +0,34] | **sí** |
+| desvío ≥0,20 | 93.439 | 375 | +0,333 | [+0,13; +0,46] | **sí** |
+| desvío ≥0,30 | 44.212 | 210 | +0,354 | [+0,17; +0,51] | **sí** |
+| desvío ≥0,40 | 22.405 | 123 | +0,555 | [+0,39; +0,78] | **sí** |
+
+**Dosis-respuesta:** γ crece monótonamente con el desvío y **se fortalece mientras la muestra cae de 410k votos a 22k** — cuando lo esperable sería perder significancia. Signo positivo, el que predice la hipótesis. El promedio de cámara no lo veía porque diluye: es el mismo error de diseño que el test anterior.
+
+**2) FE DE ERRATAS sobre la magnitud.** Se dijo "±0,9 votos" y estaba mal por un factor de trece. Tres errores encimados: se usó ±2σ en vez del rango real de `log_rel` (amplitud 1,72 ≈ 6,4σ), se contaron 20 bisagras en vez de las 23 reales, y **se ignoró a los otros 234 legisladores**. Bien calculado, el swing de la peor a la mejor situación de un gobierno es **±12,2 votos sobre 257** — con el umbral en 129, eso decide votaciones. Detalle importante: **8,9 de esos 12 votos vienen de los disciplinados**, cuyo γ NO es significativo. Con sólo los tramos probados el swing es ~3 votos.
+
+**3) λ (volatilidad) no aparece.** +0,045 con IC [−0,12; +0,09]. El razonamiento sobre permeabilidad social sigue en pie, pero no se distingue de cero con estos datos. Queda γ constante.
+
+**4) Los DOS mecanismos quedan armados (decisión de Valle: no descartar ninguno).** `modulador_icg.py`:
+- **Vía A — individual, estimada.** `aplicar_individual()`: γ por tramo de desvío, aplicado legislador por legislador antes de agregar. Flag `solo_significativo` para elegir entre lo probado (~3 votos) y el gradiente completo (~12).
+- **Vía B — escenario declarado.** `aplicar_agregado()`: corre la P final con una intensidad que **declara el analista** (nulo/leve/moderado/fuerte). No es predicción: se presenta como banda. Existe porque el test agregado dio cero pero, como señaló Valle, hay causalidades políticas que no dejan huella estadística con 25 años y seis gobiernos.
+
+**5) `COMPARADOR-ICG.html` (raíz, doble clic).** Diez escenarios hipotéticos sobre la **cámara real de hoy** (257 bancas del padrón + desvío individual medido) y momentos reales del ICG, cada uno pasado por las dos vías. Los casos donde más se separan: Código Penal 6,5% → 17,1% (A) → 29,3% (A completa) → 9,3% (B); Moratoria 41,3% → 53,8% → 64,7% → 46,7% (cruza el 50% con una vía y no con la otra).
+  - **Nota de método:** la primera versión daba ~100% en 8 de 10 escenarios — el artefacto de "aplanadora" ya conocido del caso 1167. Se corrigió declarando cuántos votos junta cada proyecto sin clima y calibrando la línea de base a ese total. Es más honesto para un escenario hipotético y pone los casos en la zona donde el nowcast decide algo.
+
+- **Archivos:** `variables/proyecto/src/{estimar_gamma.py, estimar_gamma_individual.py, modulador_icg.py, comparar_vias_icg.py}` (nuevos), `outputs/{gamma_icg.json, gamma_icg_individual.json}`, `COMPARADOR-ICG.html` (raíz).
+- **Estado:** variables/proyecto EN CURSO. Los mecanismos existen; **ninguno está enchufado al ensemble todavía** — falta la decisión de equipo.
+- **Próximo paso:** que el equipo mire el comparador y decida: (a) ¿se usa el tramo no significativo?, (b) ¿las dos vías a la vez, A como motor y B como banda?, (c) ¿qué intensidad tiene "moderado" (hoy 0,35, declarado)?
+
+
+### [2026-08-04] variables/proyecto — γ estimado: NO se distingue de cero en el promedio de cámara (y por qué eso no cierra la hipótesis)
+- **Quién:** Valle (hipótesis y diseño) · Claude (estimación) · **Módulo:** variables/proyecto
+
+**Qué se probó.** `estimar_gamma.py` (NUEVO) estima γ₀ y λ del modulador sobre **2.554 actas, 167 meses, 6 gobiernos**. Resultado = share de afirmativos como binomial ponderada por votos (no aprobada/rechazada: el 93% de lo que llega al recinto se aprueba). Efectos fijos por gobierno, sólo meses `apto_ajuste`, intervalos por **bootstrap de bloque por mes** (las actas de un mismo mes comparten el ICG y no son independientes).
+
+**Resultado — nulo, y consistente:**
+
+| muestra | n | γ₀ | IC95% | γ₀·λ | IC95% |
+|---|---:|---:|---|---:|---|
+| todas | 2.554 | −0,194 | [−0,56; +0,26] | +0,072 | [−0,09; +0,18] |
+| peleadas (share 0,35-0,75) | 864 | −0,129 | [−0,33; +0,14] | +0,001 | [−0,06; +0,04] |
+| muy peleadas (0,45-0,60) | 292 | −0,015 | [−0,13; +0,11] | −0,004 | [−0,06; +0,04] |
+
+Ninguno se distingue de cero. Y el estimador **se achica hacia cero justo donde la teoría predice que debería crecer**: −0,194 → −0,129 → −0,015 al restringir a las votaciones más peleadas, con intervalos cada vez más ajustados.
+
+**Pero el test está mal apuntado, y eso es lo importante.** La hipótesis de Valle es que el clima mueve a las **10-20 bisagras**, no a la cámara entera. Con una mediana de ~230 votos emitidos por acta, que 10 bisagras cambien de voto mueve el share **4,3%**; 20 bisagras, 8,7%. El desvío normal del share entre actas es **18,4%**. **El ruido de fondo es más grande que el efecto que la teoría predice**: el promedio de cámara no tiene resolución para verlo, midamos como midamos.
+
+**Conclusión honesta.** Lo que quedó descartado es un efecto **de cámara completa**: no es cierto que un gobierno con buen clima consiga sistemáticamente más acompañamiento en el recinto. Lo que **no** quedó probado ni descartado es la hipótesis original —que el clima mueve a los pivotes—, porque este diseño no puede verla.
+
+**El test que sí corresponde** es a nivel legislador y restringido al set pivote: ahí, que 3 de 15 bisagras cambien es el 20% del grupo, no el 1% de la cámara. Es exactamente el nivel donde Valle dijo desde el principio que había que aplicar el modulador, y coincide con el cimiento del proyecto (las partes hacen al todo).
+
+- **Archivos:** `variables/proyecto/src/estimar_gamma.py` (nuevo), `variables/proyecto/outputs/gamma_icg.json` (nuevo), `variables/proyecto/src/icg_contexto.py` (regla `fuera_escala`: se excluye del ajuste el período con ICG bajo el piso — la crisis 2002-03, decisión de Valle), `variables/proyecto/tests/test_icg_contexto.py`.
+- **Estado del módulo:** variables/proyecto EN CURSO. El contexto y el estimador están; **el modulador sigue sin aplicarse en ningún lado** (y con esta evidencia, no debe aplicarse a nivel cámara).
+- **Próximo paso:** re-estimar a nivel legislador × acta sobre el set pivote de `modelo/voto_individual`, con el mismo modulador y efectos fijos por legislador. Si γ aparece ahí, se aplica ahí.
+
+
+### [2026-08-04] variables/proyecto — REPLANTEO del ICG: de rasgo predictivo a MODULADOR SISTÉMICO
+- **Quién:** Valle (el replanteo y las tres decisiones) · Claude (medición e implementación) · **Módulo:** variables/proyecto
+
+**El giro conceptual (Valle).** El ICG venía usándose como una columna más de la regresión del embudo, y no aportaba nada (+0,000 de skill, 0,3% de la ponderación). El replanteo: **el ICG no es un atributo del proyecto, es el estado del sistema en el que ese proyecto se juega.** No se suma como rasgo — se aplica como modulador después del modelo, con signo según quién impulsa:
+
+```
+odds' = odds × k        k = (ICG_c / ICG_0) ^ (γ · s)
+```
+Se multiplican las CHANCES, no la probabilidad (P × k puede superar 1; las odds no). `s` = +1 gobierno, −1 oposición, 0 consenso. La inversión por origen sale del exponente.
+
+**Decisión 1 — el neutro es RELATIVO al propio gobierno.** Resuelve además un confundidor grave: el **54,5%** de la varianza del ICG está ENTRE gobiernos, así que comparar presidencias mide bancas, no clima. El caso que lo prueba: **Milei tiene el 2º ICG más alto de 25 años (2,38) y convierte 41,7%; CFK tenía 1,73 y convertía 87,3%.** Un ajuste entre gobiernos aprendería "ICG alto → menos leyes", que es al revés y es falso. Comparando cada gobierno consigo mismo, el problema desaparece.
+
+**Decisión 2 — las ventanas de traspaso presidencial se imputan PLANO.** Hallazgo de Valle, verificado: **los 8 meses más volátiles de la serie son 8 de 8 pegados a un traspaso.** El ICG de nov-2015 no califica a CFK, califica a Macri, que no asumió — aplicárselo a un proyecto kirchnerista invierte el signo. Los saltos: Duhalde→Néstor +1,84, Alberto→Milei +1,42, CFK→Macri +0,87, contra +0,21/+0,17/+0,04 cuando el oficialismo se sucede a sí mismo: **la luna de miel es de la ALTERNANCIA, no de la asunción.** Se reemplaza por el promedio plano de los últimos 12 meses del saliente. **Plano y no tendencia (decisión de Valle):** en esas ventanas hay MÁS votaciones peleadas (**7,8% vs 4,3%**), y para casos al filo conviene un número aburrido antes que uno que dependa de la pendiente de los últimos meses.
+
+**Decisión 3 — la VOLATILIDAD modula la elasticidad.** `γ(t) = γ₀ · (1 + λ·vol₆)`. Con el ICG planchado no hay tracción y las iniciativas no prenden; con el ICG en movimiento la sociedad está permeable. **Validación:** jul-2008 (la 125 y el voto de Cobos: ICG 1,27, vol 0,334) y mar-2022→mar-2023 (Alberto terminal: ICG ~1,3, vol 0,045) tienen **el mismo nivel y realidades políticas opuestas**. El nivel no los distingue; la volatilidad sí. Ese es el argumento de por qué la variable hace falta.
+
+**Medición que corrigió el recorte.** Se midió régimen por régimen: transición 0,325 · midterm 0,171 · normal 0,156 · campaña PASO 0,146. **Sólo el traspaso presidencial contamina** — las legislativas y las PASO no mueven el ICG. Excluir sólo eso deja **222 meses aptos de 291 (76%)** en vez de 192. La volatilidad limpia sobrevive con **3,8x** entre p10 y p90: hay rango para que λ tenga de dónde agarrarse.
+
+**Entregables.**
+- `variables/proyecto/data/calendario_electoral.csv` (NUEVO, curado a mano): 30 hitos 2001-2025 — elecciones, PASO, balotajes, asunciones y la crisis de 2001. Incluye la legislativa de 2009 adelantada a junio y la suspensión de las PASO 2025 (Ley 27.783). Fuentes: Wikipedia/DINE/Chequeado.
+- `variables/proyecto/src/icg_contexto.py` (NUEVO): produce `icg_contexto.parquet` con `icg_obs`, `icg` (imputado), `regimen`, `gobierno`, `icg_base_gob` (**expanding, anti-leakage**), `log_rel`, `vol6`, `apto_ajuste`.
+- `variables/proyecto/tests/test_icg_contexto.py` (NUEVO): **20 chequeos**, con foco en anti-leakage (el neutro nunca ve el futuro), en que la imputación sea plana, y en que un ICG constante dé `log_rel = 0`.
+- Excepciones de `.gitignore` para los dos archivos de datos, en el mismo commit.
+
+**Dos límites conocidos.** (1) **Duhalde no aporta al ajuste**: su ICG (0,60) queda pegado al piso de 1,0, así que su `log_rel` es constante cero — el período está fuera del rango del marco. (2) La ventana **2001-2002 no se puede imputar**: la serie arranca en nov-2001 y no hay saliente que promediar; queda marcada `sin_base` y excluida.
+
+- **Estado del módulo:** variables/proyecto EN CURSO. El contexto está listo; **el modulador todavía NO se aplica en ningún lado.**
+- **Próximo paso:** estimar γ y λ sobre los 222 meses aptos, con efectos fijos por gobierno, y decidir dónde se aplica el modulador. Valle ya definió que va **a nivel de cada legislador antes de agregar** (respeta el cimiento individual y hace que el clima mueva sobre todo a las bisagras), con una prueba paralela sobre el total para comparar.
+
+
+### [2026-08-04 · FE DE ERRATAS] variables/embudo — el aporte del ICG NO es +0,003: es CERO (y aparece un bug silencioso)
+- **Quién:** Valle (pregunta por el peso del ICG) · Claude (encuentra el error) · **Módulo:** variables/embudo
+
+**Qué pasó.** Al desglosar el peso de cada rasgo para explicar el ICG, las 25 columnas de comisiones daban **0,0% de la ponderación** — imposible, porque Presupuesto y Hacienda es el mayor lastre conocido del modelo. Tirando de ahí apareció un bug silencioso.
+
+**El bug.** `construir_features` detectaba las comisiones con `isinstance(v, (list, tuple))`. Cuando la cohorte se **persiste en parquet**, pandas devuelve esas listas como `numpy.ndarray`, que ese `isinstance` rechaza. Resultado: **las 25 columnas quedaban todas en cero, sin error ni warning**, y el modelo corría sin su bloque de rasgos más importante. No falla, no avisa: simplemente predice peor.
+
+**Cómo contaminó la medición.** La corrida completa de `embudo.py modelo` nunca terminó en el sandbox (los procesos largos no sobreviven entre llamadas), así que la ablación se hizo con un driver que **cacheaba la cohorte en `/tmp/cohorte.parquet`** — justo el camino que dispara el bug. Todos los números publicados esta mañana salieron de un modelo mutilado.
+
+**Números CORREGIDOS** (ablación walk-forward, comisiones vivas):
+
+| escalón | sancionado | llega_recinto |
+|---|---:|---:|
+| solo procedimental | 0,3424 | 0,3921 |
+| + origen/líder | **0,3628** | **0,4112** |
+| + ICG | 0,3625 | 0,4112 |
+| **aporte del ICG** | **‑0,0003** | **0,0000** |
+
+**La conclusión se da vuelta: el ICG no aporta nada.** Antes parecía sumar +0,003; con el modelo completo el margen desaparece. Pesa el **0,3%** de la ponderación (|coef| estandarizados) contra **68% de las comisiones** y **22% del trámite**. Se deja enchufado —es barato y puede valer cuando se condicione por tema— pero **no es la variable que faltaba**.
+
+**Chequeo de que ahora sí está bien:** el skill de `sancionado` da **0,3628**, que coincide con el **0,363** ya registrado en el caso de la Ley de Lobby del 31-07. Los números de la mañana (0,3175 / 0,3414) no coincidían con nada.
+
+**El fix.** `_como_lista()`: normaliza el campo `comisiones` venga como list, tuple, `ndarray` o NA. Es parsing defensivo, una de las 4 directivas del proyecto — el `isinstance` estricto era una trampa esperando a cualquiera que leyera la cohorte de disco.
+
+**Lección para el equipo.** El bug fue **silencioso**: sin excepción, sin warning, sólo peores predicciones. La única razón por la que apareció es que se pidió el **desglose de pesos por grupo de rasgos** y un 0,0% resultó imposible a la vista. Vale la pena que ese desglose sea rutina al tocar features, no una curiosidad: es la versión "features" de la alarma barata que ya salvó al proyecto dos veces (123 bloques donde hay 14; 383 bancas sobre 257).
+
+- **Archivos:** `variables/embudo/src/embudo.py` (`_como_lista` + uso en el one-hot), `variables/embudo/outputs/backtest_embudo.json`, `variables/embudo/README.md`, `tablero_datos.js`.
+- **Estado del módulo:** variables/embudo EN CURSO.
+- **Próximo paso:** re-correr `embudo.py modelo` COMPLETO en la PC de Valle (el sandbox no lo termina) para regenerar `p_embudo.parquet` con el modelo sano — el contrato que consume `modelo/ensemble` se generó con el modelo mutilado.
+
+
+### [2026-08-04 · cierre] coordinación — memorias homogeneizadas + `CLAUDE.md` destruncado y sin estado duplicado
+- **Quién:** Valle (lo pide) · Claude (lo ejecuta) · **Módulo:** coordinación
+
+**El problema, en una frase.** La sesión del 04-08 produjo tres trabajos equivocados (instructivo de git innecesario, workflow duplicado, workflows en la ruta que GitHub no lee) y **la información para evitar los tres ya estaba escrita** — repartida en cinco memorias con títulos que no gritaban. Es el mismo diagnóstico que dio origen a `URGENTE.md`: *lo importante necesita un lugar donde no se pueda no verlo.*
+
+**1) Memorias consolidadas.** Cinco archivos dispersos (`limites-del-sandbox`, `regimen-archivos-borrar`, `protocolo-sync-sandbox`, `setup-local-valle`, `preferencia-procesos-largos`) se fusionaron en **`nowcast-entorno-y-limites`**, que arranca con un chequeo de 60 segundos en tabla. `feedback-encuadre` se fusionó en `flujo-trabajo`. El índice (`MEMORY.md`) ahora **lleva los cuatro límites críticos escritos inline**, no como link: un link que no se abre no sirve de nada.
+
+**2) El estado dejó de duplicarse en memoria.** `nowcast-estado-actual` era un volcado de 13 KB que envejecía en silencio. Se vació a propósito: ahora apunta a las bitácoras vivas y sólo conserva los *hallazgos durables* (los que son caros de re-derivar). El estado del proyecto cambia sin Claude — el bot commitea solo y Franco trabaja en paralelo.
+
+**3) `CLAUDE.md`: dos arreglos.** (a) Nueva sección **"Límites del entorno de Claude"** con los cuatro puntos que ya costaron trabajo — va acá y no sólo en memoria porque **los Claudes de otros integrantes no tienen las memorias de Valle**, leen este archivo. (b) Se completó el procedimiento de `Archivos_Borrar/` con el paso que faltaba: **neutralizar el original**, no sólo avisar.
+
+**4) 🔴 `CLAUDE.md` estaba TRUNCADO en disco.** Terminaba a mitad de la palabra "co" en la última sección. No fue de esta sesión (la cuenta de bytes lo confirma): es el truncado del mount, propagado por un read-modify-write de alguna sesión anterior — exactamente el modo de falla que `nowcast-protocolo-sync-sandbox` venía describiendo desde el 11-jul. La sección afectada ("Estado actual") además estaba **desactualizada**: hablaba de 781k votos con la canónica ya en 1.017M, y daba el hueco Senado 2014-2023 como abierto. Se reemplazó por un puntero a las bitácoras vivas, aplicando la misma regla del punto 2.
+  - **Cómo se detectó:** un `assert` de tamaño antes de reescribir. La lectura vino con 8.961 bytes contra 9.116 reales en disco. **Ese guard debería estar en todo read-modify-write de archivos grandes**; se reconstruyó por streaming (`head -n` + append) en vez de leer entero.
+
+**5) Reclamo falso corregido en 5 lugares.** `PLAN-DE-TRABAJO.md` (x2), `variables/bloque/README.md` (x2) y `RESULTADOS-muestra-manual.md` decían que el batch de taxonomías "espera la API key". **Franco la resolvió el 14-jul, con prueba en vivo.** El blocker real es `proyectos.db` + M1. Una afirmación así hace parecer bloqueado un módulo que no lo está y desvía la priorización.
+
+**6) Regla nueva en `PLAN-DE-TRABAJO.md`** (de la tanda anterior, se consolida acá): Claude no puede borrar → copia a `Archivos_Borrar/` + neutralizar + anotar; y lo que Claude no ve no prueba que no exista → preguntar antes de concluir, y pedir listado de la raíz antes de tocar infraestructura.
+
+- **Archivos:** `CLAUDE.md`, `coordinacion/PLAN-DE-TRABAJO.md`, `variables/bloque/README.md`, `variables/proyecto/RESULTADOS-muestra-manual.md`, y las memorias locales de Valle (fuera del repo).
+- **Estado del módulo:** coordinación — HECHO.
+- **Próximo paso:** ninguno acá. Sigue el runbook `PUESTA-EN-MARCHA-2026-08-04.md` desde el PASO 1.
+
+
+### [2026-08-04 · fe de erratas] coordinación — "la carpeta no es un clon de git" era FALSO
+- **Quién:** Claude (el error) · Valle (lo detecta)
+- **Qué:** las entradas anteriores de hoy afirman que la carpeta local no estaba conectada a git y que por eso los workflows "no existían para GitHub". **Es falso: el repo siempre estuvo conectado** (GitHub Desktop, rama `main`, 25 archivos en cola). Se corrigió `coordinacion/CONECTAR-GIT.md` (que era un instructivo entero construido sobre esa deducción errónea) y el PASO 3 del runbook, que ahora es simplemente commitear y pushear.
+- **Cómo se produjo:** el entorno donde corre Claude monta la carpeta **sin exponer el directorio `.git`**. Claude corrió `ls -a`, no lo vio, y concluyó que no había repo. El resto del razonamiento fue correcto sobre una premisa falsa.
+- **Regla que queda:** **la ausencia de algo en el sandbox no prueba su ausencia en el disco.** El disco es la fuente de verdad; el sandbox es una vista parcial y ya se sabía que desfasa. Ante un archivo o carpeta que "debería estar y no está", **preguntar antes de concluir**. Es el mismo patrón que el `.gitignore`: dos veces en el mismo día se sacaron conclusiones de que algo "no existe" cuando sí existía, sólo que no se veía desde donde se estaba mirando.
+- **Lo que sí quedó bien de todo eso:** el chequeo de `git check-ignore` sobre los archivos críticos, que es lo que destapó el padrón del Senado. Se conservó en `CONECTAR-GIT.md`.
+- **Archivos:** `coordinacion/CONECTAR-GIT.md` (reescrito), `coordinacion/PUESTA-EN-MARCHA-2026-08-04.md` (paso 3), `coordinacion/URGENTE.md` (se borra el ítem de conectar git).
+- **Estado del módulo:** sin cambios (era documentación, no código).
+- **Próximo paso:** el runbook desde el PASO 1.
+
+
+### [2026-08-04 · cierre] Cierre operativo de la sesión: padrón a 257 aplicado y dos huecos de los workflows tapados
+- **Quién:** Valle (con Claude) · **Módulos:** datos/padron, .github/workflows
+
+**1) Padrón de Diputados regenerado — 257 exacto.** Se corrió `ingesta_padron.py` sobre el crudo actual y da **257** (LLA 95 · FdT-UxP 93 · OTRO/PROVINCIAL 47 · PRO 12 · UCR 6 · CC 2 · PerFed 2). Aplicado, con el anterior guardado en `padron_diputados.ANTES-2026-08-04.csv.bak`. El vigilante ahora corre 🟢 en las dos cámaras. **Falta confirmarlo contra la API** (`bajar_nomina.py diputados --padron`): el sandbox no llega a internet, así que esta regeneración salió del crudo en disco, que ya era más nuevo que el padrón.
+
+**2) Hueco tapado — el bot detecta, pero la canónica no se reconstruye sola.** `votaciones.py` lo dice al terminar, y el workflow no lo contemplaba: las actas nuevas quedaban en un parquet que el modelo no mira — el mismo agujero que dejó nueve meses de votaciones sin cargar. `bot-diario.yml` ahora detecta si commiteó actas nuevas y **abre un issue con los comandos exactos** (`to_canonical.py` + `run_pipeline.py`), con guarda de no duplicar: si ya hay uno abierto con la etiqueta `canonica-pendiente`, no abre otro. **Se decidió NO reconstruir la canónica automáticamente:** es la fuente de verdad y reescribirla sin revisión humana es demasiado riesgo para un cron. El olvido deja de depender de la memoria; la decisión sigue siendo humana.
+
+**3) Hueco tapado — los issues usaban labels que pueden no existir.** `issues.create` con un label inexistente falla, y el aviso se perdía en silencio: el peor resultado posible para algo cuyo único trabajo es avisar. Los tres workflows ahora crean el label si falta antes de abrir el issue.
+
+**4) Runbook de puesta en marcha.** `coordinacion/PUESTA-EN-MARCHA-2026-08-04.md`: 7 pasos con lo que tiene que dar cada uno y qué hacer si no da. Incluye el paso que más se olvida — **Settings → Actions → Workflow permissions → Read and write**, sin el cual los tres bots fallan al pushear — y el orden de prueba de menos a más invasivo (ICG → padrón → bot).
+
+- **Archivos:** `datos/padron/data/padron_diputados.csv` (+ `.bak`), `.github/workflows/{bot-diario,padron-vivo,icg-mensual}.yml`, `coordinacion/PUESTA-EN-MARCHA-2026-08-04.md` (nuevo).
+- **Estado:** infra de cron COMPLETA en código; **operativa recién cuando la carpeta se conecte a git** y los tres corran una vez.
+- **Próximo paso:** el runbook, en orden. Nada nuevo hasta que los tres estén verdes.
+
+
+### [2026-08-04] variables/embudo + datos/padron + .github — ICG enchufado, PADRÓN VIVO y los cron en GitHub Actions
+- **Quién:** Valle (con Claude) · **Módulos:** variables/embudo, datos/padron, datos/bot_recoleccion (infra)
+
+**1) URGENTE 1 — el ICG YA ESTABA BAJADO; lo que faltaba era enchufarlo.** El ítem decía "el script existe y nunca se corrió, no existe `icg_mensual.csv`". Es falso: el CSV está desde el 11-jul con **296 meses (nov-2001 → jun-2026, 0 huecos)**. Lo que efectivamente faltaba es que algún módulo lo importara. Hecho: `construir_features` ahora arma `icg`, `icg_delta_3m` e `icg_sin_dato`, **rezagados un mes** (un proyecto presentado en M ve el ICG de M-1, nunca el de M). Los faltantes (proyectos anteriores a nov-2001) van a la media de la serie con una bandera, no a cero.
+
+**2) Cuánto aporta el ICG — medido, no supuesto.** `cmd_modelo` ahora imprime una **ablación de tres escalones** para que el aporte sea atribuible:
+
+| escalón | sancionado | llega_recinto |
+|---|---:|---:|
+| (1) solo procedimental | 0,3175 | 0,2736 |
+| (2) + origen/líder | 0,3414 | 0,2935 |
+| (3) + **ICG** | **0,3446** | **0,2969** |
+| **aporte del ICG** | **+0,0032** | **+0,0034** |
+
+Es **chico pero consistente** en los dos targets: una séptima parte de lo que aportó origen/líder (+0,024 / +0,020). El AUC de `sancionado` incluso baja un poco (0,9302 → 0,9272), así que el ICG mejora la **calibración**, no el ordenamiento. Conclusión honesta: **el clima político sirve, pero no es la variable que faltaba.** Si el modelo tiene un techo, no está acá.
+
+**3) La hipótesis de Franco se confirma: pesa la DERIVA, no el nivel.** Coeficientes del modelo final (`sancionado`): `icg_delta_3m` **‑0,093** vs `icg` **+0,016** — la variación a 3 meses pesa casi **6x** más que el nivel. El **signo es negativo y hay que interpretarlo antes de creerle**: un ICG en alza en el trimestre previo se asocia con MENOS sanción. Dos lecturas posibles (no dirimidas): un gobierno con la confianza en alza necesita menos al Congreso, o cuando la confianza cae el Ejecutivo empuja más fuerte. **No usar este signo como hallazgo político hasta contrastarlo por gobierno.**
+
+**4) URGENTE 2 — PADRÓN VIVO (`datos/padron/src/vigilar_padron.py`, NUEVO).** Baja la nómina, la compara contra el padrón versionado y avisa **altas, bajas, pases de bloque y total ≠ 257/72**. Idempotente (huella del diff en `data/estado_vigilancia.json`: si no cambió, no re-avisa). Salidas: `outputs/vigilancia_padron.md` + códigos 0/10/20 que el workflow usa para decidir si abre un issue.
+
+**5) Lo que el vigilante encontró en su primera corrida — la banca 257 aparece.** Contra el crudo actual de Diputados detecta **altas: Matzkin y Pitrola** (los dos que ESTADO daba por perdidos el 31-07) y **baja: Ravier**. Con ellos el total da **257 exacto** (LLA 95 · FdT-UxP 93 · OTRO/PROVINCIAL 47 · PRO 12 · UCR 6 · CC 2 · PerFed 2). **El padrón versionado está viejo: hay que regenerarlo** (`bajar_nomina.py diputados --padron`).
+
+**6) Un falso positivo atrapado en el acto.** La primera versión reportó un "pase" de Del Plá que era `...TRABAJADORES-U` → `...TRABAJADORES-UNIDAD`: el mismo bloque truncado distinto. Corregido: **un pase es un cambio de LINAJE**, no de string; los cambios de texto se informan aparte como mantenimiento de la fuente. Es el mismo error de los 123 asesores y de la falsa jefa con 610 proyectos, atrapado esta vez antes de salir.
+
+**7) Segundo defecto corregido: la antigüedad no puede medirse por `mtime`.** En GitHub Actions el checkout reescribe todos los archivos, así que la alarma de "padrón rancio" habría dicho siempre "0 días" — justo en el único lugar donde importa. Ahora se mide por **hash del contenido** guardado en el estado versionado.
+
+**8) LOS CRON EN GITHUB ACTIONS (decisión de Valle, 04-08).** `.github/workflows/` no existía en la copia local pese a que el README del bot lo daba por hecho. Creados tres:
+- `bot-diario.yml` — 07:00 ARG lun-sáb: DAE Senado + TP Diputados + votaciones. Cada fuente con `continue-on-error`: si una se cae, las otras entran igual, y abre issue con cuál falló.
+- `padron-vivo.yml` — lunes 08:00 ARG: corre el vigilante, commitea el reporte y abre issue si hay novedades (🟡) o alarma dura (🔴).
+- `icg-mensual.yml` — día 5, 09:00 ARG: `ingesta_icg.py ultimo` + verificación de que la serie no se acortó, no tiene meses duplicados ni huecos.
+
+**9) 🔴 CAUSA RAÍZ DE URGENTE 3 — el `.gitignore` escondía el padrón del Senado.** URGENTE 3 afirma que el Senado no tiene bloques desde el 10-dic-2025 y que "ninguna fuente publica el bloque parlamentario del Senado". **Es falso.** `datos/padron/data/padron_senado.csv` tiene los **72 senadores vigentes con bloque y linaje**, incluidos los **24 que asumieron el 10-dic-2025** (FdT-UxP 21 · LLA 21 · OTRO/PROVINCIAL 17 · UCR 10 · PRO 3), y el crudo `raw/nomina_senado.csv` trae una columna BLOQUE. El archivo **nunca llegó al repo**: las reglas `*.csv` y `**/data/raw/` se lo comieron. Es la **cuarta** vez que ese bug esconde trabajo (parquet de expedientes 11-07, roster de jefes 30-07, salidas del embudo 31-07) y la primera que genera una urgencia falsa. Excepciones agregadas en el mismo commit, con el diagnóstico escrito en el propio `.gitignore`.
+
+- **Cómo reproducir:**
+```bash
+python variables/embudo/src/embudo.py modelo            # ablación de 3 escalones
+python datos/padron/src/vigilar_padron.py --camara ambas
+python variables/embudo/tests/test_embudo.py            # 18 OK
+python variables/embudo/tests/test_embudo_icg.py        # 17 OK (anti-leakage)
+python datos/padron/tests/test_vigilar_padron.py        # 15 OK
+```
+- **Bonus de performance:** el one-hot de comisiones estaba hecho con 25 `.apply` sobre 41k filas **por fold**; con la ablación de 3 escalones el backtest no terminaba. Vectorizado con `explode` + `crosstab`: mismo resultado exacto (lo verifica el test de regresión), de minutos a **~20 s por configuración**.
+- **Archivos:** `variables/embudo/src/embudo.py`, `variables/embudo/tests/test_embudo_icg.py` (nuevo), `variables/embudo/outputs/backtest_embudo.json`, `datos/padron/src/vigilar_padron.py` (nuevo), `datos/padron/tests/test_vigilar_padron.py` (nuevo), `.github/workflows/{bot-diario,padron-vivo,icg-mensual}.yml` (nuevos), `.gitignore`, `coordinacion/{TABLERO,CONECTAR-GIT,ESTADO,EN-HUMANO,URGENTE}`, `tablero_datos.js`.
+- **Estado de los módulos:** variables/embudo EN CURSO · datos/padron EN CURSO · infra de cron HECHA (falta que los workflows lleguen al repo).
+- **Próximo paso:** (1) **conectar la carpeta a git** (`coordinacion/CONECTAR-GIT.md`) — sin eso los workflows no existen para GitHub; (2) regenerar el padrón de Diputados para incorporar la banca 257; (3) **URGENTE 0: el leakage de `n_giros`**, que sigue siendo el que puede invalidar el skill entero.
+
 ### [2026-07-31 · cierre] URGENTE queda con 5 ítems, tres nuevos marcados por Franco
 - **Quién:** Franco (los marca) · Claude (los documenta)
 - **URGENTE 0 — auditar las VARIABLES del embudo.** Franco marcó que varias no le cierran. Documentadas las seis sospechosas con su coeficiente y el motivo. **La más grave: `n_giros`/`multi_comision` son los dos rasgos MÁS FUERTES del modelo (1,35 y 1,45), por encima de quién firma** — y podrían ser leakage: si los giros se amplían *después* de presentado, el rasgo mira el futuro y **el skill 0,36 queda en duda entero**. Verificable con `expedientes_movimientos` (fecha del giro vs. fecha de presentación). También quedan anotadas `mes` tratada como continua (diciembre = "12 veces enero") y `anio_electoral` que no distingue antes/después de la elección.

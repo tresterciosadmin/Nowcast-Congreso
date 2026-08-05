@@ -26,8 +26,14 @@ como "muerto" lo que todavia sigue vivo. Los proyectos inmaduros SI se scorean
 HOOKS variables/proyecto (cuando esten): el TEMA (taxonomias) y el ORIGEN
 oficialismo/oposicion son los rasgos mas predictivos del embudo. Si existe
 `variables/proyecto/data/features_proyecto.parquet` con columnas `origen` y/o
-`tema_*`, el modelo las incorpora automaticamente. Hoy corre solo con rasgos
-de expedientes.
+`tema_*`, el modelo las incorpora automaticamente.
+
+ICG (contexto politico, 2026-08-04): si existe `variables/proyecto/data/
+icg_mensual.csv` entran `icg`, `icg_delta_3m` e `icg_sin_dato`, REZAGADOS un mes
+(el proyecto presentado en M ve el ICG de M-1: anti-leakage duro). Es la unica
+variable no procedimental del modelo. `cmd_modelo` imprime la ablacion de tres
+escalones (procedimental / +origen-lider / +ICG) para que el aporte del ICG sea
+atribuible y no un numero de fe.
 
 4 directivas: errores especificos, backoff (n/a: I/O local), parsing defensivo
 (columnas por nombre, tolerante a NA), logging estructurado.
@@ -47,6 +53,66 @@ logger = logging.getLogger("embudo")
 MADUREZ_ANIOS = 2          # cohorte madura = presentada <= (ultimo_anio - MADUREZ_ANIOS)
 TOP_COMISIONES = 25        # cuantas comisiones entran como rasgo one-hot
 MIN_TRAIN = 500            # minimo de proyectos de train para intentar un fold
+ICG_LAG_MESES = 1          # el ICG entra REZAGADO: el del mes ANTERIOR (anti-leakage)
+ICG_DELTA_MESES = 3        # ventana de la variacion (icg_delta_3m)
+
+
+# --------------------------------------------------------------------------- #
+# ICG - Indice de Confianza en el Gobierno (UTDT). Unica variable de CONTEXTO  #
+# POLITICO del modelo; el resto de los rasgos son procedimentales.             #
+#                                                                             #
+# ANTI-LEAKAGE (regla dura): un proyecto presentado en el mes M ve el ICG de   #
+# M-1, nunca el de M. El ICG de M se publica DESPUES de que el mes termino, y  #
+# ademas el clima del propio mes ya esta contaminado por lo que pasa con el    #
+# proyecto. Se usa el nivel (icg) y la variacion a 3 meses (icg_delta_3m): la  #
+# hipotesis de Franco es que la DERIVA importa mas que el NIVEL (un gobierno   #
+# en 2,0 subiendo no es lo mismo que uno en 2,0 cayendo).                      #
+# --------------------------------------------------------------------------- #
+def cargar_icg(path: Path | None) -> dict | None:
+    """Lee icg_mensual.csv -> {(anio, mes): {"icg": x, "icg_delta_3m": y}}.
+
+    Devuelve None si el archivo no existe (el modelo corre igual, sin la
+    variable). Parsing defensivo: exige las columnas anio/mes/icg y descarta
+    filas rotas en vez de explotar.
+    """
+    if path is None or not Path(path).exists():
+        logger.warning("no encontre icg_mensual.csv - el modelo corre SIN contexto politico")
+        return None
+    try:
+        d = pd.read_csv(path)
+    except (OSError, ValueError) as e:
+        logger.error("no pude leer el ICG (%s): %s", path, e)
+        return None
+    faltan = {"anio", "mes", "icg"} - set(d.columns)
+    if faltan:
+        logger.error("icg_mensual.csv sin columnas %s - lo ignoro", sorted(faltan))
+        return None
+    d = d.dropna(subset=["anio", "mes", "icg"]).copy()
+    d["anio"] = d["anio"].astype(int)
+    d["mes"] = d["mes"].astype(int)
+    d["icg"] = d["icg"].astype(float)
+    d = d.sort_values(["anio", "mes"]).drop_duplicates(["anio", "mes"], keep="last")
+    # la variacion se calcula sobre la serie mensual ORDENADA y continua
+    d["icg_delta_3m"] = d["icg"].diff(ICG_DELTA_MESES)
+    tabla = {(int(r.anio), int(r.mes)): {"icg": float(r.icg),
+                                         "icg_delta_3m": (float(r.icg_delta_3m)
+                                                          if pd.notna(r.icg_delta_3m) else None)}
+             for r in d.itertuples()}
+    logger.info("ICG cargado: %d meses (%d-%02d -> %d-%02d)", len(tabla),
+                d["anio"].iloc[0], d["mes"].iloc[0], d["anio"].iloc[-1], d["mes"].iloc[-1])
+    return tabla
+
+
+def _mes_rezagado(anio, mes, lag: int = ICG_LAG_MESES):
+    """(anio, mes) - lag meses. Devuelve None si la fecha no es utilizable."""
+    try:
+        a, m = int(anio), int(mes)
+    except (TypeError, ValueError):
+        return None
+    if not (1 <= m <= 12) or a < 1900:
+        return None
+    total = a * 12 + (m - 1) - lag
+    return total // 12, total % 12 + 1
 
 
 # --------------------------------------------------------------------------- #
@@ -248,9 +314,32 @@ def _tasa_autor(train: pd.DataFrame, target: str) -> tuple[dict, float]:
     return g["mean"].to_dict(), base
 
 
+def _como_lista(v) -> list:
+    """Normaliza el campo `comisiones` a lista, venga de donde venga.
+
+    Tolera list/tuple (cohorte en memoria), numpy.ndarray (cohorte leida de
+    parquet) y NA. Cualquier cosa que no sea iterable o sea texto -> [].
+    """
+    if v is None:
+        return []
+    if isinstance(v, (list, tuple)):
+        return list(v)
+    if isinstance(v, str):
+        return []
+    try:
+        if pd.isna(v):
+            return []
+    except (TypeError, ValueError):
+        pass                      # arrays: pd.isna devuelve un array, no un bool
+    try:
+        return list(v)
+    except TypeError:
+        return []
+
+
 def construir_features(df: pd.DataFrame, top_com: list, tasa_autor: dict,
-                       base_autor: float, feats_proy: pd.DataFrame | None = None
-                       ) -> pd.DataFrame:
+                       base_autor: float, feats_proy: pd.DataFrame | None = None,
+                       icg: dict | None = None) -> pd.DataFrame:
     """Matriz de rasgos. `top_com` / `tasa_autor` se derivan del TRAIN (sin leakage)."""
     X = pd.DataFrame(index=df.index)
     X["n_giros"] = df["n_giros"].fillna(0).astype(float)
@@ -260,11 +349,34 @@ def construir_features(df: pd.DataFrame, top_com: list, tasa_autor: dict,
     X["camara_senado"] = df["camara_origen"].astype(str).str.contains(
         "SENADO", case=False, na=False).astype(float)
     X["autor_tasa_hist"] = df["autor"].map(tasa_autor).fillna(base_autor).astype(float)
-    # one-hot de las comisiones mas frecuentes
-    coms = df["comisiones"]
-    for com in top_com:
-        X["com__" + str(com)[:40]] = coms.apply(
-            lambda lst, cc=com: 1.0 if isinstance(lst, (list, tuple)) and cc in lst else 0.0)
+    # one-hot de las comisiones mas frecuentes.
+    # VECTORIZADO (2026-08-04): antes eran 25 `.apply` sobre 41k filas POR FOLD,
+    # y con la ablacion de 3 escalones x 2 targets x ~15 folds el backtest no
+    # terminaba en media hora. Un explode + pivot hace lo mismo en una pasada.
+    # El resultado es identico (lo verifica test_embudo); cambia solo el costo.
+    cols_com = ["com__" + str(c)[:40] for c in top_com]
+    for c_ in cols_com:
+        X[c_] = 0.0
+    if top_com:
+        listas = df["comisiones"]
+        # PARSING DEFENSIVO (2026-08-04): NO usar isinstance(v, (list, tuple)).
+        # Al persistir la cohorte en parquet, pandas devuelve las listas como
+        # numpy.ndarray, y ese isinstance las rechaza EN SILENCIO: las 25
+        # columnas de comisiones quedan todas en cero y el modelo pierde su
+        # segundo bloque de rasgos sin que nada falle ni avise. Pasó de verdad
+        # el 04-08 y contaminó una medición entera del aporte del ICG.
+        # Se acepta cualquier iterable que no sea texto.
+        listas = listas.map(_como_lista)
+        mask = listas.map(len) > 0
+        if bool(mask.any()):
+            ex = listas[mask].explode()
+            ex = ex[ex.isin(set(top_com))]
+            if len(ex):
+                pres = pd.crosstab(ex.index, ex).clip(upper=1).astype(float)
+                pres.columns = ["com__" + str(c)[:40] for c in pres.columns]
+                pres = pres.reindex(index=df.index, columns=cols_com,
+                                    fill_value=0.0).fillna(0.0)
+                X[cols_com] = pres[cols_com].values
     # hooks variables/proyecto (origen, lider, tema_*) - features_proyecto.parquet
     if feats_proy is not None and "proyecto_id" in feats_proy.columns:
         fp = feats_proy.drop_duplicates("proyecto_id").set_index(
@@ -278,6 +390,20 @@ def construir_features(df: pd.DataFrame, top_com: list, tasa_autor: dict,
             X["lider"] = idx.map(fp["lider"].astype(float).to_dict()).fillna(0.0).astype(float).values
         for col in [c for c in fp.columns if c.startswith("tema_")]:
             X["proy_" + col] = idx.map(fp[col].to_dict()).fillna(0).astype(float).values
+    # contexto politico: ICG del mes ANTERIOR a la presentacion (nunca el del mes)
+    if icg:
+        clave = [_mes_rezagado(a, m) for a, m in zip(df["anio"], df["mes"])]
+        vals = [icg.get(k) if k else None for k in clave]
+        nivel = [v["icg"] if v else None for v in vals]
+        delta = [v["icg_delta_3m"] if v else None for v in vals]
+        s_niv = pd.Series(nivel, index=df.index, dtype="float64")
+        s_del = pd.Series(delta, index=df.index, dtype="float64")
+        # los faltantes (proyecto anterior a nov-2001, o mes sin dato) van a la
+        # MEDIA de la propia serie: neutro, no inventa un clima que no se midio
+        media = float(pd.Series([v["icg"] for v in icg.values()]).mean())
+        X["icg"] = s_niv.fillna(media).astype(float)
+        X["icg_delta_3m"] = s_del.fillna(0.0).astype(float)
+        X["icg_sin_dato"] = s_niv.isna().astype(float)   # el modelo sabe cuando no vio nada
     return X.fillna(0.0)
 
 
@@ -313,7 +439,8 @@ def _metricas(y_true, y_pred) -> dict:
 
 def backtest_temporal(c: pd.DataFrame, target: str = "sancionado",
                       madurez: int = MADUREZ_ANIOS, min_train: int = MIN_TRAIN,
-                      feats_proy: pd.DataFrame | None = None) -> dict:
+                      feats_proy: pd.DataFrame | None = None,
+                      icg: dict | None = None) -> dict:
     """Walk-forward: entrena con anios < T (maduros), predice el anio T."""
     try:
         from sklearn.linear_model import LogisticRegression
@@ -333,8 +460,8 @@ def backtest_temporal(c: pd.DataFrame, target: str = "sancionado",
             continue
         top_com = _top_comisiones(train)
         tasa_autor, base_autor = _tasa_autor(train, target)
-        Xtr = construir_features(train, top_com, tasa_autor, base_autor, feats_proy)
-        Xte = construir_features(test, top_com, tasa_autor, base_autor, feats_proy).reindex(
+        Xtr = construir_features(train, top_com, tasa_autor, base_autor, feats_proy, icg)
+        Xte = construir_features(test, top_com, tasa_autor, base_autor, feats_proy, icg).reindex(
             columns=Xtr.columns, fill_value=0.0)
         ytr = train[target].astype(int).values
         if ytr.sum() == 0 or ytr.sum() == len(ytr):
@@ -356,13 +483,14 @@ def backtest_temporal(c: pd.DataFrame, target: str = "sancionado",
     brier_base = float(((np.asarray(y_base) - np.asarray(y_true)) ** 2).mean())
     skill = 1 - glob["brier"] / brier_base if brier_base else float("nan")
     return {"target": target, "madurez_anios": madurez,
+            "con_icg": bool(icg), "con_origen_lider": feats_proy is not None,
             "global": glob, "brier_baseline_tasabase": round(brier_base, 5),
             "skill_score": round(skill, 4), "folds": folds}
 
 
 def entrenar_y_scorear(c: pd.DataFrame, target: str,
-                       feats_proy: pd.DataFrame | None, madurez: int = MADUREZ_ANIOS
-                       ) -> pd.Series:
+                       feats_proy: pd.DataFrame | None, madurez: int = MADUREZ_ANIOS,
+                       icg: dict | None = None) -> pd.Series:
     """Modelo final sobre toda la cohorte madura; scorea TODOS los proyectos."""
     from sklearn.linear_model import LogisticRegression
     from sklearn.preprocessing import StandardScaler
@@ -370,12 +498,12 @@ def entrenar_y_scorear(c: pd.DataFrame, target: str,
     train = cohorte_madura(c, madurez)
     top_com = _top_comisiones(train)
     tasa_autor, base_autor = _tasa_autor(train, target)
-    Xtr = construir_features(train, top_com, tasa_autor, base_autor, feats_proy)
+    Xtr = construir_features(train, top_com, tasa_autor, base_autor, feats_proy, icg)
     ytr = train[target].astype(int).values
     modelo = make_pipeline(StandardScaler(with_mean=False),
                            LogisticRegression(max_iter=1000))
     modelo.fit(Xtr, ytr)
-    Xall = construir_features(c, top_com, tasa_autor, base_autor, feats_proy).reindex(
+    Xall = construir_features(c, top_com, tasa_autor, base_autor, feats_proy, icg).reindex(
         columns=Xtr.columns, fill_value=0.0)
     return pd.Series(modelo.predict_proba(Xall)[:, 1], index=c.index)
 
@@ -390,7 +518,9 @@ def _rutas():
     out = Path(os.environ.get("OUT", root.parents[1] / "outputs"))
     out.mkdir(parents=True, exist_ok=True)
     feats = root.parents[3] / "variables" / "proyecto" / "data" / "features_proyecto.parquet"
-    return clean, out, (feats if feats.exists() else None)
+    icg = Path(os.environ.get(
+        "ICG_CSV", root.parents[3] / "variables" / "proyecto" / "data" / "icg_mensual.csv"))
+    return clean, out, (feats if feats.exists() else None), (icg if icg.exists() else None)
 
 
 def cmd_funnel(c: pd.DataFrame, out: Path) -> None:
@@ -416,22 +546,44 @@ def cmd_funnel(c: pd.DataFrame, out: Path) -> None:
           + (", " + ", ".join(extra) if extra else ""))
 
 
-def cmd_modelo(c: pd.DataFrame, out: Path, feats_proy) -> None:
+def cmd_modelo(c: pd.DataFrame, out: Path, feats_proy, icg: dict | None = None) -> None:
+    """Backtest con ABLACION explicita: cada rasgo nuevo tiene que ganarse el lugar.
+
+    Tres escalones acumulativos, para poder atribuir el aporte de cada bloque:
+      (1) solo procedimental (giros, comisiones, autor, calendario)
+      (2) + origen/lider (variables/proyecto)      -> aporto +0,020 el 12-jul
+      (3) + ICG (contexto politico)                -> lo que se mide aca
+    El delta que importa es (3)-(2): que agrega el clima politico POR ENCIMA de
+    lo que ya explican el tramite y quien firma.
+    """
     resumen = {}
     for target in ("sancionado", "llega_recinto"):
-        bt_base = backtest_temporal(c, target=target, feats_proy=None)
-        bt = backtest_temporal(c, target=target, feats_proy=feats_proy) if feats_proy is not None else bt_base
-        resumen[target] = bt
+        bt_base = backtest_temporal(c, target=target, feats_proy=None, icg=None)
+        bt = (backtest_temporal(c, target=target, feats_proy=feats_proy, icg=None)
+              if feats_proy is not None else bt_base)
+        bt_icg = (backtest_temporal(c, target=target, feats_proy=feats_proy, icg=icg)
+                  if icg else None)
+        resumen[target] = bt_icg or bt
         resumen[target + "_sin_origen_lider"] = bt_base
+        resumen[target + "_sin_icg"] = bt
         g, gb = bt.get("global", {}), bt_base.get("global", {})
         print(f"\n=== BACKTEST target={target} ===")
-        print(f"  SIN origen/líder:  skill {bt_base.get('skill_score')} | AUC {gb.get('auc')} | Brier {gb.get('brier')}")
-        print(f"  CON origen/líder:  skill {bt.get('skill_score')} | AUC {g.get('auc')} | Brier {g.get('brier')} | n {g.get('n')}")
+        print(f"  (1) solo procedimental:   skill {bt_base.get('skill_score')} | AUC {gb.get('auc')} | Brier {gb.get('brier')}")
+        print(f"  (2) + origen/líder:       skill {bt.get('skill_score')} | AUC {g.get('auc')} | Brier {g.get('brier')} | n {g.get('n')}")
+        if bt_icg:
+            gi = bt_icg.get("global", {})
+            d = (bt_icg.get("skill_score") or 0) - (bt.get("skill_score") or 0)
+            resumen[target + "_delta_icg"] = round(d, 4)
+            print(f"  (3) + ICG (contexto):     skill {bt_icg.get('skill_score')} | AUC {gi.get('auc')} | Brier {gi.get('brier')}")
+            print(f"      -> APORTE DEL ICG: {d:+.4f} de skill  "
+                  f"({'SUMA' if d > 0.002 else 'NEUTRO' if d > -0.002 else 'RESTA'})")
+        else:
+            print("  (3) ICG: NO disponible (falta icg_mensual.csv)")
     (out / "backtest_embudo.json").write_text(
         json.dumps(resumen, ensure_ascii=False, indent=2), encoding="utf-8")
-    # contrato de salida: P por proyecto
-    p_rec = entrenar_y_scorear(c, "llega_recinto", feats_proy)
-    p_san = entrenar_y_scorear(c, "sancionado", feats_proy)
+    # contrato de salida: P por proyecto (el modelo de produccion usa TODO lo que suma)
+    p_rec = entrenar_y_scorear(c, "llega_recinto", feats_proy, icg=icg)
+    p_san = entrenar_y_scorear(c, "sancionado", feats_proy, icg=icg)
     salida = c[["proyecto_id", "anio", "etapa_actual"]].copy()
     salida["p_llega_recinto"] = p_rec.round(4).values
     salida["p_sancion"] = p_san.round(4).values
@@ -443,7 +595,8 @@ def main(argv: list[str]) -> None:
     logging.basicConfig(level=logging.INFO,
                         format="%(asctime)s %(levelname)s %(name)s %(message)s")
     cmd = argv[1] if len(argv) > 1 else "all"
-    clean, out, feats_path = _rutas()
+    clean, out, feats_path, icg_path = _rutas()
+    icg = cargar_icg(icg_path)
     dfs = cargar(clean)
     c = construir_cohorte(dfs)
     logger.info("cohorte: %d proyectos de LEY", len(c))
@@ -455,7 +608,7 @@ def main(argv: list[str]) -> None:
     if cmd in ("funnel", "all"):
         cmd_funnel(c, out)
     if cmd in ("modelo", "all"):
-        cmd_modelo(c, out, feats_proy)
+        cmd_modelo(c, out, feats_proy, icg)
 
 
 if __name__ == "__main__":

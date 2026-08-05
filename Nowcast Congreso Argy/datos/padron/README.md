@@ -60,3 +60,27 @@ que cayeron a `OTRO / PROVINCIAL` (para revisar el mapeo).
 ## Convenciones
 Consume el contrato de `datos/canonica` (no edita su código). Resiliencia: errores
 específicos, parsing defensivo (fechas dd/mm/YYYY, comillas internas), logging.
+
+## Padrón vivo — `src/vigilar_padron.py` (2026-08-04, URGENTE 2)
+
+Corre **semanal** (workflow `.github/workflows/padron-vivo.yml`, lunes 08:00 ARG)
+y compara la nómina contra el padrón versionado. Avisa:
+
+- **altas** (asumió alguien) · **bajas** (renuncias, cesantías, fallecimientos)
+- **pases de bloque** — medidos por **linaje**, no por el string crudo. Un cambio
+  de texto (`...TRABAJADORES-U` → `...-UNIDAD`) no es una ruptura política y se
+  informa aparte. Este chequeo existe porque la primera corrida reportó
+  exactamente ese falso positivo.
+- **total ≠ 257 / 72** — la alarma más barata del proyecto.
+
+Idempotente: la huella del diff va a `data/estado_vigilancia.json`; si no cambió,
+no re-avisa. La antigüedad del crudo del Senado se mide por **hash de contenido**,
+no por `mtime` (en CI el checkout reescribe todo y el mtime siempre diría 0 días).
+
+```bash
+python datos/padron/src/vigilar_padron.py                       # ambas cámaras
+python datos/padron/src/vigilar_padron.py --camara senado --dry-run
+python datos/padron/tests/test_vigilar_padron.py                # 15 chequeos offline
+```
+
+Códigos de salida: `0` sin novedades · `10` novedades · `20` alarma dura.

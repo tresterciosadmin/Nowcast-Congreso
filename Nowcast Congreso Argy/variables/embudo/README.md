@@ -69,3 +69,34 @@ python variables/embudo/tests/test_embudo.py   # 18 chequeos offline (fixture si
 ## Convenciones
 Resiliencia obligatoria: errores específicos, parsing defensivo (columnas por
 nombre, tolerante a NA), logging estructurado. Consumir contratos, no código.
+
+## ICG — contexto político (2026-08-04, URGENTE 1)
+
+Entran tres rasgos desde `variables/proyecto/data/icg_mensual.csv`: `icg`,
+`icg_delta_3m` e `icg_sin_dato`, **rezagados un mes** — un proyecto presentado en
+M ve el ICG de M-1, nunca el de M. Es la única variable no procedimental.
+
+`cmd_modelo` imprime una **ablación de tres escalones**:
+
+| escalón | sancionado | llega_recinto |
+|---|---:|---:|
+| solo procedimental | 0,3424 | 0,3921 |
+| + origen/líder | **0,3628** | **0,4112** |
+| + ICG | 0,3625 | 0,4112 |
+| **aporte del ICG** | **‑0,0003** | **0,0000** |
+
+**El ICG NO aporta.** Pesa el **0,3%** de la ponderación (suma de |coeficientes|
+estandarizados), contra 68% de las comisiones y 22% del trámite. Se deja
+enchufado porque no molesta, es barato de mantener y puede empezar a valer
+cuando el modelo se condicione por tema — pero **hoy no es la variable que
+faltaba**, y el techo del modelo no está acá.
+
+> ⚠️ **Fe de erratas.** La primera medición del 04-08 dio +0,003 y estaba mal:
+> salió de una cohorte cacheada en parquet, donde las listas de `comisiones`
+> vuelven como `numpy.ndarray` y el `isinstance(v, (list, tuple))` del one-hot
+> las rechazaba **en silencio** — las 25 columnas quedaban en cero y el modelo
+> corría sin su bloque de rasgos más importante. Corregido con `_como_lista()`.
+> Señal de que el número corregido es el bueno: el skill de `sancionado` da
+> 0,3628, que coincide con el 0,363 que ya figuraba en el caso de la Ley de Lobby.
+
+Si falta el CSV, el modelo corre igual sin la variable.

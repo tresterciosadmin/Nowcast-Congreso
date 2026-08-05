@@ -1,0 +1,122 @@
+# =============================================================================
+# ICG MENSUAL — Índice de Confianza en el Gobierno (UTDT)
+#
+# Es la ÚNICA variable de contexto político del modelo: todo el resto de lo que
+# mira el embudo es procedimental (comisiones, autor, calendario). Sin ella, el
+# motor no puede distinguir un proyecto mandado en un pico de confianza de otro
+# mandado en un piso — y esa diferencia es enorme (el PE convierte 87,3% con
+# CFK y 41,7% con Milei).
+#
+# El modo `ultimo` scrapea la página de informes y agrega SOLO el mes nuevo,
+# antes de que rote el Excel oficial. Es idempotente: correrlo dos veces no
+# duplica nada.
+#
+# Día 5 y no día 1: UTDT publica el informe del mes anterior durante los
+# primeros días, así que el 1 todavía no hay nada nuevo que traer.
+# =============================================================================
+name: icg-mensual
+
+on:
+  schedule:
+    - cron: "0 12 5 * *"      # día 5, 09:00 ARG
+  workflow_dispatch:
+    inputs:
+      modo:
+        description: "ultimo = sólo el mes nuevo · serie = rebajar todo el histórico"
+        required: false
+        default: ultimo
+        type: choice
+        options: [ultimo, serie]
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: icg-mensual
+  cancel-in-progress: false
+
+jobs:
+  actualizar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Dependencias
+        run: pip install pandas requests xlrd openpyxl beautifulsoup4 tenacity
+
+      - name: Traer el ICG
+        id: icg
+        run: python "Nowcast Congreso Argy/variables/proyecto/src/ingesta_icg.py" ${{ inputs.modo || 'ultimo' }}
+
+      - name: Verificar que la serie siga sana
+        run: |
+          python - <<'PY'
+          import sys
+          import pandas as pd
+          d = pd.read_csv("Nowcast Congreso Argy/variables/proyecto/data/icg_mensual.csv")
+          # Chequeos baratos que atrapan el 90% de los desastres de scraping:
+          # una serie que se acortó, un mes duplicado o un hueco en el medio.
+          assert len(d) >= 296, f"la serie se acortó: {len(d)} filas"
+          assert not d.duplicated(["anio", "mes"]).any(), "hay meses duplicados"
+          f = pd.to_datetime(dict(year=d.anio, month=d.mes, day=1)).sort_values()
+          huecos = (f.diff().dt.days.dropna() > 32).sum()
+          assert huecos == 0, f"{huecos} hueco(s) en la serie mensual"
+          print(f"ICG OK: {len(d)} meses, último {d.anio.iloc[-1]}-{d.mes.iloc[-1]:02d}")
+          PY
+
+      - name: Commitear si hay mes nuevo
+        run: |
+          set -euo pipefail
+          git config user.name  "bot-nowcast"
+          git config user.email "bot-nowcast@users.noreply.github.com"
+          git add -A "Nowcast Congreso Argy/variables/proyecto/data/icg_mensual.csv"
+          if git diff --cached --quiet; then
+            echo "sin mes nuevo: no commiteo"
+            exit 0
+          fi
+          git commit -m "ICG: mes nuevo $(date -u +%Y-%m)"
+          git pull --rebase --autostash
+          git push
+
+      - name: Avisar si el ICG se cayó
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            // Los labels tienen que existir antes de usarlos: si el repo no los
+            // tiene, issues.create falla y el aviso se pierde en silencio — que es
+            // el peor resultado posible para algo cuyo unico trabajo es avisar.
+            async function asegurarLabels(nombres) {
+              for (const name of nombres) {
+                try {
+                  await github.rest.issues.getLabel({
+                    owner: context.repo.owner, repo: context.repo.repo, name });
+                } catch (e) {
+                  try {
+                    await github.rest.issues.createLabel({
+                      owner: context.repo.owner, repo: context.repo.repo,
+                      name, color: 'd93f0b' });
+                  } catch (e2) { /* carrera con otro job: no importa */ }
+                }
+              }
+            }
+            await asegurarLabels(['datos', 'urgente']);
+            await github.rest.issues.create({
+              owner: context.repo.owner, repo: context.repo.repo,
+              title: 'icg-mensual: no pude traer el ICG (' + new Date().toISOString().slice(0,10) + ')',
+              body: [
+                'La ingesta del ICG falló o la serie quedó inconsistente.', '',
+                'Suele ser una de dos cosas: UTDT cambió el layout del Excel',
+                '(pasó una vez: venía transpuesto) o movió la página de informes.',
+                'El modo `serie` rebaja todo el histórico y suele destrabarlo.', '',
+                'Log: ' + '${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}',
+              ].join('\n'),
+              labels: ['datos', 'urgente'],
+            });

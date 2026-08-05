@@ -3,6 +3,49 @@
 Plan estructurado para trabajo en paralelo. Para cada bloque: **qué** hay que hacer y **cómo**. El orden de prioridad sale del gate de Fase 0 (predecir el voto-dirección por bloque ya da ~0,99 **en promedio**; el valor está en asistencia, embudo, posición de bloque y —matiz 2026-06-30— en el **desvío individual vs. bloque** de los pocos legisladores bisagra que el promedio esconde; ver 1B.4).
 
 ## Cómo se trabaja (resumen operativo)
+
+### Regla general: Claude NO puede borrar archivos (04-08-2026)
+
+Claude tiene permiso de **lectura y escritura** sobre la carpeta, **no de
+eliminación**. Puede crear y sobrescribir; no puede hacer desaparecer nada. Esto
+no es una limitación menor: un archivo que "hay que borrar" y mientras tanto
+sigue funcionando no es un pendiente, es un problema activo.
+
+**Procedimiento obligatorio** cuando algo tiene que dejar de existir:
+
+1. **Copiarlo** a `Archivos_Borrar/` con el nombre `BORRAR_<ruta-con-guiones>`.
+2. **Neutralizar el original** para que no haga daño mientras espera: a un
+   workflow se le sacan los disparadores automáticos, a un script se le saca el
+   `__main__`, a un archivo de datos se le agrega una cabecera que lo invalide.
+   **Este paso no es opcional.**
+3. **Anotarlo** en `Archivos_Borrar/PENDIENTES-DE-BORRAR.md` con la ruta exacta
+   y el motivo.
+
+El dueño humano borra cuando quiera. Nada se rompe si tarda.
+
+**De dónde sale la regla:** el 04-08 quedó un workflow duplicado en
+`.github/workflows/` que, de haber llegado activo al repo, habría corrido en
+paralelo con el bot real y los dos se habrían pisado al pushear.
+
+### Regla general: lo que Claude NO ve no prueba que no exista (04-08-2026)
+
+El entorno donde corre Claude monta la carpeta con **dos límites que no se
+anuncian solos**, y los dos generaron trabajo equivocado el mismo día:
+
+- **No expone los directorios que empiezan con punto** (`.git`, `.github`).
+  Claude corrió `ls -a`, no los vio, y concluyó que el repo no estaba conectado
+  y que no había workflows. Las dos cosas eran falsas: escribió un instructivo
+  entero para conectar git y un workflow que duplicaba uno existente.
+- **Sólo monta `Nowcast Congreso Argy/`, no la raíz del repo**, que está un
+  nivel más arriba (`Nowcast-Congreso/`). Por eso los workflows nuevos quedaron
+  en una ruta donde GitHub nunca los habría leído.
+
+**Qué hacer:** ante un archivo o carpeta que *debería* estar y no aparece,
+**preguntar antes de concluir**. El disco del dueño humano es la fuente de
+verdad; lo que Claude ve es una vista parcial. Y cuando el trabajo toque
+infraestructura del repo (workflows, hooks, configuración de CI), **pedir un
+listado de la raíz antes de escribir nada**.
+
 - Cada ítem mapea a un módulo/carpeta con su `README.md` (contrato).
 - Reclamás el módulo en `TABLERO.md`, trabajás en rama propia, registrás en `ESTADO-DEL-PROYECTO.md`, abrís PR. Detalle en `PROTOCOLO-GIT.md`.
 
@@ -73,9 +116,9 @@ Plan estructurado para trabajo en paralelo. Para cada bloque: **qué** hay que h
 ### 1B.3 variables/legislador · proyecto · bloque — feature stores
 - **Qué/Cómo:** features point-in-time por legislador, por proyecto (tema/autor/mayoría/NLP) y series por bloque (cohesión/posición/fracturas). Independientes entre sí.
 - **Diseño del feature store por proyecto (2026-07-11, decisión de Valle: diseñar antes de recolectar):** `variables/proyecto/FEATURE-STORE.md` define las 6 familias de rasgos por proyecto/votación (A identidad/trámite, B tema/taxonomías, C autoría+origen oficialismo/oposición, D institucionales, E contexto ICG Di Tella/electoral, F derivadas CONDICIONADAS: posición de bloque por tema, presentismo condicionado, disciplina por tema) y a qué etapa alimenta cada una. Es el desbloqueo de todo el condicionamiento (asistencia y posición de bloque). **Orden:** (1) correr el agente de taxonomías [desbloqueo #1: API key batch o clasificar muestra a mano], (2) regla origen oficialismo/oposición por fecha, (3) ingesta ICG Di Tella (serie mensual UTDT), (4) derivadas condicionadas, (5) calendario electoral.
-- **Avance 2026-07-11 sobre ese orden:** **(1) parcial — vocabulario VALIDADO a mano** (88 actas estratificadas 2001-25: 82% clasificable por título, 89% confianza alta/media; 5 huecos y 4 fronteras propuestos en `variables/proyecto/RESULTADOS-muestra-manual.md`; la muestra queda como set de referencia agente-vs-humano; el batch sigue esperando la API key). **(3) HECHA — ICG Di Tella vivo:** `variables/proyecto/data/icg_mensual.csv` (296 meses, nov-2001→jun-2026, 0 huecos, validado contra informes) + `src/ingesta_icg.py` con modo `serie` (Excel oficial; layout transpuesto resuelto) y modo `ultimo` (scrapea la página de informes para el mes nuevo antes de que rote el Excel; idempotente; invocable por el futuro bot). Tests 21 OK. **Siguen:** (2) regla origen por fecha ← próximo natural, (4) y (5).
+- **Avance 2026-07-11 sobre ese orden:** **(1) parcial — vocabulario VALIDADO a mano** (88 actas estratificadas 2001-25: 82% clasificable por título, 89% confianza alta/media; 5 huecos y 4 fronteras propuestos en `variables/proyecto/RESULTADOS-muestra-manual.md`; la muestra queda como set de referencia agente-vs-humano; el batch NO espera la API key —resuelta por Franco el 14-jul, prueba en vivo OK—; el blocker real es `proyectos.db` + M1). **(3) HECHA — ICG Di Tella vivo:** `variables/proyecto/data/icg_mensual.csv` (296 meses, nov-2001→jun-2026, 0 huecos, validado contra informes) + `src/ingesta_icg.py` con modo `serie` (Excel oficial; layout transpuesto resuelto) y modo `ultimo` (scrapea la página de informes para el mes nuevo antes de que rote el Excel; idempotente; invocable por el futuro bot). Tests 21 OK. **Siguen:** (2) regla origen por fecha ← próximo natural, (4) y (5).
 - **Avance 2026-07-22/23 (Valle+Claude) — TEMA y ORIGEN por acta, sin esperar el batch de PDFs:** desbloqueado el condicionamiento por texto de las actas VOTADAS. (B tema) `variables/proyecto/tema_por_acta.py` clasifica por TÍTULO las actas votadas → `tema_por_acta.parquet` (1.537 actas, 2011-2026, 87% de cobertura en la ventana reciente del Senado). (C origen) `variables/proyecto/origen_por_acta.py` etiqueta `origen` (EJECUTIVO/OFICIALISMO/OPOSICION) + `origen_lado` (GOBIERNO/OPOSICION) + `gobierno` de turno POR ACTA, determinístico sin API key (4 vías: código de expediente, **código embebido en el título** del Senado viejo `PE-608/03`, O.D.→expedientes_resultados, match de título) → `origen_por_acta.parquet` (**59% global / 54,5% Senado**; tapa el hueco 2004-2014). (F derivadas) `variables/bloque` condiciona la dirección por tema/origen con shrinkage + **guard de mismo gobierno** (no mezcla eras en la ventana) + **exclusión de actas AUX** (homenajes/trámite/tratados = consenso, no informan postura). **Validado:** proyecto de SALUD de la oposición en Diputados (47 actas de historia) → LLA NEGATIVO 0,31, kirchnerismo AFIRMATIVO 0,98 = la política real. **Límite conocido (no del método, de los datos):** cruces finos (ej. ECON×GOBIERNO en el Senado) tienen 1-2 actas en la ventana → esperan más cobertura + multitemáticas (backlog).
-- **Perfil temático por legislador (central, pedido de Valle 2026-07-02):** además del consolidado afirmativos/negativos (que cualquier página ya muestra), el diferencial es el **desagregado por taxonomía**: para cada legislador × período × taxonomía (`docs/taxonomias`), pct_afirmativo / pct_negativo / tasa_desvio → detectar tendencia a aprobar o rechazar dentro de cada tema. Sale como hoja "PorTema" en `legisladores.xlsx`. **Depende de:** (1) corrida a escala del agente de taxonomías (`variables/proyecto`, necesita API key) que llena `proyecto_taxonomias`; (2) cruce acta→expediente→proyecto para etiquetar cada votación con su tema (`datos/expedientes` + columna `expediente` de las actas).
+- **Perfil temático por legislador (central, pedido de Valle 2026-07-02):** además del consolidado afirmativos/negativos (que cualquier página ya muestra), el diferencial es el **desagregado por taxonomía**: para cada legislador × período × taxonomía (`docs/taxonomias`), pct_afirmativo / pct_negativo / tasa_desvio → detectar tendencia a aprobar o rechazar dentro de cada tema. Sale como hoja "PorTema" en `legisladores.xlsx`. **Depende de:** (1) corrida a escala del agente de taxonomías (`variables/proyecto`; la API key YA está, el blocker es `proyectos.db` + M1) que llena `proyecto_taxonomias`; (2) cruce acta→expediente→proyecto para etiquetar cada votación con su tema (`datos/expedientes` + columna `expediente` de las actas).
 - **Gate:** sin leakage; features validadas en muestra.
 
 ### 1B.4 modelo/voto_individual — desvío individual + pivotes *(reformulado 2026-06-30)*
@@ -126,6 +169,25 @@ Plan estructurado para trabajo en paralelo. Para cada bloque: **qué** hay que h
 ---
 
 ## Backlog anotado (pendientes, no abrir aún)
+
+### Presidencias de DOS PERÍODOS en la curva del ciclo — pendiente (anotado 2026-08-04, Valle)
+La curva del ciclo presidencial (`variables/proyecto/data/curva_ciclo_presidencial.csv`)
+promedia todas las presidencias alineadas por mes de mandato, tratándolas como
+equivalentes. **No lo son.** Observación de Valle: CFK I termina muy por encima
+de la curva (+0,48 en los meses 43-48) **porque venía una reelección** — no hay
+expectativa de cambio abrupto, así que la caída típica del final de mandato no se
+produce. Lo mismo aplicaría al tramo Néstor→CFK I, que también fue continuidad.
+
+Es decir: el ciclo de un gobierno que **se sabe saliente** no es el mismo que el de
+uno que **puede continuar** (por reelección propia o por sucesión del mismo signo).
+La curva actual mezcla los dos regímenes.
+
+**Pendiente:** decidir si la curva se parte en dos (mandatos con continuidad vs. con
+alternancia) o si se corrige el tramo final. **Por ahora se omite** — con 6
+presidencias, partir la muestra deja 3 y 3, y la curva ya es frágil en la cola
+(los meses 43+ quedan con n=1 al sacar la contaminación del traspaso).
+Retomar cuando el mecanismo del ICG esté validado end-to-end.
+
 
 ### Proyectos MULTITEMÁTICOS (leyes ómnibus) — pendiente (anotado 2026-07-22, Valle)
 El tagger de temas (`variables/proyecto/tema_por_acta.py`) y el v2 de bloque usan hoy **un solo tema primario** por votación. Las leyes ómnibus mezclan varias materias en una sola votación y no encajan en un tema único: p. ej. **Ley Bases** (economía + desregulación + laboral + energía + privatizaciones), **Ley de Glaciares** (ambiente + minería + federalismo), y la **ley de desregulación difundida hoy en el Congreso**. El tagger YA guarda todas las etiquetas (`todas_ids`, multi-label), pero el condicionamiento del v2 sólo lee la primaria. **Pendiente:** decidir cómo condiciona la dirección de bloque cuando un proyecto es multitemático (¿promedio ponderado de las posturas por cada tema?, ¿el tema dominante?, ¿la materia más conflictiva?). **Por ahora se omite** — se usa el tema primario. Retomar cuando el v2 esté validado con temas de un solo eje.

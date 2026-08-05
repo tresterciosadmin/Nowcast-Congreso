@@ -10,6 +10,14 @@ Es IDEMPOTENTE: si ya está aplicado, no duplica. Verifica y avisa.
 Toca: coordinacion/TABLERO.md, coordinacion/ESTADO-DEL-PROYECTO.md,
       coordinacion/EN-HUMANO.md, tablero_datos.js
 """
+# ============================================================================
+# NEUTRALIZADO 2026-08-04 — YA SE EJECUTO. Volver a correrlo DUPLICARIA entradas
+# de bitacora. Copia en Archivos_Borrar/; anotado en PENDIENTES-DE-BORRAR.md.
+import sys as _sys
+print("Este script ya se aplico en su momento. Esta neutralizado: no hace nada.")
+print("Si de verdad necesitas re-aplicarlo, borra este bloque a mano.")
+_sys.exit(0)
+# ============================================================================
 from pathlib import Path
 
 FECHA = "2026-07-12"

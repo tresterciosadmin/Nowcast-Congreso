@@ -1,0 +1,35 @@
+{
+  "n_actas": 2554,
+  "n_meses": 167,
+  "con_vol": true,
+  "boot": 60,
+  "resultado": {
+    "gamma_0": {
+      "punto": -0.1939,
+      "ic95": [
+        -0.5736,
+        0.2523
+      ],
+      "significativo": false
+    },
+    "gamma_0*lambda": {
+      "punto": 0.0722,
+      "ic95": [
+        -0.0926,
+        0.1804
+      ],
+      "significativo": false
+    }
+  },
+  "coeficientes": {
+    "s_logrel": -0.1939,
+    "s_logrel_vol": 0.0722,
+    "s": -0.085,
+    "senado": 0.6246,
+    "gob_CFK I": -0.2936,
+    "gob_CFK II": -0.1846,
+    "gob_Macri": -0.4992,
+    "gob_Milei": -0.8154,
+    "gob_Nestor": -0.5285
+  }
+}

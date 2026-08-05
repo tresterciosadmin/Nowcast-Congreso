@@ -372,3 +372,90 @@ Franco revisó las variables que usa el modelo y no le cerraron varias. Quedó a
 También quedó anotado conectar el índice de confianza en el gobierno, que daría al modelo lo único que hoy le falta: alguna noción de cómo está el clima político.
 
 Y una idea de Franco que cierra un círculo: que el bot revise cada tanto la lista de diputados para avisar si alguien renunció, asumió o se cambió de bloque. Hoy los proyectos y las votaciones entran solos, pero la composición de la Cámara todavía depende de que alguien se acuerde de mirarla — que es exactamente el tipo de olvido que nos costó nueve meses de votaciones sin cargar.
+
+
+## Le dimos al modelo su primera variable de clima político (y midió menos de lo que esperábamos)
+
+Faltaba enchufar el índice de confianza en el gobierno, lo único que le daría al sistema alguna noción de en qué momento político se presenta un proyecto. Primera sorpresa: los datos ya estaban bajados desde hace un mes —veinticinco años de mediciones, sin un solo hueco—; lo que nunca se había hecho era conectarlos al modelo. Ya está hecho, con un candado importante: un proyecto presentado en junio ve el clima de mayo, nunca el de junio. Si le dejáramos ver su propio mes, el modelo estaría espiando el futuro, que es justo el problema que estamos investigando en otra variable.
+
+Y acá viene lo honesto: **mejora poco**. Sumar el clima político aporta tres milésimas de precisión, contra las veinticuatro que aportó en su momento saber quién impulsa el proyecto. Es una mejora real y consistente en las dos cosas que el sistema predice, pero es una séptima parte de lo que esperábamos. La lectura: el clima político sirve para afinar el número, no para explicar lo que hoy no se explica. Si el modelo tiene un techo, no está acá.
+
+Lo que sí resultó interesante es la intuición de Franco sobre que importa más la tendencia que el nivel. Se confirmó, y por bastante: si el gobierno viene subiendo o bajando en los últimos tres meses pesa casi seis veces más que dónde está parado hoy. Pero el signo salió al revés de lo esperable —cuando la confianza sube, se aprueban *menos* leyes— y eso puede querer decir dos cosas muy distintas: que un gobierno con viento a favor necesita menos al Congreso, o que cuando la confianza cae el Ejecutivo empuja más. **No lo damos por sabido**: queda anotado para contrastar gobierno por gobierno antes de decir nada en público.
+
+
+## El sistema ahora se vigila solo (y la banca que faltaba apareció)
+
+Hasta hoy, los proyectos y las votaciones entraban solos, pero saber quién ocupa cada banca dependía de que alguien se acordara de mirar. Eso se terminó: hay un vigilante que corre todos los lunes, baja la lista de legisladores, la compara con la que tenemos guardada y avisa si alguien asumió, renunció, falleció o se cambió de bloque —y, sobre todo, si el total dejó de dar 257 diputados y 72 senadores, que es la alarma más barata y más efectiva que tenemos.
+
+En su primera corrida ya encontró algo. Hace unos días habíamos dado por perdida una banca: el padrón daba 256 sobre 257 y habíamos decidido avisar antes que inventar. El vigilante detectó que dos diputados —Matzkin y Pitrola— ya figuran en la lista oficial y que Ravier dejó su banca. Con ellos, el total da **257 exacto**. La cámara queda con La Libertad Avanza en 95, el peronismo en 93, cuarenta y siete de bloques provinciales y el resto repartido.
+
+También se atrapó un error nuestro en el acto, que vale contarlo porque es el tercero de la misma familia. La primera versión avisó que una diputada se había cambiado de bloque; era falso: el nombre del bloque venía escrito completo en un lado y cortado en el otro, y el programa lo leyó como una ruptura política. Ya nos pasó con los ciento veintitrés asesores que entraban como jefes de bloque y con la falsa jefa que valía seiscientos diez proyectos. Un vigilante que grita en falso se termina ignorando, así que ahora compara la familia política real y no el texto: los cambios de tipeo se informan aparte, como lo que son.
+
+
+## Los avisos automáticos ya tienen dónde correr
+
+Quedaron armadas las tres tareas que ahora corren solas en la nube, sin depender de que tu computadora esté prendida: el bot que trae proyectos y votaciones todas las mañanas de lunes a sábado, el vigilante del padrón los lunes, y la actualización del índice de confianza el día 5 de cada mes. Cada una avisa sola si algo se rompe, y ninguna hace ruido cuando no hay novedades.
+
+Falta un paso tuyo y es importante: **tu carpeta no está conectada al repositorio**. Trabajás sobre una copia suelta, así que ni tus cambios suben ni los del equipo bajan, y mientras eso siga así estas tareas automáticas no existen para GitHub. Quedó escrito paso a paso, con copia de seguridad primero, en `coordinacion/CONECTAR-GIT.md`.
+
+
+## Encontramos por qué el Senado parecía no tener bloques (y no era cierto)
+
+Esta merece contarse. En la lista de urgencias figuraba, con todas las letras, que los senadores que asumieron en diciembre no tenían bloque asignado y que "ninguna fuente oficial publica el bloque parlamentario del Senado" — con la conclusión de que había que curar setenta y dos filas a mano o salir a buscarlas a Wikipedia.
+
+Es falso. El archivo con los setenta y dos senadores, cada uno con su bloque y su familia política —incluidos los veinticuatro que asumieron el 10 de diciembre— existe y está completo en tu disco desde hace semanas. Lo que pasó es que una regla del proyecto que evita subir archivos de datos pesados se lo tragó, así que ese archivo nunca llegó al repositorio. Cualquiera que mirara el repositorio concluía, con toda razón, que el dato no existía — y se ponía a resolver un problema ya resuelto.
+
+Es la cuarta vez que esa misma regla esconde trabajo hecho, pero es la primera que genera una urgencia falsa y días de investigación al pedo. Quedó arreglado, y el diagnóstico quedó escrito dentro del propio archivo de reglas para que la quinta vez no exista.
+
+
+## Lo que sigue
+
+La urgencia más grave sigue abierta y es la que Franco marcó primero: la variable más influyente del modelo —a cuántas comisiones fue girado el proyecto— puede estar mirando el futuro. Si los giros se amplían después de que el proyecto se presenta, buena parte de la puntería del sistema es falsa. Es verificable con datos que ya tenemos y es lo próximo, antes de seguir construyendo encima.
+
+
+## El clima político entró al modelo, y hubo que darlo vuelta tres veces para que funcionara
+
+Teníamos el índice de confianza en el gobierno, que mide desde hace veinticinco años cuánta confianza le tiene la gente al gobierno de turno. Lo habíamos enchufado como una variable más —al lado de "a cuántas comisiones fue girado el proyecto" o "quién lo firma"— y no servía para nada: aportaba cero.
+
+Valle vio por qué: el clima político no es una característica del proyecto de ley, como su tema o su autor. Es el estado del mundo en el que ese proyecto se juega. Estábamos preguntándole al modelo lo que no podía responder. Así que dejó de ser una variable y pasó a ser algo distinto: un factor que **corrige** el resultado, empujando a favor del gobierno cuando la gente lo acompaña y en contra cuando lo rechaza.
+
+Y ahí apareció el hallazgo lindo. Buscamos el efecto en el conjunto de la cámara y no había nada. Pero cuando lo buscamos legislador por legislador, apareció con toda claridad — y apareció justo donde Valle decía que iba a estar: **en los que negocian**.
+
+El sistema mira el historial de cada diputado y calcula cuántas veces se despegó de su bloque en las votaciones peleadas. Con eso los ordena en cinco grupos. Los que casi nunca se despegan —el núcleo duro— no se mueven ni un milímetro por el clima político: votan igual con el gobierno arriba o abajo. Los que se despegan seguido son otra cosa: entre el peor y el mejor momento de un gobierno, su chance de acompañar un proyecto oficial cambia hasta veintitrés puntos.
+
+Lo que da confianza es quiénes son. Nadie le explicó al programa nada de política argentina, solo le dimos los votos. Y ordenó la cámara poniendo arriba a Schiaretti, de la Sota, Massot, Lousteau —los bloques provinciales y federales, los negociadores de siempre— y abajo a La Libertad Avanza, el kirchnerismo y el PRO. Cualquier analista habría hecho la misma lista a mano.
+
+En la cámara de hoy son cincuenta y un diputados los que se mueven con el clima. Los otros doscientos seis, no.
+
+
+## Lo que el índice no puede decirnos, y cómo lo resolvimos
+
+Hay una parte del efecto que **no se puede medir**, y conviene ser honestos sobre eso.
+
+Uno esperaría que un gobierno con mucha confianza popular tenga más facilidad para aprobar leyes que uno repudiado. Suena obvio. El problema es que en veinticinco años hubo apenas seis presidencias, y dentro de cada una el nivel de confianza es más o menos el mismo. Entonces, cuando el programa intenta separar "había buen clima" de "era el gobierno de Néstor", no puede: para él son el mismo dato.
+
+Así que decidimos no fingir que lo medimos. Ese factor lo **elige una persona**, mirando la coyuntura, y queda registrado con fecha y justificación. Ningún número sale publicado sin ese paso.
+
+Para eso hicimos dos paneles, uno para computadora y otro para teléfono. Se mueven dos perillas —dónde está el índice hoy y cuánto peso le damos— y los doce proyectos de ejemplo se recalculan al instante. Se ve qué proyecto cruza la mayoría y cuál se cae.
+
+La forma de la curva la definió Valle con un razonamiento que después resultó ser un clásico de la psicología económica: la gente no se impresiona con los éxitos salvo que sean notables, pero es muy sensible a las pérdidas. Así que el castigo por caer pesa casi el doble que el premio por subir, y los extremos pesan mucho más que los movimientos chicos.
+
+El caso que ordenó todo fue la Ley Bases. Milei llegó con el índice cerca de 2,8 y aprobó dos leyes enormes y muy resistidas teniendo bastantes menos bancas que hoy. Ningún modelo que mire solo cuántos diputados tiene cada bloque explica eso. Ese es exactamente el fenómeno que este mecanismo tiene que capturar, y quedó como prueba de realidad dentro del panel: si el peso que elegís no le alcanza al oficialismo para pasar la Ley Bases, te estás quedando corto.
+
+
+## Tres cosas que probamos y no funcionaron
+
+Vale contarlas, porque saber qué no anda es tan útil como saber qué anda.
+
+**La volatilidad.** La idea era que cuando el índice está planchado no hay tracción política y nada prende, y cuando se mueve mucho la sociedad está más permeable a los cambios. Es un razonamiento convincente. Lo medimos y no se distingue de cero. Queda anotado por si con más datos aparece.
+
+**El efecto sobre el conjunto de la cámara.** No existe, o al menos no lo podemos ver. Y encontramos por qué: en una votación típica hay unos setenta votos emitidos, así que aunque quince diputados cambien de opinión eso mueve el resultado un cuatro por ciento, cuando la variación normal entre votaciones es del dieciocho. El promedio de la cámara es un instrumento demasiado grueso para medir algo tan fino. Por eso hubo que bajar al nivel de cada legislador.
+
+**Los saltos del índice en los cambios de gobierno.** Descubrimos que los ocho meses más agitados de toda la serie son ocho de ocho pegados a un traspaso presidencial. Y ahí el índice está midiendo al gobierno que **entra**, no al que está. Si no lo corregíamos, en noviembre de 2015 le habríamos dado viento a favor al kirchnerismo por la aprobación que tenía Macri, que todavía no había asumido. Esos meses ahora se reemplazan por el promedio del gobierno saliente.
+
+
+## Una corrección que evitó que publicáramos algo falso
+
+Habíamos anotado que los gobiernos con buen clima "llegan sin bancas", porque los números mostraban esa relación. Valle lo frenó: eso no es una relación entre confianza y bancas, es el calendario electoral argentino. Un presidente asume habiendo ganado la elección, pero el Congreso que hereda se eligió en tandas anteriores —los diputados se renuevan por mitades y los senadores por tercios—, así que estructuralmente arranca con pocas bancas. Y arrancar es justo cuando la confianza está más alta, por la luna de miel. Las dos cosas van juntas por el almanaque, no porque una cause la otra.
+
+Estaba escrito en tres páginas y en dos programas. Se sacó de todos lados y se dejó la explicación correcta en el código, para que a nadie se le ocurra volver a escribirlo.

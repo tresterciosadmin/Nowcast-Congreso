@@ -1,0 +1,129 @@
+# =============================================================================
+# PADRÓN VIVO — vigila la composición de las dos cámaras (idea de Franco)
+#
+# Los expedientes y las votaciones ya entran solos. La COMPOSICIÓN de la cámara
+# no: dependía de que alguien se acordara de mirarla. Las bancas cambian todo el
+# año por renuncias, licencias, fallecimientos, reemplazos y pases entre bloques
+# (que son señal política en sí misma), y hoy nos enteramos de casualidad.
+#
+# Semanal alcanza: un recambio no pasa desapercibido siete días, y una corrida
+# diaria sólo agrega ruido. Cierra la última pata que dependía de la memoria
+# humana.
+#
+# Códigos de salida de vigilar_padron.py:
+#    0  sin novedades  -> no hace nada
+#   10  hay novedades  -> commitea el reporte + abre issue
+#   20  ALARMA DURA    -> abre issue con prioridad (el padrón no es confiable)
+# =============================================================================
+name: padron-vivo
+
+on:
+  schedule:
+    - cron: "0 11 * * 1"      # lunes 08:00 ARG
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: padron-vivo
+  cancel-in-progress: false
+
+jobs:
+  vigilar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    outputs:
+      estado: ${{ steps.chequeo.outputs.estado }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Dependencias
+        run: pip install pandas requests
+
+      - name: Vigilar el padrón
+        id: chequeo
+        run: |
+          set +e
+          python "Nowcast Congreso Argy/datos/padron/src/vigilar_padron.py" --camara ambas
+          codigo=$?
+          set -e
+          echo "codigo=$codigo" >> "$GITHUB_OUTPUT"
+          case "$codigo" in
+            0)  echo "estado=limpio"    >> "$GITHUB_OUTPUT" ;;
+            10) echo "estado=novedades" >> "$GITHUB_OUTPUT" ;;
+            20) echo "estado=alarma"    >> "$GITHUB_OUTPUT" ;;
+            *)  echo "estado=error"     >> "$GITHUB_OUTPUT" ;;
+          esac
+          # el job NO falla por detectar algo: detectar es su trabajo.
+          # Sólo falla si el script se rompió de verdad.
+          if [ "$codigo" -gt 20 ]; then exit "$codigo"; fi
+
+      - name: Commitear reporte y memoria
+        run: |
+          set -euo pipefail
+          git config user.name  "bot-nowcast"
+          git config user.email "bot-nowcast@users.noreply.github.com"
+          git add -A "Nowcast Congreso Argy/datos/padron/data/estado_vigilancia.json" "Nowcast Congreso Argy/datos/padron/outputs/vigilancia_padron.md"
+          if git diff --cached --quiet; then
+            echo "sin cambios en el reporte: no commiteo"
+            exit 0
+          fi
+          git commit -m "padrón vivo: ${{ steps.chequeo.outputs.estado }} $(date -u +%Y-%m-%d)"
+          git pull --rebase --autostash
+          git push
+
+      - name: Abrir issue si hay novedades o alarma
+        if: steps.chequeo.outputs.estado == 'novedades' || steps.chequeo.outputs.estado == 'alarma'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            // Los labels tienen que existir antes de usarlos: si el repo no los
+            // tiene, issues.create falla y el aviso se pierde en silencio — que es
+            // el peor resultado posible para algo cuyo unico trabajo es avisar.
+            async function asegurarLabels(nombres) {
+              for (const name of nombres) {
+                try {
+                  await github.rest.issues.getLabel({
+                    owner: context.repo.owner, repo: context.repo.repo, name });
+                } catch (e) {
+                  try {
+                    await github.rest.issues.createLabel({
+                      owner: context.repo.owner, repo: context.repo.repo,
+                      name, color: 'd93f0b' });
+                  } catch (e2) { /* carrera con otro job: no importa */ }
+                }
+              }
+            }
+            const fs = require('fs');
+            const alarma = '${{ steps.chequeo.outputs.estado }}' === 'alarma';
+            let reporte = '(no se pudo leer el reporte)';
+            try {
+              reporte = fs.readFileSync('Nowcast Congreso Argy/datos/padron/outputs/vigilancia_padron.md', 'utf8');
+            } catch (e) { /* el script pudo haber caído antes de escribirlo */ }
+            const cuerpo = [
+              reporte, '', '---', '',
+              alarma
+                ? '**Esto es una alarma dura: el padrón NO es confiable hasta resolverla.** '
+                  + 'Todo `P(mayoría)` que se calcule mientras tanto sale mal, porque el '
+                  + 'motor cuenta bancas que no existen o le faltan las que sí.'
+                : 'Novedades en la composición de la cámara. Regenerar el padrón antes '
+                  + 'de correr cualquier nowcast, y anotar el cambio en ESTADO.',
+              '',
+              'Log: ' + '${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}',
+            ].join('\n');
+            const etiquetas = alarma ? ['padron', 'urgente'] : ['padron'];
+            await asegurarLabels(etiquetas);
+            await github.rest.issues.create({
+              owner: context.repo.owner, repo: context.repo.repo,
+              title: (alarma ? '🔴 ALARMA padrón' : '🟡 Padrón: novedades')
+                     + ' — ' + new Date().toISOString().slice(0, 10),
+              body: cuerpo,
+              labels: etiquetas,
+            });

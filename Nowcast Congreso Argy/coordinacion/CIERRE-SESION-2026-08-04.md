@@ -1,5 +1,22 @@
 # Cierre de la sesión del 04-08-2026 — qué subir y qué hacer después
 
+> ## Estado de los 5 pendientes, verificado el 2026-08-06
+>
+> | # | Pendiente (sección 6) | Al 06-08 |
+> |---|---|---|
+> | 1 | Re-correr `embudo.py modelo` | 🔴 **sin hacer** — `p_embudo.parquet` sigue siendo el del 12-jul. Promovido a `URGENTE.md` ítem 1: el ensemble se apoya en la salida del modelo mutilado. |
+> | 2 | URGENTE 0 — leakage de `n_giros` | 🔴 sin hacer — sigue siendo `URGENTE.md` ítem 0 |
+> | 3 | Senado 2026 sin bloque en la ingesta | 🟡 **arreglado en código** el 06-08 (padrón vigente mandate-aware + 8 tests; los 72 senadores resuelven). Falta re-correr `run_pipeline.py` para que llegue a los parquet → `URGENTE.md` ítem 2. |
+> | 4 | Enchufar el mecanismo 1 del ICG al ensemble | 🔴 sin hacer — espera que el equipo mire los paneles y fije γ |
+> | 5 | Confirmar el padrón contra la API | 🔴 sin hacer → `URGENTE.md` ítem 3 |
+>
+> Y el **PASO 4 del runbook** (mover los workflows a la raíz) tampoco se hizo:
+> los dos bots nuevos nunca corrieron. Detalle en
+> `PUESTA-EN-MARCHA-2026-08-04.md` y en `URGENTE.md` ítem 4.
+>
+> *(Banner agregado el 06-08 por la auditoría general. Este archivo es el cierre
+> de UNA sesión: para saber qué está pendiente HOY, la fuente es `URGENTE.md`.)*
+
 Todo está escrito, testeado y registrado. Este archivo es la checklist para
 publicar y para no perder los pendientes.
 

@@ -3,11 +3,13 @@ Normaliza argentinadatos (Diputados 2020-2025, Senado 2024-2025) al esquema can�
 Diputados: el detalle de voto NO trae bloque -> se resuelve cruzando con el padrón
 (`/diputados/diputados`, campo periodoBloque con fechas) por nombre + fecha del acta.
 Senado: la fuente no trae bloque -> se resuelve con el PADRÓN DE BLOQUES de
-datos/senado (CSVs versionados = contrato publicado de ese módulo: el manual
-gana sobre el automático, matching por clave de tokens con fallback por
-variantes del mismo nombre, ventana [desde, hasta] por fecha del acta).
-Lo que no matchea queda 'SIN BLOQUE' y se reporta.
-(Retro-completado 2026-07-11; antes TODO el Senado iba SIN BLOQUE.)
+datos/senado + datos/padron (CSVs versionados = contrato publicado de esos
+módulos: el manual gana sobre el automático, matching por clave de tokens con
+fallback por variantes del mismo nombre, ventana [desde, hasta] por fecha del
+acta). Lo que no matchea queda 'SIN BLOQUE' y se reporta.
+(Retro-completado 2026-07-11; antes TODO el Senado iba SIN BLOQUE.
+ 2026-08-06: se sumó `datos/padron/data/padron_senado.csv` — sin él el Senado
+ post-recambio del 10-dic-2025 volvía a entrar SIN BLOQUE.)
 """
 from __future__ import annotations
 import json, os, time, unicodedata
@@ -46,17 +48,40 @@ def _clave(n):
     return " ".join(sorted(set(toks)))
 
 def _padron_senado():
-    """Lee los CSV versionados de datos/senado (manual primero: gana en solapes)."""
+    """Lee los CSV versionados del padrón del Senado, en orden de precedencia.
+
+    Orden (el primero que matchea la fecha gana, ver `_bloque_sen`):
+      1. datos/senado/padron_manual_2015_2017.csv  — curado a mano
+      2. datos/senado/padron_bloques_senado.csv    — histórico, termina 2025-12-09
+      3. datos/padron/padron_senado.csv            — nómina oficial VIGENTE (2026-08-06)
+
+    El (3) se agregó el 2026-08-06: sin él, todo voto del Senado posterior al
+    recambio del 10-dic-2025 entraba a la canónica con bloque='SIN BLOQUE'
+    (6.192 votos en 2026), porque el histórico se corta el 09-dic-2025. Va
+    ÚLTIMO a propósito: en el tramo solapado (senadores con mandato
+    2021-2027, que figuran en los dos) sigue mandando el padrón curado.
+    Se tapa el hueco en la ENTRADA, no en cada consumidor — regla del 30-07.
+    """
     import csv
-    base=Path(__file__).resolve().parents[2]/"senado"/"data"
+    sen=Path(__file__).resolve().parents[2]/"senado"/"data"
+    pad=Path(__file__).resolve().parents[2]/"padron"/"data"
     idx={}
-    for f in (base/"padron_manual_2015_2017.csv", base/"padron_bloques_senado.csv"):
-        if not f.exists(): continue
+    faltantes=[]
+    for f in (sen/"padron_manual_2015_2017.csv", sen/"padron_bloques_senado.csv",
+              pad/"padron_senado.csv"):
+        if not f.exists():
+            faltantes.append(f.name); continue
         with open(f,encoding="utf-8-sig") as fh:
             for r in csv.DictReader(fh):
-                if r.get("bloque"):
-                    idx.setdefault(r["clave"],[]).append(
-                        (r["desde"], r.get("hasta") or "9999-12-31", r["bloque"]))
+                if not r.get("bloque"): continue
+                # `clave` viene precomputada en los CSV; si falta, se deriva del nombre.
+                k=r.get("clave") or _clave(r.get("legislador") or r.get("senador") or "")
+                if not k: continue
+                idx.setdefault(k,[]).append(
+                    (r["desde"], r.get("hasta") or "9999-12-31", r["bloque"]))
+    if faltantes:
+        print(f"[padron_senado] AVISO: no se encontraron {faltantes} — "
+              f"los votos de ese tramo van a quedar SIN BLOQUE")
     return idx
 
 def _bloque_sen(idx,nombre,fecha):

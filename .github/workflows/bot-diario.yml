@@ -1,9 +1,24 @@
 # =====================================================================
 # BOT DIARIO (padrón vivo) — corre en GitHub Actions, sin servidor propio.
-# Cada mañana trae los DAE nuevos del Senado y commitea el parquet + estado.
-# Módulo: datos/bot_recoleccion (ver su README). Idempotente: si no hay DAE
-# nuevos, no commitea nada.
+# Cada mañana trae los DAE nuevos del Senado, el Trámite Parlamentario de
+# Diputados y las votaciones nuevas de ambas cámaras, y commitea lo que junta.
+# Módulo: datos/bot_recoleccion (ver su README). Idempotente: sin novedades,
+# no commitea nada.
 # Correr a mano: pestaña Actions -> "Bot diario (padrón vivo)" -> Run workflow.
+#
+# OJO CON LAS RUTAS: la raíz del repo es Nowcast-Congreso/Nowcast-Congreso y el
+# proyecto vive en el subdirectorio "Nowcast Congreso Argy/". Todas las rutas de
+# abajo llevan ese prefijo ENTRECOMILLADO (tiene espacios). Sin comillas, falla.
+#
+# ---------------------------------------------------------------------
+# MEJORAS AGREGADAS EL 2026-08-06 (venían escritas desde el 04-08 en un
+# archivo que quedó en la subcarpeta equivocada y nunca llegó acá):
+#   1. `continue-on-error` por fuente — si el Senado se cae, Diputados y las
+#      votaciones igual entran. Antes, una fuente caída mataba la corrida
+#      entera y no se recolectaba nada.
+#   2. Issue automático cuando hay actas nuevas sin incorporar a la canónica.
+#   3. Issue automático cuando una fuente falla.
+#   4. `permissions: issues: write` — sin esto los dos issues fallan.
 # =====================================================================
 name: Bot diario (padrón vivo)
 
@@ -13,11 +28,12 @@ on:
   workflow_dispatch: {}       # botón manual
 
 permissions:
-  contents: write
+  contents: write             # commitea lo que junta
+  issues: write               # y abre issues: fuente caída / canónica pendiente
 
 concurrency:
   group: bot-diario
-  cancel-in-progress: false
+  cancel-in-progress: false   # nunca cortar una corrida a mitad de un commit
 
 jobs:
   dae-senado:
@@ -31,14 +47,23 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+          cache: pip
 
       - name: Dependencias
         run: pip install -r "Nowcast Congreso Argy/datos/bot_recoleccion/src/requirements.txt"
 
+      # Cada fuente corre por separado y con `continue-on-error`: una fuente
+      # caída no puede volver inútil a la corrida entera. El scraper de
+      # Diputados, además, ya falla la verificación SSL contra hcdn.gob.ar y
+      # reintenta con verify=False, así que su caída no es hipotética.
       - name: Traer DAE nuevos del Senado
+        id: dae
+        continue-on-error: true
         run: python "Nowcast Congreso Argy/datos/bot_recoleccion/src/dae_senado.py"
 
       - name: Traer TP nuevos de Diputados
+        id: tp
+        continue-on-error: true
         run: python "Nowcast Congreso Argy/datos/bot_recoleccion/src/tp_diputados.py"
 
       # Agregado 2026-07-31. El bot traía QUÉ SE PRESENTA pero no QUÉ SE VOTA:
@@ -46,17 +71,142 @@ jobs:
       # 113 de la Cámara nueva) mientras los expedientes seguían al día, y el
       # proyector de posturas devolvía la Cámara vieja sin avisar.
       - name: Traer votaciones nuevas (ambas cámaras)
+        id: votaciones
+        continue-on-error: true
         run: python "Nowcast Congreso Argy/datos/bot_recoleccion/src/votaciones.py"
 
       - name: Commit si hay novedades
+        id: commit
         run: |
+          set -euo pipefail
           git config user.name "bot-recoleccion"
           git config user.email "bot-recoleccion@users.noreply.github.com"
           git add "Nowcast Congreso Argy/datos/bot_recoleccion/data"
           if git diff --cached --quiet; then
             echo "Sin novedades: no se commitea."
+            echo "hubo=no" >> "$GITHUB_OUTPUT"
             exit 0
           fi
+          # Qué archivos cambiaron, ANTES de commitear: es más confiable que
+          # mirar HEAD~1 después (si no hubo commit, HEAD~1 es de otra corrida
+          # y el aviso saldría cuando no corresponde).
+          if git diff --cached --name-only | grep -q "votaciones_nuevas.parquet"; then
+            echo "actas=si" >> "$GITHUB_OUTPUT"
+          else
+            echo "actas=no" >> "$GITHUB_OUTPUT"
+          fi
           git commit -m "bot: expedientes + votaciones $(date -u +%Y-%m-%d) [automatico]"
-          git pull --rebase origin main
+          git pull --rebase --autostash origin main
           git push origin main
+          echo "hubo=si" >> "$GITHUB_OUTPUT"
+
+      # El bot DETECTA actas nuevas; la canónica NO se reconstruye sola (lo dice
+      # el propio votaciones.py al terminar). Si nadie corre el pipeline, las
+      # actas quedan en un parquet que el modelo no mira — exactamente el
+      # agujero que dejó nueve meses de votaciones sin cargar. Reconstruir la
+      # fuente de verdad sin revisión humana es demasiado riesgo para un cron,
+      # así que el bot abre un issue con los comandos exactos: el olvido deja de
+      # depender de la memoria de alguien, y la decisión sigue siendo humana.
+      - name: Avisar que hay que reconstruir la canónica
+        if: steps.commit.outputs.actas == 'si'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            async function asegurarLabel(name, color) {
+              try {
+                await github.rest.issues.getLabel({
+                  owner: context.repo.owner, repo: context.repo.repo, name });
+              } catch (e) {
+                // `issues.create` FALLA EN SILENCIO con un label inexistente,
+                // que es lo peor que le puede pasar a algo cuyo único trabajo
+                // es avisar. Por eso el label se crea antes, siempre.
+                try {
+                  await github.rest.issues.createLabel({
+                    owner: context.repo.owner, repo: context.repo.repo, name, color });
+                } catch (e2) { /* carrera: ya existe */ }
+              }
+            }
+            // Si ya hay un issue abierto por lo mismo, no abrir otro: un cron
+            // diario que abre un issue por día se vuelve ruido y se ignora.
+            const abiertos = await github.rest.issues.listForRepo({
+              owner: context.repo.owner, repo: context.repo.repo,
+              state: 'open', labels: 'canonica-pendiente', per_page: 5 });
+            if (abiertos.data.length) {
+              core.info('ya hay un issue abierto por actas sin incorporar');
+              return;
+            }
+            await asegurarLabel('canonica-pendiente', '0e8a16');
+            await github.rest.issues.create({
+              owner: context.repo.owner, repo: context.repo.repo,
+              title: 'Actas nuevas sin incorporar a la canónica',
+              body: [
+                'El bot trajo **actas nuevas**. La canónica **no se reconstruye sola**,',
+                'así que hasta correr esto el modelo no las ve.',
+                '',
+                '```powershell',
+                'cd "C:\\Users\\tthia\\Desktop\\Nowcast-Congreso\\Nowcast-Congreso\\Nowcast Congreso Argy"',
+                'git pull',
+                'python datos\\canonica\\src\\run_pipeline.py      # ~20 min, con internet',
+                'python datos\\padron\\src\\vigilar_padron.py --camara ambas   # por si hubo recambio',
+                '```',
+                '',
+                'Después: verificar que los parquet cambiaron de fecha y **commitearlos**',
+                '(la canónica se versiona desde el 31-07).',
+                '',
+                'Cerrá este issue cuando esté hecho. Mientras siga abierto, el bot no abre otro.',
+                '',
+                'Log: ' + '${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}',
+              ].join('\n'),
+              labels: ['canonica-pendiente'],
+            });
+
+      - name: Avisar si alguna fuente falló
+        if: steps.dae.outcome == 'failure' || steps.tp.outcome == 'failure' || steps.votaciones.outcome == 'failure'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            async function asegurarLabel(name, color) {
+              try {
+                await github.rest.issues.getLabel({
+                  owner: context.repo.owner, repo: context.repo.repo, name });
+              } catch (e) {
+                try {
+                  await github.rest.issues.createLabel({
+                    owner: context.repo.owner, repo: context.repo.repo, name, color });
+                } catch (e2) { /* ya existe */ }
+              }
+            }
+            const caidas = [
+              ['DAE Senado', '${{ steps.dae.outcome }}'],
+              ['TP Diputados', '${{ steps.tp.outcome }}'],
+              ['Votaciones', '${{ steps.votaciones.outcome }}'],
+            ].filter(([, r]) => r === 'failure').map(([n]) => n);
+
+            const abiertos = await github.rest.issues.listForRepo({
+              owner: context.repo.owner, repo: context.repo.repo,
+              state: 'open', labels: 'fuente-caida', per_page: 5 });
+            if (abiertos.data.length) {
+              core.info('ya hay un issue abierto por fuente caída');
+              return;
+            }
+            await asegurarLabel('fuente-caida', 'b60205');
+            await github.rest.issues.create({
+              owner: context.repo.owner, repo: context.repo.repo,
+              title: 'El bot no pudo leer: ' + caidas.join(', '),
+              body: [
+                'Una o más fuentes fallaron en la corrida de hoy. **Las demás sí entraron**',
+                '(cada fuente corre con `continue-on-error`), así que esto no es una',
+                'emergencia — pero si se repite varios días, la fuente cambió de formato',
+                'o se cayó de verdad.',
+                '',
+                '**Fuentes caídas:** ' + caidas.join(', '),
+                '',
+                'Revisá el log y, si es un cambio de formato, el parsing del módulo:',
+                '`Nowcast Congreso Argy/datos/bot_recoleccion/src/`',
+                '',
+                'Cerrá este issue cuando esté resuelto. Mientras siga abierto, el bot no abre otro.',
+                '',
+                'Log: ' + '${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}',
+              ].join('\n'),
+              labels: ['fuente-caida'],
+            });

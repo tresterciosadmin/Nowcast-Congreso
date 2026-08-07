@@ -9,6 +9,12 @@
 > lo detectó, qué hay que hacer y por qué es urgente. Al resolverlo se BORRA de
 > acá (queda el registro en `ESTADO-DEL-PROYECTO.md`, que es la bitácora
 > permanente). Este archivo debería estar vacío la mayor parte del tiempo.
+>
+> ⚠️ **Nada de secciones de "resueltos".** El 04-08 se dejó una, y adentro quedó
+> enterrado un pendiente **vivo** (la ingesta del Senado leyendo el padrón viejo)
+> que nadie vio durante dos días. Un archivo que existe para que no se pueda no
+> ver algo no puede tener una zona donde las cosas se esconden. Lo resuelto se
+> borra: para eso está la bitácora.
 
 ---
 
@@ -35,7 +41,61 @@ está contaminado y todo el skill 0,36 queda en duda. Verificable con
 
 ---
 
-## 1. Confirmar el padrón contra la API (la regeneración ya se aplicó)
+## 1. `p_embudo.parquet` está generado con el modelo que tenía el bug
+**Detectado:** 2026-08-06 · Claude (auditoría) · **bloquea: cualquier número del ensemble**
+
+Es el pendiente nº 1 del cierre del 04-08 y sigue sin hacerse. Verificado en disco:
+
+| archivo | fecha |
+|---|---|
+| `variables/embudo/src/embudo.py` | **2026-08-04** (con el bug del one-hot corregido) |
+| `variables/embudo/outputs/p_embudo.parquet` | **2026-07-12** (generado con el bug) |
+
+El bug hacía que `construir_features` rechazara **en silencio** las 25 columnas
+de comisiones leídas de parquet: quedaban en cero sin avisar. `p_embudo.parquet`
+es el contrato que `modelo/ensemble` consume para el factor `P(llega al recinto)`
+— o sea que **hoy todo nowcast se apoya en la mitad mutilada del embudo**, y el
+código que lo produciría bien ya está arreglado hace dos días.
+
+**Qué hacer** (en la PC, el sandbox no lo termina):
+
+```powershell
+cd "C:\Users\tthia\Desktop\Nowcast-Congreso\Nowcast-Congreso\Nowcast Congreso Argy"
+python variables\embudo\src\embudo.py modelo
+```
+
+Después chequear que la fecha del parquet cambió y **commitearlo** (está en el
+régimen transitorio del `.gitignore`, así que viaja por git).
+
+---
+
+## 2. Re-correr la ingesta para que el Senado 2026 entre CON bloque
+**Detectado:** 2026-08-06 · Claude · **bloquea: el nowcast del Senado**
+
+**El código ya está arreglado; falta la corrida.** `to_canonical.py` leía sólo el
+padrón histórico del Senado, que termina el **2025-12-09**: todo voto posterior
+al recambio del 10-dic entraba a la canónica con `bloque='SIN BLOQUE'` (6.192
+votos de 2026). El 06-08 se le sumó `datos/padron/data/padron_senado.csv`
+(mandate-aware, va último para no pisar lo curado) y **los 72 senadores vigentes
+resuelven bloque** — incluido el caso Atauche, que ingresa por el Partido
+Renovador Federal pero bloquea en LLA. Hay 8 tests nuevos que lo cubren.
+
+Pero la canónica **en disco** sigue siendo la del 04-08, construida con el
+código viejo. Hasta que se re-corra, el Senado sigue ciego:
+
+```powershell
+cd "C:\Users\tthia\Desktop\Nowcast-Congreso\Nowcast-Congreso\Nowcast Congreso Argy"
+python datos\canonica\src\run_pipeline.py
+```
+
+Son ~20 minutos y necesita internet. Después: verificar que el Senado 2026 dejó
+de estar 100% sin bloque, y **commitear los tres parquet** (la canónica se
+versiona desde el 31-07). El bot, además, tiene 76 actas nuevas de Diputados y
+174 del Senado detectadas al 06-08 que entran en la misma corrida.
+
+---
+
+## 3. Confirmar el padrón contra la API (la regeneración ya se aplicó)
 **Detectado:** 2026-08-04 · Claude · **bloquea: que `P(mayoría)` cuente bien**
 
 El vigilante nuevo detectó que el padrón versionado había quedado viejo: faltaban
@@ -52,11 +112,96 @@ python datos/padron/src/bajar_nomina.py diputados --padron
 python datos/padron/src/vigilar_padron.py --camara ambas   # verificar que quede limpio
 ```
 
-Es una corrida corta y sin riesgo. Después de hacerla, este ítem se borra.
+Es una corrida corta y sin riesgo. Después de hacerla, este ítem se borra (y se
+puede borrar también el `.bak`, que hoy **está viajando a git**: la regla `*.csv`
+no lo atrapa porque termina en `.bak`).
 
 ---
 
-## 2. Validar 15 filas MEDIA del roster de jefes (equipo)
+## 4. Los workflows nuevos no están donde GitHub los lee
+**Detectado:** 2026-08-06 · Claude (auditoría) · **bloquea: que el padrón y el ICG se actualicen solos**
+
+`padron-vivo.yml` (lunes) e `icg-mensual.yml` (día 5) siguen en
+`Nowcast Congreso Argy/.github/workflows/`. **La raíz del repo está un nivel más
+arriba**, y GitHub sólo lee `.github/workflows/` de la raíz: ahí donde están,
+**nunca se dispararon**.
+
+**La evidencia de que no corrieron:** `datos/padron/outputs/` tiene sólo el
+`.gitkeep` — falta `vigilancia_padron.md`, que el workflow escribe en cada
+corrida. Y `estado_vigilancia.json` tampoco existe.
+
+Los YAML están **bien escritos** (las rutas internas ya llevan el prefijo
+`"Nowcast Congreso Argy/"` entrecomillado): sólo están en el lugar equivocado.
+Mientras tanto, `tablero_datos.js` anuncia "2 workflows nuevos en Actions" —
+corregido el 06-08, pero el trabajo operativo sigue pendiente.
+
+**Qué hacer:** el PASO 4 del runbook
+(`coordinacion/PUESTA-EN-MARCHA-2026-08-04.md`), 5 minutos de PowerShell. Ahí
+está el comando exacto, incluido el borrado del duplicado `bot-diario.yml`.
+**Es lo único que separa a esos dos bots de estar corriendo.**
+
+---
+
+## 5. El bot recolecta proyectos y NADIE los carga: el universo del modelo está congelado
+**Detectado:** 2026-08-06 · Valle (la pregunta) + Claude (verificación) · **bloquea: nowcastear cualquier proyecto reciente**
+
+Valle preguntó si el bot diario carga en la base los proyectos que detecta.
+**No los carga.** Verificado con `grep` sobre todo el repo: fuera de su propio
+módulo, **ningún script lee** `tp_entradas.parquet`, `dae_entradas.parquet` ni
+`votaciones_nuevas.parquet`. El bot los escribe, los commitea, y ahí quedan.
+
+**Con las VOTACIONES no hay problema** — y es por diseño. `run_pipeline.py` no
+lee el parquet del bot, pero re-baja las actas de la API de argentinadatos, así
+que entran igual. El bot funciona como **alarma**: detecta actas nuevas y abre un
+issue con los comandos. Decisión explícita del 04-08: no reconstruir la fuente de
+verdad sin revisión humana. Funciona.
+
+**El agujero está en los PROYECTOS.** Los números, medidos el 06-08:
+
+| Base | Qué tiene | Hasta cuándo |
+|---|---|---|
+| `datos/expedientes/.../expedientes.parquet` (**lo que mira el embudo**) | 112.793 proyectos | **2026-06-02** |
+| `datos/bot_recoleccion/.../tp_entradas.parquet` (Diputados, TP) | 2.799 proyectos | 2026-08-04 |
+| `datos/bot_recoleccion/.../dae_entradas.parquet` (Senado, DAE) | 1.007 expedientes | 2026-07-20 |
+| `datos/proyectos/data/proyectos.db` (**el destino previsto**) | **no existe — la carpeta está vacía** | — |
+
+**Tres consecuencias concretas:**
+
+1. **861 proyectos** que el bot ya tiene no existen para el modelo. Un proyecto
+   presentado en julio o agosto **no se puede nowcastear**: no está en la base
+   que lee el embudo.
+2. **Se pierde un dato que CKAN no publica.** El bot trae los **cofirmantes
+   completos** (1.008 de los 2.799 tienen más de un firmante) — era justamente
+   la razón de construir el TP scraper. Ese dato no llega a ningún rasgo.
+3. **Es el blocker real de las taxonomías.** Varios documentos dicen "el blocker
+   es `proyectos.db` + M1". Confirmado: `proyectos.db` nunca se creó, así que el
+   agente de taxonomías no tiene dónde escribir. La API key está resuelta desde
+   el 14-jul; **lo que falta es la base.**
+
+**Por qué está acá y no en el backlog:** el `README.md` del bot ya lo lista como
+pendiente ("upsert hacia datos/proyectos y capa expedientes"), pero **en ningún
+lado estaba escrita la consecuencia**. Leído como pendiente técnico parece
+prolijidad; leído como "el sistema no puede predecir nada presentado en los
+últimos dos meses" es otra cosa. El bot hoy hace la mitad de su trabajo:
+recolecta bien y no entrega.
+
+**Qué hacer** (es trabajo de módulo, no una corrida):
+
+1. Crear `proyectos.db` con el esquema que ya existe:
+   `python datos\proyectos\src\store.py init`
+2. Escribir el **upsert bot → `datos/proyectos`**: `tp_entradas` y `dae_entradas`
+   ya traen expediente, firmantes, giros y sumario; `store.py` ya tiene
+   `upsert_proyecto` idempotente por denominador. Es pegar dos contratos que
+   existen, no diseñar nada nuevo.
+3. Decidir **cómo se une con `datos/expedientes`** (el backfill de CKAN): ¿el
+   embudo pasa a leer `proyectos.db`, o `datos/expedientes` absorbe lo del bot?
+   Es una decisión de contrato → **conviene un ADR**.
+
+**Módulos:** `datos/bot_recoleccion` + `datos/proyectos` (los dos LIBRES al 06-08).
+
+---
+
+## 6. Validar 15 filas MEDIA del roster de jefes (equipo)
 **Detectado:** 2026-07-30 · Claude+Franco · **bloquea: confiar en `lider_jefe_bloque`**
 
 > **Prioridad rebajada el 31-07.** Medido el efecto real, `lider_jefe_bloque` aporta
@@ -90,26 +235,3 @@ disfrazada de otra**. Una sola fila mal puesta contaminó cientos de casos.
 **Cómo validar:** buscar fuente explícita ("presidente/jefe del bloque X"),
 actualizar `confianza` a ALTA con la fuente, o eliminar la fila dejando el
 motivo como comentario `#` en el propio CSV (como se hizo con Bianchi).
-
----
-
-## ✅ Resueltos el 2026-08-04 (el detalle está en ESTADO)
-
-- **~~Conectar el ICG al modelo~~** — el CSV ya existía (296 meses); faltaba
-  enchufarlo. Hecho, rezagado un mes. Aporta **+0,003** de skill: real y
-  consistente, pero una séptima parte de lo que dio origen/líder. **La deriva a
-  3 meses pesa 6x más que el nivel** (hipótesis de Franco, confirmada).
-- **~~Padrón oficial + padrón vivo~~** — `vigilar_padron.py` + workflow semanal.
-  El padrón ya se regeneró a 257; queda confirmarlo contra la API (ítem 1).
-- **~~SENADO sin bloques desde el 10-dic-2025~~** — **estaba mal diagnosticado.**
-  `datos/padron/data/padron_senado.csv` tiene los **72 senadores vigentes con
-  bloque y linaje**, incluidos los 24 que asumieron el 10-dic. El archivo no
-  llegaba al repo porque el `.gitignore` se lo comía (cuarta vez que ese bug
-  esconde trabajo; primera que genera una urgencia falsa). Excepción agregada.
-  **No hay que curar 72 filas a mano ni ir a Wikipedia.**
-  ⚠️ **Queda un residuo real:** la INGESTA (`datos/argentinadatos/src/to_canonical.py`)
-  todavía lee el padrón viejo `datos/senado/data/padron_bloques_senado.csv`, que
-  termina el 2025-12-09 — por eso los votos del Senado 2026 entran a la canónica
-  sin bloque. El fix es apuntarla también a `padron_senado.csv`, mandate-aware.
-  Es la regla que el propio equipo escribió el 30-07: **los huecos se tapan en la
-  entrada, no en cada consumidor.**

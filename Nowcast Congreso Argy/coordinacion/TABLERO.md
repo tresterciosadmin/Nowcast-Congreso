@@ -10,8 +10,8 @@ Cómo reclamar: editá este archivo en tu rama, agregá la fila, y mencioná en 
 
 Prioridad alta — datos (estrategia semilla → canónica → bot, ver ADR-0002):
 
-- [ ] **datos/canonica** — base propia única: unificar todas las fuentes, deduplicar solapamientos y resolver entidades. Fuente de verdad del proyecto. _Necesita al menos una fuente cargada (semilla o CKAN)._
-- [x] ~~**datos/argentinadatos**~~ → HECHO 2026-07-11 (ver "Hecho").
+- [x] ~~**datos/canonica**~~ → reclamado 2026-06-25 por Claude+Franco (ver "En curso"). **NO está libre:** es la fuente de verdad del proyecto y ya tiene 1.016.632 votos. Figuraba como disponible por un error de arrastre, corregido el 06-08.
+- [x] ~~**datos/argentinadatos**~~ → HECHO 2026-07-11 (ver "Hecho"). **Reabierto el 2026-08-06** por el bloque del Senado en la ingesta (ver la sesión abierta, abajo).
 - [x] ~~**datos/expedientes**~~ → reclamado 2026-07-11 por Claude+Franco (ver "En curso").
 - [ ] **datos/licencias_suspensiones** — registro + notificador de licencias y suspensiones de legisladores (decisión ADR-0004: se excluyen del índice de indisciplina; hoy solo los suspendidos son detectables).
 - [x] ~~**datos/padron**~~ → NUEVO, reclamado 2026-07-14 por Valle (ver "En curso"). Nómina oficial individual = composición de la cámara a la fecha.
@@ -38,18 +38,30 @@ Depende de otros (no empezar hasta que su dependencia esté HECHA):
 - [ ] **evaluacion/backtesting** — necesita al menos un modelo nuevo.
 - [ ] **producto/dashboard** — necesita ensemble.
 
+## Sesion 2026-08-06 (Valle+Claude) — ABIERTA, auditoria general del repo
+
+| Modulo | Quien | Desde | Que se esta haciendo |
+|---|---|---|---|
+| **coordinacion** | Claude (con Valle) | 2026-08-06 | Control general: armonizar bitacoras, cifras, memorias y READMEs; barrido archivo por archivo |
+| **datos/argentinadatos** | Claude (con Valle) | 2026-08-06 | Ingesta del Senado: apuntarla al padron vigente para que el 2026 deje de entrar SIN BLOQUE (URGENTE 2) |
+
+**Sigue sin reclamar, en orden de impacto:**
+
+| Modulo | Para que | Ver |
+|---|---|---|
+| `datos/bot_recoleccion` + `datos/proyectos` | **El upsert que falta.** El bot recolecta proyectos y nadie los carga: el universo del modelo esta congelado al 02-jun y `proyectos.db` nunca se creo. Toca dos modulos y necesita un ADR para decidir el contrato. | URGENTE 5 |
+| `variables/proyecto` | Auditoria de `n_giros` (sospecha de leakage en el rasgo mas pesado del modelo) | URGENTE 0 |
+| `variables/embudo` | Regenerar `p_embudo.parquet` con el modelo sano | URGENTE 1 |
+
 ## Sesion 2026-08-04 (Valle+Claude) — CERRADA, modulos liberados
 
 | Modulo | Que se hizo | Estado |
 |---|---|---|
 | variables/embudo | ICG enchufado + ablacion; bug del one-hot de comisiones corregido | LIBRE |
 | datos/padron | vigilar_padron.py (padron vivo) + padron a 257 | LIBRE |
-| datos/bot_recoleccion | 2 workflows nuevos (padron lunes, ICG dia 5) | LIBRE |
+| datos/bot_recoleccion | 2 workflows nuevos (padron lunes, ICG dia 5) — ⚠️ escritos pero **NO corriendo**: quedaron en la subcarpeta, ver URGENTE 4 | LIBRE |
 | variables/proyecto | **ICG como modulador de coyuntura (ADR-0008)** + 3 paneles HTML | LIBRE |
 | coordinacion | memorias consolidadas, CLAUDE.md destruncado, reglas nuevas en el PLAN | LIBRE |
-
-**Sin reclamar:** `datos/argentinadatos` (el bloque del Senado 2026 en la ingesta,
-ver URGENTE) y `variables/proyecto` para la auditoria de `n_giros` (URGENTE 0).
 
 ## En curso
 
@@ -82,8 +94,60 @@ ver URGENTE) y `variables/proyecto` para la auditoria de `n_giros` (URGENTE 0).
 | datos/argentinadatos | Claude+Franco | 2026-07-11 | Integrado con bloque del Senado 24-25 resuelto vía padrón versionado (SIN BLOQUE=0 en Senado; residuo menor en Dip) |
 | docs/taxonomias | Claude+Valle | 2026-06-29 | Vocabulario controlado v1 (74 ids, id estable, multi-etiqueta) |
 | evaluacion/baseline | Claude+Franco | 2026-06-25 | Baseline ~0,99 dirección / ~0,81 con asistencia |
-| datos/ckan_diputados | Claude+Franco | 2026-06-25 | En `fase0/`, pendiente migrar a su carpeta |
+| datos/ckan_diputados | Claude+Franco | 2026-06-25 | **Migración CUMPLIDA**: vive en `datos/ckan_diputados/src/to_canonical.py` y `run_pipeline.py` lo invoca (paso 2). El "pendiente migrar" era de arrastre, corregido el 06-08. Fuente congelada en 2020. |
 
 ## Congelado / no abrir aún
 
-- ~~**modelo/voto_individual** — baseline cerrado, no invertir más esfuerzo.~~ **DESCONGELADO 2026-06-30:** re
+- ~~**modelo/voto_individual** — baseline cerrado, no invertir más esfuerzo.~~ **DESCONGELADO 2026-06-30:** reformulado por ADR-0003. El voto-dirección por bloque acierta ~0,99, pero ese número es un **promedio** que tapa a los díscolos: la varianza del conteo la cargan **10-20 bisagras** cuya (in)disciplina mueve la P(aprobación) en las votaciones ajustadas. El objetivo dejó de ser predecir el voto medio y pasó a ser **separar el comportamiento partidario del individual**. Reclamado por Claude+Valle el 2026-07-01 (ver "En curso").
+
+- **datos/diputados_oficial** — PAUSADO 2026-07-10 por decisión de Valle (priorizar la puesta en marcha). No está congelado por técnica: se reanuda cuando el nowcast end-to-end esté cerrado.
+
+<!-- Reparado el 2026-08-06: este archivo estaba TRUNCADO en disco, cortado a mitad
+     de la palabra "reformulado". Es el tercer archivo dañado por el truncado del
+     mount, después de CLAUDE.md (04-08) y PLAN-DE-TRABAJO.md (06-08). El texto se
+     reconstruyó a partir de ADR-0003 y de la sección 1B.4 del PLAN.
+     ⚠️ VERIFICAR CONTRA TU DISCO: ver la nota al final de este archivo. -->
+
+---
+
+## Nota de integridad (2026-08-06) — VERIFICADA, el truncado es viejo
+
+Dos archivos de `coordinacion/` aparecen **cortados a mitad de una frase**: este
+(`TABLERO.md`, reparado arriba) y `ESTADO-DEL-PROYECTO.md`, cuya última entrada
+de la bitácora (29-06, `datos/seguimiento`) termina en "Tests offline contra
+fixtures:" sin las tres líneas de cierre que llevan todas las demás.
+
+**Se verificó con `git diff` antes de commitear.** Resultado: 115 inserciones
+contra 12 borrados, y **los 12 borrados son ediciones intencionales** de la
+sesión del 06-08 (las filas de la tabla de módulos con las cifras viejas y el
+párrafo del Senado marcado como superado). **Ninguna línea de bitácora se
+perdió en esta sesión.**
+
+El detalle que lo confirma: el archivo terminaba **sin salto de línea final**,
+mitad de palabra y sin newline es la firma clásica de una escritura truncada, y
+por eso git mostró esa última línea como modificada al agregarle contenido
+detrás. Un archivo que corta a viene de una sesión anterior — el mismo daño que
+sufrieron `CLAUDE.md` (reparado el 04-08) y `PLAN-DE-TRABAJO.md`.
+
+### Si querés recuperar el texto perdido de ESTADO (opcional, 1 minuto)
+
+El corte está en el histórico, así que alguna revisión vieja puede tener la
+entrada completa. Desde la raíz del repo:
+
+```powershell
+$ruta = "Nowcast Congreso Argy/coordinacion/ESTADO-DEL-PROYECTO.md"
+git log --format="%h %ad" --date=short -- $ruta | ForEach-Object {
+  $h = ($_ -split ' ')[0]
+  $fin = (git show "${h}:$ruta") | Select-Object -Last 1
+  "{0}  ->  ...{1}" -f $_, $fin.Substring([Math]::Max(0, $fin.Length - 55))
+}
+```
+
+**Qué mirar:** la lista muestra en qué terminaba el archivo en cada commit. Si
+alguna revisión NO termina en "Tests offline contra fixtures:", ahí está la
+versión completa y se copia de `git show <hash>:<ruta>`. Si **todas** terminan
+igual, el texto se perdió antes del primer commit y no hay nada que recuperar —
+lo que falta es el cierre de una entrada de junio sobre `datos/seguimiento`, y
+ese contenido está en `datos/seguimiento/README.md`.
+
+No es bloqueante para nada. Esta sección se borra cuando lo resuelvas.

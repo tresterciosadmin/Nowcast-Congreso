@@ -2,8 +2,13 @@
 
 **Propósito.** Usar el trabajo de Andy Tow ("La Década Votada") vía el paquete R **legislAr** como **semilla histórica de un solo uso** para arrancar nuestra base canónica. **No copiamos su dataset ni dependemos de que él lo siga actualizando**: lo exportamos una vez, lo normalizamos a nuestro esquema y de ahí en adelante mantenemos los datos nosotros (ver `datos/canonica` y `datos/bot_recoleccion`).
 
-**Estado:** PENDIENTE
-**Owner actual:** _(vacante — reclamalo en coordinacion/TABLERO.md antes de empezar)_
+**Estado:** HECHO — semilla integrada vía CSV (Diputados 2001-2010 + Senado 2004-2014).
+El export en R quedó **innecesario**: ver "ACTUALIZACIÓN: vía CSV" al final.
+**Owner actual:** Claude+Franco (cerrado 2026-06-29)
+
+> ⚠️ **Dependencia viva, no la muevas:** `datos/canonica/src/run_pipeline.py` lee
+> `Aportes sobre dataset congreso/towlandia-master/public/DecadaVotadaCSV.zip`. Es el
+> único archivo de esa carpeta que el pipeline necesita para reconstruirse de cero.
 
 ## Qué aporta
 - Votos individuales con `voto`, `nombre_bloque`, `nombre_legislador`, `provincia` desde **1998/2001**.

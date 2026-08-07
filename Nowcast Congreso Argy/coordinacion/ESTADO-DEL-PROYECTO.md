@@ -24,10 +24,10 @@ Mantené esta tabla sincronizada con la bitácora.
 |---|---|---|
 | docs/schemas | HECHO (schema_version=1) | — |
 | datos/decada_votada | HECHO (semilla integrada vía CSV: Dip 2001-2010 + Sen 2004-2014; export R quedó innecesario) | Claude+Franco |
-| datos/canonica | EN CURSO (base 2001-2026 ambas cámaras, 835k votos, reproducible; linajes v2 ADR-0005; falta Dip 2020-23) | Claude+Franco |
+| datos/canonica | EN CURSO (base 2001-2026 ambas cámaras, **1.016.632 votos / 6.231 actas** medidos en disco 06-08, reproducible; linajes v2 ADR-0005; falta Dip 2020-23) | Claude+Franco |
 | datos/bot_recoleccion | EN CURSO (bicameral automatizado en GitHub Actions: DAE Senado + TP Diputados con cofirmantes; falta estreno TP en vivo, upsert, fase votaciones) | Claude+Franco |
 | datos/ckan_diputados | HECHO (en `fase0/`, migrar) | — |
-| datos/argentinadatos | HECHO (bloque Senado 24-25 resuelto vía padrón; queda sin_bloque menor en Dip) | Claude+Franco |
+| datos/argentinadatos | HECHO (bloque Senado 24-25 y **2026** resueltos vía padrón; queda sin_bloque menor en Dip) — reabierto 06-08 para el fix del Senado post-recambio | Claude+Franco |
 | datos/senado | HECHO (2015–2023: 749 actas / 53.910 votos, bloque histórico 100%; padrón con filas REVISAR) | Claude+Franco |
 | datos/manual_2026 | HECHO (Excel curado 2026 integrado al esquema canónico, máxima precedencia; fuente viva que Franco completa a mano) | Claude+Franco |
 | datos/padron | EN CURSO (NUEVO: nómina oficial individual Dip 257 + Sen 72 vigentes, con mandato desde-hasta y linaje; composición a la fecha; reemplaza el roster inflado del proyector) | Valle |
@@ -55,6 +55,62 @@ Mantené esta tabla sincronizada con la bitácora.
 ---
 
 ## Bitácora (más reciente arriba)
+
+### [2026-08-06] coordinación + datos/argentinadatos — CONTROL GENERAL: 12 hallazgos, tres de ellos afectaban números publicables
+- **Quién:** Valle (lo pide y fija el alcance) · Claude (lo ejecuta) · **Módulos:** coordinacion, datos/argentinadatos
+
+Valle pidió un control general del estado del proyecto: armonizar memorias, criterios y bitácoras, y encontrar lo obsoleto. A mitad de camino pidió además **mirar todas las carpetas y todos los archivos uno por uno**, sin apuro. Se barrieron **1.352 archivos / 632 MB**.
+
+**El patrón, antes que la lista.** Los doce hallazgos tienen la misma forma: *alguien afirmó algo sobre el estado sin abrir el archivo*. No es descuido — es que el proyecto tiene cinco lugares donde se declara el estado (ESTADO, TABLERO, EN-HUMANO, `tablero_datos.js`, los README de módulo) y **nada obliga a que coincidan**. Es el mismo modo de falla que ya produjo tres incidentes; esta vez apareció en las bitácoras mismas.
+
+**🔴 Lo que afectaba números publicables**
+
+1. **La canónica se contaba mal en todos lados.** Medido en disco: **1.016.632 votos / 6.231 actas**. El tablero decía 834.749, el PLAN ~781k, `COBERTURA.md` arrancaba con 340.892 (cifra de junio). El salto del 31-jul **estaba registrado en la bitácora** y nunca se propagó a la tabla resumen ni al tablero — o sea, el KPI que mira el equipo llevaba una semana 18% abajo.
+2. **Los dos workflows nuevos NUNCA CORRIERON.** `padron-vivo.yml` e `icg-mensual.yml` siguen en `Nowcast Congreso Argy/.github/workflows/`; GitHub sólo lee los de la raíz. El tablero los anunciaba como activos en Actions. **La prueba:** `datos/padron/outputs/` tiene sólo el `.gitkeep` — si el vigilante hubiera corrido una vez, estaría `vigilancia_padron.md`. Los YAML están bien escritos (rutas con el prefijo entrecomillado); es puro traslado, PASO 4 del runbook.
+3. **`p_embudo.parquet` es del 12-jul, generado con el modelo que tenía el bug del one-hot.** `embudo.py` se arregló el 04-08 pero la salida nunca se regeneró, así que **todo nowcast se apoya hoy en el embudo mutilado**. Era el pendiente nº 1 del cierre y quedó sin hacer.
+
+**🟢 Lo que se arregló en esta sesión**
+
+4. **El Senado 2026 entraba SIN BLOQUE — causa encontrada y corregida.** Síntoma diagnosticado mal **dos veces** ("ninguna fuente publica el bloque del Senado"). La causa real: `to_canonical.py` cruzaba sólo contra el padrón histórico, que **termina el 09-dic-2025**, así que todo lo posterior al recambio caía afuera (6.192 votos). Se sumó `datos/padron/data/padron_senado.csv` como tercera fuente, **mandate-aware y última en precedencia** para no pisar lo curado en el tramo solapado 2021-2027. **Los 72 senadores vigentes resuelven bloque**, incluido Atauche (ingresa por el P. Renovador Federal, bloquea en LLA) — el caso que había hecho descartar las fuentes automáticas. Módulo nuevo de tests: `datos/argentinadatos/tests/test_padron_senado.py`, **8 en verde**, con un test de cobertura sobre los 72 porque esta falla es silenciosa: no rompe nada, sólo deja ciega una cámara. ⏳ Falta re-correr `run_pipeline.py` para que llegue a los parquet.
+5. **`URGENTE.md` violaba su propia regla.** Tenía una sección "✅ Resueltos el 04-08", y **adentro estaba enterrado el pendiente vivo del punto 4**. Un archivo que existe para que algo no se pueda no ver no puede tener una zona donde las cosas se esconden. Sección eliminada y la prohibición escrita en el encabezado.
+6. **`PLAN-DE-TRABAJO.md` estaba truncado en disco**, cortado a mitad de la palabra "coordina" en "Mapa de paralelización". Es el truncado del mount otra vez — el mismo daño que sufrió `CLAUDE.md`. **Segundo archivo dañado por esa vía**, y ninguno de los dos se lee de punta a punta, así que el corte sobrevive meses. Se reconstruyó la sección (cuellos de botella) con guard de bytes.
+7. **Cinco README de módulo decían "PENDIENTE / owner vacante" estando en curso**, entre ellos **`datos/canonica`**, que es la fuente de verdad con un millón de votos. `CLAUDE.md` manda leer el README del módulo antes de tocarlo: un README que invita a reclamar un módulo ocupado es el mecanismo anti-colisión **fallando al revés**. Corregidos `datos/canonica`, `datos/argentinadatos`, `datos/decada_votada`, `datos/ckan_diputados` (decía "migrar desde fase0/" — ya migrado, `run_pipeline` lo invoca) y `producto/dashboard` (decía PENDIENTE con cinco paneles construidos).
+8. **Un límite del sandbox venció y estaba escrito como permanente.** `CLAUDE.md` y la memoria decían "Claude no ve archivos que empiezan con punto". **El 06-08 sí se ven** `.github`, `.gitignore`, `.env`. `.git` sigue sin verse, pero por el otro límite (está un nivel arriba). Reescrito: la regla no es "no se ven", es **mirar cada vez** — porque una regla escrita desde un síntoma vencido hace que un Claude futuro no mire donde sí puede.
+9. **`PROTOCOLO-GIT.md` cerraba con un `git init`** de primer setup. Es la misma semilla del error que produjo `CONECTAR-GIT.md`. Reemplazado por el clone, el aviso del anidamiento doble y el chequeo de `git check-ignore`.
+10. **`CONECTAR-GIT.md` y los dos `classify_tema*.py` al régimen de descarte.** El primero era ya sólo un "ignorá la versión anterior" con nombre autoritativo (y `tablero_datos.js` todavía lo citaba como instructivo). Los otros dos son **byte a byte idénticos** entre sí, deprecados desde el 27-06 y con un comentario que dice "se puede borrar". Copiados a `Archivos_Borrar/`, originales neutralizados, anotados.
+
+**📋 Anotado, no tocado**
+
+11. **`datos/Archivos_Borrar/` pesa 261 MB — el 41% del repo**, y nunca había figurado en `PENDIENTES-DE-BORRAR.md`: el barrido del 04-08 miró la carpeta de la raíz (464 KB) y no esta. Está gitignoreada, así que no viaja a GitHub. **Pero ojo:** `senado_html/` (759 archivos, ~110 MB) es el **caché del scraper del Senado** — borrarlo no rompe nada pero hace que el próximo rebuild tarde 20 min en vez de 1.
+12. **50 MB de `.xlsx` versionados** en `datos/export/data/` (régimen transitorio de Valle del 02-07). Cada regeneración suma otros ~50 MB **permanentes** al historial de git, y los actuales son del 10-jul, o sea anteriores al crecimiento de la base. Decisión de Valle, no la toco; queda dicho el costo.
+- Y dos cosas menores: `padron_diputados.ANTES-...csv.bak` **está viajando a git** (la regla `*.csv` no lo atrapa porque termina en `.bak`), y hay `verify=False` en tres scrapers (`dae_senado`, `tp_diputados`, `scrape_jefes_bloque`) — ya estaba anotado en el runbook del 04-08, pero enterrado.
+
+**🔴 13. Hallazgo posterior (misma sesión, lo dispara una pregunta de Valle): el bot recolecta y no entrega.**
+
+Con el pipeline ya corriendo, Valle preguntó si el bot diario carga en la base los proyectos que detecta. **No los carga.** Verificado con `grep` sobre todo el repo: fuera de su propio módulo, **ningún script lee** `tp_entradas.parquet`, `dae_entradas.parquet` ni `votaciones_nuevas.parquet`.
+
+Con las **votaciones** no hay problema y es por diseño: `run_pipeline.py` re-baja las actas de la API, y el bot funciona como alarma (detecta y abre un issue). Decisión explícita del 04-08.
+
+El agujero está en los **proyectos**:
+
+| Base | Filas | Cubre hasta |
+|---|---:|---|
+| `datos/expedientes/.../expedientes.parquet` — **lo que lee el embudo** | 112.793 | **2026-06-02** |
+| `datos/bot_recoleccion/.../tp_entradas.parquet` (Diputados) | 2.799 | 2026-08-04 |
+| `datos/bot_recoleccion/.../dae_entradas.parquet` (Senado) | 1.007 | 2026-07-20 |
+| `datos/proyectos/data/proyectos.db` — **el destino previsto** | **no existe** | — |
+
+**Tres consecuencias:** (1) **861 proyectos** que el bot ya tiene son invisibles para el modelo — un proyecto presentado en julio o agosto **no se puede nowcastear**; (2) se pierden los **cofirmantes completos** (1.008 de 2.799 los tienen), que es el dato que CKAN no publica y la razón por la que se construyó el scraper del TP; (3) **es el blocker real de las taxonomías** — varios documentos dicen "el blocker es `proyectos.db` + M1", y `proyectos.db` simplemente nunca se creó, así que el agente no tiene dónde escribir. La API key está resuelta desde el 14-jul: lo que falta es la base.
+
+**Por qué es un hallazgo y no un pendiente conocido:** el `README.md` del bot ya lo listaba ("upsert hacia datos/proyectos y capa expedientes"), pero **en ningún lado estaba escrita la consecuencia**. Leído como pendiente técnico parece prolijidad; leído como "el sistema no puede predecir nada de los últimos dos meses" es otra cosa. Es el mismo patrón que el resto de la auditoría: el dato estaba, la implicación no. Registrado en `URGENTE.md` ítem 5, con el camino (crear la db con el `store.py` que ya existe, escribir el upsert entre dos contratos que ya existen, y **un ADR** para decidir si el embudo pasa a leer `proyectos.db` o si `datos/expedientes` absorbe lo del bot).
+
+**Lo que NO se toca, para que nadie lo mande a descarte por error:** `Aportes sobre dataset congreso/towlandia-master/public/DecadaVotadaCSV.zip` es **dependencia viva** — `run_pipeline.py` lo lee en el paso 1 para la semilla histórica. Anotado en `PENDIENTES-DE-BORRAR.md`.
+
+- **Archivos:** `coordinacion/{URGENTE,TABLERO,PLAN-DE-TRABAJO,PROTOCOLO-GIT,EN-HUMANO,ESTADO-DEL-PROYECTO,CONECTAR-GIT,CIERRE-SESION-2026-08-04,PUESTA-EN-MARCHA-2026-08-04}.md`, `CLAUDE.md`, `tablero_datos.js`, `datos/argentinadatos/{src/to_canonical.py,tests/test_padron_senado.py,README.md}`, `datos/canonica/{README,COBERTURA}.md`, `datos/{decada_votada,ckan_diputados,export}/README.md`, `producto/dashboard/README.md`, `Archivos_Borrar/PENDIENTES-DE-BORRAR.md` + 3 copias, y las memorias locales de Valle (fuera del repo).
+- **Estado del módulo:** coordinación HECHO · datos/argentinadatos EN CURSO (falta la corrida).
+- **Próximo paso (operativo):** las **cinco corridas en PowerShell** que quedaron en `URGENTE.md`, en este orden: (1) `run_pipeline.py` — Senado con bloque + las 250 actas nuevas del bot; (2) `embudo.py modelo` — regenerar `p_embudo`; (3) PASO 4 del runbook — mover los workflows; (4) `bajar_nomina.py --padron` — confirmar el padrón; (5) commitear. Después de eso, el nowcast vuelve a apoyarse en datos sanos.
+- **Próximo paso (de módulo):** el upsert bot → `datos/proyectos` (URGENTE 5). Es lo que separa al sistema de correr solo de punta a punta: hoy la recolección funciona y la entrega no existe.
+
 
 ### [2026-08-04 · orden] coordinación — revisión completa de la carpeta antes de publicar
 - **Quién:** Valle (lo pide) · Claude (lo ejecuta) · **Módulo:** coordinación
@@ -355,7 +411,9 @@ python datos/padron/tests/test_vigilar_padron.py        # 15 OK
   - **Criterio adoptado: no reparar.** Se detecta, se avisa y se deja: **falta 1 banca real (99,6%) en lugar de inventar 6 falsas**. Arreglo de fondo: nómina oficial de HCDN, no esta API.
   - **Bug de paso, que vale para todo el repo:** el centinela `9999-12-31` **no es representable** como `pandas.Timestamp` (el máximo es 2262-04-11) → `to_datetime` devuelve `NaT` y el legislador desaparece de cualquier filtro por fecha. Se cambió por `2099-12-31`. `_bancas_padron` en `bloque.py` sobrevivía porque contempla `h.isna()`; cualquier consumidor que no lo haga, no.
 
-**4) SENADO — anotado para retomar (pedido de Franco).** El Senado 2026 está **100% sin bloque** (6.192 votos). Diagnóstico completo en `URGENTE.md` ítem 0; en síntesis: el padrón curado termina el 2025-12-09 y **ninguna fuente publica el bloque parlamentario del Senado** — argentinadatos y el listado oficial dan la alianza de ingreso (Atauche entra por el P. Renovador Federal y bloquea en LLA), y `agrupados-por-bloques` da bloque + cantidad pero no los nombres, con las sub-tablas de asesores que el 30-07 nos hicieron leer 123 bloques falsos. **Camino recomendado:** anexo de Wikipedia 2025-2027 con `bajar_anexos_wiki.py` + `padron_bloques.py`, que ya están validados para ese formato; alternativa, curar 72 filas a mano (hay precedente). **Diputados está sano (0,5% sin bloque) → ese nowcast es utilizable.**
+**4) SENADO — anotado para retomar (pedido de Franco).** ⛔ **SUPERADO — no actuar sobre este párrafo.** Lo que sigue afirma que "ninguna fuente publica el bloque parlamentario del Senado" y propone curar 72 filas a mano o ir a Wikipedia. **Es falso, y ya costó trabajo dos veces.** El padrón existía desde el 14-jul (`datos/padron/data/padron_senado.csv`, 72 senadores vigentes con bloque y linaje); no se veía porque el `.gitignore` se lo comía (corregido el 04-08). La causa real del síntoma se encontró el **06-08**: la ingesta (`datos/argentinadatos/src/to_canonical.py`) cruzaba sólo contra el padrón histórico, que termina el 09-dic-2025. Ya está arreglado. Se deja el texto original abajo porque la bitácora no se borra — pero **no es una tarea pendiente.**
+
+ El Senado 2026 está **100% sin bloque** (6.192 votos). Diagnóstico completo en `URGENTE.md` ítem 0; en síntesis: el padrón curado termina el 2025-12-09 y **ninguna fuente publica el bloque parlamentario del Senado** — argentinadatos y el listado oficial dan la alianza de ingreso (Atauche entra por el P. Renovador Federal y bloquea en LLA), y `agrupados-por-bloques` da bloque + cantidad pero no los nombres, con las sub-tablas de asesores que el 30-07 nos hicieron leer 123 bloques falsos. **Camino recomendado:** anexo de Wikipedia 2025-2027 con `bajar_anexos_wiki.py` + `padron_bloques.py`, que ya están validados para ese formato; alternativa, curar 72 filas a mano (hay precedente). **Diputados está sano (0,5% sin bloque) → ese nowcast es utilizable.**
 
 **5) TODO CARGADO AL REPO** para que el equipo no tenga que correr nada: canónica (3 parquets, 6,5 MB), `padron_diputados.csv` + `nomina_diputados.csv`, `features_proyecto.parquet`, los CSV y el backtest del embudo, la salida del bot y el scoring del caso. Se agregaron las excepciones al `.gitignore` (cuarta tanda) y se verificó con `git check-ignore` archivo por archivo antes de cerrar.
 
@@ -913,3 +971,30 @@ python datos/padron/tests/test_vigilar_padron.py        # 15 OK
 ### [2026-06-29] datos/seguimiento — Extractor de giros/trámite de PdL (Diputados + Senado)
 - **Quién:** Claude (con Valle)
 - **Qué:** módulo nuevo `datos/seguimiento`: dado un expediente conocido, baja su ficha oficial y extrae estado de avance (giros a comisiones, trámite, fechas, autores, link al PDF) a un objeto común `FichaExpediente`. Insumo del embudo. **Validado EN VIVO** contra las webs reales de ambas cámaras (Senado 1091/26 y Diputados 2832-D-2026): trae bien sumario, fecha, giros con orden/fecha, firmantes (Dip con distrito+bloque; Sen el autor por link al perfil) y PDF absoluto. Tests offline contra fixtures:
+
+<!-- ============================================================
+     ⚠️ 2026-08-06: ESTE ARCHIVO ESTÁ TRUNCADO ACÁ (verificado con git diff)
+     ============================================================
+     La entrada de arriba (29-06, datos/seguimiento) corta a mitad de la frase
+     "Tests offline contra fixtures:" y le faltan las tres líneas de cierre que
+     llevan todas las demás entradas (Archivos / Estado del módulo / Próximo paso).
+
+     Es el mismo daño que sufrieron CLAUDE.md (reparado 04-08),
+     PLAN-DE-TRABAJO.md y TABLERO.md (reparados 06-08): el mount del entorno de
+     Claude trunca los archivos grandes al leerlos, y un read-modify-write
+     posterior consolida el corte en el disco.
+
+     NO se reconstruyó porque el texto perdido no es derivable: son datos
+     concretos de una corrida de junio. La instrucción de recuperación y el
+     comando de verificación están al final de coordinacion/TABLERO.md.
+
+     VERIFICADO el 06-08 con `git diff` antes de commitear: los 12 borrados de
+     esa sesión son todos ediciones intencionales. El corte NO se produjo ahí —
+     viene de antes, y el archivo terminaba sin salto de línea final, que es la
+     firma de una escritura truncada.
+
+     Para intentar recuperar el texto de una revisión vieja, el comando está al
+     final de coordinacion/TABLERO.md. Si ninguna revisión lo tiene, el contenido
+     que falta (cierre de una entrada de junio sobre datos/seguimiento) está en
+     datos/seguimiento/README.md.
+     ============================================================ -->

@@ -2,8 +2,15 @@
 
 **Propósito.** Nuestra **base de datos propia y única** de votaciones. Unifica todas las fuentes (semilla histórica Andy Tow + CKAN + argentinadatos + Senado + lo que traiga el bot) en una sola tabla normalizada, deduplicada y con resolución de entidades (legislador, bloque, provincia, acta). Es la fuente de verdad de la que leen todos los módulos de `variables/` y `modelo/`.
 
-**Estado:** PENDIENTE
-**Owner actual:** _(vacante — reclamalo en coordinacion/TABLERO.md antes de empezar)_
+**Estado:** EN CURSO — v1 en producción. **1.016.632 votos / 6.231 actas**, 2001-2026,
+ambas cámaras (medido en disco el 2026-08-06). Falta Diputados 2020-23 (pausado por
+decisión del 10-07).
+**Owner actual:** Claude+Franco (desde 2026-06-25)
+
+> **Este módulo NO está libre.** Hasta el 06-08 figuraba "PENDIENTE / vacante" acá y
+> como disponible en `TABLERO.md`, por arrastre del README original — cuando es la
+> fuente de verdad de la que leen todos los demás. Un README que invita a reclamar un
+> módulo ocupado es el mecanismo anti-colisión fallando al revés.
 
 ## Contrato
 - **Entradas:** los parquet de `datos/decada_votada`, `datos/ckan_diputados`, `datos/argentinadatos`, `datos/senado`, `datos/expedientes`.

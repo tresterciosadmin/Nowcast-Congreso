@@ -2,7 +2,25 @@
 
 **Propósito.** La **base de Proyectos de Ley**: fuente de verdad del embudo. Una fila por proyecto, identificado por su **denominador** (`NNNN-X-AAAA`). Guarda metadata, autores, giros a comisiones, trámite, estado y taxonomías. Se actualiza en el tiempo sin duplicar (un mismo proyecto avanza de estado).
 
-**Estado:** EN CURSO (esquema + persistencia + export, validados sin red).
+**Estado:** EN CURSO — el código está y funciona, **pero la base nunca se creó**.
+
+> 🔴 **Verificado el 2026-08-06: `data/proyectos.db` NO EXISTE, la carpeta está vacía.**
+> El esquema, el upsert idempotente y el export están escritos y testeados (18
+> chequeos), pero nadie corrió `store.py init` ni conectó nada. Consecuencias, en
+> orden de importancia:
+>
+> 1. **El bot recolecta proyectos y no tienen dónde entrar.** `datos/bot_recoleccion`
+>    junta 2.799 proyectos de Diputados (con cofirmantes completos) y 1.007
+>    expedientes del Senado, y quedan en parquets que nadie lee.
+> 2. **Es el blocker real del agente de taxonomías.** Varios documentos del repo
+>    dicen "el blocker es `proyectos.db` + M1". La API key está resuelta desde el
+>    14-jul; lo que falta es esta base.
+> 3. El universo de proyectos del modelo sigue siendo el backfill de CKAN,
+>    congelado al **2026-06-02**.
+>
+> Registrado en `coordinacion/URGENTE.md` ítem 5. El primer paso es de un minuto:
+> `python datos\proyectos\src\store.py init`. Lo que falta de verdad es el upsert
+> desde el bot, y la decisión de contrato con `datos/expedientes` (→ ADR).
 
 ## Contrato
 - **Entrada:** un dict con la forma de `FichaExpediente` (la salida de `datos/seguimiento`, serializada con `asdict`/JSON). El módulo **no importa código** de seguimiento; consume el contrato (dict).

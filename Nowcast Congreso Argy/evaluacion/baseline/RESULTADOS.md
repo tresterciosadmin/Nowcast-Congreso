@@ -1,4 +1,13 @@
-# Baseline 'votá con tu grupo' sobre la base canónica (2011–2025)
+# Baseline 'votá con tu grupo' sobre la base canónica
+
+> **Se lee de abajo hacia arriba: la última "Actualización" manda.** Corregido el
+> 2026-08-06 — el título decía "(2011–2025)" y las medidas de más abajo hablan de
+> 781k votos, cifras del run de junio. **La base hoy tiene 1.016.632 votos / 6.231
+> actas y cubre 2001–2026.** Los números de acá **no se re-midieron** (es otro
+> módulo, sin dueño y marcado HECHO): valen como lo que eran al momento de
+> correrlos, y la conclusión de fondo —el voto-dirección por bloque acierta ~0,99
+> y por eso no es el negocio— se sostuvo en todas las re-mediciones posteriores.
+> Para re-medir: `python evaluacion/baseline/src/baseline_canonico.py`.
 
 Leave-one-out, solo votos sustantivos (afirmativo/negativo). Excluye "SIN BLOQUE".
 Reproducir: `python evaluacion/baseline/src/baseline_canonico.py`.

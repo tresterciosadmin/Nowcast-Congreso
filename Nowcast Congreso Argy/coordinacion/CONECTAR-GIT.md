@@ -1,48 +1,26 @@
-# ⚠️ DOCUMENTO CORREGIDO — 2026-08-04
+# ⛔ NO LEER — documento retirado (2026-08-06)
 
-**La versión anterior de este archivo estaba equivocada y hay que ignorarla.**
+**Este archivo no contiene información válida. Está esperando que Valle lo borre.**
+La copia íntegra está en `Archivos_Borrar/BORRAR_coordinacion-CONECTAR-GIT.md`.
 
-Decía que la carpeta local no era un clon de git y daba un instructivo de
-PowerShell para inicializarlo. **Es falso: el repo siempre estuvo conectado**, y
-Valle trabaja con GitHub Desktop sobre `main`.
+## Qué era
 
-**De dónde salió el error:** el entorno donde corre Claude monta la carpeta sin
-exponer el directorio `.git`. Claude no lo vio, dedujo "no hay repo" y escribió
-un instructivo entero sobre esa deducción. La lección, anotada para todos:
-**la ausencia de algo en el sandbox no prueba su ausencia en el disco.** El disco
-es la fuente de verdad; el sandbox es una vista parcial.
+Un instructivo de PowerShell para "conectar la carpeta a git". **La premisa era
+falsa: el repo siempre estuvo conectado** (GitHub Desktop, rama `main`, remoto
+`tresterciosadmin/Nowcast-Congreso`). Nació el 04-08 de que el sandbox de Claude
+no exponía el directorio `.git`; Claude no lo vio, dedujo "no hay repo" y escribió
+el documento entero sobre esa deducción.
 
-Si en el futuro Claude no ve un archivo o carpeta que debería estar, la respuesta
-correcta es **preguntar**, no concluir.
+El 04-08 se corrigió el contenido pero **el archivo quedó vivo**, y su nombre
+siguió invitando a leerlo — de hecho `tablero_datos.js` todavía lo citaba como
+"instructivo" el 06-08. Un documento cuyo único mensaje es "ignorá lo que dice
+este documento" no es información: es ruido con nombre autoritativo.
 
----
+## Dónde está lo que sí vale
 
-## Lo único que sí vale de la versión anterior: el chequeo del `.gitignore`
-
-Esto sigue siendo obligatorio antes de cada commit, y es la parte que
-efectivamente sirvió (destapó el padrón del Senado que llevaba semanas
-invisible). Corré esto en PowerShell parado en la carpeta del repo:
-
-```powershell
-$criticos = @(
-  "datos\padron\data\padron_senado.csv",
-  "datos\padron\data\padron_diputados.csv",
-  "datos\padron\data\senado_linaje_manual.csv",
-  "datos\padron\data\raw\nomina_senado.csv",
-  "variables\proyecto\data\icg_mensual.csv",
-  "variables\proyecto\data\jefes_bloque.csv",
-  "datos\padron\data\estado_vigilancia.json"
-)
-foreach ($f in $criticos) {
-  if (-not (Test-Path $f)) { Write-Host "NO EXISTE  $f" -ForegroundColor DarkGray; continue }
-  git check-ignore -q $f
-  if ($LASTEXITCODE -eq 0) { Write-Host "IGNORADO   $f" -ForegroundColor Red }
-  else                     { Write-Host "OK viaja   $f" -ForegroundColor Green }
-}
-```
-
-Si alguno sale **IGNORADO**, agregá la excepción al `.gitignore` **en el mismo
-commit**. Es la regla de la casa, escrita en el propio archivo, y ya se
-incumplió cuatro veces: parquet de expedientes (11-07), roster de jefes (30-07),
-salidas del embudo (31-07) y padrón del Senado (detectado 04-08, el único que
-llegó a generar una urgencia falsa).
+| Qué | Dónde |
+|---|---|
+| Cómo se trabaja con git en este repo (ramas, PRs, anidamiento doble) | `coordinacion/PROTOCOLO-GIT.md` |
+| El chequeo de `git check-ignore` antes de commitear | `coordinacion/PROTOCOLO-GIT.md`, sección final |
+| La lección de fondo (lo que el sandbox no ve no prueba que no exista) | `CLAUDE.md`, "Límites del entorno de Claude" |
+| Los workflows que todavía hay que mover a la raíz | `coordinacion/URGENTE.md` ítem 4 |

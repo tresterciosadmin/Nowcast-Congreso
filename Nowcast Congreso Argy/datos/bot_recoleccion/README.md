@@ -38,10 +38,44 @@ diario 07:00 ARG (lun-sáb) + botón manual en la pestaña Actions. Corre
 Es el ejecutor 24/7 interino hasta la Etapa 4 (Oracle); la base se completa
 sola en el propio repo. Al hacer `git pull` te traés lo que el bot juntó.
 
+## 🔴 EL BOT RECOLECTA PERO NO ENTREGA (verificado 2026-08-06)
+
+**Ningún script del repo lee las salidas de este módulo** fuera de sus propios
+tests. Comprobado con `grep` sobre todo el árbol: `tp_entradas.parquet`,
+`dae_entradas.parquet` y `votaciones_nuevas.parquet` se escriben, se commitean, y
+ahí quedan.
+
+**Con las votaciones no hay problema, y es por diseño.** `run_pipeline.py` no lee
+`votaciones_nuevas.parquet`, pero re-baja las actas de la API, así que entran
+igual. Acá el bot es la **alarma**: detecta y abre un issue con los comandos.
+Decisión explícita del 04-08 — no reconstruir la fuente de verdad sin revisión
+humana.
+
+**El agujero está en los proyectos:**
+
+| Base | Filas | Cubre hasta |
+|---|---:|---|
+| `datos/expedientes/data/clean/expedientes.parquet` — **lo que lee el embudo** | 112.793 | **2026-06-02** |
+| `data/clean/tp_entradas.parquet` (Diputados) | 2.799 | 2026-08-04 |
+| `data/clean/dae_entradas.parquet` (Senado) | 1.007 | 2026-07-20 |
+| `datos/proyectos/data/proyectos.db` — **el destino previsto** | **no existe** | — |
+
+Consecuencias: **861 proyectos** que este bot ya tiene son invisibles para el
+modelo (un proyecto de julio o agosto **no se puede nowcastear**); se pierden los
+**cofirmantes completos** (1.008 de 2.799), que son la razón por la que se
+construyó el scraper del TP; y es el **blocker real de las taxonomías** —
+`proyectos.db` nunca se creó, así que el agente no tiene dónde escribir.
+
+Registrado en `coordinacion/URGENTE.md` ítem 5. Toca dos módulos
+(`datos/bot_recoleccion` + `datos/proyectos`) y la decisión de contrato —si el
+embudo pasa a leer `proyectos.db` o si `datos/expedientes` absorbe lo del bot—
+**requiere un ADR**.
+
 ## Pendientes
-Tipo ACUERDOS del DAE; backfill TP períodos 137-143 (cofirmantes históricos); upsert hacia datos/proyectos
-(contrato de Valle) y capa expedientes; programación diaria (cron/Tarea de
-Windows) cuando haya entorno 24/7 (Etapa 4 del plan).
+**(1) El upsert hacia `datos/proyectos`** — ver la sección de arriba; es el que
+convierte a este módulo en algo que sirve. Después: tipo ACUERDOS del DAE;
+backfill TP períodos 137-143 (cofirmantes históricos); capa expedientes;
+programación diaria (cron/Tarea de Windows) cuando haya entorno 24/7 (Etapa 4).
 
 ## Convenciones
 Resiliencia obligatoria (errores específicos, backoff, parsing defensivo por

@@ -44,11 +44,18 @@ El entorno de Claude **no puede borrar archivos** (en la máquina de Franco, ade
 El sandbox donde corre Claude monta la carpeta con límites que **no se anuncian solos**. Cada uno ya produjo trabajo tirado:
 
 1. **La raíz del repo está UN NIVEL ARRIBA de lo que Claude ve.** Se monta `Nowcast-Congreso\Nowcast-Congreso\Nowcast Congreso Argy`, pero la raíz git es `Nowcast-Congreso\Nowcast-Congreso`. Consecuencias: **`.github/workflows/` vive en la raíz** (lo que se escriba en la subcarpeta GitHub no lo lee nunca) y las rutas dentro de un workflow llevan el prefijo `"Nowcast Congreso Argy/"` **entrecomillado** (tiene espacios). Además `git <cmd> tablero_datos.js` desde la subcarpeta falla: git lo ve root-relative.
-2. **Claude no ve archivos ni carpetas que empiezan con punto.** `ls -a` no muestra `.git` ni `.github` aunque existan. El 04-08 eso derivó en un instructivo entero para "conectar git" (ya estaba conectado) y en un workflow que duplicaba al bot diario que corría desde julio.
-3. **El mount trunca archivos grandes al leerlos**, y el read-modify-write propaga el corte. Verificar `wc -c` + `tail` antes de reescribir; en JS/JSON chequear balance de llaves después.
+2. **Los archivos que empiezan con punto: depende de la sesión, NO asumir.** El 04-08 `ls -a` no mostraba `.git` ni `.github`, y de ahí salieron un instructivo entero para "conectar git" (ya estaba conectado) y un workflow que duplicaba al bot diario que corría desde julio. **El 06-08 sí se veían** `.github`, `.gitignore`, `.env` y `.gitattributes` — el comportamiento del mount cambió entre sesiones sin avisar. `.git` sigue sin verse, pero por el punto 1: no está en esta carpeta, está un nivel arriba. **Moraleja, que es más fuerte que el síntoma:** no vale ni "no lo veo, no existe" ni "la sesión pasada no se veía, tampoco ahora". Se mira, y si no aparece algo que debería estar, se pregunta.
+3. **El mount trunca archivos grandes al leerlos**, y el read-modify-write propaga el corte. Verificar `wc -c` + `tail` antes de reescribir; en JS/JSON chequear balance de llaves después. **Ya dañó dos archivos en disco:** `CLAUDE.md` (detectado y reparado el 04-08) y `coordinacion/PLAN-DE-TRABAJO.md`, que quedó cortado a mitad de una palabra en "Mapa de paralelización" y recién se detectó el **06-08**. Si un archivo termina raro, sospechar de esto antes que de cualquier otra cosa.
 4. **~45 s por comando y los procesos en background no sobreviven** entre llamadas. Las corridas pesadas (pipelines, exports, backtests) se le pasan al humano listas para PowerShell, con lo que tiene que dar cada paso.
 
 **La regla:** ante un archivo, carpeta o dato que *debería* estar y no aparece, **preguntar, no concluir**. Y antes de tocar infraestructura del repo (workflows, hooks, CI), **pedir un listado de la raíz**. El detalle está en `coordinacion/PLAN-DE-TRABAJO.md`.
+
+**El corolario que costó más caro, y que no es sobre el sandbox:** los tres
+errores del 04-08 y los cinco del 06-08 tienen la misma forma — *alguien
+concluyó algo sobre el estado del proyecto sin mirar el disco*. El padrón del
+Senado "que no existía" existía; los workflows "corriendo en Actions" nunca se
+dispararon; la canónica "de 835k votos" tenía 1.016.632. **Antes de repetir un
+número o un estado que leíste en una bitácora, verificalo contra el archivo.**
 
 ## Flujo mínimo por sesión
 1. `git pull` → leé ESTADO + TABLERO.

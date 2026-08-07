@@ -2,12 +2,18 @@
 
 **Propósito.** Ingesta de votaciones nominales de Diputados 2011-2020 desde CKAN HCDN (cabecera + detalle).
 
-**Estado:** HECHO (migrar desde fase0/)
-**Owner actual:** _(vacante — reclamalo en coordinacion/TABLERO.md antes de empezar)_
+**Estado:** HECHO. **La migración desde `fase0/` ya se hizo** (`src/to_canonical.py`
+vive acá y `run_pipeline.py` lo invoca en el paso 2). El texto "migrar desde fase0/"
+quedó de arrastre y se corrigió el 2026-08-06.
+**Owner actual:** _(cerrado — no requiere dueño; si hay que tocarlo, reclamalo en `coordinacion/TABLERO.md`)_
+
+> **Nota:** la fuente CKAN está **congelada en 2020**. De ahí en adelante cubre
+> `datos/argentinadatos`. Este módulo no se vuelve a correr salvo para reconstruir
+> la canónica de cero.
 
 ## Contrato
 - **Entradas:** API CKAN datos.hcdn.gob.ar
-- **Salida (contrato estable):** data/clean/diputados_cabecera.parquet, data/clean/diputados_detalle.parquet
+- **Salida (contrato estable):** `<OUT>/ckan_diputados_actas.parquet` y `<OUT>/ckan_diputados_votos.parquet` (nombres reales; el README decía `diputados_cabecera/detalle`, que nunca existieron). `OUT` lo fija `run_pipeline.py`.
 - **Depende de:** -
 - **Gate de pase:** Parquet generado y validado contra docs/schemas
 

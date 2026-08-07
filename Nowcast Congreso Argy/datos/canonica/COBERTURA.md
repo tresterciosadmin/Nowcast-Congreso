@@ -1,18 +1,25 @@
-# Cobertura de la base canónica (estado actual)
+# Cobertura de la base canónica
 
-Objetivo: **2001–2025, ambas cámaras** (últimos ~25 años).
+> ⚠️ **Este archivo es un HISTORIAL, no una foto.** Se lee **de abajo hacia
+> arriba**: la última "Actualización" manda. Corregido el 2026-08-06 — hasta
+> entonces arrancaba con una tabla y un "Hoy:" de junio (1.414 actas / 340.892
+> votos) que quedaron congelados mientras el resto del archivo crecía. Cualquiera
+> que leyera sólo el encabezado se llevaba una foto tres meses vieja y **cuatro
+> huecos que ya estaban cerrados**.
 
-| Año | Diputados | Senado |
-|---|---|---|
-| 2001–2010 | ⛔ falta (semilla Andy Tow) | ⛔ falta (semilla: 2004–2013) |
-| 2011–2018 | ✅ CKAN | ⛔ falta |
-| 2019 | ✅ CKAN (período 137) | ⛔ falta |
-| 2020–2023 | 🟡 incompleto (argentinadatos parcial) | ⛔ falta |
-| 2024–2025 | ✅ argentinadatos | ✅ argentinadatos (sin bloque) |
+**Estado al 2026-08-06 (medido en disco):**
 
-Hoy: **1.414 actas / 340.892 votos**, Diputados 2011–2025 y Senado 2024–2025.
+| | |
+|---|---|
+| **Votos** | **1.016.632** |
+| **Actas** | **6.231** |
+| **Cobertura** | 2001–2026, ambas cámaras |
+| **Hueco abierto** | Diputados 2020–2023 (pausado por decisión del 10-07) |
 
-## Huecos para llegar a la meta
+Objetivo original: **2001–2025, ambas cámaras** (últimos ~25 años) — cumplido y
+excedido; hoy llega a 2026.
+
+## Huecos para llegar a la meta (lista ORIGINAL de junio — ver más abajo cuáles se cerraron)
 1. **Diputados 2001–2010** → correr la **semilla** (`datos/decada_votada`, R).
 2. **Diputados 2020–2023** → argentinadatos está incompleto; completar desde la fuente oficial `votaciones.hcdn.gob.ar`.
 3. **Senado 2004–2013** → semilla (Andy Tow).
@@ -38,3 +45,19 @@ Hoy: **1.414 actas / 340.892 votos**, Diputados 2011–2025 y Senado 2024–2025
 - Baseline re-medido (LOO bloque_norm): global 0,979 todas / 0,964 disputadas. **Senado por primera vez completo: 0,983 todas / 0,957 disputadas (n=40.646)** — algo más de indisciplina que Diputados (0,965) en votaciones peleadas. Drift 2024-25 se sostiene (0,946 / 0,923).
 - Tabla de arriba queda superada en la fila Senado: 2015-2023 ✅ fuente `senado`.
 - Huecos restantes: **Diputados 2020-2023** (argentinadatos incompleto → `datos/diputados_oficial`); bloque Senado 2024-25 en argentinadatos sigue "SIN BLOQUE" (retro-completable con el padrón de `datos/senado`).
+
+
+## Actualización (2026-07-31): 229 actas ingestadas — la base salta 22%
+- Se re-corrió la ingesta y el build. **5.333 → 6.231 actas (+898)** y **834.749 → 1.016.632 votos (+182k)**.
+- Cubre hasta **25-06-2026** (Diputados) y **16-07-2026** (Senado).
+- La Cámara que aparece es otra: **LLA 95 bancas y FdT-UxP 93** (antes 35 y 92) — LLA pasó de tercera a primera minoría.
+- El bloque del Senado 2024-25 quedó **resuelto** vía padrón versionado.
+- Decisión del mismo día: **la canónica SÍ se versiona** (~6 MB). Es regenerable, pero dos incidentes nacieron de trabajar sobre copias viejas.
+
+
+## Actualización (2026-08-06): el bloque del Senado 2026, tapado en la ENTRADA
+- **Problema:** los 6.192 votos del Senado de 2026 entraban `SIN BLOQUE`. La ingesta (`datos/argentinadatos/src/to_canonical.py`) cruzaba sólo contra el padrón histórico, que **termina el 2025-12-09** — o sea, todo lo posterior al recambio del 10-dic caía afuera.
+- **Fix:** se sumó `datos/padron/data/padron_senado.csv` (72 senadores vigentes, mandate-aware) como tercera fuente del cruce, **última en precedencia** para no pisar lo curado en el tramo solapado. Los 72 resuelven bloque; cubierto por 8 tests en `datos/argentinadatos/tests/`.
+- **Ojo con el diagnóstico:** este síntoma se atribuyó dos veces a que "ninguna fuente publica el bloque del Senado". Era falso — el padrón existía desde el 14-jul; primero se lo comió el `.gitignore` y después nadie apuntó la ingesta hacia él.
+- ⏳ **La corrección NO está en los parquet todavía:** requiere re-correr `run_pipeline.py` (~20 min, con internet). Ver `coordinacion/URGENTE.md` ítem 2.
+- **Regla que aplica:** los huecos se tapan en la entrada, no en cada consumidor. `variables/bloque` tenía un parche de consumo (`_enriquecer_linaje_senado`) que se puede simplificar una vez que la canónica venga sana.

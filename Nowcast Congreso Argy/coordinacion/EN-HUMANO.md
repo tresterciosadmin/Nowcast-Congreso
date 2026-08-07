@@ -21,7 +21,9 @@ Pensalo como una huerta:
 - **Nuestra base propia (la huerta):** juntamos esa semilla con los datos oficiales (Congreso) y los volcamos en **una sola base de datos nuestra**, ordenada y sin duplicados. Esa base es la fuente de verdad del proyecto.
 - **El bot (el que riega):** un programita que corre solo cada tanto, mira las fuentes oficiales y agrega las votaciones nuevas a nuestra base. Así la base se mantiene fresca sin que dependamos de que otro la actualice.
 
-Detalle importante: la base de datos oficial del Congreso dejó de actualizarse en 2020, así que lo reciente (hasta 2025) lo sacamos de otra fuente (argentinadatos). Y nos falta un pedazo del Senado entre 2014 y 2023, que hay que ir a buscar aparte.
+Detalle importante: la base de datos oficial del Congreso dejó de actualizarse en 2020, así que lo reciente lo sacamos de otra fuente (argentinadatos).
+
+**Dónde está la huerta hoy (al 06-08-2026):** **1.016.632 votos en 6.231 votaciones**, de 2001 a 2026, las dos cámaras. *(Este párrafo decía que faltaba un pedazo del Senado entre 2014 y 2023: ese hueco se cerró el 02-07-2026 con el scraper del Senado oficial. Queda un solo hueco abierto, Diputados 2020-2023, y está pausado a propósito desde el 10 de julio para priorizar la puesta en marcha.)*
 
 ## El "idioma común" de los datos (el esquema)
 Cada fuente trae los datos con nombres distintos. Para que todo encaje, definimos un **formato único** (lo llamamos esquema canónico): dos planillas, una de "votaciones" y otra de "votos", con columnas fijas y una lista cerrada de valores para el voto (afirmativo, negativo, abstención, ausente). Antes de entrar a nuestra base, toda fuente se traduce a ese idioma. Es como obligar a que todos los enchufes sean del mismo tipo.
@@ -459,3 +461,26 @@ Vale contarlas, porque saber qué no anda es tan útil como saber qué anda.
 Habíamos anotado que los gobiernos con buen clima "llegan sin bancas", porque los números mostraban esa relación. Valle lo frenó: eso no es una relación entre confianza y bancas, es el calendario electoral argentino. Un presidente asume habiendo ganado la elección, pero el Congreso que hereda se eligió en tandas anteriores —los diputados se renuevan por mitades y los senadores por tercios—, así que estructuralmente arranca con pocas bancas. Y arrancar es justo cuando la confianza está más alta, por la luna de miel. Las dos cosas van juntas por el almanaque, no porque una cause la otra.
 
 Estaba escrito en tres páginas y en dos programas. Se sacó de todos lados y se dejó la explicación correcta en el código, para que a nadie se le ocurra volver a escribirlo.
+
+
+## Revisión general: el proyecto se estaba contando a sí mismo con números viejos
+
+Antes de seguir construyendo, Valle pidió parar y hacer un control general: mirar si lo que las bitácoras dicen del proyecto sigue siendo cierto. Después pidió algo más exigente — mirar **todas las carpetas y todos los archivos, uno por uno**. Son 1.352 archivos y 632 megas.
+
+Aparecieron doce cosas, y lo interesante es que **todas tienen la misma forma**: alguien escribió algo sobre el estado del proyecto sin abrir el archivo. No es descuido de nadie. Es que hoy hay **cinco lugares distintos** donde se declara cómo va el proyecto —la bitácora técnica, el tablero de tareas, este documento, el tablero ejecutivo y el README de cada módulo— y nada obliga a que digan lo mismo. Cuando uno se actualiza, los otros cuatro quedan mintiendo en silencio.
+
+**Las tres que importaban de verdad:**
+
+La primera: **la base de votaciones figuraba con 834.749 votos cuando en realidad tiene 1.016.632.** El crecimiento del 31 de julio se anotó en la bitácora y ahí quedó; nadie lo copió al tablero que mira el equipo. Durante una semana el número más visible del proyecto estuvo 18% por debajo de la realidad.
+
+La segunda: **los dos robots nuevos —el que vigila el padrón los lunes y el que baja el índice de confianza el día 5— nunca corrieron.** Los archivos que los definen quedaron guardados en una subcarpeta, y GitHub sólo los lee si están en la carpeta de más arriba. El tablero los anunciaba como funcionando. La forma de comprobarlo fue simple: si el vigilante del padrón hubiera corrido aunque sea una vez, habría dejado su reporte escrito en una carpeta. La carpeta está vacía. Moverlos son cinco minutos, y el instructivo ya está escrito desde el 4 de agosto.
+
+La tercera: **el archivo que el modelo usa para estimar si un proyecto llega a votarse sigue siendo el del 12 de julio**, generado con un programa que tenía un error. El error se corrigió el 4 de agosto, pero nunca se volvió a generar el archivo. O sea que todo número que sale hoy se apoya en esa versión defectuosa.
+
+**Lo que sí se arregló acá mismo:** los votos del Senado de 2026 entraban a la base sin saber a qué bloque pertenece cada senador — más de seis mil votos, que es lo mismo que decir que el pronóstico de esa cámara estaba a ciegas. Dos veces se había concluido que la culpa era de que ninguna fuente oficial publica esa información. Las dos veces era falso: el listado con los 72 senadores y su bloque existe desde el 14 de julio. La causa real era mucho más aburrida — el programa que carga los datos estaba consultando un padrón que **termina el 9 de diciembre de 2025**, así que todo lo que pasó después del recambio de bancas caía afuera. Se le enseñó a consultar también el padrón nuevo, y ahora los 72 resuelven bien. Falta volver a correr la carga para que el arreglo llegue a los datos.
+
+**Y una que vale la pena contar aparte,** porque es una lección sobre cómo trabajamos: el archivo `URGENTE.md` existe para que lo importante no se pueda no ver. Tenía una sección al final titulada "resueltos" — y adentro de esa sección estaba enterrado, sin resolver, justamente el problema del Senado. Un archivo diseñado para que nada se esconda no puede tener un rincón donde las cosas se esconden. Se eliminó la sección y quedó escrito que no se vuelve a hacer.
+
+Cinco fichas de módulo, además, decían "pendiente, sin dueño" sobre trabajo que está en curso hace meses — incluida la de la base de datos central del proyecto. Eso importa porque la regla de la casa es que antes de agarrar un módulo leas su ficha: una ficha que dice "libre" sobre algo ocupado es el mecanismo para no pisarnos funcionando exactamente al revés.
+
+**Lo que queda para Valle:** cinco corridas en la computadora, en orden. Volver a cargar la base (arregla el Senado y suma 250 votaciones nuevas que el robot ya detectó), regenerar el archivo del embudo, mover los dos robots a su lugar, confirmar el padrón contra la fuente oficial y subir todo. Después de eso el sistema vuelve a apoyarse en datos sanos.

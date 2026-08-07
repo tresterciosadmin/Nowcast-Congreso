@@ -36,14 +36,43 @@ Ver `.gitignore`: datos crudos/limpios (`data/raw`, `data/clean`, `*.parquet`, `
 2. Si el conflicto es en `ESTADO`, `TABLERO` o un schema, resolvé conservando **ambas** entradas/cambios (son aditivos).
 3. Ante la duda, registralo en el PR y pedí revisión.
 
-## GitHub (primer setup)
+## GitHub — el repo YA está creado y conectado
+
+**Repositorio:** https://github.com/tresterciosadmin/Nowcast-Congreso ·
+**Rama de trabajo:** `main` · Valle trabaja con **GitHub Desktop**.
+
+Acá había un instructivo de `git init` / `git remote add` para el primer setup.
+**Se sacó el 2026-08-06** porque ya no aplica y porque el 04-08 esa idea —"esto
+todavía no está conectado"— generó un documento entero equivocado
+(`CONECTAR-GIT.md`). Un instructivo de inicialización que sobrevive al proyecto
+inicializado es una invitación a repetir el error.
+
+Un colaborador nuevo **clona**, no inicializa:
+
 ```
-# desde la carpeta del repo, una sola vez:
-git init
-git add .
-git commit -m "Estructura inicial: módulos + coordinación + baseline Fase 0"
-git branch -M main
-git remote add origin https://github.com/<usuario>/<repo>.git
-git push -u origin main
+git clone https://github.com/tresterciosadmin/Nowcast-Congreso.git
 ```
-Luego cada colaborador clona y sigue el flujo de arriba.
+
+⚠️ **Ojo con el anidamiento doble.** La raíz del repo es
+`Nowcast-Congreso\Nowcast-Congreso`, y el proyecto vive en el subdirectorio
+`Nowcast Congreso Argy\`. Consecuencias:
+
+- `.github/workflows/` va **en la raíz**, no en el subdirectorio. Lo que se
+  escriba adentro, GitHub no lo lee nunca (pasó el 04-08 con dos workflows que
+  siguen sin correr — ver `URGENTE.md`).
+- Las rutas dentro de un workflow llevan el prefijo `"Nowcast Congreso Argy/"`
+  **entrecomillado** (tiene espacios).
+- Los comandos de git que reciben una ruta (`git check-ignore`, `git log <file>`)
+  hay que correrlos desde la raíz con ruta root-relative, o fallan.
+
+## Antes de commitear: el chequeo del `.gitignore` (10 segundos)
+
+Las reglas `*.csv`, `*.parquet` y `**/data/clean/` **ya escondieron trabajo
+cuatro veces** (parquet de expedientes 11-07, roster de jefes 30-07, salidas del
+embudo 31-07, padrón del Senado 04-08 — este último generó una urgencia falsa que
+costó días). Al crear la salida de un módulo nuevo, decidí **en el mismo commit**
+si entra al régimen transitorio, y verificá:
+
+```powershell
+git check-ignore -q <archivo>   # si sale 0, está IGNORADO y no viaja
+```

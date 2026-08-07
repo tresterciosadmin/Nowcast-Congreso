@@ -1,5 +1,26 @@
 # Puesta en marcha — lo que queda de la sesión del 04-08-2026
 
+> ## 🔴 SIGUE PENDIENTE al 2026-08-06
+>
+> Verificado en la auditoría del 06-08: **el PASO 4 no se ejecutó**.
+> `padron-vivo.yml` e `icg-mensual.yml` siguen en
+> `Nowcast Congreso Argy\.github\workflows\`, junto con el duplicado
+> `bot-diario.yml` y su nota. Como GitHub sólo lee `.github/workflows/` **de la
+> raíz**, esos dos bots **nunca se dispararon**.
+>
+> **Cómo lo verifiqué, por si querés confirmarlo vos:** `datos/padron/outputs/`
+> contiene únicamente el `.gitkeep`. Si `padron-vivo.yml` hubiera corrido aunque
+> sea una vez, ahí estaría `vigilancia_padron.md` (el reporte que escribe en cada
+> corrida) y en `datos/padron/data/` estaría `estado_vigilancia.json`. No están.
+>
+> **Son 5 minutos de PowerShell.** Andá directo al PASO 4 y después al 5 (el
+> permiso de escritura, que es el que más se olvida). El resto del runbook —
+> tests, chequeo del `.gitignore`, el commit — ya se hizo.
+>
+> El bot diario **sí** está vivo y al día: su última revisión es del 06-08, con
+> 76 actas nuevas de Diputados y 174 del Senado detectadas para 2026.
+> *(Banner agregado el 06-08 por la auditoría general.)*
+
 Todo el código está escrito, testeado y corriendo en seco. **Lo que falta es
 operativo, no de programación:** conectar la carpeta a git y ver a los tres
 workflows correr una vez cada uno.

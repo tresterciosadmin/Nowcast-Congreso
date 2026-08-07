@@ -32,10 +32,15 @@ paralelo con el bot real y los dos se habrían pisado al pushear.
 El entorno donde corre Claude monta la carpeta con **dos límites que no se
 anuncian solos**, y los dos generaron trabajo equivocado el mismo día:
 
-- **No expone los directorios que empiezan con punto** (`.git`, `.github`).
-  Claude corrió `ls -a`, no los vio, y concluyó que el repo no estaba conectado
-  y que no había workflows. Las dos cosas eran falsas: escribió un instructivo
-  entero para conectar git y un workflow que duplicaba uno existente.
+- **Los directorios que empiezan con punto: a veces se ven y a veces no.**
+  El 04-08 Claude corrió `ls -a`, no vio `.git` ni `.github`, y concluyó que el
+  repo no estaba conectado y que no había workflows. Las dos cosas eran falsas:
+  escribió un instructivo entero para conectar git y un workflow que duplicaba
+  uno existente. **Actualización 2026-08-06:** en esa sesión `ls -la` **sí**
+  mostró `.github`, `.gitignore`, `.env` y `.gitattributes`. O sea que el mount
+  cambió de comportamiento sin avisar, y la regla no puede escribirse como
+  "nunca se ven" — hay que **mirar cada vez**. `.git` sigue sin aparecer, pero
+  por el límite siguiente: vive un nivel más arriba, fuera de lo montado.
 - **Sólo monta `Nowcast Congreso Argy/`, no la raíz del repo**, que está un
   nivel más arriba (`Nowcast-Congreso/`). Por eso los workflows nuevos quedaron
   en una ruta donde GitHub nunca los habría leído.
@@ -125,7 +130,7 @@ listado de la raíz antes de escribir nada**.
 - **Replanteo:** el voto-dirección por bloque acierta ~0,99, pero ese número es un **promedio** que tapa a los díscolos. El conteo agregado (p.ej. 120/257) es un punto; su varianza la cargan **10–20 bisagras** cuya (in)disciplina mueve la P(aprobación) en votaciones ajustadas. Por eso `modelo/voto_individual` se descongela: el objetivo no es predecir el voto medio, sino **separar el comportamiento partidario del individual** y modelar el desvío del legislador vs. su bloque. En 2024–25 la disciplina se afloja → más espacio para este modelo.
 - **Qué (dos productos):** (1) **partidario/bloque** = posición esperada del bloque, para recuento agregado y análisis macro; (2) **individual/parlamentario** = el desvío respecto del bloque.
 - **Cómo (cuatro piezas):** (a) **índice de disciplina individual** por legislador (tasa de desvío vs. bloque, global y por tema, time-aware); (b) **modelo de defección** P(desvía | tema, cercanía de la votación, período, provincia, ciclo electoral); (c) **recuento como distribución** — simular cada voto Bernoulli(pᵢ)=posición de bloque ajustada por desvío → distribución del conteo con intervalo, no número puntual; (d) **detección de pivotes** — qué legisladores son bisagra para una ley y cuánto mueve cada uno la P(aprobación). Distinguir partido ≠ bloque ≠ parlamentario.
-- **Lee de:** `datos/canonica` (~781k votos) + `variables/legislador` y `variables/bloque` cuando existan.
+- **Lee de:** `datos/canonica` (**1.016.632 votos** al 06-08-2026; decía ~781k, cifra de junio) + `variables/legislador` y `variables/bloque` cuando existan.
 - **Definición vigente del desvío: v2 (ADR-0004, 2026-07-02)** — indisciplina total: conductas aprobar/rechazar/no-acompañar; línea = mayoría de TODOS los escaños del bloque; estricta; desempate por linaje; parcial en OTRO/PROVINCIAL; presidencias de Diputados excluidas.
 - **Pendientes que abre el v2:** (a) **reclasificar la bolsa OTRO/PROVINCIAL hacia linajes** (manual y/o automática; toca entity_resolution=canonica, coordinar con Franco) — **AVANCE 2026-07-23 (Valle+Claude): resuelto para el Senado reciente desde la capa de consumo.** Los votos del Senado 2024+ (fuente argentinadatos) llegaban con `bloque="SIN BLOQUE"`→OTRO/PROVINCIAL para los 8.496 (la ingesta no resolvió el bloque). `variables/bloque._enriquecer_linaje_senado` recupera el linaje real por NOMBRE contra el padrón oficial, **mandate-aware** (fecha del voto en [desde,hasta], sin anacronismos) + fallback apellido, + **override manual curado** `datos/padron/data/senado_linaje_manual.csv` para los 22 que dejaron banca en dic-2025 (COMPLETO por Valle) + canonicalización de etiquetas. Resultado: OTRO/PROVINCIAL del Senado 2024+ **53%→26%**; el nowcast del Senado ya condiciona. **Propuesta a Franco:** absorberlo en `votos_resuelto`/entity_resolution (hoy es parche de consumo, no de la fuente); la lógica mandate-aware + el override manual son reutilizables. (b) decidir tratamiento de **suspensiones y licencias**; (c) **ponderación por trascendencia** de la votación (sesión futura); (d) **disciplina ideológica por taxonomía** (consistencia de voto por tema; mitiga monobloques — ver 1B.3).
 - **Gate:** (1) dimensionar el set pivote: cuántos legisladores superan un umbral de divergencia vs. su bloque; (2) el recuento como distribución calibra mejor que el punto del baseline en votaciones ajustadas (backtesting walk-forward, sin leakage).
@@ -165,7 +170,23 @@ listado de la raíz antes de escribir nada**.
 | embudo, asistencia_quorum, legislador, proyecto, bloque | leen de la canónica, escriben en su carpeta |
 | dashboard mientras se cierra ensemble | consume contrato, no código |
 
-**Cuellos de botella (un solo dueño, coordina
+**Cuellos de botella (un solo dueño, coordinar antes de tocar):**
+
+| Módulo | Por qué es cuello de botella |
+|---|---|
+| `datos/canonica` | es la fuente de verdad; todo `variables/` y `modelo/` lee de ahí. Un rebuild cambia el piso de todos. |
+| `modelo/ensemble` | compone las salidas de todos los demás; dos personas tocándolo se pisan seguro. |
+| `docs/schemas` | contrato de datos compartido. **Cambiarlo requiere ADR** (`coordinacion/DECISIONES/`) y aviso en el TABLERO. |
+| `.gitignore` | tocarlo mal esconde trabajo. Ya pasó **cuatro veces**: parquet de expedientes (11-07), roster de jefes (30-07), salidas del embudo (31-07) y el padrón del Senado (04-08, que además generó una urgencia falsa). Al crear la salida de un módulo nuevo, decidir en el MISMO commit si entra al régimen transitorio. |
+
+> **Nota de reparación (2026-08-06).** Esta sección estaba **truncada a mitad de
+> la palabra "coordina"** — el mount corta los archivos grandes al leerlos y algún
+> read-modify-write anterior propagó el corte al disco. Es el mismo daño que ya
+> había sufrido `CLAUDE.md` (reparado el 04-08). Se reconstruyó a partir de las
+> dependencias reales del repo y del `.gitignore`. **El guard:** verificar `wc -c`
+> antes y después de reescribir cualquier archivo grande, y no leer entero lo que
+> se puede parchear por streaming.
+
 ---
 
 ## Backlog anotado (pendientes, no abrir aún)

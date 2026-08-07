@@ -293,14 +293,67 @@ def scrapear_informes(html: str | None = None) -> pd.DataFrame:
     return _limpiar(pd.DataFrame(filas))
 
 
+# --- Precedencia de fuentes y escritura estable --------------------------------
+#
+# REGLA (decisión de Valle, 2026-08-06): **siempre gana el valor del Excel
+# oficial.** El Excel trae precisión completa; la página de informes redondea a
+# dos decimales. El informe existe sólo para no quedarse sin el mes nuevo
+# mientras el Excel no rota — es un valor PROVISIONAL.
+#
+# La columna `fuente` deja registrado de dónde salió cada dato:
+#   "excel"   -> precisión completa, definitivo
+#   "informe" -> 2 decimales, provisional; lo pisa el Excel cuando aparezca
+#
+# Es aditiva: `icg_contexto.py` y `embudo.py` validan columnas FALTANTES, no
+# exactas, así que una columna de más no los rompe.
+FUENTE_EXCEL = "excel"
+FUENTE_INFORME = "informe"
+COLUMNAS = ["fecha", "anio", "mes", "icg", "fuente"]
+
+# Formato fijo al escribir. SIN esto, cada reescritura del CSV devuelve algunos
+# floats con un dígito menos en la última posición (2.8727293059654078 ->
+# 2.872729305965408): el mismo número, pero el `git diff` marca decenas de
+# líneas como cambiadas. La primera corrida del workflow ensució 59 líneas para
+# agregar una. Un diff que siempre trae basura deja de servir para revisar, y
+# un cambio real de la UTDT quedaría enterrado ahí.
+FLOAT_FMT = "%.12g"
+
+
+def _con_fuente(df: pd.DataFrame, fuente: str) -> pd.DataFrame:
+    out = df.copy()
+    if "fuente" not in out.columns:
+        out["fuente"] = fuente
+    else:
+        out["fuente"] = out["fuente"].fillna(fuente)
+    return out[COLUMNAS]
+
+
+def _escribir(serie: pd.DataFrame, salida: Path) -> None:
+    """Escritura única y estable: orden fijo, columnas fijas, floats fijos."""
+    serie = serie.sort_values("fecha").reset_index(drop=True)[COLUMNAS]
+    salida.parent.mkdir(parents=True, exist_ok=True)
+    serie.to_csv(salida, index=False, encoding="utf-8", float_format=FLOAT_FMT)
+
+
+def _fundir(preferida: pd.DataFrame, respaldo: pd.DataFrame) -> pd.DataFrame:
+    """Une dos series: donde las dos tienen el mes, gana `preferida`.
+
+    Se usa para que correr el modo `serie` REFINE la precisión sin perder los
+    meses que el Excel todavía no publicó (que sólo están vía informe).
+    """
+    faltantes = respaldo[~respaldo["fecha"].isin(preferida["fecha"])]
+    return (pd.concat([preferida, faltantes], ignore_index=True)
+              .sort_values("fecha").reset_index(drop=True))
+
+
 def actualizar_ultimo(salida: Path) -> pd.DataFrame:
-    """Modo liviano mensual: agrega a `salida` los meses de los informes que la
-    serie todavía no tiene. No pisa valores existentes (el Excel oficial es más
-    preciso: el informe redondea a 2 decimales)."""
+    """Modo liviano mensual: agrega los meses de los informes que la serie no
+    tiene todavía. **No pisa valores existentes** — el Excel oficial es más
+    preciso, y lo que entra por acá es provisional (`fuente='informe'`)."""
     if not salida.exists():
         raise ICGError(f"No existe {salida}; corré primero la serie completa (sin argumentos)")
-    base = pd.read_csv(salida, parse_dates=["fecha"])
-    informes = scrapear_informes()
+    base = _con_fuente(pd.read_csv(salida, parse_dates=["fecha"]), FUENTE_EXCEL)
+    informes = _con_fuente(scrapear_informes(), FUENTE_INFORME)
     nuevos = informes[informes["fecha"] > base["fecha"].max()]
     ult = informes.iloc[-1]
     LOG.info("Último informe publicado: %s = %.2f", ult["fecha"].strftime("%Y-%m"), ult["icg"])
@@ -308,12 +361,16 @@ def actualizar_ultimo(salida: Path) -> pd.DataFrame:
         LOG.info("La serie ya está al día (%s)", base["fecha"].max().strftime("%Y-%m"))
         print(f"Sin novedades: serie al día hasta {base['fecha'].max().strftime('%Y-%m')} "
               f"(último informe: {ult['fecha'].strftime('%Y-%m')} = {ult['icg']:.2f})")
+        _escribir(base, salida)   # normaliza formato aunque no haya mes nuevo
         return base
-    out = pd.concat([base, nuevos], ignore_index=True).sort_values("fecha").reset_index(drop=True)
-    out.to_csv(salida, index=False, encoding="utf-8")
+    out = _fundir(base, nuevos)
+    _escribir(out, salida)
     for _, f in nuevos.iterrows():
-        print(f"AGREGADO {f['fecha'].strftime('%Y-%m')}: ICG = {f['icg']:.2f}")
-    LOG.info("Serie extendida a %s (%d meses)", out["fecha"].max().strftime("%Y-%m"), len(out))
+        print(f"AGREGADO {f['fecha'].strftime('%Y-%m')}: ICG = {f['icg']:.2f}  "
+              f"(PROVISIONAL: sale del informe, 2 decimales; lo refina el Excel)")
+    prov = int((out["fuente"] == FUENTE_INFORME).sum())
+    LOG.info("Serie extendida a %s (%d meses; %d provisionales)",
+             out["fecha"].max().strftime("%Y-%m"), len(out), prov)
     return out
 
 
@@ -338,8 +395,25 @@ def correr(salida: Path, forzar_fallback: bool = False) -> pd.DataFrame:
     if len(huecos):
         LOG.warning("Meses sin dato en la serie: %s", [d.strftime("%Y-%m") for d in huecos[:12]])
 
-    salida.parent.mkdir(parents=True, exist_ok=True)
-    serie.to_csv(salida, index=False, encoding="utf-8")
+    # El Excel es la fuente definitiva y PISA lo que haya (regla de Valle,
+    # 06-08). Pero no puede BORRAR: si la serie en disco tiene meses que el
+    # Excel todavía no publicó —los que entraron por informe—, se conservan.
+    # Sin esto, correr el modo `serie` para refinar la precisión haría
+    # desaparecer el mes más nuevo, que es justo el que mira el nowcast.
+    serie = _con_fuente(serie, FUENTE_EXCEL)
+    if salida.exists():
+        previa = _con_fuente(pd.read_csv(salida, parse_dates=["fecha"]), FUENTE_EXCEL)
+        pisados = int(previa["fecha"].isin(serie["fecha"]).sum())
+        conservados = previa[~previa["fecha"].isin(serie["fecha"])]
+        if len(conservados):
+            LOG.warning("El Excel no trae %d mes(es) que sí están en disco: %s. "
+                        "Se CONSERVAN (vienen del informe, provisionales).",
+                        len(conservados),
+                        [d.strftime("%Y-%m") for d in conservados["fecha"]])
+        LOG.info("Excel aplicado: %d meses pisados con precisión completa, %d conservados",
+                 pisados, len(conservados))
+        serie = _fundir(serie, previa)
+    _escribir(serie, salida)
     LOG.info("OK: %d meses (%s → %s) escritos en %s", len(serie),
              serie["fecha"].min().strftime("%Y-%m"), serie["fecha"].max().strftime("%Y-%m"), salida)
     print(serie.tail(12).to_string(index=False))

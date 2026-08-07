@@ -56,6 +56,25 @@ Mantené esta tabla sincronizada con la bitácora.
 
 ## Bitácora (más reciente arriba)
 
+### [2026-08-06 · cierre] variables/proyecto — el ICG de julio entra, y se fija la precedencia de fuentes
+- **Quién:** Valle (decide la regla) · Claude (implementa) · **Módulo:** variables/proyecto
+
+**Julio 2026 = 1,94** (cae 6,5% desde 2,07). Confirmado contra la página de la UTDT. Dato con sustancia: el break-even del mecanismo 2 del ICG está en **1,90**, así que el clima quedó a cuatro centésimas del punto donde el modulador pasa de premiar a castigar.
+
+**El workflow había fallado, pero no por lo que parecía.** El paso rojo se llama *"Commitear si hay mes nuevo"*, y se leyó como "no hay mes nuevo". El log dice otra cosa: trajo julio, verificó la serie y **commiteó**; lo que falló fue el **push**, rechazado por una carrera (`cannot lock ref`) porque Valle lanzó dos workflows a la vez. El runner es efímero, así que ese commit se perdió. Al recorrerlo solo, pasó. **Los tres crones están escalonados a propósito** (10:00 / 11:00 / 12:00 UTC), así que las corridas automáticas no se pisan: la carrera sólo sale de lanzarlos a mano en simultáneo.
+
+**REGLA NUEVA (Valle): siempre gana el valor del Excel oficial.** El Excel trae precisión completa; la página de informes redondea a 2 decimales y existe sólo para no quedarse sin el mes nuevo mientras el Excel no rota. Implementado con una columna **`fuente`** (`excel` | `informe`) que deja registrado qué valores son definitivos y cuáles provisionales. Y con un cuidado que no era obvio: **el Excel pisa pero NO borra** — si la serie en disco tiene un mes que el Excel todavía no publicó, se conserva. Sin eso, correr el modo `serie` para refinar la precisión haría desaparecer el mes más nuevo, que es justo el que mira el nowcast.
+
+**Escritura estable.** El commit del workflow decía `60 insertions(+), 59 deletions(-)` para agregar un mes. Reproducido: al reescribir el CSV, pandas devuelve algunos floats con un dígito menos en la última posición (`2.8727293059654078` → `2.872729305965408`) — el mismo número. Se fijó `float_format` y ahora **leer y reescribir no cambia un byte**, así que el diff mensual muestra sólo la fila nueva. No es cosmética: un diff que siempre trae ruido deja de servir para revisar, y un cambio real de la UTDT quedaría enterrado ahí. Costo único: esta normalización toca las líneas con más de 12 dígitos significativos (precisión de sobra para un índice que se publica con 2 decimales).
+
+**Compatibilidad:** la columna `fuente` es aditiva. `icg_contexto.py` y `embudo.py` validan columnas FALTANTES, no exactas — verificado corriendo sus tests.
+
+- **Archivos:** `variables/proyecto/src/ingesta_icg.py`, `variables/proyecto/tests/test_ingesta_icg.py` (+2 tests), `variables/proyecto/data/icg_mensual.csv`.
+- **Tests:** 23 + 20 (icg_contexto) + 17 (embudo_icg) en verde.
+- **Estado del módulo:** variables/proyecto EN CURSO (sigue libre la auditoría de `n_giros`, URGENTE 0).
+- **Próximo paso:** mejora anotada, no urgente — agregarle `git pull --rebase` al push de `icg-mensual.yml` para que sea inmune a la carrera.
+
+
 ### [2026-08-06 · noche] infraestructura — los 3 workflows a la raíz, el bot con avisos, y el padrón NO da 257
 - **Quién:** Valle (corre todo) · Claude (diagnóstico y merge) · **Módulos:** datos/bot_recoleccion, datos/padron
 

@@ -43,6 +43,7 @@ Depende de otros (no empezar hasta que su dependencia esté HECHA):
 | Modulo | Quien | Desde | Que se esta haciendo |
 |---|---|---|---|
 | **coordinacion** | Claude (con Valle) | 2026-08-06 | Control general: armonizar bitacoras, cifras, memorias y READMEs; barrido archivo por archivo |
+| **variables/proyecto** | Claude (con Valle) | 2026-08-06 | Precedencia de fuentes del ICG (Excel > informe) + escritura estable del CSV |
 | **datos/argentinadatos** | Claude (con Valle) | 2026-08-06 | Ingesta del Senado: apuntarla al padron vigente para que el 2026 deje de entrar SIN BLOQUE (URGENTE 2) |
 
 **Sigue sin reclamar, en orden de impacto:**

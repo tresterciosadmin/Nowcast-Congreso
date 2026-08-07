@@ -157,11 +157,69 @@ def test_actualizar_ultimo_merge(tmp_path=None):
     check(len(out2) == 6, "ultimo: idempotente (segunda corrida no duplica)")
 
 
+def test_escritura_estable():
+    """El CSV reescrito sin cambios tiene que quedar BYTE A BYTE igual.
+
+    Sin `float_format` fijo, pandas devuelve algunos floats con un dígito menos
+    en la última posición (2.8727293059654078 -> 2.872729305965408): el mismo
+    número, pero el `git diff` marca decenas de líneas como cambiadas. La
+    primera corrida del workflow del ICG ensució **59 líneas para agregar una**.
+    Un diff que siempre trae ruido deja de servir para revisar, y un cambio real
+    de la UTDT quedaría enterrado ahí.
+    """
+    import tempfile
+    tmp = Path(tempfile.mkdtemp()) / "icg.csv"
+    serie = pd.DataFrame({
+        "fecha": pd.to_datetime(["2003-09-01", "2007-07-01", "2026-06-01"]),
+        "anio": [2003, 2007, 2026], "mes": [9, 7, 6],
+        # los dos primeros son los que oscilaban en la serie real
+        "icg": [2.8727293059654078, 1.9988101264971851, 2.07],
+    })
+    icg._escribir(icg._con_fuente(serie, icg.FUENTE_EXCEL), tmp)
+    primera = tmp.read_bytes()
+    releida = icg._con_fuente(pd.read_csv(tmp, parse_dates=["fecha"]), icg.FUENTE_EXCEL)
+    icg._escribir(releida, tmp)
+    check(tmp.read_bytes() == primera, "escritura: leer y reescribir no cambia un byte")
+    check("fuente" in pd.read_csv(tmp).columns, "escritura: la columna `fuente` viaja")
+
+
+def test_excel_pisa_pero_no_borra():
+    """Regla de Valle (06-08): **siempre gana el valor del Excel oficial.**
+
+    Pero el Excel no puede BORRAR: si la serie en disco tiene un mes que el
+    Excel todavía no publicó —el que entró por el informe—, se conserva. Sin
+    esto, correr el modo `serie` para refinar la precisión haría desaparecer el
+    mes más nuevo, que es justo el que mira el nowcast.
+    """
+    previa = pd.DataFrame({
+        "fecha": pd.to_datetime(["2026-06-01", "2026-07-01"]),
+        "anio": [2026, 2026], "mes": [6, 7], "icg": [2.07, 1.94],
+        "fuente": [icg.FUENTE_INFORME, icg.FUENTE_INFORME],
+    })
+    # el Excel trae junio con precisión completa, pero NO julio
+    excel = icg._con_fuente(pd.DataFrame({
+        "fecha": pd.to_datetime(["2026-06-01"]), "anio": [2026], "mes": [6],
+        "icg": [2.0712345678901],
+    }), icg.FUENTE_EXCEL)
+
+    out = icg._fundir(excel, previa[icg.COLUMNAS])
+    junio = out[out.mes == 6].iloc[0]
+    check(abs(junio["icg"] - 2.0712345678901) < 1e-12,
+          "precedencia: el Excel PISA el valor redondeado del informe")
+    check(junio["fuente"] == icg.FUENTE_EXCEL, "precedencia: junio queda marcado como `excel`")
+    julio = out[out.mes == 7]
+    check(len(julio) == 1, "precedencia: julio NO se borra aunque el Excel no lo traiga")
+    check(julio["fuente"].iloc[0] == icg.FUENTE_INFORME,
+          "precedencia: julio queda marcado `informe` (provisional)")
+    check(list(out["fecha"]) == sorted(out["fecha"]), "precedencia: la serie queda ordenada")
+
+
 if __name__ == "__main__":
     for fn in [test_layout_largo, test_layout_largo_meses_texto, test_layout_ancho,
                test_limpieza_defensiva, test_layout_transpuesto_utdt,
                test_encabezado_desplazado, test_scrapear_informes_fixture,
-               test_actualizar_ultimo_merge]:
+               test_actualizar_ultimo_merge,
+               test_escritura_estable, test_excel_pisa_pero_no_borra]:
         print(fn.__name__)
         fn()
     print(f"\n{OK} chequeos OK")

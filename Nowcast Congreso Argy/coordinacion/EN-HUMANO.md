@@ -545,3 +545,53 @@ Los tres procesos automáticos —el que junta proyectos y votaciones, el que vi
 Quedó actualizado. Aparecieron dos cosas en el camino. Una: había una cuarta pieza con el mismo problema que no estaba en la lista de pendientes — es la que abre los avisos cuando algo falla, así que se habría caído junto con todo lo demás, justo cuando más falta hacía. Dos: pudiendo actualizar una de las piezas dos escalones, se actualizó sólo uno. El segundo escalón no agregaba nada sobre el problema que queríamos resolver y sí cambiaba la forma en que estos procesos guardan sus permisos para subir archivos — que es de lo que dependen para funcionar. Cambiar un riesgo conocido por uno desconocido, en algo que nadie mira todos los días, no es prudencia mal entendida: es la diferencia entre arreglar y tocar.
 
 Falta el paso que lo confirma: verlos correr una vez cada uno. Hasta entonces el pendiente sigue anotado, porque si algo se rompió, no va a avisar.
+
+
+## El bot por fin entrega lo que junta
+Desde marzo, el robot venía juntando todos los proyectos que se presentan en las dos cámaras y guardándolos en un archivo que **ningún otro programa leía**. Recolectaba bien y no entregaba: hacía la mitad de su trabajo.
+
+Ya no. Ahora esos proyectos entran a la base que mira el modelo. En números: el sistema pasó a conocer **671 proyectos de ley más**, y —esto es lo importante— **514 de ellos son del Senado**, la cámara de la que casi no teníamos nada. Y la base, que estaba congelada en junio, ahora llega al **5 de agosto**.
+
+También entró por primera vez un dato que la fuente oficial no publica: **quiénes firman cada proyecto además del autor principal**. Hay 1.222 proyectos con varios firmantes, y uno con quince. Ese dato era la razón por la que se construyó el robot, y hasta hoy no llegaba a ningún lado.
+
+## Dos errores que no dieron error
+Los dos casos de hoy valen como advertencia, porque ninguno se manifestó como una falla.
+
+El primero: al cargar los proyectos nuevos, el sistema informó alegremente que había cargado 1.531. El modelo vio **uno**. Los proyectos del robot todavía no tienen el número de identificación que asigna la Cámara, y el programa que arma la tabla trataba a todos los "sin número" como si fueran el mismo proyecto, quedándose con uno solo. No hubo mensaje de error: hubo un número que no cerraba, y sólo apareció porque fuimos a comparar cuánto tenía que haber subido.
+
+El segundo: el lector de expedientes del Senado estaba descartando 34 documentos por "formato inesperado". Resultaron ser **los del Poder Ejecutivo**, que son justamente los que más peso tienen en el modelo: el Presidente firma pocos proyectos pero convierte tres de cada cuatro en ley. Se estaban tirando en silencio.
+
+La lección es la misma en los dos casos: **un proceso que no falla no es un proceso que funciona.** Lo único que los encontró fue ir a chequear si el número que salió era el que tenía que salir.
+
+## Una advertencia sobre los números de acá en más
+La tasa de éxito general bajó de 3,21% a 3,16%. No cambió nada en el Congreso: los 671 proyectos nuevos son de los últimos cinco meses y **ninguno tuvo tiempo de aprobarse**. Entran al denominador y no al numerador.
+
+Es correcto que estén, pero de ahora en más cualquier tasa calculada sobre el total va a salir un poco baja. Hay que medirla sobre proyectos que ya tuvieron tiempo de resolverse.
+
+
+## Ahora los errores silenciosos hacen ruido
+Los tres problemas del día tuvieron algo en común, y es lo más importante que dejó la sesión: **ninguno dio error**. El programa terminaba bien, decía que había cargado todo, y estaba mal.
+
+Uno informó que había cargado 1.531 proyectos y el modelo vio uno. Otro dejó de contar 109 comisiones. El tercero tiró a la basura 34 expedientes del Poder Ejecutivo —los de más peso del modelo— bajo un aviso que decía "formato inesperado". Los tres aparecieron porque alguien fue a chequear si el número que salió era el que tenía que salir.
+
+Eso ya no depende de que alguien se acuerde de mirar. Ahora el sistema **se controla solo**: cada vez que se carga algo, corre una lista de catorce comprobaciones y, si alguna no cierra, **se detiene y avisa**. No sigue adelante con datos rotos.
+
+Las catorce salen de errores reales, no de imaginar qué podría fallar: cada una vigila una de las formas concretas en que esto se rompió hoy.
+
+Y hay un detalle que importa más de lo que parece: **probamos que los controles funcionan rompiendo la base a propósito**. Ocho pruebas que dañan los datos exactamente como se dañaron de verdad, y verifican que el control lo detecta. Un control que nunca se dispara no protege de nada — hasta no verlo saltar, no sabés si sirve o si es un adorno.
+
+Además, los programas que cargan datos pasaron de *avisar* a *frenar*. Antes, un expediente que no se entendía generaba una línea de aviso que nadie leía. Ahora corta la carga y muestra ejemplos. Si algo se tiene que descartar, hay que decirlo explícitamente en el código: no puede colarse en un aviso.
+
+
+## Corrección: los datos raros se apartan, no frenan todo
+La primera versión del control estaba mal y Valle la frenó. Yo había hecho que **cualquier dato raro detuviera la carga entera**. Suena prudente y no lo es: el robot corre todos los días y una actualización trae trescientos proyectos. Parar los trescientos porque uno vino con un formato desconocido es el mismo error que ya habíamos corregido meses atrás, cuando una fuente caída dejaba al robot sin recolectar nada.
+
+La idea de Valle es mejor y quedó implementada así: **los datos que no se entienden van a una base separada**, con la fila entera guardada y el motivo por el que no se pudo leer. La base principal queda limpia por definición — si un proyecto está ahí, se leyó bien. Nada dudoso llega al modelo y nada se pierde.
+
+Esa lista de pendientes **se sube a GitHub**, aunque la base grande no. Pesa unos kilobytes y la tiene que mirar una persona; si se quedara sólo en la máquina de quien cargó, sería otra vez trabajo invisible.
+
+Hay una excepción: **si de golpe se apartan muchos datos a la vez, ahí sí se frena.** Uno raro es normal, la fuente cambia de a poco. Que se aparte el 15% de una tanda significa que cambió el formato, y eso conviene mirarlo antes de seguir.
+
+Y un detalle que salió de probarlo, no de pensarlo: al principio el corte era sólo por porcentaje, y con tandas chicas frenaba de más — el robot puede traer veinte expedientes en un día, y uno raro ya es el 5%. Se le agregó un piso: por debajo de diez casos nunca frena.
+
+**Un control mal calibrado es peor que ninguno**, porque enseña a ignorarlo. Eso pasó también con mi propio control: al principio avisaba "falló 1 de 8" cuando no fallaba nada, porque revisaba cosas que todavía no podían existir. Corregido.

@@ -6,11 +6,24 @@ vida (giros → dictámenes → movimientos → resultados → ley). Es el
 **denominador del embudo**, el **enlace acta→expediente** y la semilla de la
 red de autorías (Módulos B/C del plan).
 
-**Estado:** EN CURSO (backfill CKAN corrido y verificado 11-07-2026)
+**Estado:** EN CURSO — backfill CKAN **refrescado el 07-08-2026**.
+
+> ⚠️ **La ingesta usa CACHÉ salvo que exista la variable `REFRESH`.** El 07-08 se
+> corrió y no bajó nada: el log decía `caché: proyectos.csv` en las 8 líneas. Para
+> traer datos nuevos hace falta `REFRESH=1`.
+>
+> **Al refrescar (llevaba un mes sin correr):** 112.793 → **113.177** proyectos, y la
+> cobertura pasa del **02-jun** al **30-jun-2026**. Dato operativo que queda:
+> **HCDN publica con ~5 semanas de atraso**, así que el bot sigue haciendo falta pero
+> para una ventana más chica de lo que se creía.
+>
+> **Quién consume esto ahora:** `datos/proyectos` lo migra a `proyectos.db`
+> (ADR-0009), que es de donde lee el embudo. Este módulo sigue siendo el que baja
+> CKAN y produce su contrato; lo que cambió es quién lo lee.
 **Owner actual:** Claude+Franco (2026-07-11)
 
 ## Resultados del backfill (corrida 2026-07-11)
-- **112.793 proyectos, 2008-2026** (40.623 de LEY, 50.666 resoluciones, 20.016 declaraciones).
+- **113.177 proyectos, 2008 → 30-jun-2026** (40.752 de LEY, 50.851 resoluciones, 20.084 declaraciones). *(medido el 07-08; antes decía 112.793 / 02-jun)*
 - Cadena de vida: 422.143 giros · 23.801 dictámenes · 140.903 movimientos · 117.026 resultados · 1.335 leyes.
 - **EMBUDO BRUTO: 3,22%** — de 41.339 proyectos de ley presentados, 1.332 sancionados.
   Y solo 4 RECHAZADOS explícitos en 18 años: **el Congreso no rechaza, deja morir** (por eso el embudo es EL diferencial).

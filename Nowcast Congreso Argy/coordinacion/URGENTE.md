@@ -18,66 +18,14 @@
 
 ---
 
-## 1. El bot recolecta proyectos y NADIE los carga: el universo del modelo está congelado
-**Detectado:** 2026-08-06 · Valle (la pregunta) + Claude (verificación) · **bloquea: nowcastear cualquier proyecto reciente**
+> ℹ️ **Sacado de urgencias por decisión de Valle (07-08).** El sesgo de supervivencia del
+> Senado (el modelo da 48% a proyectos del Senado contra 1,7% de Diputados, porque la base sólo
+> tiene los que ya cruzaron a Diputados) **no se parchea de a un síntoma**: queda como insumo de
+> la **Revisión de las Comisiones**, la línea que revisa el circuito completo comisión → cámara.
+> Está desarrollado en `PLAN-DE-TRABAJO.md`. **Precaución vigente mientras tanto: no publicar
+> P(sanción) de proyectos con origen Senado.**
 
-Valle preguntó si el bot diario carga en la base los proyectos que detecta.
-**No los carga.** Verificado con `grep` sobre todo el repo: fuera de su propio
-módulo, **ningún script lee** `tp_entradas.parquet`, `dae_entradas.parquet` ni
-`votaciones_nuevas.parquet`. El bot los escribe, los commitea, y ahí quedan.
-
-**Con las VOTACIONES no hay problema** — y es por diseño. `run_pipeline.py` no
-lee el parquet del bot, pero re-baja las actas de la API de argentinadatos, así
-que entran igual. El bot funciona como **alarma**: detecta actas nuevas y abre un
-issue con los comandos. Decisión explícita del 04-08: no reconstruir la fuente de
-verdad sin revisión humana. Funciona.
-
-**El agujero está en los PROYECTOS.** Los números, medidos el 06-08:
-
-| Base | Qué tiene | Hasta cuándo |
-|---|---|---|
-| `datos/expedientes/.../expedientes.parquet` (**lo que mira el embudo**) | 112.793 proyectos | **2026-06-02** |
-| `datos/bot_recoleccion/.../tp_entradas.parquet` (Diputados, TP) | 2.799 proyectos | 2026-08-04 |
-| `datos/bot_recoleccion/.../dae_entradas.parquet` (Senado, DAE) | 1.007 expedientes | 2026-07-20 |
-| `datos/proyectos/data/proyectos.db` (**el destino previsto**) | **no existe — la carpeta está vacía** | — |
-
-**Tres consecuencias concretas:**
-
-1. **861 proyectos** que el bot ya tiene no existen para el modelo. Un proyecto
-   presentado en julio o agosto **no se puede nowcastear**: no está en la base
-   que lee el embudo.
-2. **Se pierde un dato que CKAN no publica.** El bot trae los **cofirmantes
-   completos** (1.008 de los 2.799 tienen más de un firmante) — era justamente
-   la razón de construir el TP scraper. Ese dato no llega a ningún rasgo.
-3. **Es el blocker real de las taxonomías.** Varios documentos dicen "el blocker
-   es `proyectos.db` + M1". Confirmado: `proyectos.db` nunca se creó, así que el
-   agente de taxonomías no tiene dónde escribir. La API key está resuelta desde
-   el 14-jul; **lo que falta es la base.**
-
-**Por qué está acá y no en el backlog:** el `README.md` del bot ya lo lista como
-pendiente ("upsert hacia datos/proyectos y capa expedientes"), pero **en ningún
-lado estaba escrita la consecuencia**. Leído como pendiente técnico parece
-prolijidad; leído como "el sistema no puede predecir nada presentado en los
-últimos dos meses" es otra cosa. El bot hoy hace la mitad de su trabajo:
-recolecta bien y no entrega.
-
-**Qué hacer** (es trabajo de módulo, no una corrida):
-
-1. Crear `proyectos.db` con el esquema que ya existe:
-   `python datos\proyectos\src\store.py init`
-2. Escribir el **upsert bot → `datos/proyectos`**: `tp_entradas` y `dae_entradas`
-   ya traen expediente, firmantes, giros y sumario; `store.py` ya tiene
-   `upsert_proyecto` idempotente por denominador. Es pegar dos contratos que
-   existen, no diseñar nada nuevo.
-3. Decidir **cómo se une con `datos/expedientes`** (el backfill de CKAN): ¿el
-   embudo pasa a leer `proyectos.db`, o `datos/expedientes` absorbe lo del bot?
-   Es una decisión de contrato → **conviene un ADR**.
-
-**Módulos:** `datos/bot_recoleccion` + `datos/proyectos` (los dos LIBRES al 06-08).
-
----
-
-## 2. Validar 15 filas MEDIA del roster de jefes (equipo)
+## 1. Validar 15 filas MEDIA del roster de jefes (equipo)
 **Detectado:** 2026-07-30 · Claude+Franco · **bloquea: confiar en `lider_jefe_bloque`**
 
 > **Prioridad rebajada el 31-07.** Medido el efecto real, `lider_jefe_bloque` aporta
@@ -114,19 +62,13 @@ motivo como comentario `#` en el propio CSV (como se hizo con Bianchi).
 
 ---
 
-## 3. Documentar / prolijidad (no bloquea, pero conviene)
+## 2. Documentar / prolijidad (no bloquea, pero conviene)
 **Detectado:** 2026-08-07
 
 - **Padrón de Diputados: 256/257.** Falta Pitrola (la API le carga `2026-04-27 →
   2026-04-27`) y Matzkin no figura. Se probó reparar y da 278 o 263: la fuente no
   distingue quién asumió de quién cesó. Arreglo de fondo: **nómina oficial de
   HCDN**. Ver `datos/padron/src/bajar_nomina.py`.
-- **`p_embudo.parquet` conviene regenerarlo** con el giro inicial enchufado
-  (`python variables/embudo/src/embudo.py modelo`, corrida larga que el sandbox no
-  termina). El modelo está sano; sólo falta que la salida lo refleje.
-- **Actions — subido a Node 24 el 07-08, FALTA VERLO CORRER.** Los tres workflows
-  pasaron a `checkout@v5` · `setup-python@v6` · `github-script@v8`. El riesgo de
-  Node 20 está cerrado en código, pero **una corrida verde de cada uno es lo que
-  lo confirma**: si algo se rompió, el modo de falla es que el bot deje de
-  recolectar sin avisar. Disparar a mano los tres desde Actions y confirmar. Al
-  verlos verdes, **borrar este bullet**.
+- **Exportar `proyecto_taxonomias` a un archivo versionado ANTES de que el agente
+  escriba**, con su excepción explícita en el `.gitignore`. Es lo único de
+  `proyectos.db` que NO se reconstruye desde las fuentes: cuesta llamadas a la API.

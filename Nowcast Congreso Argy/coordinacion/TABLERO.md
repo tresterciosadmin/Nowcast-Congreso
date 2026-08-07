@@ -38,7 +38,23 @@ Depende de otros (no empezar hasta que su dependencia esté HECHA):
 - [ ] **evaluacion/backtesting** — necesita al menos un modelo nuevo.
 - [ ] **producto/dashboard** — necesita ensemble.
 
-## Sesion 2026-08-06 (Valle+Claude) — ABIERTA, auditoria general del repo
+## Sesion 2026-08-07 (Valle+Claude) — CERRADA, el upsert del bot (ADR-0009). MODULOS LIBRES.
+
+**Decision de Valle: Opcion B directa, con el Senado en la misma tanda.**
+`proyectos.db` pasa a ser la fuente de verdad de los proyectos y el embudo lee de ahi.
+Contrato y precedencia por campo en `DECISIONES/0009-proyectos-db-fuente-de-verdad-de-proyectos.md`.
+
+| Modulo | Quien | Desde | Que se esta haciendo |
+|---|---|---|---|
+| **datos/proyectos** | Claude (con Valle) | 2026-08-07 | Crear `proyectos.db` + capa de MERGE (no dos upserts: `upsert_proyecto` reemplaza las hijas completas y cargar dos fuentes seguidas pierde datos en cualquier orden). Migrar los 112.793 de CKAN. |
+| **datos/bot_recoleccion** | Claude (con Valle) | 2026-08-07 | Upsert `tp_entradas` + `dae_entradas` -> `proyectos.db`, con cofirmantes completos y normalizacion del expediente del Senado (`S-2/26-PL` vs `4014-S-2013`). |
+| **variables/embudo** | Claude (con Valle) | 2026-08-07 | Ruta de lectura desde SQLite dejando la de parquet viva como fallback. **No se apaga la vieja hasta que las dos den skill 0,3647 identico al cuarto decimal.** |
+
+✅ **CERRADA el 07-08. Los tres modulos quedan LIBRES.** La condicion de aceptacion se cumplio:
+cohorte identica celda por celda entre las dos rutas, y backtest 0,3643 / 0,4195 por ambas.
+`proyectos.db` es la fuente de verdad; la ruta de parquet queda como fallback (`EMBUDO_FUENTE=parquet`).
+
+## Sesion 2026-08-06 (Valle+Claude) — CERRADA, auditoria general del repo
 
 | Modulo | Quien | Desde | Que se esta haciendo |
 |---|---|---|---|
@@ -46,13 +62,13 @@ Depende de otros (no empezar hasta que su dependencia esté HECHA):
 | **variables/proyecto** | Claude (con Valle) | 2026-08-06 | Precedencia de fuentes del ICG (Excel > informe) + escritura estable del CSV |
 | **datos/argentinadatos** | Claude (con Valle) | 2026-08-06 | Ingesta del Senado: apuntarla al padron vigente para que el 2026 deje de entrar SIN BLOQUE (URGENTE 2) |
 
-**Sigue sin reclamar, en orden de impacto:**
+**✅ Los tres pendientes de esa lista se HICIERON el 07-08:**
 
-| Modulo | Para que | Ver |
+| Modulo | Que era | Estado |
 |---|---|---|
-| `datos/bot_recoleccion` + `datos/proyectos` | **El upsert que falta.** El bot recolecta proyectos y nadie los carga: el universo del modelo esta congelado al 02-jun y `proyectos.db` nunca se creo. Toca dos modulos y necesita un ADR para decidir el contrato. | URGENTE 5 |
-| `variables/proyecto` | Auditoria de `n_giros` (sospecha de leakage en el rasgo mas pesado del modelo) | URGENTE 0 |
-| `variables/embudo` | Regenerar `p_embudo.parquet` con el modelo sano | URGENTE 1 |
+| `datos/bot_recoleccion` + `datos/proyectos` | el upsert que faltaba | **HECHO** — ADR-0009. `proyectos.db` existe (114.708 proyectos) y el bot entrega |
+| `variables/proyecto` | auditoria de `n_giros` (sospecha de leakage) | **HECHO** por Franco el 07-08 — la sospecha se DESCARTO con evidencia |
+| `variables/embudo` | regenerar `p_embudo.parquet` | **HECHO** — regenerado con 42.141 proyectos y el modelo sano |
 
 ## Sesion 2026-08-04 (Valle+Claude) — CERRADA, modulos liberados
 
@@ -71,7 +87,7 @@ Depende de otros (no empezar hasta que su dependencia esté HECHA):
 | datos/decada_votada | Claude+Franco | 2026-06-25 | export_seed.R listo; falta correrlo en R |
 | datos/canonica | Claude+Franco | 2026-06-25 | cubre Diputados 2011–2025 + Senado 2024–2025 |
 | datos/seguimiento | Claude+Valle | 2026-06-29 | extractor de giros/trámite Dip+Sen — VALIDADO EN VIVO |
-| datos/proyectos | Claude+Valle | 2026-06-29 | base SQLite de PdL + export Excel; upsert idempotente por denominador |
+| datos/proyectos | Claude+Valle | 2026-06-29 | **FUENTE DE VERDAD de los proyectos (ADR-0009, 07-08)**: `proyectos.db` con 114.708 = CKAN + bot, con cofirmantes. El embudo lee de aca. + cuarentena aparte y 14 controles de integridad |
 | variables/proyecto | Claude+Valle | 2026-06-30 | agente de taxonomías + ICG + origen/líder + tema_por_acta (1537). origen_por_acta.py = quién impulsa + gobierno POR ACTA (4 vías: código/embebido/O.D./título); 20 tests. Cobertura (2026-07-23): 59% global / 54,5% Senado (vía código embebido tapa el hueco 2004-2014). HALLAZGO: el nowcast del Senado a hoy se traba en la atribución de linaje de votos recientes (todo cae en OTRO/PROVINCIAL) = entity_resolution/Franco, no origen |
 | modelo/voto_individual | Claude+Valle | 2026-07-01 | índice de disciplina individual + dimensionamiento del set pivote (gate 1 de 1B.4) |
 | variables/legislador | Claude+Valle | 2026-07-01 | ficha individual por legislador (identidad, bloques, presentismo, perfil de voto, desvío) |
@@ -79,7 +95,7 @@ Depende de otros (no empezar hasta que su dependencia esté HECHA):
 | modelo/agregador_institucional | Claude+Valle | 2026-07-10 | motor de recuento como distribución (P aprobación con banda); tests 12 OK; falta backtest a escala |
 | producto/dashboard | Claude+Valle | 2026-07-10 | PANEL-NOWCAST.html (raíz, doble clic): estado del sistema + simulador de votación (motor JS) |
 | variables/asistencia_quorum | Claude+Valle | 2026-07-11 | escalón 1: presentismo por legislador + modo asistencia del agregador (arreglo del sesgo pesimista); falta backtest a escala |
-| datos/expedientes | Claude+Franco | 2026-07-11 | backfill CKAN HECHO (112.793 proyectos; embudo bruto 3,22%); fase 2 = cofirmantes vía bot |
+| datos/expedientes | Claude+Franco | 2026-07-11 | backfill CKAN REFRESCADO 07-08 (113.177 proyectos, hasta 30-jun-2026; ojo: usa cache salvo REFRESH=1); embudo bruto 3,22%); fase 2 = cofirmantes vía bot |
 | datos/bot_recoleccion | Claude+Franco | 2026-07-11 | bot diario BICAMERAL en GitHub Actions: DAE Senado (1.004 exp.) + TP Diputados con COFIRMANTES completos (13+13 tests) |
 | variables/embudo | Claude+Valle | 2026-07-12 | supervivencia del proyecto de ley: embudo por etapas + modelo v1 (rasgos al presentar, sin leakage) + backtest temporal; consume contrato de datos/expedientes |
 | modelo/ensemble | Claude+Valle | 2026-07-12 | P(aprob)=P(llega)×P(mayoría). ROSTER NOMINAL (2026-07-22): nowcast_auto simula UNA FILA POR LEGISLADOR (padrón vigente + desvío individual, escalera reciente→global→bloque); se eliminó _expandir_roster/demo. Dirección de bloque condicionable por tema/origen (consume tema_por_acta + origen_por_acta). Con --origen GOBIERNO el caso testigo 1167-D-2025 se endereza (LLA 0,33→0,88; kirchnerismo 0,85→0,44). Falta backtest de la cadena y automatizar el --origen del propio proyecto |

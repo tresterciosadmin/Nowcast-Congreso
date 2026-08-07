@@ -93,6 +93,15 @@ listado de la raíz antes de escribir nada**.
 - **Qué:** ingestar proyectos presentados (CKAN `expedientes`); medir % que llega a votación nominal.
 - **Cómo:** cruzar por número de expediente parseado del título de cada acta.
 - **Gate:** número de sesgo de selección publicado en ESTADO.
+- **⚠️ 07-08:** la ingesta usa **caché** salvo `REFRESH=1` — una corrida sin esa variable no baja nada y el log lo dice bajito (`caché: proyectos.csv`). Refrescado ese día: 113.177 proyectos hasta el 30-jun. **HCDN publica con ~5 semanas de atraso.** Quien consume esto ahora es `datos/proyectos` (1A.5b), no el embudo directamente.
+
+### 1A.5b datos/proyectos — la base de proyectos *(FUENTE DE VERDAD desde 2026-08-07, ADR-0009)*
+- **Qué:** `proyectos.db` consolida el backfill de CKAN (`datos/expedientes`) **y** lo que junta el bot (`datos/bot_recoleccion`). **Es de donde lee `variables/embudo`.**
+- **Cómo:** `migrar_ckan.py` (backfill) + `upsert_bot.py` (capa de merge con precedencia por campo). `store.py` **no se toca**: su `upsert_proyecto` reemplaza las tablas hijas completas, así que dos upserts sucesivos pierden datos en cualquier orden — por eso hay merge y no dos cargas.
+- **Régimen:** la base **no viaja a git** (89 MB binarios) y se reconstruye en ~1 minuto desde fuentes versionadas. **Excepción:** `proyecto_taxonomias` NO es reconstruible (la llena el agente, cuesta API) → hay que exportarla a un archivo versionado antes de que el agente escriba.
+- **Cuarentena:** lo que no se pudo leer va a `cuarentena.db`, una base aparte (decisión de Valle). Una fila rara no frena la carga; una avalancha (>5%, con piso de 10 filas) sí.
+- **Control:** `verificar.py` — 14 invariantes que cortan con `exit 1`. `tests/test_verificar.py` rompe la base a propósito para probar que el control se dispara.
+- **Gate:** CUMPLIDO — cohorte idéntica celda por celda entre la ruta vieja y la nueva; backtest 0,3643 / 0,4195 por ambas.
 
 ### 1A.6b datos/licencias_suspensiones — registro y notificador *(a crear; decisión ADR-0004)*
 - **Qué:** registro histórico + herramienta que detecte y NOTIFIQUE suspensiones y pedidos de licencia de legisladores (con fechas desde/hasta), para excluirlos del índice de indisciplina (su "no acompañar" no es una decisión libre) y alimentar asistencia_quorum.
@@ -121,9 +130,9 @@ listado de la raíz antes de escribir nada**.
 ### 1B.3 variables/legislador · proyecto · bloque — feature stores
 - **Qué/Cómo:** features point-in-time por legislador, por proyecto (tema/autor/mayoría/NLP) y series por bloque (cohesión/posición/fracturas). Independientes entre sí.
 - **Diseño del feature store por proyecto (2026-07-11, decisión de Valle: diseñar antes de recolectar):** `variables/proyecto/FEATURE-STORE.md` define las 6 familias de rasgos por proyecto/votación (A identidad/trámite, B tema/taxonomías, C autoría+origen oficialismo/oposición, D institucionales, E contexto ICG Di Tella/electoral, F derivadas CONDICIONADAS: posición de bloque por tema, presentismo condicionado, disciplina por tema) y a qué etapa alimenta cada una. Es el desbloqueo de todo el condicionamiento (asistencia y posición de bloque). **Orden:** (1) correr el agente de taxonomías [desbloqueo #1: API key batch o clasificar muestra a mano], (2) regla origen oficialismo/oposición por fecha, (3) ingesta ICG Di Tella (serie mensual UTDT), (4) derivadas condicionadas, (5) calendario electoral.
-- **Avance 2026-07-11 sobre ese orden:** **(1) parcial — vocabulario VALIDADO a mano** (88 actas estratificadas 2001-25: 82% clasificable por título, 89% confianza alta/media; 5 huecos y 4 fronteras propuestos en `variables/proyecto/RESULTADOS-muestra-manual.md`; la muestra queda como set de referencia agente-vs-humano; el batch NO espera la API key —resuelta por Franco el 14-jul, prueba en vivo OK—; el blocker real es `proyectos.db` + M1). **(3) HECHA — ICG Di Tella vivo:** `variables/proyecto/data/icg_mensual.csv` (296 meses, nov-2001→jun-2026, 0 huecos, validado contra informes) + `src/ingesta_icg.py` con modo `serie` (Excel oficial; layout transpuesto resuelto) y modo `ultimo` (scrapea la página de informes para el mes nuevo antes de que rote el Excel; idempotente; invocable por el futuro bot). Tests 21 OK. **Siguen:** (2) regla origen por fecha ← próximo natural, (4) y (5).
+- **Avance 2026-07-11 sobre ese orden:** **(1) parcial — vocabulario VALIDADO a mano** (88 actas estratificadas 2001-25: 82% clasificable por título, 89% confianza alta/media; 5 huecos y 4 fronteras propuestos en `variables/proyecto/RESULTADOS-muestra-manual.md`; la muestra queda como set de referencia agente-vs-humano; el batch NO espera la API key —resuelta por Franco el 14-jul, prueba en vivo OK—; ~~el blocker real es `proyectos.db` + M1~~ → **DESBLOQUEADO 07-08: la base existe (ADR-0009)**). **(3) HECHA — ICG Di Tella vivo:** `variables/proyecto/data/icg_mensual.csv` (296 meses, nov-2001→jun-2026, 0 huecos, validado contra informes) + `src/ingesta_icg.py` con modo `serie` (Excel oficial; layout transpuesto resuelto) y modo `ultimo` (scrapea la página de informes para el mes nuevo antes de que rote el Excel; idempotente; invocable por el futuro bot). Tests 21 OK. **Siguen:** (2) regla origen por fecha ← próximo natural, (4) y (5).
 - **Avance 2026-07-22/23 (Valle+Claude) — TEMA y ORIGEN por acta, sin esperar el batch de PDFs:** desbloqueado el condicionamiento por texto de las actas VOTADAS. (B tema) `variables/proyecto/tema_por_acta.py` clasifica por TÍTULO las actas votadas → `tema_por_acta.parquet` (1.537 actas, 2011-2026, 87% de cobertura en la ventana reciente del Senado). (C origen) `variables/proyecto/origen_por_acta.py` etiqueta `origen` (EJECUTIVO/OFICIALISMO/OPOSICION) + `origen_lado` (GOBIERNO/OPOSICION) + `gobierno` de turno POR ACTA, determinístico sin API key (4 vías: código de expediente, **código embebido en el título** del Senado viejo `PE-608/03`, O.D.→expedientes_resultados, match de título) → `origen_por_acta.parquet` (**59% global / 54,5% Senado**; tapa el hueco 2004-2014). (F derivadas) `variables/bloque` condiciona la dirección por tema/origen con shrinkage + **guard de mismo gobierno** (no mezcla eras en la ventana) + **exclusión de actas AUX** (homenajes/trámite/tratados = consenso, no informan postura). **Validado:** proyecto de SALUD de la oposición en Diputados (47 actas de historia) → LLA NEGATIVO 0,31, kirchnerismo AFIRMATIVO 0,98 = la política real. **Límite conocido (no del método, de los datos):** cruces finos (ej. ECON×GOBIERNO en el Senado) tienen 1-2 actas en la ventana → esperan más cobertura + multitemáticas (backlog).
-- **Perfil temático por legislador (central, pedido de Valle 2026-07-02):** además del consolidado afirmativos/negativos (que cualquier página ya muestra), el diferencial es el **desagregado por taxonomía**: para cada legislador × período × taxonomía (`docs/taxonomias`), pct_afirmativo / pct_negativo / tasa_desvio → detectar tendencia a aprobar o rechazar dentro de cada tema. Sale como hoja "PorTema" en `legisladores.xlsx`. **Depende de:** (1) corrida a escala del agente de taxonomías (`variables/proyecto`; la API key YA está, el blocker es `proyectos.db` + M1) que llena `proyecto_taxonomias`; (2) cruce acta→expediente→proyecto para etiquetar cada votación con su tema (`datos/expedientes` + columna `expediente` de las actas).
+- **Perfil temático por legislador (central, pedido de Valle 2026-07-02):** además del consolidado afirmativos/negativos (que cualquier página ya muestra), el diferencial es el **desagregado por taxonomía**: para cada legislador × período × taxonomía (`docs/taxonomias`), pct_afirmativo / pct_negativo / tasa_desvio → detectar tendencia a aprobar o rechazar dentro de cada tema. Sale como hoja "PorTema" en `legisladores.xlsx`. **Depende de:** (1) corrida a escala del agente de taxonomías (`variables/proyecto`; la API key YA está, ~~el blocker es `proyectos.db` + M1~~ → **DESBLOQUEADO 07-08 (ADR-0009)**) que llena `proyecto_taxonomias`; (2) cruce acta→expediente→proyecto para etiquetar cada votación con su tema (`datos/expedientes` + columna `expediente` de las actas).
 - **Gate:** sin leakage; features validadas en muestra.
 
 ### 1B.4 modelo/voto_individual — desvío individual + pivotes *(reformulado 2026-06-30)*
@@ -213,3 +222,112 @@ Retomar cuando el mecanismo del ICG esté validado end-to-end.
 ### Proyectos MULTITEMÁTICOS (leyes ómnibus) — pendiente (anotado 2026-07-22, Valle)
 El tagger de temas (`variables/proyecto/tema_por_acta.py`) y el v2 de bloque usan hoy **un solo tema primario** por votación. Las leyes ómnibus mezclan varias materias en una sola votación y no encajan en un tema único: p. ej. **Ley Bases** (economía + desregulación + laboral + energía + privatizaciones), **Ley de Glaciares** (ambiente + minería + federalismo), y la **ley de desregulación difundida hoy en el Congreso**. El tagger YA guarda todas las etiquetas (`todas_ids`, multi-label), pero el condicionamiento del v2 sólo lee la primaria. **Pendiente:** decidir cómo condiciona la dirección de bloque cuando un proyecto es multitemático (¿promedio ponderado de las posturas por cada tema?, ¿el tema dominante?, ¿la materia más conflictiva?). **Por ahora se omite** — se usa el tema primario. Retomar cuando el v2 esté validado con temas de un solo eje.
 - **Refuerzo 2026-07-23 (Valle):** la sesión confirmó que además del tema hace falta MÁS COBERTURA DE ACTAS. Un mismo tema mezcla consenso y conflicto: p. ej. "ECON" o "TRAB" en el Senado 2024-25 son mayormente proyectos que la oposición también acompañó, no las reformas contenciosas del gobierno (que aún no están en los datos votados). La exclusión de actas AUX (consenso puro: homenajes/trámite/tratados) ya está implementada en `variables/bloque` (`excluir_aux`), pero separar "proteger vs. desregular" dentro de un mismo tema necesita la designación multitemática + más actas. Dos ejes del mismo pendiente: (i) multi-label operativo, (ii) volumen de votaciones contenciosas.
+
+---
+
+## 🔭 REVISIÓN DE LAS COMISIONES — línea de trabajo abierta (nombrada por Valle, 2026-08-07)
+
+> Valle abre esta línea al aparecer el sesgo del Senado (abajo). **Criterio suyo:** no se
+> parchea de a un síntoma; cuando se toque, se revisa **el circuito completo** de cómo un
+> proyecto atraviesa comisiones y cámaras. Hasta entonces **no se abre** — se acumulan
+> insumos acá.
+
+### Insumo 1 — El universo del Senado está sesgado por supervivencia (detectado 2026-08-07)
+
+**El síntoma, medido en `p_embudo.parquet`:**
+
+| cámara de origen | proyectos | P(sanción) media |
+|---|---:|---:|
+| Diputados | 39.971 | 1,73% |
+| **Senado** | 1.368 | **48,03%** |
+
+**La causa, verificada:** `expedientes.parquet` es el registro de **HCDN (Diputados)**. De un
+proyecto nacido en el Senado se entera **recién cuando le llega con media sanción**. Prueba
+directa: los **1.999** expedientes con `camara_origen=Senado` tienen **los 1.999** un
+`exp_senado` — o sea que todos ya cruzaron. **No hay un solo proyecto del Senado en la base que
+se haya quedado en el Senado.** De los 1.368 de ley, 656 son ley = 47,95%.
+
+**Por qué importa más de lo que parece:** `camara_senado` **es un rasgo del modelo**
+(`embudo.py:366`). El modelo aprendió que "viene del Senado" predice sanción, cuando lo que
+codifica es "**ya pasó** el Senado". El error va **para arriba**, que es el lado peligroso.
+
+**Precaución operativa mientras tanto:** no publicar P(sanción) de proyectos con origen Senado.
+
+**Lo que lo mejora, y ya está en curso:** los 520 proyectos de ley del Senado que junta el bot
+(DAE) son la primera vista de proyectos senatoriales **que todavía pueden morir** — le dan al
+modelo el denominador que le falta. Entran con el ADR-0009. Aun así el universo va a seguir
+siendo parcial: el bot arranca en 2026.
+
+**Preguntas que la Revisión tendrá que contestar:**
+
+1. ¿El nowcast es de **Diputados** y se declara así, o se modela el Senado **aparte** con su
+   propio denominador? (decisión de producto, no técnica → ADR)
+2. ¿`camara_origen` sigue siendo un rasgo, o hay que sacarlo hasta tener universo comparable?
+3. ¿Cuánto del **embudo** de Diputados sufre lo mismo en menor grado? El circuito real es
+   comisión → dictamen → recinto → otra cámara, y hoy se modela como etapas de un solo lado.
+4. ¿Los **giros** (a qué comisión va cada proyecto) son comparables entre cámaras, siendo que
+   el catálogo de 151 comisiones sale del lado de Diputados?
+
+### Insumo 2 — `expedientes_giros` conoce 278.196 proyectos; la tabla principal tiene 112.793 (detectado 2026-08-07)
+
+Al migrar a `proyectos.db` (ADR-0009) aparecieron **242.890 filas de giro huérfanas**: apuntan a
+**165.403 proyectos que no están en `expedientes.parquet`**. El embudo ya las ignora —
+`cnt.reindex(exp["proyecto_id"])` las descarta en silencio — así que **no son un bug ni afectan
+el skill actual**, y la migración las descarta igual (verificado: 179.253 giros entran, que es
+exactamente lo que el embudo ve hoy).
+
+**Pero dicen algo sobre la cobertura:** el backfill de CKAN de la tabla de expedientes es un
+**subconjunto** de lo que las tablas hijas conocen. O bien `expedientes.parquet` está filtrado
+por algún criterio no documentado, o la ingesta se cortó. Son 1,5 veces el universo actual.
+
+**Afinado el mismo día, a pedido de Valle ("¿son de ley o de otro tipo?"). Se parten en dos:**
+
+- **~90.963 tienen id POR DEBAJO del mínimo de la base** (`HCDN092249`). Los ids de HCDN son
+  correlativos y la base arranca el **2008-03-03**, así que son anteriores al backfill.
+  **Ignorarlos es correcto:** están fuera de la ventana declarada.
+- **🔴 74.440 tienen id DENTRO del rango de la base** y aun así no están en ella. Eso **no** lo
+  explica la antigüedad. Es un hueco sin diagnóstico.
+
+**Y la pregunta de Valle no se puede contestar:** el `tipo` (LEY / RESOLUCION / DECLARACION) vive
+en `expedientes.parquet`, que es justamente la tabla de la que faltan. De un huérfano se sabe
+**sólo su comisión y el orden del giro** — ni fecha, ni título, ni autor, ni desenlace. No hay
+forma de saber si son proyectos de ley sin volver a la fuente.
+
+**Rastreado hasta la fuente el mismo día (Valle: "¿cómo volvemos a la fuente original?").**
+El crudo de CKAN **sobrevive en disco**: `datos/Archivos_Borrar/expedientes_ckan/` (bajado el
+12-jul). No hizo falta descargar nada. Resultado:
+
+> 📅 **Cifras del crudo del 12-jul**, que es el que estaba en disco al hacer este análisis.
+> Tras el refresco del 07-08 son 113.177; **la conclusión no cambia** (el hueco es de ~165.000
+> proyectos), pero si alguien rehace la cuenta le van a dar números un poco distintos.
+
+| crudo de HCDN | filas | proyectos distintos |
+|---|---:|---:|
+| `proyectos.csv` | 112.793 | **112.793** |
+| `giros.csv` | 422.143 | **278.196** |
+
+**La ingesta no pierde nada** — el parquet tiene exactamente las 112.793 del crudo. **El hueco
+viene así de CKAN:** HCDN publica giros de 165.403 proyectos que no publica en el dataset de
+proyectos. No es un bug nuestro.
+
+**Qué son, con la evidencia disponible.** Los huérfanos tocan **147 comisiones** contra 94 de los
+conocidos, y **58 aparecen SÓLO entre ellos**: `ENERGIA`, `POBLACION Y RECURSOS HUMANOS`,
+`REFORMA ADMINISTRATIVA`, varias bicamerales viejas, y `EDUCACION Y CULTURA` — que hoy figura
+partida en `EDUCACION` y `CULTURA` por separado del lado de los conocidos. **Usan la nomenclatura
+vieja de comisiones**, o sea que son de períodos anteriores. Van a comisiones legislativas
+normales (Presupuesto y Hacienda, Relaciones Exteriores), así que **no** son "oficiales varios"
+ni peticiones particulares: parecen proyectos de verdad, sólo que más viejos.
+
+⚠️ **La pista del id no servía.** Se creyó que 74.440 estaban "dentro del rango" y por lo tanto
+eran contemporáneos. Los ids de HCDN **no son cronológicos entre tandas de digitalización**, así
+que el solapamiento de rangos no prueba nada. La nomenclatura de comisiones es mejor evidencia
+que el número de id.
+
+**Si son anteriores a 2008, ignorarlos es correcto y la tasa base está bien.** Es lo más
+probable, pero **no está confirmado**. Lo que lo confirmaría, y es barato: leer en
+`datos.hcdn.gob.ar` qué período declara cubrir cada dataset (`proyectos-parlamentarios` vs
+`giro-a-comisiones`). Requiere red, así que queda para la Revisión.
+
+💡 **Aparte, y aprovechable ya:** el crudo es del **12-jul** y el parquet llega al **02-jun**.
+Volver a correr `ingesta_ckan.py` podría cerrar parte del hueco de proyectos recientes **gratis**,
+sin depender del bot. Vale probarlo antes de dar por sentado que sólo el bot puede taparlo.

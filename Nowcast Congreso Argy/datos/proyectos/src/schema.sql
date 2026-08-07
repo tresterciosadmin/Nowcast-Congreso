@@ -72,3 +72,43 @@ CREATE INDEX IF NOT EXISTS ix_proy_estado  ON proyectos(estado);
 CREATE INDEX IF NOT EXISTS ix_proy_fecha   ON proyectos(fecha_ingreso);
 CREATE INDEX IF NOT EXISTS ix_giros_denom  ON proyecto_giros(denominador);
 CREATE INDEX IF NOT EXISTS ix_tax_denom    ON proyecto_taxonomias(denominador);
+
+-- ═══════════════════════════════════════════════════════════════════════════
+-- AMPLIACIÓN 2026-08-07 — ADR-0009 (proyectos.db como fuente de verdad)
+--
+-- El esquema original modelaba la FICHA de un proyecto (scrape ficha por ficha).
+-- Al absorber el backfill de CKAN aparecieron tres datos que el embudo consume y
+-- que no tenían dónde vivir. Todo lo de acá es ADITIVO: `CREATE TABLE IF NOT
+-- EXISTS` y columnas nuevas, así que una base vieja sigue abriendo igual y
+-- `upsert_proyecto()` no cambia de comportamiento.
+-- ═══════════════════════════════════════════════════════════════════════════
+
+-- 1. HITOS del expediente: dictamen / tratamiento en el recinto / ley sancionada.
+--    El embudo los usa como conjuntos de pertenencia para armar las etapas, así
+--    que se guardan como evidencia cruda y NO como un `estado` precalculado: si
+--    mañana cambia la definición de etapa, se recalcula sin re-migrar.
+CREATE TABLE IF NOT EXISTS proyecto_hitos (
+    denominador TEXT NOT NULL,
+    hito        TEXT NOT NULL,   -- 'dictamen' | 'resultado' | 'ley'
+    fecha       TEXT,
+    detalle     TEXT,            -- nº de ley, texto del resultado, etc.
+    FOREIGN KEY (denominador) REFERENCES proyectos(denominador) ON DELETE CASCADE
+);
+CREATE INDEX IF NOT EXISTS ix_hitos_denom ON proyecto_hitos(denominador);
+CREATE INDEX IF NOT EXISTS ix_hitos_tipo  ON proyecto_hitos(hito);
+
+-- 2. Identidad cruzada. `denominador` es el expediente de Diputados (todas las
+--    112.793 filas de CKAN lo tienen). Estos dos permiten volver a la fuente:
+--    `proyecto_id` es el id interno de CKAN (HCDN292367) del que dependen los
+--    contratos viejos, y `exp_senado` es el número que el mismo proyecto recibe
+--    al cruzar de cámara (3.315 proyectos con media sanción lo tienen).
+ALTER TABLE proyectos ADD COLUMN proyecto_id TEXT;
+ALTER TABLE proyectos ADD COLUMN exp_senado  TEXT;
+ALTER TABLE proyectos ADD COLUMN tipo        TEXT;   -- LEY | RESOLUCION | DECLARACION
+CREATE INDEX IF NOT EXISTS ix_proy_pid  ON proyectos(proyecto_id);
+CREATE INDEX IF NOT EXISTS ix_proy_tipo ON proyectos(tipo);
+
+-- 3. Giro AL INGRESAR (contrato de Franco del 07-08). Es el rasgo más pesado del
+--    modelo y NO se deduce de `proyecto_giros`, que es el acumulado de hoy.
+ALTER TABLE proyectos ADD COLUMN n_giros_inicial        INTEGER;
+ALTER TABLE proyectos ADD COLUMN n_giros_inicial_fuente TEXT;  -- 'tp_bot' | 'reconstruido'

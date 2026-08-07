@@ -2,25 +2,62 @@
 
 **Propósito.** La **base de Proyectos de Ley**: fuente de verdad del embudo. Una fila por proyecto, identificado por su **denominador** (`NNNN-X-AAAA`). Guarda metadata, autores, giros a comisiones, trámite, estado y taxonomías. Se actualiza en el tiempo sin duplicar (un mismo proyecto avanza de estado).
 
-**Estado:** EN CURSO — el código está y funciona, **pero la base nunca se creó**.
+**Estado:** EN CURSO — **la base existe y es la fuente de verdad del universo de proyectos** (ADR-0009, 2026-08-07).
 
-> 🔴 **Verificado el 2026-08-06: `data/proyectos.db` NO EXISTE, la carpeta está vacía.**
-> El esquema, el upsert idempotente y el export están escritos y testeados (18
-> chequeos), pero nadie corrió `store.py init` ni conectó nada. Consecuencias, en
-> orden de importancia:
+> ✅ **`data/proyectos.db` creada el 2026-08-07: 114.708 proyectos, 89 MB.**
+> *(Este README decía hasta ese día "la base nunca se creó". Era cierto desde junio
+> y dejó de serlo; se corrige acá porque un README desactualizado es el mecanismo
+> anti-colisión fallando al revés — ya pasó con cinco módulos el 06-08.)*
 >
-> 1. **El bot recolecta proyectos y no tienen dónde entrar.** `datos/bot_recoleccion`
->    junta 2.799 proyectos de Diputados (con cofirmantes completos) y 1.007
->    expedientes del Senado, y quedan en parquets que nadie lee.
-> 2. **Es el blocker real del agente de taxonomías.** Varios documentos del repo
->    dicen "el blocker es `proyectos.db` + M1". La API key está resuelta desde el
->    14-jul; lo que falta es esta base.
-> 3. El universo de proyectos del modelo sigue siendo el backfill de CKAN,
->    congelado al **2026-06-02**.
+> **Qué contiene y de dónde sale:**
 >
-> Registrado en `coordinacion/URGENTE.md` ítem 5. El primer paso es de un minuto:
-> `python datos\proyectos\src\store.py init`. Lo que falta de verdad es el upsert
-> desde el bot, y la decisión de contrato con `datos/expedientes` (→ ADR).
+> | fuente | qué aporta |
+> |---|---|
+> | backfill de CKAN (`datos/expedientes`) | 113.177 proyectos 2008 → 30-jun-2026, con trámite, dictámenes y resultados |
+> | bot (`datos/bot_recoleccion`) | +1.531 proyectos hasta el **05-ago-2026**, los **cofirmantes completos** y el giro **medido** al ingresar |
+>
+> **Quién la consume:** `variables/embudo` lee de acá (`cargar_sqlite()`). La ruta
+> vieja de parquet sigue viva como *fallback* con `EMBUDO_FUENTE=parquet`.
+>
+> **No viaja a git** (`*.db`, decisión previa y correcta: 89 MB binarios y cada
+> regeneración quedaría en el historial para siempre). **Se reconstruye en ~1 minuto**
+> desde fuentes versionadas:
+>
+> ```bash
+> python datos/proyectos/src/migrar_ckan.py    # CKAN -> base (25 s)
+> python datos/proyectos/src/upsert_bot.py     # + el bot (20 s)
+> ```
+>
+> ⚠️ **Lo único NO reconstruible es `proyecto_taxonomias`** — la llena el agente y
+> cuesta llamadas a la API. **Antes de que el agente escriba, hay que exportarla a un
+> archivo versionado** (pendiente en `URGENTE.md`).
+
+## Cuarentena: lo dudoso va aparte
+
+Decisión de Valle (07-08): *"los pendientes de revisión van a una base de datos
+distinta y los que están bien pasan a la base general"*. **Separación física, no una
+etiqueta** — si una fila está en `proyectos.db`, se leyó bien.
+
+- `data/cuarentena.db` guarda la fila cruda entera + el motivo. **Sí viaja a git**
+  (pesa kilobytes y la mira una persona; excepción explícita en el `.gitignore`).
+- Ver qué hay esperando: `python src/cuarentena.py`
+- **Una fila rara no frena la carga; una avalancha sí.** >5% de una tanda en
+  cuarentena = la fuente cambió de formato. Con piso de 10 filas, para que una tanda
+  chica del bot diario no aborte por un caso suelto.
+
+## Control de integridad
+
+`src/verificar.py` — **14 invariantes que cortan con `exit 1`**. `migrar_ckan.py` y
+`upsert_bot.py` lo corren solos al terminar.
+
+Existe porque el 07-08 tres errores de carga **no dieron error**: la cohorte subió +1
+en vez de +671, el giro corregido bajó de 633 a 559, y 34 expedientes del Ejecutivo se
+descartaron como "formato inesperado". Los tres se encontraron mirando si el número era
+el esperado, no viendo si el programa terminaba bien.
+
+`tests/test_verificar.py` **rompe la base a propósito**, cada vez de la forma exacta en
+que se rompió de verdad, y exige que el control lo detecte (10 tests). *Un control que
+nunca se dispara no protege de nada.*
 
 ## Contrato
 - **Entrada:** un dict con la forma de `FichaExpediente` (la salida de `datos/seguimiento`, serializada con `asdict`/JSON). El módulo **no importa código** de seguimiento; consume el contrato (dict).

@@ -25,23 +25,23 @@ Mantené esta tabla sincronizada con la bitácora.
 | docs/schemas | HECHO (schema_version=1) | — |
 | datos/decada_votada | HECHO (semilla integrada vía CSV: Dip 2001-2010 + Sen 2004-2014; export R quedó innecesario) | Claude+Franco |
 | datos/canonica | EN CURSO (base 2001-2026 ambas cámaras, **1.016.632 votos / 6.231 actas** medidos en disco 06-08, reproducible; linajes v2 ADR-0005; falta Dip 2020-23) | Claude+Franco |
-| datos/bot_recoleccion | EN CURSO (bicameral automatizado en GitHub Actions: DAE Senado + TP Diputados con cofirmantes; falta estreno TP en vivo, upsert, fase votaciones) | Claude+Franco |
+| datos/bot_recoleccion | EN CURSO (bicameral en GitHub Actions **y ENTREGANDO** desde el 07-08: `upsert_bot.py` carga en `proyectos.db` — +1.531 proyectos, 514 de ley del Senado, 1.222 con cofirmantes. Falta backfill TP 2019-25) | Claude+Franco |
 | datos/ckan_diputados | HECHO (en `fase0/`, migrar) | — |
 | datos/argentinadatos | HECHO (bloque Senado 24-25 y **2026** resueltos vía padrón; queda sin_bloque menor en Dip) — reabierto 06-08 para el fix del Senado post-recambio | Claude+Franco |
 | datos/senado | HECHO (2015–2023: 749 actas / 53.910 votos, bloque histórico 100%; padrón con filas REVISAR) | Claude+Franco |
 | datos/manual_2026 | HECHO (Excel curado 2026 integrado al esquema canónico, máxima precedencia; fuente viva que Franco completa a mano) | Claude+Franco |
 | datos/padron | EN CURSO (NUEVO: nómina oficial individual Dip 257 + Sen 72 vigentes, con mandato desde-hasta y linaje; composición a la fecha; reemplaza el roster inflado del proyector) | Valle |
 | datos/seguimiento | EN CURSO (extractor de giros Dip+Sen, validado en vivo) | Valle |
-| datos/proyectos | EN CURSO (base SQLite + export Excel) | Valle |
+| datos/proyectos | EN CURSO (**FUENTE DE VERDAD de los proyectos**, ADR-0009: `proyectos.db` 114.708 = CKAN + bot, con cofirmantes. Capa de merge por campo + cuarentena aparte + 14 controles que cortan la carga. NO viaja a git; se rehace en ~1 min) | Valle |
 | docs/taxonomias | HECHO (vocabulario controlado v1, 74 ids) | Valle |
-| datos/expedientes | EN CURSO (backfill CKAN 112.793 proyectos 2008-2026; embudo bruto 3,22%; enlace acta→expediente 89%) | Claude+Franco |
+| datos/expedientes | EN CURSO (backfill CKAN **refrescado 07-08: 113.177 proyectos, hasta 30-jun-2026**; HCDN publica con ~5 semanas de atraso; la ingesta usa caché salvo `REFRESH=1`; embudo bruto 3,22%; enlace acta→expediente 89%) | Claude+Franco |
 | datos/licencias_suspensiones | PENDIENTE (nuevo — registro+notificador; decisión ADR-0004) | — |
 | datos/export | EN CURSO (SQLite + Excel por gobierno; disputada = ±5% de emitidos vs umbral) | Valle |
 | variables/legislador | EN CURSO (ficha + por período; PorTema bloqueada por taxonomías) | Valle |
 | variables/proyecto | EN CURSO (tema_por_acta 1537; origen_por_acta 59% global / 54,5% Senado vía código embebido; el nowcast del Senado ahora se traba en la atribución de linaje de votos recientes = entity_resolution/Franco) | Valle |
 | variables/bloque | EN CURSO (dirección condicionada por tema/origen; enriquecimiento de LINAJE del Senado desde el padrón mandate-aware + override manual COMPLETO 22/22 → el nowcast del Senado condiciona, OTRO/PROVINCIAL 53%→26%; 35 tests OK) | Claude+Valle |
 | variables/asistencia_quorum | EN CURSO (escalón 1 construido y backtesteado: presentismo promedio empeora → asistencia CONDICIONAL = escalón 2; motor sin asistencia queda de default) | Valle |
-| variables/embudo | EN CURSO (v1 GATE APROBADO: skill 0,34-0,39; segmentación origen/líder enchufada; falta tema) | Valle |
+| variables/embudo | EN CURSO (v1 GATE APROBADO: skill **0,3643 sancionado / 0,4195 recinto** medido el 07-08 sobre datos frescos; **lee de `proyectos.db`** con la ruta parquet de fallback `EMBUDO_FUENTE=parquet`; cohorte 42.141; falta tema) | Valle |
 | variables/contexto | FUTURO | — |
 | modelo/voto_individual | EN CURSO (desvío v2 = indisciplina total, ADR-0004; gate 1 aprobado, set pivote = 112 legisladores) | Valle |
 | modelo/agregador_institucional | EN CURSO (v1: motor de recuento como distribución; tests 12 OK; backtest 4.890 actas Brier 0,011 / skill 0,76 / acc 0,987; falta calibrar disputadas) | Valle |
@@ -55,6 +55,346 @@ Mantené esta tabla sincronizada con la bitácora.
 ---
 
 ## Bitácora (más reciente arriba)
+### [2026-08-07 · cierre 8] coordinación — BARRIDO de documentos: 8 archivos decían cosas que hoy son falsas
+- **Quién:** Valle (*"tomate el tiempo de mirar todos los archivos"*) · Claude · **Módulo:** coordinación
+
+Cerrada la jornada, se barrieron los **45 archivos que declaran estado** (bitácoras, READMEs de
+módulo, el tablero) buscando lo que el trabajo de hoy volvió falso. **Aparecieron 8**, y el
+patrón es el de siempre: el trabajo se hace y los documentos que lo describen quedan atrás.
+
+| archivo | qué decía | corregido a |
+|---|---|---|
+| `datos/proyectos/README.md` | *"la base nunca se creó"* + 🔴 "NO EXISTE" | existe: 114.708 proyectos, es la fuente de verdad |
+| `datos/bot_recoleccion/README.md` | título *"🔴 EL BOT RECOLECTA PERO NO ENTREGA"* | ✅ la entrega, con la tabla de lo que aporta |
+| `datos/expedientes/README.md` | 112.793 proyectos al 02-jun | 113.177 al 30-jun + el aviso del `REFRESH=1` |
+| `variables/embudo/README.md` | skill 0,3628 / 0,4112 (del 04-08) | **0,3643 / 0,4195**, con la fecha de medición |
+| `coordinacion/TABLERO.md` | 3 pendientes que se hicieron hoy + 2 filas viejas | los tres marcados HECHO |
+| `coordinacion/PLAN-DE-TRABAJO.md` | *"el blocker es `proyectos.db` + M1"* ×2 | DESBLOQUEADO + sección **1A.5b** nueva |
+| `coordinacion/ESTADO` (tabla resumen) | 4 filas de módulo desactualizadas | al día |
+| `tablero_datos.js` | 4 notas de módulo + hito + cabecera | al día |
+
+**El caso que mejor ilustra el modo de falla:** en el README del bot yo había reescrito **el
+cuerpo** de la sección y dejado **el título** diciendo lo contrario. Quien lo abriera leía
+"🔴 EL BOT RECOLECTA PERO NO ENTREGA" y no seguía. **Corregir un documento a medias es peor que
+no tocarlo**, porque el encabezado es lo que la gente lee.
+
+**Lo que NO se tocó, a propósito:** las entradas viejas de `ESTADO`, `EN-HUMANO` y los
+`CIERRE-SESION` anteriores. Son bitácora: describen lo que era cierto en su fecha. Sólo se
+actualizaron sus **tablas resumen**, que sí pretenden reflejar el presente. Y en el análisis de
+los huérfanos del PLAN se dejó la cifra original con una nota de fecha, porque **la conclusión no
+cambia** y rehacer la cuenta con datos nuevos daría otros números sin agregar nada.
+
+- **Verificado al cerrar:** `p_embudo.parquet` tiene 42.141 proyectos y el backtest guardado da
+  0,363 / 0,4195 — la promoción ya había quedado hecha.
+- **Cierre operativo en** `coordinacion/CIERRE-SESION-2026-08-07.md`.
+- **Estado del módulo:** coordinación HECHO.
+
+### [2026-08-07 · cierre 7] datos/proyectos — CUARENTENA: lo dudoso va aparte, no frena la carga
+- **Quién:** Valle (frena el diseño anterior y propone éste) · Claude · **Módulo:** datos/proyectos
+
+**Valle rechazó el control que yo había hecho, y tenía razón.** Mi versión hacía `SystemExit`
+ante cualquier fila rara. Su objeción: *"trabajamos con muchos datos de manera constante… a lo
+mejor que se carguen con una etiqueta que los marque como pendientes de revisión"*. Es correcto:
+el bot corre solo a diario y un refresco trae 300+ proyectos. **Frenar la tanda por una fila rara
+es el mismo error que el workflow ya había corregido con `continue-on-error`.**
+
+**La distinción que me faltaba:**
+
+| clase | qué corresponde |
+|---|---|
+| **fila rara** (formato desconocido, `tipo` sin mapear) | cuarentena — se aparta y la carga sigue |
+| **invariante rota** (el trámite desapareció, la llave colapsó, cambió una variable de resultado) | frenar — la lógica está rota |
+
+De los tres errores del día, **dos eran invariante rota** y **el de los 34 del Ejecutivo era fila
+rara**. Valle apuntó justo a ése.
+
+**Cómo quedó, con su diseño:** *"los pendientes van a una base distinta y los que están bien pasan
+a la general"*. **Separación física.** Nuevo `datos/proyectos/src/cuarentena.py` +
+`data/cuarentena.db`, que guarda la fila cruda entera y el motivo. `proyectos.db` queda limpia por
+definición. **La cuarentena viaja a git** (excepción en el `.gitignore`): pesa kilobytes y la mira
+una persona; si no viajara, los pendientes quedarían sólo en la máquina de quien cargó.
+
+**Pero una avalancha sí frena:** >5% de una tanda en cuarentena = la fuente cambió de formato.
+
+**⚠️ Con piso absoluto de 10 filas, y eso salió de PROBARLO, no de pensarlo.** El primer test con
+3 de 20 (15%) frenó, y ahí se vio el defecto: con sólo el porcentaje una tanda chica frena de más
+— el bot diario puede traer 20 expedientes y uno raro ya es 5%. Probado: 1/20 sigue · 3/100 sigue
+· 15/100 frena.
+
+**🔴 Y salió un tercer caso del mismo mal, en mi propio control:** `migrar_ckan.py` reportaba
+**"1 de 8 controles fallaron"** cuando no fallaba nada — corría el control de cofirmantes antes de
+que el bot cargara. **Un control que grita cuando todo está bien es peor que no tenerlo:** enseña
+a ignorarlo, que es justo el hábito que estos controles vinieron a romper. Corregido con etapas
+(`ckan` = 5 controles · `completa` = 14).
+
+- **Archivos:** `datos/proyectos/src/{cuarentena.py,verificar.py,upsert_bot.py,migrar_ckan.py}`,
+  `datos/proyectos/tests/test_verificar.py`, `.gitignore` (excepción de la cuarentena + journals
+  de SQLite, que se iban a colar).
+- **Tests: 10 en verde**, incluidos los tres escenarios de avalancha.
+- **Estado del módulo:** datos/proyectos EN CURSO · módulo LIBRE.
+
+### [2026-08-07 · cierre 6] datos/proyectos — CONTROL DE INTEGRIDAD: los fallos dejan de ser silenciosos
+- **Quién:** Valle (lo exige: *"y solucionalo ahora, para qué lo vamos a dejar suelto"*) · Claude
+- **Módulo:** datos/proyectos
+
+**El pedido fue sobre el patrón, no sobre los tres casos.** Los tres errores del día
+**no dieron error**: la cohorte subió +1 en vez de +671; el log dijo 559 giros corregidos donde
+antes decía 633; y 34 expedientes se descartaron como "formato inesperado" siendo los del
+**Poder Ejecutivo**. Los tres se encontraron mirando si el número que salió era el esperado —
+ninguno se habría notado viendo si el programa terminaba bien.
+
+**Ahora eso es código.** Nuevo `datos/proyectos/src/verificar.py`: **14 invariantes** que cortan
+con `exit 1` si no se cumplen. `migrar_ckan.py` y `upsert_bot.py` lo llaman **solos al terminar**.
+
+| invariante | qué bug del día atrapa |
+|---|---|
+| toda fila del bot llega a la base | los 34 del Ejecutivo descartados |
+| todo proyecto tiene `tipo` | los 38 invisibles para la cohorte de LEY |
+| la llave del embudo es única | el +1 en vez de +671 |
+| trámite de CKAN intacto | el upsert ciego borrando el trámite |
+| giros acumulados de CKAN intactos | el bot pisando el acumulado con el inicial |
+| hay cofirmantes cargados | el merge al revés borrándolos |
+| sin giros huérfanos | — |
+| las 4 variables de **resultado** idénticas entre rutas | cualquier carga rota |
+
+**🔬 Y lo que hace que esto valga: se probó que el control se dispara.**
+`datos/proyectos/tests/test_verificar.py` **rompe la base a propósito**, cada vez de la forma
+exacta en que se rompió de verdad, y exige que el control lo detecte. **8 tests, 8 en verde.**
+*Un control que nunca se dispara no protege de nada; hasta no verlo fallar, no se sabe si sirve.*
+
+**Los cargadores pasan de avisar a CORTAR.** `logger.warning("34 con formato inesperado")` era el
+mensaje que escondió los expedientes del Ejecutivo. Ahora un expediente ilegible o un `tipo` sin
+mapear **levanta `SystemExit` con ejemplos**. Si un descarte es legítimo, hay que declararlo en el
+código: no puede quedar en un warning que nadie lee.
+
+**Resultado del control sobre la base de hoy: 14/14 ✅.** Y **los 38 proyectos sin `tipo` ya no
+existen** — los arregló la reconstrucción tras el fix del parser (`DC` era el sufijo que faltaba).
+Sale de `URGENTE`.
+
+- **Suite completa, nada roto:** 8 (control) + 20 (`variables/proyecto`) + 8
+  (`datos/argentinadatos`) en pytest · 16 (`test_modulador_shrink` de Franco) y `test_store.py`
+  standalone. **52 chequeos en verde.**
+- **Anotado, no tocado:** `test_modulador_shrink.py` y `test_store.py` **no son tests de pytest**
+  — son scripts con `raise SystemExit` al importarse, así que **rompen la colección** si se corre
+  `pytest` sobre todo el repo de una. Hoy hay que correrlos por separado. Vale unificarlos algún
+  día; no es urgente.
+- **Estado del módulo:** datos/proyectos EN CURSO (control agregado; módulo libre).
+- **Próximo paso:** ninguno de este ítem. Queda en `URGENTE` sólo exportar
+  `proyecto_taxonomias` antes de que el agente escriba.
+
+### [2026-08-07 · cierre 5] BACKTEST por las dos rutas + una corrección al ADR-0009
+- **Quién:** Valle (corre) · Claude · **Módulos:** variables/embudo, datos/proyectos
+
+**El backtest da lo mismo por las dos rutas** (baseline medido de nuevo, porque el 0,3647 de
+Franco es anterior al refresco de CKAN):
+
+| target | sin bot | con bot |
+|---|---:|---:|
+| `sancionado` (escalón 2) | 0,3643 | **0,3643** |
+| `sancionado` (+ICG) | 0,3633 | 0,3630 |
+| `llega_recinto` | 0,4195 | **0,4195** |
+
+**Y el dato que explica por qué, que hay que tener presente de acá en más:
+`n = 36.726` en LAS DOS corridas.** La cohorte creció 671 y el conjunto **evaluado** no se movió
+ni uno. Los proyectos del bot son de los últimos 5 meses y **no tienen desenlace**: el backtest no
+los puede calificar. **Ningún backtest va a mostrar el valor de esta carga** — su valor es que hoy
+*se puede nowcastear* un proyecto de julio, cosa que ayer era imposible. Lo que el backtest sí
+confirma, y era el objetivo, es que **no se rompió nada**.
+
+**🔴 CORRECCIÓN AL ADR-0009 (ver el propio ADR).** La precedencia decía "`giros` → gana el bot" y
+estaba mal: los de CKAN son el **acumulado de hoy** y los del bot el **giro al ingresar**. Pisar
+unos con otros borró el acumulado de 2.267 proyectos (4.115 → 4.006 giros). Corregido:
+`proyecto_giros` guarda el acumulado y sólo lo escribe el bot para proyectos que CKAN no conoce;
+el giro al ingresar vive en `n_giros_inicial`.
+
+| | con el error | corregido |
+|---|---:|---:|
+| giros acumulados | 4.006 | **4.115** ✓ |
+| `comisiones` alteradas en proyectos viejos | 174 | **0** ✓ |
+| cobertura del giro **medido** | 2.927 | **4.449** (+52%) |
+
+**Cómo se detectó, y es la lección del día:** el log decía *"559 proyectos con el giro corregido"*
+donde antes decía 633. **Nada fallaba.** Un número que bajó cuando tenía que subir.
+
+- **Estado del módulo:** variables/embudo EN CURSO · datos/proyectos EN CURSO.
+- **✅ RE-CORRIDO tras la corrección (07-08, Valle).** Mismos números: `sancionado` **0,3643** ·
+  `llega_recinto` **0,4195**. **La condición de aceptación del ADR-0009 está CUMPLIDA** y la
+  migración se da por buena. `p_embudo.parquet` regenerado con 42.141 proyectos — de paso cierra
+  el pendiente de que la salida era del 12-jul, generada con el bug del one-hot ya corregido.
+- **Próximo paso:** los tres módulos se liberan. Queda anotado: (1) los **38 proyectos del TP sin
+  `tipo`**, que no entran a la cohorte de LEY; (2) exportar `proyecto_taxonomias` a un archivo
+  versionado **antes** de que el agente escriba, con su excepción en el `.gitignore`.
+
+### [2026-08-07 · cierre 4] datos/bot_recoleccion — LA ENTREGA: el bot por fin carga en la base
+- **Quién:** Valle · Claude · **Módulos:** datos/bot_recoleccion, datos/proyectos, variables/embudo · **ADR-0009 etapa 2**
+
+**El pendiente más viejo de `URGENTE` está cerrado.** El bot recolectaba desde marzo y ningún
+módulo leía sus parquet. Ahora `datos/proyectos/src/upsert_bot.py` los carga.
+
+| | antes | ahora |
+|---|---:|---:|
+| proyectos en la base | 113.177 | **114.708** |
+| **cohorte del embudo (proyectos de LEY)** | 41.470 | **42.141** (+671) |
+| …de los cuales, del **Senado** | — | **514** |
+| …de Diputados | — | 157 |
+| la base llega hasta | 30-jun | **05-ago** |
+| filas de autores | 113.177 (1 por proyecto) | **120.575** |
+| proyectos con **cofirmantes** | 0 | **1.222** (máximo: 15 firmantes) |
+
+**🔴 Y lo que el merge protegió, que era el punto:** `proyecto_tramite` quedó en **141.550** y
+`proyecto_hitos` en **41.488** — **exactamente igual que antes**. Un `upsert_proyecto` ciego los
+habría borrado, sin error y sin warning. Era la hipótesis del ADR y se confirmó en la práctica.
+
+**Verificación de que no se rompió nada viejo.** Se comparó la cohorte proyecto por proyecto
+contra la ruta de parquet, sobre los 41.470 en común:
+
+| columna | cambios | ¿todos dentro de los 2.267 enriquecidos por el bot? |
+|---|---:|---|
+| `autor` | 12 | **sí, 12/12** |
+| `n_giros` | 6 | **sí, 6/6** |
+| `comisiones` | 174 | **sí, 174/174** |
+| `sancionado`, `llega_recinto`, `con_dictamen`, `etapa_actual` | **0** | — |
+
+**Cero cambios fuera del grupo esperado, y las variables de RESULTADO intactas.** Los cambios que
+hay son la precedencia del ADR funcionando: el giro medido del bot pisa al acumulado de CKAN.
+
+**🐛 DOS BUGS ATRAPADOS POR MIRAR EL NÚMERO, NO POR UN ERROR**
+
+1. **La cohorte subía +1 en vez de +671.** `construir_cohorte` hace
+   `astype(str)` + `drop_duplicates("proyecto_id")`, y las altas del bot **no tienen id de CKAN**
+   (todavía no lo publicó). Los 1.531 nulos se volvían el string `"None"` y **colapsaban a UNA
+   fila**. Sin error, sin warning: el log decía "cargados 1.531 proyectos" y el modelo veía uno.
+   Arreglado con `COALESCE(proyecto_id, denominador)`. Para los de CKAN devuelve lo mismo, así
+   que la equivalencia entre rutas se mantiene.
+2. **Se estaban descartando 34 expedientes del PODER EJECUTIVO.** El parser del DAE matcheaba
+   sólo `^S-` y los del Ejecutivo vienen como `PE-8/26-PL`. El log sólo decía "34 con formato
+   inesperado". **Son los de mayor valor predictivo del modelo** (el PE convierte ~77% contra
+   1,4% del resto). El DAE **sí** trae el código de origen en el prefijo (`S` / `PE` / `CD`), así
+   que no había que adivinarlo — el primer parser simplemente lo ignoraba.
+
+⚠️ **Efecto esperado que hay que tener en cuenta:** la tasa base baja de **3,21% a 3,16%**. No es
+un cambio del mundo: los 671 proyectos nuevos son de los últimos 5 meses y **ninguno pudo haberse
+sancionado todavía** (0 sancionados, 0 con dictamen). Diluyen el denominador por construcción.
+**Cualquier medición de tasa base sobre la cohorte completa ahora está sesgada hacia abajo** —
+hay que usar cohorte madura. El backtest es walk-forward, así que no debería afectarlo, pero
+**hay que verificarlo antes de comparar skills**.
+
+- **Archivos:** `datos/proyectos/src/upsert_bot.py` (nuevo), `variables/embudo/src/embudo.py`
+  (COALESCE), `datos/proyectos/data/proyectos.db` (89,8 MB).
+- **Detalle:** el separador de comisiones del TP se validó contra `contar_en_texto()` de Franco
+  (lógica ya auditada el 07-08): **coincide en los 2.826 casos**, 0 discrepancias.
+- **Estado del módulo:** datos/bot_recoleccion EN CURSO · datos/proyectos EN CURSO.
+- **Próximo paso:** (1) correr el **backtest completo** por las dos rutas — es la corrida larga
+  que va a PowerShell; (2) **38 proyectos del TP quedaron sin `tipo`** (no entran a la cohorte de
+  LEY): revisar; (3) exportar `proyecto_taxonomias` a un archivo versionado **antes** de que el
+  agente escriba, con su excepción en `.gitignore`.
+
+### [2026-08-07 · cierre 3] datos/expedientes + datos/proyectos — CKAN se refresca (+384) y nace `proyectos.db`
+- **Quién:** Valle (corre las descargas) · Claude · **Módulos:** datos/expedientes, datos/proyectos · **ADR-0009**
+
+**1) La ingesta de CKAN llevaba un mes sin correr, y correrla es gratis.**
+Valle preguntó si los proyectos que cargó esta semana no tapaban el hueco. **No**: lo que corrió
+fue `run_pipeline.py`, que reconstruye **votaciones** (1.016.632 votos, hasta el 16-jul, Senado
+2026 al **0,0% sin bloque** — el fix del 06-08 quedó confirmado). Los **proyectos** son otra base
+y otro comando. Distinción que conviene tener escrita porque se confundió dos veces.
+
+**Y la primera corrida no bajó nada:** `_descargar()` devuelve el caché salvo que exista la env
+`REFRESH`. El log decía `caché: proyectos.csv` en las 8 líneas. Se repitió con
+`REFRESH=1` + `CACHE`/`OUT` a `Archivos_Borrar` (descarga aparte, sin pisar nada), y ahí sí:
+
+| | antes | ahora |
+|---|---:|---:|
+| expedientes | 112.793 · hasta **02-jun** | **113.177 · hasta 30-jun** |
+| giros | 422.143 | 422.939 |
+| movimientos | 140.903 | 141.550 |
+| dictámenes / leyes / resultados | 23.801 / 1.335 / 117.026 | 23.891 / 1.340 / 117.412 |
+
+**+384 proyectos y cuatro semanas, sin tocar el bot.** Todas las tablas crecieron y ninguna se
+achicó, así que el refresco es limpio. Dato operativo que queda: **HCDN publica con ~5 semanas de
+atraso**; el bot sigue siendo necesario, pero para una ventana más chica de lo que se creía.
+
+**Efecto colateral bueno:** al recalcular `giros_iniciales.py` (de Franco, 07-08), el giro
+**medido** al ingresar pasa de **1.889 a 2.267** proyectos y el total de 2.549 a **2.927**. La
+corrección no sólo mejora sola con el tiempo del bot: **también mejora al refrescar CKAN**,
+porque aparecen los proyectos de 2026 contra los que el TP puede cruzar.
+
+**2) `proyectos.db` EXISTE.** 113.177 proyectos · 88,3 MB, construida por
+`datos/proyectos/src/migrar_ckan.py` en ~25 s.
+
+**Dos números parecían pérdidas y los dos son correctos** — se verificaron a pedido de Valle
+("¿por qué está *bien* ignorarlos?"):
+- **Giros: 422.939 → 179.895.** Las filas que no entran apuntan a proyectos ausentes de la tabla
+  principal; el embudo ya las descarta con `reindex`. Contado por el lado del embudo da el mismo
+  número **al uno**.
+- **Resultados: 117.412 → 16.257 hitos.** Los descartados son filas con `resultado` vacío. **La
+  prueba de que no es dato faltante:** de los proyectos de ley **con** resultado anotado, el
+  **36,7%** terminó siendo ley; de los que están **sin** resultado, el **0,67%**. 55x de
+  diferencia. "Sin resultado" significa *entró al orden del día y nunca se trató*, que es el
+  destino normal. Excluirlos es correcto.
+
+- **Esquema ampliado** (aditivo, `IF NOT EXISTS` + columnas nuevas; `store.py` no se toca):
+  `proyecto_hitos` (dictamen/resultado/ley como evidencia cruda, no como `estado` precalculado) y
+  en `proyectos` las columnas `proyecto_id`, `exp_senado`, `tipo`, `n_giros_inicial`,
+  `n_giros_inicial_fuente`.
+- **Por qué el backfill NO usa `upsert_proyecto`:** esa función hace SELECT+DELETE+INSERT por
+  proyecto para refrescar una ficha; sobre una base vacía no hay nada que refrescar y sería
+  órdenes de magnitud más lenta. La capa de merge con `upsert_proyecto` es de la etapa 2, que es
+  donde dos fuentes tocan el mismo proyecto.
+
+**3) ⛔ Límite del entorno NUEVO: SQLite no puede crear una base sobre el mount.**
+Tira `disk I/O error` — el mount no soporta el file locking que necesita. La base se construye en
+disco local y se **copia terminada** (copiar sí funciona: no requiere locks). En Windows esto no
+pasa. Anotado en las memorias.
+
+- **Archivos:** `datos/expedientes/data/clean/*.parquet` (8 refrescados + `giros_iniciales`
+  recalculado), `datos/proyectos/src/{schema.sql,migrar_ckan.py}`,
+  `datos/proyectos/data/proyectos.db` (**gitignoreada por diseño**, ver abajo).
+- **Nota de propiedad:** se refrescó la salida de `datos/expedientes`, que es de Claude+Franco,
+  **corriendo su propio ingestor sin tocarle una línea de código**. Queda dicho por la regla de
+  "un módulo, un dueño".
+- **`proyectos.db` NO viaja a git** (`.gitignore:32`, decisión previa y correcta: son cientos de
+  MB binarios y cada regeneración quedaría en el historial para siempre). **La consecuencia que
+  no estaba escrita:** todo en la base es reconstruible desde las fuentes versionadas **salvo
+  `proyecto_taxonomias`**, que la llena el agente y cuesta llamadas a la API. **Pendiente antes
+  de que el agente escriba: exportar esa tabla a un archivo chico versionado, con su excepción
+  explícita en el `.gitignore`** (`*.parquet` y `*.csv` están ignorados globalmente; los
+  contratos viajan sólo por excepciones `!` puestas a mano — sería la quinta vez que el
+  `.gitignore` esconde trabajo).
+- **Estado del módulo:** datos/expedientes EN CURSO · datos/proyectos EN CURSO.
+**4) ✅ EL EMBUDO YA LEE DE SQLite, Y LA PRUEBA DE ACEPTACIÓN PASÓ.**
+`cargar_sqlite()` devuelve el **mismo contrato** que `cargar()` — mismas claves, mismas columnas,
+y sigue usando `proyecto_id` como llave. Es deliberado: la etapa 1 es una **mudanza**, no un
+cambio de modelo. Si devolviera algo distinto, el test no podría distinguir un error de carga de
+una mejora real. El cambio de llave a `denominador` es de una etapa posterior.
+
+**La prueba se hizo mejor de lo planeado.** En vez de comparar el skill (corrida larga, y un
+número agregado puede coincidir por compensación de dos errores), se comparó **la cohorte entera
+celda por celda**:
+
+| | resultado |
+|---|---|
+| proyectos de LEY por cada ruta | **41.470 = 41.470** |
+| columnas | 13, sin diferencias |
+| **celdas distintas, en las 13 columnas** | **CERO** |
+| los 4 CSV de salida de `funnel` | **byte a byte idénticos** |
+
+Si la cohorte de entrada es idéntica, la salida del modelo lo es **por construcción**. Es una
+garantía más fuerte que "el skill dio parecido", y además **no necesita la corrida larga**.
+
+**Cómo se elige la fuente:** si `proyectos.db` existe, se usa; `EMBUDO_FUENTE=parquet` fuerza la
+vieja. **La ruta de parquet NO se apagó** — queda como *fallback* y como control para poder
+repetir esta comparación cuando cambie algo.
+
+- **Detalle que hizo falta:** `camara_origen` viaja en minúscula en la base y capitalizado en el
+  parquet. `construir_cohorte` hace `.upper()` así que daba igual, pero se normaliza igual para
+  que un diff de las dos rutas no muestre ruido que no es.
+- **Estado del módulo:** variables/embudo EN CURSO · datos/proyectos EN CURSO.
+- **Próximo paso:** **etapa 2 del ADR-0009** — la capa de merge y el upsert del bot
+  (283 proyectos de ley de Diputados + 520 del Senado + los cofirmantes). Ahí el skill **sí** va a
+  cambiar, y ese cambio es el objetivo. ⚠️ El baseline contra el que comparar **ya no es el 0,3647
+  de Franco**: los datos cambiaron con el refresco de CKAN. Hay que medir el nuevo antes de sumar
+  nada del bot.
+
 ### [2026-08-07 · cierre 2] infraestructura — los 3 workflows a Node 24, y el sandbox por fin ve git
 - **Quién:** Valle (lo pide y monta la carpeta) · Claude · **Módulo:** infraestructura (`.github/workflows`)
 
@@ -98,8 +438,14 @@ porque se pudo consultar el historial en vez de deducirlo.
   `yaml.safe_load` en los tres.
 - **Archivos:** raíz `.github/workflows/{bot-diario,icg-mensual,padron-vivo}.yml`.
 - **Estado del módulo:** infraestructura EN CURSO.
-- **Próximo paso:** ⏳ **disparar los tres a mano y verlos verdes.** Hasta que eso pase el
-  ítem sigue en URGENTE: si algo se rompió, el bot deja de recolectar **sin avisar**.
+- **✅ VERIFICADO el 07-08 (commit `fd2aa2b`).** Valle disparó los tres a mano y **los tres
+  dieron verde**: `bot-diario #27` (38s) · `icg-mensual #2` (28s) · `padron-vivo #2` (42s).
+  El ítem sale de URGENTE. `bot-diario` no commiteó nada, que es lo correcto: ya había
+  corrido solo a las 01:55 y no había novedades — la idempotencia funciona.
+- **El `#27` es la prueba del rename.** Si cambiar el `name:` hubiera partido el historial,
+  la corrida habría sido `#1`. Siguió numerando desde la anterior: **queda confirmado
+  empíricamente que GitHub identifica el workflow por la RUTA del archivo**, y que la
+  objeción con la que yo había desaconsejado el rename era falsa.
 **4) Renombrados dos nombres viejos de `bot-diario.yml` — y una corrección de criterio mía.**
 Primero lo escribí como "anotado, no tocado", con el argumento de que renombrarlo **partía el
 historial de corridas**. Valle pidió cambiarlo igual y al verificarlo el argumento resultó

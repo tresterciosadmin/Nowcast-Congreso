@@ -80,10 +80,17 @@ M ve el ICG de M-1, nunca el de M. Es la única variable no procedimental.
 
 | escalón | sancionado | llega_recinto |
 |---|---:|---:|
-| solo procedimental | 0,3424 | 0,3921 |
-| + origen/líder | **0,3628** | **0,4112** |
-| + ICG | 0,3625 | 0,4112 |
-| **aporte del ICG** | **‑0,0003** | **0,0000** |
+| solo procedimental | 0,3429 | 0,3992 |
+| + origen/líder | **0,3643** | **0,4195** |
+| + ICG | 0,3630 | 0,4195 |
+| **aporte del ICG** | **‑0,0013** | **0,0000** |
+
+> 📅 **Cifras medidas el 07-08-2026** sobre la cohorte de 42.141 proyectos de ley
+> (CKAN refrescado al 30-jun + los proyectos del bot, vía `proyectos.db`).
+> **Reemplazan a las del 04-08 (0,3628 / 0,4112) y al 0,3647 del 07-08 mediodía:**
+> las tres son correctas para sus datos, pero **los datos cambiaron**. Cualquier
+> comparación de skill tiene que decir contra qué cohorte se midió — es la tercera
+> vez en el proyecto que un número se repite sin su fecha.
 
 **El ICG NO aporta.** Pesa el **0,3%** de la ponderación (suma de |coeficientes|
 estandarizados), contra 68% de las comisiones y 22% del trámite. Se deja
@@ -98,6 +105,7 @@ faltaba**, y el techo del modelo no está acá.
 > corría sin su bloque de rasgos más importante. Corregido con `_como_lista()`.
 > Señal de que el número corregido es el bueno: el skill de `sancionado` da
 > 0,3628, que coincide con el 0,363 que ya figuraba en el caso de la Ley de Lobby.
+> *(Ese 0,3628 era el valor con los datos del 04-08; ver la nota de fecha arriba.)*
 
 Si falta el CSV, el modelo corre igual sin la variable.
 

@@ -32,6 +32,14 @@ package-lock.json
 *.db
 *.sqlite
 *.sqlite3
+# ...EXCEPTO la cuarentena: es de kilobytes, la tiene que mirar una PERSONA y si
+# no viaja, los pendientes de revision quedan solo en la maquina de quien cargo.
+# Seria la quinta vez que este archivo esconde trabajo (ver ESTADO 04-08).
+!datos/proyectos/data/cuarentena.db
+# Los journals de SQLite son temporales de una corrida: nunca se versionan.
+*.db-journal
+*.db-wal
+*.db-shm
 
 # Carpeta de descarte: ignorar contenido, conservar el README
 Archivos_Borrar/*

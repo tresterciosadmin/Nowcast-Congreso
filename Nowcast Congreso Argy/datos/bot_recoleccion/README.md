@@ -4,7 +4,7 @@
 trae lo nuevo de ambas cámaras — proyectos ingresados con firmantes y giros —
 y (fase posterior) las votaciones nuevas, con upsert idempotente.
 
-**Estado:** EN CURSO (adaptador Senado listo con tests; Diputados en exploración)
+**Estado:** EN CURSO — bicameral, automatizado en GitHub Actions **y entregando a `proyectos.db`** desde el 07-08-2026 (ADR-0009).
 **Owner actual:** Claude+Franco (2026-07-11)
 
 ## Arquitectura (diseño en README de datos/expedientes, fase 2)
@@ -38,7 +38,7 @@ diario 07:00 ARG (lun-sáb) + botón manual en la pestaña Actions. Corre
 Es el ejecutor 24/7 interino hasta la Etapa 4 (Oracle); la base se completa
 sola en el propio repo. Al hacer `git pull` te traés lo que el bot juntó.
 
-## 🔴 EL BOT RECOLECTA PERO NO ENTREGA (verificado 2026-08-06)
+## ✅ LA ENTREGA — resuelta el 2026-08-07 (ADR-0009)
 
 **Ningún script del repo lee las salidas de este módulo** fuera de sus propios
 tests. Comprobado con `grep` sobre todo el árbol: `tp_entradas.parquet`,
@@ -51,25 +51,38 @@ igual. Acá el bot es la **alarma**: detecta y abre un issue con los comandos.
 Decisión explícita del 04-08 — no reconstruir la fuente de verdad sin revisión
 humana.
 
-**El agujero está en los proyectos:**
+**✅ EL AGUJERO SE CERRÓ el 2026-08-07 (ADR-0009).** Este README decía hasta ese
+día que el bot "recolecta pero no entrega". **Ya entrega.**
 
-| Base | Filas | Cubre hasta |
-|---|---:|---|
-| `datos/expedientes/data/clean/expedientes.parquet` — **lo que lee el embudo** | 112.793 | **2026-06-02** |
-| `data/clean/tp_entradas.parquet` (Diputados) | 2.799 | 2026-08-04 |
-| `data/clean/dae_entradas.parquet` (Senado) | 1.007 | 2026-07-20 |
-| `datos/proyectos/data/proyectos.db` — **el destino previsto** | **no existe** | — |
+`datos/proyectos/src/upsert_bot.py` carga lo que junta este módulo en
+`proyectos.db`, que es la fuente de verdad que consume el embudo:
 
-Consecuencias: **861 proyectos** que este bot ya tiene son invisibles para el
-modelo (un proyecto de julio o agosto **no se puede nowcastear**); se pierden los
-**cofirmantes completos** (1.008 de 2.799), que son la razón por la que se
-construyó el scraper del TP; y es el **blocker real de las taxonomías** —
-`proyectos.db` nunca se creó, así que el agente no tiene dónde escribir.
+| | resultado |
+|---|---:|
+| proyectos nuevos cargados | **+1.531** |
+| …de ellos, **proyectos de ley del Senado** | **514** |
+| proyectos existentes enriquecidos con datos de acá | 2.293 |
+| proyectos con **cofirmantes completos** (el dato que CKAN no publica) | **1.222** (máx. 15 firmantes) |
+| el universo del modelo pasa a llegar hasta | **05-ago-2026** (antes: 02-jun) |
 
-Registrado en `coordinacion/URGENTE.md` ítem 5. Toca dos módulos
-(`datos/bot_recoleccion` + `datos/proyectos`) y la decisión de contrato —si el
-embudo pasa a leer `proyectos.db` o si `datos/expedientes` absorbe lo del bot—
-**requiere un ADR**.
+**El giro AL INGRESAR que captura el TP** entra como `n_giros_inicial`, que es
+medición directa y le gana a la reconstrucción de `giros_iniciales.py`. La cobertura
+del giro medido subió de 2.927 a **4.449 proyectos**.
+
+**Lo que NO se pudo leer va a `datos/proyectos/data/cuarentena.db`**, una base aparte
+(decisión de Valle): la carga no se frena por una fila rara, pero nada dudoso entra a
+la base general. Ver `python datos/proyectos/src/cuarentena.py`.
+
+> ⚠️ **Cuidado al leer el TP:** el campo `giros` viene **sin separadores**
+> (`"ASUNTOS CONSTITUCIONALES LEGISLACION PENAL PRESUPUESTO Y HACIENDA"` son tres).
+> Hay que matchear contra el catálogo de 151 comisiones, del nombre más largo al más
+> corto. Partirlo por espacios da un error de 10x — ya pasó el 07-08.
+>
+> ⚠️ **Y el DAE del Senado trae el código de origen en el prefijo** (`S-` senador,
+> `PE-` Ejecutivo, `CD-` Diputados). Un parser que sólo matchee `^S-` descarta **los
+> del Poder Ejecutivo**, que son los de mayor peso del modelo (convierte ~77% contra
+> 1,4%). Pasó el 07-08 con 34 expedientes, y el único síntoma fue un
+> `logger.warning`.
 
 ## Pendientes
 **(1) El upsert hacia `datos/proyectos`** — ver la sección de arriba; es el que

@@ -43,6 +43,9 @@ from __future__ import annotations
 import json
 import logging
 import os
+import shutil
+import sqlite3
+import tempfile
 import sys
 from pathlib import Path
 
@@ -144,6 +147,89 @@ def cargar(clean_dir: Path) -> dict[str, pd.DataFrame]:
         raise FileNotFoundError(
             f"no encontre expedientes.parquet en {clean_dir}. "
             "Corre antes: python datos/expedientes/src/ingesta_ckan.py")
+    return dfs
+
+
+def cargar_sqlite(db_path: Path) -> dict[str, pd.DataFrame]:
+    """Mismo contrato que `cargar()`, pero leido de `proyectos.db` (ADR-0009).
+
+    Devuelve EXACTAMENTE las mismas claves y columnas que la ruta de parquet, y
+    sigue usando `proyecto_id` como llave. Eso es a proposito: la etapa 1 del
+    ADR-0009 es una MUDANZA, no un cambio de modelo. Si esta funcion devolviera
+    algo distinto, el test de aceptacion (mismo skill por las dos rutas) no
+    podria distinguir un error de carga de una mejora real.
+
+    El cambio de llave a `denominador` es de una etapa posterior, y se hara
+    cuando esta ruta ya este validada.
+    """
+    if not Path(db_path).exists():
+        raise FileNotFoundError(
+            f"no existe {db_path}. Corre antes: "
+            "python datos/proyectos/src/migrar_ckan.py")
+
+    # El mount de la carpeta del proyecto no soporta el file locking de SQLite
+    # (`disk I/O error`, comprobado 07-08-2026). Se lee una copia local. En
+    # Windows no hace falta, pero copiar 88 MB es barato y no rompe nada.
+    tmp = Path(tempfile.gettempdir()) / "proyectos_lectura.db"
+    try:
+        shutil.copyfile(db_path, tmp)
+        origen = tmp
+    except OSError as e:
+        logger.warning("no pude copiar la base a local (%s); la leo en su lugar", e)
+        origen = Path(db_path)
+
+    con = sqlite3.connect(str(origen))
+    try:
+        q = lambda sql: pd.read_sql_query(sql, con)  # noqa: E731
+        dfs = {
+            # COALESCE, no `proyecto_id` a secas: las altas del bot NO tienen id de
+            # CKAN (todavia no lo publico), y `construir_cohorte` hace
+            # `astype(str)` + `drop_duplicates("proyecto_id")` — con lo cual TODOS
+            # los nulos se vuelven el string "None" y colapsan a UNA fila. Sin
+            # esto, cargar 671 leyes nuevas sumaba +1 proyecto a la cohorte, sin
+            # error y sin warning. Para los de CKAN el COALESCE devuelve lo mismo,
+            # asi que la equivalencia entre las dos rutas se mantiene.
+            "expedientes": q("""
+                SELECT COALESCE(proyecto_id, denominador) AS proyecto_id,
+                       sumario AS titulo, fecha_ingreso AS fecha_publicacion,
+                       camara AS camara_origen, denominador AS exp_diputados,
+                       exp_senado, tipo,
+                       (SELECT nombre FROM proyecto_autores a
+                         WHERE a.denominador = p.denominador AND a.orden = 0) AS autor
+                  FROM proyectos p"""),
+            "giros": q("""
+                SELECT COALESCE(pr.proyecto_id, pr.denominador) AS proyecto_id, g.comision
+                  FROM proyecto_giros g JOIN proyectos pr USING (denominador)"""),
+            "dictamenes": q("""
+                SELECT COALESCE(pr.proyecto_id, pr.denominador) AS proyecto_id FROM proyecto_hitos h
+                  JOIN proyectos pr USING (denominador) WHERE h.hito = 'dictamen'"""),
+            "movimientos": q("""
+                SELECT COALESCE(pr.proyecto_id, pr.denominador) AS proyecto_id, t.movimiento, t.fecha
+                  FROM proyecto_tramite t JOIN proyectos pr USING (denominador)"""),
+            "resultados": q("""
+                SELECT COALESCE(pr.proyecto_id, pr.denominador) AS proyecto_id, h.detalle AS resultado, h.fecha
+                  FROM proyecto_hitos h JOIN proyectos pr USING (denominador)
+                 WHERE h.hito = 'resultado'"""),
+            "leyes": q("""
+                SELECT COALESCE(pr.proyecto_id, pr.denominador) AS proyecto_id FROM proyecto_hitos h
+                  JOIN proyectos pr USING (denominador) WHERE h.hito = 'ley'"""),
+        }
+        gi = q("""SELECT COALESCE(proyecto_id, denominador) AS proyecto_id,
+                          n_giros_inicial, n_giros_inicial_fuente AS fuente
+                    FROM proyectos WHERE n_giros_inicial IS NOT NULL""")
+        if len(gi):
+            dfs["giros_iniciales"] = gi
+    finally:
+        con.close()
+
+    # `camara_origen` viaja en minuscula en la base y en capitalizado en el
+    # parquet. `construir_cohorte` hace .upper(), asi que da igual — pero se
+    # normaliza igual para que un diff de las dos rutas no muestre ruido.
+    if "camara_origen" in dfs["expedientes"].columns:
+        dfs["expedientes"]["camara_origen"] = (
+            dfs["expedientes"]["camara_origen"].astype(str).str.capitalize())
+
+    logger.info("SQLite: %s", {k: len(v) for k, v in dfs.items()})
     return dfs
 
 
@@ -537,7 +623,12 @@ def _rutas():
     feats = root.parents[3] / "variables" / "proyecto" / "data" / "features_proyecto.parquet"
     icg = Path(os.environ.get(
         "ICG_CSV", root.parents[3] / "variables" / "proyecto" / "data" / "icg_mensual.csv"))
-    return clean, out, (feats if feats.exists() else None), (icg if icg.exists() else None)
+    # ADR-0009: si existe proyectos.db se lee de ahi. `EMBUDO_FUENTE=parquet`
+    # fuerza la ruta vieja — es lo que permite correr las dos y compararlas.
+    db = Path(os.environ.get(
+        "PROYECTOS_DB", root.parents[3] / "datos" / "proyectos" / "data" / "proyectos.db"))
+    return (clean, out, (feats if feats.exists() else None),
+            (icg if icg.exists() else None), (db if db.exists() else None))
 
 
 def cmd_funnel(c: pd.DataFrame, out: Path) -> None:
@@ -612,9 +703,15 @@ def main(argv: list[str]) -> None:
     logging.basicConfig(level=logging.INFO,
                         format="%(asctime)s %(levelname)s %(name)s %(message)s")
     cmd = argv[1] if len(argv) > 1 else "all"
-    clean, out, feats_path, icg_path = _rutas()
+    clean, out, feats_path, icg_path, db = _rutas()
     icg = cargar_icg(icg_path)
-    dfs = cargar(clean)
+    fuente = os.environ.get("EMBUDO_FUENTE", "auto").lower()
+    if fuente == "parquet" or db is None:
+        logger.info("FUENTE: parquet (%s)", clean)
+        dfs = cargar(clean)
+    else:
+        logger.info("FUENTE: sqlite (%s)", db)
+        dfs = cargar_sqlite(db)
     c = construir_cohorte(dfs)
     logger.info("cohorte: %d proyectos de LEY", len(c))
     feats_proy = pd.read_parquet(feats_path) if feats_path else None

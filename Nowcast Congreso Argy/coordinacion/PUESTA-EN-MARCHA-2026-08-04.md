@@ -1,25 +1,25 @@
 # Puesta en marcha — lo que queda de la sesión del 04-08-2026
 
-> ## 🔴 SIGUE PENDIENTE al 2026-08-06
+> ## ✅ EJECUTADO el 2026-08-06 (con dos hallazgos)
 >
-> Verificado en la auditoría del 06-08: **el PASO 4 no se ejecutó**.
-> `padron-vivo.yml` e `icg-mensual.yml` siguen en
-> `Nowcast Congreso Argy\.github\workflows\`, junto con el duplicado
-> `bot-diario.yml` y su nota. Como GitHub sólo lee `.github/workflows/` **de la
-> raíz**, esos dos bots **nunca se dispararon**.
+> El PASO 4 llevaba un mes sin ejecutarse: `padron-vivo.yml` e `icg-mensual.yml`
+> seguían en la subcarpeta, donde GitHub no los lee. **Se movieron los tres a la
+> raíz el 06-08** y el permiso quedó en *Read and write*.
 >
-> **Cómo lo verifiqué, por si querés confirmarlo vos:** `datos/padron/outputs/`
-> contiene únicamente el `.gitkeep`. Si `padron-vivo.yml` hubiera corrido aunque
-> sea una vez, ahí estaría `vigilancia_padron.md` (el reporte que escribe en cada
-> corrida) y en `datos/padron/data/` estaría `estado_vigilancia.json`. No están.
+> **`padron-vivo` corrió y salió verde** — y el número de corrida, **`#1`**,
+> confirma que en un mes nunca se había disparado. Commiteó su reporte, y el paso
+> de abrir issue quedó salteado porque no hubo novedades: la deduplicación anda.
 >
-> **Son 5 minutos de PowerShell.** Andá directo al PASO 4 y después al 5 (el
-> permiso de escritura, que es el que más se olvida). El resto del runbook —
-> tests, chequeo del `.gitignore`, el commit — ya se hizo.
+> **Dos cosas que aparecieron al hacerlo:**
 >
-> El bot diario **sí** está vivo y al día: su última revisión es del 06-08, con
-> 76 actas nuevas de Diputados y 174 del Senado detectadas para 2026.
-> *(Banner agregado el 06-08 por la auditoría general.)*
+> 1. **`bot-diario.yml` no tenía los avisos** que se escribieron el 04-08 — y la
+>    versión que los tenía usaba rutas **sin** el prefijo `"Nowcast Congreso Argy/"`,
+>    así que copiarla encima habría roto el bot. Se hizo un merge.
+> 2. **El padrón da 256, no 257.** Ver el PASO 2, corregido más abajo.
+>
+> **Lo que falta:** disparar a mano `bot-diario` e `icg-mensual` y verlos llegar
+> al commit.
+> *(Banner reescrito el 06-08 después de ejecutar el paso.)*
 
 Todo el código está escrito, testeado y corriendo en seco. **Lo que falta es
 operativo, no de programación:** conectar la carpeta a git y ver a los tres
@@ -84,8 +84,14 @@ python datos\padron\src\bajar_nomina.py diputados --padron
 python datos\padron\src\vigilar_padron.py --camara ambas
 ```
 
-**Tiene que dar:** `bancas vigentes al ...: 257` y después
-`🟢 Sin novedades`, con Diputados en **257** y Senado en **72**.
+**Tiene que dar:** `🟢 Sin novedades`, con **Diputados en 256** y Senado en **72**.
+
+> ⛔ **Corregido el 06-08.** Acá decía que tenía que dar **257**. Es falso: da
+> **256**, y el vigilante lo marca como `banca_vacante`, dentro de tolerancia.
+> Verificado contra la API en vivo y contra el archivo, que da 256 en todas las
+> fechas de agosto. **La banca faltante es la de Pitrola** (`hasta = 2026-04-27`).
+> Un "tiene que dar" con el número equivocado es peor que no tenerlo: manda a
+> parar una corrida que salió bien.
 
 **Si da otra cosa:** no lo arregles a mano. El vigilante te va a listar quién
 sobra o falta — mandámelo y lo miramos. Ya sabemos que esta fuente carga mal
@@ -134,7 +140,7 @@ sesion 04-08: ICG al embudo, padron vivo y los tres cron en Actions
   de skill; la deriva a 3 meses pesa 6x mas que el nivel.
 - datos/padron/vigilar_padron.py: vigilante semanal de altas, bajas, pases
   de bloque y total != 257/72. Idempotente.
-- Padron de Diputados regenerado: 257 exacto (aparecen Matzkin y Pitrola).
+- Padron de Diputados regenerado: 257 exacto (aparecen Matzkin y Pitrola). ⛔ **CORREGIDO 2026-08-06: es FALSO, da 256.** Verificado contra la API en vivo (`padron-vivo #1`) y contra el archivo: `padron_diputados.csv` da 256 vigentes en todas las fechas de agosto, incluido el 04-08, y el `.bak` previo también. Nunca dio 257. La banca faltante es la de **Pitrola** (`hasta = 2026-04-27`), vacante desde abril.
 - 3 workflows de GitHub Actions: bot diario, padron los lunes, ICG el dia 5.
 - .gitignore: el padron del Senado estaba oculto y genero una urgencia falsa.
 - Tests: 18 + 17 + 15 + 21 en verde.

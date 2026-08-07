@@ -8,11 +8,12 @@
 > | 2 | URGENTE 0 — leakage de `n_giros` | 🔴 sin hacer — sigue siendo `URGENTE.md` ítem 0 |
 > | 3 | Senado 2026 sin bloque en la ingesta | 🟡 **arreglado en código** el 06-08 (padrón vigente mandate-aware + 8 tests; los 72 senadores resuelven). Falta re-correr `run_pipeline.py` para que llegue a los parquet → `URGENTE.md` ítem 2. |
 > | 4 | Enchufar el mecanismo 1 del ICG al ensemble | 🔴 sin hacer — espera que el equipo mire los paneles y fije γ |
-> | 5 | Confirmar el padrón contra la API | 🔴 sin hacer → `URGENTE.md` ítem 3 |
+> | 5 | Confirmar el padrón contra la API | ✅ **HECHO el 06-08** — lo hizo el propio `padron-vivo #1` contra la API en vivo. Resultado: el padrón versionado coincide con la fuente, pero **da 256, no 257** (ver la corrección más abajo). |
 >
-> Y el **PASO 4 del runbook** (mover los workflows a la raíz) tampoco se hizo:
-> los dos bots nuevos nunca corrieron. Detalle en
-> `PUESTA-EN-MARCHA-2026-08-04.md` y en `URGENTE.md` ítem 4.
+> El **PASO 4 del runbook** (mover los workflows a la raíz) tampoco se había
+> hecho — **se hizo el 06-08**. `padron-vivo` corrió por primera vez (`#1`) y
+> salió verde; `bot-diario` se mergeó con los avisos que le faltaban e
+> `icg-mensual` sigue sin estrenar. Detalle en `URGENTE.md` ítem 3.
 >
 > *(Banner agregado el 06-08 por la auditoría general. Este archivo es el cierre
 > de UNA sesión: para saber qué está pendiente HOY, la fuente es `URGENTE.md`.)*
@@ -72,7 +73,7 @@ MODELO
   registrada (PANEL-COYUNTURA.html / PANEL-MOVIL.html).
 
 DATOS
-- Padron de Diputados regenerado: 257 exactos.
+- Padron de Diputados regenerado: 257 exactos. ⛔ **CORREGIDO 2026-08-06: es FALSO, da 256.** Verificado contra la API en vivo (`padron-vivo #1`) y contra el archivo: `padron_diputados.csv` da 256 vigentes en todas las fechas de agosto, incluido el 04-08, y el `.bak` previo también. Nunca dio 257. La banca faltante es la de **Pitrola** (`hasta = 2026-04-27`), vacante desde abril.
 - vigilar_padron.py: vigilante semanal de altas, bajas y pases de bloque.
 - calendario_electoral.csv y curva_ciclo_presidencial.csv, curados a mano.
 

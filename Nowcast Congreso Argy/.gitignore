@@ -177,3 +177,39 @@ datos/padron/data/raw/*
 # Muestra manual de taxonomias: 88 actas clasificadas A MANO por Valle. Es el set
 # de referencia agente-vs-humano, no se regenera -> va al repo.
 !variables/proyecto/outputs/muestra_manual_taxonomias.csv
+
+# ---------------------------------------------------------------------------
+# 2026-08-06 — QUINTA vez, y esta escondia CONTRATOS ENTRE MODULOS.
+#
+# Detectado al chequear antes de commitear: `p_embudo.parquet` salia IGNORADO.
+# Es el contrato que `modelo/ensemble` consume para el factor P(llega al
+# recinto) — o sea que nunca estuvo en el repo, y **quien pullee no puede
+# correr el ensemble**: tiene que regenerar toda la cadena antes.
+#
+# Revisados TODOS los parquet del repo (con las reglas evaluadas de verdad, no
+# por grep: las excepciones usan comodines y un grep literal da falsos
+# negativos). Aparecieron cuatro en la misma situacion, y los cuatro tienen la
+# misma propiedad: **otro modulo los lee**.
+#
+# LA REGLA QUE SE DESPRENDE, mas util que la lista: si la salida de un modulo
+# es INSUMO DE OTRO, viaja. Lo que solo mira su propio dueño, no hace falta.
+# Las cuatro veces anteriores (expedientes 11-07, jefes 30-07, embudo 31-07,
+# padron del Senado 04-08) el criterio se decidio caso por caso; este lo
+# generaliza.
+# ---------------------------------------------------------------------------
+
+# p_embudo: lo consume modelo/ensemble (P llega al recinto). 433 KB.
+!variables/embudo/outputs/*.parquet
+
+# tema_por_acta y origen_por_acta: los consume variables/bloque para condicionar
+# la direccion por tema y por origen. 44 KB + 82 KB.
+!variables/proyecto/data/tema_por_acta.parquet
+!variables/proyecto/data/origen_por_acta.parquet
+
+# serie_bloque: la serie por bloque que consume el ensemble. 15 KB.
+!variables/bloque/outputs/*.parquet
+
+# NO se agregan (regenerables y solo los usa su dueño):
+#   datos/senado/data/clean/senado_*.parquet  -> ya viajan dentro de la canonica
+#   modelo/voto_individual/outputs/desvios_por_voto.parquet -> sus CSV ya viajan
+#   variables/legislador/data/*.parquet -> el CSV y el XLSX ya viajan

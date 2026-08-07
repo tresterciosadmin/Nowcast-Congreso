@@ -95,54 +95,31 @@ versiona desde el 31-07). El bot, además, tiene 76 actas nuevas de Diputados y
 
 ---
 
-## 3. Confirmar el padrón contra la API (la regeneración ya se aplicó)
-**Detectado:** 2026-08-04 · Claude · **bloquea: que `P(mayoría)` cuente bien**
-
-El vigilante nuevo detectó que el padrón versionado había quedado viejo: faltaban
-**Matzkin** y **Pitrola** (los dos que el 31-07 dábamos por perdidos) y sobraba
-**Ravier**. **Ya se regeneró y da 257 exacto** (el anterior quedó en
-`padron_diputados.ANTES-2026-08-04.csv.bak`).
-
-**Lo que falta:** esa regeneración salió del crudo en disco, porque el entorno de
-Claude no llega a internet. Hay que confirmarla contra la API, que es la fuente
-viva:
-
-```bash
-python datos/padron/src/bajar_nomina.py diputados --padron
-python datos/padron/src/vigilar_padron.py --camara ambas   # verificar que quede limpio
-```
-
-Es una corrida corta y sin riesgo. Después de hacerla, este ítem se borra (y se
-puede borrar también el `.bak`, que hoy **está viajando a git**: la regla `*.csv`
-no lo atrapa porque termina en `.bak`).
-
----
-
-## 4. Los workflows nuevos no están donde GitHub los lee
+## 3. Los workflows nuevos no están donde GitHub los lee
 **Detectado:** 2026-08-06 · Claude (auditoría) · **bloquea: que el padrón y el ICG se actualicen solos**
 
-`padron-vivo.yml` (lunes) e `icg-mensual.yml` (día 5) siguen en
-`Nowcast Congreso Argy/.github/workflows/`. **La raíz del repo está un nivel más
-arriba**, y GitHub sólo lee `.github/workflows/` de la raíz: ahí donde están,
-**nunca se dispararon**.
+**Los tres YAML ya están en la raíz** (movidos el 06-08) y el permiso de
+escritura quedó en *Read and write*. Estado de cada uno:
 
-**La evidencia de que no corrieron:** `datos/padron/outputs/` tiene sólo el
-`.gitkeep` — falta `vigilancia_padron.md`, que el workflow escribe en cada
-corrida. Y `estado_vigilancia.json` tampoco existe.
+| Workflow | Estado |
+|---|---|
+| `padron-vivo.yml` (lunes) | ✅ **corrió y funciona** — `padron-vivo #1`, verde, commiteó el reporte |
+| `bot-diario.yml` | 🟡 mergeado el 06-08 con los avisos que le faltaban; **falta verlo correr una vez** |
+| `icg-mensual.yml` (día 5) | 🔴 **sin estrenar** |
 
-Los YAML están **bien escritos** (las rutas internas ya llevan el prefijo
-`"Nowcast Congreso Argy/"` entrecomillado): sólo están en el lugar equivocado.
-Mientras tanto, `tablero_datos.js` anuncia "2 workflows nuevos en Actions" —
-corregido el 06-08, pero el trabajo operativo sigue pendiente.
+**Qué falta:** disparar a mano cada uno desde Actions → *Run workflow* y ver que
+llegue al paso de commit. `icg-mensual.yml` recién se dispararía solo el 5 del
+mes que viene, así que sin prueba manual no hay forma de saber si anda.
 
-**Qué hacer:** el PASO 4 del runbook
-(`coordinacion/PUESTA-EN-MARCHA-2026-08-04.md`), 5 minutos de PowerShell. Ahí
-está el comando exacto, incluido el borrado del duplicado `bot-diario.yml`.
-**Es lo único que separa a esos dos bots de estar corriendo.**
+**Anotado del run #1:** GitHub avisa que `actions/checkout@v4` y
+`actions/setup-python@v5` corren sobre Node.js 20, ya deprecado, y los fuerza a
+Node 24. Hoy es sólo un warning; cuando GitHub lo corte, los tres workflows
+fallan a la vez. Subir a `checkout@v5` / `setup-python@v6` es de un minuto y
+conviene hacerlo antes de que sea urgente.
 
 ---
 
-## 5. El bot recolecta proyectos y NADIE los carga: el universo del modelo está congelado
+## 4. El bot recolecta proyectos y NADIE los carga: el universo del modelo está congelado
 **Detectado:** 2026-08-06 · Valle (la pregunta) + Claude (verificación) · **bloquea: nowcastear cualquier proyecto reciente**
 
 Valle preguntó si el bot diario carga en la base los proyectos que detecta.
@@ -201,7 +178,7 @@ recolecta bien y no entrega.
 
 ---
 
-## 6. Validar 15 filas MEDIA del roster de jefes (equipo)
+## 5. Validar 15 filas MEDIA del roster de jefes (equipo)
 **Detectado:** 2026-07-30 · Claude+Franco · **bloquea: confiar en `lider_jefe_bloque`**
 
 > **Prioridad rebajada el 31-07.** Medido el efecto real, `lider_jefe_bloque` aporta

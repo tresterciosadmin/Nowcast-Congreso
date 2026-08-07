@@ -56,6 +56,30 @@ Mantené esta tabla sincronizada con la bitácora.
 
 ## Bitácora (más reciente arriba)
 
+### [2026-08-06 · noche] infraestructura — los 3 workflows a la raíz, el bot con avisos, y el padrón NO da 257
+- **Quién:** Valle (corre todo) · Claude (diagnóstico y merge) · **Módulos:** datos/bot_recoleccion, datos/padron
+
+**1) Los tres workflows ya están en la raíz y `padron-vivo` corrió.** `padron-vivo #1` — el `#1` confirma que **nunca se había disparado** en el mes que llevaba escrito. Verde de punta a punta, commiteó `vigilancia_padron.md` + `estado_vigilancia.json`, y el paso "abrir issue" quedó **salteado** porque no hubo novedades: la deduplicación funciona. Permiso en *Read and write*.
+
+**2) `bot-diario.yml` estaba sin las mejoras del 04-08, y las mejoras estaban rotas.** El workflow real de la raíz (2.417 bytes) no tenía ninguno de los avisos. Y la versión "mejorada" que se había escrito el 04-08 **usaba rutas SIN el prefijo `"Nowcast Congreso Argy/"`**: copiarla encima habría roto el bot en el primer paso. Estaba escrita para vivir en la subcarpeta, o sea que arrastraba el mismo error de ubicación por dentro. Se hizo un **merge**: base de la raíz (rutas correctas, Python 3.12, nombre que ya figura en Actions) + lo que faltaba — `issues: write`, `continue-on-error` por fuente, issue de "reconstruí la canónica" e issue de "fuente caída". Corrección sobre el diseño original: la detección de actas nuevas mira `git diff --cached` **antes** de commitear, no `HEAD~1` después (así no avisa en corridas sin novedades). Instalado y verificado byte a byte, 10.358 bytes.
+
+**Por qué importa el `continue-on-error`:** como estaba, si `dae_senado.py` fallaba, **`tp_diputados.py` y `votaciones.py` ni se ejecutaban**. Una fuente caída mataba la recolección entera. Y el scraper de Diputados ya falla la verificación SSL contra `hcdn.gob.ar` y reintenta con `verify=False`, así que no es hipotético.
+
+**3) 🔴 EL PADRÓN NO DA 257. Da 256, y nunca dio 257.** El vigilante, contra la API en vivo, reportó **256 bancas** con alarma `banca_vacante` (dentro de tolerancia). Verificado después contra el archivo: `padron_diputados.csv` da **256 vigentes en TODAS las fechas de agosto, incluido el 04-08** — y el `.bak` anterior a la regeneración también. O sea que **"el padrón se regeneró y da 257 EXACTO" fue siempre falso**, y está escrito en cinco lugares (ESTADO x2, EN-HUMANO, CIERRE-SESION, PUESTA-EN-MARCHA) más dos hitos del tablero.
+
+**La banca que falta tiene nombre:** Pitrola, con `hasta = 2026-04-27`. Es el único mandato del padrón que termina en 2026. Su banca figura **vacante desde abril** — más de tres meses. O es una vacante real sin cubrir, o el reemplazante no está en la API. Vale confirmarlo: el impacto en el modelo es chico (la mayoría absoluta son 129 por ley, no depende del total), pero es el insumo del quórum.
+
+**El agravante, y es mío:** esta sesión **reescribió `URGENTE.md` copiando la frase "ya se regeneró y da 257 exacto" sin verificarla contra el archivo**. Es exactamente el modo de falla que la auditoría de hoy documentó — repetir un número leído en una bitácora sin abrir el dato — cometido mientras se lo documentaba. La regla escrita en `CLAUDE.md` esta misma tarde ("antes de repetir un número o un estado que leíste en una bitácora, verificalo contra el archivo") se aplica también a quien la escribe.
+
+**4) Node.js 20 deprecado.** El run #1 avisa que `actions/checkout@v4` y `actions/setup-python@v5` se fuerzan a Node 24. Hoy es warning; cuando GitHub lo corte, **los tres workflows fallan a la vez**. Subir a `checkout@v5` / `setup-python@v6`.
+
+**5) Un patrón que vale anotar:** el bloque de instalación del workflow se corrió **dos veces**, y en la segunda pasada el backup se hizo *después* del reemplazo — o sea que guardó una copia del archivo nuevo. Un comando que parece idempotente y no lo es. No hubo daño porque existía una copia previa, pero el modo de falla es silencioso: el backup queda, y es inútil.
+
+- **Archivos:** raíz `.github/workflows/{bot-diario,padron-vivo,icg-mensual}.yml` (los tres movidos; `bot-diario` mergeado), `coordinacion/{URGENTE,ESTADO-DEL-PROYECTO}.md`, copias en `Archivos_Borrar/_root-bot-diario.*`.
+- **Estado del módulo:** datos/bot_recoleccion EN CURSO · datos/padron EN CURSO.
+- **Próximo paso:** (1) disparar a mano `bot-diario` e `icg-mensual` y verlos llegar al commit; (2) **corregir el "257 exacto" en los 7 lugares** y decidir si la banca vacante desde abril es real; (3) el `p_embudo` regenerado (skill 0,3628, ICG neutro como corresponde tras el ADR-0008) y la canónica reconstruida quedan para commitear.
+
+
 ### [2026-08-06] coordinación + datos/argentinadatos — CONTROL GENERAL: 12 hallazgos, tres de ellos afectaban números publicables
 - **Quién:** Valle (lo pide y fija el alcance) · Claude (lo ejecuta) · **Módulos:** coordinacion, datos/argentinadatos
 
@@ -322,7 +346,7 @@ Se multiplican las CHANCES, no la probabilidad (P × k puede superar 1; las odds
 ### [2026-08-04 · cierre] Cierre operativo de la sesión: padrón a 257 aplicado y dos huecos de los workflows tapados
 - **Quién:** Valle (con Claude) · **Módulos:** datos/padron, .github/workflows
 
-**1) Padrón de Diputados regenerado — 257 exacto.** Se corrió `ingesta_padron.py` sobre el crudo actual y da **257** (LLA 95 · FdT-UxP 93 · OTRO/PROVINCIAL 47 · PRO 12 · UCR 6 · CC 2 · PerFed 2). Aplicado, con el anterior guardado en `padron_diputados.ANTES-2026-08-04.csv.bak`. El vigilante ahora corre 🟢 en las dos cámaras. **Falta confirmarlo contra la API** (`bajar_nomina.py diputados --padron`): el sandbox no llega a internet, así que esta regeneración salió del crudo en disco, que ya era más nuevo que el padrón.
+**1) Padrón de Diputados regenerado — 257 exacto.** ⛔ **FALSO — corregido el 06-08: da 256.** Verificado contra la API en vivo (`padron-vivo #1`) y contra el archivo, que da 256 en todas las fechas de agosto, incluido el 04-08; el `.bak` previo también. **Nunca dio 257.** Falta la banca de **Pitrola** (`hasta = 2026-04-27`), vacante desde abril. Detalle en la entrada del 06-08 · noche. Se corrió `ingesta_padron.py` sobre el crudo actual y da **257** (LLA 95 · FdT-UxP 93 · OTRO/PROVINCIAL 47 · PRO 12 · UCR 6 · CC 2 · PerFed 2). Aplicado, con el anterior guardado en `padron_diputados.ANTES-2026-08-04.csv.bak`. El vigilante ahora corre 🟢 en las dos cámaras. **Falta confirmarlo contra la API** (`bajar_nomina.py diputados --padron`): el sandbox no llega a internet, así que esta regeneración salió del crudo en disco, que ya era más nuevo que el padrón.
 
 **2) Hueco tapado — el bot detecta, pero la canónica no se reconstruye sola.** `votaciones.py` lo dice al terminar, y el workflow no lo contemplaba: las actas nuevas quedaban en un parquet que el modelo no mira — el mismo agujero que dejó nueve meses de votaciones sin cargar. `bot-diario.yml` ahora detecta si commiteó actas nuevas y **abre un issue con los comandos exactos** (`to_canonical.py` + `run_pipeline.py`), con guarda de no duplicar: si ya hay uno abierto con la etiqueta `canonica-pendiente`, no abre otro. **Se decidió NO reconstruir la canónica automáticamente:** es la fuente de verdad y reescribirla sin revisión humana es demasiado riesgo para un cron. El olvido deja de depender de la memoria; la decisión sigue siendo humana.
 
@@ -331,7 +355,7 @@ Se multiplican las CHANCES, no la probabilidad (P × k puede superar 1; las odds
 **4) Runbook de puesta en marcha.** `coordinacion/PUESTA-EN-MARCHA-2026-08-04.md`: 7 pasos con lo que tiene que dar cada uno y qué hacer si no da. Incluye el paso que más se olvida — **Settings → Actions → Workflow permissions → Read and write**, sin el cual los tres bots fallan al pushear — y el orden de prueba de menos a más invasivo (ICG → padrón → bot).
 
 - **Archivos:** `datos/padron/data/padron_diputados.csv` (+ `.bak`), `.github/workflows/{bot-diario,padron-vivo,icg-mensual}.yml`, `coordinacion/PUESTA-EN-MARCHA-2026-08-04.md` (nuevo).
-- **Estado:** infra de cron COMPLETA en código; **operativa recién cuando la carpeta se conecte a git** y los tres corran una vez.
+- **Estado:** infra de cron COMPLETA en código; **operativa recién cuando la carpeta se conecte a git** y los tres corran una vez. ⛔ **DOS CORRECCIONES (06-08):** (a) la carpeta **ya estaba conectada** a git — la premisa era falsa; lo que faltaba era mover los YAML a la raíz, hecho el 06-08. (b) El padrón **no da 257, da 256**: ver la entrada del 06-08 · noche.
 - **Próximo paso:** el runbook, en orden. Nada nuevo hasta que los tres estén verdes.
 
 
@@ -355,7 +379,7 @@ Es **chico pero consistente** en los dos targets: una séptima parte de lo que a
 
 **4) URGENTE 2 — PADRÓN VIVO (`datos/padron/src/vigilar_padron.py`, NUEVO).** Baja la nómina, la compara contra el padrón versionado y avisa **altas, bajas, pases de bloque y total ≠ 257/72**. Idempotente (huella del diff en `data/estado_vigilancia.json`: si no cambió, no re-avisa). Salidas: `outputs/vigilancia_padron.md` + códigos 0/10/20 que el workflow usa para decidir si abre un issue.
 
-**5) Lo que el vigilante encontró en su primera corrida — la banca 257 aparece.** Contra el crudo actual de Diputados detecta **altas: Matzkin y Pitrola** (los dos que ESTADO daba por perdidos el 31-07) y **baja: Ravier**. Con ellos el total da **257 exacto** (LLA 95 · FdT-UxP 93 · OTRO/PROVINCIAL 47 · PRO 12 · UCR 6 · CC 2 · PerFed 2). **El padrón versionado está viejo: hay que regenerarlo** (`bajar_nomina.py diputados --padron`).
+**5) Lo que el vigilante encontró en su primera corrida — la banca 257 aparece.** ⛔ **El título es falso y la corrida no era la primera de verdad** (fue en seco, local; la primera real fue `padron-vivo #1` el 06-08). Matzkin y Pitrola sí volvieron al padrón, pero **el total sigue en 256**: el mandato de Pitrola figura terminado el 27-04-2026, así que no cuenta como banca vigente. Ver la entrada del 06-08 · noche. Contra el crudo actual de Diputados detecta **altas: Matzkin y Pitrola** (los dos que ESTADO daba por perdidos el 31-07) y **baja: Ravier**. Con ellos el total da **257 exacto** (LLA 95 · FdT-UxP 93 · OTRO/PROVINCIAL 47 · PRO 12 · UCR 6 · CC 2 · PerFed 2). **El padrón versionado está viejo: hay que regenerarlo** (`bajar_nomina.py diputados --padron`).
 
 **6) Un falso positivo atrapado en el acto.** La primera versión reportó un "pase" de Del Plá que era `...TRABAJADORES-U` → `...TRABAJADORES-UNIDAD`: el mismo bloque truncado distinto. Corregido: **un pase es un cambio de LINAJE**, no de string; los cambios de texto se informan aparte como mantenimiento de la fuente. Es el mismo error de los 123 asesores y de la falsa jefa con 610 proyectos, atrapado esta vez antes de salir.
 

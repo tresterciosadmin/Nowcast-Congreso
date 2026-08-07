@@ -5,7 +5,7 @@
  },
  "tp_diputados": {
   "periodo": 144,
-  "numero": 106
+  "numero": 107
  },
  "actas_diputados_2025": {
   "ids": [
@@ -539,9 +539,14 @@
    "argentinadatos:senado:2791",
    "argentinadatos:senado:2792",
    "argentinadatos:senado:2793",
-   "argentinadatos:senado:2794"
+   "argentinadatos:senado:2794",
+   "argentinadatos:senado:2795",
+   "argentinadatos:senado:2796",
+   "argentinadatos:senado:2797",
+   "argentinadatos:senado:2798",
+   "argentinadatos:senado:2799"
   ],
-  "n": 174,
+  "n": 179,
   "ultima_revision": "2026-08-07"
  }
 }

@@ -106,8 +106,45 @@ INTENSIDAD = {
 }
 
 
+K_SHRINK = 5.0        # pseudo-conteo; mismo valor que variables/bloque (proyectar_postura)
+MIN_DISPUTADAS = 10   # por debajo de esto el desvio propio no alcanza para un tramo
+
+
+def encoger_desvio(desvio, n_disputadas, prior: float, k: float = K_SHRINK) -> float:
+    """Desvio ENCOGIDO hacia un `prior` (la mediana de su bloque), con peso
+    proporcional a cuantas votaciones disputadas lo respaldan.
+
+        desvio' = (n * desvio_obs + k * prior) / (n + k)
+
+    POR QUE (detectado 2026-08-07). Los 104 diputados de la camada dic-2025 tienen
+    **mediana de 2 votaciones disputadas** contra 47 de los veteranos. Con 2
+    observaciones el desvio solo puede valer 0, 0,5 o 1 — y los TRAMOS cortan en
+    0,10 / 0,20 / 0,30 / 0,40, asi que es **aritmeticamente imposible caer en los
+    tramos intermedios**: o se cae al piso o se salta al techo. En los hechos 96 de
+    los 104 quedaron en gamma 0,094 ("nucleo duro") por no desviarse en 2 tiradas
+    —lo mas probable que le pase incluso a una bisagra genuina (0,8^2 = 64%)— y 6
+    quedaron en **gamma 0,555, el tramo maximo de la camara, con dos datos**.
+
+    Es el mismo defecto que el equipo diagnostico a nivel camara ("no tiene
+    resolucion para verlo", ADR-0008) aparecido un nivel mas abajo, y se corrige
+    con la herramienta que el repo ya usa: encogimiento empirico-bayesiano.
+
+    Con k=5 y n=2 el dato propio pesa 29% y el prior 71%; con n=47 pesa 90%.
+    """
+    if desvio is None or (isinstance(desvio, float) and np.isnan(desvio)):
+        return float(prior)
+    n = 0.0 if n_disputadas is None or (isinstance(n_disputadas, float)
+                                        and np.isnan(n_disputadas)) else float(n_disputadas)
+    return (n * float(desvio) + k * float(prior)) / (n + k)
+
+
 def gamma_individual(desvio: float, solo_significativo: bool = False) -> float:
-    """gamma segun cuan bisagra es el legislador. NaN -> se trata como disciplinado."""
+    """gamma segun cuan bisagra es el legislador.
+
+    NaN -> se trata como disciplinado. OJO: ese default es seguro solo si el
+    desvio viene de una muestra suficiente; para legisladores nuevos usar
+    `encoger_desvio` ANTES (ver `aplicar_individual(prior_desvio=...)`).
+    """
     if desvio is None or (isinstance(desvio, float) and np.isnan(desvio)):
         desvio = 0.0
     for umbral, g in TRAMOS:
@@ -126,16 +163,57 @@ def _mover(p, gamma, s, log_rel):
 
 
 def aplicar_individual(legisladores: pd.DataFrame, s: float, log_rel: float,
-                       solo_significativo: bool = False) -> pd.DataFrame:
+                       solo_significativo: bool = False,
+                       encoger: bool = True, k: float = K_SHRINK) -> pd.DataFrame:
     """VÍA A. `legisladores` necesita `p_acompana` y `desvio`.
 
-    Devuelve el mismo frame con `gamma`, `p_mod` y `delta`.
+    Si trae `n_disputadas` (y opcionalmente `bloque`), el desvio se ENCOGE hacia
+    la mediana de su bloque antes de mapearlo a un tramo — ver `encoger_desvio`.
+    Sin `n_disputadas` el comportamiento es el de antes (contrato intacto), pero
+    se avisa: quien pasa un roster con legisladores nuevos y no manda `n_disputadas`
+    esta asignando tramos con dos observaciones.
+
+    Devuelve el mismo frame con `gamma`, `p_mod` y `delta` (y `desvio_enc` si aplica).
     """
     faltan = {"p_acompana", "desvio"} - set(legisladores.columns)
     if faltan:
         raise ValueError(f"faltan columnas {sorted(faltan)}")
     d = legisladores.copy()
-    d["gamma"] = d["desvio"].map(lambda x: gamma_individual(x, solo_significativo))
+
+    col = "desvio"
+    if encoger and "n_disputadas" in d.columns:
+        # El prior se calcula SOLO con legisladores de muestra suficiente. Si se
+        # usara el bloque entero, los novatos se encogerian hacia la mediana de
+        # sus propios pares novatos —que es el mismo ruido que queremos corregir—
+        # y el ajuste no haria nada: con 96 de 104 en desvio 0, la mediana del
+        # bloque da 0 y todos se quedan donde estaban. El prior tiene que venir
+        # de quienes SI tienen historial.
+        nd = pd.to_numeric(d["n_disputadas"], errors="coerce").fillna(0)
+        solido = d[nd >= MIN_DISPUTADAS]
+        if solido.empty:
+            solido = d
+        base = float(solido["desvio"].median())
+        if "bloque" in d.columns:
+            med = solido.groupby("bloque")["desvio"].median()
+            prior = d["bloque"].map(med).astype(float).fillna(base)
+        else:
+            prior = pd.Series(base, index=d.index)
+        d["desvio_enc"] = [
+            encoger_desvio(dv, n, pr, k)
+            for dv, n, pr in zip(d["desvio"], d["n_disputadas"], prior)
+        ]
+        col = "desvio_enc"
+        flojos = (pd.to_numeric(d["n_disputadas"], errors="coerce")
+                  .fillna(0) < MIN_DISPUTADAS).sum()
+        if flojos:
+            logger.info("encogimiento aplicado (k=%.1f): %d de %d legisladores "
+                        "tienen menos de %d disputadas", k, flojos, len(d), MIN_DISPUTADAS)
+    elif encoger:
+        logger.warning("sin columna `n_disputadas`: no puedo encoger el desvio. "
+                       "Un legislador con 2 votaciones recibe el mismo trato que "
+                       "uno con 47 (ver encoger_desvio).")
+
+    d["gamma"] = d[col].map(lambda x: gamma_individual(x, solo_significativo))
     d["p_mod"] = _mover(d["p_acompana"].values, d["gamma"].values, s, log_rel)
     d["delta"] = d["p_mod"] - d["p_acompana"]
     return d

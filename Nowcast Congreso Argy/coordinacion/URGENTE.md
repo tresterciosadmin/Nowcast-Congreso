@@ -18,108 +18,7 @@
 
 ---
 
-## 0. Revisar las VARIABLES del embudo — hay señales que no cierran
-**Detectado:** 2026-07-31 · **Franco** · **bloquea: confiar en el número que sale**
-
-Franco marcó que **varias variables del modelo no le cierran**. Revisar el set
-completo antes de seguir construyendo encima. Lo que ya sabemos que está raro:
-
-| variable | coef. | por qué no cierra |
-|---|---:|---|
-| `n_giros` / `multi_comision` | **1,35 / 1,45** | son **los dos rasgos más fuertes del modelo**, por encima de quién lo firma. ¿Es causal o proxy? Un proyecto girado a más comisiones puede ser "más importante" (y por eso avanza) o **más difícil** (más vetos). El signo positivo dice lo primero; la intuición legislativa diría lo segundo. **Sospecha fuerte de leakage sutil:** los giros pueden ampliarse *después* de presentado, y entonces el rasgo estaría mirando el futuro. |
-| `autor_tasa_hist` | 0,61 | correlaciona **0,874** con `origen_ejecutivo` (el autor del PE *es* el presidente). Se lleva todo el crédito y deja a `origen` y `lider` en ~0. |
-| `lider` | **‑0,03** | **negativo**, cuando la tasa cruda de líderes es 6x la de no-líderes. Artefacto de la colinealidad de arriba. |
-| `origen_ejecutivo` | 0,04 | ~nulo, con tasas crudas de **78,8% vs 1,4%**. Idem. |
-| `mes` | ‑0,04 | tratado como **número continuo** (enero=1 … diciembre=12): implica que diciembre es "12 veces enero". Debería ser categórico o, mejor, "días hasta el fin del período de sesiones". |
-| `anio_electoral` | ‑0,06 | definido como `anio % 2 == 1`. Correcto para Argentina, pero no distingue **antes/después de la elección** dentro del mismo año, que es cuando cambia el comportamiento. |
-
-**Qué hacer:** auditar una por una (definición, signo esperado vs. obtenido,
-correlaciones cruzadas), **priorizando el chequeo de leakage en `n_giros`** — si
-los giros se amplían después de presentado, el rasgo más importante del modelo
-está contaminado y todo el skill 0,36 queda en duda. Verificable con
-`expedientes_movimientos` (fecha de cada giro vs. fecha de presentación).
-
----
-
-## 1. `p_embudo.parquet` está generado con el modelo que tenía el bug
-**Detectado:** 2026-08-06 · Claude (auditoría) · **bloquea: cualquier número del ensemble**
-
-Es el pendiente nº 1 del cierre del 04-08 y sigue sin hacerse. Verificado en disco:
-
-| archivo | fecha |
-|---|---|
-| `variables/embudo/src/embudo.py` | **2026-08-04** (con el bug del one-hot corregido) |
-| `variables/embudo/outputs/p_embudo.parquet` | **2026-07-12** (generado con el bug) |
-
-El bug hacía que `construir_features` rechazara **en silencio** las 25 columnas
-de comisiones leídas de parquet: quedaban en cero sin avisar. `p_embudo.parquet`
-es el contrato que `modelo/ensemble` consume para el factor `P(llega al recinto)`
-— o sea que **hoy todo nowcast se apoya en la mitad mutilada del embudo**, y el
-código que lo produciría bien ya está arreglado hace dos días.
-
-**Qué hacer** (en la PC, el sandbox no lo termina):
-
-```powershell
-cd "C:\Users\tthia\Desktop\Nowcast-Congreso\Nowcast-Congreso\Nowcast Congreso Argy"
-python variables\embudo\src\embudo.py modelo
-```
-
-Después chequear que la fecha del parquet cambió y **commitearlo** (está en el
-régimen transitorio del `.gitignore`, así que viaja por git).
-
----
-
-## 2. Re-correr la ingesta para que el Senado 2026 entre CON bloque
-**Detectado:** 2026-08-06 · Claude · **bloquea: el nowcast del Senado**
-
-**El código ya está arreglado; falta la corrida.** `to_canonical.py` leía sólo el
-padrón histórico del Senado, que termina el **2025-12-09**: todo voto posterior
-al recambio del 10-dic entraba a la canónica con `bloque='SIN BLOQUE'` (6.192
-votos de 2026). El 06-08 se le sumó `datos/padron/data/padron_senado.csv`
-(mandate-aware, va último para no pisar lo curado) y **los 72 senadores vigentes
-resuelven bloque** — incluido el caso Atauche, que ingresa por el Partido
-Renovador Federal pero bloquea en LLA. Hay 8 tests nuevos que lo cubren.
-
-Pero la canónica **en disco** sigue siendo la del 04-08, construida con el
-código viejo. Hasta que se re-corra, el Senado sigue ciego:
-
-```powershell
-cd "C:\Users\tthia\Desktop\Nowcast-Congreso\Nowcast-Congreso\Nowcast Congreso Argy"
-python datos\canonica\src\run_pipeline.py
-```
-
-Son ~20 minutos y necesita internet. Después: verificar que el Senado 2026 dejó
-de estar 100% sin bloque, y **commitear los tres parquet** (la canónica se
-versiona desde el 31-07). El bot, además, tiene 76 actas nuevas de Diputados y
-174 del Senado detectadas al 06-08 que entran en la misma corrida.
-
----
-
-## 3. Los workflows nuevos no están donde GitHub los lee
-**Detectado:** 2026-08-06 · Claude (auditoría) · **bloquea: que el padrón y el ICG se actualicen solos**
-
-**Los tres YAML ya están en la raíz** (movidos el 06-08) y el permiso de
-escritura quedó en *Read and write*. Estado de cada uno:
-
-| Workflow | Estado |
-|---|---|
-| `padron-vivo.yml` (lunes) | ✅ **corrió y funciona** — `padron-vivo #1`, verde, commiteó el reporte |
-| `bot-diario.yml` | 🟡 mergeado el 06-08 con los avisos que le faltaban; **falta verlo correr una vez** |
-| `icg-mensual.yml` (día 5) | 🔴 **sin estrenar** |
-
-**Qué falta:** disparar a mano cada uno desde Actions → *Run workflow* y ver que
-llegue al paso de commit. `icg-mensual.yml` recién se dispararía solo el 5 del
-mes que viene, así que sin prueba manual no hay forma de saber si anda.
-
-**Anotado del run #1:** GitHub avisa que `actions/checkout@v4` y
-`actions/setup-python@v5` corren sobre Node.js 20, ya deprecado, y los fuerza a
-Node 24. Hoy es sólo un warning; cuando GitHub lo corte, los tres workflows
-fallan a la vez. Subir a `checkout@v5` / `setup-python@v6` es de un minuto y
-conviene hacerlo antes de que sea urgente.
-
----
-
-## 4. El bot recolecta proyectos y NADIE los carga: el universo del modelo está congelado
+## 1. El bot recolecta proyectos y NADIE los carga: el universo del modelo está congelado
 **Detectado:** 2026-08-06 · Valle (la pregunta) + Claude (verificación) · **bloquea: nowcastear cualquier proyecto reciente**
 
 Valle preguntó si el bot diario carga en la base los proyectos que detecta.
@@ -178,7 +77,7 @@ recolecta bien y no entrega.
 
 ---
 
-## 5. Validar 15 filas MEDIA del roster de jefes (equipo)
+## 2. Validar 15 filas MEDIA del roster de jefes (equipo)
 **Detectado:** 2026-07-30 · Claude+Franco · **bloquea: confiar en `lider_jefe_bloque`**
 
 > **Prioridad rebajada el 31-07.** Medido el efecto real, `lider_jefe_bloque` aporta
@@ -212,3 +111,18 @@ disfrazada de otra**. Una sola fila mal puesta contaminó cientos de casos.
 **Cómo validar:** buscar fuente explícita ("presidente/jefe del bloque X"),
 actualizar `confianza` a ALTA con la fuente, o eliminar la fila dejando el
 motivo como comentario `#` en el propio CSV (como se hizo con Bianchi).
+
+---
+
+## 3. Documentar / prolijidad (no bloquea, pero conviene)
+**Detectado:** 2026-08-07
+
+- **Padrón de Diputados: 256/257.** Falta Pitrola (la API le carga `2026-04-27 →
+  2026-04-27`) y Matzkin no figura. Se probó reparar y da 278 o 263: la fuente no
+  distingue quién asumió de quién cesó. Arreglo de fondo: **nómina oficial de
+  HCDN**. Ver `datos/padron/src/bajar_nomina.py`.
+- **`p_embudo.parquet` conviene regenerarlo** con el giro inicial enchufado
+  (`python variables/embudo/src/embudo.py modelo`, corrida larga que el sandbox no
+  termina). El modelo está sano; sólo falta que la salida lo refleje.
+- **Actions:** `checkout@v4` / `setup-python@v5` corren sobre Node 20 deprecado.
+  Subir a v5/v6 antes de que GitHub lo corte y fallen los tres workflows a la vez.

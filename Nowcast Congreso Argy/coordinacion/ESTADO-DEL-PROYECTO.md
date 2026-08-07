@@ -55,6 +55,98 @@ Mantené esta tabla sincronizada con la bitácora.
 ---
 
 ## Bitácora (más reciente arriba)
+### [2026-08-07 · noche] variables/embudo — AUDITORÍA de las 3 variables restantes: los tres "arreglos" EMPEORAN el modelo
+- **Quién:** Franco (lo pide) · Claude · **Módulo:** variables/embudo — **cierra URGENTE 0**
+- **Resultado que da vuelta la expectativa:** las tres variables sospechosas tienen los defectos que se les atribuían, **pero corregirlos baja el skill**. Ninguna se toca.
+
+| variante | skill | Δ |
+|---|---:|---:|
+| **base (como está)** | **0,3647** | — |
+| `autor_tasa_hist` con encogimiento (k=10, umbral 5) | 0,3490 | **−0,016** |
+| ídem bajando el umbral a 3 | 0,3455 | −0,019 |
+| `mes` categórico (receso / apertura / resto) | 0,3631 | −0,002 |
+
+**1) `autor_tasa_hist` — el defecto es real y el arreglo es peor.**
+- *Qué hace:* tasa histórica de sanción del autor, calculada **solo sobre el train** (sin leakage temporal: para predecir el año T usa años < T). Umbral de 5 proyectos; quien no llega recibe la tasa base (3,40%). Cubre el 98% de los proyectos con 960 autores.
+- *El defecto, medido:* **gradiente de ruido perfecto.** Autores con 5-9 proyectos: tasa media 0,084 y **29% de ellos supera 3x la base**. Con 50+: tasa 0,022 y solo 3% la supera. Cuanta menos muestra, más extrema la tasa — la firma clásica de falta de encogimiento, **el mismo patrón que el γ del ICG esta misma mañana**.
+- *Por qué el arreglo falla:* encogerla hacia la base **castiga al Poder Ejecutivo**. El presidente firma pocos proyectos por período pero convierte el 77%; encogerlo hacia 3,4% destruye la señal más fuerte del modelo. Y eso **confirma la colinealidad 0,874 desde otro ángulo**: `autor_tasa_hist` no es un rasgo cualquiera, **es el canal por el que entra el efecto Ejecutivo**. Por eso `origen_ejecutivo` quedó en 0,04: no es que el origen no importe, es que ya está adentro de la tasa del autor.
+- *La conclusión, que es la que importa:* **el problema de esta variable NO es predictivo, es interpretativo.** El modelo predice bien; lo que no se puede es leer sus coeficientes como efectos. Y eso no se arregla tocando el rasgo — se arregla **no leyéndolos**, y usando contrafactuales (que es exactamente lo que hace `escenarios.py` desde el 31-07, moviendo origen + líder + tasa del autor a la vez). **La herramienta correcta ya existía; faltaba entender por qué era necesaria.**
+
+**2) `mes` — el patrón no es lineal, pero categorizarlo no ayuda.**
+- *Qué hace:* mes de presentación como número continuo 1-12, o sea asume que diciembre "vale 12 veces" enero.
+- *El defecto, medido:* la tasa por mes **no es monótona, es un salto**: enero 9,46% (n=148) · febrero 6,72% · **marzo 2,51% (n=10.803)** · resto 3,1-4,3%. Correlación lineal con el resultado: **0,0146**, prácticamente cero — por eso el coeficiente es −0,04.
+- *Lo interesante:* el mes **no mide cuándo, mide qué tipo de proyecto**. Marzo concentra el 28% de todo (avalancha de apertura de sesiones, mucha re-presentación de rutina) y es el mes de peor tasa; enero-febrero son receso, y lo poco que entra es excepcional o de extraordinarias — por eso triplican la tasa.
+- *Por qué no se cambia:* la versión categórica da −0,002. El modelo ya captura eso por otras vías y la partición agrega parámetros sin información nueva.
+
+**3) `anio_electoral` — el defecto no es cómo está definida: es que no discrimina.**
+- *Qué hace:* `anio % 2 == 1` (las legislativas argentinas son en años impares).
+- *El defecto, medido:* año electoral 3,51% vs no electoral 3,32%. **0,19 puntos de diferencia.** Desagregando por antes/después de octubre aparece algo más (post-elección en año electoral 4,02% vs 3,43% antes) y por año del ciclo presidencial el rango es 3,03%-3,60%. Todo chico. El coeficiente −0,06 es ruido.
+- *Estado:* candidata a eliminarse por parsimonia, no por daño. La corrida que lo mediría no terminó en el sandbox; queda anotado.
+
+- **Lección metodológica (la tercera del día, y la más incómoda):** las dos auditorías anteriores encontraron defectos y **arreglarlos funcionó** (γ del ICG, giro inicial). Esta encontró defectos y **arreglarlos rompió**. La diferencia: en `autor_tasa_hist` el "ruido" que se quería limpiar era el vehículo de la señal. **Un defecto estadístico real no implica que corregirlo mejore**: hay que medir el arreglo, no solo diagnosticar el problema. Si hubiéramos aplicado el encogimiento por analogía con el caso de la mañana —que era el impulso natural— habríamos bajado el skill un 4% creyendo que lo mejorábamos.
+- **Estado:** URGENTE 0 CERRADO. Las cuatro variables auditadas; ninguna se modifica. Lo que queda del ítem es documental: dejar escrito en el README del embudo que **los coeficientes de este modelo no son efectos**.
+- **Próximo paso:** URGENTE 4 (el bot recolecta proyectos y nadie los carga: el modelo no ve nada posterior al 2 de junio).
+
+### [2026-08-07 · cierre] datos/expedientes + variables/embudo — el embudo pasa a usar el GIRO AL INGRESAR (skill 0,3628 → 0,3647)
+- **Quién:** Franco (lo pide) · Claude · **Módulos:** datos/expedientes (nuevo), variables/embudo (hook)
+- **Qué.** `n_giros` se contaba sobre `expedientes_giros`, que es el **acumulado de hoy**. Ahora se usa el giro **al ingresar**, que es lo único que se conoce al presentar. Nuevo `datos/expedientes/src/giros_iniciales.py` → contrato `giros_iniciales.parquet` (proyecto_id · n_giros_inicial · n_giros_hoy · fuente).
+- **Dos fuentes, por calidad:** (1) **TP del bot** — el giro tal como se publicó en el Trámite Parlamentario, o sea **medido** al ingresar: **1.889 proyectos**, cubre 2026 en adelante; (2) **reconstrucción histórica** — giros de hoy menos los que agregó cada "RESOLUCIÓN DE PRESIDENCIA - AMPLIACIÓN DE GIRO": **660 proyectos**. El TP gana donde hay ambos (medición > reconstrucción). Total **2.549 proyectos**, **625 con el giro efectivamente corregido** en la cohorte.
+- **Detalle de parsing que importa:** el campo `giros` del TP viene **sin separadores**; se cuenta matcheando contra el catálogo de 151 comisiones, del nombre más largo al más corto (si no, "LEGISLACION GENERAL" se contaría como "LEGISLACION" + otra). Y en las resoluciones se corta el texto en "SE SUPRIME EL GIRO A...", porque esas comisiones ya no están en el acumulado y descontarlas sería contar dos veces.
+- **Resultado:**
+
+  | | skill (sancionado) |
+  |---|---:|
+  | acumulado de hoy (como venía) | 0,3628 |
+  | **giro al ingresar** | **0,3647** |
+
+  **+0,0019** — más que el +0,0013 del test aproximado del mediodía, porque ahora 1.889 proyectos usan la medición real del TP en vez de restar 1 a ojo.
+- **Diseño: hook opcional, contrato intacto.** `cargar()` suma `giros_iniciales.parquet` a su dict si existe y `construir_cohorte` lo aplica; si el archivo no está, el módulo se comporta exactamente como antes. Mismo patrón que `features_proyecto` y el ICG. **Se tocaron 2 líneas del módulo del equipo**, ambas dentro de ese patrón.
+- **Efecto colateral bueno:** cuanto más corra el bot, más proyectos tendrán el giro **medido** en vez de reconstruido — la corrección mejora sola con el tiempo. Hoy son 1.889 de 2.549 (74%).
+- **Estado del módulo:** datos/expedientes EN CURSO · variables/embudo EN CURSO.
+- **Próximo paso:** regenerar `p_embudo.parquet` con este cambio (la corrida larga no termina en el sandbox) y auditar las tres variables que quedan en URGENTE 0, empezando por `autor_tasa_hist`.
+
+### [2026-08-07 · tarde] variables/embudo — `n_giros` NO es leakage: la sospecha queda DESCARTADA con evidencia
+- **Quién:** Franco (plantea la sospecha el 31-07) · Claude (la prueba) · **Módulo:** variables/embudo (URGENTE 0)
+- **La sospecha:** `n_giros` / `multi_comision` son los dos rasgos más fuertes del modelo (coef. 1,35 y 1,45), por encima de quién firma. Si los giros se amplían **después** de presentado, el rasgo miraría el futuro y **todo el skill 0,36 quedaría en duda**.
+- **Problema de método:** `expedientes_giros` **no tiene fecha**, así que la prueba directa (fecha del giro vs. fecha de presentación) no existe. Se atacó por dos vías independientes.
+- **Vía 1 — el bot como fotografía del momento cero.** `tp_entradas.parquet` guarda los giros **tal como se publicaron en el Trámite Parlamentario**, o sea al ingresar. Cruzados 735 proyectos de ley de 2026 contra los giros acumulados de hoy: **91,8% conserva exactamente los giros originales**, 8,0% amplió, 1 bajó. Media 2,33 → 2,41.
+  - ⚠️ **Un primer conteo dio 81,8% de ampliación y era MENTIRA:** el campo `giros` del TP viene sin separadores ("ASUNTOS CONSTITUCIONALES LEGISLACION PENAL PRESUPUESTO Y HACIENDA" son tres), y partirlo por espacios/comas contaba 1. Se rehízo matcheando contra el catálogo de 151 comisiones. **Casi publico un número diez veces más grande que el real por una heurística de parsing.**
+- **Vía 2 — el registro histórico.** 697 movimientos "AMPLIACIÓN DE GIRO"; en la cohorte madura son **552 proyectos de ley = 1,45%**. Esos tienen 3,01 giros contra 2,27 y avanzan **1,6x más** (11,2% vs 6,9% de dictamen). **La contaminación existe y es real — pero alcanza al 1,5% de los casos.**
+- **La prueba decisiva — ablación walk-forward:**
+
+  | corrida | skill (sancionado) | Δ |
+  |---|---:|---:|
+  | base | 0,3628 | — |
+  | **restando el giro ampliado a los 552 contaminados** | **0,3641** | **+0,0013** |
+  | sin `n_giros` ni `multi_comision` | 0,3059 | **−0,057** |
+
+- **Conclusión: la sospecha se descarta.** Si el poder de `n_giros` viniera del futuro, limpiarlo lo habría destruido; en cambio **lo mejora levemente**. Y el rasgo vale de verdad: sacarlo cuesta **0,057 de skill (−16%)**, lo que confirma que es el más importante del modelo, ahora sin la sospecha encima.
+- **Qué mide entonces, y la respuesta al signo.** Franco preguntaba si más comisiones significa "más importante" (avanza) o "más difícil" (más vetos). Los datos dicen **lo primero**: el giro múltiple lo asigna la Presidencia al ingresar y funciona como **medida de alcance del proyecto** — uno que toca varias materias es sustantivo, y los sustantivos avanzan. El giro múltiple no es un obstáculo: es un indicador de que el proyecto se toma en serio.
+- **Mejora gratis que queda sobre la mesa:** usar el giro **inicial** cuando exista (el bot ya lo captura desde 2026) en vez del acumulado. Elimina el 1,5-8% de contaminación y el skill **sube** un poco. Requiere el upsert bot → base, que es el URGENTE 4.
+- **Discrepancia anotada:** 1,45% de ampliación medido por movimientos históricos contra 8,0% medido por el bot en 2026. Probable subregistro en `expedientes_movimientos` (72.061 de 140.903 filas tienen `movimiento` nulo). El rango real de contaminación está entre esos dos valores; en ninguno de los dos el skill se sostiene por el leakage.
+- **Estado del ítem:** `n_giros` sale de la lista de sospechosos de URGENTE 0. **Siguen sin auditar:** `autor_tasa_hist` (colinealidad 0,874), `mes` como continua y `anio_electoral` sin distinguir antes/después de la elección.
+
+### [2026-08-07] variables/proyecto — el γ del ICG se medía con 2 votaciones: ENCOGIMIENTO del desvío individual
+- **Quién:** Franco (detecta la pregunta) · Claude (diagnóstico y fix) · **Módulo:** variables/proyecto (mecanismo 1 del ADR-0008)
+- **El defecto.** `gamma_individual()` mapea el desvío del legislador a un tramo de γ, pero **no mira cuántas votaciones respaldan ese desvío**. Los 104 diputados de la camada dic-2025 tienen **mediana de 2 votaciones disputadas** contra **47** de los veteranos. Con 2 observaciones el desvío solo puede valer **0 · 0,5 · 1**, y los tramos cortan en 0,10 / 0,20 / 0,30 / 0,40: es **aritméticamente imposible caer en los tramos intermedios**. O se cae al piso o se salta al techo.
+- **El daño, medido:** **96 de los 104 quedaron en γ = 0,094** ("núcleo duro") por no desviarse en 2 tiradas — que es lo más probable que le pase incluso a una bisagra genuina (0,8² = 64%) — y **6 quedaron en γ = 0,555, el tramo máximo de la cámara, con dos datos**. Justo la lista de bisagras, que según ADR-0007 es la mitad más accionable de cada informe.
+- **Es el mismo defecto que el equipo ya había diagnosticado un nivel más arriba.** El ADR-0008 descarta el efecto a nivel cámara con el argumento correcto: *"con ~69 votos por acta, un efecto de 10-20 bisagras mueve 4% del share contra un ruido de 18%: el promedio de cámara no tiene resolución para verlo"*. Acá pasa lo mismo con n=2. **Vale como regla general: antes de mapear una medición a una categoría, preguntar cuántas observaciones la sostienen.**
+- **El fix — `encoger_desvio()`**, encogimiento empírico-bayesiano con la herramienta que el repo YA usa (`proyectar_postura`, `k_shrink=5.0`, con el mismo argumento: "no dar vuelta la dirección con 2-3 actas"):
+  `desvio' = (n · desvio_obs + k · prior) / (n + k)` — con k=5 y n=2 el dato propio pesa 29%; con n=47, el 90%.
+- **Detalle que importa: el prior sale SOLO de legisladores con muestra sólida (≥10 disputadas).** El primer intento usó la mediana del bloque entero y **no movió nada**: con 96 de 104 novatos en desvío 0, la mediana del bloque da 0 y los novatos se encogían hacia el ruido de sus propios pares. El prior tiene que venir de quienes sí tienen historial. Los priors resultantes son políticamente coherentes: **UCR 0,110 · Innovación Federal 0,071 · PRO 0,043 · LLA 0,000**.
+- **Resultado (cámara de hoy, 271 diputados con actividad 2026):**
+
+  | | antes | después |
+  |---|---:|---:|
+  | novatos en el tramo MÁXIMO (0,555) | 6 | **0** |
+  | legisladores con γ alto (≥0,333) | 34 | 27 |
+  | veteranos que cambian de tramo | — | **6 de 167 (4%)** |
+  | γ medio de la cámara | 0,1500 | 0,1403 |
+
+  El swing agregado casi no se mueve (+1,5 → +1,4 votos con ICG en 2,40): **el valor del fix no está en el agregado sino en QUIÉN aparece en la lista de bisagras**, que es el output accionable.
+- **Contrato intacto:** sin la columna `n_disputadas` el comportamiento es idéntico al anterior, pero se emite un warning. `encoger=False` desactiva explícitamente. **16 tests offline nuevos** (`tests/test_modulador_shrink.py`), y los 20 de `test_icg_contexto.py` siguen en verde.
+- **Pendiente para el equipo:** `set_pivote.json` declara `min_votos: 50` como umbral de medición y **105 de 271 diputados activos están por debajo**, pero `gamma_individual()` nunca consultó ese umbral — el criterio existía y no se aplicaba donde importa. Conviene revisar si otros consumidores del desvío tienen el mismo agujero (el propio `set_pivote` y la simulación del agregador).
+
 
 ### [2026-08-06 · cierre] variables/proyecto — el ICG de julio entra, y se fija la precedencia de fuentes
 - **Quién:** Valle (decide la regla) · Claude (implementa) · **Módulo:** variables/proyecto

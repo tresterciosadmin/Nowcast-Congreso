@@ -490,3 +490,43 @@ La tercera: **el archivo que el modelo usa para estimar si un proyecto llega a v
 Cinco fichas de módulo, además, decían "pendiente, sin dueño" sobre trabajo que está en curso hace meses — incluida la de la base de datos central del proyecto. Eso importa porque la regla de la casa es que antes de agarrar un módulo leas su ficha: una ficha que dice "libre" sobre algo ocupado es el mecanismo para no pisarnos funcionando exactamente al revés.
 
 **Lo que queda para Valle:** cinco corridas en la computadora, en orden. Volver a cargar la base (arregla el Senado y suma 250 votaciones nuevas que el robot ya detectó), regenerar el archivo del embudo, mover los dos robots a su lugar, confirmar el padrón contra la fuente oficial y subir todo. Después de eso el sistema vuelve a apoyarse en datos sanos.
+
+
+## Le estábamos midiendo la disciplina a los diputados nuevos con dos votaciones
+El equipo construyó algo muy bueno mientras no estuvimos: un mecanismo que estima cuánto se mueve cada legislador según cómo esté el clima político. La idea es que el clima no mueve a la Cámara entera, mueve a los negociadores — y el modelo, sin que nadie le diera información política, puso a los bloques provinciales como los más sensibles y a La Libertad Avanza, el kirchnerismo y el PRO como núcleo duro. Eso es exactamente lo que diría un analista.
+
+El problema que encontramos hoy es de dónde saca ese número. Para saber cuán díscolo es un diputado se mira cuántas veces votó distinto de su bloque en votaciones peleadas. Los diputados que asumieron en diciembre llevan dos votaciones peleadas; los veteranos, cuarenta y siete. Y con dos, el resultado solo puede ser "nunca se desvió", "se desvió una vez" o "se desvió las dos" — no hay puntos intermedios posibles. Así, seis diputados nuevos quedaron catalogados como los más díscolos de toda la Cámara por haberse desviado dos de dos veces, y noventa y seis quedaron como disciplina de hierro por no haberse desviado en dos intentos, que es lo más probable que le pase incluso a alguien que en realidad negocia.
+
+La corrección es la que se usa siempre para estos casos y que el propio proyecto ya aplicaba en otra parte: cuando hay pocos datos de alguien, se lo mezcla con el comportamiento típico de su bloque, dándole más peso a su historia propia a medida que acumula votaciones. Con eso ningún diputado nuevo queda ya en el casillero extremo, y los veteranos casi no se mueven, que es justo lo que uno quiere.
+
+Un detalle que casi se nos pasa: al principio mezclábamos a los nuevos con el promedio de su bloque incluyendo a los propios nuevos, y entonces no cambiaba nada — se estaban comparando con el mismo ruido que queríamos corregir. El promedio tiene que salir de los que sí tienen historia.
+
+
+## La sospecha más grande sobre el modelo: falsa alarma
+Franco venía marcando algo que, de ser cierto, tiraba abajo buena parte del sistema. El dato que más pesa a la hora de predecir si una ley va a salir es a cuántas comisiones fue enviada — pesa más que quién la firma, incluso más que si la manda el Presidente. Y ahí estaba la duda: si las comisiones se van agregando con el tiempo, entonces el modelo no estaría prediciendo nada, estaría espiando lo que ya pasó.
+
+Lo probamos por dos caminos. El primero fue mirar la foto del momento exacto en que cada proyecto entra —que el bot viene guardando desde marzo— y compararla con la situación de hoy: nueve de cada diez proyectos tienen exactamente las mismas comisiones que el primer día. El segundo fue buscar en el historial las veces que se amplió formalmente el giro: pasa en el 1,5% de los casos, y esos proyectos efectivamente avanzan más. O sea, algo de contaminación hay, pero es marginal.
+
+La prueba final fue sacarle la contaminación al modelo y volver a medirlo. Si el dato estuviera haciendo trampa, limpiarlo tendría que empeorar la puntería. Pasó lo contrario: mejoró un poquito. Y cuando probamos sacar el dato por completo, la puntería cayó un 16%. Conclusión: el dato es legítimo y además es tan importante como parecía.
+
+Queda una respuesta interesante a la pregunta de fondo. Que un proyecto vaya a varias comisiones no lo hace más difícil, como uno podría pensar por tener que convencer a más gente: lo hace más probable. El giro múltiple lo decide la Presidencia de la Cámara cuando el proyecto entra, y funciona como una señal de que el tema se toma en serio.
+
+Una anécdota que vale como advertencia: el primer cálculo nos dio que el 82% de los proyectos habían cambiado de comisiones — diez veces más de lo real. El error era de lectura: la lista de comisiones viene sin separadores, y tres comisiones seguidas se contaban como una sola. Estuvimos a un paso de anunciar un problema gravísimo que no existía.
+
+
+## Ahora el modelo mira las comisiones del primer día, no las de hoy
+Cerramos la auditoría de las comisiones con una mejora chica y gratis. El modelo contaba a cuántas comisiones fue enviado un proyecto usando la lista de hoy; ahora usa la del día en que entró, que es lo único que se sabe cuando uno tiene que predecir. Para los proyectos de este año el dato es exacto, porque el bot viene guardando la foto del momento de ingreso desde marzo; para los viejos se reconstruye restando las ampliaciones que quedaron registradas.
+
+La puntería del modelo subió un poco, y tiene una gracia: va a seguir mejorando sola. Cuantos más meses corra el bot, más proyectos van a tener el dato medido en vez de reconstruido — hoy ya son tres de cada cuatro.
+
+
+## Auditamos las variables que faltaban, y la sorpresa fue que no había que tocarlas
+Quedaban tres datos del modelo bajo sospecha. Los tres tenían efectivamente el problema que les atribuíamos. Pero cuando probamos arreglarlos, el modelo empeoró en los tres casos.
+
+El más interesante es el historial de éxito del autor. La sospecha era razonable: los autores con pocos proyectos aparecen con tasas de éxito altísimas, que son ruido y no talento — de hecho, tres de cada diez autores con menos de diez proyectos figuran con una tasa tres veces superior al promedio. Cuando corregimos eso de la misma forma que habíamos corregido otro problema esta mañana, la puntería del modelo cayó.
+
+La razón resultó ser reveladora. El "autor" de los proyectos del Poder Ejecutivo es el Presidente, que firma pocos proyectos pero convierte tres de cada cuatro en ley. Al suavizar las tasas extremas estábamos, sin querer, apagando justamente la señal más fuerte que tiene el modelo. Y eso explica algo que nos venía llamando la atención: por qué el dato "lo manda el Ejecutivo" parecía no importar nada. No es que no importe — es que ya estaba contado dentro del historial del autor.
+
+Así que la conclusión no es que haya que cambiar el modelo, sino cómo se lo lee. Los números internos del modelo no se pueden interpretar como "cuánto influye cada cosa", porque hay variables que se solapan. Para saber cuánto pesa realmente que un proyecto lo mande el Ejecutivo hay que hacer lo que ya veníamos haciendo: simular el mismo proyecto firmado por otro. Esa herramienta ya existía desde julio; hoy entendimos por qué era imprescindible.
+
+Y queda una lección que vale para adelante. Hoy corregimos tres problemas y en dos casos mejoró y en uno empeoró. Encontrar un defecto estadístico real no garantiza que arreglarlo sirva. Si hubiéramos aplicado la corrección por analogía con el caso de la mañana —que era lo natural— habríamos bajado la calidad del modelo un 4% convencidos de estar mejorándolo.

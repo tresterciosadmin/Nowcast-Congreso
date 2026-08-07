@@ -100,3 +100,36 @@ faltaba**, y el techo del modelo no está acá.
 > 0,3628, que coincide con el 0,363 que ya figuraba en el caso de la Ley de Lobby.
 
 Si falta el CSV, el modelo corre igual sin la variable.
+
+## ⚠️ Cómo (no) leer este modelo
+
+**Los coeficientes de la logística NO son efectos.** Auditado el 2026-08-07:
+`autor_tasa_hist` correlaciona **0,874** con `origen_ejecutivo` —el autor de un
+proyecto del PE *es* el presidente—, así que la regresión le adjudica el crédito
+a la tasa del autor (coef. 0,61) y deja `origen_ejecutivo` en **0,04** y `lider`
+en **−0,03**, cuando las tasas crudas son **78,8% vs 1,4%** y 6x respectivamente.
+
+No es un defecto a corregir: se probó encoger `autor_tasa_hist` y el skill **cae
+0,016**, porque esa variable es el canal por el que entra la señal del Ejecutivo.
+El modelo predice bien; lo que no se puede es leerlo como atribución de causas.
+
+**Para leer efectos, usar contrafactuales:** `src/escenarios.py` scorea el mismo
+proyecto cambiando quién lo firma y mueve `origen`, `lider` y `autor_tasa_hist`
+**a la vez** (moverlos por separado da un contrafactual falso). Es la única vía
+válida para responder "¿cuánto vale que lo mande el PE?".
+
+Lo mismo aplica al desglose de importancia por grupo de rasgos: sirve para
+detectar bloques muertos (así apareció el bug del one-hot el 04-08), no para
+repartir mérito entre variables colineales.
+
+## Variables: qué mide cada una (auditoría 07-08)
+
+| rasgo | qué es | estado |
+|---|---|---|
+| `n_giros` · `multi_comision` | comisiones **al ingresar** (contrato `giros_iniciales.parquet`; antes era el acumulado de hoy) | ✅ sin leakage; los más fuertes. Miden **alcance**, no dificultad |
+| `com__<COMISIÓN>` | one-hot de las 25 más frecuentes | ✅ el bloque de mayor peso (68%) |
+| `autor_tasa_hist` | tasa histórica del autor, solo sobre train | ⚠️ colineal con el origen — ver arriba |
+| `origen_*` · `lider` | de `features_proyecto` | ⚠️ coeficientes canibalizados |
+| `mes` | mes de presentación, continuo | ⚠️ el patrón real es un escalón (enero 9,5% · marzo 2,5%), no una recta; categorizarlo da −0,002 |
+| `anio_electoral` | año impar | ⚠️ no discrimina (3,51% vs 3,32%) |
+| `icg` · `icg_delta_3m` | contexto político, rezagado 1 mes | aporte ~0 (ADR-0008) |

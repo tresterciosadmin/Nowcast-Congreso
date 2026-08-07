@@ -127,6 +127,8 @@ def cargar(clean_dir: Path) -> dict[str, pd.DataFrame]:
         "movimientos": "expedientes_movimientos.parquet",
         "resultados": "expedientes_resultados.parquet",
         "leyes": "expedientes_leyes.parquet",
+        # opcional: giro AL INGRESAR (ver datos/expedientes/src/giros_iniciales.py)
+        "giros_iniciales": "giros_iniciales.parquet",
     }
     dfs: dict[str, pd.DataFrame] = {}
     for k, nombre in archivos.items():
@@ -202,6 +204,21 @@ def construir_cohorte(dfs: dict[str, pd.DataFrame]) -> pd.DataFrame:
                   if "autor" in exp.columns else "NA")
     c["n_giros"] = c["proyecto_id"].map(n_giros).fillna(0).astype("int64").values
     c["comisiones"] = c["proyecto_id"].map(comis_por_proy)
+
+    # HOOK: giro AL INGRESAR (contrato de datos/expedientes, 2026-08-07).
+    # `expedientes_giros` es el acumulado de HOY; una parte de los proyectos recibe
+    # ampliación de giro despues de presentado y esos avanzan 1,6x mas, o sea que
+    # para ellos el rasgo miraba un pedazo del futuro. Si existe el parquet, se usa
+    # el giro medido/reconstruido al ingresar; si no, sigue el acumulado (contrato
+    # intacto). Auditoria completa en ESTADO 07-08: el efecto es acotado (91,8% de
+    # los proyectos no cambia) pero corregirlo SUBE el skill.
+    gi = dfs.get("giros_iniciales")
+    if gi is not None and {"proyecto_id", "n_giros_inicial"} <= set(gi.columns):
+        serie = gi.drop_duplicates("proyecto_id").set_index("proyecto_id")["n_giros_inicial"]
+        m = c["proyecto_id"].map(serie)
+        cambian = int((m.notna() & (m != c["n_giros"])).sum())
+        c["n_giros"] = m.fillna(c["n_giros"]).astype("int64")
+        logger.info("giros_iniciales enchufado: %d proyectos con el giro corregido", cambian)
 
     ids = c["proyecto_id"]
     c["con_giro"] = ids.isin(id_giro)

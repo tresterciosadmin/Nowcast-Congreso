@@ -55,6 +55,73 @@ Mantené esta tabla sincronizada con la bitácora.
 ---
 
 ## Bitácora (más reciente arriba)
+### [2026-08-07 · cierre 2] infraestructura — los 3 workflows a Node 24, y el sandbox por fin ve git
+- **Quién:** Valle (lo pide y monta la carpeta) · Claude · **Módulo:** infraestructura (`.github/workflows`)
+
+**1) El límite del sandbox que costó tres errores está RESUELTO.** Valle montó
+`Nowcast-Congreso/Nowcast-Congreso` (la raíz git) además de la subcarpeta del proyecto.
+Desde esta sesión el entorno **ve `.git` y `.github`**, o sea que se puede leer el historial
+real en vez de reconstruirlo por fechas de archivo. Primera verificación con la herramienta
+correcta: `git show --stat 636d4bb` confirma que el commit de Franco del 07-08 tocó
+**exactamente los 10 archivos** que se habían inferido por `find -newermt`. La
+reconstrucción a ciegas era correcta, pero ya no hace falta.
+
+> **Dato que sólo se ve con el historial:** el repo tiene **tres autores** —
+> `Franco Marconi`, `ThiagoPP260` (Valle) y los bots (`bot-recoleccion`, `bot-nowcast`),
+> que commitean solos casi todos los días. Por eso las cifras "de ayer" no son las de hoy:
+> entre el 06-08 y el 07-08 el TP pasó de 2.799 a 2.826 proyectos **sin que nadie tocara
+> nada**. Cualquier número que se cite tiene que llevar la fecha de medición.
+
+**2) `git pull --rebase` YA ESTABA HECHO — este "próximo paso" del 06-08 estaba vencido.**
+El cierre del 06-08 lo dejó anotado como mejora pendiente para `icg-mensual.yml`. Verificado
+con `git log -S`: entró en el commit `5f98f03` (06-08 22:24) y hoy está en **los tres**
+workflows como `git pull --rebase --autostash`. Es otra vez el modo de falla del proyecto —
+una bitácora que declara pendiente algo ya hecho — sólo que esta vez se detectó en minutos
+porque se pudo consultar el historial en vez de deducirlo.
+
+**3) Los tres workflows suben a Node 24.** `checkout@v4 → v5` · `setup-python@v5 → v6` ·
+`github-script@v7 → v8`, **10 reemplazos** en los tres archivos de la raíz.
+- **Se corrigió el destino que decía URGENTE.** El ítem pedía "v5/v6"; verificado contra
+  los releases de GitHub, `checkout` ya va por **v6.0.3** y `setup-python` por **v6.2.0**.
+- **Y aun así `checkout` se dejó en v5, a propósito.** v5.0.0 ya corre sobre Node 24, o sea
+  que **resuelve el problema entero**. v6 agrega un cambio de fondo: guarda las credenciales
+  en `$RUNNER_TEMP` en vez del git config local — y estos tres workflows **hacen `git push`
+  en un step posterior usando esas credenciales**. Tocar eso para no ganar nada sobre el
+  riesgo que se quería cerrar es cambiar un peligro conocido por uno desconocido, en tres
+  crones que nadie mira. **Regla que queda:** subir de major sólo hasta donde el problema
+  se resuelve; el resto es deuda opcional, no urgencia.
+- `github-script` no figuraba en el ítem de URGENTE y **también corría sobre Node 20**
+  (4 usos, los que abren los issues de aviso). Habría fallado con los otros.
+- **Verificación:** los tres archivos quedaron **byte por byte del mismo tamaño**
+  (10.358 / 5.019 / 5.549) porque los tres reemplazos tienen el mismo largo — con el mount
+  que trunca archivos, un tamaño distinto habría sido la señal de daño. YAML validado con
+  `yaml.safe_load` en los tres.
+- **Archivos:** raíz `.github/workflows/{bot-diario,icg-mensual,padron-vivo}.yml`.
+- **Estado del módulo:** infraestructura EN CURSO.
+- **Próximo paso:** ⏳ **disparar los tres a mano y verlos verdes.** Hasta que eso pase el
+  ítem sigue en URGENTE: si algo se rompió, el bot deja de recolectar **sin avisar**.
+**4) Renombrados dos nombres viejos de `bot-diario.yml` — y una corrección de criterio mía.**
+Primero lo escribí como "anotado, no tocado", con el argumento de que renombrarlo **partía el
+historial de corridas**. Valle pidió cambiarlo igual y al verificarlo el argumento resultó
+**falso**: GitHub identifica un workflow por la **ruta del archivo**, no por su `name:`. Lo que
+parte el historial es renombrar el **archivo** — por eso el archivo no se toca y el `name:` sí.
+Queda como aviso: *una precaución que no se verifica es una superstición*, y en un repo cuyo
+modo de falla recurrente es afirmar sin mirar, es el mismo error con otro signo.
+
+| | antes | ahora | por qué |
+|---|---|---|---|
+| `name:` del workflow | `Bot diario (padrón vivo)` | **`bot-diario`** | era el nombre del *otro* workflow (`padron-vivo.yml`); hacía dudar cuál disparar |
+| id del **job** | `dae-senado` | **`recoleccion`** | de cuando sólo traía el Senado; hoy trae DAE + TP + votaciones |
+
+Los tres workflows quedan nombrados **igual que su archivo** (`bot-diario` / `padron-vivo` /
+`icg-mensual`), que ya era la convención de los otros dos. Renombrar el job es seguro porque
+**ninguno de los tres se dispara con `pull_request`**, así que no puede estar configurado como
+check obligatorio de un PR — verificado antes de tocarlo.
+
+**No se tocaron** las menciones al nombre viejo en entradas de bitácora anteriores
+(ESTADO del 11-07, `PUESTA-EN-MARCHA-2026-08-04.md`): son registro histórico y describen lo
+que el archivo se llamaba entonces.
+
 ### [2026-08-07 · noche] variables/embudo — AUDITORÍA de las 3 variables restantes: los tres "arreglos" EMPEORAN el modelo
 - **Quién:** Franco (lo pide) · Claude · **Módulo:** variables/embudo — **cierra URGENTE 0**
 - **Resultado que da vuelta la expectativa:** las tres variables sospechosas tienen los defectos que se les atribuían, **pero corregirlos baja el skill**. Ninguna se toca.

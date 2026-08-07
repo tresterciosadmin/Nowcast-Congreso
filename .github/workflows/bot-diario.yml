@@ -1,10 +1,10 @@
 # =====================================================================
-# BOT DIARIO (padrón vivo) — corre en GitHub Actions, sin servidor propio.
+# BOT DIARIO (recolección) — corre en GitHub Actions, sin servidor propio.
 # Cada mañana trae los DAE nuevos del Senado, el Trámite Parlamentario de
 # Diputados y las votaciones nuevas de ambas cámaras, y commitea lo que junta.
 # Módulo: datos/bot_recoleccion (ver su README). Idempotente: sin novedades,
 # no commitea nada.
-# Correr a mano: pestaña Actions -> "Bot diario (padrón vivo)" -> Run workflow.
+# Correr a mano: pestaña Actions -> "bot-diario" -> Run workflow.
 #
 # OJO CON LAS RUTAS: la raíz del repo es Nowcast-Congreso/Nowcast-Congreso y el
 # proyecto vive en el subdirectorio "Nowcast Congreso Argy/". Todas las rutas de
@@ -19,8 +19,20 @@
 #   2. Issue automático cuando hay actas nuevas sin incorporar a la canónica.
 #   3. Issue automático cuando una fuente falla.
 #   4. `permissions: issues: write` — sin esto los dos issues fallan.
+#
+# RENOMBRADO EL 2026-08-07 (dos nombres, no uno): se llamaba "Bot diario (padrón vivo)", que es el
+# nombre del OTRO workflow (padron-vivo.yml) y hacía confundir cuál disparar.
+# Este junta expedientes y votaciones; el padrón lo vigila el otro. Ahora los
+# tres se llaman igual que su archivo (bot-diario / padron-vivo / icg-mensual).
+# El historial de corridas NO se pierde: GitHub identifica el workflow por la
+# RUTA del archivo, no por el `name:`. Lo que sí lo partiría es renombrar el
+# archivo — por eso el archivo no se toca.
+# Y el JOB se llamaba `dae-senado`, de cuando sólo traía el Senado: hoy trae
+# DAE + TP + votaciones. Pasa a `recoleccion`. Es seguro porque ninguno de los
+# tres workflows se dispara con `pull_request`, así que el job no puede estar
+# configurado como check obligatorio de ningún PR.
 # =====================================================================
-name: Bot diario (padrón vivo)
+name: bot-diario
 
 on:
   schedule:
@@ -36,15 +48,15 @@ concurrency:
   cancel-in-progress: false   # nunca cortar una corrida a mitad de un commit
 
 jobs:
-  dae-senado:
+  recoleccion:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: "3.12"
           cache: pip
@@ -109,7 +121,7 @@ jobs:
       # depender de la memoria de alguien, y la decisión sigue siendo humana.
       - name: Avisar que hay que reconstruir la canónica
         if: steps.commit.outputs.actas == 'si'
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             async function asegurarLabel(name, color) {
@@ -162,7 +174,7 @@ jobs:
 
       - name: Avisar si alguna fuente falló
         if: steps.dae.outcome == 'failure' || steps.tp.outcome == 'failure' || steps.votaciones.outcome == 'failure'
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             async function asegurarLabel(name, color) {

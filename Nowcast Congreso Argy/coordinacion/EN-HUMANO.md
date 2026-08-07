@@ -530,3 +530,18 @@ La razón resultó ser reveladora. El "autor" de los proyectos del Poder Ejecuti
 Así que la conclusión no es que haya que cambiar el modelo, sino cómo se lo lee. Los números internos del modelo no se pueden interpretar como "cuánto influye cada cosa", porque hay variables que se solapan. Para saber cuánto pesa realmente que un proyecto lo mande el Ejecutivo hay que hacer lo que ya veníamos haciendo: simular el mismo proyecto firmado por otro. Esa herramienta ya existía desde julio; hoy entendimos por qué era imprescindible.
 
 Y queda una lección que vale para adelante. Hoy corregimos tres problemas y en dos casos mejoró y en uno empeoró. Encontrar un defecto estadístico real no garantiza que arreglarlo sirva. Si hubiéramos aplicado la corrección por analogía con el caso de la mañana —que era lo natural— habríamos bajado la calidad del modelo un 4% convencidos de estar mejorándolo.
+
+
+## Se cerró el punto ciego que venía haciéndonos deducir en vez de mirar
+Hasta hoy, el entorno donde trabaja Claude veía la carpeta del proyecto pero no el registro de quién cambió qué: ese registro vive un nivel más arriba, fuera de su alcance. Era como tener la llave de una habitación pero no del pasillo. La consecuencia práctica era que, para saber qué había hecho Franco, había que deducirlo mirando las fechas de los archivos y creyéndole a las bitácoras — que es exactamente el hábito que ya nos costó varios errores.
+
+Valle sumó la carpeta de arriba y el punto ciego se cerró. La primera comprobación fue justamente esa: lo que se había deducido a ciegas sobre el trabajo de Franco coincidía exactamente con lo que dice el registro real. La deducción estaba bien, pero ya no hace falta.
+
+Apareció además algo que sólo se ve con el historial a la vista: en este repositorio escriben tres manos, y una de ellas es automática. Los bots suben datos casi todos los días por su cuenta. Entre ayer y hoy entraron 27 proyectos nuevos sin que nadie tocara nada. Por eso ningún número del proyecto se puede citar sin la fecha en que se midió.
+
+## Los tres robots estaban por romperse todos juntos, y ya no
+Los tres procesos automáticos —el que junta proyectos y votaciones, el que vigila la composición de las cámaras y el que trae el índice de confianza— se apoyaban en piezas que GitHub está dejando de mantener. No estaban rotos: venían avisando. Pero el día que GitHub cortara el soporte, los tres iban a fallar el mismo día, y el modo de falla es el peor posible: el sistema deja de recolectar sin que nadie se entere.
+
+Quedó actualizado. Aparecieron dos cosas en el camino. Una: había una cuarta pieza con el mismo problema que no estaba en la lista de pendientes — es la que abre los avisos cuando algo falla, así que se habría caído junto con todo lo demás, justo cuando más falta hacía. Dos: pudiendo actualizar una de las piezas dos escalones, se actualizó sólo uno. El segundo escalón no agregaba nada sobre el problema que queríamos resolver y sí cambiaba la forma en que estos procesos guardan sus permisos para subir archivos — que es de lo que dependen para funcionar. Cambiar un riesgo conocido por uno desconocido, en algo que nadie mira todos los días, no es prudencia mal entendida: es la diferencia entre arreglar y tocar.
+
+Falta el paso que lo confirma: verlos correr una vez cada uno. Hasta entonces el pendiente sigue anotado, porque si algo se rompió, no va a avisar.

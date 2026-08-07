@@ -124,5 +124,9 @@ motivo como comentario `#` en el propio CSV (como se hizo con Bianchi).
 - **`p_embudo.parquet` conviene regenerarlo** con el giro inicial enchufado
   (`python variables/embudo/src/embudo.py modelo`, corrida larga que el sandbox no
   termina). El modelo está sano; sólo falta que la salida lo refleje.
-- **Actions:** `checkout@v4` / `setup-python@v5` corren sobre Node 20 deprecado.
-  Subir a v5/v6 antes de que GitHub lo corte y fallen los tres workflows a la vez.
+- **Actions — subido a Node 24 el 07-08, FALTA VERLO CORRER.** Los tres workflows
+  pasaron a `checkout@v5` · `setup-python@v6` · `github-script@v8`. El riesgo de
+  Node 20 está cerrado en código, pero **una corrida verde de cada uno es lo que
+  lo confirma**: si algo se rompió, el modo de falla es que el bot deje de
+  recolectar sin avisar. Disparar a mano los tres desde Actions y confirmar. Al
+  verlos verdes, **borrar este bullet**.

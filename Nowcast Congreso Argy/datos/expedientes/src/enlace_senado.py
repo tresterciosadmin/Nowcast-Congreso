@@ -108,6 +108,27 @@ _RE_EN_TITULO = re.compile(
 _RE_OD = re.compile(r"\bO\.?\s*D\.?\s*N?[ºo°]?\s*(\d{1,4})\b", re.I)
 
 
+def _vacio(valor: object) -> bool:
+    """¿Es un faltante, en cualquiera de sus disfraces?
+
+    ⚠️ NO alcanza con `if not valor`. Según la versión de pandas y el backend de
+    la columna (object vs. Arrow), un faltante llega como `None`, como
+    `float('nan')` o como `pd.NA` — y **`not float('nan')` es False**, así que
+    un `if not valor` deja pasar el NaN y explota más abajo. Pasó de verdad el
+    2026-08-08: los tests daban 83/83 en el sandbox (columnas object) y
+    reventaban en la PC de Valle (pandas más nuevo, columnas Arrow) con
+    `'float' object has no attribute 'split'`.
+    """
+    if valor is None:
+        return True
+    try:
+        if pd.isna(valor):
+            return True
+    except (TypeError, ValueError):
+        pass
+    return str(valor).strip() == ""
+
+
 def normalizar_expediente(valor: object) -> Optional[str]:
     """Lleva cualquiera de los dos formatos al denominador canónico NNNN-XX-AAAA.
 
@@ -121,10 +142,10 @@ def normalizar_expediente(valor: object) -> Optional[str]:
     >>> normalizar_expediente('sin datos') is None
     True
     """
-    if valor is None or (isinstance(valor, float) and pd.isna(valor)):
+    if _vacio(valor):
         return None
     s = str(valor).strip().upper()
-    if not s or s in {"NAN", "NONE", "-"}:
+    if not s or s in {"NAN", "NONE", "-", "<NA>"}:
         return None
 
     m = _RE_HCDN.match(s)
@@ -160,7 +181,7 @@ def expediente_en_titulo(titulo: object) -> Optional[str]:
     >>> expediente_en_titulo('Presupuesto 2026') is None
     True
     """
-    if titulo is None or (isinstance(titulo, float) and pd.isna(titulo)):
+    if _vacio(titulo):
         return None
     m = _RE_EN_TITULO.search(str(titulo))
     if not m:
@@ -177,7 +198,7 @@ def od_en_titulo(titulo: object) -> Optional[str]:
     >>> od_en_titulo('PLAN DE LABOR') is None
     True
     """
-    if titulo is None or (isinstance(titulo, float) and pd.isna(titulo)):
+    if _vacio(titulo):
         return None
     m = _RE_OD.search(str(titulo))
     return m.group(1).lstrip("0") or None if m else None
@@ -212,10 +233,15 @@ def mapa_od(resultados: pd.DataFrame) -> dict[tuple[int, str], str]:
 
 
 def prefijo(clave: Optional[str]) -> Optional[str]:
-    """Letra del denominador ya normalizado ('0038-CD-2022' -> 'CD')."""
-    if not clave:
+    """Letra del denominador ya normalizado ('0038-CD-2022' -> 'CD').
+
+    Tolera faltantes de cualquier backend: ver `_vacio`. Esta función es la que
+    reventó en la PC de Valle el 08-08 con `'float' object has no attribute
+    'split'` mientras el sandbox daba 83/83.
+    """
+    if _vacio(clave):
         return None
-    partes = clave.split("-")
+    partes = str(clave).split("-")
     return partes[1] if len(partes) == 3 else None
 
 
@@ -348,7 +374,7 @@ def construir_enlace(
 
     def resolver(fila) -> tuple[Optional[str], Optional[str]]:
         clave = fila["clave"]
-        if not clave:
+        if _vacio(clave):
             return None, None
         # El acta del Senado se resuelve por la numeración del Senado; la de
         # Diputados por la de HCDN. Se prueba primero la de su propia cámara.

@@ -319,6 +319,59 @@ enl_sc = construir_enlace(actas, sin_col).set_index("acta_id")
 check(pd.isna(enl_sc.loc["sen:1", "proyecto_id"]),
       "si falta exp_senado el módulo sigue corriendo y no enlaza el Senado")
 
+# ───────── faltantes de cualquier backend (regresión 2026-08-08) ─────────
+# Los tests daban 83/83 en el sandbox y REVENTABAN en la PC de Valle con
+# `'float' object has no attribute 'split'`. La diferencia es la versión de
+# pandas: con columnas Arrow los faltantes llegan como float('nan') en vez de
+# None, y `not float('nan')` es **False**, así que un `if not valor` los deja
+# pasar. Un test que sólo prueba None no protege de nada.
+print("\nfaltantes: None, NaN y pd.NA")
+
+for vacio in [None, float("nan"), pd.NA, pd.NaT, "", "   "]:
+    check(prefijo(vacio) is None, f"prefijo({vacio!r}) -> None")
+    check(normalizar_expediente(vacio) is None, f"normalizar_expediente({vacio!r}) -> None")
+    check(expediente_en_titulo(vacio) is None, f"expediente_en_titulo({vacio!r}) -> None")
+    check(od_en_titulo(vacio) is None, f"od_en_titulo({vacio!r}) -> None")
+
+print("\nSeries.map sobre una columna Arrow con nulos (la reproducción exacta)")
+# Verificado: con `dtype="string[pyarrow]"` el nulo llega como pd.NA y un
+# `if not clave` levanta "boolean value of NA is ambiguous"; en la PC de Valle
+# llegó como float('nan') y levantó "'float' object has no attribute 'split'".
+# Son el mismo bug con dos caras, y ninguna la cazaba un test con None.
+try:
+    col = pd.Series(["0038-CD-2022", None, "1623-D-2018"], dtype="string[pyarrow]")
+    for fn, nombre in ((prefijo, "prefijo"),
+                       (normalizar_expediente, "normalizar_expediente"),
+                       (expediente_en_titulo, "expediente_en_titulo"),
+                       (od_en_titulo, "od_en_titulo")):
+        try:
+            fn_out = col.map(fn)
+            check(fn_out.isna().sum() >= 1, f"{nombre}: sobrevive a un nulo Arrow")
+        except (TypeError, AttributeError) as exc:
+            check(False, f"{nombre} rompe con nulo Arrow: {type(exc).__name__}: {exc}")
+except ImportError:
+    print("  (sin pyarrow: se saltea)")
+
+print("\nel pipeline completo sobre columnas Arrow (el entorno de Valle)")
+try:
+    actas_arrow = actas.convert_dtypes(dtype_backend="pyarrow")
+    exp_arrow = expedientes.convert_dtypes(dtype_backend="pyarrow")
+    soporta_arrow = True
+except (TypeError, ImportError):   # pandas viejo o sin pyarrow
+    soporta_arrow = False
+    print("  (pandas sin backend pyarrow: se saltea)")
+
+if soporta_arrow:
+    try:
+        e_ar = construir_enlace(actas_arrow, exp_arrow, res)
+        check(len(e_ar) > 0, "construir_enlace no rompe con dtypes Arrow")
+        c_ar = construir_cadena(e_ar, exp_arrow)
+        check(len(c_ar) > 0, "construir_cadena no rompe con dtypes Arrow")
+        check(int((c_ar["n_camaras"] == 2).sum()) == 1,
+              "con Arrow da el MISMO resultado que con object")
+    except Exception as exc:  # noqa: BLE001 - queremos el mensaje exacto
+        check(False, f"el pipeline rompió con dtypes Arrow: {type(exc).__name__}: {exc}")
+
 print(f"\n{corridos - len(fallos)}/{corridos} OK")
 if fallos:
     print(f"\n{len(fallos)} FALLAS:")

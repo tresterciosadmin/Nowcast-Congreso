@@ -44,6 +44,18 @@ Para coordinarnos hay tres papeles siempre a la vista:
 ## En una frase
 Ya sabemos que adivinar el voto individual no sirve (el bloque lo explica casi todo); el valor está en la asistencia, el embudo y la cúpula. Estamos armando una base de datos propia (arrancada con el trabajo de Andy Tow y mantenida por un bot), con un formato común y una forma de trabajar en equipo sin pisarnos.
 
+## Aviso: los tests pasaban en mi entorno y fallaban en el de Valle
+
+Vale la pena contarlo porque es una trampa que se puede repetir. Ayer di por buenos unos controles que en mi entorno daban "83 de 83 correctos", y al correrlos Valle en su computadora **fallaron**. No era que el trabajo estuviera mal hecho: era que las dos máquinas tienen versiones distintas de una de las bibliotecas, y en una de ellas un dato faltante se representa de una forma que mi código no contemplaba.
+
+El detalle técnico es chico y el error es de manual: yo preguntaba "¿este valor está vacío?" de una manera que funciona cuando el vacío es de un tipo y falla cuando es de otro. Hay tres formas de "vacío" dando vueltas y yo cubría una sola, justamente la que es fácil acordarse de probar.
+
+Ya está arreglado, y sobre todo está arreglado el control: ahora las pruebas **imitan el entorno de Valle**, no el mío. Antes de dar por bueno el arreglo verifiqué que la prueba nueva efectivamente falla con el código viejo — una prueba de regresión que no reproduce el problema original no sirve para nada.
+
+Se revisó también el otro módulo de ayer, el del padrón del Senado, por si tenía el mismo defecto: está sano.
+
+La lección para el proyecto, que se suma a las otras del entorno: **"funciona en mi máquina" no es "funciona"**, y la corrida de Valle es la que vale. Los datos, por suerte, no se habían ensuciado: al regenerarlos dieron exactamente lo mismo.
+
 ## Aviso: estábamos mirando la votación equivocada
 
 Se corrió el chequeo que había quedado pendiente sobre la fuente de datos recientes, para saber si publica el número de expediente de cada votación. La respuesta: **el Senado sí lo trae, Diputados no lo trae de ninguna forma**. O sea que el rodeo que se armó ayer —deducirlo del número de Orden del Día— no era un parche provisorio: es lo mejor que existe. Queda escrito, porque ya se buscó dos veces.

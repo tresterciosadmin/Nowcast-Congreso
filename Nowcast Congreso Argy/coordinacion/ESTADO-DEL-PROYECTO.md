@@ -55,6 +55,22 @@ Mantené esta tabla sincronizada con la bitácora.
 ---
 
 ## Bitácora (más reciente arriba)
+### [2026-08-08 · 5] Los tests daban 83/83 en el sandbox y reventaban en la PC de Valle — límite nuevo del entorno
+- **Quién:** Valle (lo detecta al correr) · Claude (lo arregla) · **Módulo:** datos/expedientes
+- **Qué pasó:** el commit `6f29d09` se hizo con los tests **rotos en la máquina de Valle**. `python test_enlace_senado.py` cortó con `AttributeError: 'float' object has no attribute 'split'` en `prefijo()`, mientras en el sandbox daba **83/83 OK**. El `git commit` iba en la misma línea y entró igual.
+- **La causa: la versión de pandas cambia CÓMO llega un faltante.** Según el backend de la columna (object vs. Arrow) un nulo llega como `None`, como `float('nan')` o como `pd.NA`. La guarda era `if not clave`, y ahí está el problema:
+  - `not None` → `True` (funciona)
+  - **`not float('nan')` → `False`** — el NaN pasa la guarda y explota en `.split()`
+  - **`not pd.NA`** → levanta `TypeError: boolean value of NA is ambiguous`
+- **Es el mismo bug con tres caras, y ninguna la cazaba un test que sólo prueba `None`.** El sandbox corre pandas 2.3.3 con columnas object; Valle tiene Python 3.12 con pandas más nuevo y columnas Arrow. **Los tests pasaban por el entorno, no por estar bien.**
+- **El arreglo:** función `_vacio()` que reconoce las tres formas (`None`, `pd.isna`, cadena vacía) y se usa en `prefijo`, `normalizar_expediente`, `expediente_en_titulo`, `od_en_titulo` y `resolver`. Los `str(...)` explícitos antes de `.split()`.
+- **Los tests ahora reproducen el entorno ajeno, no el propio** (83 → **114 checks**): se prueban `None`, `float('nan')`, `pd.NA`, `pd.NaT` y cadena vacía en las cuatro funciones; se corre `Series.map` sobre una columna `string[pyarrow]` con nulos; y se corre **el pipeline completo** sobre los datos convertidos con `convert_dtypes(dtype_backend="pyarrow")`, exigiendo el mismo resultado que con object. **Verificado que el test nuevo SÍ falla con el código viejo** — un test de regresión que no reproduce el fallo original no protege de nada.
+- **Se auditó `datos/padron/src/padron_senado_historico.py` por el mismo defecto: está sano.** Usa `.astype(str)` y `_name_key` (que hace `str()`) antes de tocar el valor. Se comprobó corriéndolo con nulos Arrow: 19/19 tests OK y construye sin romper.
+- **⛔ LÍMITE NUEVO DEL ENTORNO, para el CLAUDE.md:** *"pasa en el sandbox" no es "pasa"*. El sandbox tiene **otra versión de pandas** que la PC de Valle, y eso ya escondió un bug real. Los tests que tocan pandas deben ejercitar **los dos backends de dtype**, y la corrida de Valle es la que vale. Suma a la lista de límites que no se anuncian solos (mount que trunca, dotfiles que aparecen y desaparecen, sin red).
+- **Y el mismo patrón de siempre, otra vez:** `if not clave` es una guarda que *parece* defensiva. El módulo dice "parsing defensivo" en su propio encabezado. Lo era contra `None`, que es el único caso que alguien se acuerda de probar.
+- **Archivos:** `datos/expedientes/src/enlace_senado.py`, `datos/expedientes/tests/test_enlace_senado.py`. Las salidas se regeneraron: **2.355 actas enlazadas, 243 cadenas completas** — idénticas a las del commit anterior, o sea que el bug rompía el test pero no había ensuciado los datos.
+- **Próximo paso:** commit de arreglo sobre `6f29d09`.
+
 ### [2026-08-08 · 4] La sonda contesta, y de paso destapa un bug propio: se estaba eligiendo la votación equivocada
 - **Quién:** Valle (corre la sonda) · Claude (analiza) · **Módulos:** datos/argentinadatos, datos/expedientes
 - **✅ RESULTADO DE LA SONDA `explorar_campos.py` (corrida por Valle con red).** La pregunta era si la API expone el expediente y lo estábamos tirando. Respuesta: **depende de la cámara.**

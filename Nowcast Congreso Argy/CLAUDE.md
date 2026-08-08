@@ -48,6 +48,19 @@ El sandbox donde corre Claude monta la carpeta con límites que **no se anuncian
 3. **El mount trunca archivos grandes al leerlos**, y el read-modify-write propaga el corte. Verificar `wc -c` + `tail` antes de reescribir; en JS/JSON chequear balance de llaves después. **Ya dañó dos archivos en disco:** `CLAUDE.md` (detectado y reparado el 04-08) y `coordinacion/PLAN-DE-TRABAJO.md`, que quedó cortado a mitad de una palabra en "Mapa de paralelización" y recién se detectó el **06-08**. Si un archivo termina raro, sospechar de esto antes que de cualquier otra cosa.
 4. **~45 s por comando y los procesos en background no sobreviven** entre llamadas. Las corridas pesadas (pipelines, exports, backtests) se le pasan al humano listas para PowerShell, con lo que tiene que dar cada paso.
 
+5. **El sandbox tiene OTRA VERSIÓN DE PANDAS que la PC de Valle, y eso ya escondió un bug.**
+   El 08-08 `test_enlace_senado.py` daba **83/83 OK** acá y reventaba en la
+   máquina de Valle con `'float' object has no attribute 'split'`. Según la
+   versión y el backend de la columna (object vs. Arrow), un faltante llega como
+   `None`, como `float('nan')` o como `pd.NA` — y **`not float('nan')` es
+   `False`** (el NaN pasa la guarda), mientras **`not pd.NA` levanta
+   `TypeError: boolean value of NA is ambiguous`**. Un `if not valor` cubre sólo
+   el primer caso, que es el único que uno se acuerda de probar.
+   **Qué hacer:** guardas de faltantes con `pd.isna()`, `str()` explícito antes
+   de `.split()`/`.strip()`, y **tests que ejerciten los dos backends**
+   (`convert_dtypes(dtype_backend="pyarrow")`). **"Pasa en el sandbox" no es
+   "pasa": la corrida de Valle es la que vale.**
+
 **La regla:** ante un archivo, carpeta o dato que *debería* estar y no aparece, **preguntar, no concluir**. Y antes de tocar infraestructura del repo (workflows, hooks, CI), **pedir un listado de la raíz**. El detalle está en `coordinacion/PLAN-DE-TRABAJO.md`.
 
 **El corolario que costó más caro, y que no es sobre el sandbox:** los tres

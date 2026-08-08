@@ -55,6 +55,76 @@ Mantené esta tabla sincronizada con la bitácora.
 ---
 
 ## Bitácora (más reciente arriba)
+### [2026-08-08 · 4] La sonda contesta, y de paso destapa un bug propio: se estaba eligiendo la votación equivocada
+- **Quién:** Valle (corre la sonda) · Claude (analiza) · **Módulos:** datos/argentinadatos, datos/expedientes
+- **✅ RESULTADO DE LA SONDA `explorar_campos.py` (corrida por Valle con red).** La pregunta era si la API expone el expediente y lo estábamos tirando. Respuesta: **depende de la cámara.**
+
+  | | ¿trae expediente? | qué trae |
+  |---|---|---|
+  | **Senado** (18 campos) | **parcial** | `proyecto` = `"OD 699/25 - Título IV"` y el `titulo` ya trae `PE-159/25-PL , O.D. 699/2025` |
+  | **Diputados** (13 campos) | **NO** | el único campo parecido es `numeroActa`, que es el nº de acta. El expediente no está en ningún lado |
+
+- **Conclusión, y queda cerrada:** para **Diputados la API no publica el expediente**, así que **el puente por O.D. no es un parche: es lo mejor que existe.** Se buscó dos veces; queda escrito para que no se busque una tercera. Para el **Senado** el rescate por título ya captura lo mismo que trae el campo `proyecto`, así que tampoco cambia nada hoy.
+- **🔎 Pero la sonda encontró algo que no se buscaba: el Senado publica `descripcion` = `"SE VOTA EN PARTICULAR"`.** Es un campo EXPLÍCITO para algo que hoy se infiere leyendo el título. Y también `quorumTipo`, `miembros` y `amn` (mayoría absoluta necesaria), que le sirven al agregador. **No se enchufó nada:** sumar columnas a la canónica es tocar `docs/schemas`, y eso **requiere un ADR** (CLAUDE.md). Queda propuesto, no hecho.
+- **🔴 Y eso destapó un bug MÍO, del commit de esta mañana.** `construir_cadena` se quedaba con la **última** votación de cada cámara. Medido: **el 15,2% de los pares (proyecto, cámara) tiene más de una votación**, y el caso peor es la **Ley Bases con 50 votaciones en Diputados**. Una ley se vota EN GENERAL —ahí se decide si se aprueba— y después EN PARTICULAR, artículo por artículo. Tomar la última devolvía **el último artículo**, y con su resultado: un artículo puede caerse y la ley sancionarse igual. Para un módulo cuyo objetivo es alimentar `P(mayoría | cámara)`, eso es el dato equivocado.
+- **El arreglo (`elegir_votacion`):** 1) la que dice EN GENERAL en el título; 2) si ninguna lo dice, la **primera en el tiempo** (la general va antes que el articulado); 3) queda registrado en `tipo_votacion_dip`/`_sen` (`unica` | `general` | `primera` | `primera_particular`) y en `n_actas_dip`/`_sen`, para que el consumidor sepa cuándo la elección fue por regla y no por evidencia. **Control sobre la Ley Bases:** ahora toma el acta del **02-02-2024** (la general) y no la del último artículo.
+- **Distribución de la elección en las 243 cadenas:** 188 `unica`, 48 `general`, 7 `primera`. **55 proyectos se votaron en partes.**
+- **De dónde salió el bug, que es lo que importa:** el `.last()` estaba escrito como "es la que define el desenlace en esa cámara" — una suposición razonable **que nadie midió**. Apareció recién al mirar los campos de una API por otro motivo. Es el mismo patrón que ya está anotado tres veces en esta bitácora: **una variable que mide algo distinto de lo que se cree.**
+- **Archivos:** `datos/expedientes/src/enlace_senado.py`, `datos/expedientes/tests/test_enlace_senado.py` (**83 checks**, eran 75; el test que fijaba el comportamiento viejo se corrigió), `datos/argentinadatos/src/explorar_campos.py`, + los dos parquet regenerados.
+- **Contrato ampliado** en `cadena_camaras.parquet`: `tipo_votacion_dip`, `tipo_votacion_sen`, `n_actas_dip`, `n_actas_sen`.
+- **Próximo paso:** ADR para sumar `descripcion` (general/particular) y `quorumTipo` a la canónica desde argentinadatos — con eso la elección de la votación decisiva deja de depender de leer títulos.
+
+### [2026-08-08 · 3] datos/expedientes — el puente por ORDEN DEL DÍA destapa la ventana reciente
+- **Quién:** Claude (con Valle) · **Módulos:** datos/expedientes, datos/argentinadatos · **Línea:** Revisión de las Comisiones
+- **De dónde salió:** al cerrar el rescate del Senado quedó anotado que la cadena completa se cortaba después de 2020. Valle indicó no complicarse con lo anterior a 2015 (Congreso poco digitalizado, ningún legislador de esa época sigue vigente; sirve como arrastre histórico para linajes, no para el nowcast). **Pero el problema no era el pasado: eran los años recientes, que son los que le importan al producto.**
+- **🔴 El diagnóstico: el hueco es de DIPUTADOS, no del Senado.** Desde 2020 las actas de Diputados entran **sin expediente: 0 de 177 en 2024, 0 de 116 en 2025, 0 de 76 en 2026**. El Senado ya estaba resuelto por el rescate del título (58 actas enlazadas en 2026). Sin el lado de Diputados no hay cadena posible, por buena que sea la otra mitad.
+- **Y los títulos de Diputados NO traen el expediente**: traen la **Orden del Día** (`"O. D. 759 - DNU 179/2025, QUE APRUEBA..."`), en 262 de 369. `expedientes_resultados.parquet` tiene `od_numero` + `od_publicacion`, así que el par **(año, nº de O.D.) lleva al proyecto**.
+- **Implementado como tercer nivel de respaldo** (`od_en_titulo` + `mapa_od` + `_puente_od`), después del campo y del título. Detalles que hacen que sea confiable:
+  - **Clave con año**, porque las O.D. se renumeran cada año, y con reintento en `año-1`: una O.D. publicada a fin de año se vota al siguiente.
+  - **292 claves (año, nº) ambiguas descartadas** — una O.D. puede contener varios dictámenes. No enlazar es mejor que adjudicar el proyecto equivocado.
+  - **⛔ NO se aplica al Senado, a propósito.** El Senado numera sus propias Órdenes del Día: buscar la "O.D. 206/2023" de un acta del Senado en la tabla de HCDN devolvería un proyecto ajeno con toda naturalidad. Hay un test específico que lo impide.
+- **✅ Control cruzado: donde el acta ya tenía expediente, la O.D. da el mismo proyecto en el 98,9%** (88 de 89).
+- **Resultado:**
+
+  | | antes de hoy | tras el título | **tras la O.D.** |
+  |---|---:|---:|---:|
+  | actas enlazadas | 1.337 | 2.104 | **2.355** |
+  | Diputados enlazadas | 1.136 | 1.136 | **1.387** |
+  | **cadena completa (2 cámaras)** | **39** | **223** | **243** |
+  | cadena en 2025 / 2026 | 0 / 0 | 0 / 0 | **7 / 5** |
+
+- **Lo que queda y por qué:** 2020-2023 sigue casi vacío del lado de Diputados (entre 1 y 9 actas por año en la canónica) — es el hueco **Dip 2020-23 pausado a propósito desde el 10-jul**, no un problema nuevo. En 2024 hay 125 actas de Diputados enlazadas y 0 del Senado sobre 41.
+- **🔎 argentinadatos: se deja una SONDA, no un parche a ciegas.** `to_canonical.py` tiene `expediente=None` **fijo** en las líneas 132 y 147. No se puede saber desde el sandbox si la API expone el campo (no hay red), y **cambiar la ingesta adivinando el nombre de una clave es exactamente el tipo de trabajo que después hay que tirar**. Se agregó `datos/argentinadatos/src/explorar_campos.py`: baja un acta de cada cámara e imprime todos sus campos. Un comando y queda decidido. Si la API lo expone, el arreglo son dos líneas y cubre el flujo vivo en la fuente; si no, el rescate por título/O.D. es lo mejor disponible y hay que dejarlo escrito para que nadie lo vuelva a buscar (ya se buscó dos veces).
+- **Nota de prolijidad:** el módulo se llama `enlace_senado.py` y ya resuelve las dos cámaras. El nombre quedó chico. No se renombró porque el entorno no puede borrar y un rename dejaría un archivo zombi; queda como pendiente cosmético para quien lo haga desde PowerShell.
+- **Archivos:** `datos/expedientes/src/enlace_senado.py`, `datos/expedientes/tests/test_enlace_senado.py` (**75 checks**, eran 57), `datos/argentinadatos/src/explorar_campos.py`, + los dos parquet regenerados.
+- **Estado de los módulos:** datos/expedientes EN CURSO · datos/argentinadatos EN CURSO (sonda pendiente de correr con red).
+- **Próximo paso:** correr la sonda; después, modelar `P(mayoría | revisora, dado que aprobó origen)` sobre las 243 cadenas observadas.
+
+### [2026-08-08 · 2] datos/expedientes — la cobertura del Senado sube de 8,1% a 72,4%, y sin scrapear nada
+- **Quién:** Claude (con Valle) · **Módulo:** datos/expedientes · **Línea:** Revisión de las Comisiones
+- **El pedido:** subir la cobertura de expediente en las actas del Senado, que era el cuello de botella de la cadena entre cámaras. Se había anotado como trabajo de ingesta en `datos/senado/src/scrape_votaciones.py` y argentinadatos.
+- **🔑 No era ingesta: el dato ya estaba en disco, dentro del TÍTULO del acta.** El diagnóstico por fuente mostró de dónde venía el hueco (Senado, 3.078 actas): `argentinadatos` **0%** (311 actas, tiene `expediente=None` **hardcodeado** en `to_canonical.py:132,147`), `decada_votada` **0,1%** (2.011), el scraper `senado` **33,1%** (749). Pero **2.229 de las 2.828 actas sin expediente lo traen escrito en el título**: `"...Reforma Laboral. PE-608/03. Votacion en general"`, `"Presupuesto 2026. Artículo 67. CD-30/25-PL"`.
+- **Cómo se implementó:** `expediente_en_titulo()` en `enlace_senado.py`, como **respaldo** cuando la columna viene vacía. El módulo pasa a partir de todas las actas, no sólo de las que traen la columna. Nueva columna de contrato `origen_clave` ∈ {`campo`, `titulo`} para que cualquier consumidor pueda quedarse sólo con lo de máxima confianza.
+- **✅ El control cruzado que da confianza: donde existen los dos métodos coinciden en el 98,8%** (246 de 249). **Y las 3 discrepancias validan la regla de precedencia**: el título nombra un expediente REFERENCIADO (un proyecto que se reproduce, el proyecto de fondo de un dictamen de bicameral) y no el que se está votando. Por eso **el campo siempre manda** y el título es sólo respaldo. Los tres casos están fijados como test.
+- **Resultado medido:**
+
+  | | antes | ahora |
+  |---|---:|---:|
+  | actas del Senado con expediente | 250 (8,1%) | **2.230 (72,4%)** |
+  | actas enlazadas a un proyecto | 1.337 | **2.104** |
+  | actas del Senado con prefijo `CD-` (cruce) | 108 | **893** |
+  | **proyectos con votación en LAS DOS cámaras** | **39** | **223** |
+
+- **⚠️ La tasa global de enlace BAJA de 59,7% a 49,8% y NO es un empeoramiento:** creció el denominador. De las 1.980 rescatadas, las **963 posteriores a 2008 enlazan al 79,6%** y las **1.017 anteriores al 0%** — el maestro de CKAN arranca el 2008-03-03, así que esas actas apuntan a proyectos que no están en la base. Cualquier lectura del porcentaje tiene que decir sobre qué ventana se midió.
+- **Límite observado y no explicado todavía:** la cadena completa se concentra entre 2008 y 2020 (44 casos en 2009, 35 en 2012, 2 en 2020, ninguno después). Falta ver si es cobertura de actas de Diputados con expediente o algo del maestro. **No se forzó ninguna explicación.**
+- **Lo que SÍ queda como trabajo de ingesta (y ahora es lo único):**
+  1. `datos/argentinadatos/src/to_canonical.py` tiene `expediente=None` fijo para las dos cámaras. Habría que ver **con red** si la API expone el campo; si lo expone, se arregla el flujo vivo (2024-2026) en dos líneas. Hoy esas 311 actas se salvan por el título (65,9%).
+  2. `manual_2026` (7 actas) no trae expediente ni en el título — es el Excel que completa Franco a mano.
+  3. Las 1.017 actas anteriores a 2008 no tienen contra qué enlazar hasta que el maestro cubra ese período.
+- **Archivos:** `datos/expedientes/src/enlace_senado.py`, `datos/expedientes/tests/test_enlace_senado.py` (**57 checks**, eran 42), `acta_expediente_senado.parquet` (4.221 filas), `cadena_camaras.parquet` (1.112).
+- **Estado del módulo:** datos/expedientes EN CURSO.
+- **Próximo paso:** con 223 cadenas observadas ya se puede empezar a modelar `P(mayoría | revisora, dado que aprobó origen)` sobre votaciones reales y no sólo sobre la tabla de resultados.
+
 ### [2026-08-08] datos/expedientes + datos/padron — el enlace entre cámaras y el padrón histórico del Senado
 - **Quién:** Claude (con Valle) · **Módulos:** datos/expedientes, datos/padron · **Línea:** Revisión de las Comisiones
 - **Contexto — el cambio de enfoque.** Valle decide que el nowcast deja de intentar predecir la etapa de COMISIÓN (comportamiento político y arbitrario: la deliberación real pasa por reuniones de labor parlamentaria que no son públicas) y pasa a medir la aprobación **en la cámara de origen y en la revisora**. Eso convierte la cadena entre cámaras en la pieza central, y ahí no había infraestructura.

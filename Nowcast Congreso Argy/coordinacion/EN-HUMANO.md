@@ -44,6 +44,40 @@ Para coordinarnos hay tres papeles siempre a la vista:
 ## En una frase
 Ya sabemos que adivinar el voto individual no sirve (el bloque lo explica casi todo); el valor está en la asistencia, el embudo y la cúpula. Estamos armando una base de datos propia (arrancada con el trabajo de Andy Tow y mantenida por un bot), con un formato común y una forma de trabajar en equipo sin pisarnos.
 
+## Aviso: estábamos mirando la votación equivocada
+
+Se corrió el chequeo que había quedado pendiente sobre la fuente de datos recientes, para saber si publica el número de expediente de cada votación. La respuesta: **el Senado sí lo trae, Diputados no lo trae de ninguna forma**. O sea que el rodeo que se armó ayer —deducirlo del número de Orden del Día— no era un parche provisorio: es lo mejor que existe. Queda escrito, porque ya se buscó dos veces.
+
+Pero el chequeo mostró de paso otra cosa, y esa sí obligó a corregir algo. **Una ley no se vota una vez: se vota "en general" —donde se decide si se aprueba— y después "en particular", artículo por artículo.** La Ley Bases tiene **50 votaciones** de un mismo proyecto. Y el programa que armé ayer se quedaba con la última de cada cámara, que en esos casos es el último artículo, no la votación que define la ley. Un artículo puede rechazarse y la ley aprobarse igual: estábamos por medir el resultado equivocado.
+
+Ya está arreglado: ahora busca explícitamente la votación en general y, si no la encuentra identificada, se queda con la primera, que es la que va antes del articulado. Además queda anotado en cada caso **cuántas votaciones hubo** y **por qué se eligió esa**, para que quien use el dato sepa cuándo fue por evidencia y cuándo por regla. De los 243 proyectos con votación en las dos cámaras, 55 se votaron en partes.
+
+Vale la pena decir de dónde salió el error, porque es el mismo de siempre en este proyecto: quedarse con la última votación parecía obviamente correcto, se escribió como si lo fuera, y nadie lo midió. Apareció de casualidad, mirando otra cosa.
+
+## Avance: se destapó la ventana reciente (2025-2026)
+
+Al cerrar lo del Senado quedó una alarma anotada: las leyes con votación en las dos cámaras se cortaban en 2020. Al mirarlo, el problema no era el Senado sino **Diputados**: desde 2020 sus votaciones entran sin ninguna referencia al proyecto votado — cero de 177 en 2024, cero de 116 en 2025. Y como una cadena necesita las dos mitades, no importaba lo bien que estuviera el Senado.
+
+Los títulos de Diputados tampoco nombran el expediente, pero sí nombran la **Orden del Día**: *"O. D. 759 - DNU 179/2025..."*. La Orden del Día es el número con el que un dictamen llega al recinto, y esa numeración sí la teníamos cruzada con los proyectos. Con ese puente entran 251 votaciones más y aparecen las primeras cadenas completas de **2025 (7) y 2026 (5)**, que antes eran cero.
+
+Dos cuidados que valieron la pena. Primero, las Órdenes del Día se renumeran todos los años, así que la búsqueda usa año y número juntos (y prueba el año anterior, porque una del final de diciembre se vota en marzo). Segundo, y más importante: **el puente NO se usa para el Senado**, porque el Senado numera sus propias Órdenes del Día y buscarlas en la tabla de Diputados devolvería un proyecto equivocado sin ningún aviso. Eso quedó escrito como prueba.
+
+Sobre lo viejo, siguiendo el criterio de Valle: lo anterior a 2015 se conserva como historia —sirve para linajes y comportamiento de arrastre— pero no se va a forzar. Ningún legislador de esa época sigue en actividad y el Congreso de entonces no estaba digitalizado.
+
+Queda una sola cosa por confirmar, y necesita internet: el sistema que trae los datos recientes pone el campo del expediente en blanco por una línea de código. No sabemos si la fuente lo publica o directamente no lo tiene. En vez de adivinar y arreglar mal, se dejó un chequeo de un solo comando que lo responde.
+
+## Avance: el Senado pasa de 8% a 72% de votaciones identificadas
+
+Quedaba un problema grande del cambio de enfoque: para seguir una ley de una cámara a la otra hay que saber **qué proyecto se votó** en cada votación, y del lado del Senado eso sólo estaba anotado en 8 de cada 100 votaciones. La conclusión natural era que había que volver a recorrer la web del Senado, votación por votación, veinte años para atrás.
+
+**No hizo falta.** El dato estaba escrito en el propio título de la votación, en texto: *"Reforma Laboral. PE-608/03. Votación en general"*. Estaba a la vista y nadie lo estaba leyendo. Con eso el Senado pasa de **250 a 2.230 votaciones identificadas**, y los proyectos con votación registrada en las dos cámaras saltan de **39 a 223**.
+
+Como el título es texto libre y podía traer errores, se comprobó contra los casos donde el dato ya existía anotado aparte: **coinciden en el 98,8%**. Y las tres diferencias resultaron útiles, porque explican cuándo NO hay que confiar en el título: a veces menciona *otro* expediente, uno que el proyecto cita o reproduce, no el que se está votando. Por eso la regla quedó en que el dato anotado siempre gana y el título es sólo el respaldo.
+
+Una aclaración para que nadie lea mal el número: el porcentaje general de votaciones enlazadas *bajó* de 59,7% a 49,8%, y sin embargo se enlazaron 767 votaciones más. Es que ahora se está intentando con muchas más: las de antes de 2008 no tienen con qué cruzarse, porque la base de proyectos del Congreso arranca ahí. Las posteriores a 2008 se enlazan en el 79,6% de los casos.
+
+Queda una sola cosa que sí es de recolección: el sistema que trae los datos recientes descarta el expediente a propósito, por una línea de código que lo pone en blanco. Habría que ver si la fuente lo publica; si lo publica, se arregla en dos líneas y el flujo del día a día queda cubierto.
+
 ## Avance: ahora podemos seguir una ley de una cámara a la otra
 
 Cambió el enfoque del pronóstico. Hasta ahora intentábamos adivinar si un proyecto lograba salir de comisión, y eso resultó ser lo menos pronosticable de todo: lo que pasa en comisión se define en reuniones donde los partidos negocian a puertas cerradas, y no hay estadística que capture eso. Así que el nowcast pasa a medir lo que sí se puede medir: **si el proyecto se aprueba en la cámara donde nació y después en la otra**.

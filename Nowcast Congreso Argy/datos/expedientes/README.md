@@ -118,3 +118,70 @@ python datos/expedientes/src/enlace_senado.py            # construye y reporta
 python datos/expedientes/src/enlace_senado.py --reporte  # sólo diagnóstico
 python datos/expedientes/tests/test_enlace_senado.py     # 42 checks, sin red
 ```
+
+### Rescate del expediente desde el TÍTULO (2026-08-08, segunda corrida)
+
+El cuello de botella de arriba (8,1%) **no era de ingesta**: el expediente está
+escrito dentro del título del acta en 2.229 casos —
+`"...Reforma Laboral. PE-608/03. Votacion en general"`. `expediente_en_titulo()`
+lo rescata **sólo como respaldo**, cuando la columna `expediente` viene vacía.
+
+| | antes | ahora |
+|---|---:|---:|
+| actas del Senado con expediente | 250 (8,1%) | **2.230 (72,4%)** |
+| actas enlazadas | 1.337 | **2.104** |
+| **proyectos con votación en las DOS cámaras** | **39** | **223** |
+
+**El campo propio SIEMPRE manda.** Donde existen los dos coinciden en el
+**98,8%** (246/249), y las 3 discrepancias son casos en que el título nombra un
+expediente *referenciado* (un proyecto que se reproduce, el proyecto de fondo de
+un dictamen de bicameral) y no el votado. Columna de contrato nueva:
+`origen_clave` ∈ {`campo`, `titulo`}.
+
+⚠️ **Cómo (no) leer la tasa global.** Baja de 59,7% a 49,8% **porque creció el
+denominador**, no porque empeore: de las 1.980 rescatadas, las 963 posteriores a
+2008 enlazan al **79,6%** y las 1.017 anteriores al **0%** (el maestro de CKAN
+arranca el 2008-03-03). Cualquier cita del porcentaje tiene que decir la ventana.
+
+**Lo que sigue siendo de ingesta, y es lo único:**
+`datos/argentinadatos/src/to_canonical.py` tiene `expediente=None` **fijo** para
+las dos cámaras (líneas 132 y 147). Hay que ver **con red** si la API lo expone;
+si lo expone, se arregla el flujo vivo (2024-2026) en dos líneas. Hoy esas 311
+actas se salvan por el título (65,9%).
+
+### Tercer nivel: puente por ORDEN DEL DÍA (2026-08-08, sólo DIPUTADOS)
+
+Desde 2020 las actas de **Diputados** entran sin expediente (**0 de 369** entre
+2024 y 2026) y el título tampoco lo nombra — pero sí trae la **O.D.**:
+`"O. D. 759 - DNU 179/2025, QUE APRUEBA..."`. Como `expedientes_resultados.parquet`
+tiene `od_numero` + `od_publicacion`, el par **(año, nº de O.D.) lleva al proyecto**.
+
+- Clave **con año** (las O.D. se renumeran cada año) y reintento en `año-1`:
+  una O.D. de fin de año se vota al siguiente.
+- **292 claves ambiguas descartadas** (una O.D. puede tener varios dictámenes).
+- ✅ Control: donde el acta ya tenía expediente, la O.D. da el mismo proyecto en
+  el **98,9%** (88/89).
+
+⛔ **NO se aplica al Senado, a propósito.** El Senado numera **sus propias**
+Órdenes del Día: buscar la "O.D. 206/2023" de un acta del Senado en la tabla de
+HCDN devolvería un proyecto ajeno sin ningún aviso. Hay un test que lo impide.
+
+**Orden de precedencia del módulo:** `campo expediente` → `expediente en el
+título` → `O.D. en el título (sólo Diputados)`. La columna `origen_clave`
+(`campo` | `titulo` | `od`) dice de dónde salió cada uno.
+
+| | inicio | + título | **+ O.D.** |
+|---|---:|---:|---:|
+| actas enlazadas | 1.337 | 2.104 | **2.355** |
+| **cadena completa (2 cámaras)** | **39** | **223** | **243** |
+| cadena en 2025 / 2026 | 0 / 0 | 0 / 0 | **7 / 5** |
+
+**Pendientes conocidos:**
+- 2020-2023 sigue casi vacío del lado de Diputados (1 a 9 actas por año): es el
+  hueco **Dip 2020-23 pausado desde el 10-jul**, no un problema de este módulo.
+- `datos/argentinadatos/src/explorar_campos.py` es una **sonda** para decidir
+  con red si la API expone el expediente (hoy `to_canonical.py` lo pone en
+  `None` fijo, líneas 132 y 147). Un comando y queda resuelto.
+- ✏️ El módulo se llama `enlace_senado.py` y ya resuelve las **dos** cámaras.
+  El nombre quedó chico; no se renombró porque el entorno no puede borrar y
+  quedaría un archivo zombi.

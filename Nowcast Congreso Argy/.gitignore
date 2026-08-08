@@ -36,6 +36,12 @@ package-lock.json
 # no viaja, los pendientes de revision quedan solo en la maquina de quien cargo.
 # Seria la quinta vez que este archivo esconde trabajo (ver ESTADO 04-08).
 !datos/proyectos/data/cuarentena.db
+
+# RESPALDO DE TAXONOMIAS — lo unico de proyectos.db que NO se reconstruye (la
+# llena el agente LLM y cuesta llamadas a la API). La base son 90 MB y no viaja;
+# este CSV pesa kilobytes y ES la copia de seguridad. Si queda ignorado, un
+# `migrar_ckan.py` —comando inocente y documentado— borra trabajo pago.
+!datos/proyectos/data/taxonomias.csv
 # Los journals de SQLite son temporales de una corrida: nunca se versionan.
 *.db-journal
 *.db-wal

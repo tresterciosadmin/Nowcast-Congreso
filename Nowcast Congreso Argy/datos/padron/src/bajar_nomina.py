@@ -137,6 +137,87 @@ def nomina_diputados() -> pd.DataFrame:
     return df.drop_duplicates()
 
 
+CKAN_BLOQUES = ("https://datos.hcdn.gob.ar/api/3/action/"
+                "package_show?id=bloques-interbloques-e-integracion")
+
+
+def composicion_oficial() -> pd.DataFrame:
+    """Composición ACTUAL de bloques, del CKAN oficial de HCDN.
+
+    Resuelve lo que la API de argentinadatos no puede (ver CALIDAD DE FUENTE):
+    devuelve **exactamente 257 filas**, una por banca vigente, con BLOQUE,
+    APELLIDO, NOMBRE y PERIODO ('2025-2029' / '2023-2027').
+
+    Es una FOTO: no tiene historia ni fechas finas, así que no reemplaza al
+    padrón point-in-time — lo **completa y lo controla**. Los dos faltantes
+    conocidos (Pitrola, con tramo degenerado en la API, y Matzkin, ausente)
+    aparecen acá.
+    """
+    import requests
+    H2 = {"User-Agent": "nowcast-congreso/0.1 (datos/padron)"}
+    pkg = requests.get(CKAN_BLOQUES, headers=H2, timeout=120, verify=False).json()["result"]
+    url = next(r["url"] for r in pkg["resources"]
+               if r.get("format") == "JSON"
+               and "Composición actual de bloques" in r.get("name", ""))
+    j = requests.get(url, headers=H2, timeout=120, verify=False).json()
+    df = pd.json_normalize(j if isinstance(j, list) else j)
+    faltan = {"BLOQUE", "APELLIDO", "NOMBRE", "PERIODO"} - set(df.columns)
+    if faltan:
+        raise RuntimeError(f"el CKAN de bloques cambió de contrato: faltan {sorted(faltan)}")
+    logger.info("composición oficial HCDN: %d bancas", len(df))
+    return df
+
+
+def _periodo_a_fechas(periodo: str) -> tuple[str, str]:
+    """'2025-2029' -> ('2025-12-10', '2029-12-09'). Los mandatos arrancan el 10-dic."""
+    try:
+        a, b = str(periodo).split("-")
+        return f"{int(a)}-12-10", f"{int(b)}-12-09"
+    except (ValueError, AttributeError):
+        return "", ""
+
+
+def completar_con_oficial(df: pd.DataFrame, fecha: str) -> pd.DataFrame:
+    """Suma al padrón las bancas vigentes que la API no trajo.
+
+    Sólo agrega lo que FALTA (match por apellido + primer nombre): no pisa nada,
+    porque la API tiene la historia de cambios de bloque y esta fuente no.
+    """
+    try:
+        ofi = composicion_oficial()
+    except Exception as e:                      # red o contrato: no es fatal
+        logger.warning("no pude traer la composición oficial (%s): sigo sin completar", e)
+        return df
+
+    def k(ap, no):
+        return (_norm_txt(ap), _norm_txt(str(no).split()[0]) if str(no).strip() else "")
+
+    vig = _vigentes(df, fecha)
+    ya = {k(r.Apellido, r.Nombre) for r in vig.itertuples()}
+    nuevas = []
+    for r in ofi.itertuples():
+        if k(r.APELLIDO, r.NOMBRE) in ya:
+            continue
+        d, h = _periodo_a_fechas(r.PERIODO)
+        if not d:
+            continue
+        nuevas.append({"Apellido": str(r.APELLIDO).title().strip(),
+                       "Nombre": str(r.NOMBRE).title().strip(),
+                       "Distrito": "", "IniciaMandato": d, "FinalizaMandato": h,
+                       "Bloque": str(r.BLOQUE).title().strip()})
+    if nuevas:
+        logger.info("completadas %d bancas desde la fuente oficial: %s", len(nuevas),
+                    ", ".join(f"{n['Apellido']}" for n in nuevas))
+        df = pd.concat([df, pd.DataFrame(nuevas)], ignore_index=True)
+    return df
+
+
+def _norm_txt(s) -> str:
+    import unicodedata
+    s = unicodedata.normalize("NFKD", str(s)).encode("ascii", "ignore").decode()
+    return " ".join(s.upper().split())
+
+
 def _vigentes(df: pd.DataFrame, fecha: str) -> pd.DataFrame:
     d = pd.to_datetime(df["IniciaMandato"], errors="coerce")
     h = pd.to_datetime(df["FinalizaMandato"], errors="coerce")
@@ -156,6 +237,7 @@ def main(argv=None) -> int:
 
     DATA.mkdir(parents=True, exist_ok=True)
     df = nomina_diputados()
+    df = completar_con_oficial(df, a.fecha)   # cierra los faltantes contra HCDN
     salida = DATA / f"nomina_{a.camara}.csv"
     df.to_csv(salida, index=False, encoding="utf-8")
 

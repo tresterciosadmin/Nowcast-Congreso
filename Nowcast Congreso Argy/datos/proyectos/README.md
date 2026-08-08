@@ -28,9 +28,21 @@
 > python datos/proyectos/src/upsert_bot.py     # + el bot (20 s)
 > ```
 >
-> ⚠️ **Lo único NO reconstruible es `proyecto_taxonomias`** — la llena el agente y
-> cuesta llamadas a la API. **Antes de que el agente escriba, hay que exportarla a un
-> archivo versionado** (pendiente en `URGENTE.md`).
+> ✅ **`proyecto_taxonomias` ya tiene respaldo (07-08).** Era lo único NO
+> reconstruible —la llena el agente y cuesta llamadas a la API—, así que un
+> `migrar_ckan.py` de más borraba trabajo pago. Ahora:
+>
+> ```bash
+> python datos/proyectos/src/taxonomias_backup.py exportar   # db -> data/taxonomias.csv (versionado)
+> python datos/proyectos/src/taxonomias_backup.py estado     # avisa si hay filas sin respaldar
+> ```
+>
+> **`migrar_ckan.py` restaura solo** al terminar: no depende de que nadie se
+> acuerde. La restauración es idempotente y **nunca pisa una clasificación
+> `fuente='humano'` con una del agente**. 14 tests en `tests/test_taxonomias_backup.py`.
+>
+> ⚠️ Queda una regla operativa: **cuando el agente termine una tanda, correr
+> `exportar`**. Es lo que convierte el respaldo en respaldo.
 
 ## Cuarentena: lo dudoso va aparte
 

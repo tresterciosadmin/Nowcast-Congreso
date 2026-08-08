@@ -55,6 +55,87 @@ Mantené esta tabla sincronizada con la bitácora.
 ---
 
 ## Bitácora (más reciente arriba)
+### [2026-08-07 · cierre] La cadena corrida tras los linajes — y aparece que el "desvío" mide ausentismo
+- **Quién:** Franco (corre) · Claude (analiza) · **Módulos:** datos/canonica, variables/bloque, modelo/voto_individual
+- **✅ La reclasificación quedó validada por los datos.** `IZQUIERDA`: **cohesión 1,0000 y desvío 0,0000** en 2025 y 2026 — vota siempre igual, sin una sola fractura, y con share afirmativo **0,2414 contra 0,8211 de LLA** en 2026. Es oposición dura y perfectamente disciplinada; disuelta en `OTRO / PROVINCIAL` esa disciplina era invisible y además ensuciaba al grupo negociador.
+- **La medición global mejoró:** mediana de desvío **0,1654 → 0,1477** (−11%), legisladores medibles 1.591 → **1.751**, cobertura 1994-2026 sobre 955.025 votos. Linajes bien asignados = menos "falso desvío" por estar en el grupo equivocado.
+- **⚠️ Una predicción propia que NO se verificó.** Se anticipó que el desvío de `OTRO / PROVINCIAL` bajaría al sacarle la izquierda. Quedó en 0,2820 con cohesión 0,4359, y **no hay valor previo del mismo indicador** para comparar — así que no se puede afirmar ni que bajó ni que subió. Se deja dicho en vez de buscarle una lectura favorable.
+- **🔴 HALLAZGO — el `desvío` mide AUSENTISMO en un 40%.** El top de díscolos tras la corrida son casi todos ausentes: Martínez Llano 0,955 de desvío con **100% de ausencias**, Néstor Kirchner (2010) 0,944 con 98%, Quintar 0,864 con 97%, Chaya 0,877 con 92%. **Correlación desvío ↔ ausentismo: r = 0,630** sobre 1.961 legisladores.
+  - **No es un bug: es el ADR-0004**, que decide explícitamente ser "estricto con abstenciones y ausencias". El problema es el **uso aguas abajo**: `gamma_individual()` asigna la elasticidad al clima político según ese desvío, o sea que **da γ alto —hasta 0,555, el tramo máximo— a legisladores cuyo "desvío" es no presentarse**. Un ausente crónico no es una bisagra sensible al clima.
+  - **Deja incompleto el fix de esta mañana:** el encogimiento corrigió el desvío por *tamaño de muestra* (los 104 novatos con 2 votaciones) pero no por *naturaleza del desvío*. Quien está en un tramo alto por ausentismo sigue ahí.
+  - **Verificación barata propuesta:** separar `tasa_desvio_conducta` de `tasa_desvio_ausencia` y ver si cambia el ranking de bisagras. Registrado en URGENTE 1.
+- **El patrón del día, por cuarta vez:** una variable que mide algo distinto de lo que se cree. Pasó con el efecto líder (era composición), con `n_giros` (se sospechaba leakage y no lo era), con el γ del ICG (2 observaciones) y ahora con el desvío (ausentismo). **La pregunta que conviene volver rutina: ¿qué mide realmente esta columna, y con cuántos datos?**
+- **Estado:** datos/canonica y variables/bloque corridos; falta `modelo/ensemble` y el γ, que leen el desvío.
+
+### [2026-08-07] datos/canonica — la IZQUIERDA sale de OTRO/PROVINCIAL: 13 variantes rescatadas por patrón
+- **Quién:** Franco (plantea la hipótesis y pide verificarla) · Claude · **Módulo:** datos/canonica — cierra URGENTE 2
+- **El problema:** `LINAJE` tenía 4 entradas de izquierda escritas a mano y en la canónica hay **13 variantes del mismo espacio político** ("PTS-FRENTE DE IZQUIERDA UNIDAD", "PARTIDO OBRERO EN EL FRENTE DE IZQUIERDA Y DE TRABAJADORES-U", "MST - FRENTE DE IZQUIERDA Y TRABAJADORES UNIDAD"…). **El FIT rota la etiqueta cada elección**, así que una lista exacta se desactualiza sola: **todas menos una caían en `OTRO / PROVINCIAL`**.
+- **VERIFICACIÓN de la hipótesis de Franco** (*"la izquierda vota contra Milei y con UxP"*) — era Milei, 333 actas, postura mayoritaria por bloque:
+
+  | la izquierda coincide con… | |
+  |---|---:|
+  | **FdT-UxP (kirchnerismo)** | **96,1%** |
+  | LA LIBERTAD AVANZA | 8,1% |
+  | `OTRO / PROVINCIAL`, donde estaba clasificada | **49,8%** |
+
+  **Hipótesis confirmada.** Y el dato que justifica el arreglo: el linaje que se le venía asignando tenía **poder explicativo nulo — 49,8% es una moneda al aire**. `OTRO / PROVINCIAL` es el cajón de los bloques **negociadores** (los más sensibles al clima según ADR-0008) y el FIT es exactamente lo contrario: vota siempre igual y en contra. Lo estábamos metiendo en el grupo de comportamiento opuesto.
+- **🔴 El test que evitó un error mayor: NO se funde con FdT-UxP.** El 96,1% invita a fusionarlos, pero desagregado por gobierno se cae:
+
+  | gobierno | coincidencia IZQ–kirchnerismo |
+  |---|---:|
+  | Macri (ambos oposición) | 80,2% |
+  | **Alberto Fernández (el K gobierna)** | **58,3%** |
+  | Milei (ambos oposición) | 96,1% |
+
+  **Coinciden cuando ambos son oposición, no por identidad.** Cuando el kirchnerismo gobierna, la izquierda se le opone. Linaje propio. (n=24 actas en el tramo de Alberto: muestra chica, pero la dirección es inequívoca y políticamente coherente.)
+- **El fix — por PATRÓN, no por lista.** `_RE_IZQUIERDA` (`IZQUIERD|PARTIDO OBRERO|\bPTS\b|\bMST\b|BLOQUE DE LOS TRABAJADORES`) aplicado **solo sobre lo que quedó en `OTRO / PROVINCIAL`**: nunca pisa un linaje asignado a mano, el mapa exacto sigue mandando. Con excepción explícita para que "PARTIDO SOCIALISTA" / "SOCIALISTA" a secas sigan en `PROGRESISMO` — es el PS, no el FIT.
+- **Ampliación (pedido de Franco: "hay que seguir buscando").** Se barrieron los **51 bloques** de `OTRO / PROVINCIAL` con nombre sugestivo y se decidió **por comportamiento, no por nombre** — coincidencia con el núcleo de izquierda ya identificado:
+
+  | bloque candidato | actas | coincide con la izquierda | decisión |
+  |---|---:|---:|---|
+  | **AUTODETERMINACIÓN Y LIBERTAD** (Zamora) | 121 | **100,0%** | ✅ **entra** |
+  | MOVIMIENTO EVITA | 54 | 88,9% | ❌ es kirchnerismo (movimiento social peronista); coincidencia coyuntural — **el mismo error que se descartó con UxP** |
+  | MOVIMIENTO SOLIDARIO POPULAR | 414 | 66,4% | ❌ sin evidencia suficiente |
+  | FRENTE POPULAR BONAERENSE | 86 | 54,7% | ❌ peronismo provincial |
+  | MOVIMIENTO POPULAR NEUQUINO | 833 | 38,9% | ❌ provincial, está bien donde está |
+
+  **El criterio que se aplicó dos veces hoy:** un nombre parecido no alcanza, y una coincidencia alta tampoco si se explica por coyuntura. Zamora entra con 100% sobre 121 actas; el Evita no entra pese al 88,9%, porque su alineamiento sigue al kirchnerismo, no a la izquierda.
+- **Queda anotado, sin evidencia para decidir:** las variantes de **PROYECTO SUR** (`MOVIMIENTO PROYECTO SUR` 1.030 votos, `BS. AS. PARA TODOS EN PROYECTO SUR` 202) y **SOLIDARIDAD E IGUALDAD (SI)** (1.731 entre tres variantes) son centroizquierda y el mapa ya tiene el linaje `PROGRESISMO` con "PROYECTO SUR" y "PARTIDO SOCIALISTA" adentro. No se tocaron porque **no hay solapamiento temporal suficiente** con el núcleo de izquierda para medirlas (son de épocas en que el FIT no tenía bancas). Requieren criterio político del equipo, no estadística.
+- **Decisiones de Franco que cerraron los dos casos que la estadística no podía resolver:**
+  - **PROYECTO SUR (Solanas) → IZQUIERDA.** Estaba en `PROGRESISMO` desde ADR-0005. Se movió el mapa completo y sus variantes (`MOVIMIENTO PROYECTO SUR`, `BS. AS. PARA TODOS EN PROYECTO SUR`, `PROYECTO SUR - UNEN`), que caían en `OTRO / PROVINCIAL`.
+  - **SOLIDARIDAD E IGUALDAD (SI) → FdT-UxP.** Terminó integrando Unidad Ciudadana. Sus tres variantes estaban en `OTRO / PROVINCIAL`.
+  - Ambos eran justamente los que **no se podían medir**: no hay solapamiento temporal con el núcleo de izquierda (son de épocas en que el FIT no tenía bancas). Donde la estadística no llega, decide el criterio político — y quedó registrado quién lo decidió.
+- **Impacto final: 7.841 votos reclasificados** — 6.110 a `IZQUIERDA` (18 bloques) y 1.731 a `FdT-UxP` (3 bloques). Más del triple que el primer intento (2.505).
+- **✅ CORRIDA HECHA (Franco, 07-08).** `entity_resolution.py` sobre 1.016.632 votos: **`IZQUIERDA` pasa de ~2.700 a 8.816 votos y 19 bloques** (1994-2026, 304 en 2026); `PROGRESISMO` baja a 26.003 al ceder Proyecto Sur. **Control post-corrida:** la izquierda sigue coincidiendo 96,1% con el kirchnerismo y 8,1% con LLA en la era Milei — el linaje cambió, el comportamiento medido no, que es lo que se esperaba.
+- **Falta:** re-correr `variables/bloque` y el desvío individual — cambia la composición de dos grupos. Anotado en URGENTE. En 2026 la cámara pasa a tener 304 votos de linaje `IZQUIERDA`, que antes engrosaban el grupo negociador.
+- **Por qué el patrón y no seguir agregando a la lista:** la lista ya había fallado tres veces por lo mismo (cada elección el frente cambia de nombre). Un patrón cubre las variantes futuras sin que nadie tenga que acordarse.
+- **⏳ Falta la corrida:** `python datos/canonica/src/entity_resolution.py` para que el cambio llegue a `votos_resuelto.parquet`, y después re-correr `variables/bloque` y `modelo/voto_individual` (el desvío del grupo cambia). **El código viaja con el pull, el efecto no.**
+- **Estado del módulo:** datos/canonica EN CURSO.
+
+### [2026-08-07 · cierre] datos/padron — el padrón cierra en **257/257** con la fuente oficial de HCDN
+- **Quién:** Claude (con Franco) · **Módulo:** datos/padron — cierra el pendiente del padrón
+- **Qué faltaba:** el padrón daba **256 de 257**. La API de argentinadatos le carga a Pitrola el tramo `2026-04-27 → 2026-04-27` (asumió y le pusieron fin el mismo día) y a Matzkin no lo trae. El 31-07 se probó repararlo por heurística y **no se pudo**: abrir los tramos rotos daba 278 bancas, cerrarlos con el inicio del siguiente daba 263 y Buenos Aires 74 sobre 70. Se dejó sin reparar a propósito, con el arreglo de fondo anotado: **la nómina oficial de HCDN**.
+- **La fuente que faltaba, encontrada:** CKAN de HCDN, dataset `bloques-interbloques-e-integracion`, recurso **"Composición actual de bloques parlamentarios"** → **exactamente 257 filas** con BLOQUE, APELLIDO, NOMBRE y PERIODO. Es la nómina oficial que se venía buscando.
+- **Cómo se enchufó — complementa, no reemplaza.** `composicion_oficial()` + `completar_con_oficial()` en `bajar_nomina.py`: la API de argentinadatos sigue siendo la base porque **tiene la historia** (un diputado que cambia de bloque genera varios tramos, que es lo que necesita un padrón point-in-time); la fuente oficial es una **foto sin historia**, así que sólo se usa para **agregar las bancas vigentes que falten** y como control de que el total dé 257. No pisa nada.
+- **Resultado: 257/257.** Se completó 1 banca (Pitrola). Matzkin ya estaba cubierto por el cruce. Si la fuente oficial no responde, el script sigue con lo que tenga y avisa — no rompe.
+- **Detalle anotado, no resuelto:** Pitrola entra como `OTRO / PROVINCIAL` cuando su tramo de 2015 figura como `IZQUIERDA`. El bloque "Partido Obrero en el Frente de Izquierda y de Trabajadores" no está en el mapeo de linajes, y **no hay ningún bloque IZQUIERDA en el padrón actual**, así que probablemente le pase a todo el FIT. Es de `entity_resolution`, no del padrón. **Conviene revisarlo antes de usar linajes para el nowcast de 2026.**
+- **Otro ítem que ya no correspondía:** las Actions con Node 20 deprecado. Verificado en disco: el equipo las subió a `checkout@v5` / `setup-python@v6` / `github-script@v8` en el commit "infra". **Tercera alarma vencida que encuentro hoy** — la verificación previa sigue pagando.
+- **Estado del módulo:** datos/padron EN CURSO (Diputados cerrado; el Senado ya lo resolvió el equipo el 06-08 con `padron_senado.csv`).
+
+### [2026-08-07 · noche] datos/proyectos — RESPALDO de `proyecto_taxonomias`: lo único que no se reconstruye
+- **Quién:** Claude (con Franco) · **Módulo:** datos/proyectos
+- **El riesgo, en una línea:** `proyectos.db` no viaja a git (90 MB) y se rehace en un minuto con `migrar_ckan.py`. Eso está bien para todo **menos para `proyecto_taxonomias`**, que no sale de ninguna fuente pública: la llena el agente LLM y **cuesta llamadas a la API**. Correr `migrar_ckan.py` —un comando inocente, documentado en el README, que cualquiera del equipo puede ejecutar— **borraba trabajo pago sin red de contención**.
+- **Se resolvió HOY porque hoy era gratis:** la tabla está en **0 filas** (la base se creó esta tarde). Montar el respaldo con 100.000 clasificaciones adentro habría sido pagar la API dos veces.
+- **Qué se hizo:** `datos/proyectos/src/taxonomias_backup.py` con tres acciones — `exportar` (db → `data/taxonomias.csv`, versionado), `restaurar` (csv → db) y `estado` (compara ambos y avisa cuántas filas quedaron sin respaldar). **`migrar_ckan.py` llama a `restaurar()` solo al terminar**: la recuperación no depende de que nadie se acuerde, que es exactamente como se pierden las cosas en este proyecto.
+- **Dos decisiones de diseño:**
+  1. **La restauración nunca pisa `fuente='humano'` con una del agente.** Una clasificación revisada por una persona vale más que una del modelo; el agente ya respetaba esa regla al escribir y el respaldo la respeta al leer.
+  2. **El CSV se escribe aunque haya 0 filas.** Un respaldo vacío con encabezado es la señal de que el mecanismo está montado; si no se escribiera, no habría forma de distinguir "no hay taxonomías" de "nadie corrió el respaldo".
+- **14 tests offline** (`tests/test_taxonomias_backup.py`) sobre base temporal, incluido el escenario real: cargar clasificaciones → simular `migrar_ckan` borrando la tabla → restaurar → verificar que quedó igual, y que una revisión humana sobrevive a un respaldo viejo del agente.
+- **.gitignore — quinta vez.** `*.csv` se comía el respaldo. **El chequeo previo falló por un bug mío:** pregunté si el archivo ya contenía "taxonomias.csv" y dio verdadero por `muestra_manual_taxonomias.csv`, que es otro archivo. Se corrigió comparando la ruta completa. Vale como recordatorio de que **el chequeo `git check-ignore` es el que manda**, no la inspección del texto.
+- **Regla operativa que queda:** cuando el agente termine una tanda de clasificación, correr `taxonomias_backup.py exportar`. Es lo que convierte el respaldo en respaldo.
+- **Estado del módulo:** datos/proyectos EN CURSO.
+- **Próximo paso:** el agente de taxonomías ya tiene dónde escribir y ahora también red de contención; queda correr la primera tanda real.
+
 ### [2026-08-07 · cierre 8] coordinación — BARRIDO de documentos: 8 archivos decían cosas que hoy son falsas
 - **Quién:** Valle (*"tomate el tiempo de mirar todos los archivos"*) · Claude · **Módulo:** coordinación
 

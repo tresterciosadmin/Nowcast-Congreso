@@ -25,7 +25,42 @@
 > Está desarrollado en `PLAN-DE-TRABAJO.md`. **Precaución vigente mientras tanto: no publicar
 > P(sanción) de proyectos con origen Senado.**
 
-## 1. Validar 15 filas MEDIA del roster de jefes (equipo)
+## 1. 🔴 El "desvío" mide AUSENTISMO en un 40%, y de ahí sale el γ del ICG
+**Detectado:** 2026-08-07 · Claude+Franco · **bloquea: confiar en la lista de bisagras**
+
+Al re-correr `disciplina.py` tras el cambio de linajes, el **top de díscolos** salió
+dominado por gente que no va a votar:
+
+| legislador | tasa_desvio | % ausente |
+|---|---:|---:|
+| MARTINEZ LLANO, José Rodolfo | 0,955 | **100%** |
+| KIRCHNER, Néstor Carlos (2010) | 0,944 | **98%** |
+| QUINTAR, Amado | 0,864 | **97%** |
+| CHAYA, María Lelia | 0,877 | **92%** |
+
+**Correlación desvío ↔ ausentismo: r = 0,630** sobre 1.961 legisladores medibles.
+Casi **el 40% de la varianza** del indicador es inasistencia, no indisciplina.
+
+**No es un bug: es el ADR-0004**, que decide ser "estricto con abstenciones y
+ausencias". El problema es **el uso aguas abajo**. `gamma_individual()` asigna la
+elasticidad al clima político según ese desvío, y le está dando **γ alto (hasta
+0,555, el tramo máximo) a legisladores cuyo "desvío" es no presentarse**. Un
+ausente crónico no es una bisagra sensible al clima: es alguien que no está.
+
+**Conecta con el fix del 07-08 y lo deja incompleto:** el encogimiento corrigió
+el desvío por **tamaño de muestra** (los 104 novatos con 2 votaciones), pero no
+por **naturaleza del desvío**. Quien está en un tramo alto por ausentismo sigue ahí.
+
+**Cómo verificarlo (barato):** separar `tasa_desvio_conducta` (votó distinto de su
+bloque estando presente) de `tasa_desvio_ausencia`, y ver si el ranking de bisagras
+cambia. Si cambia, `gamma_individual` debe leer la primera, no la actual.
+
+**Dónde:** `modelo/voto_individual/src/disciplina.py` (producir las dos columnas) y
+`variables/proyecto/src/modulador_icg.py` (consumir la correcta).
+
+---
+
+## 2. Validar 15 filas MEDIA del roster de jefes (equipo)
 **Detectado:** 2026-07-30 · Claude+Franco · **bloquea: confiar en `lider_jefe_bloque`**
 
 > **Prioridad rebajada el 31-07.** Medido el efecto real, `lider_jefe_bloque` aporta
@@ -62,13 +97,20 @@ motivo como comentario `#` en el propio CSV (como se hizo con Bianchi).
 
 ---
 
-## 2. Documentar / prolijidad (no bloquea, pero conviene)
+## 3. Re-correr el resto de la cadena tras el cambio de linajes
 **Detectado:** 2026-08-07
 
-- **Padrón de Diputados: 256/257.** Falta Pitrola (la API le carga `2026-04-27 →
-  2026-04-27`) y Matzkin no figura. Se probó reparar y da 278 o 263: la fuente no
-  distingue quién asumió de quién cesó. Arreglo de fondo: **nómina oficial de
-  HCDN**. Ver `datos/padron/src/bajar_nomina.py`.
-- **Exportar `proyecto_taxonomias` a un archivo versionado ANTES de que el agente
-  escriba**, con su excepción explícita en el `.gitignore`. Es lo único de
-  `proyectos.db` que NO se reconstruye desde las fuentes: cuesta llamadas a la API.
+✅ **Hechos (Franco, 07-08):** `entity_resolution.py` (IZQUIERDA: ~2.700 → **8.816
+votos / 19 bloques**), `bloque.py serie` y `disciplina.py`. La medición mejoró:
+**mediana de desvío 0,1654 → 0,1477** y legisladores medibles 1.591 → **1.751**.
+Validación del cambio: `IZQUIERDA` da **cohesión 1,0000 y desvío 0,0000** en 2025 y
+2026 — vota siempre igual, sin una fractura; disuelta en OTRO/PROVINCIAL eso era
+invisible. Share afirmativo 2026: **0,2414 contra 0,8211 de LLA**.
+
+⏳ **Falta:** `variables/embudo` no depende de esto, pero **`modelo/ensemble` y el
+γ del ICG sí** (leen el desvío, que cambió). Y **commitear los parquet**.
+
+⚠️ **Predicción que NO se verificó:** se anticipó que el desvío de
+`OTRO / PROVINCIAL` bajaría al sacarle la izquierda. Quedó en **0,2820 con cohesión
+0,4359** y no hay valor previo del mismo indicador para comparar. Queda dicho para
+no dar por buena una predicción que no se comprobó.

@@ -257,6 +257,23 @@ def main() -> int:
         verificar(); return 0
     st = migrar()
     logger.info("LISTO -> %s", DB)
+
+    # Restaurar las TAXONOMIAS (2026-08-07). `migrar()` rehace la base desde cero,
+    # y `proyecto_taxonomias` es lo unico que NO se puede reconstruir: la llena el
+    # agente LLM y cuesta llamadas a la API. Sin esto, correr este script —que es
+    # un comando inocente y documentado— borra trabajo pago. Se restaura SOLO, sin
+    # depender de que alguien se acuerde, que es como se pierden las cosas.
+    try:
+        sys.path.insert(0, str(Path(__file__).resolve().parent))
+        import taxonomias_backup as tb
+        n = tb.restaurar()
+        if n:
+            logger.info("taxonomias restauradas desde el respaldo versionado: %d", n)
+    except (ImportError, OSError, ValueError) as e:
+        logger.error("NO pude restaurar las taxonomias (%s). Si habia clasificaciones, "
+                     "recuperarlas con: python datos/proyectos/src/taxonomias_backup.py "
+                     "restaurar", e)
+
     verificar()
     # Control de integridad: si un numero no cierra, corta con exit 1.
     sys.path.insert(0, str(Path(__file__).resolve().parent))

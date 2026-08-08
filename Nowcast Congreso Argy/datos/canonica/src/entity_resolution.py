@@ -52,6 +52,13 @@ LINAJE = {
     # Sub-bloques del FdT-UxP en el Senado (etiquetas del padrón wiki; omisión
     # detectada 2026-07-11: caían en OTRO siendo kirchnerismo puro)
     "UNIDAD CIUDADANA": "FdT-UxP (kirchnerismo)",
+    # SOLIDARIDAD E IGUALDAD (SI) -> kirchnerismo por decision de Franco (07-08):
+    # termino integrando Unidad Ciudadana. Estaba en OTRO / PROVINCIAL (1.731
+    # votos entre sus tres variantes).
+    "SOLIDARIDAD E IGUALDAD (SI)": "FdT-UxP (kirchnerismo)",
+    "SOLIDARIDAD E IGUALDAD (SI) - ARI (T.D.F)": "FdT-UxP (kirchnerismo)",
+    "SOLIDARIDAD E IGUALDAD (SI) - PROYECTO P": "FdT-UxP (kirchnerismo)",
+    "SOLIDARIDAD E IGUALDAD": "FdT-UxP (kirchnerismo)",
     "FRENTE NACIONAL Y POPULAR": "FdT-UxP (kirchnerismo)",
     # Bloque de Pichetto post-2019 (misma omisión, lado peronismo federal)
     "PERONISMO REPUBLICANO": "PERONISMO FEDERAL",
@@ -85,9 +92,13 @@ LINAJE = {
     "GEN": "PROGRESISMO",                               # 2010-25 (Stolbizer)
     "FREPASO": "PROGRESISMO",                           # 2001-05
     "UNIDAD POPULAR": "PROGRESISMO",                    # 2011-15 (Lozano, CTA)
-    "PROYECTO SUR - UNEN": "PROGRESISMO",               # Solanas
-    "PROYECTO SUR-UNEN": "PROGRESISMO",
-    "PROYECTO SUR": "PROGRESISMO",
+    # PROYECTO SUR (Solanas) -> IZQUIERDA por decision de Franco (07-08): es
+    # izquierda, no progresismo socialdemocrata. Estaba en PROGRESISMO desde
+    # ADR-0005; se mueve junto con sus variantes ("MOVIMIENTO PROYECTO SUR",
+    # "BS. AS. PARA TODOS EN PROYECTO SUR"), que caian en OTRO / PROVINCIAL.
+    "PROYECTO SUR - UNEN": "IZQUIERDA",                 # Solanas
+    "PROYECTO SUR-UNEN": "IZQUIERDA",
+    "PROYECTO SUR": "IZQUIERDA",
 }
 
 # JUSTICIALISTA a secas: tres animales con el mismo nombre -> ventanas por fecha
@@ -128,8 +139,49 @@ def _bloque_norm(b):
         return "COALICION CIVICA"
     return BLOQUE_ALIAS.get(s, s)
 
+# IZQUIERDA por PATRON, no por lista (2026-08-07).
+# El mapa exacto LINAJE tenia 4 entradas de izquierda y en la canonica hay **13
+# variantes** del mismo espacio politico ("PTS-FRENTE DE IZQUIERDA UNIDAD",
+# "PARTIDO OBRERO EN EL FRENTE DE IZQUIERDA Y DE TRABAJADORES-U", "MST - FRENTE
+# DE IZQUIERDA Y TRABAJADORES UNIDAD"...). El FIT rota la etiqueta cada eleccion,
+# asi que una lista exacta se desactualiza sola: todas menos una caian en
+# OTRO / PROVINCIAL.
+#
+# POR QUE IMPORTA (medido en la canonica, era Milei, 333 actas):
+#   la izquierda coincide con el kirchnerismo    96,1%
+#   con LLA                                       8,1%
+#   con OTRO / PROVINCIAL, donde estaba            49,8%  <- azar puro
+# OTRO / PROVINCIAL es el cajon de los bloques NEGOCIADORES (los mas sensibles al
+# clima segun ADR-0008); el FIT es lo contrario: vota siempre igual y en contra.
+# Meterlo ahi ensucia el desvio del grupo y la lectura de bisagras.
+#
+# NO se funde con FdT-UxP, aunque hoy voten casi igual. El test por gobierno lo
+# desmiente: Macri 80,2% · **Alberto (con el K gobernando) 58,3%** · Milei 96,1%.
+# Coinciden cuando ambos son oposicion, no por identidad. Linaje propio.
+# AUTODETERMINACION Y LIBERTAD (Zamora) entra por EVIDENCIA, no por nombre:
+# coincide con el nucleo de izquierda en el **100,0%** de 121 actas.
+#
+# NO entran, aunque el nombre invite: MOVIMIENTO EVITA (88,9% de coincidencia en
+# 54 actas) es kirchnerismo — un movimiento social peronista, no izquierda; la
+# coincidencia es coyuntural, el mismo error que se descarto al no fundir el FIT
+# con UxP. MOVIMIENTO POPULAR NEUQUINO (38,9%) y FRENTE POPULAR BONAERENSE
+# (54,7%) son provinciales y quedan bien donde estan.
+_RE_IZQUIERDA = re.compile(
+    r"IZQUIERD|PARTIDO OBRERO|\bPTS\b|\bMST\b|BLOQUE DE LOS TRABAJADORES"
+    r"|AUTODETERMINACION Y LIBERTAD|PROYECTO SUR", re.I)
+
+# Excepciones: "SOCIALISTA" a secas es el PS (progresismo), no el FIT. Solo entra
+# si viene acompanado de una marca del frente de izquierda.
+_RE_NO_IZQ = re.compile(r"^PARTIDO SOCIALISTA(?: POPULAR)?$|^SOCIALISTA$", re.I)
+
+
 def _linaje_vec(bnorm: pd.Series, fecha: pd.Series) -> pd.Series:
     out = bnorm.map(LINAJE).fillna("OTRO / PROVINCIAL")
+    # el patron solo RESCATA lo que quedo en OTRO / PROVINCIAL: nunca pisa un
+    # linaje ya asignado a mano (el mapa exacto sigue mandando).
+    s = bnorm.astype(str)
+    es_izq = s.str.contains(_RE_IZQUIERDA, na=False) & ~s.str.contains(_RE_NO_IZQ, na=False)
+    out = out.mask(es_izq & out.eq("OTRO / PROVINCIAL"), "IZQUIERDA")
     fe = pd.to_datetime(fecha, errors="coerce")
     fr = bnorm.eq("FRENTE RENOVADOR")
     post = fe >= pd.Timestamp(CUTOFF_FR)

@@ -595,3 +595,59 @@ Hay una excepción: **si de golpe se apartan muchos datos a la vez, ahí sí se 
 Y un detalle que salió de probarlo, no de pensarlo: al principio el corte era sólo por porcentaje, y con tandas chicas frenaba de más — el robot puede traer veinte expedientes en un día, y uno raro ya es el 5%. Se le agregó un piso: por debajo de diez casos nunca frena.
 
 **Un control mal calibrado es peor que ninguno**, porque enseña a ignorarlo. Eso pasó también con mi propio control: al principio avisaba "falló 1 de 8" cuando no fallaba nada, porque revisaba cosas que todavía no podían existir. Corregido.
+
+
+## Le pusimos red a lo único que no se puede recuperar
+La base de proyectos que armó el equipo pesa noventa megas y no se guarda en el repositorio: se reconstruye en un minuto con dos comandos. Eso está bien para casi todo, porque todo sale de fuentes públicas que podemos volver a bajar. Con una excepción: la clasificación temática de cada proyecto, que no la publica nadie — la hace un modelo de lenguaje y cada clasificación cuesta dinero.
+
+El problema era que reconstruir la base borraba esa tabla. Y no hablamos de un comando peligroso: está documentado en el manual del módulo, es rápido y cualquiera del equipo puede correrlo con toda razón. Alguien iba a hacerlo alguna vez y el trabajo pago se perdía sin aviso.
+
+Lo resolvimos hoy justamente porque hoy no cuesta nada: la tabla está vacía, la base se creó esta tarde. Montarlo cuando ya haya cien mil clasificaciones adentro habría significado pagarlas dos veces.
+
+Ahora hay una copia de seguridad en un archivo de texto que sí viaja por el repositorio, y la reconstrucción la restaura sola al terminar — sin depender de que nadie se acuerde, que es exactamente como se pierden las cosas. Además, si alguien revisó a mano una clasificación, esa revisión nunca queda pisada por la del modelo.
+
+
+## El padrón por fin cierra en 257
+Veníamos con 256 diputados de los 257 que existen. Faltaba Néstor Pitrola, porque la fuente que usábamos le anotó la fecha de salida el mismo día que entró. Habíamos intentado corregirlo con reglas y salía peor —según cómo lo arreglábamos terminábamos con 278 o con 263—, así que lo dejamos anotado esperando la nómina oficial de la Cámara.
+
+Hoy la encontramos: la Cámara publica la composición actual de sus bloques, y trae exactamente 257 filas. La usamos para completar lo que faltaba, sin reemplazar la fuente anterior — porque esa tiene la historia de los cambios de bloque, que es lo que hace falta para reconstruir cualquier fecha pasada, y la oficial es solo una foto de hoy.
+
+De paso apareció algo para revisar: el bloque del Partido Obrero está cayendo en la bolsa de "otros/provinciales", que es donde van los bloques negociadores. Es justo lo contrario de lo que hace la izquierda, que vota siempre igual y casi siempre en contra. Quedó anotado, porque mezclar esas dos cosas distorsiona el cálculo de quiénes son las bisagras.
+
+
+## La izquierda estaba en el cajón equivocado
+Franco planteó que la izquierda vota casi siempre en contra de Milei y junto al kirchnerismo, y pidió verificarlo antes de tocar nada. Lo medimos sobre las votaciones de este gobierno: coincide con el kirchnerismo en el 96% de las veces y con La Libertad Avanza en el 8%. La hipótesis era correcta.
+
+Lo llamativo es dónde estaba clasificada: en la bolsa de "otros y provinciales", con la que coincide el 49,8% de las veces — o sea, exactamente lo mismo que si tiráramos una moneda. Esa bolsa es la de los bloques negociadores, los que más se mueven según cómo esté el clima político. La izquierda es justo lo contrario: vota siempre igual, pase lo que pase. La teníamos en el grupo de comportamiento opuesto.
+
+La causa era simple y vieja: el frente de izquierda se cambia el nombre en cada elección, y la lista que traduce nombres de bloque a familias políticas estaba escrita a mano. De trece variantes, doce no figuraban. Lo resolvimos con una regla por patrón en vez de una lista, así las próximas versiones del nombre entran solas.
+
+Y hubo un test que evitó un error más grande. Con un 96% de coincidencia, la tentación era fundir a la izquierda con el kirchnerismo. Pero al mirar gobierno por gobierno aparece que durante la presidencia de Alberto Fernández —cuando el kirchnerismo era gobierno— la coincidencia baja al 58%. No votan igual porque sean lo mismo: votan igual cuando ambos son oposición. Así que la izquierda queda como familia propia.
+
+
+## Seguimos buscando, y apareció Zamora
+Franco pidió no quedarnos con el frente de izquierda y buscar todos los partidos de izquierda que pasaron por el Congreso. Revisamos los cincuenta y un bloques que estaban en la bolsa de "otros" con nombre sospechoso, pero no decidimos por el nombre: medimos cómo vota cada uno comparado con la izquierda ya identificada.
+
+Apareció uno inequívoco: Autodeterminación y Libertad, el bloque de Luis Zamora, que coincide con la izquierda en el cien por ciento de las ciento veintiún votaciones donde ambos estuvieron. Entra sin dudas.
+
+Y apareció una trampa. El Movimiento Evita coincide el 89% de las veces, un número altísimo. Pero es un movimiento social peronista, no de izquierda: coincide porque en el período que le tocó ambos eran oposición. Es exactamente el mismo error que habíamos evitado un rato antes al no fusionar la izquierda con el kirchnerismo. Quedó afuera.
+
+Quedan dos casos sin resolver, Proyecto Sur y Solidaridad e Igualdad, que probablemente sean progresismo. No los tocamos porque no hay manera de medirlos: son de épocas en que la izquierda no tenía bancas, así que no hay votaciones donde comparar. Esos necesitan criterio político del equipo, no estadística.
+
+
+## Quedó armada la familia de la izquierda
+Franco cerró los dos casos que no habíamos podido resolver midiendo. Proyecto Sur, el espacio de Pino Solanas, va con la izquierda y no con el progresismo donde estaba. Y Solidaridad e Igualdad va con el kirchnerismo, porque terminó integrando Unidad Ciudadana.
+
+Los dos eran justamente los que la estadística no podía decidir: son de épocas en que la izquierda no tenía bancas, así que no había votaciones donde comparar. Cuando el dato no alcanza, decide el criterio político — y queda anotado quién decidió qué, que es lo que permite revisarlo mañana.
+
+El resultado final es casi ocho mil votos reclasificados, más del triple de lo que habíamos logrado con la primera búsqueda. La izquierda pasó de un puñado de registros a diecinueve bloques cubriendo desde 1994 hasta hoy. Y como control, después de la corrida volvimos a medir: sigue coincidiendo 96% con el kirchnerismo y 8% con La Libertad Avanza en el gobierno actual. Cambió la etiqueta, no el comportamiento — que es exactamente lo que tenía que pasar.
+
+
+## Descubrimos que "indisciplinado" y "ausente" se nos estaban mezclando
+Al terminar de reclasificar a la izquierda corrimos de nuevo los cálculos, y el cambio quedó validado: la izquierda aparece como el bloque más disciplinado del Congreso —vota siempre igual, sin una sola excepción— y vota que no en tres de cada cuatro ocasiones, mientras el oficialismo vota que sí en ocho de cada diez. Metida en la bolsa de "otros" eso no se veía.
+
+Pero apareció algo que conviene mirar. La lista de los diputados más "indisciplinados" está encabezada por gente que directamente no iba a votar: uno con el 100% de ausencias, Néstor Kirchner con el 98% en su año como diputado, otro con el 97%. Medimos la relación en todo el padrón y da que cerca del 40% de lo que llamamos "desvío" es en realidad inasistencia.
+
+No es un error de programación: el sistema fue diseñado a propósito para contar las ausencias como forma de no acompañar, y eso tiene sentido. El problema es lo que hacemos después con ese número: lo usamos para decidir qué legisladores son sensibles al clima político, o sea quiénes son las bisagras que hay que convencer. Y alguien que no viene al recinto no es una bisagra: es alguien que no está.
+
+Quedó anotado con una forma barata de verificarlo. Es el cuarto caso del día del mismo tipo: una medición que en realidad mide otra cosa. Ya nos pasó con el efecto de los jefes de bloque, con las comisiones, con el índice de confianza, y ahora con esto. Vale la pena que preguntarse "¿qué mide realmente este número, y con cuántos datos?" se vuelva parte de la rutina.

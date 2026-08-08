@@ -240,7 +240,12 @@ check(bool(por_acta.loc["sen:2", "es_cruce"]) is False, "prefijo S no es cruce")
 check(pd.isna(por_acta.loc["sen:3", "proyecto_id"]),
       "expediente inexistente NO debe enlazar (falso positivo)")
 check(pd.isna(por_acta.loc["sen:4", "proyecto_id"]), "expediente ilegible no enlaza")
-check(por_acta.loc["sen:4", "clave"] is None, "expediente ilegible deja clave nula")
+# ⚠️ `pd.isna`, NO `is None`. Un valor leído de un DataFrame vuelve como `None`,
+# `float('nan')` o `pd.NA` según la versión de pandas — es el mismo bug que se
+# arregló en el módulo, y esta aserción lo repetía: pasaba en el sandbox y
+# fallaba en la PC de Valle (113/114 el 08-08). Comparar identidad contra None
+# sirve para lo que devuelve una función; nunca para lo que sale de una tabla.
+check(pd.isna(por_acta.loc["sen:4", "clave"]), "expediente ilegible deja clave nula")
 
 print("\nambigüedad: una clave que apunta a dos proyectos NO debe enlazar")
 amb = pd.concat([expedientes, pd.DataFrame([{

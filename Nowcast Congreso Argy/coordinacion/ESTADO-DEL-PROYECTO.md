@@ -55,6 +55,19 @@ Mantené esta tabla sincronizada con la bitácora.
 ---
 
 ## Bitácora (más reciente arriba)
+### [2026-08-08 · 6] El arreglo tenía el mismo bug adentro del test — 113/114
+- **Quién:** Valle (corre) · Claude · **Módulo:** datos/expedientes
+- **Qué pasó:** el commit `db80565` arregló las guardas de faltantes del módulo y **repitió el error en una aserción del propio test**: `check(por_acta.loc["sen:4", "clave"] is None, ...)`. En el sandbox el faltante vuelve como `None` y pasa; en la PC de Valle vuelve como `pd.NA` y **`pd.NA is None` es `False`**. 113/114.
+- **El código estaba bien** — el log lo mostraba: *"1 actas con expediente que no se pudo normalizar ni rescatar"*, que es exactamente lo esperado. Fallaba sólo la forma de preguntarlo.
+- **La regla, ahora explícita en el test:** `is None` sirve para lo que **devuelve una función**; para lo que **sale de una tabla** va siempre `pd.isna()`. Las otras 9 apariciones de `is None` del archivo se auditaron: todas comparan el retorno de una función, o sea que están bien.
+- **Lo que deja como enseñanza:** se escribió un test para no volver a confundir las formas del faltante, y el test cayó en la misma confusión. **No alcanza con conocer la regla si la herramienta de verificación no la aplica también.**
+- **⚠️ Y un detalle de operación que ya dejó pasar DOS commits con tests rojos:** encadenar `python test.py` y `git commit` en líneas seguidas de PowerShell **no frena** ante el fallo — PowerShell corre igual la línea siguiente. Los commits `6f29d09` y `db80565` entraron con el test en rojo. Para que corte:
+  ```powershell
+  python "Nowcast Congreso Argy\datos\expedientes\tests\test_enlace_senado.py"
+  if ($LASTEXITCODE -ne 0) { Write-Host "TESTS EN ROJO - no se commitea" -ForegroundColor Red } else { git add -A; git commit -m "..." }
+  ```
+- **Archivos:** `datos/expedientes/tests/test_enlace_senado.py`. **114/114 OK.**
+
 ### [2026-08-08 · 5] Los tests daban 83/83 en el sandbox y reventaban en la PC de Valle — límite nuevo del entorno
 - **Quién:** Valle (lo detecta al correr) · Claude (lo arregla) · **Módulo:** datos/expedientes
 - **Qué pasó:** el commit `6f29d09` se hizo con los tests **rotos en la máquina de Valle**. `python test_enlace_senado.py` cortó con `AttributeError: 'float' object has no attribute 'split'` en `prefijo()`, mientras en el sandbox daba **83/83 OK**. El `git commit` iba en la misma línea y entró igual.

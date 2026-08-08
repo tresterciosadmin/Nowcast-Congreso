@@ -227,3 +227,12 @@ datos/padron/data/raw/*
 #   datos/senado/data/clean/senado_*.parquet  -> ya viajan dentro de la canonica
 #   modelo/voto_individual/outputs/desvios_por_voto.parquet -> sus CSV ya viajan
 #   variables/legislador/data/*.parquet -> el CSV y el XLSX ya viajan
+
+# 2026-08-08 — CUARTA vez que la regla `*.csv` se come un contrato nuevo.
+# `padron_senado_historico.csv` es el padrón del Senado CON HISTORIA (243 tramos,
+# 176 senadores, 2017→2031): es lo que permite revivir la composición de la
+# cámara en una fecha pasada y por lo tanto backtestear la cadena entre cámaras.
+# Es un CONTRATO, no un intermedio: se reconstruye con
+# `python datos/padron/src/padron_senado_historico.py`, pero si no viaja a git
+# nadie más lo tiene y el módulo parece no haberse hecho.
+!datos/padron/data/padron_senado_historico.csv

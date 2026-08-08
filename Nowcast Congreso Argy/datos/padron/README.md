@@ -84,3 +84,54 @@ python datos/padron/tests/test_vigilar_padron.py                # 15 chequeos of
 ```
 
 Códigos de salida: `0` sin novedades · `10` novedades · `20` alarma dura.
+
+## Padrón HISTÓRICO del Senado (nuevo, 2026-08-08 — línea Revisión de Comisiones)
+
+`src/padron_senado_historico.py` cierra el pendiente "falta histórico de
+mandatos" **del lado del Senado**. Antes había sólo la foto de los 72 vigentes,
+así que no se podía revivir la composición de una votación pasada — y sin eso no
+se puede backtestear la cadena entre cámaras.
+
+**No hubo que bajar nada nuevo.** Se unifican dos fuentes que ya estaban:
+`datos/senado/data/padron_bloques_senado.csv` (291 tramos de Wikipedia,
+2017-2025) y `data/padron_senado.csv` (72 vigentes, oficial). Ante solape manda
+la oficial; Wikipedia aporta la historia que la oficial no tiene.
+
+**Salida:** `data/padron_senado_historico.csv` — **mismo esquema que
+`padron_diputados.csv`**, para que los consumidores traten a las dos cámaras
+igual. **243 tramos, 176 senadores, 2017-12-10 → 2031-12-09.**
+
+**Decisiones:**
+- Tramos consecutivos con el mismo bloque **se fusionan**: los anexos de
+  Wikipedia son por período, así que un mandato de 6 años venía partido en 3.
+- El **linaje se calcula con la fecha del tramo**, no sólo con el nombre del
+  bloque (ADR-0005: el mismo bloque significa cosas distintas en épocas
+  distintas). Se importa `_linaje_vec` de la canónica, no se copia.
+
+🔴 **Reconciliación de identidades — el apellido manda.** Wikipedia usa el nombre
+de uso ("Eduardo Vischi") y la nómina oficial el completo ("VISCHI, ALEJANDRO
+EDUARDO"): la misma persona generaba dos claves y el padrón devolvía **90 bancas
+sobre 72** al 12-jun-2024. Se fusiona sólo si el APELLIDO oficial (antes de la
+coma) está contenido en el nombre de Wikipedia **y** comparten un nombre de pila.
+Una regla laxa de "comparten 2 tokens" fusionaría *PAGOTTO, Carlos Juan* con
+*Juan Carlos Romero* y *BENSUSAN, Daniel Pablo* con *Pablo Daniel Blanco*: son
+cuatro senadores distintos y están fijados como test.
+
+⚠️ **Pendiente de criterio del equipo:** al proyectar a marzo-2019 el linaje da
+PERONISMO FEDERAL 22 contra FdT-UxP 9. Es la ventana del JUSTICIALISTA del
+ADR-0005 aplicada al pie, pero se calibró mirando Diputados. No se parcheó.
+
+⚠️ **Cobertura:** empieza en 2017-12-10. Las fechas anteriores devuelven vacío a
+propósito — **no se extrapola**. Algunas fechas dan 69-71 bancas: son huecos
+reales de Wikipedia (reemplazos de mandato), no un error de lógica.
+
+```bash
+python datos/padron/src/padron_senado_historico.py                 # construye
+python datos/padron/src/padron_senado_historico.py --verificar     # sólo controla
+python datos/padron/src/padron_senado_historico.py --fecha 2019-03-12
+python datos/padron/tests/test_padron_senado_historico.py          # 19 checks
+```
+```python
+from padron_senado_historico import composicion_a_fecha
+comp = composicion_a_fecha(df, "2019-03-12")   # 72 filas
+```

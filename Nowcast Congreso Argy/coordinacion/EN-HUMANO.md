@@ -44,6 +44,20 @@ Para coordinarnos hay tres papeles siempre a la vista:
 ## En una frase
 Ya sabemos que adivinar el voto individual no sirve (el bloque lo explica casi todo); el valor está en la asistencia, el embudo y la cúpula. Estamos armando una base de datos propia (arrancada con el trabajo de Andy Tow y mantenida por un bot), con un formato común y una forma de trabajar en equipo sin pisarnos.
 
+## Avance: ahora podemos seguir una ley de una cámara a la otra
+
+Cambió el enfoque del pronóstico. Hasta ahora intentábamos adivinar si un proyecto lograba salir de comisión, y eso resultó ser lo menos pronosticable de todo: lo que pasa en comisión se define en reuniones donde los partidos negocian a puertas cerradas, y no hay estadística que capture eso. Así que el nowcast pasa a medir lo que sí se puede medir: **si el proyecto se aprueba en la cámara donde nació y después en la otra**.
+
+Eso trajo un problema práctico. Para seguir una ley de Diputados al Senado hay que saber que "el expediente 7435-D-2018 de Diputados" y "el CD-57/18 del Senado" son **el mismo proyecto**: cada cámara lo numera a su manera. Se creía que había que salir a buscar esa correspondencia a la web del Senado, expediente por expediente. **Ya estaba en nuestros propios archivos**: una columna que veníamos guardando desde el backfill tiene la numeración del Senado. Era juntar dos columnas, no un mes de scraping.
+
+Con eso enlazamos el 60% de las votaciones que tienen expediente anotado, y aparecen los primeros **39 proyectos con votación registrada en las dos cámaras**. Es poco, y la razón es honesta: de cada 100 votaciones del Senado, sólo 8 tienen anotado qué proyecto se votó. Ese es el próximo arreglo, y es de carga de datos, no de modelo.
+
+Lo segundo: **el Senado ahora tiene memoria**. Antes teníamos la foto de los 72 senadores de hoy, pero para revivir una votación de 2019 hace falta saber quiénes estaban en 2019. Se armó juntando lo que ya se había reconstruido de Wikipedia con la nómina oficial: 243 mandatos, 176 senadores, de 2017 a 2031.
+
+Y una del tipo "el control sirvió": al pedirle la composición de un día cualquiera de 2024, devolvía **90 senadores en un cuerpo de 72**. El motivo no era político sino de nombres — Wikipedia dice "Eduardo Vischi" y la lista oficial dice "VISCHI, ALEJANDRO EDUARDO", y el sistema los tomaba por dos personas distintas. Al unirlos hubo que ser cuidadoso: *Carlos Juan Pagotto* y *Juan Carlos Romero* comparten los dos nombres de pila y son dos senadores distintos, igual que *Bensusán, Daniel Pablo* y *Pablo Daniel Blanco*. Fusionarlos habría inventado un senador que no existe y le habría atribuido votos ajenos. La regla quedó en que **manda el apellido**, y esos cuatro casos quedaron escritos como prueba para que nadie los rompa de nuevo.
+
+Un dato que salió de paso y que ordena la discusión del producto: de las 1.340 leyes sancionadas desde 2008, **669 nacieron en Diputados y 661 en el Senado**. Mitad y mitad. Un producto que mire sólo Diputados deja afuera la mitad de las leyes del país.
+
 ## Avance: la base canónica ya respira
 Ya tenemos la "huerta" funcionando con su primera fuente real: tomamos las votaciones oficiales de Diputados (2011–2020), las tradujimos al idioma común y armamos nuestra base propia —casi 231 mil votos en 899 votaciones— con un control automático que rechaza cualquier dato mal formado. Todavía es una sola fuente; faltan sumar la semilla histórica de Andy Tow y los datos recientes, y unificar los nombres de legisladores que aparecen distinto en cada fuente. Pero el circuito completo (bajar → traducir → unir → validar) ya está probado y andando.
 

@@ -80,3 +80,41 @@ completos + giros, diario. **Es el candidato natural a próximo claim.**
 ## Convenciones de código
 Resiliencia obligatoria: errores específicos, backoff en red, parsing
 defensivo, logging estructurado.
+
+## Enlace ENTRE CÁMARAS (nuevo, 2026-08-08 — línea Revisión de Comisiones)
+
+`src/enlace_senado.py` responde **qué proyecto se votó en cada acta**, que es lo
+que hace falta para modelar `cámara de origen -> cámara revisora`.
+
+**El problema:** las actas del Senado traen la numeración INTERNA del Senado
+(`CD-38/22-PL`), no el denominador de HCDN, así que el cruce directo daba ~0.
+
+**La clave:** el puente ya estaba acá. `expedientes.parquet` tiene `exp_senado`
+con exactamente esa numeración, ya normalizada (`0038-CD-2022`). **No hay que
+scrapear senado.gob.ar.** Prefijos: `CD-` entró desde Diputados con media
+sanción · `S-` origen Senado · `PE-` Ejecutivo · `OV-` oficiales varios.
+
+| Archivo (`data/clean/`) | Contenido | Clave |
+|---|---|---|
+| `acta_expediente_senado.parquet` | acta_id, camara, expediente, clave, prefijo, proyecto_id, metodo, es_cruce | acta_id |
+| `cadena_camaras.parquet` | un proyecto por fila con su votación en cada cámara: acta/fecha/resultado por cámara + `n_camaras` | proyecto_id |
+
+**Cobertura medida (08-08):** 1.337 de 2.241 actas con expediente (59,7%) —
+Senado 201/250 (80,4%), Diputados 1.136/1.991 (57,1%). **39 proyectos con
+votación en las dos cámaras.**
+
+⚠️ **El cuello de botella NO está acá:** sólo **250 de 3.078 actas del Senado
+traen expediente (8,1%)**. Subir eso multiplica la cadena completa, y se arregla
+en `datos/senado/src/scrape_votaciones.py` y en la ingesta de argentinadatos.
+
+💡 **Activo subutilizado:** `expedientes_leyes.parquet` trae
+`primera_media_sancion`, `segunda_media_sancion`, `camara_sancionadora` y
+`sancion_definitiva` **para el 100% de las leyes**, mientras
+`expedientes_resultados` registra la media sanción de sólo el 43,7%. Para
+cualquier medición de la cadena, usar `expedientes_leyes`.
+
+```bash
+python datos/expedientes/src/enlace_senado.py            # construye y reporta
+python datos/expedientes/src/enlace_senado.py --reporte  # sólo diagnóstico
+python datos/expedientes/tests/test_enlace_senado.py     # 42 checks, sin red
+```

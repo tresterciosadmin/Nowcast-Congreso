@@ -55,6 +55,29 @@ Mantené esta tabla sincronizada con la bitácora.
 ---
 
 ## Bitácora (más reciente arriba)
+### [2026-08-09] modelo/ensemble — Puerta D (voto en la revisora): spec congelado + primer ladrillo corriendo
+- **Quién:** Valle (diseña) + Claude (construye) · **Módulo:** modelo/ensemble · **Línea:** reconstrucción del nowcast por puertas
+- **Contexto — el mapa acordado con Valle.** El nowcast deja de predecir la etapa de COMISIÓN y pasa a `P(sanción)=P(A)·P(B|A)·P(C|A,B)·P(D|A,B,C)`: A=agenda origen (se observa el dictamen, parqueado), B=voto origen (agregador, ya existe), C=agenda revisora (observada + reloj Ley 13.640), **D=voto revisora**. Una puerta que ya ocurrió vale 1; el número se colapsa según el estado observado.
+- **Ficha de D congelada ANTES de codear** (`modelo/ensemble/PUERTA-D.md`), con las 3 declaraciones acordadas: unidad = proyecto vía su votación decisiva "en general"; evento = media sanción con fecha, composición de la revisora leída point-in-time; población = base mecánica + ajuste "pasó por origen" sobre los ~243 casos de dos cámaras, encogido, sin ómnibus.
+- **Decisión de Valle incorporada:** las posturas de bloque en la revisora salen de la MISMA maquinaria que en origen (`proyectar_postura` por tema/origen), no de una transferencia por linaje desde la votación de origen (eso quedó como propuesta a debatir, ver entrada 2026-08-09 más abajo). Y **Manera 1 (composición sola) es el LÍMITE de Manera 2 (con el ajuste "pasó por origen") cuando el encogimiento lleva el ajuste a 0** — un solo modelo, el fallback no es un `if`.
+- **Construido:** `src/puerta_d.py` — `p_voto_revisora()` elige la cámara revisora, apunta al padrón correcto (el HISTÓRICO del Senado), y reusa `roster_nominal` (ensemble) + `simular_votacion` (agregador). No reimplementa nada. El ajuste `ajuste_paso_origen` corre en logit con factor de encogimiento; hoy `delta=0` (Manera 1 pura). `estimar_delta_paso_origen` queda como hook `NotImplementedError` para Manera 2.
+- **Extensión mínima y backward-compatible de `roster_nominal`:** nuevo arg opcional `padron_file` para poder apuntar al padrón histórico del Senado sin renombrar archivos. Sin el arg, se comporta igual que antes.
+- **✅ Corre de punta a punta sobre datos REALES.** Caso Diputados→Senado al 2024-06-01: lee 71 senadores vigentes del padrón histórico, **64 traen su desvío individual reciente** (el `legislador_id` del padrón matchea con `disciplina_individual`), simula y devuelve p_aprobación. La cadena point-in-time completa (persona correcta / fecha correcta / comportamiento individual) funciona.
+- **Tests:** `tests/test_puerta_d.py`, **24/24**, sin red: cámara revisora, ajuste con su fallback, pipeline completo sobre padrón sintético, mayoría que se invierte al invertir las posturas, y la propiedad clave (Manera 1 == límite exacto de Manera 2 al encoger a 0).
+- **⚠️ Lo que FALTA para que D sea D de verdad (no está hecho):**
+  1. **Enchufar `proyectar_postura`**: hoy la prueba real le pasó las posturas de bloque a mano. Falta que salgan solas de tema/origen. Hasta eso, el número (0,43 en el caso de prueba) NO es significativo — 17 senadores de OTRO/PROVINCIAL entraron NO_ACOMPANA por no estar en la lista manual.
+  2. **Ajustar `delta` (Manera 2)** sobre `cadena_camaras.parquet` (243 casos, sin ómnibus, encogido). Hoy corre en Manera 1.
+- **Archivos:** `modelo/ensemble/PUERTA-D.md`, `modelo/ensemble/src/puerta_d.py`, `modelo/ensemble/tests/test_puerta_d.py`, `modelo/ensemble/src/ensemble.py` (arg `padron_file`).
+- **Estado del módulo:** modelo/ensemble EN CURSO. **Próximo paso:** enchufar `proyectar_postura` para que las posturas de la revisora salgan de tema/origen, y ahí sí tener un P(D) real de punta a punta.
+
+### [2026-08-09] 💡 PROPUESTA (a debatir con el equipo) — ¿transferir posturas de bloque de origen a la revisora?
+- **Quién:** Valle + Claude · **Estado: PROPUESTA, NO decisión.** Para que Franco la mire y se debata.
+- **Contexto:** al diseñar la Puerta D (voto en la cámara revisora) apareció la pregunta de de dónde salen las posturas de bloque en la revisora. **Resuelto para D:** salen de la MISMA maquinaria que en origen (`variables/bloque`, dirección por tema/origen) corrida sobre el roster de la revisora. D no necesita nada especial.
+- **La propuesta que queda EN DUDA:** usar la votación ya observada en origen para *predecir* la postura en la revisora vía linaje ("si el kirchnerismo votó a favor en Diputados, vota a favor en el Senado").
+- **Por qué NO se adopta (objeción de Valle):** es engañoso. Hay núcleos duros, pero un partido puede tener otra fuerza relativa en cada cámara, y la segunda votación es **una herramienta de negociación**: a veces la revisora alinea con origen, a veces es donde se cobra o se pelea lo que no se consiguió antes. No es "origen alinea revisora" — a veces sí, a veces no.
+- **Qué queda para el equipo:** ¿hay una señal aprovechable en la votación de origen (aunque sea condicionada por partido/tema/coyuntura), o se descarta y las posturas de la revisora se estiman sólo con tema/origen como en la cámara de origen? Requiere criterio político + medición sobre los ~243 casos de dos cámaras, no decisión unilateral.
+- **Mientras tanto, en D:** "pasó por origen" entra sólo como un ajuste escalar encogido por muestra (fallback a la composición pura), NO como transferencia de posturas.
+
 ### [2026-08-08 · 6] El arreglo tenía el mismo bug adentro del test — 113/114
 - **Quién:** Valle (corre) · Claude · **Módulo:** datos/expedientes
 - **Qué pasó:** el commit `db80565` arregló las guardas de faltantes del módulo y **repitió el error en una aserción del propio test**: `check(por_acta.loc["sen:4", "clave"] is None, ...)`. En el sandbox el faltante vuelve como `None` y pasa; en la PC de Valle vuelve como `pd.NA` y **`pd.NA is None` es `False`**. 113/114.

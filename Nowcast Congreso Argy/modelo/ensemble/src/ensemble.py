@@ -116,13 +116,18 @@ def _disciplina_csv(disciplina_path=None) -> Path:
 
 def roster_nominal(camara: str, fecha, bloques: list[dict],
                    padron_dir=None, disciplina_path=None,
-                   min_votos: int = MIN_VOTOS_FICHA):
+                   min_votos: int = MIN_VOTOS_FICHA, padron_file=None):
     """Construye el roster NOMINAL para simular: (lineas, desvios, detalle).
 
     camara  : 'diputados' | 'senado'
     fecha   : fecha de la votación (filtra el mandato desde<=F<=hasta del padrón)
     bloques : salida de proyectar_postura ([{bloque, linea, desvio, ...}]) — aporta
               la LÍNEA por linaje y el desvío promedio del bloque como fallback.
+    padron_file : ruta explícita al padrón. Si se pasa, IGNORA el nombre por defecto
+              `padron_<camara>.csv`. Lo usa la Puerta D para apuntar al padrón
+              HISTÓRICO del Senado (`padron_senado_historico.csv`), que tiene los
+              mandatos 2017→2031 en vez de sólo los 72 vigentes. Backward-compatible:
+              sin este argumento, todo se comporta como antes.
 
     Devuelve:
       lineas  : np.ndarray de str, una por legislador
@@ -131,7 +136,7 @@ def roster_nominal(camara: str, fecha, bloques: list[dict],
     """
     import pandas as pd
 
-    pcsv = _padron_csv(camara, padron_dir)
+    pcsv = Path(padron_file) if padron_file else _padron_csv(camara, padron_dir)
     if not pcsv.exists():
         raise FileNotFoundError(f"falta el padrón oficial: {pcsv}")
     pad = pd.read_csv(pcsv, dtype=str, encoding="utf-8-sig")

@@ -1,20 +1,29 @@
-# Padrón vivo — 2026-08-07 21:37 UTC
+# Padrón vivo — 2026-08-10 11:39 UTC
 
-## 🟢 Sin novedades
-
-La composición de ambas cámaras coincide con el padrón versionado.
+## 🟡 Hay novedades en la composición
 
 ### DIPUTADOS
-- Bancas vigentes: **256** (esperadas 257) · padrón versionado: 256 · fuente: `api:argentinadatos`
+- Bancas vigentes: **256** (esperadas 257) · padrón versionado: 257 · fuente: `api:argentinadatos`
 - 🟡 **banca_vacante** — 256/257 — dentro de tolerancia (vacante transitoria).
+
+**Bajas (1)**
+
+  - Pitrola, Nestor — PO-FIT-U-PARTIDO OBRERO EN EL FRENTE DE LA IZQUIERDA Y DE TRABAJADORES - UNIDAD (nan)
+
+**Cambios de bloque (3)** — señal política, no ruido administrativo
+
+  - Bregman, Myriam: OTRO / PROVINCIAL → IZQUIERDA
+  - Del Caño, Nicolas: OTRO / PROVINCIAL → IZQUIERDA
+  - Del Pla, Romina: OTRO / PROVINCIAL → IZQUIERDA
 
 **Composición por linaje**
 
   - LA LIBERTAD AVANZA: 95
   - FdT-UxP (kirchnerismo): 93
-  - OTRO / PROVINCIAL: 46
+  - OTRO / PROVINCIAL: 43
   - PRO: 12
   - RADICALISMO: 6
+  - IZQUIERDA: 3
   - COALICION CIVICA: 2
   - PERONISMO FEDERAL: 2
 
@@ -28,3 +37,12 @@ La composición de ambas cámaras coincide con el padrón versionado.
   - OTRO / PROVINCIAL: 17
   - RADICALISMO: 10
   - PRO: 3
+
+---
+
+**Qué hacer.** Regenerar el padrón y volver a correr lo que depende de él:
+
+```bash
+python datos/padron/src/bajar_nomina.py diputados --padron
+python datos/padron/src/ingesta_padron.py senado
+```

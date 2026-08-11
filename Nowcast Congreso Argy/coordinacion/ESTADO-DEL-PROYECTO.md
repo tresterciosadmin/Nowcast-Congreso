@@ -55,6 +55,15 @@ Mantené esta tabla sincronizada con la bitácora.
 ---
 
 ## Bitácora (más reciente arriba)
+### [2026-08-11] 💡 DUDA PARA FRANCO — ¿clima relativo al propio gobierno, o sólo la tendencia de 6 meses del ICG?
+- **Quién:** Valle + Claude · **Estado: DUDA / PROPUESTA, NO decisión.** Para que Franco opine y se debata.
+- **De dónde salió:** validando por qué la baja del ICG a 1,94 en julio-2026 NO pegó negativo. El `z_fondo` dio +0,003 (neutro) porque el promedio del gobierno de Milei bajó junto con el ICG, así que la señal quedó "en el promedio del gobierno". Valle: quizás eso hace al sistema poco reactivo a las caídas.
+- **Sistema ACTUAL (A) — clima relativo al propio gobierno:** `z_fondo = log(MA6 / promedio del gobierno)`. Mide si el clima reciente está por encima/debajo de lo que ESE gobierno típicamente tuvo. **A favor:** no confunde "mal clima" con "gobierno que siempre fue bajo" — evita el confundidor entre-gobiernos (54,5% de la varianza del ICG es entre presidencias = bancas/era, no clima). **En contra (lo que vio Valle):** como el promedio del gobierno "persigue" al MA6, una caída SOSTENIDA tarda en registrarse como negativa (julio: ICG cayendo pero z≈0). Recién pega negativo cuando el MA6 cae por debajo de la base.
+- **Alternativa (B) que propone Valle — sólo la tendencia de 6 meses:** calcular el incentivo político con la **variación con signo del ICG en los últimos 6 meses** (subiendo = +, bajando = −), sin anclar al promedio del gobierno. Un signal de momentum/derivada. **A favor:** más reactivo a la dinámica reciente (una caída pega negativo enseguida, aunque el gobierno haya sido siempre bajo); y también esquiva el confundidor entre-gobiernos, porque una ventana de 6 meses casi no cruza presidencias (los traspasos ya están imputados). **En contra:** pierde el ancla de NIVEL — un gobierno que se recupera desde un piso pésimo daría señal positiva aunque siga bajísimo; no distingue "mejora real" de "rebote desde el subsuelo".
+- **La pregunta política de fondo:** ¿el legislador reacciona a *"cómo está el gobierno vs su propia norma"* (A) o a *"para dónde va el clima"* (B)? Puede que las dos cosas importen (nivel-relativo + momentum), y ahí la respuesta sería combinarlas, no elegir.
+- **Costo técnico a tener en cuenta:** cambiar el signal obliga a **RE-ESTIMAR el gamma** — el 0,44/0,48/0,51 se midió contra el signal A. Y habría que medir cuál de las dos formas predice mejor sobre las votaciones peleadas, no decidir a ojo.
+- **Estado:** abierto. No se toca nada hasta que Franco lo mire y se decida en equipo.
+
 ### [2026-08-11 · resultado] La corrida oficial confirmó el FONDO y descartó el CORTO
 - **Quién:** Valle (corre en su PC, bootstrap 500) + Claude · **Módulo:** variables/proyecto
 - **Resultado de `estimar_gamma_individual.py --modelo dos_capas --boot 500`:**

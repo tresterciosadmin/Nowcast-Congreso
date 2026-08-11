@@ -11,11 +11,12 @@ paneles construidos.
 
 | Archivo | Qué muestra | Desde |
 |---|---|---|
-| `PANEL-NOWCAST.html` | simulador de una votación (motor JS) | 2026-07-11 |
-| `PANEL-MOVIL.html` | coyuntura en el teléfono: 12 proyectos recalculados en vivo sobre los 257 diputados reales | 2026-08-04 |
-| `PANEL-COYUNTURA.html` | lo mismo para escritorio, con más detalle | 2026-08-04 |
-| `COMPARADOR-ICG.html` | las dos vías del ICG + las 4 preguntas abiertas, para decidir en equipo | 2026-08-04 |
 | `TABLERO-CONTROL.html` | mapa ejecutivo (se alimenta de `tablero_datos.js`; **no se edita el HTML**) | 2026-07-02 |
+
+> Los paneles `PANEL-NOWCAST/MOVIL/COYUNTURA.html` y el `COMPARADOR-ICG.html`
+> (2026-08-04) se **dieron de baja el 2026-08-11** al eliminar la capa 2 global del
+> ICG (ver ADR-0008, enmienda). Los paneles de coyuntura servían para que el analista
+> asignara la intensidad global, que ya no existe.
 
 **Decisión de forma (no escrita hasta hoy):** se eligió HTML autocontenido en vez de
 Streamlit porque el equipo lo abre con doble clic, sin instalar nada y sin internet.

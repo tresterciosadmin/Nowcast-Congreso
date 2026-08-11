@@ -38,10 +38,7 @@ En `docs/contexto/`: `INSTRUCTIVO-MAESTRO.md`, `Nowcast-Congreso_viabilidad_y_pl
 | Archivo | Para qué |
 |---|---|
 | `TABLERO-CONTROL.html` | mapa ejecutivo del proyecto — se alimenta de `tablero_datos.js` |
-| `PANEL-NOWCAST.html` | simulador de una votación (motor JS) |
-| `PANEL-MOVIL.html` | **coyuntura política en el teléfono** — 12 proyectos que se recalculan en vivo |
-| `PANEL-COYUNTURA.html` | lo mismo para escritorio, con más detalle |
-| `COMPARADOR-ICG.html` | las dos vías del ICG y las decisiones abiertas, para el equipo |
 
-Los tres últimos salieron de la sesión del 04-08-2026 (ver ADR-0008). Ninguno
-necesita internet.
+Los paneles de coyuntura (`PANEL-NOWCAST/MOVIL/COYUNTURA.html`) y el
+`COMPARADOR-ICG.html` salieron de la sesión del 04-08-2026 y **se dieron de baja el
+11-08-2026** al eliminar la capa 2 global del ICG (ver ADR-0008, enmienda 2026-08-11).

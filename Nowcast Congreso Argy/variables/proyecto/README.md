@@ -105,12 +105,17 @@ Contrato y decisiones completas en `coordinacion/DECISIONES/0008-icg-modulador-d
 ### Cadena
 
 ```
-ingesta_icg.py        -> data/icg_mensual.csv           serie cruda (296 meses)
-icg_contexto.py       -> data/icg_contexto.parquet      serie limpia + neutro point-in-time
-estimar_gamma_individual.py -> outputs/gamma_icg_individual.json
-modulador_icg.py      -> los dos mecanismos (se importa, no se corre)
-comparar_vias_icg.py  -> COMPARADOR-ICG.html
+ingesta_icg.py        -> data/icg_mensual.csv           serie cruda
+icg_contexto.py       -> data/icg_contexto.parquet      serie limpia + z_fondo/z_corto (2 horizontes)
+estimar_gamma_individual.py --modelo dos_capas -> outputs/gamma_icg_dos_capas.json
+modulador_icg.py      -> aplica el ICG por legislador (se importa, no se corre)
 ```
+
+> ⚠️ **Desactualizado desde el 2026-08-11 (ADR-0008, enmienda).** El ICG ya no tiene
+> "dos mecanismos": la capa 2 global (nivel declarado por el analista) se ELIMINÓ, y
+> el mecanismo individual pasó a **dos horizontes** (fondo 6m + sacudón 3m). El
+> `comparar_vias_icg.py` / `COMPARADOR-ICG.html` se dieron de baja. La sección de
+> abajo describe el diseño viejo; se conserva como referencia histórica.
 
 ### Los dos mecanismos
 

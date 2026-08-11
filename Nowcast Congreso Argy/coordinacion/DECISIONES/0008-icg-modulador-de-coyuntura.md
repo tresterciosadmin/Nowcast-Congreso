@@ -181,7 +181,9 @@ arranca alto—. Se conserva por si el equipo quiere volver sobre ella.
 
 ## Archivos
 
-`variables/proyecto/src/{icg_contexto,estimar_gamma,estimar_gamma_individual,modulador_icg,comparar_vias_icg}.py`
+`variables/proyecto/src/{icg_contexto,estimar_gamma,estimar_gamma_individual,modulador_icg}.py`
 · `data/{calendario_electoral,curva_ciclo_presidencial}.csv` · `data/icg_contexto.parquet`
-· `outputs/gamma_icg*.json` · `tests/test_icg_contexto.py` · `COMPARADOR-ICG.html`
-· `PANEL-COYUNTURA.html` · `PANEL-MOVIL.html`
+· `outputs/gamma_icg*.json` · `tests/test_icg_contexto.py`
+
+(Dados de baja el 2026-08-11 al eliminar la capa 2: `comparar_vias_icg.py` —neutralizado—,
+`COMPARADOR-ICG.html`, `PANEL-COYUNTURA/MOVIL/NOWCAST.html`.)

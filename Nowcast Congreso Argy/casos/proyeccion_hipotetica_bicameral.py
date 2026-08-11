@@ -33,10 +33,12 @@ from agregador import simular_votacion                     # noqa: E402
 import modulador_icg as icg                                # noqa: E402
 
 # ─────────── EL PROYECTO HIPOTÉTICO ───────────
-FECHA = "2026-06-01"           # coyuntura con ICG disponible
 ASUNTO = "Reforma del impuesto a las ganancias (iniciativa del Poder Ejecutivo)"
 POSTURA_GOBIERNO = "AFIRMATIVO"   # es un proyecto DEL gobierno: el gobierno vota que sí
-ICG_ACTUAL = 2.07              # ICG de 2026-06 (icg_mensual.csv), sólo informativo
+# La fecha NO se clava a mano: se toma el mes MÁS NUEVO del ICG, así la proyección
+# no se queda en un mes viejo apenas UTDT publica el siguiente. Para proyectar a un
+# mes puntual, reemplazar por FECHA = "AAAA-MM-01".
+FECHA, ICG_ACTUAL = icg.ultimo_mes_icg()
 # El ICG entra por sus DOS señales (fondo 6m + sacudón 3m), leídas del mes objetivo
 # desde icg_contexto.parquet. Ya no hay perilla global del analista: la capa 2 se
 # eliminó (doble conteo del mismo clima), ver ADR-0008 rev 2026-08-11.

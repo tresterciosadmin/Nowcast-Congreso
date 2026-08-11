@@ -229,6 +229,16 @@ def zetas_del_mes(fecha, contexto_path: Path | None = None) -> tuple[float, floa
     return float(r["z_fondo"]), float(r["z_corto"])
 
 
+def ultimo_mes_icg(contexto_path: Path | None = None) -> tuple[str, float]:
+    """Devuelve (fecha 'YYYY-MM-01', icg) del mes MÁS NUEVO del contexto. Para que
+    las proyecciones usen siempre el clima más reciente y no una fecha clavada a
+    mano (que se queda vieja apenas UTDT publica el mes siguiente)."""
+    path = contexto_path or (Path(__file__).resolve().parents[1] / "data" / "icg_contexto.parquet")
+    ctx = pd.read_parquet(path)
+    r = ctx.loc[pd.to_datetime(ctx["fecha"]).idxmax()]
+    return pd.Timestamp(r["fecha"]).strftime("%Y-%m-01"), float(r["icg"])
+
+
 def votos_esperados(d: pd.DataFrame, col="p_mod") -> tuple[float, float]:
     """Media y desvio del recuento, tratando cada voto como Bernoulli independiente."""
     p = d[col].values

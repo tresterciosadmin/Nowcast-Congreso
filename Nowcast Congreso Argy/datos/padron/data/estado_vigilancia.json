@@ -1,15 +1,15 @@
 {
   "diputados": {
-    "huella": "648d1abba448dcd0",
+    "huella": "00b85fe482afded8",
     "n": 256,
-    "ultima_corrida": "2026-08-07T21:37:01.910841+00:00",
+    "ultima_corrida": "2026-08-10T11:39:01.271944+00:00",
     "hash_raw": null,
-    "hash_visto_desde": "2026-08-07T21:37:01.910841+00:00"
+    "hash_visto_desde": "2026-08-10T11:39:01.271944+00:00"
   },
   "senado": {
     "huella": "648d1abba448dcd0",
     "n": 72,
-    "ultima_corrida": "2026-08-07T21:37:01.910841+00:00",
+    "ultima_corrida": "2026-08-10T11:39:01.271944+00:00",
     "hash_raw": "eec8b5d10dddf599",
     "hash_visto_desde": "2026-08-07T01:15:08.292550+00:00"
   }

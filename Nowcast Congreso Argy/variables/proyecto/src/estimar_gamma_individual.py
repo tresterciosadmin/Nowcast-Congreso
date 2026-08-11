@@ -53,7 +53,8 @@ OUT = _HERE.parents[1] / "outputs"
 def cargar(umbral_desvio: float) -> pd.DataFrame:
     ctx = pd.read_parquet(DATA / "icg_contexto.parquet")
     ctx["mes_key"] = ctx["fecha"].values.astype("datetime64[M]")
-    ctx = ctx[ctx["apto_ajuste"]][["mes_key", "log_rel", "vol6_z", "gobierno"]]
+    ctx = ctx[ctx["apto_ajuste"]][["mes_key", "log_rel", "z_fondo", "z_corto",
+                                   "vol6_z", "gobierno"]]
 
     ori = pd.read_parquet(DATA / "origen_por_acta.parquet")
     ori = ori[ori["origen_lado"].isin(["GOBIERNO", "OPOSICION"])][["acta_id", "origen_lado"]]
@@ -81,12 +82,21 @@ def cargar(umbral_desvio: float) -> pd.DataFrame:
     return d
 
 
-def lpm_fe(d: pd.DataFrame, con_vol: bool) -> dict:
-    """LPM con doble demeaning (legislador y gobierno)."""
+def lpm_fe(d: pd.DataFrame, con_vol: bool = False, modelo: str = "crudo") -> dict:
+    """LPM con doble demeaning (legislador y gobierno).
+
+    modelo='crudo'     -> regresor s*log_rel (el ICG mensual crudo; +vol opcional).
+    modelo='dos_capas' -> DOS regresores: s*z_fondo (humor de fondo, 6m) y
+                          s*z_corto (sacudón reciente, 3m). Ver icg_contexto.py.
+    """
     y = d["acompana"].values
-    X = {"s_logrel": (d["s"] * d["log_rel"]).values}
-    if con_vol:
-        X["s_logrel_vol"] = X["s_logrel"] * d["vol6_z"].values
+    if modelo == "dos_capas":
+        X = {"s_fondo": (d["s"] * d["z_fondo"]).values,
+             "s_corto": (d["s"] * d["z_corto"]).values}
+    else:
+        X = {"s_logrel": (d["s"] * d["log_rel"]).values}
+        if con_vol:
+            X["s_logrel_vol"] = X["s_logrel"] * d["vol6_z"].values
     X["s"] = d["s"].values
     M = pd.DataFrame(X, index=d.index)
     ys = pd.Series(y, index=d.index)
@@ -101,7 +111,7 @@ def lpm_fe(d: pd.DataFrame, con_vol: bool) -> dict:
     return {k: float(b) / esc for k, b in zip(M.columns, beta)} | {"_p": p, "_n": len(d)}
 
 
-def boot(d: pd.DataFrame, con_vol: bool, n: int, semilla=7) -> pd.DataFrame:
+def boot(d: pd.DataFrame, con_vol: bool, n: int, semilla=7, modelo: str = "crudo") -> pd.DataFrame:
     rng = np.random.default_rng(semilla)
     meses = d["mes_key"].unique()
     idx_por_mes = {m: d.index[d.mes_key == m] for m in meses}
@@ -110,23 +120,20 @@ def boot(d: pd.DataFrame, con_vol: bool, n: int, semilla=7) -> pd.DataFrame:
         el = rng.choice(meses, size=len(meses), replace=True)
         idx = np.concatenate([idx_por_mes[m] for m in el])
         try:
-            filas.append(lpm_fe(d.loc[idx].reset_index(drop=True), con_vol))
+            filas.append(lpm_fe(d.loc[idx].reset_index(drop=True), con_vol, modelo))
         except (ValueError, np.linalg.LinAlgError):
             continue
     return pd.DataFrame(filas)
 
 
-def main(argv=None) -> int:
-    logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s %(message)s")
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--umbral", type=float, default=0.25, help="tasa de desvio minima para ser bisagra")
-    ap.add_argument("--boot", type=int, default=120)
-    ap.add_argument("--con-vol", action="store_true")
-    a = ap.parse_args(argv)
+# los tramos de desvío del ADR-0008 (dose-response): a cada uno le corresponde un
+# gamma por capa. El tramo del NÚCLEO DURO se mide SOLO sobre los disciplinados
+# (<0.10), no sobre TODOS: si se mezclan las bisagras, el número deja de ser el del
+# núcleo duro (2026-08-11, a pedido de Valle). Los demás son acumulados (>=x).
+TRAMOS_DOSIS = [0.0, 0.10, 0.20, 0.30, 0.40]
 
-    d = cargar(a.umbral)
-    logger.info("votos individuales utilizables: %d (%d legisladores, %d meses)",
-                len(d), d.legislador_id.nunique(), d.mes_key.nunique())
+
+def _estimar_crudo(d, a) -> dict:
     res = {}
     for etq, sub in [("TODOS", d), ("BISAGRAS", d[d.es_pivote])]:
         if len(sub) < 5000:
@@ -148,6 +155,61 @@ def main(argv=None) -> int:
     (OUT / "gamma_icg_individual.json").write_text(
         json.dumps({"umbral_pivote": a.umbral, "con_vol": a.con_vol, "resultado": res},
                    ensure_ascii=False, indent=2), encoding="utf-8")
+    return res
+
+
+def _estimar_dos_capas(d, a) -> dict:
+    """Dose-response de las DOS capas (fondo 6m + sacudón 3m) a través de los
+    tramos de desvío. Escribe gamma_icg_dos_capas.json, que consume modulador_icg.
+    """
+    tramos = {}
+    for thr in TRAMOS_DOSIS:
+        if thr == 0.0:                                   # núcleo duro: SOLO <0.10
+            sub = d[d["desvio"].fillna(0) < 0.10]; etq = "<0.10"
+        else:                                            # bisagras: acumulado >=x
+            sub = d[d["desvio"].fillna(0) >= thr]; etq = f">={thr:.2f}"
+        if len(sub) < 5000:
+            print(f"  {etq}: muestra chica ({len(sub)}), no se estima"); continue
+        c = lpm_fe(sub.reset_index(drop=True), modelo="dos_capas")
+        b = boot(sub.reset_index(drop=True), a.con_vol, a.boot, modelo="dos_capas")
+        print(f"\n=== desvío {etq} — n={c['_n']:,} votos, {sub.legislador_id.nunique()} legisladores, "
+              f"p(acompaña)={c['_p']:.3f} ===")
+        fila = {"umbral": thr, "n": c["_n"], "n_legisladores": int(sub.legislador_id.nunique()),
+                "p": round(c["_p"], 4)}
+        for k, nom in [("s_fondo", "gamma_fondo"), ("s_corto", "gamma_corto")]:
+            lo, hi = b[k].quantile(.025), b[k].quantile(.975)
+            sig = "SI" if (lo > 0 or hi < 0) else "no"
+            print(f"  {nom:12s} = {c[k]:+.4f}   IC95% [{lo:+.4f}, {hi:+.4f}]   distinto de cero: {sig}")
+            fila[nom] = {"punto": round(c[k], 4), "ic95": [round(float(lo), 4), round(float(hi), 4)],
+                         "significativo": sig == "SI"}
+        tramos[etq] = fila
+    OUT.mkdir(parents=True, exist_ok=True)
+    (OUT / "gamma_icg_dos_capas.json").write_text(
+        json.dumps({"modelo": "dos_capas", "ma_fondo": 6, "ma_corto": 3,
+                    "nota": "gamma en escala logit por capa y por tramo de desvío. "
+                            "El modulador arma sus tramos desde acá.",
+                    "tramos": tramos}, ensure_ascii=False, indent=2), encoding="utf-8")
+    return tramos
+
+
+def main(argv=None) -> int:
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s %(message)s")
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--umbral", type=float, default=0.25, help="tasa de desvio minima para ser bisagra (modelo crudo)")
+    ap.add_argument("--boot", type=int, default=120)
+    ap.add_argument("--con-vol", action="store_true")
+    ap.add_argument("--modelo", choices=["crudo", "dos_capas"], default="crudo",
+                    help="crudo = ICG mensual (compat); dos_capas = fondo 6m + sacudón 3m (ADR-0008 rev 2026-08-11)")
+    a = ap.parse_args(argv)
+
+    # dos_capas recorre tramos por su cuenta -> cargar sin filtrar (umbral 0.0)
+    d = cargar(0.0 if a.modelo == "dos_capas" else a.umbral)
+    logger.info("votos individuales utilizables: %d (%d legisladores, %d meses)",
+                len(d), d.legislador_id.nunique(), d.mes_key.nunique())
+    if a.modelo == "dos_capas":
+        _estimar_dos_capas(d, a)
+    else:
+        _estimar_crudo(d, a)
     return 0
 
 

@@ -38,6 +38,12 @@ Depende de otros (no empezar hasta que su dependencia esté HECHA):
 - [ ] **evaluacion/backtesting** — necesita al menos un modelo nuevo.
 - [ ] **producto/dashboard** — necesita ensemble.
 
+## Sesion 2026-08-11 (Valle+Claude) — ABIERTA, re-tratamiento del ICG (2 horizontes)
+
+| Modulo | Quien | Desde | Que se esta haciendo |
+|---|---|---|---|
+| **variables/proyecto** | Claude (con Valle) | 2026-08-11 | Claim a pedido de Valle (toca modulo de Franco, cambios ADITIVOS). Re-estimacion del gamma del ICG: se suaviza la senal en 2 capas point-in-time DENTRO de cada gobierno (fondo 6m + sacudon 3m) para sacar el sesgo de atenuacion del ICG mensual crudo; se ELIMINA la capa 2 global del analista (doble conteo). Toca icg_contexto.py, estimar_gamma_individual.py, modulador_icg.py + consumidores. Corrida oficial con IC la corre Valle. |
+
 ## Sesion 2026-08-07 (Valle+Claude) — CERRADA, el upsert del bot (ADR-0009). MODULOS LIBRES.
 
 **Decision de Valle: Opcion B directa, con el Senado en la misma tanda.**

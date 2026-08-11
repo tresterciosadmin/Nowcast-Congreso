@@ -1,110 +1,104 @@
-"""modulador_icg.py — las DOS formas de meter el ICG en el nowcast.
+"""modulador_icg.py — el ICG entra al nowcast en DOS HORIZONTES, legislador por legislador.
 
-Ninguna se descarta: el equipo decide con evidencia. Las dos comparten la misma
-matemática —se multiplican las CHANCES, no la probabilidad— y se diferencian en
-DÓNDE se aplican y en qué evidencia se apoyan.
+Revisión 2026-08-11 (Valle). Antes había dos vías: (A) individual medida y (B) un
+multiplicador GLOBAL que fijaba el analista. **La vía B se eliminó**: como estaba
+cableada, la perilla del analista y el efecto medido multiplicaban la MISMA señal
+(el ICG del mes contra un neutro), o sea contaban dos veces el mismo clima. Nos
+quedamos SOLO con lo medido, legislador por legislador.
 
-    odds' = odds x k        k = (ICG_c / ICG_0) ^ (gamma * s)
-    logit(p') = logit(p) + gamma * s * log_rel
+Y lo medido cambió de forma: en vez de reaccionar al ICG del mes suelto (que
+rebota mucho y SUBESTIMA el efecto por atenuación), cada legislador reacciona a
+DOS horizontes que no se pisan (ver icg_contexto.py):
 
-`s` = +1 si el proyecto lo impulsa el gobierno, -1 la oposicion, 0 consenso.
-`log_rel` = log del ICG relativo al promedio del propio gobierno (point-in-time).
+    FONDO  (mediano plazo, media móvil 6m vs promedio del gobierno) -> z_fondo
+    CORTO  (sacudón reciente, media móvil 3m vs el fondo)           -> z_corto
 
-## Vía A — INDIVIDUAL (estimada)
-Se aplica legislador por legislador ANTES de agregar, con gamma segun cuan
-bisagra sea cada uno. Respeta el cimiento del proyecto (las partes hacen al
-todo) y descansa en un efecto MEDIDO:
+Matemática, por capa (se multiplican las CHANCES, no la probabilidad):
 
-    desvio >= 0.40 -> gamma 0.555   (IC95 [0.39, 0.78])
-    desvio >= 0.30 -> gamma 0.354   (IC95 [0.17, 0.51])
-    desvio >= 0.20 -> gamma 0.333   (IC95 [0.13, 0.46])
-    desvio >= 0.10 -> gamma 0.220   (IC95 [0.06, 0.34])
-    resto          -> gamma 0.094   (IC95 [-0.03, 0.24])  NO significativo
+    odds' = odds * exp(gamma * s * z)
+    logit(p') = logit(p) + gamma * s * z
 
-El patron es dosis-respuesta: gamma crece monotonamente con el desvio y se
-mantiene significativo mientras la muestra cae de 410k votos a 22k. En la camara
-de hoy: 51 legisladores con desvio >=0.10, 23 con >=0.20, 8 con >=0.40.
+`s` = +1 si el proyecto lo impulsa el gobierno, -1 la oposición, 0 consenso.
+Las dos capas se componen: primero el fondo, después el corto.
 
-**Lo conservador es aplicar gamma SOLO a los tramos significativos** (>=0.10) y
-dejar el resto en cero: eso da ~+3 votos de swing punta a punta. Si se acepta el
-gradiente completo, el swing llega a ~12 votos sobre 257.
+`gamma` depende de cuán BISAGRA sea cada legislador (dose-response por tramo de
+desvío) y de la capa. Los valores salen de `estimar_gamma_individual.py --modelo
+dos_capas` (outputs/gamma_icg_dos_capas.json); si falta ese archivo se usan los
+provisionales de la exploración del 2026-08-11 (punto, sin IC).
 
-## Vía B — ESCENARIO DECLARADO (no estimada)
-Un desplazamiento sobre el resultado agregado que el analista **declara**, no que
-el modelo estima. Existe porque el test a nivel camara dio cero y porque, como
-planteo Valle, hay causalidades politicas que no dejan huella estadistica con 25
-años de datos y seis gobiernos: el clima del recinto, la expectativa de lo que
-viene, el costo de oponerse a un gobierno con viento a favor.
-
-**No se presenta como prediccion, se presenta como banda.** No decimos "el ICG
-lleva el 57% a 67%": decimos "con este clima, entre 118 y 126 votos". La
-honestidad del producto depende de no confundir lo medido con lo supuesto.
-
-`INTENSIDAD` traduce una postura del analista en un gamma agregado. Son valores
-DECLARADOS, no estimados — cambiarlos es una decision de equipo, no un ajuste.
-
-4 directivas: errores especificos, sin red, parsing defensivo, logging.
+4 directivas: errores específicos, sin red (lee sólo de disco local), parsing
+defensivo, logging.
 """
 from __future__ import annotations
 
+import json
 import logging
+from pathlib import Path
+
 import numpy as np
 import pandas as pd
 
 logger = logging.getLogger("icg.modulador")
 
-# --- Via A: gamma por tramo de desvio (ESTIMADO, ver estimar_gamma_individual) ---
-TRAMOS = [(0.40, 0.555), (0.30, 0.354), (0.20, 0.333), (0.10, 0.220), (0.00, 0.094)]
-SIGNIFICATIVO_DESDE = 0.10          # por debajo de esto el IC cruza el cero
+_OUT = Path(__file__).resolve().parents[1] / "outputs" / "gamma_icg_dos_capas.json"
 
-# DECISION DE VALLE (04-08-2026): el default INCLUYE a los disciplinados
-# (`solo_significativo=False`). Razon sustantiva: un disciplinado tambien traiciona
-# de vez en cuando, y esas pocas defecciones son justo las que definen una votacion
-# al filo. Razon estadistica: excluirlos NO es la opcion "prudente" — es fijar su
-# gamma en 0, que esta en el BORDE del intervalo [-0,03; +0,24]. El 0,094 estimado
-# es el valor central, o sea la mejor apuesta que permiten los datos. Poner cero es
-# tan supuesto como poner 0,094, solo que menos probable.
+# CAPA CORTO (sacudón 3m) APAGADA (Valle, 2026-08-11): la corrida oficial con
+# bootstrap NO pudo distinguir su efecto de cero (IC muy anchos en todos los
+# tramos). No se publica lo que no está medido con confianza. El fondo (6m) SÍ
+# quedó sólido y significativo (0,44 / 0,48 / 0,51). Con el corto apagado, el
+# modelo es de hecho un único suavizado de 6 meses. Poner True sólo si una corrida
+# futura confirma significancia del corto.
+USAR_CORTO = False
 
-# --- NEUTRO HISTORICO (capa 2) ---
-# Promedio de los promedios de cada presidencia sobre meses limpios (sin
-# transiciones ni el periodo fuera de escala 2002-03). Se pondera por PRESIDENCIA
-# y no por mes, para que Nestor (44 meses) no pese el doble que Milei (24).
-#   Nestor 2,474 | Milei 2,343 | Macri 2,212 | CFK II 1,739 | CFK I 1,611 | Alberto 1,554
-# Da 1,9888 — casi identico a la mediana de la serie mensual (1,973), asi que la
-# eleccion del neutro NO depende de un juicio nuestro.
-NEUTRO = 1.9888
+# --- dose-response PROVISIONAL (fallback si falta el JSON oficial). La corrida de
+# Valle reescribe el JSON y estos valores dejan de usarse. Tramos: el <0.10 es el
+# NÚCLEO DURO medido aparte; los demás son acumulados (>=x).
+# núcleo duro (0.00) = valor medido sobre <0.10 (~-0.07), sin piso — ver nota abajo.
+_PROV_FONDO = [(0.40, 0.400), (0.30, 0.509), (0.20, 0.477), (0.10, 0.443), (0.00, -0.069)]
+_PROV_CORTO = [(0.40, 0.552), (0.30, 0.575), (0.20, 0.318), (0.10, 0.270), (0.00, 0.000)]
 
-# gamma del NIVEL ABSOLUTO, estimado sobre bisagras controlando por bancas del
-# oficialismo. OJO con la lectura de esa correlacion (-0,544): NO significa que los
-# gobiernos con buen clima lleguen sin bancas. Es el CALENDARIO DE RECAMBIO
-# argentino (Diputados renueva por mitades, Senado por tercios): un presidente
-# asume habiendo ganado la eleccion pero hereda un Congreso de ciclos anteriores,
-# y ese arranque coincide con la luna de miel del ICG. Las dos cosas van juntas
-# por el calendario, no por causalidad.
-# +0,488 IC95 [0,28; 0,73]. Se ofrece como REFERENCIA para elegir la intensidad
-# de la capa 2, no como parametro del modelo: controlar por bancas es mas debil
-# que un efecto fijo y quedan afuera otras diferencias entre gobiernos.
-GAMMA_ABS_REFERENCIA = 0.488
+# el tramo 0.00 (núcleo duro) lee la banda "<0.10" del JSON, no "TODOS": medir el
+# disciplinado mezclado con las bisagras daría otro número (Valle, 2026-08-11).
+_CLAVE_TRAMO = {0.40: ">=0.40", 0.30: ">=0.30", 0.20: ">=0.20", 0.10: ">=0.10", 0.00: "<0.10"}
 
-# --- Via B: intensidad DECLARADA para el escenario agregado ---
-# ATENCION: con la forma ACELERADA, estos gammas NO son comparables con los de
-# la version anterior (log-ratio). La escala cambio por completo. Referencia en
-# votos que mueve el clima punta a punta (ICG 1,0 <-> 3,3) sobre 257 bancas en
-# una votacion al filo:
-#     0,05 -> 11 votos | 0,10 -> 22 | 0,20 -> 43 | 0,30 -> 64 | 0,45 -> 93
-# Para comparar: el mecanismo INDIVIDUAL, que es el unico medido, mueve 6,6.
-#
-# **REQUISITO OPERATIVO (Valle, 04-08-2026):** ningun nowcast se publica sin que
-# un analista humano evalue la coyuntura y asigne gamma explicitamente. No hay
-# default silencioso — se elige en `PANEL-COYUNTURA.html` y se registra.
-INTENSIDAD = {
-    "nulo":     0.00,   # el clima no toca el agregado
-    "leve":     0.05,   # ~11 votos punta a punta
-    "moderado": 0.10,   # ~22 votos — 3x el efecto medido
-    "fuerte":   0.20,   # ~43 votos — el clima como factor de primer orden
-    "extremo":  0.30,   # ~64 votos — solo para coyunturas excepcionales
-}
 
+def _cargar_tramos() -> tuple[list, list, str]:
+    """Devuelve (TRAMOS_FONDO, TRAMOS_CORTO, fuente). Lee la dose-response oficial;
+    si el JSON no está o está roto, cae a los provisionales sin explotar. Si
+    USAR_CORTO es False, la capa corto queda en cero (apagada)."""
+    if not _OUT.exists():
+        fondo, corto, fuente = _PROV_FONDO, _PROV_CORTO, "provisional"
+    else:
+        try:
+            j = json.loads(_OUT.read_text(encoding="utf-8"))
+            t = j["tramos"]
+            fondo, corto = [], []
+            for u in (0.40, 0.30, 0.20, 0.10, 0.00):
+                k = _CLAVE_TRAMO[u]
+                if u == 0.00 and k not in t and "TODOS" in t:
+                    k = "TODOS"      # JSON viejo (previo al 2026-08-11): núcleo duro = TODOS
+                if k not in t:
+                    continue
+                # se toma el valor MEDIDO tal cual, SIN piso (decisión de Valle,
+                # 2026-08-11): "no significativo" no es "cero". El núcleo duro
+                # (<0.10) da ~-0.07 — un nudge minúsculo y de signo dudoso. ⚠️ HAY
+                # QUE VALIDARLO mes a mes para ver si se condice (ver ESTADO). Los
+                # tramos de bisagra (>=0.10) son positivos y significativos.
+                fondo.append((u, float(t[k]["gamma_fondo"]["punto"])))
+                corto.append((u, float(t[k]["gamma_corto"]["punto"])))
+            if not fondo:
+                raise KeyError("tramos de fondo vacíos")
+            fuente = "oficial(json)"
+        except (KeyError, ValueError, TypeError, json.JSONDecodeError) as e:
+            logger.warning("no pude leer %s (%s); uso dose-response provisional", _OUT.name, e)
+            fondo, corto, fuente = _PROV_FONDO, _PROV_CORTO, "provisional"
+    if not USAR_CORTO:
+        corto = [(u, 0.0) for u, _ in (corto or fondo)]   # capa corto apagada
+    return fondo, corto, fuente
+
+
+TRAMOS_FONDO, TRAMOS_CORTO, FUENTE_TRAMOS = _cargar_tramos()
+logger.info("dose-response del ICG: fuente=%s", FUENTE_TRAMOS)
 
 K_SHRINK = 5.0        # pseudo-conteo; mismo valor que variables/bloque (proyectar_postura)
 MIN_DISPUTADAS = 10   # por debajo de esto el desvio propio no alcanza para un tramo
@@ -120,60 +114,62 @@ def encoger_desvio(desvio, n_disputadas, prior: float, k: float = K_SHRINK) -> f
     **mediana de 2 votaciones disputadas** contra 47 de los veteranos. Con 2
     observaciones el desvio solo puede valer 0, 0,5 o 1 — y los TRAMOS cortan en
     0,10 / 0,20 / 0,30 / 0,40, asi que es **aritmeticamente imposible caer en los
-    tramos intermedios**: o se cae al piso o se salta al techo. En los hechos 96 de
-    los 104 quedaron en gamma 0,094 ("nucleo duro") por no desviarse en 2 tiradas
-    —lo mas probable que le pase incluso a una bisagra genuina (0,8^2 = 64%)— y 6
-    quedaron en **gamma 0,555, el tramo maximo de la camara, con dos datos**.
-
-    Es el mismo defecto que el equipo diagnostico a nivel camara ("no tiene
-    resolucion para verlo", ADR-0008) aparecido un nivel mas abajo, y se corrige
-    con la herramienta que el repo ya usa: encogimiento empirico-bayesiano.
+    tramos intermedios**: o se cae al piso o se salta al techo. Se corrige con
+    encogimiento empirico-bayesiano.
 
     Con k=5 y n=2 el dato propio pesa 29% y el prior 71%; con n=47 pesa 90%.
     """
-    if desvio is None or (isinstance(desvio, float) and np.isnan(desvio)):
+    # Guardas con pd.isna(): reconoce None, float('nan') Y pd.NA (backend pyarrow).
+    # `isinstance(x, float) and np.isnan(x)` NO cazaba pd.NA y explotaba en la PC de
+    # Valle (bug del 2026-08-08, ver ESTADO).
+    if pd.isna(desvio):
         return float(prior)
-    n = 0.0 if n_disputadas is None or (isinstance(n_disputadas, float)
-                                        and np.isnan(n_disputadas)) else float(n_disputadas)
+    n = 0.0 if pd.isna(n_disputadas) else float(n_disputadas)
     return (n * float(desvio) + k * float(prior)) / (n + k)
 
 
-def gamma_individual(desvio: float, solo_significativo: bool = False) -> float:
-    """gamma segun cuan bisagra es el legislador.
-
-    NaN -> se trata como disciplinado. OJO: ese default es seguro solo si el
-    desvio viene de una muestra suficiente; para legisladores nuevos usar
-    `encoger_desvio` ANTES (ver `aplicar_individual(prior_desvio=...)`).
-    """
-    if desvio is None or (isinstance(desvio, float) and np.isnan(desvio)):
+def _gamma_tramo(desvio: float, tabla: list) -> float:
+    """gamma de UNA capa según cuán bisagra es el legislador. NaN -> disciplinado."""
+    if pd.isna(desvio):     # None / nan / pd.NA (ver nota en encoger_desvio)
         desvio = 0.0
-    for umbral, g in TRAMOS:
+    for umbral, g in tabla:
         if desvio >= umbral:
-            if solo_significativo and umbral < SIGNIFICATIVO_DESDE:
-                return 0.0
             return g
     return 0.0
 
 
-def _mover(p, gamma, s, log_rel):
-    """logit(p) + gamma*s*log_rel, con los bordes protegidos."""
+def gamma_fondo(desvio: float) -> float:
+    """gamma de la capa de FONDO (mediano plazo, 6m)."""
+    return _gamma_tramo(desvio, TRAMOS_FONDO)
+
+
+def gamma_corto(desvio: float) -> float:
+    """gamma de la capa de CORTO (sacudón reciente, 3m)."""
+    return _gamma_tramo(desvio, TRAMOS_CORTO)
+
+
+def _mover(p, gamma, s, z):
+    """logit(p) + gamma*s*z, con los bordes protegidos."""
     p = np.clip(np.asarray(p, dtype=float), 1e-6, 1 - 1e-6)
-    odds = p / (1 - p) * np.exp(np.asarray(gamma) * s * log_rel)
+    odds = p / (1 - p) * np.exp(np.asarray(gamma) * s * z)
     return odds / (1 + odds)
 
 
-def aplicar_individual(legisladores: pd.DataFrame, s: float, log_rel: float,
-                       solo_significativo: bool = False,
+def aplicar_individual(legisladores: pd.DataFrame, s: float,
+                       z_fondo: float, z_corto: float,
                        encoger: bool = True, k: float = K_SHRINK) -> pd.DataFrame:
-    """VÍA A. `legisladores` necesita `p_acompana` y `desvio`.
+    """Aplica las DOS capas del ICG legislador por legislador.
 
-    Si trae `n_disputadas` (y opcionalmente `bloque`), el desvio se ENCOGE hacia
-    la mediana de su bloque antes de mapearlo a un tramo — ver `encoger_desvio`.
-    Sin `n_disputadas` el comportamiento es el de antes (contrato intacto), pero
-    se avisa: quien pasa un roster con legisladores nuevos y no manda `n_disputadas`
-    esta asignando tramos con dos observaciones.
+    `legisladores` necesita `p_acompana` y `desvio`. Si trae `n_disputadas` (y
+    opcionalmente `bloque`), el desvio se ENCOGE hacia la mediana de su bloque
+    antes de mapearlo a un tramo — ver `encoger_desvio`.
 
-    Devuelve el mismo frame con `gamma`, `p_mod` y `delta` (y `desvio_enc` si aplica).
+    `z_fondo` y `z_corto` son las dos señales del ICG para el mes objetivo (de
+    icg_contexto: columnas z_fondo / z_corto). Se componen: primero el fondo,
+    después el corto.
+
+    Devuelve el frame con `gamma_fondo`, `gamma_corto`, `p_mod`, `delta`
+    (y `desvio_enc` si se encogió).
     """
     faltan = {"p_acompana", "desvio"} - set(legisladores.columns)
     if faltan:
@@ -182,12 +178,8 @@ def aplicar_individual(legisladores: pd.DataFrame, s: float, log_rel: float,
 
     col = "desvio"
     if encoger and "n_disputadas" in d.columns:
-        # El prior se calcula SOLO con legisladores de muestra suficiente. Si se
-        # usara el bloque entero, los novatos se encogerian hacia la mediana de
-        # sus propios pares novatos —que es el mismo ruido que queremos corregir—
-        # y el ajuste no haria nada: con 96 de 104 en desvio 0, la mediana del
-        # bloque da 0 y todos se quedan donde estaban. El prior tiene que venir
-        # de quienes SI tienen historial.
+        # El prior se calcula SOLO con legisladores de muestra suficiente (si no,
+        # los novatos se encogen hacia el ruido de sus propios pares novatos).
         nd = pd.to_numeric(d["n_disputadas"], errors="coerce").fillna(0)
         solido = d[nd >= MIN_DISPUTADAS]
         if solido.empty:
@@ -203,8 +195,7 @@ def aplicar_individual(legisladores: pd.DataFrame, s: float, log_rel: float,
             for dv, n, pr in zip(d["desvio"], d["n_disputadas"], prior)
         ]
         col = "desvio_enc"
-        flojos = (pd.to_numeric(d["n_disputadas"], errors="coerce")
-                  .fillna(0) < MIN_DISPUTADAS).sum()
+        flojos = int((nd < MIN_DISPUTADAS).sum())
         if flojos:
             logger.info("encogimiento aplicado (k=%.1f): %d de %d legisladores "
                         "tienen menos de %d disputadas", k, flojos, len(d), MIN_DISPUTADAS)
@@ -213,157 +204,29 @@ def aplicar_individual(legisladores: pd.DataFrame, s: float, log_rel: float,
                        "Un legislador con 2 votaciones recibe el mismo trato que "
                        "uno con 47 (ver encoger_desvio).")
 
-    d["gamma"] = d[col].map(lambda x: gamma_individual(x, solo_significativo))
-    d["p_mod"] = _mover(d["p_acompana"].values, d["gamma"].values, s, log_rel)
+    d["gamma_fondo"] = d[col].map(gamma_fondo)
+    d["gamma_corto"] = d[col].map(gamma_corto)
+    p1 = _mover(d["p_acompana"].values, d["gamma_fondo"].values, s, z_fondo)  # capa fondo
+    d["p_mod"] = _mover(p1, d["gamma_corto"].values, s, z_corto)              # capa corto
     d["delta"] = d["p_mod"] - d["p_acompana"]
     return d
 
 
-_CURVA = None
+def zetas_del_mes(fecha, contexto_path: Path | None = None) -> tuple[float, float]:
+    """(z_fondo, z_corto) del ICG para un mes dado, leídas de icg_contexto.parquet.
 
-
-def neutro_ciclo(mes_mandato: int) -> float:
-    """Neutro segun el MES DE MANDATO: lo que un gobierno suele tener a esa altura.
-
-    Sale de alinear las 6 presidencias por mes de mandato y promediar (curva en
-    `data/curva_ciclo_presidencial.csv`). Va de 2,58 en el mes 2 a 1,81 en el
-    mes 32. **Truncada en el mes 41** (decision de Valle): de ahi en adelante la
-    suba que muestra el promedio es expectativa de recambio, no del gobierno.
+    `fecha` puede ser 'YYYY-MM' / 'YYYY-MM-DD' / Timestamp. Es el modo point-in-time
+    de conseguir las dos señales para un nowcast: el mes objetivo ya vive en la
+    serie. Levanta KeyError si el mes no está en el contexto.
     """
-    global _CURVA
-    if _CURVA is None:
-        import pathlib
-        f = pathlib.Path(__file__).resolve().parents[1] / "data" / "curva_ciclo_presidencial.csv"
-        _CURVA = pd.read_csv(f).set_index("mes_mandato")["neutro_ciclo"]
-    m = int(np.clip(mes_mandato, _CURVA.index.min(), _CURVA.index.max()))
-    return float(_CURVA.loc[m])
-
-
-BREAK_EVEN = 1.90
-EXP_ACEL = 1.5      # >1: cada punto extra de ICG pesa MAS que el anterior
-AVERSION = 2.0      # la caida pesa AVERSION veces mas que la suba equivalente
-
-
-def z_absoluto(icg_mes: float, break_even: float = BREAK_EVEN,
-               exp_acel: float = EXP_ACEL, aversion: float = AVERSION) -> float:
-    """Desvio del ICG contra el break-even, ACELERADO y con AVERSION A LA PERDIDA.
-
-        z = d^exp_acel                 si d >= 0   (d = ICG - break_even)
-        z = -aversion * |d|^exp_acel   si d < 0
-
-    Forma elegida por Valle (04-08-2026) con este razonamiento: *"las personas no
-    son sensibles a exitos a menos que sean notables; mientras que son muy
-    sensibles a la perdida"*. Es, sin haberlo buscado, la funcion de valor de la
-    teoria prospectiva (Kahneman-Tversky): sensibilidad creciente en los extremos
-    y asimetria a favor del castigo.
-
-    Con los valores por defecto: ICG 1,0 -> -40% de chances; ICG 3,3 -> +64%;
-    y cada +0,5 punto suma 11, 24, 38 y 60 puntos de multiplicador — acelera.
-    Para el mismo salto en puntos, la caida pesa entre 1,4x y 1,8x mas que la suba.
-
-    **Caso testigo que motiva la forma (Valle):** Milei llega al poder con ICG
-    ~2,8 y aprueba Ley Bases y RIGI con muchas menos bancas de las que tiene hoy.
-    Ningun modelo que mire solo la composicion de la camara explica eso.
-    """
-    d = float(np.clip(icg_mes, 1.0, 4.0)) - break_even
-    return d ** exp_acel if d >= 0 else -aversion * (abs(d) ** exp_acel)
-
-
-def log_vs_fijo(icg_mes: float, break_even: float = BREAK_EVEN) -> float:
-    """VARIANTE B del nivel: break-even FIJO, sin curva del ciclo (Valle, 04-08).
-
-    Arriba de 1,90 el factor es positivo y escala cuanto mas se aleja; abajo,
-    negativo. Es la version simple: un solo numero para toda la historia.
-
-    **La diferencia con la curva del ciclo, en una frase:** con break-even fijo un
-    gobierno recien asumido cobra premio automatico (el ICG a los 3 meses es ~2,55
-    por la luna de miel, no por merito) y uno maduro cobra castigo automatico (a los
-    30 meses lo normal es 1,82). La curva del ciclo neutraliza eso y premia solo
-    estar MEJOR de lo esperable a esa altura.
-
-    Cual conviene NO es una pregunta tecnica sino politica: si se cree que la luna
-    de miel da poder real sobre el Congreso, el fijo lo captura. Si se cree que los
-    legisladores ya descuentan que todo gobierno arranca alto, la curva es mejor.
-    """
-    return float(np.log(np.clip(icg_mes, 1.0, 4.0) / break_even))
-
-
-def log_vs_ciclo(icg_mes: float, mes_mandato: int) -> float:
-    """Cuanto esta este gobierno por encima/debajo de lo esperable A ESTA ALTURA."""
-    return float(np.log(np.clip(icg_mes, 1.0, 4.0) / neutro_ciclo(mes_mandato)))
-
-
-def log_nivel_gobierno(prom_gobierno: float, neutro: float = NEUTRO) -> float:
-    """(en desuso, queda por compatibilidad) nivel contra el promedio de presidencias.
-
-    Ojo — NO recibe el ICG del mes sino el PROMEDIO DEL GOBIERNO. La razon es
-    que la descomposicion tiene que ser exacta y sin solapamiento:
-
-        log(ICG_mes / NEUTRO) = log(ICG_mes / prom_gob) + log(prom_gob / NEUTRO)
-                                 \_____ capa 1 _____/    \_____ capa 2 _____/
-
-    Capa 1 = cuanto se desvia el mes respecto de su propio gobierno (lo medido,
-    dentro del gobierno, sin el confundidor de las bancas).
-    Capa 2 = que tan alto o bajo esta este gobierno contra la historia.
-
-    Si la capa 2 usara el ICG del MES, se estaria contando dos veces el desvio
-    mensual, que ya vive entero en la capa 1.
-
-    En vivo, `prom_gobierno` es el promedio EXPANDIDO (los meses transcurridos),
-    que es lo unico conocido a la fecha: `icg_base_gob` de icg_contexto.parquet.
-    """
-    return float(np.log(np.clip(prom_gobierno, 1.0, 4.0) / neutro))
-
-
-def aplicar_agregado(p_aprobacion: float, s: float, icg_mes: float, mes_mandato: int,
-                     intensidad: str = "moderado", modo: str = "ciclo") -> float:
-    """CAPA 2. Corre la probabilidad final segun el NIVEL DE ESTE GOBIERNO.
-
-    Recibe el promedio del gobierno (ej. 2,34 para Milei), no el ICG del mes:
-    lo que el analista pondera es "este gobierno se sostiene alto/bajo", no el
-    ruido del mes — ese ya lo tomo la capa 1. Es un ESCENARIO declarado, no una
-    prediccion: se presenta como banda.
-    """
-    if intensidad not in INTENSIDAD:
-        raise ValueError(f"intensidad debe ser una de {sorted(INTENSIDAD)}")
-    if modo not in ("ciclo", "fijo"):
-        raise ValueError("modo debe ser 'ciclo' o 'fijo'")
-    dz = log_vs_ciclo(icg_mes, mes_mandato) if modo == "ciclo" else z_absoluto(icg_mes)
-    return float(_mover(p_aprobacion, INTENSIDAD[intensidad], s, dz))
-
-
-def aplicar_dos_capas(legisladores: pd.DataFrame, s: float, log_rel: float,
-                      icg_mes: float, mes_mandato: int, umbral: float,
-                      intensidad: str = "moderado", modo: str = "ciclo",
-                      solo_significativo: bool = False) -> dict:
-    """Las DOS capas compuestas, en el orden que definio Valle (04-08-2026).
-
-    CAPA 1 — dentro del calculo probabilistico. `log_rel` (el ICG contra el
-    promedio del propio gobierno) mueve a cada legislador segun cuan bisagra sea.
-    Es lo MEDIDO: gamma sube 0,22 -> 0,33 -> 0,35 -> 0,56 con el desvio, con
-    dosis-respuesta y significativo. Al ser una comparacion dentro del mismo
-    gobierno, no la contamina el confundidor de las bancas.
-
-    CAPA 2 — decision de analista, por fuera del estudio probabilistico. El
-    NIVEL ABSOLUTO contra el neutro historico: un gobierno sostenido en 2,8 no
-    es lo mismo que uno sostenido en 1,2, aunque los dos esten en su propio
-    promedio y la capa 1 les de cero a ambos.
-
-    Las dos capas son independientes por construccion: una mide desvios DENTRO
-    del gobierno, la otra el nivel DEL gobierno. Por eso se pueden componer sin
-    contarse dos veces.
-    """
-    d = aplicar_individual(legisladores, s, log_rel, solo_significativo)
-    p_base = p_mayoria(d, umbral, "p_acompana")
-    p_capa1 = p_mayoria(d, umbral, "p_mod")
-    p_final = aplicar_agregado(p_capa1, s, icg_mes, mes_mandato, intensidad, modo)
-    v0, _ = votos_esperados(d, "p_acompana")
-    v1, _ = votos_esperados(d, "p_mod")
-    return {"p_base": p_base, "p_capa1": p_capa1, "p_final": p_final,
-            "votos_base": v0, "votos_capa1": v1,
-            "log_ciclo": log_vs_ciclo(icg_mes, mes_mandato),
-            "log_fijo": log_vs_fijo(icg_mes), "movidos": int((d["delta"].abs() > 0.005).sum()),
-            "detalle": d}
+    path = contexto_path or (Path(__file__).resolve().parents[1] / "data" / "icg_contexto.parquet")
+    ctx = pd.read_parquet(path)
+    mes = pd.Timestamp(fecha).to_period("M")
+    fila = ctx[pd.to_datetime(ctx["fecha"]).dt.to_period("M") == mes]
+    if fila.empty:
+        raise KeyError(f"el mes {mes} no está en {path.name}; ¿corriste icg_contexto.py?")
+    r = fila.iloc[0]
+    return float(r["z_fondo"]), float(r["z_corto"])
 
 
 def votos_esperados(d: pd.DataFrame, col="p_mod") -> tuple[float, float]:

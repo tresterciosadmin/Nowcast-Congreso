@@ -1,0 +1,118 @@
+{
+  "modelo": "dos_capas",
+  "ma_fondo": 6,
+  "ma_corto": 3,
+  "nota": "gamma en escala logit por capa y por tramo de desvío. El modulador arma sus tramos desde acá.",
+  "tramos": {
+    "<0.10": {
+      "umbral": 0.0,
+      "n": 234780,
+      "n_legisladores": 1002,
+      "p": 0.6646,
+      "gamma_fondo": {
+        "punto": -0.0691,
+        "ic95": [
+          -0.4516,
+          0.1847
+        ],
+        "significativo": false
+      },
+      "gamma_corto": {
+        "punto": -0.3379,
+        "ic95": [
+          -1.3855,
+          0.558
+        ],
+        "significativo": false
+      }
+    },
+    ">=0.10": {
+      "umbral": 0.1,
+      "n": 209495,
+      "n_legisladores": 738,
+      "p": 0.5579,
+      "gamma_fondo": {
+        "punto": 0.4427,
+        "ic95": [
+          0.161,
+          0.7283
+        ],
+        "significativo": true
+      },
+      "gamma_corto": {
+        "punto": 0.27,
+        "ic95": [
+          -0.4846,
+          1.0412
+        ],
+        "significativo": false
+      }
+    },
+    ">=0.20": {
+      "umbral": 0.2,
+      "n": 99126,
+      "n_legisladores": 396,
+      "p": 0.5133,
+      "gamma_fondo": {
+        "punto": 0.4773,
+        "ic95": [
+          0.1969,
+          0.7708
+        ],
+        "significativo": true
+      },
+      "gamma_corto": {
+        "punto": 0.3183,
+        "ic95": [
+          -0.4544,
+          1.1277
+        ],
+        "significativo": false
+      }
+    },
+    ">=0.30": {
+      "umbral": 0.3,
+      "n": 44993,
+      "n_legisladores": 210,
+      "p": 0.4835,
+      "gamma_fondo": {
+        "punto": 0.5094,
+        "ic95": [
+          0.1938,
+          0.8653
+        ],
+        "significativo": true
+      },
+      "gamma_corto": {
+        "punto": 0.5753,
+        "ic95": [
+          -0.1533,
+          1.1938
+        ],
+        "significativo": false
+      }
+    },
+    ">=0.40": {
+      "umbral": 0.4,
+      "n": 16297,
+      "n_legisladores": 104,
+      "p": 0.4699,
+      "gamma_fondo": {
+        "punto": 0.4004,
+        "ic95": [
+          -0.1795,
+          0.8247
+        ],
+        "significativo": false
+      },
+      "gamma_corto": {
+        "punto": 0.5521,
+        "ic95": [
+          -0.4354,
+          1.3712
+        ],
+        "significativo": false
+      }
+    }
+  }
+}

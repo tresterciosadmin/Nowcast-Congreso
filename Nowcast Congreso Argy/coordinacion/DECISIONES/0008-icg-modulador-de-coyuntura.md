@@ -1,6 +1,63 @@
 # ADR-0008 — El ICG como modulador de coyuntura, no como rasgo predictivo
 
-**Fecha:** 2026-08-04 · **Estado:** ACEPTADA · **Quién:** Valle (diseño y decisiones), Claude (estimación e implementación)
+**Fecha:** 2026-08-04 · **Estado:** ACEPTADA (con enmienda 2026-08-11) · **Quién:** Valle (diseño y decisiones), Claude (estimación e implementación)
+
+## ⟲ Enmienda 2026-08-11 (Valle) — leer ANTES que el texto original
+
+Dos cambios sobre el diseño de abajo. El cuerpo del ADR queda como registro
+histórico; lo vigente es esto.
+
+**1. El mecanismo 1 pasa de UNA señal a DOS HORIZONTES.** Antes `z = log(ICG del
+mes / promedio del gobierno)`: el ICG del mes crudo. Ese regresor es ruidoso y
+**subestima γ por atenuación** (errores en la variable). Medido: el desvío del
+ICG dentro de cada gobierno es ~0,41 (la variación existe), y al suavizar la
+señal el γ de bisagras sube. La señal se descompone en dos capas que no se
+solapan, ambas medias móviles **trailing** (point-in-time) y **dentro de cada
+gobierno** (el efecto fijo por gobierno se mantiene, no se re-confunde clima con
+composición):
+
+    z_fondo = log(MA6  / promedio del gobierno)   # humor de mediano plazo
+    z_corto = log(MA3  / MA6)                      # sacudón reciente sobre el fondo
+
+Se descartó el suavizado único (3/6/12m) y la descomposición de 3 capas (el
+escalón 6-vs-12 aportaba ~0). Las dos capas correlacionan 0,36 (no colineales).
+
+**RESULTADO de la corrida oficial (bootstrap 500, Valle, 2026-08-11):**
+- **FONDO confirmado y significativo:** γ = 0,44 / 0,48 / 0,51 para desvío ≥0,10 /
+  ≥0,20 / ≥0,30 (crudo con vol era 0,235). La atenuación era real.
+- **CORTO NO significativo** en ningún tramo (IC muy anchos). **Se APAGA**
+  (`USAR_CORTO=False`). El modelo queda como un único suavizado de 6 meses. Se
+  aplica una sola capa (el fondo); el corto queda cableado por si una corrida
+  futura lo confirma.
+- **Núcleo duro (<0,10):** medido SOLO sobre los disciplinados (banda `<0.10`, no
+  `TODOS`) da γ_fondo = −0,069 no significativo (IC centrado en cero). **Decisión de
+  Valle: se usa el valor medido tal cual, sin piso** ("no significativo" ≠ "cero"; y
+  es un nudge minúsculo). **A VALIDAR mes a mes** con datos nuevos. La hipótesis de
+  Valle (los propios dudan en caídas pronunciadas) es ASIMÉTRICA y esta estimación
+  es simétrica; el test exploratorio sobre la caída de Alberto la respalda en
+  dirección (mismos disciplinados: 82% → 75% de acompañamiento del gobierno) pero
+  no en significancia (muestra chica + confusión clima/tiempo). Queda como pista.
+- **≥0,40** (n=104): no significativo por muestra chica; se conserva el valor
+  medido, **sin forzar monotonía**.
+
+**2. Se ELIMINA el mecanismo 2 (NIVEL declarado por el analista).** Motivo: tal
+como estaba cableado en `modulador_icg.aplicar_dos_capas`, la intensidad del
+analista y el γ empírico multiplicaban el MISMO `log(ICG/neutro)` del mes — dos
+perillas sobre una sola señal = **doble conteo del mismo clima**. La intención
+original (capturar el efecto ENTRE-gobiernos, inestimable) vivía en
+`log_nivel_gobierno`, que estaba marcada "en desuso" y nunca se usó. Nos quedamos
+sólo con lo medido, legislador por legislador. Se eliminan del módulo `INTENSIDAD`,
+`aplicar_agregado`, `aplicar_dos_capas`, `z_absoluto`, `log_vs_*`, `neutro_ciclo`,
+`log_nivel_gobierno`; `comparar_vias_icg.py` queda neutralizado (comparaba contra
+la capa 2). Cae en consecuencia la Consecuencia 1 de abajo (evaluación de
+coyuntura declarada) y el mecanismo 2 de "Preparación de la serie".
+
+**Archivos vigentes:** `icg_contexto.py` (columnas `z_fondo`/`z_corto`),
+`estimar_gamma_individual.py --modelo dos_capas` (→ `outputs/gamma_icg_dos_capas.json`),
+`modulador_icg.py` (2 capas, lee el JSON). Ver ESTADO/EN-HUMANO 2026-08-11.
+
+---
+
 
 ## Contexto
 

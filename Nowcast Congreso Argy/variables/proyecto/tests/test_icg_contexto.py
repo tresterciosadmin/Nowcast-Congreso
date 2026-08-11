@@ -101,6 +101,24 @@ def main():
     chk(abs(ap["log_rel"]).max() < 1e-9,
         "ICG constante -> log_rel = 0: un gobierno en su promedio no recibe ni castigo ni premio")
 
+    # ---------- DOS CAPAS: fondo (6m) + corto (3m) ----------
+    chk({"z_fondo", "z_corto"} <= set(r5.columns), "el contrato expone z_fondo y z_corto")
+    apz = r5[r5.z_fondo.notna()]
+    chk(abs(apz["z_fondo"]).max() < 1e-9 and abs(r5["z_corto"]).max() < 1e-9,
+        "ICG constante -> z_fondo = z_corto = 0 (gobierno en su promedio, sin ruido)")
+    # salto DENTRO de un gobierno: el corto reacciona antes que el fondo, y NO hay
+    # leakage del futuro (los meses previos al salto siguen en cero)
+    step = np.concatenate([np.full(20, 2.0), np.full(20, 3.0)])
+    rs = C.construir(serie(desde="2016-01", n=40, valores=step), cal([])).reset_index(drop=True)
+    antes = rs.loc[15]      # 5 meses antes del salto (idx 20)
+    chk(abs(antes["z_corto"]) < 1e-9 and abs(antes["z_fondo"]) < 1e-9,
+        "point-in-time: la suba futura NO afecta los meses previos (media móvil trailing)")
+    despues = rs.loc[23]    # 3 meses después del salto
+    chk(despues["z_corto"] > 0.02,
+        "tras una suba reciente el sacudón de corto plazo se pone positivo")
+    chk(despues["z_fondo"] > 0,
+        "el humor de fondo también sube, pero con más retraso")
+
     # ---------- volatilidad ----------
     r6 = C.construir(serie(n=40, valores=np.full(40, 2.0)), cal([]))
     chk(r6["vol6"].dropna().max() < 1e-9, "serie planchada -> volatilidad cero (elasticidad colapsa)")

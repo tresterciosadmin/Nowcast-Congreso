@@ -82,6 +82,8 @@ PISO, TECHO = 1.0, 4.0
 DIAS_ANTES, DIAS_DESPUES = 95, 185
 MESES_BASE = 12          # cuántos meses del saliente se promedian
 VOL_MESES = 6            # ventana de la volatilidad
+MA_MED = 6               # "humor de fondo": media móvil trailing de mediano plazo
+MA_CORTO = 3             # "sacudón reciente": media móvil trailing de corto plazo
 MIN_MESES_GOB = 6        # antes de eso, el neutro del gobierno no es confiable
 
 # Gobiernos nacionales (fecha de asunción -> fin de mandato).
@@ -182,6 +184,28 @@ def construir(d: pd.DataFrame, cal: pd.DataFrame) -> pd.DataFrame:
     base_c = d["icg_base_gob"].clip(PISO, TECHO)
     # el insumo del modulador: log del ICG relativo al propio gobierno
     d["log_rel"] = np.log(d["icg_c"] / base_c)
+
+    # --- DOS HORIZONTES (Valle, 2026-08-11) -----------------------------------
+    # El ICG mensual crudo rebota mucho de un mes al otro; regresar el voto contra
+    # ese ruido SUBESTIMA el efecto del clima (sesgo de atenuación por errores en
+    # la variable). Medido: el gamma de bisagras salta al suavizar. En lugar de un
+    # único suavizado, se descompone en dos capas que NO se pisan, para poder
+    # medir cuánto pesa cada horizonte:
+    #   FONDO (mediano plazo)  = media móvil trailing de MA_MED meses vs promedio
+    #                            del propio gobierno → "cómo viene el clima".
+    #   CORTO (sacudón reciente) = media móvil trailing de MA_CORTO meses vs el
+    #                            fondo → "cuánto se despegó el último tramo".
+    # Ambas medias móviles son TRAILING (sólo mes corriente + previos: point-in-
+    # time, no miran el futuro) y se calculan DENTRO de cada gobierno (no cruzan un
+    # traspaso). El denominador de FONDO sigue siendo el promedio del gobierno, así
+    # que el efecto-fijo por gobierno (que separa clima de composición) queda igual.
+    # Se calculan sobre `icg_c` (ya imputado en transiciones), no sobre el crudo.
+    ma_med = (d.groupby("gobierno")["icg_c"]
+              .transform(lambda s: s.rolling(MA_MED, min_periods=1).mean())).clip(PISO, TECHO)
+    ma_corto = (d.groupby("gobierno")["icg_c"]
+                .transform(lambda s: s.rolling(MA_CORTO, min_periods=1).mean())).clip(PISO, TECHO)
+    d["z_fondo"] = np.log(ma_med / base_c)      # mediano plazo vs promedio del gobierno
+    d["z_corto"] = np.log(ma_corto / ma_med)    # corto plazo vs el fondo
     # volatilidad sobre la serie YA limpia (si no, mide el recambio, no el clima)
     d["vol6"] = d["icg"].rolling(VOL_MESES).std()
     d["vol6_z"] = (d["vol6"] - d["vol6"].mean()) / d["vol6"].std()
@@ -196,11 +220,12 @@ def construir(d: pd.DataFrame, cal: pd.DataFrame) -> pd.DataFrame:
 
     # qué meses sirven para ESTIMAR gamma (predecir se puede en todos)
     d["apto_ajuste"] = ((d["regimen"] == "normal") & ~d["fuera_escala"]
-                        & d["log_rel"].notna() & d["vol6"].notna())
+                        & d["log_rel"].notna() & d["vol6"].notna()
+                        & d["z_fondo"].notna() & d["z_corto"].notna())
 
     cols = ["fecha", "anio", "mes", "icg_obs", "icg", "icg_c", "imputado", "regimen",
-            "gobierno", "icg_base_gob", "base_es_propia", "log_rel", "vol6", "vol6_z",
-            "fuera_escala", "apto_ajuste"]
+            "gobierno", "icg_base_gob", "base_es_propia", "log_rel", "z_fondo", "z_corto",
+            "vol6", "vol6_z", "fuera_escala", "apto_ajuste"]
     return d[cols]
 
 

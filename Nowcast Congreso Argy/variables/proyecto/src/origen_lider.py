@@ -55,8 +55,13 @@ GOBIERNOS = [
     ("1900-01-01", "2015-12-10", {"KIRCHNERISMO"}),                 # Néstor/CFK
     ("2015-12-10", "2019-12-10", {"PRO", "RADICALISMO", "CC"}),     # Cambiemos (Macri)
     ("2019-12-10", "2023-12-10", {"KIRCHNERISMO"}),                 # Frente de Todos (A. Fernández)
-    ("2023-12-10", "2100-01-01", {"LLA"}),                          # La Libertad Avanza (Milei)
+    ("2023-12-10", "2100-01-01", {"LLA", "PRO"}),                   # La Libertad Avanza (Milei) + PRO
 ]
+# PRO sumado a Milei (Valle 2026-08-09): PRO acompaña la agenda del gobierno en el
+# Congreso. Matiz sin resolver: la alianza se consolidó DURANTE 2024, no desde el
+# 10-dic-2023; los votos PRO de los primeros meses de Milei quedan etiquetados como
+# oficialismo aunque el acuerdo todavía no estaba cerrado. Se deja así por ahora
+# (la tabla usa los recambios del 10-dic como únicos cortes); afinar si hace ruido.
 
 
 def _norm(s) -> str:

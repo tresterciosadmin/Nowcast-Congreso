@@ -1,5 +1,14 @@
-"""comparar_vias_icg.py — genera COMPARADOR-ICG.html para que el equipo decida.
+"""comparar_vias_icg.py — SUPERSEDED / NEUTRALIZADO 2026-08-11.
 
+⛔ Este comparador contrastaba el MECANISMO 1 (individual, medido) contra el
+MECANISMO 2 (nivel declarado por el analista = capa 2 global). El 2026-08-11
+Valle DECIDIÓ ELIMINAR la capa 2 (doble conteo del mismo clima), así que la
+comparación ya no tiene sentido y `modulador_icg.aplicar_dos_capas` fue removido:
+este script NO corre más (levantaría AttributeError). Se conserva sólo como
+registro histórico; copia en Archivos_Borrar/BORRAR_comparar_vias_icg_capa2_2026-08-11.py.
+El `__main__` está neutralizado. Ver ADR-0008 (rev 2026-08-11) y ESTADO 2026-08-11.
+
+--- diseño original (histórico) --------------------------------------------
 Reescrito de cero el 2026-08-04 con el diseño final acordado con Valle:
 
   MECANISMO 1 — VARIACION (medido, individual).
@@ -280,7 +289,7 @@ Generado por <code>comparar_vias_icg.py</code>. Fuentes: <code>estimar_gamma_ind
 
 
 if __name__ == "__main__":
-    df, v = correr()
-    SALIDA.write_text(html(df, v), encoding="utf-8")
-    print(df[["t","mes","icg","neutro","p0","p1","p2"]].round(3).to_string())
-    print(f"\n-> {SALIDA}")
+    raise SystemExit(
+        "comparar_vias_icg.py NEUTRALIZADO (2026-08-11): la capa 2 global se "
+        "eliminó y aplicar_dos_capas ya no existe. Este comparador no corre más. "
+        "Ver ADR-0008 rev 2026-08-11.")

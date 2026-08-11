@@ -86,11 +86,43 @@ def ajuste_paso_origen(p0: float, delta: float, factor_encogimiento: float = 1.0
     return _clip01(_sigmoide(_logit(p0) + delta * fe))
 
 
+def posturas_revisora(fecha, camara, *, tema=None, origen=None, canon=None) -> list[dict]:
+    """Posturas de bloque (línea + desvío por linaje) para `camara` en `fecha`.
+
+    Reusa `variables/bloque.proyectar_postura` — la MISMA maquinaria que la
+    cámara de origen (Puerta B), condicionada por tema/origen. Se toma sólo
+    `linea` y `desvio`; las bancas de la revisora las pone `roster_nominal`
+    desde el padrón histórico, no esta función. Por eso es seguro en fechas
+    pasadas aunque el padrón oficial no las cubra (proyectar_postura cae a
+    contar por la ventana de votos).
+    """
+    from ensemble import _cargar_proyector
+    cargar_bloque, proyectar_postura, cargar_tema_por_acta = _cargar_proyector()
+    votos = cargar_bloque() if canon is None else cargar_bloque(canon)
+
+    # EL NORTE DEL MODELO (Valle 2026-08-09): la postura de bloque se calcula SÓLO
+    # sobre actas de ley. Sin este filtro, el consenso de tratados/pliegos/
+    # homenajes lava la señal: el kirchnerismo sale 55,8% afirmativo (dirección
+    # AFIRMATIVO, degenerado) en vez del 29% real sobre leyes. Ver actas_ley.py.
+    exp_src = RAIZ / "datos" / "expedientes" / "src"
+    if str(exp_src) not in sys.path:
+        sys.path.insert(0, str(exp_src))
+    from actas_ley import filtrar_votos_a_ley  # type: ignore
+    votos = filtrar_votos_a_ley(votos)
+
+    cond = cargar_tema_por_acta() if (tema or origen) else None
+    return proyectar_postura(votos, fecha, camara, tema=tema, origen=origen,
+                             cond_por_acta=cond)
+
+
 def p_voto_revisora(
     camara_origen: str,
     fecha,
-    bloques: list[dict],
+    bloques: Optional[list[dict]] = None,
     *,
+    tema=None,
+    origen=None,
+    canon=None,
     tipo_mayoria: str = "SIMPLE",
     delta: float = 0.0,
     factor_encogimiento: float = 0.0,
@@ -103,8 +135,12 @@ def p_voto_revisora(
 
     camara_origen : de dónde salió el proyecto; la revisora es la otra.
     fecha         : fecha de la votación en la revisora (o proyectada).
-    bloques       : posturas por linaje, salida de bloque.proyectar_postura
-                    ([{bloque, linea, desvio}, ...]). MISMA maquinaria que B.
+    bloques       : posturas por linaje ([{bloque, linea, desvio}, ...]). Si es
+                    None (lo normal), se derivan solas de tema/origen con
+                    `posturas_revisora` (misma maquinaria que B). Se pasan a mano
+                    sólo para escenarios "¿y si…?" o para los tests.
+    tema, origen  : condicionan las posturas de bloque (área temática y quién
+                    impulsa). Sólo se usan cuando `bloques` es None.
     delta, factor_encogimiento : ajuste 'pasó por origen'. Por defecto (0,0) =
                     Manera 1 pura. Cuando se ajuste Manera 2, se pasan acá.
 
@@ -118,6 +154,8 @@ def p_voto_revisora(
     from agregador import simular_votacion  # type: ignore
 
     revisora = camara_revisora(camara_origen)
+    if bloques is None:
+        bloques = posturas_revisora(fecha, revisora, tema=tema, origen=origen, canon=canon)
     pfile = padron_file or str(_padron_de(revisora))
     if not Path(pfile).exists():
         raise FileNotFoundError(

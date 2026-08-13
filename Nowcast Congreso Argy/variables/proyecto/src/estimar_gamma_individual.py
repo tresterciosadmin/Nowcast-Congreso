@@ -75,7 +75,22 @@ def cargar(umbral_desvio: float) -> pd.DataFrame:
     d["s"] = np.where(d["origen_lado"] == "GOBIERNO", 1.0, -1.0)
 
     disc = pd.read_csv(RAIZ / "modelo/voto_individual/outputs/disciplina_individual.csv")
-    col = "tasa_desvio_disputadas" if "tasa_desvio_disputadas" in disc.columns else "tasa_desvio"
+    # Desvío de CONDUCTA (votó distinto ESTANDO PRESENTE), NO el mezclado con ausentismo
+    # (URGENTE 1, 2026-08-13). El "desvío" v2 correlaciona r≈0,63 con la inasistencia:
+    # ausentes crónicos entraban como bisagras de γ alto sin ser sensibles al clima.
+    # Fallback en cascada por si el contrato viejo aún no trae las columnas nuevas.
+    col = next((c for c in ("tasa_desvio_disputadas_conducta", "tasa_desvio_disputadas",
+                            "tasa_desvio") if c in disc.columns), "tasa_desvio")
+    logger.info("γ: desvío leído de la columna '%s'", col)
+    # Quitar del análisis a los outliers de ausentismo (muertes/testimoniales/licencias,
+    # ADR-0004) — decisión de Valle 2026-08-13. Guarda con pd.isna() por el backend pyarrow
+    # de la PC de Valle (NA en booleano es ambiguo, bug del 2026-08-08).
+    if "ausentista_outlier" in disc.columns:
+        es_out = disc["ausentista_outlier"].map(lambda x: bool(x) if not pd.isna(x) else False)
+        out_ids = set(disc.loc[es_out, "legislador_id"])
+        if out_ids:
+            d = d[~d["legislador_id"].isin(out_ids)]
+            logger.info("γ: quitados %d legisladores ausentista_outlier de la muestra", len(out_ids))
     disc = disc[disc["n_votos"] >= 50][["legislador_id", col]].rename(columns={col: "desvio"})
     d = d.merge(disc, on="legislador_id", how="left")
     d["es_pivote"] = d["desvio"].fillna(0) >= umbral_desvio

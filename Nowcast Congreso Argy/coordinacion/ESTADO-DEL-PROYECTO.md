@@ -43,9 +43,9 @@ Mantené esta tabla sincronizada con la bitácora.
 | variables/asistencia_quorum | EN CURSO (escalón 1 construido y backtesteado: presentismo promedio empeora → asistencia CONDICIONAL = escalón 2; motor sin asistencia queda de default) | Valle |
 | variables/embudo | EN CURSO (v1 GATE APROBADO: skill **0,3643 sancionado / 0,4195 recinto** medido el 07-08 sobre datos frescos; **lee de `proyectos.db`** con la ruta parquet de fallback `EMBUDO_FUENTE=parquet`; cohorte 42.141; falta tema) | Valle |
 | variables/contexto | FUTURO | — |
-| modelo/voto_individual | EN CURSO (desvío v2 = indisciplina total, ADR-0004; gate 1 aprobado, set pivote = 112 legisladores) | Valle |
+| modelo/voto_individual | EN CURSO (desvío v2 = indisciplina total, ADR-0004; gate 1 aprobado, set pivote = 112 legisladores; **13-08: separada INDISCIPLINA de AUSENTISMO** — columnas `tasa_desvio_conducta`/`_ausencia` + flag `ausentista_outlier` μ+2σ, aditivas) | Valle |
 | modelo/agregador_institucional | EN CURSO (v1: motor de recuento como distribución; tests 12 OK; backtest 4.890 actas Brier 0,011 / skill 0,76 / acc 0,987; falta calibrar disputadas) | Valle |
-| modelo/ensemble | EN CURSO (ROSTER NOMINAL: simula legislador por legislador con desvío individual; se eliminó _expandir_roster/demo. Origen=GOBIERNO endereza el 1167. Falta backtest de la cadena) | Claude+Valle |
+| modelo/ensemble | EN CURSO (ROSTER NOMINAL: simula legislador por legislador con desvío individual; se eliminó _expandir_roster/demo. Origen=GOBIERNO endereza el 1167. **13-08: `roster_nominal` lee la columna de CONDUCTA (fallback a la mezclada), 32 tests OK**. Falta backtest de la cadena) | Claude+Valle |
 | evaluacion/baseline | HECHO | — |
 | evaluacion/backtesting | PENDIENTE (bloqueado: necesita al menos un modelo nuevo corriendo) | — |
 | evaluacion/metricas | PENDIENTE | — |
@@ -55,6 +55,44 @@ Mantené esta tabla sincronizada con la bitácora.
 ---
 
 ## Bitácora (más reciente arriba)
+### [2026-08-13 · roster] `roster_nominal` (ensemble) lee la CONDUCTA en la proyección — el fix llega al nowcast end-to-end
+- **Quién:** Valle (implementa en su PC) + Claude (diseño/tests) · **Módulo:** modelo/ensemble (claim a coordinar con Franco). · **Cierra:** el "próximo paso" de las entradas de más abajo.
+- **El hueco que cerró:** el fix de conducta vivía en la ESTIMACIÓN del γ, pero `roster_nominal` seguía asignando a cada banca el desvío **mezclado** (`tasa_desvio_reciente` / `tasa_desvio`) para la PROYECCIÓN. O sea: un diputado actual ausente crónico pero disciplinado-cuando-va entraba a la proyección con desvío inflado. Ahora la escalera lee `tasa_desvio_reciente_conducta` / `tasa_desvio_conducta` con **fallback** a la mezclada si la planilla es vieja.
+- **Cambios (aditivos, contrato de salida intacto):** en `modelo/ensemble/src/ensemble.py`, (1) se agregan las columnas de conducta + `n_presente` a la conversión numérica; (2) la escalera de desvío prefiere conducta con fallback (`pd.isna()` para cubrir el `pd.NA` de pyarrow). El gate de muestra sigue en `n_reciente`/`n_votos` (afinar a `n_presente` queda anotado como opcional).
+- **Verificado end-to-end:** `test_ensemble.py` 29→**32 checks** (prefiere conducta / fallback a mezclada / NaN no rompe). `casos/proyeccion_hipotetica_bicameral.py` corre y el roster reporta `ficha reciente 255/257` en Diputados leyendo la columna de conducta.
+- **Efecto medido (test de sensibilidad de único uso, `Archivos_Borrar/test_sensibilidad_icg.py`):** a nivel legislador el γ nuevo muerde el doble (una bisagra p=0,45 con clima malo va a 0,39 vs 0,42 con el viejo). A nivel AGREGADO, para el proyecto de Ganancias la P casi no cambia: Diputados es goleada (30 de colchón) y en el Senado sólo 5 de 72 son bisagras y el núcleo duro (γ≈−0,08) las cancela. Conclusión: el motor quedó bien; que el clima cambie un RESULTADO depende de que el proyecto esté en el filo y decidido por bisagras.
+- **Archivos:** `modelo/ensemble/src/ensemble.py`, `modelo/ensemble/tests/test_ensemble.py`.
+- **Estado del módulo:** modelo/ensemble EN CURSO. **Próximo paso (opcional):** darle desvío ≈0 a los presidentes de cámara (voto-ancla en desempates) y evaluar el gate por `n_presente`. Coordinar con Franco.
+
+### [2026-08-13 · resultado] La corrida oficial CONFIRMA: el γ de bisagras se duplica al medir por conducta
+- **Quién:** Valle (corre en su PC, `disciplina.py` + `estimar_gamma_individual.py --modelo dos_capas --boot 500`) · **Módulo:** variables/proyecto · **Cierra:** URGENTE ítem 1 (borrado).
+- **Sin errores de `pd.NA` en el entorno de Valle** (las guardas `pd.isna()` + `str()` aguantaron; "pasa en el sandbox" esta vez también pasó allá).
+- **γ_fondo por tramo (conducta, sin outliers, boot=500), vs. el valor mezclado del 11-08:**
+  - `>=0.10`: **1,012** IC[0,616; 1,461] SÍ sig — antes 0,443 (**×2,3**)
+  - `>=0.20`: **1,147** IC[0,701; 1,607] SÍ sig — antes 0,477 (**×2,4**)
+  - `>=0.30`: **0,926** IC[0,290; 1,573] SÍ sig — antes 0,509 (**×1,8**)
+  - núcleo duro `<0.10`: **−0,076** IC[−0,396; +0,155] no sig (igual que antes: los disciplinados no responden al clima promedio)
+  - `corto` (sacudón 3m): **no significativo** en todos los tramos (IC anchos) → sigue APAGADO, como el 11-08.
+  - `>=0.40`: ya **no se estima** (con conducta quedan 4.465 votos < 5.000; antes lo inflaban los ausentes). Un legislador con desvío-de-conducta ≥0,40 hereda el tramo ≥0,30 (0,93) — conservador.
+- **Se quitaron 111 legisladores `ausentista_outlier` de la muestra**; el desvío se leyó de `tasa_desvio_disputadas_conducta` (confirmado en el log). Muestra final: 428.069 votos, 1.661 legisladores.
+- **Interpretación:** la medida mezclada metía ausentes en los tramos de bisagra y **subestimaba a la mitad** el efecto del clima sobre las bisagras reales. Corregido, el humor de fondo (6m) mueve fuerte a las bisagras y nada a los disciplinados — el patrón que Valle esperaba.
+- **Archivos regenerados (en la PC de Valle, listos para commitear):** `modelo/voto_individual/outputs/disciplina_individual.csv` (con las columnas nuevas), `variables/proyecto/outputs/gamma_icg_dos_capas.json` (boot 500 oficial).
+- **Estado del módulo:** variables/proyecto EN CURSO. **Próximo paso:** coordinar con Franco que `roster_nominal` lea la columna de conducta en la proyección (ver entrada previa) — con esto la mejora del γ recién llega al nowcast end-to-end.
+
+### [2026-08-13] modelo/voto_individual + variables/proyecto — separar INDISCIPLINA de AUSENTISMO (URGENTE 1)
+- **Quién:** Valle (decide) + Claude (mide/implementa) · **Módulos:** modelo/voto_individual (`disciplina.py`, de Valle) y variables/proyecto (consumidor). Claim en TABLERO, sesión 13-08. · **Cierra:** URGENTE ítem 1.
+- **El problema (verificado contra disco, no contra bitácora):** el `tasa_desvio` v2 (ADR-0004, estricto con ausencias) que elige a las bisagras correlaciona **r=0,647** con el ausentismo sobre 1.751 legisladores medibles — **41,9% de su varianza es inasistencia**, no indisciplina. El top de díscolos lo encabezaban ausentes crónicos con desvío-de-conducta CERO: N. Kirchner (98% ausente), Quintar (97%), Insaurralde (65%) — cuando iban, votaban con el bloque. `gamma_individual` les daba γ alto tratándolos como bisagras sensibles al clima. NO es un bug: es el uso aguas abajo del ADR-0004.
+- **La medición previa al cambio (regla: medir antes de tocar):** separando `tasa_desvio_conducta` (desvío ESTANDO PRESENTE) del de ausencia, el ranking de bisagras **cambia radicalmente** — Spearman 0,67, solapamiento top-20 de sólo 3/20 (15%); en disputadas (lo que consume el γ) 5/20 (25%). Como cambia, correspondía repuntar los consumidores.
+- **Diagnóstico de los casos marginales (a pedido de Valle):** distribución de ausentismo (media 22%, σ 18%). Vara **2σ (>~61%)** = 77 outliers; de esos, **sólo 2 con mandato vigente**: Martín Menem (presidente de Diputados, entra al roster como LLA — su desvío-de-conducta es 0, NO queda como indisciplinado) y **Schiaretti** (63% ausente en su mandato → **marcado para revisión de Valle**, no se borra). Los otros 75 son muertes/testimoniales/licencias (ADR-0004) sin banca hoy → se quitan del análisis. **Fuga tapada:** el placeholder "Legislador a Designar" (1.023 votos fantasma al 100% ausente) se colaba (el filtro "NO INCORPORADO" no lo cazaba).
+- **Implementado (aditivo, contrato viejo INTACTO):**
+  - `disciplina.py`: columnas nuevas `tasa_desvio_conducta`, `tasa_desvio_ausencia`, `n_presente`, `tasa_desvio_disputadas_conducta`, `tasa_desvio_reciente_conducta`, `pct_ausente`, `ausentista_outlier` (μ+2σ recomputado por corrida, registrado en `set_pivote.json`). La abstención va del lado PRESENTE (acto político en la banca, ADR-0004; 17.792 abstenciones vs 254.370 ausencias). Fix del placeholder "DESIGNAR" en `excluir_no_medibles`. Guardas de faltantes con `pd.isna()`/`str()`.
+  - `estimar_gamma_individual.py`: lee `tasa_desvio_disputadas_conducta` (fallback en cascada a las viejas) y **quita los `ausentista_outlier`** de la muestra del γ.
+  - Tests: `test_disciplina.py` 18→**29 checks**, con los DOS backends de dtype (numpy_nullable + pyarrow) y el path de `pd.NA`. Se verificó que el contrato viejo no se rompe.
+- **⚠️ SEÑAL PROVISIONAL (boot=40 en sandbox, NO oficial):** al medir bisagras por conducta y sacar outliers, el **γ de fondo de las bisagras MÁS QUE SE DUPLICA**: ≥0,10 pasa de 0,44 a ~1,01; ≥0,20 de 0,48 a ~1,15; ≥0,30 de 0,51 a ~0,93 (IC despegados de cero); el núcleo duro <0,10 sigue en ~−0,08 (no significativo). Confirma la hipótesis: la medida mezclada diluía el γ metiendo ausentes en los tramos de bisagra.
+- **Archivos:** `modelo/voto_individual/src/disciplina.py`, `modelo/voto_individual/tests/test_disciplina.py`, `variables/proyecto/src/estimar_gamma_individual.py`.
+- **Estado del módulo:** modelo/voto_individual y variables/proyecto EN CURSO.
+- **Próximo paso (Valle, en su PC — "pasa en el sandbox no es pasa"):** (1) regenerar el output oficial: `python modelo/voto_individual/src/disciplina.py`; (2) corrida oficial del γ con IC: `python variables/proyecto/src/estimar_gamma_individual.py --modelo dos_capas --boot 500` → reescribe `gamma_icg_dos_capas.json`; confirmar si el γ de bisagras sube como en la corrida provisional. **Próximo paso (coordinar con Franco, módulo ensemble):** que `roster_nominal` lea `tasa_desvio_conducta`/`tasa_desvio_reciente_conducta` (hoy lee la mezclada) para que la PROYECCIÓN también use conducta, y darle desvío ≈0 a los presidentes de cámara (voto-ancla de su lado en desempates) — resuelve el caso Menem que Valle señaló.
+
 ### [2026-08-11] 💡 DUDA PARA FRANCO — ¿clima relativo al propio gobierno, o sólo la tendencia de 6 meses del ICG?
 - **Quién:** Valle + Claude · **Estado: DUDA / PROPUESTA, NO decisión.** Para que Franco opine y se debata.
 - **De dónde salió:** validando por qué la baja del ICG a 1,94 en julio-2026 NO pegó negativo. El `z_fondo` dio +0,003 (neutro) porque el promedio del gobierno de Milei bajó junto con el ICG, así que la señal quedó "en el promedio del gobierno". Valle: quizás eso hace al sistema poco reactivo a las caídas.

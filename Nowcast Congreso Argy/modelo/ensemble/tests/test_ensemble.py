@@ -155,6 +155,49 @@ def main():
     except ValueError:
         chk(True, "falla claro si no hay p_llega (ni embudo ni override)")
 
+    # --- roster PREFIERE la columna de CONDUCTA (URGENTE 1, 2026-08-13) ---
+    tmpc = Path(tempfile.mkdtemp())
+    padc = pd.DataFrame([
+        {"legislador": "Ausente", "legislador_id": "leg:A", "bloque_linaje": "AZUL",
+         "desde": "2023-12-10", "hasta": "2027-12-09"},
+    ])
+    (tmpc / "padron_diputados.csv").write_text(padc.to_csv(index=False), encoding="utf-8-sig")
+    # ausente crónico: desvío MEZCLADO alto (0.80) pero desvío de CONDUCTA bajo (0.05).
+    # El roster debe usar 0.05 (cuando vota, vota con el bloque; no es bisagra).
+    fc = pd.DataFrame([
+        {"legislador_id": "leg:A", "n_votos": 500, "n_reciente": 60, "n_presente": 90,
+         "tasa_desvio": 0.80, "tasa_desvio_reciente": 0.80,
+         "tasa_desvio_conducta": 0.05, "tasa_desvio_reciente_conducta": 0.05}])
+    fcc = tmpc / "disciplina_individual.csv"
+    fcc.write_text(fc.to_csv(index=False), encoding="utf-8-sig")
+    _, _, dc = E.roster_nominal("diputados", "2026-07-14", BLOQUES, padron_dir=tmpc, disciplina_path=fcc)
+    fA = {f["legislador_id"]: f for f in dc["filas"]}["leg:A"]
+    chk(abs(fA["desvio"] - 0.05) < 1e-9,
+        "roster PREFIERE tasa_desvio_reciente_conducta (0.05) sobre la mezclada (0.80)")
+
+    # --- fallback: ficha VIEJA sin columnas de conducta -> usa la mezclada (compat) ---
+    fv = pd.DataFrame([
+        {"legislador_id": "leg:A", "n_votos": 500, "n_reciente": 60,
+         "tasa_desvio": 0.80, "tasa_desvio_reciente": 0.30}])
+    fcv = tmpc / "disciplina_vieja.csv"
+    fcv.write_text(fv.to_csv(index=False), encoding="utf-8-sig")
+    _, _, dv2 = E.roster_nominal("diputados", "2026-07-14", BLOQUES, padron_dir=tmpc, disciplina_path=fcv)
+    fA2 = {f["legislador_id"]: f for f in dv2["filas"]}["leg:A"]
+    chk(abs(fA2["desvio"] - 0.30) < 1e-9,
+        "fallback: sin columnas de conducta usa la mezclada (0.30) — compat")
+
+    # --- conducta faltante (NaN) no rompe y cae a la mezclada (guarda pd.isna) ---
+    fn = pd.DataFrame([
+        {"legislador_id": "leg:A", "n_votos": 500, "n_reciente": 60, "n_presente": 90,
+         "tasa_desvio": 0.80, "tasa_desvio_reciente": 0.30,
+         "tasa_desvio_conducta": np.nan, "tasa_desvio_reciente_conducta": np.nan}])
+    fcn = tmpc / "disciplina_nan.csv"
+    fcn.write_text(fn.to_csv(index=False), encoding="utf-8-sig")
+    _, _, dn = E.roster_nominal("diputados", "2026-07-14", BLOQUES, padron_dir=tmpc, disciplina_path=fcn)
+    fA3 = {f["legislador_id"]: f for f in dn["filas"]}["leg:A"]
+    chk(abs(fA3["desvio"] - 0.30) < 1e-9,
+        "conducta NaN: guarda pd.isna no rompe y cae a la mezclada")
+
     # --- lo eliminado quedó eliminado ---
     chk(not hasattr(E, "_expandir_roster"), "el atajo _expandir_roster ya no existe")
     chk(not hasattr(E, "_demo"), "la demo hardcodeada ya no existe")

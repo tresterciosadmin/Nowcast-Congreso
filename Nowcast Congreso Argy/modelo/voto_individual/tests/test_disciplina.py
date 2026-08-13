@@ -113,6 +113,76 @@ def main() -> None:
     disp = D.actas_disputadas(actas, pd.DataFrame({"acta_id": [], "voto": []}))
     check("disputada ±5% emitidos: 130-127 sí, 200-57 no", disp == {"x1"})
 
+    # ----------------------------------------------------------------------- #
+    # Separación CONDUCTA / AUSENCIA (URGENTE 1, 2026-08-13)                    #
+    # ----------------------------------------------------------------------- #
+    import numpy as np
+
+    def acta_bloqueA(acta, voto_x):
+        # bloque A de 4 escaños: 3 fillers AFIRMATIVO + leg:X → línea AFIRMATIVO siempre.
+        return filas(acta, "A", "ESPACIO",
+                     [("f1", "AFIRMATIVO"), ("f2", "AFIRMATIVO"),
+                      ("f3", "AFIRMATIVO"), ("X", voto_x)])
+
+    cfilas = (acta_bloqueA("c1", "AFIRMATIVO")    # presente, alineado  -> desvío 0
+              + acta_bloqueA("c2", "NEGATIVO")    # presente, cruza     -> desvío 1
+              + acta_bloqueA("c3", "AUSENTE")     # ausente             -> desvío 1
+              + acta_bloqueA("c4", "ABSTENCION")) # presente (se abstiene) -> desvío 1
+    cv = pd.DataFrame(cfilas)
+    cv["anio"] = cv["anio"].astype("Int64")
+    cv["conducta"] = np.where(cv["voto"].isin(["AFIRMATIVO", "NEGATIVO"]), cv["voto"], "NO_ACOMPANA")
+
+    def _mide_X(frame):
+        dd = D.marcar_desvios(frame)
+        ix = D.indice_por_legislador(dd, disputadas=set())
+        return ix[ix["legislador_id"] == "leg:X"].iloc[0]
+
+    rx = _mide_X(cv)
+    check("conducta: n_presente = 3 (AFIRM+NEG+ABSTENCION; el AUSENTE no)", int(rx["n_presente"]) == 3)
+    check("conducta: pct_ausente = 0.25", abs(float(rx["pct_ausente"]) - 0.25) < 1e-9)
+    check("conducta: tasa_desvio_conducta = 2/3 (NEG y ABSTENCION desvían, AFIRM no)",
+          abs(float(rx["tasa_desvio_conducta"]) - 0.6667) < 1e-3)
+    check("ausencia: tasa_desvio_ausencia = 1.0 (el AUSENTE desvía la línea de votar)",
+          float(rx["tasa_desvio_ausencia"]) == 1.0)
+    check("mezcla: tasa_desvio (vieja) = 0.75, INTACTA", float(rx["tasa_desvio"]) == 0.75)
+    check("abstención va del lado PRESENTE (no infla la ausencia)",
+          (not pd.isna(rx["tasa_desvio_ausencia"])) and int(rx["n_presente"]) == 3)
+
+    # los DOS backends de dtype (bug del 2026-08-08: el sandbox y la PC de Valle difieren).
+    for backend in ("numpy_nullable", "pyarrow"):
+        try:
+            cvb = cv.copy().convert_dtypes(dtype_backend=backend)
+        except Exception as e:  # pyarrow puede no estar instalado en el sandbox
+            print(f"  (backend {backend} no disponible, salteado: {e})")
+            continue
+        rb = _mide_X(cvb)
+        check(f"[{backend}] tasa_desvio_conducta estable = 2/3",
+              abs(float(rb["tasa_desvio_conducta"]) - 0.6667) < 1e-3)
+        check(f"[{backend}] n_presente estable = 3", int(rb["n_presente"]) == 3)
+
+    # voto faltante REAL (pd.NA en StringDtype): la guarda pd.isna() no explota y el
+    # voto no cuenta ni como presente ni como ausente.
+    cvna = pd.DataFrame(acta_bloqueA("n1", "AFIRMATIVO"))
+    cvna.loc[cvna["legislador_id"] == "leg:X", "voto"] = pd.NA
+    cvna["voto"] = cvna["voto"].astype("string")
+    cvna["anio"] = cvna["anio"].astype("Int64")
+    cvna["conducta"] = "NO_ACOMPANA"
+    xna = D.marcar_desvios(cvna).query("legislador_id == 'leg:X'").iloc[0]
+    check("voto pd.NA: guarda pd.isna() no explota; ni presente ni ausente",
+          (not bool(xna["presente"])) and (not bool(xna["ausente"])))
+
+    # outlier de ausentismo por μ+2σ
+    idx_out = pd.DataFrame({
+        "legislador_id": [f"l{i}" for i in range(10)],
+        "n_votos": [100] * 10,
+        "pct_ausente": [0.10, 0.10, 0.12, 0.15, 0.20, 0.18, 0.11, 0.13, 0.14, 0.95],
+    })
+    marc, info = D.marcar_ausentista_outlier(idx_out, min_votos=50)
+    check("outlier: sólo el de 0.95 supera μ+2σ",
+          int(marc["ausentista_outlier"].sum()) == 1
+          and bool(marc.loc[marc["legislador_id"] == "l9", "ausentista_outlier"].iloc[0]))
+    check("outlier: umbral μ+2σ registrado en el info", "umbral_mu_2sigma" in info)
+
     print(f"\n{OK} chequeos OK")
 
 

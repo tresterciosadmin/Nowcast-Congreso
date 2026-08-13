@@ -25,42 +25,7 @@
 > Está desarrollado en `PLAN-DE-TRABAJO.md`. **Precaución vigente mientras tanto: no publicar
 > P(sanción) de proyectos con origen Senado.**
 
-## 1. 🔴 El "desvío" mide AUSENTISMO en un 40%, y de ahí sale el γ del ICG
-**Detectado:** 2026-08-07 · Claude+Franco · **bloquea: confiar en la lista de bisagras**
-
-Al re-correr `disciplina.py` tras el cambio de linajes, el **top de díscolos** salió
-dominado por gente que no va a votar:
-
-| legislador | tasa_desvio | % ausente |
-|---|---:|---:|
-| MARTINEZ LLANO, José Rodolfo | 0,955 | **100%** |
-| KIRCHNER, Néstor Carlos (2010) | 0,944 | **98%** |
-| QUINTAR, Amado | 0,864 | **97%** |
-| CHAYA, María Lelia | 0,877 | **92%** |
-
-**Correlación desvío ↔ ausentismo: r = 0,630** sobre 1.961 legisladores medibles.
-Casi **el 40% de la varianza** del indicador es inasistencia, no indisciplina.
-
-**No es un bug: es el ADR-0004**, que decide ser "estricto con abstenciones y
-ausencias". El problema es **el uso aguas abajo**. `gamma_individual()` asigna la
-elasticidad al clima político según ese desvío, y le está dando **γ alto (hasta
-0,555, el tramo máximo) a legisladores cuyo "desvío" es no presentarse**. Un
-ausente crónico no es una bisagra sensible al clima: es alguien que no está.
-
-**Conecta con el fix del 07-08 y lo deja incompleto:** el encogimiento corrigió
-el desvío por **tamaño de muestra** (los 104 novatos con 2 votaciones), pero no
-por **naturaleza del desvío**. Quien está en un tramo alto por ausentismo sigue ahí.
-
-**Cómo verificarlo (barato):** separar `tasa_desvio_conducta` (votó distinto de su
-bloque estando presente) de `tasa_desvio_ausencia`, y ver si el ranking de bisagras
-cambia. Si cambia, `gamma_individual` debe leer la primera, no la actual.
-
-**Dónde:** `modelo/voto_individual/src/disciplina.py` (producir las dos columnas) y
-`variables/proyecto/src/modulador_icg.py` (consumir la correcta).
-
----
-
-## 2. Validar 15 filas MEDIA del roster de jefes (equipo)
+## 1. Validar 15 filas MEDIA del roster de jefes (equipo)
 **Detectado:** 2026-07-30 · Claude+Franco · **bloquea: confiar en `lider_jefe_bloque`**
 
 > **Prioridad rebajada el 31-07.** Medido el efecto real, `lider_jefe_bloque` aporta
@@ -97,7 +62,7 @@ motivo como comentario `#` en el propio CSV (como se hizo con Bianchi).
 
 ---
 
-## 3. Re-correr el resto de la cadena tras el cambio de linajes
+## 2. Re-correr el resto de la cadena tras el cambio de linajes
 **Detectado:** 2026-08-07
 
 ✅ **Hechos (Franco, 07-08):** `entity_resolution.py` (IZQUIERDA: ~2.700 → **8.816

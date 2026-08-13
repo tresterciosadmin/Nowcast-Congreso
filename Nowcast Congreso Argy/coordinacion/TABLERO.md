@@ -38,6 +38,16 @@ Depende de otros (no empezar hasta que su dependencia esté HECHA):
 - [ ] **evaluacion/backtesting** — necesita al menos un modelo nuevo.
 - [ ] **producto/dashboard** — necesita ensemble.
 
+## Sesion 2026-08-13 (Valle+Claude) — ABIERTA, separar INDISCIPLINA de AUSENTISMO (URGENTE 1)
+
+| Modulo | Quien | Desde | Que se esta haciendo |
+|---|---|---|---|
+| **modelo/voto_individual** | Claude (con Valle) | 2026-08-13 | `disciplina.py`: columnas ADITIVAS `tasa_desvio_conducta` (desvio votando ESTANDO PRESENTE), `tasa_desvio_ausencia`, `n_presente`, `tasa_desvio_disputadas_conducta`, `pct_ausente`, `ausentista_outlier` (umbral mu+2sigma). Fix de fuga: excluir placeholder "a Designar". NO se renombra ninguna columna consumida. |
+| **variables/proyecto** | Claude (con Valle) | 2026-08-13 | Consumidor: `estimar_gamma_individual.py` lee `tasa_desvio_disputadas_conducta` (fallback a la actual) y QUITA los `ausentista_outlier` de la muestra del gamma. Corrida oficial con bootstrap la corre Valle en su PC. |
+| **modelo/ensemble** | Valle (con Claude) | 2026-08-13 | **Claim a coordinar con Franco.** `roster_nominal` ahora lee la columna de CONDUCTA (`tasa_desvio_reciente_conducta` / `tasa_desvio_conducta`) con fallback a la mezclada, para que la PROYECCIÓN también use conducta (antes leía la mezclada con ausentismo). Aditivo, no rompe el contrato de salida. 3 tests nuevos (prefiere conducta / fallback / NaN), 32 OK. |
+
+**Decisiones de Valle (2026-08-13):** vara de outlier = **2 sigma** (>~61% ausencia). Los outliers **sin mandato vigente se quitan** del analisis; **Schiaretti** (vigente, 63% ausente en su mandato) queda **marcado para revision de Valle**, no se borra. **Menem** (presidente de Diputados) ya esta excluido por `PRESIDENCIAS_DIPUTADOS` y en la proyeccion entra como LLA/gobierno via padron — NO queda como indisciplinado. El Senado no necesita la exclusion (preside la vicepresidenta, que no es senadora). **Coordinar con Franco (ensemble):** que `roster_nominal` lea la columna de conducta y que a los presidentes de camara se les de desvio ~0 (voto-ancla de su lado en desempates).
+
 ## Sesion 2026-08-11 (Valle+Claude) — ABIERTA, re-tratamiento del ICG (2 horizontes)
 
 | Modulo | Quien | Desde | Que se esta haciendo |

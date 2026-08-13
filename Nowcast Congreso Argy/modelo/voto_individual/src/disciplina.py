@@ -24,8 +24,17 @@ de licencias/suspensiones (PLAN — datos/licencias_suspensiones, a crear).
 DISPUTADA: misma definición que datos/export (resultado a ±5% de los votos emitidos
 respecto del umbral de la mayoría requerida). Mantener sincronizadas.
 
+Separación INDISCIPLINA / AUSENTISMO (URGENTE 1, 2026-08-13): el `tasa_desvio` v2
+mezcla dos cosas — votar distinto (indisciplina) y no ir (ausentismo), correlacionadas
+r≈0,63. Se agregan columnas ADITIVAS (no se renombra nada consumido): `tasa_desvio_conducta`
+mide el desvío SÓLO estando presente; `tasa_desvio_ausencia`, sólo sobre ausencias;
+`pct_ausente` + `ausentista_outlier` (μ+2σ) marcan a quienes casi no usan la banca
+(muertes/testimoniales/licencias — ADR-0004). Los consumidores del γ (variables/proyecto)
+leen la columna de conducta y sacan los outliers.
+
 Salidas (outputs/):
-  - disciplina_individual.csv    (una fila por legislador)
+  - disciplina_individual.csv    (una fila por legislador; incluye las columnas de
+                                  conducta/ausencia y el flag ausentista_outlier)
   - disciplina_por_periodo.csv   (legislador × período parlamentario × cámara)
   - disciplina_por_anio.csv      (legislador × año)
   - desvios_por_voto.parquet     (una fila por VOTO: conducta, línea, método, desvío —
@@ -50,6 +59,12 @@ log = logging.getLogger("disciplina")
 logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s: %(message)s")
 
 CONDUCTAS = ["AFIRMATIVO", "NEGATIVO", "NO_ACOMPANA"]
+# Para separar INDISCIPLINA de AUSENTISMO (URGENTE 1, 2026-08-13): "presente" = usó el
+# escaño (votó o se abstuvo — abstenerse es un acto político estando en la banca,
+# ADR-0004); "ausente" = no fue. La abstención va del lado PRESENTE porque el problema
+# que se corrige es el ausentismo, no la abstención (17.792 abstenciones vs 254.370
+# ausencias en la base). `tasa_desvio_conducta` = desvío medido SÓLO sobre los presentes.
+PRESENTE_VOTOS = {"AFIRMATIVO", "NEGATIVO", "ABSTENCION"}
 LINAJE_BOLSA = "OTRO / PROVINCIAL"   # no es un espacio político real: no sirve para desempatar
 MARGEN_DISPUTADA = 0.05              # ±5% de los emitidos (igual que datos/export)
 MIEMBROS = {"diputados": 257, "senado": 72}
@@ -86,6 +101,11 @@ def excluir_no_medibles(v: pd.DataFrame) -> pd.DataFrame:
     antes = len(v)
     nombre = _sin_acentos(v["legislador_nombre"])
     v = v[~nombre.str.contains("NO INCORPORADO", na=False)]
+    # Placeholder de banca vacante: "Legislador a Designar" / "#, Legislador a Designar"
+    # (1.023 votos fantasma al 100% de ausencia que se colaban en el ranking de díscolos,
+    # detectado 2026-08-13). El filtro de "NO INCORPORADO" no lo cazaba.
+    nombre = _sin_acentos(v["legislador_nombre"])
+    v = v[~nombre.str.contains("DESIGNAR", na=False)]
     nombre = _sin_acentos(v["legislador_nombre"])
     v = v[~nombre.str.contains("SUSPENDID", na=False)]
     f = pd.to_datetime(v["fecha"], errors="coerce")
@@ -198,6 +218,15 @@ def _linea(df: pd.DataFrame, nivel: str) -> pd.DataFrame:
 
 def marcar_desvios(v: pd.DataFrame) -> pd.DataFrame:
     """Desvío v2 por voto: línea del bloque → desempate por linaje → desvío parcial."""
+    v = v.copy()
+    # Banderas presente/ausente para separar el desvío de CONDUCTA del de AUSENCIA
+    # (URGENTE 1, 2026-08-13). Acá y no en cargar() para que también las tenga quien
+    # llame a marcar_desvios directo (los tests). Guarda de faltantes con pd.isna() +
+    # str() explícito: en la PC de Valle `voto` puede llegar como pd.NA (backend
+    # pyarrow) y `NA == "AUSENTE"` es ambiguo (bug del 2026-08-08, ver ESTADO).
+    voto_up = v["voto"].map(lambda x: "" if pd.isna(x) else str(x).upper())
+    v["presente"] = voto_up.isin(PRESENTE_VOTOS)
+    v["ausente"] = voto_up.eq("AUSENTE")
     lb = _linea(v, "bloque_norm").rename(columns={"linea": "linea_bloque", "n_total": "n_bloque"})
     d = v.merge(lb, on=["acta_id", "bloque_norm"], how="left")
 
@@ -236,6 +265,11 @@ def indice_por_legislador(d: pd.DataFrame, disputadas: set) -> pd.DataFrame:
         anio_max = sub["anio"].max()
         reciente = sub[sub["anio"] >= (anio_max - 1)] if pd.notna(anio_max) else sub.iloc[0:0]
         sd = sub[sub["disputada"]]
+        # separación indisciplina / ausentismo (URGENTE 1): el desvío de CONDUCTA se
+        # mide sólo sobre los votos donde el legislador ESTUVO PRESENTE; el de AUSENCIA,
+        # sólo sobre los AUSENTE. `tasa_desvio` (mezclada) se conserva sin tocar.
+        pres, aus = sub[sub["presente"]], sub[sub["ausente"]]
+        sd_pres, rec_pres = sd[sd["presente"]], reciente[reciente["presente"]]
         return pd.Series({
             "nombre": sub["legislador_nombre"].mode().iat[0],
             "camaras": "+".join(sorted(sub["camara"].dropna().unique())),
@@ -243,10 +277,16 @@ def indice_por_legislador(d: pd.DataFrame, disputadas: set) -> pd.DataFrame:
             "anio_desde": sub["anio"].min(), "anio_hasta": anio_max,
             "n_votos": len(sub), "n_desvios": round(float(sub["desvio"].sum()), 1),
             "tasa_desvio": round(float(sub["desvio"].mean()), 4),
+            "pct_ausente": round(float(sub["ausente"].mean()), 4),
+            "n_presente": int(sub["presente"].sum()),
+            "tasa_desvio_conducta": round(float(pres["desvio"].mean()), 4) if len(pres) else np.nan,
+            "tasa_desvio_ausencia": round(float(aus["desvio"].mean()), 4) if len(aus) else np.nan,
             "n_disputadas": len(sd),
             "tasa_desvio_disputadas": round(float(sd["desvio"].mean()), 4) if len(sd) else np.nan,
+            "tasa_desvio_disputadas_conducta": round(float(sd_pres["desvio"].mean()), 4) if len(sd_pres) else np.nan,
             "n_reciente": len(reciente),
             "tasa_desvio_reciente": round(float(reciente["desvio"].mean()), 4) if len(reciente) else np.nan,
+            "tasa_desvio_reciente_conducta": round(float(rec_pres["desvio"].mean()), 4) if len(rec_pres) else np.nan,
             "pct_metodo_linaje": round(float((sub["metodo"] == "linaje").mean()), 4),
             "pct_metodo_parcial": round(float((sub["metodo"] == "parcial").mean()), 4),
             "tam_bloque_mediano": float(sub["n_bloque"].median()),
@@ -313,6 +353,30 @@ def dimensionar_set_pivote(idx: pd.DataFrame, min_votos: int) -> dict:
     return res
 
 
+def marcar_ausentista_outlier(idx: pd.DataFrame, min_votos: int) -> tuple[pd.DataFrame, dict]:
+    """Marca `ausentista_outlier` = pct_ausente MUY por encima de la distribución
+    (media + 2σ sobre los legisladores medibles). Decisión de Valle (2026-08-13): el
+    Reglamento sanciona la ausencia reiterada, y estos casos (muertes en el cargo,
+    bancas testimoniales, licencias — ADR-0004) inflan el "desvío" con inasistencia,
+    no con indisciplina. Se los MARCA acá; los consumidores del γ los sacan de la
+    muestra. Los que tienen mandato vigente se revisan caso por caso (no se borran).
+    El umbral se calcula sobre la corrida y se registra en set_pivote.json (2σ ≈ 0,61
+    con la base actual, pero se recomputa por si cambian los datos)."""
+    base = idx[idx["n_votos"] >= min_votos]
+    mu = float(base["pct_ausente"].mean())
+    sd = float(base["pct_ausente"].std())
+    umbral = mu + 2 * sd
+    idx = idx.copy()
+    # guarda de faltantes: pct_ausente no debería tener NA, pero fillna(0) evita que un
+    # NA se convierta en outlier espurio en cualquier backend de dtype.
+    idx["ausentista_outlier"] = idx["pct_ausente"].fillna(0) >= umbral
+    info = {"umbral_mu_2sigma": round(umbral, 4), "media": round(mu, 4), "sigma": round(sd, 4),
+            "n_outliers_medibles": int((base["pct_ausente"].fillna(0) >= umbral).sum())}
+    log.info("ausentismo: media=%.3f sigma=%.3f umbral(mu+2sigma)=%.3f -> %d outliers medibles",
+             mu, sd, umbral, info["n_outliers_medibles"])
+    return idx, info
+
+
 def main() -> None:
     here = Path(__file__).resolve()
     src = Path(os.environ.get("CANON", here.parents[3] / "datos" / "canonica" / "data" / "clean"))
@@ -326,9 +390,11 @@ def main() -> None:
     log.info("actas disputadas (±5%% emitidos): %d", len(disputadas))
 
     idx = indice_por_legislador(d, disputadas)
+    idx, outlier_info = marcar_ausentista_outlier(idx, min_votos)
     anual = por_anio(d)
     periodos = por_periodo(d, disputadas)
     gate = dimensionar_set_pivote(idx, min_votos)
+    gate["ausentismo_outlier"] = outlier_info
     gate["cobertura"] = {
         "n_votos_medidos": int(len(d)),
         "n_actas": int(d["acta_id"].nunique()),

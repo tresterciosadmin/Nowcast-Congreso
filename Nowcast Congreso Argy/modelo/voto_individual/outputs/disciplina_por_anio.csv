@@ -5,7 +5,7 @@ leg:002628569985,2003,"BERTONE, Rosana Andrea",diputados,56,6.1,0.1089
 leg:002628569985,2004,"BERTONE, Rosana Andrea",diputados,172,7.0,0.0407
 leg:002628569985,2005,"BERTONE, Rosana Andrea",diputados,100,7.7,0.077
 leg:002628569985,2006,"BERTONE, Rosana Andrea",diputados,406,66.6,0.164
-leg:002628569985,2007,"BERTONE, Rosana Andrea",diputados,227,60.4,0.2661
+leg:002628569985,2007,"BERTONE, Rosana Andrea",diputados,227,58.9,0.2595
 leg:002628569985,2008,"BERTONE, Rosana Andrea",diputados,132,9.0,0.0682
 leg:002628569985,2009,"BERTONE, Rosana Andrea",diputados,128,18.5,0.1445
 leg:002628569985,2010,"BERTONE, Rosana Andrea",diputados,61,5.0,0.082
@@ -100,12 +100,12 @@ leg:029a32f9782c,2003,"BEJARANO, Mario Fernando",diputados,3,0.0,0.0
 leg:029a32f9782c,2004,"BEJARANO, Mario Fernando",diputados,105,45.0,0.4286
 leg:029a32f9782c,2005,"BEJARANO, Mario Fernando",diputados,83,38.3,0.4614
 leg:029a32f9782c,2006,"BEJARANO, Mario Fernando",diputados,329,174.8,0.5313
-leg:029a32f9782c,2007,"BEJARANO, Mario Fernando",diputados,191,125.9,0.6592
+leg:029a32f9782c,2007,"BEJARANO, Mario Fernando",diputados,191,127.4,0.667
 leg:02b7316838e6,2003,"ROMERO, Rosario",diputados,3,0.0,0.0
 leg:02b7316838e6,2004,"ROMERO, Rosario",diputados,105,23.0,0.219
 leg:02b7316838e6,2005,"ROMERO, Rosario",diputados,83,2.7,0.0325
 leg:02b7316838e6,2006,"ROMERO, Rosario",diputados,329,76.6,0.2328
-leg:02b7316838e6,2007,"ROMERO, Rosario",diputados,191,38.9,0.2037
+leg:02b7316838e6,2007,"ROMERO, Rosario",diputados,191,38.4,0.201
 leg:02cac82a6d55,2022,"Antola, Marcela",diputados,9,0.0,0.0
 leg:02cac82a6d55,2023,"Antola, Marcela",diputados,8,0.5,0.0625
 leg:02cac82a6d55,2024,"Antola, Marcela",diputados,177,24.8,0.1401
@@ -243,7 +243,7 @@ leg:04ddfccadbdf,2020,CARRIÓ Elisa María Avelina,diputados,4,3.0,0.75
 leg:057ea4f4ae79,2001,"MORENO RAMIREZ, Arturo Jorge",diputados,24,0.0,0.0
 leg:0588412df406,2005,"KUNKEL, Carlos Miguel",diputados,56,0.0,0.0
 leg:0588412df406,2006,"KUNKEL, Carlos Miguel",diputados,406,135.6,0.334
-leg:0588412df406,2007,"KUNKEL, Carlos Miguel",diputados,227,46.4,0.2044
+leg:0588412df406,2007,"KUNKEL, Carlos Miguel",diputados,227,44.9,0.1978
 leg:0588412df406,2008,"KUNKEL, Carlos Miguel",diputados,132,12.0,0.0909
 leg:0588412df406,2009,"KUNKEL, Carlos Miguel",diputados,128,15.5,0.1211
 leg:0588412df406,2010,"KUNKEL, Carlos Miguel",diputados,61,3.0,0.0492
@@ -279,7 +279,7 @@ leg:062532d73f65,2008,"SESMA, Laura Judith",diputados,132,48.0,0.3636
 leg:062532d73f65,2009,"SESMA, Laura Judith",diputados,119,72.0,0.605
 leg:06b5416d586b,2005,"SALUM, Osvaldo Rubén",diputados,56,1.0,0.0179
 leg:06b5416d586b,2006,"SALUM, Osvaldo Rubén",diputados,329,49.6,0.1508
-leg:06b5416d586b,2007,"SALUM, Osvaldo Rubén",diputados,206,81.4,0.3951
+leg:06b5416d586b,2007,"SALUM, Osvaldo Rubén",diputados,206,82.9,0.4024
 leg:06b5416d586b,2008,"SALUM, Osvaldo Rubén",diputados,132,22.0,0.1667
 leg:06b5416d586b,2009,"SALUM, Osvaldo Rubén",diputados,119,2.5,0.021
 leg:06ff39ae3d52,2024,"Castillo, Christian",diputados,177,0.0,0.0
@@ -289,7 +289,7 @@ leg:0722ce0482cd,2002,"CABALLERO MARTIN, Carlos Aurelio",diputados,40,15.5,0.387
 leg:0722ce0482cd,2003,"CABALLERO MARTIN, Carlos Aurelio",diputados,42,16.2,0.3857
 leg:0727f35986c7,2005,"FERRA DE BARTOL, Margarita",diputados,56,0.0,0.0
 leg:0727f35986c7,2006,"FERRA DE BARTOL, Margarita",diputados,406,215.6,0.531
-leg:0727f35986c7,2007,"FERRA DE BARTOL, Margarita",diputados,227,140.9,0.6207
+leg:0727f35986c7,2007,"FERRA DE BARTOL, Margarita",diputados,227,142.4,0.6273
 leg:0727f35986c7,2008,"FERRA DE BARTOL, Margarita",diputados,132,9.0,0.0682
 leg:0727f35986c7,2009,"FERRA DE BARTOL, Margarita",diputados,128,19.5,0.1523
 leg:0727f35986c7,2010,"FERRA DE BARTOL, Margarita",diputados,61,23.0,0.377
@@ -308,7 +308,7 @@ leg:07d3120e44cd,2003,"HERRERA, Griselda Noemí",diputados,56,22.7,0.4054
 leg:07d3120e44cd,2004,"HERRERA, Griselda Noemí",diputados,172,33.0,0.1919
 leg:07d3120e44cd,2005,"HERRERA, Griselda Noemí",diputados,100,3.7,0.037
 leg:07d3120e44cd,2006,"HERRERA, Griselda Noemí",diputados,406,118.6,0.2921
-leg:07d3120e44cd,2007,"HERRERA, Griselda Noemí",diputados,227,75.2,0.3313
+leg:07d3120e44cd,2007,"HERRERA, Griselda Noemí",diputados,227,76.7,0.3379
 leg:07d3120e44cd,2008,"HERRERA, Griselda Noemí",diputados,132,34.0,0.2576
 leg:07d3120e44cd,2009,"HERRERA, Griselda Noemí",diputados,128,32.5,0.2539
 leg:07d3120e44cd,2011,HERRERA Griselda Noemí,diputados,20,2.0,0.1
@@ -340,7 +340,7 @@ leg:08938ec3e04f,2025,"Brugge, Juan Fernando",diputados,116,19.3,0.1664
 leg:08938ec3e04f,2026,"Brugge, Juan Fernando",diputados,86,37.4,0.4349
 leg:0894f8ae30d4,2005,"ACCASTELLO, Eduardo",diputados,56,1.0,0.0179
 leg:0894f8ae30d4,2006,"ACCASTELLO, Eduardo",diputados,329,151.6,0.4608
-leg:0894f8ae30d4,2007,"ACCASTELLO, Eduardo",diputados,191,117.9,0.6173
+leg:0894f8ae30d4,2007,"ACCASTELLO, Eduardo",diputados,191,119.4,0.6251
 leg:08bacbb3068e,2009,"QUINTERO, Marta Beatriz",diputados,13,0.5,0.0385
 leg:08bacbb3068e,2010,"QUINTERO, Marta Beatriz",diputados,61,5.0,0.082
 leg:08bacbb3068e,2011,QUINTERO Marta Beatriz,diputados,62,23.6,0.3806
@@ -401,7 +401,7 @@ leg:0ae7821bc09a,2025,"Patiño Brizuela, Marcos",diputados,19,0.0,0.0
 leg:0ae7821bc09a,2026,"Patiño Brizuela, Marcos",diputados,86,2.0,0.0233
 leg:0b07d05e24fb,2005,"GUTIERREZ, Graciela Beatriz",diputados,56,1.0,0.0179
 leg:0b07d05e24fb,2006,"GUTIERREZ, Graciela Beatriz",diputados,329,63.6,0.1933
-leg:0b07d05e24fb,2007,"GUTIERREZ, Graciela Beatriz",diputados,206,47.4,0.2301
+leg:0b07d05e24fb,2007,"GUTIERREZ, Graciela Beatriz",diputados,206,45.9,0.2228
 leg:0b07d05e24fb,2008,"GUTIERREZ, Graciela Beatriz",diputados,132,31.0,0.2348
 leg:0b07d05e24fb,2009,"GUTIERREZ, Graciela Beatriz",diputados,119,40.5,0.3403
 leg:0b274795a92c,2020,"Neder, Estela Mary",diputados,3,0.0,0.0
@@ -465,7 +465,7 @@ leg:0c48a4f1e2d2,2020,ALLENDE Walberto Enrique,diputados,4,0.0,0.0
 leg:0c63b90bc57d,2002,"CANEVAROLO, Dante Omar",diputados,40,14.5,0.3625
 leg:0c63b90bc57d,2003,"CANEVAROLO, Dante Omar",diputados,42,9.1,0.2167
 leg:0c63b90bc57d,2006,"CANEVAROLO, Dante Omar",diputados,286,51.8,0.1811
-leg:0c63b90bc57d,2007,"CANEVAROLO, Dante Omar",diputados,191,21.7,0.1136
+leg:0c63b90bc57d,2007,"CANEVAROLO, Dante Omar",diputados,191,21.2,0.111
 leg:0cb36175d439,2007,"PEREZ ALSINA, Juan Agustín",senado,42,0.0,0.0
 leg:0cb36175d439,2008,"PEREZ ALSINA, Juan Agustín",senado,221,0.0,0.0
 leg:0cb36175d439,2009,"PEREZ ALSINA, Juan Agustín",senado,159,0.0,0.0
@@ -488,7 +488,7 @@ leg:0dc58de59adc,2003,"MENDEZ de FERREYRA, Araceli Estela",diputados,45,13.1,0.2
 leg:0dc58de59adc,2004,"MENDEZ de FERREYRA, Araceli Estela",diputados,105,16.5,0.1571
 leg:0dc58de59adc,2005,"MENDEZ de FERREYRA, Araceli Estela",diputados,83,12.5,0.1506
 leg:0dc58de59adc,2006,"MENDEZ de FERREYRA, Araceli Estela",diputados,329,40.8,0.124
-leg:0dc58de59adc,2007,"MENDEZ de FERREYRA, Araceli Estela",diputados,191,27.7,0.145
+leg:0dc58de59adc,2007,"MENDEZ de FERREYRA, Araceli Estela",diputados,191,26.2,0.1372
 leg:0ddebbf74c7a,2016,BOSSIO Diego Luis,diputados,190,13.6,0.0716
 leg:0ddebbf74c7a,2017,BOSSIO Diego Luis,diputados,156,28.7,0.184
 leg:0ddebbf74c7a,2018,BOSSIO Diego Luis,diputados,105,39.9,0.38
@@ -775,7 +775,7 @@ leg:1615f2a728dd,2003,"GIORGETTI, Jorge Raúl",diputados,3,0.0,0.0
 leg:1615f2a728dd,2004,"GIORGETTI, Jorge Raúl",diputados,105,28.0,0.2667
 leg:1615f2a728dd,2005,"GIORGETTI, Jorge Raúl",diputados,83,27.8,0.3349
 leg:1615f2a728dd,2006,"GIORGETTI, Jorge Raúl",diputados,329,132.8,0.4036
-leg:1615f2a728dd,2007,"GIORGETTI, Jorge Raúl",diputados,191,67.9,0.3555
+leg:1615f2a728dd,2007,"GIORGETTI, Jorge Raúl",diputados,191,67.3,0.3524
 leg:161df1ceeabf,2002,"LLANO, Gabriel Joaquín",diputados,40,9.5,0.2375
 leg:161df1ceeabf,2003,"LLANO, Gabriel Joaquín",diputados,45,9.5,0.2111
 leg:161df1ceeabf,2004,"LLANO, Gabriel Joaquín",diputados,105,0.0,0.0
@@ -815,7 +815,7 @@ leg:16e236abf905,2004,"FERRIN, María Teresa",diputados,105,4.0,0.0381
 leg:16e236abf905,2005,"FERRIN, María Teresa",diputados,27,18.0,0.6667
 leg:171b5d4ba323,2005,"ARRIAGA, Julio Esteban",diputados,56,1.0,0.0179
 leg:171b5d4ba323,2006,"ARRIAGA, Julio Esteban",diputados,329,54.6,0.166
-leg:171b5d4ba323,2007,"ARRIAGA, Julio Esteban",diputados,206,40.6,0.1971
+leg:171b5d4ba323,2007,"ARRIAGA, Julio Esteban",diputados,206,41.1,0.1995
 leg:171b5d4ba323,2008,"ARRIAGA, Julio Esteban",diputados,132,49.5,0.375
 leg:171b5d4ba323,2009,"ARRIAGA, Julio Esteban",diputados,119,25.0,0.2101
 leg:17c79731a836,2016,MASSOT Nicolás María,diputados,190,20.0,0.1053
@@ -1087,7 +1087,7 @@ leg:1d92e3b0a42c,2016,SÁNCHEZ Fernando,diputados,190,10.5,0.0553
 leg:1d92e3b0a42c,2017,SÁNCHEZ Fernando,diputados,117,6.0,0.0513
 leg:1d9aa7efda8b,2005,"BIANCO, Lía Fabiola",diputados,56,0.0,0.0
 leg:1d9aa7efda8b,2006,"BIANCO, Lía Fabiola",diputados,329,21.8,0.0663
-leg:1d9aa7efda8b,2007,"BIANCO, Lía Fabiola",diputados,206,62.4,0.3029
+leg:1d9aa7efda8b,2007,"BIANCO, Lía Fabiola",diputados,206,61.4,0.2981
 leg:1d9aa7efda8b,2008,"BIANCO, Lía Fabiola",diputados,132,1.0,0.0076
 leg:1d9aa7efda8b,2009,"BIANCO, Lía Fabiola",diputados,119,2.5,0.021
 leg:1de025f5e0f7,2016,SELVA Carlos Américo,diputados,190,54.6,0.2874
@@ -1109,7 +1109,7 @@ leg:1e5401fb3e8d,2003,"BIANCHI SILVESTRE, Marcela",diputados,45,8.1,0.18
 leg:1e5401fb3e8d,2004,"BIANCHI SILVESTRE, Marcela",diputados,105,1.0,0.0095
 leg:1e5401fb3e8d,2005,"BIANCHI SILVESTRE, Marcela",diputados,83,6.7,0.0807
 leg:1e5401fb3e8d,2006,"BIANCHI SILVESTRE, Marcela",diputados,329,39.6,0.1204
-leg:1e5401fb3e8d,2007,"BIANCHI SILVESTRE, Marcela",diputados,206,46.5,0.2257
+leg:1e5401fb3e8d,2007,"BIANCHI SILVESTRE, Marcela",diputados,206,46.9,0.2277
 leg:1e5401fb3e8d,2008,"BIANCHI SILVESTRE, Marcela",diputados,132,17.0,0.1288
 leg:1e5401fb3e8d,2009,"BIANCHI SILVESTRE, Marcela",diputados,119,18.5,0.1555
 leg:1e668039f9d6,2011,RASINO Elida Elena,diputados,20,0.0,0.0
@@ -1188,7 +1188,7 @@ leg:2003a78e0538,2018,PRETTO Pedro Javier,diputados,105,4.0,0.0381
 leg:2003a78e0538,2019,PRETTO Pedro Javier,diputados,69,26.7,0.387
 leg:2029b49428af,2005,"CAVADINI, Eduardo",diputados,51,1.0,0.0196
 leg:2029b49428af,2006,"CAVADINI, Eduardo",diputados,329,206.6,0.628
-leg:2029b49428af,2007,"CAVADINI, Eduardo",diputados,191,141.9,0.7429
+leg:2029b49428af,2007,"CAVADINI, Eduardo",diputados,191,143.4,0.7508
 leg:203122f91367,2025,"Basualdo, Carolina",diputados,19,0.0,0.0
 leg:203122f91367,2026,"Basualdo, Carolina",diputados,86,28.2,0.3279
 leg:203139bb84f4,2001,"CASTRO, Alicia Amalia",diputados,24,6.0,0.25
@@ -1419,7 +1419,7 @@ leg:2573522c8b65,2003,"MARCONATO, Gustavo Angel",diputados,3,0.0,0.0
 leg:2573522c8b65,2004,"MARCONATO, Gustavo Angel",diputados,172,1.0,0.0058
 leg:2573522c8b65,2005,"MARCONATO, Gustavo Angel",diputados,100,1.7,0.017
 leg:2573522c8b65,2006,"MARCONATO, Gustavo Angel",diputados,406,68.6,0.169
-leg:2573522c8b65,2007,"MARCONATO, Gustavo Angel",diputados,227,41.6,0.1833
+leg:2573522c8b65,2007,"MARCONATO, Gustavo Angel",diputados,227,41.1,0.1811
 leg:2573522c8b65,2008,"MARCONATO, Gustavo Angel",diputados,132,9.0,0.0682
 leg:2573522c8b65,2009,"MARCONATO, Gustavo Angel",diputados,128,2.5,0.0195
 leg:2573522c8b65,2010,"MARCONATO, Gustavo Angel",diputados,61,5.0,0.082
@@ -1428,7 +1428,7 @@ leg:25c0c14234cd,2003,"PERIE, Hugo Rubén",diputados,3,0.0,0.0
 leg:25c0c14234cd,2004,"PERIE, Hugo Rubén",diputados,172,4.0,0.0233
 leg:25c0c14234cd,2005,"PERIE, Hugo Rubén",diputados,100,5.7,0.057
 leg:25c0c14234cd,2006,"PERIE, Hugo Rubén",diputados,406,93.8,0.231
-leg:25c0c14234cd,2007,"PERIE, Hugo Rubén",diputados,227,74.4,0.3278
+leg:25c0c14234cd,2007,"PERIE, Hugo Rubén",diputados,227,72.8,0.3207
 leg:25c0c14234cd,2008,"PERIE, Hugo Rubén",diputados,132,10.0,0.0758
 leg:25c0c14234cd,2009,"PERIE, Hugo Rubén",diputados,128,10.5,0.082
 leg:25c0c14234cd,2010,"PERIE, Hugo Rubén",diputados,61,8.0,0.1311
@@ -1446,7 +1446,7 @@ leg:25fa88a3c677,2018,PEREYRA Juan Manuel,diputados,105,0.0,0.0
 leg:25fa88a3c677,2019,PEREYRA Juan Manuel,diputados,69,0.0,0.0
 leg:2610b241f7d8,2005,"TORINO, Héctor Omar",diputados,51,17.0,0.3333
 leg:2610b241f7d8,2006,"TORINO, Héctor Omar",diputados,329,181.2,0.5508
-leg:2610b241f7d8,2007,"TORINO, Héctor Omar",diputados,191,136.8,0.7162
+leg:2610b241f7d8,2007,"TORINO, Héctor Omar",diputados,191,138.3,0.7241
 leg:263334be44e6,2016,DE PONTI Lucila María,diputados,190,35.0,0.1842
 leg:263334be44e6,2017,DE PONTI Lucila María,diputados,156,37.0,0.2372
 leg:263334be44e6,2018,DE PONTI Lucila María,diputados,105,17.0,0.1619
@@ -1480,7 +1480,7 @@ leg:27150213a8cd,2003,"BALADRON, Manuel Justo",diputados,45,2.2,0.0489
 leg:27150213a8cd,2004,"BALADRON, Manuel Justo",diputados,105,19.0,0.181
 leg:27150213a8cd,2005,"BALADRON, Manuel Justo",diputados,83,7.0,0.0843
 leg:27150213a8cd,2006,"BALADRON, Manuel Justo",diputados,329,105.6,0.321
-leg:27150213a8cd,2007,"BALADRON, Manuel Justo",diputados,206,58.9,0.2859
+leg:27150213a8cd,2007,"BALADRON, Manuel Justo",diputados,206,60.4,0.2932
 leg:27150213a8cd,2008,"BALADRON, Manuel Justo",diputados,132,27.0,0.2045
 leg:27150213a8cd,2009,"BALADRON, Manuel Justo",diputados,119,53.5,0.4496
 leg:27311d5efa8e,2016,PÉREZ Raúl Joaquín,diputados,190,21.9,0.1153
@@ -1549,7 +1549,7 @@ leg:28ecb19ad84d,2020,"MARINO, JUAN CARLOS",senado,93,16.5,0.1774
 leg:28ecb19ad84d,2021,"MARINO, JUAN CARLOS",senado,84,33.3,0.3964
 leg:2903310f180d,2005,"SOLANAS, Raúl Patricio",diputados,56,0.0,0.0
 leg:2903310f180d,2006,"SOLANAS, Raúl Patricio",diputados,329,107.6,0.3271
-leg:2903310f180d,2007,"SOLANAS, Raúl Patricio",diputados,206,48.9,0.2374
+leg:2903310f180d,2007,"SOLANAS, Raúl Patricio",diputados,206,48.4,0.235
 leg:2903310f180d,2008,"SOLANAS, Raúl Patricio",diputados,132,8.0,0.0606
 leg:2903310f180d,2009,"SOLANAS, Raúl Patricio",diputados,119,2.5,0.021
 leg:2924ba03a7e6,2001,"FARIZANO, Juan Carlos",diputados,24,4.7,0.1958
@@ -1586,7 +1586,7 @@ leg:298a4f9c7ef4,2003,"IRRAZABAL, Juan Manuel",diputados,3,0.0,0.0
 leg:298a4f9c7ef4,2004,"IRRAZABAL, Juan Manuel",diputados,172,3.0,0.0174
 leg:298a4f9c7ef4,2005,"IRRAZABAL, Juan Manuel",diputados,100,7.7,0.077
 leg:298a4f9c7ef4,2006,"IRRAZABAL, Juan Manuel",diputados,406,165.8,0.4084
-leg:298a4f9c7ef4,2007,"IRRAZABAL, Juan Manuel",diputados,227,127.8,0.563
+leg:298a4f9c7ef4,2007,"IRRAZABAL, Juan Manuel",diputados,227,127.3,0.5608
 leg:298a4f9c7ef4,2008,"IRRAZABAL, Juan Manuel",diputados,132,35.0,0.2652
 leg:298a4f9c7ef4,2009,"IRRAZABAL, Juan Manuel",diputados,128,25.5,0.1992
 leg:298a4f9c7ef4,2010,"IRRAZABAL, Juan Manuel",diputados,61,13.0,0.2131
@@ -1603,7 +1603,7 @@ leg:298c0549e724,2022,"Latorre, Jimena",diputados,9,4.0,0.4444
 leg:298c0549e724,2023,"Latorre, Jimena",diputados,8,5.6,0.7
 leg:29aebbc9e7c8,2005,"ILARREGUI, Luis Alfredo",diputados,56,1.0,0.0179
 leg:29aebbc9e7c8,2006,"ILARREGUI, Luis Alfredo",diputados,329,53.6,0.1629
-leg:29aebbc9e7c8,2007,"ILARREGUI, Luis Alfredo",diputados,206,56.5,0.2743
+leg:29aebbc9e7c8,2007,"ILARREGUI, Luis Alfredo",diputados,206,55.0,0.267
 leg:29aebbc9e7c8,2008,"ILARREGUI, Luis Alfredo",diputados,132,26.0,0.197
 leg:29aebbc9e7c8,2009,"ILARREGUI, Luis Alfredo",diputados,119,23.5,0.1975
 leg:29d18d137619,2014,"Cobos, Julio",diputados,101,12.6,0.1248
@@ -1650,7 +1650,7 @@ leg:2a9089f3ddd8,2003,"DE BERNARDI, Eduardo",diputados,3,0.0,0.0
 leg:2a9089f3ddd8,2004,"DE BERNARDI, Eduardo",diputados,105,1.0,0.0095
 leg:2a9089f3ddd8,2005,"DE BERNARDI, Eduardo",diputados,83,5.7,0.0687
 leg:2a9089f3ddd8,2006,"DE BERNARDI, Eduardo",diputados,329,57.8,0.1757
-leg:2a9089f3ddd8,2007,"DE BERNARDI, Eduardo",diputados,191,64.0,0.3351
+leg:2a9089f3ddd8,2007,"DE BERNARDI, Eduardo",diputados,191,64.5,0.3377
 leg:2ac4f861fef6,2016,SORAIRE Mirta Alicia,diputados,190,34.5,0.1816
 leg:2ac4f861fef6,2017,SORAIRE Mirta Alicia,diputados,156,28.8,0.1846
 leg:2ac4f861fef6,2018,SORAIRE Mirta Alicia,diputados,105,20.5,0.1952
@@ -1727,12 +1727,12 @@ leg:2c64bf85fa44,2003,"DAZA, Héctor Rubén",diputados,3,0.0,0.0
 leg:2c64bf85fa44,2004,"DAZA, Héctor Rubén",diputados,105,14.0,0.1333
 leg:2c64bf85fa44,2005,"DAZA, Héctor Rubén",diputados,83,9.8,0.1181
 leg:2c64bf85fa44,2006,"DAZA, Héctor Rubén",diputados,329,88.8,0.2699
-leg:2c64bf85fa44,2007,"DAZA, Héctor Rubén",diputados,191,118.6,0.6209
+leg:2c64bf85fa44,2007,"DAZA, Héctor Rubén",diputados,191,120.0,0.6283
 leg:2c6742cce1df,2003,"DE LA ROSA, Maria Graciela",diputados,3,0.0,0.0
 leg:2c6742cce1df,2004,"DE LA ROSA, Maria Graciela",diputados,172,0.0,0.0
 leg:2c6742cce1df,2005,"DE LA ROSA, Maria Graciela",diputados,100,3.7,0.037
 leg:2c6742cce1df,2006,"DE LA ROSA, Maria Graciela",diputados,406,22.6,0.0557
-leg:2c6742cce1df,2007,"DE LA ROSA, Maria Graciela",diputados,227,40.9,0.1802
+leg:2c6742cce1df,2007,"DE LA ROSA, Maria Graciela",diputados,227,41.9,0.1846
 leg:2c6742cce1df,2008,"DE LA ROSA, Maria Graciela",diputados,132,2.0,0.0152
 leg:2c6742cce1df,2009,"DE LA ROSA, Maria Graciela",diputados,128,0.5,0.0039
 leg:2c6742cce1df,2010,"DE LA ROSA, Maria Graciela",diputados,61,1.0,0.0164
@@ -1938,7 +1938,7 @@ leg:304d82161f94,2026,"Santurio, Santiago",diputados,86,0.0,0.0
 leg:306df8c28773,2004,"CONTI, Diana Beatriz",senado,395,0.0,0.0
 leg:306df8c28773,2005,"CONTI, Diana Beatriz",diputados,300,10.5,0.035
 leg:306df8c28773,2006,"CONTI, Diana Beatriz",diputados,406,97.6,0.2404
-leg:306df8c28773,2007,"CONTI, Diana Beatriz",diputados,227,53.5,0.2357
+leg:306df8c28773,2007,"CONTI, Diana Beatriz",diputados,227,51.9,0.2286
 leg:306df8c28773,2008,"CONTI, Diana Beatriz",diputados,132,24.0,0.1818
 leg:306df8c28773,2009,"CONTI, Diana Beatriz",diputados,128,21.5,0.168
 leg:306df8c28773,2010,"CONTI, Diana Beatriz",diputados,61,19.0,0.3115
@@ -2053,14 +2053,14 @@ leg:34d9f589f2df,2020,CASSINERIO Paulo Leonardo,diputados,7,0.5,0.0714
 leg:34d9f589f2df,2021,"Cassinerio, Paulo Leonardo",diputados,1,0.0,0.0
 leg:34e2127f300c,2005,"GALANTINI, Eduardo",diputados,56,0.0,0.0
 leg:34e2127f300c,2006,"GALANTINI, Eduardo",diputados,329,149.6,0.4547
-leg:34e2127f300c,2007,"GALANTINI, Eduardo",diputados,206,88.8,0.4311
+leg:34e2127f300c,2007,"GALANTINI, Eduardo",diputados,206,89.3,0.4335
 leg:34e2127f300c,2008,"GALANTINI, Eduardo",diputados,132,26.0,0.197
 leg:34e2127f300c,2009,"GALANTINI, Eduardo",diputados,119,35.5,0.2983
 leg:350b8b36caf4,2024,"Juliano, Pablo",diputados,177,76.9,0.4345
 leg:350b8b36caf4,2025,"Juliano, Pablo",diputados,116,13.9,0.1198
 leg:350b8b36caf4,2026,"Juliano, Pablo",diputados,86,38.6,0.4488
 leg:35586215a165,2006,"ROMAN, Carmen",diputados,274,40.6,0.1482
-leg:35586215a165,2007,"ROMAN, Carmen",diputados,206,58.4,0.2835
+leg:35586215a165,2007,"ROMAN, Carmen",diputados,206,57.4,0.2786
 leg:35586215a165,2008,"ROMAN, Carmen",diputados,132,13.0,0.0985
 leg:35586215a165,2009,"ROMAN, Carmen",diputados,119,14.5,0.1218
 leg:3571ccfe588e,2019,RUARTE Adriana Noemi,diputados,27,3.0,0.1111
@@ -2108,7 +2108,7 @@ leg:3687d85bb436,2024,"Monti, Francisco",diputados,177,30.7,0.1734
 leg:3687d85bb436,2025,"Monti, Francisco",diputados,97,4.3,0.0443
 leg:36cdce3e2305,2005,"ALVAREZ RODRIGUEZ, Cristina",diputados,56,0.0,0.0
 leg:36cdce3e2305,2006,"ALVAREZ RODRIGUEZ, Cristina",diputados,329,104.6,0.3179
-leg:36cdce3e2305,2007,"ALVAREZ RODRIGUEZ, Cristina",diputados,191,88.7,0.4644
+leg:36cdce3e2305,2007,"ALVAREZ RODRIGUEZ, Cristina",diputados,191,88.1,0.4613
 leg:36e047ac915e,2002,"RICO, María del Carmen Cecilia",diputados,40,25.5,0.6375
 leg:36e047ac915e,2003,"RICO, María del Carmen Cecilia",diputados,45,36.3,0.8067
 leg:36e047ac915e,2004,"RICO, María del Carmen Cecilia",diputados,105,18.5,0.1762
@@ -2255,7 +2255,7 @@ leg:3afb32f0526a,2003,"OSUNA, Blanca Inés",diputados,56,14.2,0.2536
 leg:3afb32f0526a,2004,"OSUNA, Blanca Inés",diputados,172,11.0,0.064
 leg:3afb32f0526a,2005,"OSUNA, Blanca Inés",diputados,100,19.8,0.198
 leg:3afb32f0526a,2006,"OSUNA, Blanca Inés",diputados,406,45.6,0.1123
-leg:3afb32f0526a,2007,"OSUNA, Blanca Inés",diputados,254,79.4,0.3126
+leg:3afb32f0526a,2007,"OSUNA, Blanca Inés",diputados,254,80.9,0.3185
 leg:3afb32f0526a,2008,"OSUNA, Blanca Inés",senado,221,6.1,0.0276
 leg:3afb32f0526a,2009,"OSUNA, Blanca Inés",senado,159,2.0,0.0126
 leg:3afb32f0526a,2010,"OSUNA, Blanca Inés",senado,124,14.0,0.1129
@@ -2270,7 +2270,7 @@ leg:3afb32f0526a,2025,"Osuna, Blanca Ines",diputados,116,3.6,0.031
 leg:3afb32f0526a,2026,"Osuna, Blanca Ines",diputados,86,3.6,0.0419
 leg:3b3ba623a993,2005,"MONAYAR, Ana María Cármen",diputados,83,11.7,0.141
 leg:3b3ba623a993,2006,"MONAYAR, Ana María Cármen",diputados,329,29.6,0.09
-leg:3b3ba623a993,2007,"MONAYAR, Ana María Cármen",diputados,191,32.2,0.1686
+leg:3b3ba623a993,2007,"MONAYAR, Ana María Cármen",diputados,191,31.6,0.1654
 leg:3b952a145f6e,2014,TUNDIS Mirta,diputados,225,73.8,0.328
 leg:3b952a145f6e,2015,TUNDIS Mirta,diputados,97,32.5,0.3351
 leg:3b952a145f6e,2016,TUNDIS Mirta,diputados,190,7.6,0.04
@@ -2289,7 +2289,7 @@ leg:3bc043bd16a7,2024,"Pereyra, Julio",diputados,177,16.0,0.0904
 leg:3bc043bd16a7,2025,"Pereyra, Julio",diputados,97,3.7,0.0381
 leg:3bdaf4f153a5,2005,"WEST, Mariano Federíco",diputados,56,1.0,0.0179
 leg:3bdaf4f153a5,2006,"WEST, Mariano Federíco",diputados,406,69.6,0.1714
-leg:3bdaf4f153a5,2007,"WEST, Mariano Federíco",diputados,227,8.5,0.0374
+leg:3bdaf4f153a5,2007,"WEST, Mariano Federíco",diputados,227,7.0,0.0308
 leg:3bdaf4f153a5,2008,"WEST, Mariano Federíco",diputados,132,0.0,0.0
 leg:3bdaf4f153a5,2009,"WEST, Mariano Federíco",diputados,128,11.5,0.0898
 leg:3bdaf4f153a5,2010,"WEST, Mariano Federíco",diputados,61,9.0,0.1475
@@ -2329,7 +2329,7 @@ leg:3cbd8362f5c6,2025,"Del Caño, Nicolas",diputados,66,0.0,0.0
 leg:3cbd8362f5c6,2026,"Del Caño, Nicolas",diputados,86,0.0,0.0
 leg:3cc84340cad1,2005,"ROSSI, Agustín Oscar",diputados,56,1.0,0.0179
 leg:3cc84340cad1,2006,"ROSSI, Agustín Oscar",diputados,406,12.6,0.031
-leg:3cc84340cad1,2007,"ROSSI, Agustín Oscar",diputados,227,23.0,0.1013
+leg:3cc84340cad1,2007,"ROSSI, Agustín Oscar",diputados,227,23.5,0.1035
 leg:3cc84340cad1,2008,"ROSSI, Agustín Oscar",diputados,132,3.0,0.0227
 leg:3cc84340cad1,2009,"ROSSI, Agustín Oscar",diputados,128,6.5,0.0508
 leg:3cc84340cad1,2010,"ROSSI, Agustín Oscar",diputados,61,1.0,0.0164
@@ -2351,7 +2351,7 @@ leg:3d537dc379b2,2025,"Abad, Maximiliano",senado,97,16.7,0.1722
 leg:3d537dc379b2,2026,"Abad, Maximiliano",senado,93,20.0,0.2151
 leg:3d797667a2c2,2005,"GENEM, Amanda Susana",diputados,56,0.0,0.0
 leg:3d797667a2c2,2006,"GENEM, Amanda Susana",diputados,329,47.6,0.1447
-leg:3d797667a2c2,2007,"GENEM, Amanda Susana",diputados,206,64.9,0.315
+leg:3d797667a2c2,2007,"GENEM, Amanda Susana",diputados,206,66.4,0.3223
 leg:3d797667a2c2,2008,"GENEM, Amanda Susana",diputados,132,19.0,0.1439
 leg:3d797667a2c2,2009,"GENEM, Amanda Susana",diputados,119,12.5,0.105
 leg:3dce9b8007b1,2018,ASENCIO Fernando,diputados,59,6.7,0.1136
@@ -2434,7 +2434,7 @@ leg:3fe7aaa54cdf,2025,"Marclay, Marianela",diputados,19,0.0,0.0
 leg:3fe7aaa54cdf,2026,"Marclay, Marianela",diputados,86,16.5,0.1919
 leg:4007c56ed09a,2005,"MORENO, Carlos Julio",diputados,56,0.0,0.0
 leg:4007c56ed09a,2006,"MORENO, Carlos Julio",diputados,406,71.6,0.1764
-leg:4007c56ed09a,2007,"MORENO, Carlos Julio",diputados,227,32.5,0.1432
+leg:4007c56ed09a,2007,"MORENO, Carlos Julio",diputados,227,31.0,0.1366
 leg:4007c56ed09a,2008,"MORENO, Carlos Julio",diputados,132,9.0,0.0682
 leg:4007c56ed09a,2009,"MORENO, Carlos Julio",diputados,128,8.5,0.0664
 leg:4007c56ed09a,2010,"MORENO, Carlos Julio",diputados,61,1.0,0.0164
@@ -2447,7 +2447,7 @@ leg:4007c56ed09a,2016,MORENO Carlos Julio,diputados,190,31.5,0.1658
 leg:4007c56ed09a,2017,MORENO Carlos Julio,diputados,117,32.5,0.2778
 leg:401e5a8d63bb,2005,"ROSSO, Graciela Zulema",diputados,56,1.0,0.0179
 leg:401e5a8d63bb,2006,"ROSSO, Graciela Zulema",diputados,329,46.6,0.1416
-leg:401e5a8d63bb,2007,"ROSSO, Graciela Zulema",diputados,191,50.4,0.2639
+leg:401e5a8d63bb,2007,"ROSSO, Graciela Zulema",diputados,191,50.9,0.2665
 leg:40316693278c,2020,"Rezinovsky, Dina",diputados,3,0.0,0.0
 leg:40316693278c,2021,"Rezinovsky, Dina",diputados,1,0.0,0.0
 leg:40316693278c,2022,"Rezinovsky, Dina",diputados,9,0.0,0.0
@@ -2485,7 +2485,7 @@ leg:40c2c72fdf07,2003,"ROQUEL, Rodolfo",diputados,3,0.0,0.0
 leg:40c2c72fdf07,2004,"ROQUEL, Rodolfo",diputados,105,7.0,0.0667
 leg:40c2c72fdf07,2005,"ROQUEL, Rodolfo",diputados,83,11.4,0.1373
 leg:40c2c72fdf07,2006,"ROQUEL, Rodolfo",diputados,329,73.8,0.2243
-leg:40c2c72fdf07,2007,"ROQUEL, Rodolfo",diputados,191,43.7,0.2288
+leg:40c2c72fdf07,2007,"ROQUEL, Rodolfo",diputados,191,42.8,0.2241
 leg:40db3b51752f,2007,"BIANCALANI, Fabio Darío",senado,42,1.0,0.0238
 leg:40db3b51752f,2008,"BIANCALANI, Fabio Darío",senado,221,34.2,0.1548
 leg:40db3b51752f,2009,"BIANCALANI, Fabio Darío",senado,159,36.0,0.2264
@@ -2553,7 +2553,7 @@ leg:42e6ceda97aa,2018,GRANDINETTI Alejandro Ariel,diputados,105,13.5,0.1286
 leg:42e6ceda97aa,2019,GRANDINETTI Alejandro Ariel,diputados,69,21.5,0.3116
 leg:4304180973d3,2005,"SALIM, Juan Arturo",diputados,56,0.0,0.0
 leg:4304180973d3,2006,"SALIM, Juan Arturo",diputados,406,22.6,0.0557
-leg:4304180973d3,2007,"SALIM, Juan Arturo",diputados,227,35.6,0.1568
+leg:4304180973d3,2007,"SALIM, Juan Arturo",diputados,227,37.0,0.163
 leg:4304180973d3,2008,"SALIM, Juan Arturo",diputados,132,15.0,0.1136
 leg:4304180973d3,2009,"SALIM, Juan Arturo",diputados,128,6.5,0.0508
 leg:4304180973d3,2010,"SALIM, Juan Arturo",diputados,61,12.0,0.1967
@@ -2755,7 +2755,7 @@ leg:4a5411ff0445,2020,ÁLVAREZ RODRIGUEZ María Cristina,diputados,7,0.0,0.0
 leg:4a5411ff0445,2021,"Álvarez Rodriguez, María Cristina",diputados,1,0.0,0.0
 leg:4a57433bd977,2005,"DEPETRI, Edgardo Fernando",diputados,56,9.0,0.1607
 leg:4a57433bd977,2006,"DEPETRI, Edgardo Fernando",diputados,406,228.6,0.5631
-leg:4a57433bd977,2007,"DEPETRI, Edgardo Fernando",diputados,227,129.9,0.5722
+leg:4a57433bd977,2007,"DEPETRI, Edgardo Fernando",diputados,227,131.4,0.5789
 leg:4a57433bd977,2008,"DEPETRI, Edgardo Fernando",diputados,132,65.0,0.4924
 leg:4a57433bd977,2009,"DEPETRI, Edgardo Fernando",diputados,128,44.5,0.3477
 leg:4a57433bd977,2010,"DEPETRI, Edgardo Fernando",diputados,7,0.0,0.0
@@ -2768,7 +2768,7 @@ leg:4a57433bd977,2016,DEPETRI Edgardo Fernando,diputados,190,70.5,0.3711
 leg:4a57433bd977,2017,DEPETRI Edgardo Fernando,diputados,117,58.7,0.5017
 leg:4a6576cec5b4,2005,"DI TULLIO, Juliana",diputados,56,1.0,0.0179
 leg:4a6576cec5b4,2006,"DI TULLIO, Juliana",diputados,406,88.6,0.2182
-leg:4a6576cec5b4,2007,"DI TULLIO, Juliana",diputados,227,62.7,0.2762
+leg:4a6576cec5b4,2007,"DI TULLIO, Juliana",diputados,227,64.1,0.2824
 leg:4a6576cec5b4,2008,"DI TULLIO, Juliana",diputados,132,24.0,0.1818
 leg:4a6576cec5b4,2009,"DI TULLIO, Juliana",diputados,128,15.5,0.1211
 leg:4a6576cec5b4,2010,"DI TULLIO, Juliana",diputados,61,4.0,0.0656
@@ -2790,7 +2790,7 @@ leg:4b27aa8b2f6c,2003,"ARGÜELLO, Jorge",diputados,3,1.0,0.3333
 leg:4b27aa8b2f6c,2004,"ARGÜELLO, Jorge",diputados,105,19.0,0.181
 leg:4b27aa8b2f6c,2005,"ARGÜELLO, Jorge",diputados,83,12.7,0.153
 leg:4b27aa8b2f6c,2006,"ARGÜELLO, Jorge",diputados,329,126.6,0.3848
-leg:4b27aa8b2f6c,2007,"ARGÜELLO, Jorge",diputados,63,19.4,0.3079
+leg:4b27aa8b2f6c,2007,"ARGÜELLO, Jorge",diputados,63,18.9,0.3
 leg:4b2f04f386db,2001,"MASTROGIACOMO, Miguel Angel",diputados,24,6.6,0.275
 leg:4b2f04f386db,2002,"MASTROGIACOMO, Miguel Angel",diputados,40,10.0,0.25
 leg:4b2f04f386db,2003,"MASTROGIACOMO, Miguel Angel",diputados,42,13.6,0.3238
@@ -2875,7 +2875,7 @@ leg:4dc62d6072a5,2003,"CITTADINI, Stella",diputados,3,3.0,1.0
 leg:4dc62d6072a5,2004,"CITTADINI, Stella",diputados,105,9.0,0.0857
 leg:4dc62d6072a5,2005,"CITTADINI, Stella",diputados,83,3.7,0.0446
 leg:4dc62d6072a5,2006,"CITTADINI, Stella",diputados,329,40.6,0.1234
-leg:4dc62d6072a5,2007,"CITTADINI, Stella",diputados,191,30.0,0.1571
+leg:4dc62d6072a5,2007,"CITTADINI, Stella",diputados,191,29.4,0.1539
 leg:4dd5342198f7,2011,GROSSO Leonardo,diputados,20,0.0,0.0
 leg:4dd5342198f7,2012,GROSSO Leonardo,diputados,180,3.7,0.0206
 leg:4dd5342198f7,2013,GROSSO Leonardo,diputados,177,2.0,0.0113
@@ -2984,7 +2984,7 @@ leg:51d817ff89f2,2025,"Treffinger, Cesar",diputados,116,0.0,0.0
 leg:51d817ff89f2,2026,"Treffinger, Cesar",diputados,86,0.0,0.0
 leg:51da6d55bdc3,2005,"GARCIA de MORENO, Eva",diputados,56,0.0,0.0
 leg:51da6d55bdc3,2006,"GARCIA de MORENO, Eva",diputados,329,40.6,0.1234
-leg:51da6d55bdc3,2007,"GARCIA de MORENO, Eva",diputados,206,22.4,0.1087
+leg:51da6d55bdc3,2007,"GARCIA de MORENO, Eva",diputados,206,20.9,0.1015
 leg:51da6d55bdc3,2008,"GARCIA de MORENO, Eva",diputados,132,21.0,0.1591
 leg:51da6d55bdc3,2009,"GARCIA de MORENO, Eva",diputados,119,36.0,0.3025
 leg:51edb1a5e8a1,2016,BREZZO María Eugenia,diputados,190,25.6,0.1347
@@ -3082,7 +3082,7 @@ leg:556d7f89b12f,2003,"FERRIGNO OBARRIO, Santiago",diputados,3,0.0,0.0
 leg:556d7f89b12f,2004,"FERRIGNO OBARRIO, Santiago",diputados,105,11.0,0.1048
 leg:556d7f89b12f,2005,"FERRIGNO OBARRIO, Santiago",diputados,83,5.5,0.0663
 leg:556d7f89b12f,2006,"FERRIGNO OBARRIO, Santiago",diputados,329,63.6,0.1933
-leg:556d7f89b12f,2007,"FERRIGNO OBARRIO, Santiago",diputados,191,47.6,0.2492
+leg:556d7f89b12f,2007,"FERRIGNO OBARRIO, Santiago",diputados,191,48.0,0.2513
 leg:55750a118fb7,2007,"VERA, Pedro Ramón Ademar",diputados,22,0.0,0.0
 leg:5591f3e6fd1c,2011,CLERI Marcos,diputados,20,0.0,0.0
 leg:5591f3e6fd1c,2012,CLERI Marcos,diputados,180,1.1,0.0061
@@ -3179,7 +3179,7 @@ leg:59025a137533,2003,"SNOPEK, Carlos Daniel",diputados,45,2.1,0.0467
 leg:59025a137533,2004,"SNOPEK, Carlos Daniel",diputados,105,17.0,0.1619
 leg:59025a137533,2005,"SNOPEK, Carlos Daniel",diputados,83,4.7,0.0566
 leg:59025a137533,2006,"SNOPEK, Carlos Daniel",diputados,329,18.6,0.0565
-leg:59025a137533,2007,"SNOPEK, Carlos Daniel",diputados,206,41.2,0.2
+leg:59025a137533,2007,"SNOPEK, Carlos Daniel",diputados,206,39.7,0.1927
 leg:59025a137533,2008,"SNOPEK, Carlos Daniel",diputados,132,10.0,0.0758
 leg:59025a137533,2009,"SNOPEK, Carlos Daniel",diputados,119,31.5,0.2647
 leg:5917f2664b3e,2011,YAGÛE Linda Cristina,diputados,29,9.0,0.3103
@@ -3219,7 +3219,7 @@ leg:5a40e2ac864d,2003,"DIAZ, Susana Eladia",diputados,3,0.0,0.0
 leg:5a40e2ac864d,2004,"DIAZ, Susana Eladia",diputados,172,10.0,0.0581
 leg:5a40e2ac864d,2005,"DIAZ, Susana Eladia",diputados,100,10.7,0.107
 leg:5a40e2ac864d,2006,"DIAZ, Susana Eladia",diputados,406,132.6,0.3266
-leg:5a40e2ac864d,2007,"DIAZ, Susana Eladia",diputados,227,66.5,0.293
+leg:5a40e2ac864d,2007,"DIAZ, Susana Eladia",diputados,227,65.0,0.2863
 leg:5a40e2ac864d,2008,"DIAZ, Susana Eladia",diputados,132,34.0,0.2576
 leg:5a40e2ac864d,2009,"DIAZ, Susana Eladia",diputados,128,19.5,0.1523
 leg:5a40e2ac864d,2010,"DIAZ, Susana Eladia",diputados,61,8.0,0.1311
@@ -3266,7 +3266,7 @@ leg:5b42eab92533,2003,"GODOY, Ruperto Eduardo",diputados,3,0.0,0.0
 leg:5b42eab92533,2004,"GODOY, Ruperto Eduardo",diputados,172,2.0,0.0116
 leg:5b42eab92533,2005,"GODOY, Ruperto Eduardo",diputados,100,11.7,0.117
 leg:5b42eab92533,2006,"GODOY, Ruperto Eduardo",diputados,406,82.6,0.2034
-leg:5b42eab92533,2007,"GODOY, Ruperto Eduardo",diputados,227,37.7,0.1661
+leg:5b42eab92533,2007,"GODOY, Ruperto Eduardo",diputados,227,38.2,0.1683
 leg:5b42eab92533,2008,"GODOY, Ruperto Eduardo",diputados,132,18.0,0.1364
 leg:5b42eab92533,2009,"GODOY, Ruperto Eduardo",diputados,128,0.5,0.0039
 leg:5b42eab92533,2010,"GODOY, Ruperto Eduardo",diputados,61,1.0,0.0164
@@ -3279,7 +3279,7 @@ leg:5b42eab92533,2016,"GODOY, RUPERTO EDUARDO",senado,195,48.2,0.2472
 leg:5b42eab92533,2017,"GODOY, RUPERTO EDUARDO",senado,85,19.7,0.2318
 leg:5b6c7f6e8aa3,2005,"SYLVESTRE BEGNIS, Juan Héctor",diputados,56,0.0,0.0
 leg:5b6c7f6e8aa3,2006,"SYLVESTRE BEGNIS, Juan Héctor",diputados,329,45.6,0.1386
-leg:5b6c7f6e8aa3,2007,"SYLVESTRE BEGNIS, Juan Héctor",diputados,206,76.9,0.3733
+leg:5b6c7f6e8aa3,2007,"SYLVESTRE BEGNIS, Juan Héctor",diputados,206,78.4,0.3806
 leg:5b6c7f6e8aa3,2008,"SYLVESTRE BEGNIS, Juan Héctor",diputados,132,13.0,0.0985
 leg:5b6c7f6e8aa3,2009,"SYLVESTRE BEGNIS, Juan Héctor",diputados,119,7.5,0.063
 leg:5b958791b34e,2022,"Tejeda, Maria Victoria",diputados,9,0.0,0.0
@@ -3419,7 +3419,7 @@ leg:5ef6dfb07b65,2003,"URTUBEY, Juan Manuel",diputados,45,4.1,0.0911
 leg:5ef6dfb07b65,2004,"URTUBEY, Juan Manuel",diputados,105,1.0,0.0095
 leg:5ef6dfb07b65,2005,"URTUBEY, Juan Manuel",diputados,80,1.7,0.0212
 leg:5ef6dfb07b65,2006,"URTUBEY, Juan Manuel",diputados,329,73.6,0.2237
-leg:5ef6dfb07b65,2007,"URTUBEY, Juan Manuel",diputados,123,44.5,0.3618
+leg:5ef6dfb07b65,2007,"URTUBEY, Juan Manuel",diputados,123,43.0,0.3496
 leg:5ef9d201d546,2025,"Flores, Maria Gabriela",diputados,19,1.0,0.0526
 leg:5ef9d201d546,2026,"Flores, Maria Gabriela",diputados,86,0.0,0.0
 leg:5f32bd3a4570,2003,"SOSA, Carlos Alberto",diputados,3,0.0,0.0
@@ -3579,7 +3579,7 @@ leg:63a0e9bbdb51,2003,"ARTOLA, Isabel Amanda",diputados,3,1.0,0.3333
 leg:63a0e9bbdb51,2004,"ARTOLA, Isabel Amanda",diputados,105,42.5,0.4048
 leg:63a0e9bbdb51,2005,"ARTOLA, Isabel Amanda",diputados,83,6.0,0.0723
 leg:63a0e9bbdb51,2006,"ARTOLA, Isabel Amanda",diputados,329,55.8,0.1696
-leg:63a0e9bbdb51,2007,"ARTOLA, Isabel Amanda",diputados,86,46.9,0.5453
+leg:63a0e9bbdb51,2007,"ARTOLA, Isabel Amanda",diputados,86,47.4,0.5512
 leg:63e2cc41c868,2003,"Solanas, Julio Rodolfo",diputados,11,2.5,0.2273
 leg:63e2cc41c868,2011,SOLANAS Julio Rodolfo,diputados,20,0.0,0.0
 leg:63e2cc41c868,2012,SOLANAS Julio Rodolfo,diputados,180,1.2,0.0067
@@ -3747,7 +3747,7 @@ leg:687a4ba03546,2003,"SARTORI, Diego Horacio",diputados,3,0.0,0.0
 leg:687a4ba03546,2004,"SARTORI, Diego Horacio",diputados,172,9.0,0.0523
 leg:687a4ba03546,2005,"SARTORI, Diego Horacio",diputados,100,10.0,0.1
 leg:687a4ba03546,2006,"SARTORI, Diego Horacio",diputados,406,71.6,0.1764
-leg:687a4ba03546,2007,"SARTORI, Diego Horacio",diputados,212,97.6,0.4604
+leg:687a4ba03546,2007,"SARTORI, Diego Horacio",diputados,212,98.6,0.4651
 leg:687a4ba03546,2019,SARTORI Diego Horacio,diputados,27,0.0,0.0
 leg:687a4ba03546,2020,SARTORI Diego Horacio,diputados,7,0.0,0.0
 leg:687a4ba03546,2021,"Sartori, Diego Horacio",diputados,1,0.0,0.0
@@ -3757,7 +3757,7 @@ leg:68de03b7361e,2003,"DE BRASI, Marta Susana",diputados,3,0.0,0.0
 leg:68de03b7361e,2004,"DE BRASI, Marta Susana",diputados,105,13.0,0.1238
 leg:68de03b7361e,2005,"DE BRASI, Marta Susana",diputados,83,0.0,0.0
 leg:68de03b7361e,2006,"DE BRASI, Marta Susana",diputados,329,92.8,0.2821
-leg:68de03b7361e,2007,"DE BRASI, Marta Susana",diputados,191,141.6,0.7414
+leg:68de03b7361e,2007,"DE BRASI, Marta Susana",diputados,191,142.0,0.7435
 leg:68e367d45721,2019,REY Maria Lujan,diputados,27,0.0,0.0
 leg:68e367d45721,2020,REY Maria Lujan,diputados,7,1.0,0.1429
 leg:68e367d45721,2021,"Rey, Maria Lujan",diputados,1,0.0,0.0
@@ -3765,7 +3765,7 @@ leg:68e367d45721,2022,"Rey, Maria Lujan",diputados,9,3.0,0.3333
 leg:68e367d45721,2023,"Rey, Maria Lujan",diputados,8,3.0,0.375
 leg:690897355ef6,2005,"MOISES, María Carolina",diputados,56,2.0,0.0357
 leg:690897355ef6,2006,"MOISES, María Carolina",diputados,406,159.6,0.3931
-leg:690897355ef6,2007,"MOISES, María Carolina",diputados,227,110.2,0.4855
+leg:690897355ef6,2007,"MOISES, María Carolina",diputados,227,111.7,0.4921
 leg:690897355ef6,2008,"MOISES, María Carolina",diputados,132,94.0,0.7121
 leg:690897355ef6,2009,"MOISES, María Carolina",diputados,128,56.5,0.4414
 leg:690897355ef6,2017,MOISÉS María Carolina,diputados,39,22.9,0.5872
@@ -3789,7 +3789,7 @@ leg:6988a92f1935,2022,"Dantas, Pedro Cristian",diputados,9,0.0,0.0
 leg:6988a92f1935,2023,"Dantas, Pedro Cristian",diputados,8,1.0,0.125
 leg:698f28b68808,2005,"ROJKES de ALPEROVICH, Beatriz Liliana",diputados,56,1.0,0.0179
 leg:698f28b68808,2006,"ROJKES de ALPEROVICH, Beatriz Liliana",diputados,329,72.6,0.2207
-leg:698f28b68808,2007,"ROJKES de ALPEROVICH, Beatriz Liliana",diputados,206,64.7,0.3141
+leg:698f28b68808,2007,"ROJKES de ALPEROVICH, Beatriz Liliana",diputados,206,65.1,0.316
 leg:698f28b68808,2008,"ROJKES de ALPEROVICH, Beatriz Liliana",diputados,132,32.0,0.2424
 leg:698f28b68808,2009,"ROJKES de ALPEROVICH, Beatriz Liliana",diputados,119,45.5,0.3824
 leg:698f28b68808,2015,"ROJKES DE ALPEROVICH, BEATRIZ LILIANA",senado,84,20.0,0.2381
@@ -3846,7 +3846,7 @@ leg:6a775690ac56,2003,"CASERIO, Carlos Alberto",diputados,3,0.0,0.0
 leg:6a775690ac56,2004,"CASERIO, Carlos Alberto",diputados,172,14.0,0.0814
 leg:6a775690ac56,2005,"CASERIO, Carlos Alberto",diputados,100,1.7,0.017
 leg:6a775690ac56,2006,"CASERIO, Carlos Alberto",diputados,406,100.6,0.2478
-leg:6a775690ac56,2007,"CASERIO, Carlos Alberto",diputados,212,133.9,0.6316
+leg:6a775690ac56,2007,"CASERIO, Carlos Alberto",diputados,212,135.4,0.6387
 leg:6a775690ac56,2014,CASERIO Carlos Alberto,diputados,225,26.0,0.1156
 leg:6a775690ac56,2015,CASERIO Carlos Alberto,diputados,97,11.0,0.1134
 leg:6a775690ac56,2016,"CASERIO, CARLOS ALBERTO",senado,195,60.7,0.3113
@@ -4144,7 +4144,7 @@ leg:721dcff19a43,2022,"Martinez Villada, Leonor Maria",diputados,9,0.5,0.0556
 leg:721dcff19a43,2023,"Martinez Villada, Leonor Maria",diputados,8,3.0,0.375
 leg:72239ba7e06b,2005,"MARCO DEL PONT, Mercedes",diputados,56,1.0,0.0179
 leg:72239ba7e06b,2006,"MARCO DEL PONT, Mercedes",diputados,329,24.6,0.0748
-leg:72239ba7e06b,2007,"MARCO DEL PONT, Mercedes",diputados,206,18.4,0.0893
+leg:72239ba7e06b,2007,"MARCO DEL PONT, Mercedes",diputados,206,16.9,0.082
 leg:728e0865bdd3,2016,BRITEZ María Cristina,diputados,190,23.5,0.1237
 leg:728e0865bdd3,2017,BRITEZ María Cristina,diputados,156,15.5,0.0994
 leg:728e0865bdd3,2018,BRITEZ María Cristina,diputados,105,21.5,0.2048
@@ -4251,12 +4251,12 @@ leg:74c70d28f433,2003,"LOVAGLIO SARAVIA, Antonio",diputados,3,0.0,0.0
 leg:74c70d28f433,2004,"LOVAGLIO SARAVIA, Antonio",diputados,105,3.0,0.0286
 leg:74c70d28f433,2005,"LOVAGLIO SARAVIA, Antonio",diputados,83,11.1,0.1337
 leg:74c70d28f433,2006,"LOVAGLIO SARAVIA, Antonio",diputados,329,82.8,0.2517
-leg:74c70d28f433,2007,"LOVAGLIO SARAVIA, Antonio",diputados,191,57.6,0.3016
+leg:74c70d28f433,2007,"LOVAGLIO SARAVIA, Antonio",diputados,191,58.6,0.3068
 leg:74ccded7b911,2010,"MANSUR, Ricardo Alfredo",diputados,61,5.0,0.082
 leg:74ccded7b911,2011,MANSUR Ricardo Alfredo,diputados,62,30.5,0.4919
 leg:74e5b959406d,2005,"PASTORIZA, Eduardo",diputados,56,0.0,0.0
 leg:74e5b959406d,2006,"PASTORIZA, Eduardo",diputados,329,162.6,0.4942
-leg:74e5b959406d,2007,"PASTORIZA, Eduardo",diputados,206,15.7,0.0762
+leg:74e5b959406d,2007,"PASTORIZA, Eduardo",diputados,206,15.2,0.0738
 leg:74e5b959406d,2008,"PASTORIZA, Eduardo",diputados,132,0.0,0.0
 leg:74e5b959406d,2009,"PASTORIZA, Eduardo",diputados,119,0.0,0.0
 leg:750044b07882,2017,SAHAD Julio Enrique,diputados,39,0.0,0.0
@@ -4270,7 +4270,7 @@ leg:7599174012e5,2003,"CORDOBA, Stella Maris",diputados,56,21.8,0.3893
 leg:7599174012e5,2004,"CORDOBA, Stella Maris",diputados,172,9.0,0.0523
 leg:7599174012e5,2005,"CORDOBA, Stella Maris",diputados,100,10.7,0.107
 leg:7599174012e5,2006,"CORDOBA, Stella Maris",diputados,406,131.8,0.3246
-leg:7599174012e5,2007,"CORDOBA, Stella Maris",diputados,227,75.5,0.3326
+leg:7599174012e5,2007,"CORDOBA, Stella Maris",diputados,227,76.9,0.3388
 leg:7599174012e5,2008,"CORDOBA, Stella Maris",diputados,132,30.0,0.2273
 leg:7599174012e5,2009,"CORDOBA, Stella Maris",diputados,128,32.5,0.2539
 leg:7599174012e5,2010,"CORDOBA, Stella Maris",diputados,61,13.0,0.2131
@@ -4411,7 +4411,7 @@ leg:78ee78d9cc8e,2018,LIPOVETZKY Daniel Andrés,diputados,105,4.0,0.0381
 leg:78ee78d9cc8e,2019,LIPOVETZKY Daniel Andrés,diputados,69,21.7,0.3145
 leg:790072968c9a,2005,"ITURRIETA, Miguel Angel",diputados,56,0.0,0.0
 leg:790072968c9a,2006,"ITURRIETA, Miguel Angel",diputados,329,47.8,0.1453
-leg:790072968c9a,2007,"ITURRIETA, Miguel Angel",diputados,206,34.4,0.167
+leg:790072968c9a,2007,"ITURRIETA, Miguel Angel",diputados,206,33.4,0.1621
 leg:790072968c9a,2008,"ITURRIETA, Miguel Angel",diputados,132,2.0,0.0152
 leg:790072968c9a,2009,"ITURRIETA, Miguel Angel",diputados,119,15.5,0.1303
 leg:7942cc844e1d,2024,"Razzini, Veronica",diputados,177,21.5,0.1215
@@ -4447,14 +4447,6 @@ leg:7aa140f923f0,2002,"UBALDINI, Saul Edolver",diputados,40,6.2,0.155
 leg:7aa140f923f0,2003,"UBALDINI, Saul Edolver",diputados,45,5.1,0.1133
 leg:7aa140f923f0,2004,"UBALDINI, Saul Edolver",diputados,105,5.0,0.0476
 leg:7aa140f923f0,2005,"UBALDINI, Saul Edolver",diputados,27,8.9,0.3296
-leg:7aa9ed127917,2001,"#, Legislador a Designar",diputados,2,0.0,0.0
-leg:7aa9ed127917,2002,"#, Legislador a Designar",diputados,4,0.0,0.0
-leg:7aa9ed127917,2003,"#, Legislador a Designar",diputados,9,0.0,0.0
-leg:7aa9ed127917,2004,Legislador a Designar,senado,397,2.0,0.005
-leg:7aa9ed127917,2005,Legislador a Designar,senado,262,0.0,0.0
-leg:7aa9ed127917,2006,"#, Legislador a Designar",diputados,192,156.6,0.8156
-leg:7aa9ed127917,2007,"#, Legislador a Designar",diputados,151,137.9,0.9132
-leg:7aa9ed127917,2010,"#, Legislador a Designar",diputados,6,0.0,0.0
 leg:7ab1fe1e8012,2017,GARCIA Alejandro,diputados,39,0.0,0.0
 leg:7ab1fe1e8012,2018,GARCIA Alejandro,diputados,105,6.0,0.0571
 leg:7ab1fe1e8012,2019,GARCIA Alejandro,diputados,96,22.7,0.2365
@@ -4552,7 +4544,7 @@ leg:7c7590d4e964,2003,"FIGUEROA, José Oscar",diputados,45,18.9,0.42
 leg:7c7590d4e964,2004,"FIGUEROA, José Oscar",diputados,105,10.0,0.0952
 leg:7c7590d4e964,2005,"FIGUEROA, José Oscar",diputados,83,29.3,0.353
 leg:7c7590d4e964,2006,"FIGUEROA, José Oscar",diputados,329,130.6,0.397
-leg:7c7590d4e964,2007,"FIGUEROA, José Oscar",diputados,191,68.7,0.3597
+leg:7c7590d4e964,2007,"FIGUEROA, José Oscar",diputados,191,69.2,0.3623
 leg:7c7a458ca104,2003,"SARGHINI, Jorge Emilio",diputados,3,3.0,1.0
 leg:7c7a458ca104,2005,"SARGHINI, Jorge Emilio",diputados,56,11.1,0.1982
 leg:7c7a458ca104,2006,"SARGHINI, Jorge Emilio",diputados,406,154.5,0.3805
@@ -4589,7 +4581,7 @@ leg:7d492c3a963e,2003,"CIGOGNA, Luis Francisco Jorge",diputados,56,7.9,0.1411
 leg:7d492c3a963e,2004,"CIGOGNA, Luis Francisco Jorge",diputados,172,0.0,0.0
 leg:7d492c3a963e,2005,"CIGOGNA, Luis Francisco Jorge",diputados,100,5.7,0.057
 leg:7d492c3a963e,2006,"CIGOGNA, Luis Francisco Jorge",diputados,406,6.6,0.0163
-leg:7d492c3a963e,2007,"CIGOGNA, Luis Francisco Jorge",diputados,227,7.5,0.033
+leg:7d492c3a963e,2007,"CIGOGNA, Luis Francisco Jorge",diputados,227,6.0,0.0264
 leg:7d492c3a963e,2008,"CIGOGNA, Luis Francisco Jorge",diputados,132,3.0,0.0227
 leg:7d492c3a963e,2009,"CIGOGNA, Luis Francisco Jorge",diputados,128,1.0,0.0078
 leg:7d492c3a963e,2010,"CIGOGNA, Luis Francisco Jorge",diputados,61,0.0,0.0
@@ -4630,7 +4622,7 @@ leg:7eaf28fdd7b3,2003,"DAHER, Zulema Beatriz",diputados,56,8.2,0.1464
 leg:7eaf28fdd7b3,2004,"DAHER, Zulema Beatriz",diputados,172,17.0,0.0988
 leg:7eaf28fdd7b3,2005,"DAHER, Zulema Beatriz",diputados,100,13.9,0.139
 leg:7eaf28fdd7b3,2006,"DAHER, Zulema Beatriz",diputados,406,115.6,0.2847
-leg:7eaf28fdd7b3,2007,"DAHER, Zulema Beatriz",diputados,227,63.0,0.2775
+leg:7eaf28fdd7b3,2007,"DAHER, Zulema Beatriz",diputados,227,62.1,0.2736
 leg:7eaf28fdd7b3,2008,"DAHER, Zulema Beatriz",diputados,132,53.5,0.4053
 leg:7eaf28fdd7b3,2009,"DAHER, Zulema Beatriz",diputados,128,15.0,0.1172
 leg:7eaf28fdd7b3,2010,"DAHER, Zulema Beatriz",diputados,61,6.7,0.1098
@@ -4732,7 +4724,7 @@ leg:80de47b87b87,2024,"Duré, María Eugenia",senado,45,0.0,0.0
 leg:80de47b87b87,2025,"Duré, María Eugenia",senado,77,2.0,0.026
 leg:80e2a75366be,2005,"CANELA, Susana Mercedes",diputados,56,0.0,0.0
 leg:80e2a75366be,2006,"CANELA, Susana Mercedes",diputados,329,28.6,0.0869
-leg:80e2a75366be,2007,"CANELA, Susana Mercedes",diputados,206,20.7,0.1005
+leg:80e2a75366be,2007,"CANELA, Susana Mercedes",diputados,206,19.2,0.0932
 leg:80e2a75366be,2008,"CANELA, Susana Mercedes",diputados,132,6.0,0.0455
 leg:80e2a75366be,2009,"CANELA, Susana Mercedes",diputados,119,12.5,0.105
 leg:80f7cbdb6680,2020,"Martinez, Dolores",diputados,3,0.0,0.0
@@ -4784,10 +4776,10 @@ leg:82ab407ea6d7,2003,"GARRIDO ARCEO, Jorge Antonio",diputados,3,0.0,0.0
 leg:82ab407ea6d7,2004,"GARRIDO ARCEO, Jorge Antonio",diputados,105,14.5,0.1381
 leg:82ab407ea6d7,2005,"GARRIDO ARCEO, Jorge Antonio",diputados,83,12.2,0.147
 leg:82ab407ea6d7,2006,"GARRIDO ARCEO, Jorge Antonio",diputados,329,142.6,0.4334
-leg:82ab407ea6d7,2007,"GARRIDO ARCEO, Jorge Antonio",diputados,191,41.5,0.2173
+leg:82ab407ea6d7,2007,"GARRIDO ARCEO, Jorge Antonio",diputados,191,40.0,0.2094
 leg:82c27162720f,2005,"KAKUBUR, Emilio",diputados,56,2.0,0.0357
 leg:82c27162720f,2006,"KAKUBUR, Emilio",diputados,329,222.6,0.6766
-leg:82c27162720f,2007,"KAKUBUR, Emilio",diputados,206,58.4,0.2835
+leg:82c27162720f,2007,"KAKUBUR, Emilio",diputados,206,59.9,0.2908
 leg:82c27162720f,2008,"KAKUBUR, Emilio",diputados,132,0.0,0.0
 leg:82c27162720f,2009,"KAKUBUR, Emilio",diputados,119,0.0,0.0
 leg:82ca3558c322,2019,ZUVIC Mariana,diputados,27,0.0,0.0
@@ -4818,7 +4810,7 @@ leg:8346fc5694ee,2003,"NEMIROVSCI, Osvaldo Mario",diputados,3,0.0,0.0
 leg:8346fc5694ee,2004,"NEMIROVSCI, Osvaldo Mario",diputados,105,2.0,0.019
 leg:8346fc5694ee,2005,"NEMIROVSCI, Osvaldo Mario",diputados,83,1.7,0.0205
 leg:8346fc5694ee,2006,"NEMIROVSCI, Osvaldo Mario",diputados,329,70.8,0.2152
-leg:8346fc5694ee,2007,"NEMIROVSCI, Osvaldo Mario",diputados,191,71.0,0.3717
+leg:8346fc5694ee,2007,"NEMIROVSCI, Osvaldo Mario",diputados,191,71.5,0.3743
 leg:8359958e4143,2007,"PAROLI, Raúl Omar",diputados,15,2.5,0.1667
 leg:8359958e4143,2008,"PAROLI, Raúl Omar",diputados,132,35.5,0.2689
 leg:8359958e4143,2009,"PAROLI, Raúl Omar",diputados,128,12.5,0.0977
@@ -4930,7 +4922,7 @@ leg:85f731da936a,2012,BERNAL María Eugenia,diputados,180,1.2,0.0067
 leg:85f731da936a,2013,BERNAL María Eugenia,diputados,177,0.0,0.0
 leg:86369a4a843d,2005,"DALLA FONTANA, Ariel",diputados,51,1.0,0.0196
 leg:86369a4a843d,2006,"DALLA FONTANA, Ariel",diputados,329,43.6,0.1325
-leg:86369a4a843d,2007,"DALLA FONTANA, Ariel",diputados,206,81.8,0.3971
+leg:86369a4a843d,2007,"DALLA FONTANA, Ariel",diputados,206,82.4,0.4
 leg:86369a4a843d,2008,"DALLA FONTANA, Ariel",diputados,132,44.0,0.3333
 leg:86369a4a843d,2009,"DALLA FONTANA, Ariel",diputados,119,7.0,0.0588
 leg:8665582464af,2001,"CASTELLANI, Carlos Alberto",diputados,24,0.0,0.0
@@ -4942,7 +4934,7 @@ leg:867d5c3cc817,2003,"MARTINEZ LLANOS, José Rodolfo",diputados,2,1.0,0.5
 leg:868304403cd4,2002,"LOUTAIF, Julio César",diputados,40,7.0,0.175
 leg:868304403cd4,2003,"LOUTAIF, Julio César",diputados,42,7.5,0.1786
 leg:86890ff29d6e,2006,"LOPEZ, Amelia de los Milagros",diputados,281,23.6,0.084
-leg:86890ff29d6e,2007,"LOPEZ, Amelia de los Milagros",diputados,191,39.0,0.2042
+leg:86890ff29d6e,2007,"LOPEZ, Amelia de los Milagros",diputados,191,38.4,0.201
 leg:86e9070b564b,2011,DE FERRARI RUEDA Patricia,diputados,20,3.0,0.15
 leg:86e9070b564b,2012,DE FERRARI RUEDA Patricia,diputados,180,26.6,0.1478
 leg:86e9070b564b,2013,DE FERRARI RUEDA Patricia,diputados,177,19.1,0.1079
@@ -5274,7 +5266,7 @@ leg:919e40152470,2003,"JOBE, Miguel Antonio",diputados,42,11.0,0.2619
 leg:91b1653b961c,2016,ALBORNOZ Gabriela Romina,diputados,190,1.5,0.0079
 leg:91b1653b961c,2017,ALBORNOZ Gabriela Romina,diputados,117,9.6,0.0821
 leg:91c6d0e82886,2006,"GONZALEZ, Nancy Susana",diputados,163,39.6,0.2429
-leg:91c6d0e82886,2007,"GONZALEZ, Nancy Susana",diputados,227,27.5,0.1211
+leg:91c6d0e82886,2007,"GONZALEZ, Nancy Susana",diputados,227,26.0,0.1145
 leg:91c6d0e82886,2008,"GONZALEZ, Nancy Susana",diputados,132,18.0,0.1364
 leg:91c6d0e82886,2009,"GONZALEZ, Nancy Susana",diputados,128,30.5,0.2383
 leg:91c6d0e82886,2010,"GONZALEZ, Nancy Susana",diputados,61,6.0,0.0984
@@ -5468,7 +5460,7 @@ leg:957e79db0d37,2002,"MEZA, Martha Elizabeth",diputados,39,30.5,0.7821
 leg:957e79db0d37,2003,"MEZA, Martha Elizabeth",diputados,1,1.0,1.0
 leg:9580dfed322f,2005,"GARCIA, María Teresa",diputados,56,1.0,0.0179
 leg:9580dfed322f,2006,"GARCIA, María Teresa",diputados,406,112.6,0.2773
-leg:9580dfed322f,2007,"GARCIA, María Teresa",diputados,227,32.2,0.1419
+leg:9580dfed322f,2007,"GARCIA, María Teresa",diputados,227,31.6,0.1392
 leg:9580dfed322f,2008,"GARCIA, María Teresa",diputados,132,16.0,0.1212
 leg:9580dfed322f,2009,"GARCIA, María Teresa",diputados,128,27.5,0.2148
 leg:9580dfed322f,2010,"GARCIA, María Teresa",diputados,61,1.0,0.0164
@@ -5517,7 +5509,7 @@ leg:963b42e89e03,2002,"HERRERA, Alberto",diputados,40,19.4,0.485
 leg:963b42e89e03,2003,"HERRERA, Alberto",diputados,42,6.9,0.1643
 leg:963b42e89e03,2005,"HERRERA, Alberto",diputados,56,0.0,0.0
 leg:963b42e89e03,2006,"HERRERA, Alberto",diputados,328,92.6,0.2823
-leg:963b42e89e03,2007,"HERRERA, Alberto",diputados,206,115.9,0.5626
+leg:963b42e89e03,2007,"HERRERA, Alberto",diputados,206,117.4,0.5699
 leg:963b42e89e03,2008,"HERRERA, Alberto",diputados,132,18.0,0.1364
 leg:963b42e89e03,2009,"HERRERA, Alberto",diputados,119,13.5,0.1134
 leg:9676f860d29f,2019,MORETTI Jose,diputados,45,9.6,0.2133
@@ -5578,7 +5570,7 @@ leg:9870ad9578a8,2018,HUSS Juan  Manuel,diputados,105,31.5,0.3
 leg:9870ad9578a8,2019,HUSS Juan  Manuel,diputados,69,10.2,0.1478
 leg:98c259b79866,2005,"DOVENA, Miguel Dante",diputados,56,1.0,0.0179
 leg:98c259b79866,2006,"DOVENA, Miguel Dante",diputados,329,72.6,0.2207
-leg:98c259b79866,2007,"DOVENA, Miguel Dante",diputados,206,62.8,0.3049
+leg:98c259b79866,2007,"DOVENA, Miguel Dante",diputados,206,64.2,0.3117
 leg:98c259b79866,2008,"DOVENA, Miguel Dante",diputados,132,14.0,0.1061
 leg:98c259b79866,2009,"DOVENA, Miguel Dante",diputados,119,13.5,0.1134
 leg:98c8447f1199,2002,"PILATI, Norma Raquel",diputados,40,7.3,0.1825
@@ -5813,7 +5805,7 @@ leg:9f6a58dff78f,2019,AMERI Juan Emilio,diputados,27,0.0,0.0
 leg:9f6a58dff78f,2020,AMERI Juan Emilio,diputados,4,0.0,0.0
 leg:9f75280e50bc,2005,"BERRAUTE, Ana",diputados,56,0.0,0.0
 leg:9f75280e50bc,2006,"BERRAUTE, Ana",diputados,329,6.6,0.0201
-leg:9f75280e50bc,2007,"BERRAUTE, Ana",diputados,206,19.5,0.0947
+leg:9f75280e50bc,2007,"BERRAUTE, Ana",diputados,206,20.0,0.0971
 leg:9f75280e50bc,2008,"BERRAUTE, Ana",diputados,132,2.0,0.0152
 leg:9f75280e50bc,2009,"BERRAUTE, Ana",diputados,119,3.5,0.0294
 leg:9fb77ef44d9b,2014,DURAND CORNEJO Guillermo Mario,diputados,225,16.5,0.0733
@@ -5874,7 +5866,7 @@ leg:a1b44ce16369,2003,"CANTOS, José María",diputados,3,0.0,0.0
 leg:a1b44ce16369,2004,"CANTOS, José María",diputados,105,14.0,0.1333
 leg:a1b44ce16369,2005,"CANTOS, José María",diputados,83,14.1,0.1699
 leg:a1b44ce16369,2006,"CANTOS, José María",diputados,329,67.8,0.2061
-leg:a1b44ce16369,2007,"CANTOS, José María",diputados,191,79.1,0.4141
+leg:a1b44ce16369,2007,"CANTOS, José María",diputados,191,79.6,0.4168
 leg:a22524ec8f06,2002,"SANTILLI, Diego Cesar",diputados,22,9.1,0.4136
 leg:a22524ec8f06,2003,"SANTILLI, Diego Cesar",diputados,42,13.2,0.3143
 leg:a22524ec8f06,2013,"SANTILLI, Diego César",senado,10,1.0,0.1
@@ -5903,7 +5895,7 @@ leg:a2a556a5a868,2004,"MONTOYA, Fernando Ramón",diputados,105,61.0,0.581
 leg:a2a556a5a868,2005,"MONTOYA, Fernando Ramón",diputados,27,24.0,0.8889
 leg:a2a7444a3e52,2005,"VACA NARVAJA, Patricia",diputados,56,1.0,0.0179
 leg:a2a7444a3e52,2006,"VACA NARVAJA, Patricia",diputados,220,12.0,0.0545
-leg:a2a7444a3e52,2007,"VACA NARVAJA, Patricia",diputados,121,29.7,0.2455
+leg:a2a7444a3e52,2007,"VACA NARVAJA, Patricia",diputados,121,30.7,0.2537
 leg:a2a7444a3e52,2008,"VACA NARVAJA, Patricia",diputados,129,4.0,0.031
 leg:a2a7444a3e52,2009,"VACA NARVAJA, Patricia",diputados,110,5.0,0.0455
 leg:a2aecb4e50bb,2001,"ROMA, Rafael Edgardo",diputados,24,14.1,0.5875
@@ -6137,7 +6129,7 @@ leg:a7304ee83692,2003,"DE LA BARRERA, Guillermo",diputados,3,0.0,0.0
 leg:a7304ee83692,2004,"DE LA BARRERA, Guillermo",diputados,105,4.0,0.0381
 leg:a7304ee83692,2005,"DE LA BARRERA, Guillermo",diputados,83,2.7,0.0325
 leg:a7304ee83692,2006,"DE LA BARRERA, Guillermo",diputados,329,68.6,0.2085
-leg:a7304ee83692,2007,"DE LA BARRERA, Guillermo",diputados,191,44.8,0.2346
+leg:a7304ee83692,2007,"DE LA BARRERA, Guillermo",diputados,191,44.3,0.2319
 leg:a77580b1efe2,2005,"VARISCO, Sergio Fausto",diputados,56,11.7,0.2089
 leg:a77580b1efe2,2006,"VARISCO, Sergio Fausto",diputados,329,144.5,0.4392
 leg:a77580b1efe2,2007,"VARISCO, Sergio Fausto",diputados,206,46.1,0.2238
@@ -6232,7 +6224,7 @@ leg:a97b406bf103,2014,COMELLI Alicia Marcela,diputados,225,32.3,0.1436
 leg:a97b406bf103,2015,COMELLI Alicia Marcela,diputados,97,0.0,0.0
 leg:a988f605eb5c,2005,"CARMONA, María Araceli",diputados,56,2.0,0.0357
 leg:a988f605eb5c,2006,"CARMONA, María Araceli",diputados,329,32.8,0.0997
-leg:a988f605eb5c,2007,"CARMONA, María Araceli",diputados,206,41.4,0.201
+leg:a988f605eb5c,2007,"CARMONA, María Araceli",diputados,206,39.9,0.1937
 leg:a988f605eb5c,2008,"CARMONA, María Araceli",diputados,132,19.0,0.1439
 leg:a988f605eb5c,2009,"CARMONA, María Araceli",diputados,119,23.5,0.1975
 leg:a98be2af6c49,2025,"Chiconi, Abel",diputados,19,0.0,0.0
@@ -6249,12 +6241,12 @@ leg:a9dca751022a,2025,"Ávila, Beatriz Luisa",senado,97,0.0,0.0
 leg:a9dca751022a,2026,"Ávila, Beatriz Luisa",senado,93,0.0,0.0
 leg:aa1c2a248c28,2005,"LAURITTO, José Eduardo",diputados,56,0.0,0.0
 leg:aa1c2a248c28,2006,"LAURITTO, José Eduardo",diputados,329,27.6,0.0839
-leg:aa1c2a248c28,2007,"LAURITTO, José Eduardo",diputados,191,16.8,0.088
+leg:aa1c2a248c28,2007,"LAURITTO, José Eduardo",diputados,191,15.2,0.0796
 leg:aa207ea41024,2003,"GIOJA, Juan Carlos",diputados,3,0.0,0.0
 leg:aa207ea41024,2004,"GIOJA, Juan Carlos",diputados,172,4.0,0.0233
 leg:aa207ea41024,2005,"GIOJA, Juan Carlos",diputados,100,1.7,0.017
 leg:aa207ea41024,2006,"GIOJA, Juan Carlos",diputados,406,189.6,0.467
-leg:aa207ea41024,2007,"GIOJA, Juan Carlos",diputados,227,101.4,0.4467
+leg:aa207ea41024,2007,"GIOJA, Juan Carlos",diputados,227,101.9,0.4489
 leg:aa207ea41024,2008,"GIOJA, Juan Carlos",diputados,132,28.0,0.2121
 leg:aa207ea41024,2009,"GIOJA, Juan Carlos",diputados,128,37.5,0.293
 leg:aa207ea41024,2010,"GIOJA, Juan Carlos",diputados,61,28.0,0.459
@@ -6391,7 +6383,7 @@ leg:adb806646c87,2025,"Gutierrez, Ramiro",diputados,116,3.8,0.0328
 leg:adb806646c87,2026,"Gutierrez, Ramiro",diputados,86,22.5,0.2616
 leg:ae2a6dda342a,2005,"RECALDE, Héctor Pedro",diputados,56,0.0,0.0
 leg:ae2a6dda342a,2006,"RECALDE, Héctor Pedro",diputados,406,33.6,0.0828
-leg:ae2a6dda342a,2007,"RECALDE, Héctor Pedro",diputados,227,35.7,0.1573
+leg:ae2a6dda342a,2007,"RECALDE, Héctor Pedro",diputados,227,35.1,0.1546
 leg:ae2a6dda342a,2008,"RECALDE, Héctor Pedro",diputados,132,14.0,0.1061
 leg:ae2a6dda342a,2009,"RECALDE, Héctor Pedro",diputados,128,4.5,0.0352
 leg:ae2a6dda342a,2010,"RECALDE, Héctor Pedro",diputados,61,7.0,0.1148
@@ -6543,7 +6535,7 @@ leg:b307802620e3,2008,"LORENZO BOROCOTO, Eduardo",diputados,132,0.0,0.0
 leg:b307802620e3,2009,"LORENZO BOROCOTO, Eduardo",diputados,119,0.0,0.0
 leg:b32fe7edb5e0,2005,"BIELSA, Rafael",diputados,56,13.0,0.2321
 leg:b32fe7edb5e0,2006,"BIELSA, Rafael",diputados,329,244.6,0.7435
-leg:b32fe7edb5e0,2007,"BIELSA, Rafael",diputados,123,76.8,0.6244
+leg:b32fe7edb5e0,2007,"BIELSA, Rafael",diputados,123,77.3,0.6285
 leg:b35f12f73e05,2013,"CREXELL, Carmen Lucila",senado,10,1.5,0.15
 leg:b35f12f73e05,2014,"CREXELL, Carmen Lucila",senado,66,17.5,0.2652
 leg:b35f12f73e05,2015,"CREXELL, CARMEN LUCILA",senado,84,22.5,0.2679
@@ -6644,7 +6636,7 @@ leg:b741279cfd6e,2003,"FIOL, Paulina Esther",diputados,3,0.0,0.0
 leg:b741279cfd6e,2004,"FIOL, Paulina Esther",diputados,172,3.0,0.0174
 leg:b741279cfd6e,2005,"FIOL, Paulina Esther",diputados,100,7.7,0.077
 leg:b741279cfd6e,2006,"FIOL, Paulina Esther",diputados,406,18.6,0.0458
-leg:b741279cfd6e,2007,"FIOL, Paulina Esther",diputados,227,35.5,0.1564
+leg:b741279cfd6e,2007,"FIOL, Paulina Esther",diputados,227,35.9,0.1581
 leg:b741279cfd6e,2008,"FIOL, Paulina Esther",diputados,132,22.0,0.1667
 leg:b741279cfd6e,2009,"FIOL, Paulina Esther",diputados,128,5.5,0.043
 leg:b741279cfd6e,2010,"FIOL, Paulina Esther",diputados,61,2.0,0.0328
@@ -6831,7 +6823,7 @@ leg:bcd98bed2e62,2003,"MARINO, Juliana Isabel",diputados,3,0.0,0.0
 leg:bcd98bed2e62,2004,"MARINO, Juliana Isabel",diputados,105,26.8,0.2552
 leg:bcd98bed2e62,2005,"MARINO, Juliana Isabel",diputados,83,8.0,0.0964
 leg:bcd98bed2e62,2006,"MARINO, Juliana Isabel",diputados,329,61.6,0.1872
-leg:bcd98bed2e62,2007,"MARINO, Juliana Isabel",diputados,191,23.4,0.1225
+leg:bcd98bed2e62,2007,"MARINO, Juliana Isabel",diputados,191,21.9,0.1147
 leg:bcf2bc7f4939,2010,"FORTE, Ulises Umberto",diputados,58,3.0,0.0517
 leg:bcf2bc7f4939,2011,FORTE Ulises Umberto,diputados,55,14.0,0.2545
 leg:bcf2bc7f4939,2012,FORTE Ulises Umberto,diputados,103,18.3,0.1777
@@ -6924,14 +6916,14 @@ leg:c0086d643399,2015,OPORTO Mario Néstor,diputados,97,0.0,0.0
 leg:c0510e73c938,2001,"GARIGLIO, Juan Miguel",diputados,20,10.2,0.51
 leg:c05a41f6a654,2005,"CORDOBA, José Manuel",diputados,56,0.0,0.0
 leg:c05a41f6a654,2006,"CORDOBA, José Manuel",diputados,329,78.6,0.2389
-leg:c05a41f6a654,2007,"CORDOBA, José Manuel",diputados,206,95.2,0.4621
+leg:c05a41f6a654,2007,"CORDOBA, José Manuel",diputados,206,96.7,0.4694
 leg:c05a41f6a654,2008,"CORDOBA, José Manuel",diputados,132,30.0,0.2273
 leg:c05a41f6a654,2009,"CORDOBA, José Manuel",diputados,119,24.5,0.2059
 leg:c07f4f2e9c3e,2003,"SLUGA, Juan Carlos",diputados,3,0.0,0.0
 leg:c07f4f2e9c3e,2004,"SLUGA, Juan Carlos",diputados,172,12.0,0.0698
 leg:c07f4f2e9c3e,2005,"SLUGA, Juan Carlos",diputados,100,8.7,0.087
 leg:c07f4f2e9c3e,2006,"SLUGA, Juan Carlos",diputados,406,174.6,0.43
-leg:c07f4f2e9c3e,2007,"SLUGA, Juan Carlos",diputados,227,108.5,0.478
+leg:c07f4f2e9c3e,2007,"SLUGA, Juan Carlos",diputados,227,108.9,0.4797
 leg:c07f4f2e9c3e,2008,"SLUGA, Juan Carlos",diputados,132,41.0,0.3106
 leg:c07f4f2e9c3e,2009,"SLUGA, Juan Carlos",diputados,128,61.5,0.4805
 leg:c07f4f2e9c3e,2010,"SLUGA, Juan Carlos",diputados,61,22.0,0.3607
@@ -6966,7 +6958,7 @@ leg:c0ff25e45a10,2018,PEÑALOZA MARIANETTI María Florencia,diputados,105,0.0,0.
 leg:c0ff25e45a10,2019,PEÑALOZA MARIANETTI María Florencia,diputados,69,0.0,0.0
 leg:c1011ec99fcf,2005,"HEREDIA, Arturo Miguel",diputados,56,1.0,0.0179
 leg:c1011ec99fcf,2006,"HEREDIA, Arturo Miguel",diputados,329,36.6,0.1112
-leg:c1011ec99fcf,2007,"HEREDIA, Arturo Miguel",diputados,206,46.4,0.2252
+leg:c1011ec99fcf,2007,"HEREDIA, Arturo Miguel",diputados,206,45.8,0.2223
 leg:c1011ec99fcf,2008,"HEREDIA, Arturo Miguel",diputados,132,27.0,0.2045
 leg:c1011ec99fcf,2009,"HEREDIA, Arturo Miguel",diputados,119,24.0,0.2017
 leg:c103c1e4186f,2002,"ABALOS, Roberto",diputados,40,5.8,0.145
@@ -6975,7 +6967,7 @@ leg:c103c1e4186f,2004,"ABALOS, Roberto",diputados,105,18.0,0.1714
 leg:c103c1e4186f,2005,"ABALOS, Roberto",diputados,27,11.0,0.4074
 leg:c10f6edefdc8,2005,"CARLOTTO, Remo Gerardo",diputados,56,1.0,0.0179
 leg:c10f6edefdc8,2006,"CARLOTTO, Remo Gerardo",diputados,406,40.6,0.1
-leg:c10f6edefdc8,2007,"CARLOTTO, Remo Gerardo",diputados,227,73.5,0.3238
+leg:c10f6edefdc8,2007,"CARLOTTO, Remo Gerardo",diputados,227,74.0,0.326
 leg:c10f6edefdc8,2008,"CARLOTTO, Remo Gerardo",diputados,132,26.0,0.197
 leg:c10f6edefdc8,2009,"CARLOTTO, Remo Gerardo",diputados,128,14.5,0.1133
 leg:c10f6edefdc8,2010,"CARLOTTO, Remo Gerardo",diputados,61,12.0,0.1967
@@ -7026,12 +7018,12 @@ leg:c1d3656a5483,2003,"OLMOS, Graciela Hortencia",diputados,3,0.0,0.0
 leg:c1d3656a5483,2004,"OLMOS, Graciela Hortencia",diputados,105,19.0,0.181
 leg:c1d3656a5483,2005,"OLMOS, Graciela Hortencia",diputados,83,5.7,0.0687
 leg:c1d3656a5483,2006,"OLMOS, Graciela Hortencia",diputados,329,57.6,0.1751
-leg:c1d3656a5483,2007,"OLMOS, Graciela Hortencia",diputados,191,60.0,0.3141
+leg:c1d3656a5483,2007,"OLMOS, Graciela Hortencia",diputados,191,60.5,0.3168
 leg:c1e3351a1f9f,2003,"GONZALEZ, Jorge Pedro",diputados,3,0.0,0.0
 leg:c1e3351a1f9f,2004,"GONZALEZ, Jorge Pedro",diputados,105,4.0,0.0381
 leg:c1e3351a1f9f,2005,"GONZALEZ, Jorge Pedro",diputados,83,10.8,0.1301
 leg:c1e3351a1f9f,2006,"GONZALEZ, Jorge Pedro",diputados,329,173.6,0.5277
-leg:c1e3351a1f9f,2007,"GONZALEZ, Jorge Pedro",diputados,191,147.9,0.7743
+leg:c1e3351a1f9f,2007,"GONZALEZ, Jorge Pedro",diputados,191,149.4,0.7822
 leg:c1ea3121fa7b,2022,"Fernandez, Agustin",diputados,9,0.0,0.0
 leg:c1ea3121fa7b,2023,"Fernandez, Agustin",diputados,8,0.0,0.0
 leg:c1ea3121fa7b,2024,"Fernandez, Agustin",diputados,177,1.0,0.0056
@@ -7085,7 +7077,7 @@ leg:c2ac5948b853,2003,"MEDIZA, Heriberto Eloy",diputados,3,0.0,0.0
 leg:c2ac5948b853,2004,"MEDIZA, Heriberto Eloy",diputados,105,14.0,0.1333
 leg:c2ac5948b853,2005,"MEDIZA, Heriberto Eloy",diputados,83,29.3,0.353
 leg:c2ac5948b853,2006,"MEDIZA, Heriberto Eloy",diputados,329,88.6,0.2693
-leg:c2ac5948b853,2007,"MEDIZA, Heriberto Eloy",diputados,191,26.7,0.1398
+leg:c2ac5948b853,2007,"MEDIZA, Heriberto Eloy",diputados,191,27.2,0.1424
 leg:c2b1b96df87d,2017,LEAVY Sergio Napoleón,diputados,39,19.0,0.4872
 leg:c2b1b96df87d,2018,LEAVY Sergio Napoleón,diputados,105,47.5,0.4524
 leg:c2b1b96df87d,2019,LEAVY Sergio Napoleón,diputados,72,23.2,0.3222
@@ -7122,7 +7114,7 @@ leg:c34eef24308c,2012,LLANOS Ermindo Edgardo Marcelo,diputados,180,13.1,0.0728
 leg:c34eef24308c,2013,LLANOS Ermindo Edgardo Marcelo,diputados,177,43.0,0.2429
 leg:c36ab48c8173,2005,"DIAZ ROIG, Juan Carlos",diputados,56,0.0,0.0
 leg:c36ab48c8173,2006,"DIAZ ROIG, Juan Carlos",diputados,406,68.8,0.1695
-leg:c36ab48c8173,2007,"DIAZ ROIG, Juan Carlos",diputados,227,53.0,0.2335
+leg:c36ab48c8173,2007,"DIAZ ROIG, Juan Carlos",diputados,227,54.4,0.2396
 leg:c36ab48c8173,2008,"DIAZ ROIG, Juan Carlos",diputados,132,10.0,0.0758
 leg:c36ab48c8173,2009,"DIAZ ROIG, Juan Carlos",diputados,128,40.5,0.3164
 leg:c36ab48c8173,2010,"DIAZ ROIG, Juan Carlos",diputados,61,13.0,0.2131
@@ -7145,7 +7137,7 @@ leg:c3dc767c6dca,2003,"VARGAS AIGNASSE, Gerónimo",diputados,3,0.0,0.0
 leg:c3dc767c6dca,2004,"VARGAS AIGNASSE, Gerónimo",diputados,172,42.0,0.2442
 leg:c3dc767c6dca,2005,"VARGAS AIGNASSE, Gerónimo",diputados,100,13.8,0.138
 leg:c3dc767c6dca,2006,"VARGAS AIGNASSE, Gerónimo",diputados,406,121.6,0.2995
-leg:c3dc767c6dca,2007,"VARGAS AIGNASSE, Gerónimo",diputados,227,93.2,0.4106
+leg:c3dc767c6dca,2007,"VARGAS AIGNASSE, Gerónimo",diputados,227,93.7,0.4128
 leg:c3dc767c6dca,2008,"VARGAS AIGNASSE, Gerónimo",diputados,132,34.0,0.2576
 leg:c3dc767c6dca,2009,"VARGAS AIGNASSE, Gerónimo",diputados,128,30.5,0.2383
 leg:c3dc767c6dca,2010,"VARGAS AIGNASSE, Gerónimo",diputados,61,18.0,0.2951
@@ -7156,7 +7148,7 @@ leg:c3ee40a1fa99,2024,"Tavela, Danya",diputados,177,26.2,0.148
 leg:c3ee40a1fa99,2025,"Tavela, Danya",diputados,97,6.3,0.0649
 leg:c4556e55cff1,2005,"CESAR, Nora",diputados,56,0.0,0.0
 leg:c4556e55cff1,2006,"CESAR, Nora",diputados,329,92.8,0.2821
-leg:c4556e55cff1,2007,"CESAR, Nora",diputados,206,58.9,0.2859
+leg:c4556e55cff1,2007,"CESAR, Nora",diputados,206,58.4,0.2835
 leg:c4556e55cff1,2008,"CESAR, Nora",diputados,132,20.0,0.1515
 leg:c4556e55cff1,2009,"CESAR, Nora",diputados,119,24.5,0.2059
 leg:c465ace7fa0f,2007,"GRIBAUDO, Christian Alejandro",diputados,15,2.6,0.1733
@@ -7178,7 +7170,7 @@ leg:c489b8c6d08c,2003,"RICHTER, Ana",diputados,3,0.0,0.0
 leg:c489b8c6d08c,2004,"RICHTER, Ana",diputados,105,34.0,0.3238
 leg:c489b8c6d08c,2005,"RICHTER, Ana",diputados,83,5.7,0.0687
 leg:c489b8c6d08c,2006,"RICHTER, Ana",diputados,329,35.6,0.1082
-leg:c489b8c6d08c,2007,"RICHTER, Ana",diputados,191,35.1,0.1838
+leg:c489b8c6d08c,2007,"RICHTER, Ana",diputados,191,33.6,0.1759
 leg:c49018adb13b,2019,HEIN Gustavo Rene,diputados,27,0.0,0.0
 leg:c49018adb13b,2020,HEIN Gustavo Rene,diputados,7,3.0,0.4286
 leg:c49018adb13b,2021,"Hein, Gustavo Rene",diputados,1,0.0,0.0
@@ -7193,7 +7185,7 @@ leg:c4bf6b539c14,2003,"INGRAM, Roddy Ernesto",diputados,3,3.0,1.0
 leg:c4bf6b539c14,2004,"INGRAM, Roddy Ernesto",diputados,105,8.0,0.0762
 leg:c4bf6b539c14,2005,"INGRAM, Roddy Ernesto",diputados,83,3.0,0.0361
 leg:c4bf6b539c14,2006,"INGRAM, Roddy Ernesto",diputados,329,110.6,0.3362
-leg:c4bf6b539c14,2007,"INGRAM, Roddy Ernesto",diputados,191,75.8,0.3969
+leg:c4bf6b539c14,2007,"INGRAM, Roddy Ernesto",diputados,191,77.2,0.4042
 leg:c4dcf73b4976,2007,"ROLDAN, José María",diputados,37,1.0,0.027
 leg:c4dcf73b4976,2008,"ROLDAN, José María",diputados,132,42.0,0.3182
 leg:c4dcf73b4976,2009,"ROLDAN, José María",diputados,119,36.0,0.3025
@@ -7237,7 +7229,7 @@ leg:c551d7f27bfd,2025,"Gallardo, Maria Virginia",diputados,19,0.0,0.0
 leg:c551d7f27bfd,2026,"Gallardo, Maria Virginia",diputados,86,0.0,0.0
 leg:c57053a056c8,2005,"CANTERO GUTIERREZ, Alberto",diputados,56,1.0,0.0179
 leg:c57053a056c8,2006,"CANTERO GUTIERREZ, Alberto",diputados,329,26.6,0.0809
-leg:c57053a056c8,2007,"CANTERO GUTIERREZ, Alberto",diputados,206,29.7,0.1442
+leg:c57053a056c8,2007,"CANTERO GUTIERREZ, Alberto",diputados,206,28.2,0.1369
 leg:c57053a056c8,2008,"CANTERO GUTIERREZ, Alberto",diputados,132,10.0,0.0758
 leg:c57053a056c8,2009,"CANTERO GUTIERREZ, Alberto",diputados,119,2.5,0.021
 leg:c58d488b2fd3,2003,"STORANI, Federico Teobaldo",diputados,3,3.0,1.0
@@ -7386,7 +7378,7 @@ leg:ca15d2f3ae11,2003,"GUTIERREZ, Francisco Virgilio",diputados,45,2.5,0.0556
 leg:ca15d2f3ae11,2004,"GUTIERREZ, Francisco Virgilio",diputados,105,0.0,0.0
 leg:ca15d2f3ae11,2005,"GUTIERREZ, Francisco Virgilio",diputados,83,2.0,0.0241
 leg:ca15d2f3ae11,2006,"GUTIERREZ, Francisco Virgilio",diputados,329,115.6,0.3514
-leg:ca15d2f3ae11,2007,"GUTIERREZ, Francisco Virgilio",diputados,191,89.4,0.4681
+leg:ca15d2f3ae11,2007,"GUTIERREZ, Francisco Virgilio",diputados,191,87.9,0.4602
 leg:ca85a123aa3a,2015,"BORELLO, MARTA",senado,84,18.5,0.2202
 leg:ca8e36ee57b4,2026,"Herrera, Oscar",diputados,10,0.0,0.0
 leg:ca9936d49137,2004,"ISIDORI, Amanda Mercedes",senado,395,119.6,0.3028
@@ -7469,7 +7461,7 @@ leg:cbcb83fef0e8,2003,"MONGELO, José Ricardo",diputados,3,3.0,1.0
 leg:cbcb83fef0e8,2004,"MONGELO, José Ricardo",diputados,172,8.0,0.0465
 leg:cbcb83fef0e8,2005,"MONGELO, José Ricardo",diputados,100,12.7,0.127
 leg:cbcb83fef0e8,2006,"MONGELO, José Ricardo",diputados,406,92.8,0.2286
-leg:cbcb83fef0e8,2007,"MONGELO, José Ricardo",diputados,212,89.8,0.4236
+leg:cbcb83fef0e8,2007,"MONGELO, José Ricardo",diputados,212,88.3,0.4165
 leg:cbcb83fef0e8,2011,MONGELO José Ricardo,diputados,20,0.0,0.0
 leg:cbcb83fef0e8,2012,MONGELO José Ricardo,diputados,180,6.7,0.0372
 leg:cbcb83fef0e8,2013,MONGELO José Ricardo,diputados,177,4.0,0.0226
@@ -7875,7 +7867,7 @@ leg:d621960146ec,2003,"SOLANAS, Julio Rodolfo Francisco",diputados,42,20.3,0.483
 leg:d6257ed3f47a,2001,"DE SANCTIS, Guillermo Horacio",diputados,24,12.3,0.5125
 leg:d647571c8808,2005,"SOTO, Gladys Beatriz",diputados,56,0.0,0.0
 leg:d647571c8808,2006,"SOTO, Gladys Beatriz",diputados,406,57.6,0.1419
-leg:d647571c8808,2007,"SOTO, Gladys Beatriz",diputados,227,65.5,0.2885
+leg:d647571c8808,2007,"SOTO, Gladys Beatriz",diputados,227,64.0,0.2819
 leg:d647571c8808,2008,"SOTO, Gladys Beatriz",diputados,132,41.0,0.3106
 leg:d647571c8808,2009,"SOTO, Gladys Beatriz",diputados,128,35.5,0.2773
 leg:d647571c8808,2011,SOTO Gladys Beatriz,diputados,20,0.0,0.0
@@ -7944,7 +7936,7 @@ leg:d87a58e93c3d,2003,"LAMBERTO, Oscar Santiago",diputados,3,1.0,0.3333
 leg:d87a58e93c3d,2004,"LAMBERTO, Oscar Santiago",diputados,105,37.0,0.3524
 leg:d87a58e93c3d,2005,"LAMBERTO, Oscar Santiago",diputados,83,15.0,0.1807
 leg:d87a58e93c3d,2006,"LAMBERTO, Oscar Santiago",diputados,329,156.6,0.476
-leg:d87a58e93c3d,2007,"LAMBERTO, Oscar Santiago",diputados,133,68.8,0.5173
+leg:d87a58e93c3d,2007,"LAMBERTO, Oscar Santiago",diputados,133,68.3,0.5135
 leg:d8a80345b425,2024,"Ardohain, Martin",diputados,177,8.2,0.0463
 leg:d8a80345b425,2025,"Ardohain, Martin",diputados,116,5.4,0.0466
 leg:d8a80345b425,2026,"Ardohain, Martin",diputados,86,1.0,0.0116
@@ -8001,7 +7993,7 @@ leg:da44b4f9e5d8,2015,ISA Evita Nélida,diputados,97,2.0,0.0206
 leg:da44b4f9e5d8,2016,ISA Evita Nélida,diputados,190,67.6,0.3558
 leg:da44b4f9e5d8,2017,ISA Evita Nélida,diputados,117,62.8,0.5368
 leg:db01609f5553,2006,"UÑAC, José Rubén",diputados,354,98.6,0.2785
-leg:db01609f5553,2007,"UÑAC, José Rubén",diputados,212,56.2,0.2651
+leg:db01609f5553,2007,"UÑAC, José Rubén",diputados,212,56.7,0.2675
 leg:db01609f5553,2011,UÑAC José Rubén,diputados,20,0.0,0.0
 leg:db01609f5553,2012,UÑAC José Rubén,diputados,180,7.7,0.0428
 leg:db01609f5553,2013,UÑAC José Rubén,diputados,177,4.0,0.0226
@@ -8146,7 +8138,7 @@ leg:df1a88f6ef62,2012,FORTUNA Francisco José,diputados,180,50.5,0.2806
 leg:df1a88f6ef62,2013,FORTUNA Francisco José,diputados,177,16.0,0.0904
 leg:df1dc746d3d4,2005,"VELARDE, Marta Sylvia",diputados,56,1.0,0.0179
 leg:df1dc746d3d4,2006,"VELARDE, Marta Sylvia",diputados,329,37.6,0.1143
-leg:df1dc746d3d4,2007,"VELARDE, Marta Sylvia",diputados,206,35.6,0.1728
+leg:df1dc746d3d4,2007,"VELARDE, Marta Sylvia",diputados,206,36.1,0.1752
 leg:df1dc746d3d4,2008,"VELARDE, Marta Sylvia",diputados,132,17.0,0.1288
 leg:df1dc746d3d4,2009,"VELARDE, Marta Sylvia",diputados,119,0.0,0.0
 leg:df31a8a5f6db,2017,SAPAG Alma Liliana,diputados,39,0.0,0.0
@@ -8201,7 +8193,7 @@ leg:e0434f518638,2003,"FADEL, Patricia Susana",diputados,3,0.0,0.0
 leg:e0434f518638,2004,"FADEL, Patricia Susana",diputados,172,3.0,0.0174
 leg:e0434f518638,2005,"FADEL, Patricia Susana",diputados,100,9.1,0.091
 leg:e0434f518638,2006,"FADEL, Patricia Susana",diputados,406,55.6,0.1369
-leg:e0434f518638,2007,"FADEL, Patricia Susana",diputados,227,30.7,0.1352
+leg:e0434f518638,2007,"FADEL, Patricia Susana",diputados,227,30.2,0.133
 leg:e0434f518638,2008,"FADEL, Patricia Susana",diputados,132,14.0,0.1061
 leg:e0434f518638,2009,"FADEL, Patricia Susana",diputados,128,7.5,0.0586
 leg:e0434f518638,2010,"FADEL, Patricia Susana",diputados,60,3.0,0.05
@@ -8528,7 +8520,7 @@ leg:e8479cf65fc1,2003,"DAUD, Jorge Carlos",diputados,45,4.1,0.0911
 leg:e8479cf65fc1,2004,"DAUD, Jorge Carlos",diputados,105,1.0,0.0095
 leg:e8479cf65fc1,2005,"DAUD, Jorge Carlos",diputados,83,1.7,0.0205
 leg:e8479cf65fc1,2006,"DAUD, Jorge Carlos",diputados,329,117.6,0.3574
-leg:e8479cf65fc1,2007,"DAUD, Jorge Carlos",diputados,191,60.0,0.3141
+leg:e8479cf65fc1,2007,"DAUD, Jorge Carlos",diputados,191,59.5,0.3115
 leg:e84ad8a564f7,2022,"Gollan, Daniel",diputados,9,0.0,0.0
 leg:e84ad8a564f7,2023,"Gollan, Daniel",diputados,8,0.0,0.0
 leg:e84ad8a564f7,2024,"Gollan, Daniel",diputados,177,0.0,0.0
@@ -8602,7 +8594,7 @@ leg:e9d6912905d9,2024,"Benedetti, Atilio",diputados,177,11.8,0.0667
 leg:e9d6912905d9,2025,"Benedetti, Atilio",diputados,97,15.5,0.1598
 leg:ea0aa9cc788b,2005,"THOMAS, Enrique Luis",diputados,56,0.0,0.0
 leg:ea0aa9cc788b,2006,"THOMAS, Enrique Luis",diputados,406,44.1,0.1086
-leg:ea0aa9cc788b,2007,"THOMAS, Enrique Luis",diputados,227,37.9,0.167
+leg:ea0aa9cc788b,2007,"THOMAS, Enrique Luis",diputados,227,36.4,0.1604
 leg:ea0aa9cc788b,2008,"THOMAS, Enrique Luis",diputados,132,48.5,0.3674
 leg:ea0aa9cc788b,2009,"THOMAS, Enrique Luis",diputados,128,27.0,0.2109
 leg:ea0aa9cc788b,2010,"THOMAS, Enrique Luis",diputados,61,3.5,0.0574
@@ -8665,7 +8657,7 @@ leg:eb5003785673,2025,"Biella, Bernardo",diputados,19,2.6,0.1368
 leg:eb5003785673,2026,"Biella, Bernardo",diputados,86,8.3,0.0965
 leg:eb65e59656cd,2005,"COSCIA, Jorge Edmundo",diputados,56,0.0,0.0
 leg:eb65e59656cd,2006,"COSCIA, Jorge Edmundo",diputados,329,44.6,0.1356
-leg:eb65e59656cd,2007,"COSCIA, Jorge Edmundo",diputados,206,33.6,0.1631
+leg:eb65e59656cd,2007,"COSCIA, Jorge Edmundo",diputados,206,32.1,0.1558
 leg:eb65e59656cd,2008,"COSCIA, Jorge Edmundo",diputados,132,17.0,0.1288
 leg:eb65e59656cd,2009,"COSCIA, Jorge Edmundo",diputados,19,12.0,0.6316
 leg:eb943342c295,2001,"RODRIGUEZ, Jesus",diputados,24,6.7,0.2792
@@ -8715,7 +8707,7 @@ leg:ec1a4a160fda,2003,"AGUERO, Elda Susana",diputados,45,9.2,0.2044
 leg:ec1a4a160fda,2004,"AGUERO, Elda Susana",diputados,105,12.0,0.1143
 leg:ec1a4a160fda,2005,"AGUERO, Elda Susana",diputados,83,30.3,0.3651
 leg:ec1a4a160fda,2006,"AGUERO, Elda Susana",diputados,329,84.6,0.2571
-leg:ec1a4a160fda,2007,"AGUERO, Elda Susana",diputados,191,50.0,0.2618
+leg:ec1a4a160fda,2007,"AGUERO, Elda Susana",diputados,191,49.4,0.2586
 leg:eca5becc6769,2007,"ERRO, Norberto Pedro",diputados,15,1.0,0.0667
 leg:eca5becc6769,2008,"ERRO, Norberto Pedro",diputados,132,23.0,0.1742
 leg:eca5becc6769,2009,"ERRO, Norberto Pedro",diputados,128,15.0,0.1172
@@ -9100,7 +9092,7 @@ leg:f5e154ec8838,2003,"GALLO, Daniel Oscar",diputados,3,0.0,0.0
 leg:f5e154ec8838,2004,"GALLO, Daniel Oscar",diputados,105,15.0,0.1429
 leg:f5e154ec8838,2005,"GALLO, Daniel Oscar",diputados,83,5.7,0.0687
 leg:f5e154ec8838,2006,"GALLO, Daniel Oscar",diputados,329,157.6,0.479
-leg:f5e154ec8838,2007,"GALLO, Daniel Oscar",diputados,191,130.3,0.6822
+leg:f5e154ec8838,2007,"GALLO, Daniel Oscar",diputados,191,129.8,0.6796
 leg:f5f2b54d00c9,2019,"NEDER, JOSÉ EMILIO",senado,3,0.0,0.0
 leg:f5f2b54d00c9,2020,"NEDER, JOSÉ EMILIO",senado,93,2.0,0.0215
 leg:f5f2b54d00c9,2021,"NEDER, JOSÉ EMILIO",senado,86,12.0,0.1395
@@ -9281,7 +9273,7 @@ leg:fbdfef09e7c2,2003,"BOSCH de SARTORI, Irene Miriam",diputados,3,0.0,0.0
 leg:fbdfef09e7c2,2004,"BOSCH de SARTORI, Irene Miriam",diputados,105,25.5,0.2429
 leg:fbdfef09e7c2,2005,"BOSCH de SARTORI, Irene Miriam",diputados,83,37.8,0.4554
 leg:fbdfef09e7c2,2006,"BOSCH de SARTORI, Irene Miriam",diputados,329,49.8,0.1514
-leg:fbdfef09e7c2,2007,"BOSCH de SARTORI, Irene Miriam",diputados,191,45.6,0.2387
+leg:fbdfef09e7c2,2007,"BOSCH de SARTORI, Irene Miriam",diputados,191,45.1,0.2361
 leg:fbfe0edcf70b,2025,"Riesco, Gaston",diputados,19,0.0,0.0
 leg:fbfe0edcf70b,2026,"Riesco, Gaston",diputados,86,0.0,0.0
 leg:fc45374c281a,2002,"OSORIO, Marta Lucía",diputados,40,10.8,0.27
@@ -9289,7 +9281,7 @@ leg:fc45374c281a,2003,"OSORIO, Marta Lucía",diputados,45,4.1,0.0911
 leg:fc45374c281a,2004,"OSORIO, Marta Lucía",diputados,105,20.0,0.1905
 leg:fc45374c281a,2005,"OSORIO, Marta Lucía",diputados,83,5.9,0.0711
 leg:fc45374c281a,2006,"OSORIO, Marta Lucía",diputados,329,12.6,0.0383
-leg:fc45374c281a,2007,"OSORIO, Marta Lucía",diputados,206,29.5,0.1432
+leg:fc45374c281a,2007,"OSORIO, Marta Lucía",diputados,206,30.0,0.1456
 leg:fc45374c281a,2008,"OSORIO, Marta Lucía",diputados,132,23.0,0.1742
 leg:fc45374c281a,2009,"OSORIO, Marta Lucía",diputados,119,5.5,0.0462
 leg:fc5a6d0cdc37,2001,"BAYLAC, Juan Pablo",diputados,24,18.7,0.7792
@@ -9360,7 +9352,7 @@ leg:fd80312788a0,2003,"FERNANDEZ, Alfredo Cesar",diputados,3,0.0,0.0
 leg:fd80312788a0,2004,"FERNANDEZ, Alfredo Cesar",diputados,105,5.0,0.0476
 leg:fd80312788a0,2005,"FERNANDEZ, Alfredo Cesar",diputados,83,4.7,0.0566
 leg:fd80312788a0,2006,"FERNANDEZ, Alfredo Cesar",diputados,329,67.8,0.2061
-leg:fd80312788a0,2007,"FERNANDEZ, Alfredo Cesar",diputados,191,59.9,0.3136
+leg:fd80312788a0,2007,"FERNANDEZ, Alfredo Cesar",diputados,191,59.4,0.311
 leg:fd82204ddbab,2016,"VERASAY, PAMELA FERNANDA",senado,195,21.6,0.1108
 leg:fd82204ddbab,2017,"VERASAY, PAMELA FERNANDA",senado,102,1.0,0.0098
 leg:fd82204ddbab,2018,"VERASAY, PAMELA FERNANDA",senado,81,2.5,0.0309
@@ -9384,7 +9376,7 @@ leg:fdb426b871a3,2025,"Giudici, Silvana",diputados,116,4.0,0.0345
 leg:fdb426b871a3,2026,"Giudici, Silvana",diputados,86,0.0,0.0
 leg:fde1bf847c2b,2005,"MASSEI, Oscar Ermelindo",diputados,56,20.0,0.3571
 leg:fde1bf847c2b,2006,"MASSEI, Oscar Ermelindo",diputados,329,15.6,0.0474
-leg:fde1bf847c2b,2007,"MASSEI, Oscar Ermelindo",diputados,206,14.8,0.0718
+leg:fde1bf847c2b,2007,"MASSEI, Oscar Ermelindo",diputados,206,13.2,0.0641
 leg:fde1bf847c2b,2008,"MASSEI, Oscar Ermelindo",diputados,128,7.0,0.0547
 leg:fe128801715e,2016,MASSETANI Vanesa Laura,diputados,190,7.6,0.04
 leg:fe128801715e,2017,MASSETANI Vanesa Laura,diputados,156,14.5,0.0929

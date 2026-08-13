@@ -1,35 +1,41 @@
 {
   "definicion": "desvío v2 (ADR-0004): conducta vs línea del bloque (mayoría de TODOS los escaños); estricta con abstenciones/ausencias; desempate por linaje; parcial en OTRO/PROVINCIAL; excluidos presidentes de Diputados y suspendidos",
   "min_votos": 50,
-  "legisladores_medibles": 1751,
+  "legisladores_medibles": 1750,
   "tasa_desvio_mediana": 0.1477,
-  "tasa_desvio_p90": 0.3452,
+  "tasa_desvio_p90": 0.3453,
   "por_umbral": {
     ">=2%": {
-      "n_legisladores": 1501,
+      "n_legisladores": 1500,
       "pct_de_medibles": 85.7
     },
     ">=5%": {
-      "n_legisladores": 1358,
-      "pct_de_medibles": 77.6
+      "n_legisladores": 1357,
+      "pct_de_medibles": 77.5
     },
     ">=10%": {
-      "n_legisladores": 1131,
+      "n_legisladores": 1130,
       "pct_de_medibles": 64.6
     },
     ">=15%": {
-      "n_legisladores": 866,
-      "pct_de_medibles": 49.5
+      "n_legisladores": 865,
+      "pct_de_medibles": 49.4
     }
   },
   "disputadas": {
-    ">=2%": 1236,
-    ">=5%": 1079,
+    ">=2%": 1235,
+    ">=5%": 1078,
     ">=10%": 816,
     ">=15%": 626
   },
+  "ausentismo_outlier": {
+    "umbral_mu_2sigma": 0.587,
+    "media": 0.2199,
+    "sigma": 0.1836,
+    "n_outliers_medibles": 83
+  },
   "cobertura": {
-    "n_votos_medidos": 955025,
+    "n_votos_medidos": 954002,
     "n_actas": 6094,
     "anios": "1994-2026",
     "fuentes": [
@@ -40,9 +46,9 @@
       "senado"
     ],
     "metodo": {
-      "bloque": 912591,
-      "parcial": 35468,
-      "linaje": 6966
+      "bloque": 911804,
+      "parcial": 35344,
+      "linaje": 6854
     }
   }
 }

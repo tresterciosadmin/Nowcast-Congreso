@@ -169,7 +169,8 @@ def roster_nominal(camara: str, fecha, bloques: list[dict],
     dcsv = _disciplina_csv(disciplina_path)
     if dcsv.exists():
         di = pd.read_csv(dcsv, encoding="utf-8-sig")
-        for c in ("n_votos", "n_reciente", "tasa_desvio", "tasa_desvio_reciente"):
+        for c in ("n_votos", "n_reciente", "n_presente", "tasa_desvio", "tasa_desvio_reciente",
+                  "tasa_desvio_conducta", "tasa_desvio_reciente_conducta"):
             if c in di.columns:
                 di[c] = pd.to_numeric(di[c], errors="coerce")
         fichas = di.set_index("legislador_id").to_dict("index")
@@ -189,8 +190,16 @@ def roster_nominal(camara: str, fecha, bloques: list[dict],
             linea, d_blo = info["linea"], info["desvio"]
 
         f = fichas.get(lid) or {}
-        d_rec, n_r = f.get("tasa_desvio_reciente"), f.get("n_reciente")
-        d_gl, n_v = f.get("tasa_desvio"), f.get("n_votos")
+        # Desvío de CONDUCTA (votó distinto ESTANDO PRESENTE), con fallback a la
+        # mezclada si la planilla es vieja. Evita que un ausente crónico entre como
+        # bisagra en la proyección (URGENTE 1, 2026-08-13).
+        d_rec = f.get("tasa_desvio_reciente_conducta")
+        if d_rec is None or pd.isna(d_rec):
+            d_rec = f.get("tasa_desvio_reciente")
+        d_gl = f.get("tasa_desvio_conducta")
+        if d_gl is None or pd.isna(d_gl):
+            d_gl = f.get("tasa_desvio")
+        n_r, n_v = f.get("n_reciente"), f.get("n_votos")
         if d_rec is not None and pd.notna(d_rec) and (n_r or 0) >= min_votos:
             desvio, fuente = float(d_rec), "ficha_reciente"
             n_rec += 1

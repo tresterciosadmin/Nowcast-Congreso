@@ -44,6 +44,20 @@ Para coordinarnos hay tres papeles siempre a la vista:
 ## En una frase
 Ya sabemos que adivinar el voto individual no sirve (el bloque lo explica casi todo); el valor está en la asistencia, el embudo y la cúpula. Estamos armando una base de datos propia (arrancada con el trabajo de Andy Tow y mantenida por un bot), con un formato común y una forma de trabajar en equipo sin pisarnos.
 
+## Avance: separamos "no vota porque desafía" de "no vota porque no va"
+
+El sistema marca a los legisladores "bisagra" —los que pueden cambiar una votación peleada— midiendo cuánto se apartan de su bloque. El problema: ese número mezclaba dos cosas muy distintas. Una es **votar distinto** (indisciplina de verdad). La otra es **no aparecer** (ausentismo). Y estaban tan pegadas que casi cuatro de cada diez puntos del "desvío" eran, en realidad, inasistencia.
+
+Se veía en el ranking: lo encabezaban personas que casi nunca votaban. Néstor Kirchner figuraba como el más díscolo de todos… con 98% de ausencias y una sola votación presente en toda la base. Cuando esta gente aparecía, votaba con su bloque. Su "rebeldía" era pura ausencia. Y el modelo les daba máxima sensibilidad al clima político, cuando un ausente crónico no es una bisagra: es alguien que no está.
+
+Lo que hicimos: separar el número en dos. Uno mide cuánto se desvía **estando presente** (la indisciplina real), otro mide la ausencia por separado. Además, con tu criterio, armamos la distribución de ausentismo y marcamos a los que están **muy por encima** (más de dos desvíos de lo normal, ~61% de faltas). De 77 casos así, 75 ni siquiera tienen banca hoy —son muertes en el cargo, bancas testimoniales y licencias— y se quitan del análisis. Los dos que sí tienen banca: Menem (que preside la Cámara y por eso no vota, pero entra correctamente como voto oficialista) y Schiaretti, que quedó marcado para que lo mires vos.
+
+De paso se tapó una fuga: una banca fantasma anotada como "Legislador a Designar" metía más de mil votos vacíos en el ranking.
+
+¿Sirvió? La cuenta definitiva ya la corrimos, y la respuesta es sí, y fuerte: al medir las bisagras por su conducta real, el efecto del clima político sobre ellas **más que se duplica** (y con margen de error firme, no por casualidad). Los legisladores disciplinados siguen sin moverse por el clima, como debe ser. Era lo que sospechábamos: mezclar ausentes diluía la señal a la mitad.
+
+Y cerramos el circuito hasta la punta: la parte del sistema que arma la cámara para una proyección (el "roster") también empezó a usar el número limpio de conducta, no el mezclado. Así el arreglo no se queda en la estimación: llega hasta la predicción final. Con esto el pendiente queda cerrado. Un detalle que vimos de paso: que el clima cambie el *resultado* de una votación depende del proyecto — si una cámara lo gana holgado o si los que definen son legisladores disciplinados, el clima casi no mueve la aguja; se nota cuando la votación está en el filo y la definen las bisagras.
+
 ## Aviso: los tests pasaban en mi entorno y fallaban en el de Valle
 
 Vale la pena contarlo porque es una trampa que se puede repetir. Ayer di por buenos unos controles que en mi entorno daban "83 de 83 correctos", y al correrlos Valle en su computadora **fallaron**. No era que el trabajo estuviera mal hecho: era que las dos máquinas tienen versiones distintas de una de las bibliotecas, y en una de ellas un dato faltante se representa de una forma que mi código no contemplaba.

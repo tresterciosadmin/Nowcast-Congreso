@@ -46,9 +46,35 @@ La **postura de cada bloque** es un dato de entrada (elegida a mano / observada)
 - el nowcast de un proyecto YA VOTADO reproduce la historia (postura observada) → equivale al backtest del agregador (Brier 0,0089);
 - el nowcast de un proyecto NO votado usa la postura que le pongas → la calibración de la cadena completa depende de esa proyección futura.
 
+## Backtest de la cadena completa (`src/backtest_cadena.py`, opción B — 2026-08-13)
+Mide la calibración del end-to-end contra la realidad: sobre la cohorte **madura** y
+etiquetada del embudo (`construir_cohorte` + `cohorte_madura`, label `sancionado`),
+compone `p_llega` (embudo) × `p_mayoría` (`nowcast_auto`, postura proyectada point-in-time
+sobre el roster nominal de **conducta**) y lo compara con `sancionado`. **Baseline:** el
+`p_sancion` que el embudo calcula solo (¿la maquinaria roster+agregador aporta encima del
+embudo?). Consume contratos públicos; no reimplementa la cohorte ni las métricas (`_metricas`).
+
+- **Point-in-time honesto:** cada proyecto se evalúa a su `fecha_publicacion`; `cohorte_madura`
+  (≥2 años) evita etiquetar como "no sancionado" a proyectos que aún podrían serlo.
+- **Memoización:** en v1 la postura NO se condiciona por tema/origen, así que `p_mayoría`
+  depende solo de (cámara, mes) → se calcula una vez por mes. Corrida liviana.
+- **Alcance real v1 = Diputados.** El Senado histórico no se puede rostear con el padrón por
+  defecto de `nowcast_auto` (`padron_senado.csv` = 72 vigentes; el histórico arranca fin-2017 y
+  `nowcast_auto` no expone `padron_file`). Y el hueco Diputados 2020-2023 (pausado) invalida la
+  ventana de postura de los proyectos presentados ~2020-2025. El harness **saltea con aviso** los
+  (cámara, mes) sin historia/roster; no inventa nada.
+- **Salidas:** resumen → `outputs/backtest_cadena.json` (viaja a git); detalle por proyecto →
+  `Archivos_Borrar/backtest_cadena_detalle.csv` (regenerable, `*.csv` gitignored).
+
+```powershell
+# corrida real (Valle, en su PC): Diputados, cohorte completa
+python "Nowcast Congreso Argy\modelo\ensemble\src\backtest_cadena.py" --camara Diputados --n-sims 2000
+```
+
 ## Tests
 ```bash
-python modelo/ensemble/tests/test_ensemble.py   # 16 chequeos offline (sin datos)
+python modelo/ensemble/tests/test_ensemble.py          # 32 chequeos offline (sin datos)
+python modelo/ensemble/tests/test_backtest_cadena.py   # 31 chequeos offline, dos backends de dtype
 ```
 
 ## Pendientes / v2

@@ -44,6 +44,14 @@ Para coordinarnos hay tres papeles siempre a la vista:
 ## En una frase
 Ya sabemos que adivinar el voto individual no sirve (el bloque lo explica casi todo); el valor está en la asistencia, el embudo y la cúpula. Estamos armando una base de datos propia (arrancada con el trabajo de Andy Tow y mantenida por un bot), con un formato común y una forma de trabajar en equipo sin pisarnos.
 
+## Cerramos un pendiente urgente: la cadena ya se re-corrió con los linajes nuevos
+Había quedado anotado en la lista de "urgente" que, después de arreglar cómo se agrupan los bloques de izquierda, faltaba volver a correr dos piezas que dependían de ese cambio (el clima político y el simulador de votación) y **guardar todo en el repositorio**. Se verificó contra el disco que las dos piezas ya estaban rehechas y quedaron guardadas en el commit del 13 de agosto. Como ya está resuelto, se sacó de la lista de urgentes (el registro completo queda en la bitácora técnica). La lista de urgentes queda con un solo tema, y de baja prioridad: validar unas pocas filas del listado de jefes de bloque.
+
+## Avance: una forma de medir si el sistema completo le acierta a la realidad
+Hasta ahora cada pieza del Nowcast se validaba por separado: el "embudo" (¿el proyecto llega a votarse?) por un lado, y el "simulador de votación" (¿hay mayoría?) por otro. Faltaba probar la CADENA COMPLETA de una: multiplicar las dos y comparar con lo que de verdad pasó (¿el proyecto terminó siendo ley, sí o no?). Se armó esa herramienta. Toma los proyectos ya "maduros" (viejos como para saber si fueron ley o no), los evalúa **con la información que existía en su momento** (sin espiar el futuro), y mide qué tan bien le acierta — usando como vara de comparación la estimación que el embudo ya hace solo, para responder: ¿la maquinaria del simulador agrega algo o no?
+
+Dos límites honestos que aparecieron al probarla contra el disco: por ahora corre sobre **Diputados** (para el Senado viejo no tenemos la lista de quién ocupaba cada banca en cada fecha con el detalle necesario), y el hueco conocido de Diputados 2020-2023 deja afuera esos años. La herramienta está probada y lista; **la corrida grande la hace Valle en su computadora** porque es pesada, y de ahí sale el número real (los de la prueba chica no cuentan).
+
 ## Avance: separamos "no vota porque desafía" de "no vota porque no va"
 
 El sistema marca a los legisladores "bisagra" —los que pueden cambiar una votación peleada— midiendo cuánto se apartan de su bloque. El problema: ese número mezclaba dos cosas muy distintas. Una es **votar distinto** (indisciplina de verdad). La otra es **no aparecer** (ausentismo). Y estaban tan pegadas que casi cuatro de cada diez puntos del "desvío" eran, en realidad, inasistencia.

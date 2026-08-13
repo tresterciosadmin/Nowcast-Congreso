@@ -59,23 +59,3 @@ disfrazada de otra**. Una sola fila mal puesta contaminó cientos de casos.
 **Cómo validar:** buscar fuente explícita ("presidente/jefe del bloque X"),
 actualizar `confianza` a ALTA con la fuente, o eliminar la fila dejando el
 motivo como comentario `#` en el propio CSV (como se hizo con Bianchi).
-
----
-
-## 2. Re-correr el resto de la cadena tras el cambio de linajes
-**Detectado:** 2026-08-07
-
-✅ **Hechos (Franco, 07-08):** `entity_resolution.py` (IZQUIERDA: ~2.700 → **8.816
-votos / 19 bloques**), `bloque.py serie` y `disciplina.py`. La medición mejoró:
-**mediana de desvío 0,1654 → 0,1477** y legisladores medibles 1.591 → **1.751**.
-Validación del cambio: `IZQUIERDA` da **cohesión 1,0000 y desvío 0,0000** en 2025 y
-2026 — vota siempre igual, sin una fractura; disuelta en OTRO/PROVINCIAL eso era
-invisible. Share afirmativo 2026: **0,2414 contra 0,8211 de LLA**.
-
-⏳ **Falta:** `variables/embudo` no depende de esto, pero **`modelo/ensemble` y el
-γ del ICG sí** (leen el desvío, que cambió). Y **commitear los parquet**.
-
-⚠️ **Predicción que NO se verificó:** se anticipó que el desvío de
-`OTRO / PROVINCIAL` bajaría al sacarle la izquierda. Quedó en **0,2820 con cohesión
-0,4359** y no hay valor previo del mismo indicador para comparar. Queda dicho para
-no dar por buena una predicción que no se comprobó.

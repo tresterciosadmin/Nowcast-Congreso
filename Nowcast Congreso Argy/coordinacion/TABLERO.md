@@ -38,6 +38,12 @@ Depende de otros (no empezar hasta que su dependencia esté HECHA):
 - [ ] **evaluacion/backtesting** — necesita al menos un modelo nuevo.
 - [ ] **producto/dashboard** — necesita ensemble.
 
+## Sesion 2026-08-13 (Valle+Claude) — CERRADA, backtest de la cadena completa (modelo/ensemble). MODULO LIBRE.
+
+| Modulo | Quien | Desde | Que se hizo |
+|---|---|---|---|
+| **modelo/ensemble** | Claude (con Valle) | 2026-08-13 | **Harness ENTREGADO** (`src/backtest_cadena.py` + `tests/test_backtest_cadena.py`, 31 checks / dos backends). Backtest de la CADENA COMPLETA (opcion B): sobre la cohorte etiquetada y MADURA del embudo, compone `p_llega x p_mayoria` (nowcast_auto, postura proyectada point-in-time + roster de conducta) y mide Brier/skill/calibracion contra `sancionado`, con el `p_sancion` del embudo como baseline. Consume contratos, no reimplementa. **Alcance v1 = DIPUTADOS** (Senado historico no rosteable con el padron por defecto; hueco Dip 2020-23). **Corrida real pendiente en la PC de Valle** (ver ESTADO). Claim liberado. |
+
 ## Sesion 2026-08-13 (Valle+Claude) — ABIERTA, separar INDISCIPLINA de AUSENTISMO (URGENTE 1)
 
 | Modulo | Quien | Desde | Que se esta haciendo |

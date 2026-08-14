@@ -1,0 +1,79 @@
+{
+  "n_evaluados": 37341,
+  "tasa_base_sancion": 0.0177,
+  "brier_climatologia": 0.01741,
+  "cadena": {
+    "brier": 0.01378,
+    "auc": 0.9658,
+    "skill_vs_climatologia": 0.2087,
+    "skill_vs_embudo": -0.1332,
+    "calibracion": [
+      {
+        "bin": 0,
+        "n": 35237,
+        "pred": 0.0102,
+        "real": 0.0039
+      },
+      {
+        "bin": 1,
+        "n": 942,
+        "pred": 0.1385,
+        "real": 0.0987
+      },
+      {
+        "bin": 2,
+        "n": 370,
+        "pred": 0.2436,
+        "real": 0.2108
+      },
+      {
+        "bin": 3,
+        "n": 190,
+        "pred": 0.3393,
+        "real": 0.2947
+      },
+      {
+        "bin": 4,
+        "n": 103,
+        "pred": 0.4461,
+        "real": 0.3689
+      },
+      {
+        "bin": 5,
+        "n": 77,
+        "pred": 0.5518,
+        "real": 0.4156
+      },
+      {
+        "bin": 6,
+        "n": 77,
+        "pred": 0.6528,
+        "real": 0.5195
+      },
+      {
+        "bin": 7,
+        "n": 56,
+        "pred": 0.7449,
+        "real": 0.4464
+      },
+      {
+        "bin": 8,
+        "n": 87,
+        "pred": 0.8508,
+        "real": 0.5632
+      },
+      {
+        "bin": 9,
+        "n": 202,
+        "pred": 0.9639,
+        "real": 0.5693
+      }
+    ]
+  },
+  "baseline_embudo_p_sancion": {
+    "brier": 0.01216,
+    "auc": 0.9699,
+    "skill_vs_climatologia": 0.3017
+  },
+  "nota": "v1 con postura SIN condicionar por tema/origen: p_mayoria depende solo de (camara, mes), asi que la discriminacion (AUC) de la cadena la aporta casi toda el embudo; el agregador ajusta el NIVEL. Condicionar por tema/origen es el proximo paso."
+}

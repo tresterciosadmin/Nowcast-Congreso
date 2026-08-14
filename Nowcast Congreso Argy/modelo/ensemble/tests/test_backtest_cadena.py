@@ -159,7 +159,92 @@ def test_backend_con_faltante_pdNA():
             f"backend {backend}: p_llega NA -> p_aprob NA, sin excepcion")
 
 
+# --- version FINA: factor de la 2a camara (revisora) --------------------- #
+def test_revisora_memoizacion():
+    llamadas = []
+
+    def fake(camara, mes):
+        llamadas.append((camara, mes))
+        return 0.6
+
+    c = _cohorte_sintetica()
+    prev = B.construir_p_revisora_por_mes(c, fake)
+    chk(len(prev) == 4, "revisora: 4 (origen,mes) unicos memoizados")
+    chk(len(llamadas) == 4, "revisora: se calculo una vez por mes-origen")
+
+
+def test_componer_con_revisora_triple():
+    c = _cohorte_sintetica()
+    pmay = {("Diputados", "2023-05"): 0.5, ("Senado", "2023-05"): 0.5,
+            ("Diputados", "2023-06"): 0.8, ("Senado", "2023-06"): 0.8}
+    prev = {("Diputados", "2023-05"): 0.5, ("Senado", "2023-05"): 0.5,
+            ("Diputados", "2023-06"): 0.5, ("Senado", "2023-06"): 0.5}
+    out = B.componer_backtest(c, pmay, p_revisora_map=prev)
+    fila = out[out["proyecto_id"] == "P0"].iloc[0]
+    chk(abs(fila["p_aprob"] - fila["p_llega"] * 0.5 * 0.5) < 1e-9,
+        "p_aprob = p_llega x p_mayoria x p_revisora (segunda camara)")
+    chk((out["p_aprob"] <= 1.0).all(), "p_aprob clip en 1 con la 2a camara")
+
+
+def test_componer_revisora_descarta_mes_faltante():
+    c = _cohorte_sintetica()
+    pmay = {("Diputados", "2023-05"): 0.5, ("Senado", "2023-05"): 0.5,
+            ("Diputados", "2023-06"): 0.8, ("Senado", "2023-06"): 0.8}
+    prev = {("Diputados", "2023-05"): 0.5, ("Senado", "2023-05"): 0.5}  # falta junio
+    out = B.componer_backtest(c, pmay, p_revisora_map=prev)
+    chk((out["mes"] == "2023-05").all(),
+        "sin p_revisora del mes -> esas filas se descartan (cohorte 2018+ honesta)")
+
+
+def test_revisora_backend_faltante_pdNA():
+    base = _cohorte_sintetica()
+    base.loc[0, "p_llega"] = np.nan
+    pmay = {("Diputados", "2023-05"): 0.5, ("Senado", "2023-05"): 0.5,
+            ("Diputados", "2023-06"): 0.8, ("Senado", "2023-06"): 0.8}
+    prev = {("Diputados", "2023-05"): 0.5, ("Senado", "2023-05"): 0.5,
+            ("Diputados", "2023-06"): 0.5, ("Senado", "2023-06"): 0.5}
+    for backend in ("numpy_nullable", "pyarrow"):
+        try:
+            c = base.convert_dtypes(dtype_backend=backend)
+        except Exception:
+            continue
+        out = B.componer_backtest(c, pmay, p_revisora_map=prev)
+        chk(pd.isna(out.loc[out['proyecto_id'] == 'P0', 'p_aprob']).all(),
+            f"revisora backend {backend}: p_llega NA -> p_aprob NA, sin excepcion")
+
+
+# --- factor empirico de 2a camara (walk-forward, sin fuga) --------------- #
+def _cohorte_multianio():
+    filas = []
+    # 2020: 40 llegan al recinto, 20 sancionados (tasa 0.5)
+    for i in range(40):
+        filas.append({"proyecto_id": f"A{i}", "anio": 2020, "llega_recinto": True,
+                      "sancionado": 1 if i < 20 else 0})
+    # 2021: 40 llegan, 10 sancionados (tasa 0.25) — no debe afectar al factor de 2021
+    for i in range(40):
+        filas.append({"proyecto_id": f"B{i}", "anio": 2021, "llega_recinto": True,
+                      "sancionado": 1 if i < 10 else 0})
+    # 2022: un proyecto cualquiera
+    filas.append({"proyecto_id": "C0", "anio": 2022, "llega_recinto": False, "sancionado": 0})
+    return pd.DataFrame(filas)
+
+
+def test_factor_empirico_walkforward():
+    c = _cohorte_multianio()
+    k = B.factor_revisora_empirico(c, min_prev=10)
+    c = c.assign(k=k)
+    chk(c[c["anio"] == 2020]["k"].isna().all(),
+        "2020 sin años previos -> factor NaN (no inventa)")
+    k2021 = c[c["anio"] == 2021]["k"].iloc[0]
+    chk(abs(k2021 - 0.5) < 1e-9,
+        "2021 usa SOLO 2020 (tasa 0.5), no su propio año -> sin fuga")
+    k2022 = c[c["anio"] == 2022]["k"].iloc[0]
+    # 2022 usa 2020+2021 = (20+10)/(40+40) = 0.375
+    chk(abs(k2022 - 0.375) < 1e-9, "2022 acumula 2020+2021 = 0.375 (walk-forward)")
+
+
 if __name__ == "__main__":
+    test_factor_empirico_walkforward()
     test_skill_score()
     test_memoizacion()
     test_memoizacion_tolera_fallos()
@@ -168,4 +253,8 @@ if __name__ == "__main__":
     test_resumen()
     test_backends_dtype()
     test_backend_con_faltante_pdNA()
+    test_revisora_memoizacion()
+    test_componer_con_revisora_triple()
+    test_componer_revisora_descarta_mes_faltante()
+    test_revisora_backend_faltante_pdNA()
     print(f"\nOK: {OK} chequeos")

@@ -1,0 +1,56 @@
+{
+  "n_evaluados": 35453,
+  "version": "fina empirica (2a camara medida)",
+  "tasa_base_sancion": 0.0168,
+  "brier_climatologia": 0.01653,
+  "cadena": {
+    "brier": 0.01197,
+    "auc": 0.9665,
+    "skill_vs_climatologia": 0.2758,
+    "skill_vs_embudo": -0.0248,
+    "calibracion": [
+      {
+        "bin": 0,
+        "n": 34337,
+        "pred": 0.0071,
+        "real": 0.0057
+      },
+      {
+        "bin": 1,
+        "n": 507,
+        "pred": 0.1384,
+        "real": 0.1953
+      },
+      {
+        "bin": 2,
+        "n": 170,
+        "pred": 0.2463,
+        "real": 0.4
+      },
+      {
+        "bin": 3,
+        "n": 140,
+        "pred": 0.3466,
+        "real": 0.4571
+      },
+      {
+        "bin": 4,
+        "n": 216,
+        "pred": 0.4595,
+        "real": 0.5556
+      },
+      {
+        "bin": 5,
+        "n": 83,
+        "pred": 0.5121,
+        "real": 0.6024
+      }
+    ]
+  },
+  "baseline_embudo_p_sancion": {
+    "brier": 0.01168,
+    "auc": 0.9694,
+    "skill_vs_climatologia": 0.2933
+  },
+  "nota": "cadena = p_llega x p_mayoria(origen) x k_revisora, donde k_revisora es la 2a camara MEDIDA (walk-forward): P(sancion|llego al recinto) de años previos. Captura la atenuacion REAL (agenda/attrition en la revisora: ~54% de lo que llega al recinto se sanciona), que el voto simulado no ve porque la votacion de PISO casi siempre pasa. Cubre toda la cohorte. El voto de origen sigue sin condicionar por tema/origen (da p~1 y aporta poco): ese es el limite restante."
+}

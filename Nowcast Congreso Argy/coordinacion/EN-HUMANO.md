@@ -44,6 +44,31 @@ Para coordinarnos hay tres papeles siempre a la vista:
 ## En una frase
 Ya sabemos que adivinar el voto individual no sirve (el bloque lo explica casi todo); el valor está en la asistencia, el embudo y la cúpula. Estamos armando una base de datos propia (arrancada con el trabajo de Andy Tow y mantenida por un bot), con un formato común y una forma de trabajar en equipo sin pisarnos.
 
+## Corrección de rumbo: la segunda cámara se mide como VOTO, no como "¿la tratan?"
+Durante la sesión me fui por un camino equivocado y Valle lo corrigió. Yo había intentado estimar "qué chance hay de que la segunda cámara trate el proyecto" con un promedio histórico. Pero eso es justo lo que decidimos NO medir cuando sacamos la etapa de comisiones: si una cámara pone o no un proyecto en el recinto es una decisión política pura (negociación de bloques, la vice, la oposición), volátil y atada al contexto —más aún en un período tan atípico como el de Milei—. Ningún promedio la captura.
+
+Lo correcto, que es lo que vamos a hacer: la segunda cámara se calcula igual que la primera —**¿gana la votación, dada la composición real de esa cámara?**— y el "si la tratan o no" se **observa** (se mira si está en agenda), no se adivina. El trabajo de fondo que sigue es hacer que el sistema entienda **de qué trata y de qué lado juega cada proyecto**, porque eso es lo que hace que la estimación del voto distinga un proyecto de otro —en las dos cámaras, no en una—. Hoy, sin eso, el motor dice "pasa" casi siempre; con eso, discrimina de verdad (como en Ganancias, que daba el Senado al filo).
+
+## Arreglo con control humano: sacamos "designaciones" de lo que cuenta como ley
+El sistema, para medir la postura de los bloques, mira sólo las votaciones de leyes de verdad (los tratados, homenajes y designaciones se aprueban por consenso y ensucian la señal). Se coló un grupo que no debía: las **designaciones del Senado** (cónsules, jueces, embajadores), que figuraban mal etiquetadas como "ley". Se agregó un filtro que las saca — pero **conservador a propósito**: sólo cuando el título es inequívocamente un nombramiento, para no borrar por error una ley real.
+
+Y lo importante para la confianza: el filtro **deja escrita, cada vez que corre, una lista en castellano de todo lo que sacó**, para que una persona la revise de un vistazo. De hecho, armándolo se coló por error una ley real (una sobre el procedimiento para nombrar jueces suplentes); esa lista la detectó enseguida y quedó como control para que no vuelva a pasar. La idea: que no haya que confiar a ciegas en el filtro, sino poder auditarlo siempre.
+
+## Ajustes: la prueba ahora corre en segundos, y una idea queda para más adelante
+Dos cosas de mantenimiento. Primero, la herramienta que mide si el sistema le acierta a la realidad ahora corre **mucho más rápido**: antes releía toda la base de votaciones una y otra vez (por eso tardaba minutos); ahora la lee una sola vez y da exactamente el mismo resultado, pero en segundos. Eso nos deja probar variantes sin esperar.
+
+Segundo, quedó **parqueada para después** (para cuando el sistema ya esté publicado y andando) una idea sobre la segunda cámara: modelar el "reloj" que hace caducar un proyecto si no lo tratan a tiempo. Decisión de Valle, con buen fundamento: los tiempos de tratamiento son políticos —lo que va a ser ley se trata rápido, y lo que no tiene peso político (la mayoría) nunca avanza—, y eso el sistema ya lo captura "en promedio" con el número que pusimos. Afinarlo fino es un lujo para más adelante, no algo que frene nada.
+
+## Avance: le sumamos la segunda cámara bien, y el sistema empata a lo que teníamos
+Entendimos algo que cambia cómo se suma la segunda cámara. De los proyectos que **llegan a votarse**, poco más de la mitad (54%) terminan siendo ley. Lo importante: esa mitad que se cae **no pierde la votación** — casi todo lo que se vota, se aprueba. Lo que pasa es que muchos proyectos **nunca llegan a tratarse** en la segunda cámara, o se cambian y quedan en la nada. Por eso no servía "simular la votación" del Senado (esa da que sí casi siempre): lo que hay que meter es esa realidad de que "más o menos la mitad completa el camino".
+
+Metiéndolo como corresponde (usando sólo la historia previa a cada proyecto, sin hacer trampa con el futuro), el sistema completo pasó de estar **claramente por debajo** de la pieza que ya teníamos a **quedar empatado** con ella. Quedó hecho y probado dentro de la herramienta, listo para correr cuando quieras.
+
+## Hallazgo: el simulador dice "pasa seguro" casi siempre, y por qué eso importa
+Al probar sumarle la segunda cámara al sistema, apareció algo que ordena la prioridad: el simulador de votaciones, cuando no le decimos **de qué trata** el proyecto, contesta "hay mayoría" con casi total certeza — en las dos cámaras (en Diputados, en 9 de cada 10 casos). Suena bien pero es un problema: si siempre dice que sí, no distingue un proyecto de otro. Por eso agregar la segunda cámara "a lo mecánico" no cambió nada (multiplica por casi uno), mientras que el número fijo de la vez anterior sí ayudaba, porque metía la realidad de que la mitad se cae.
+
+La conclusión útil: las dos cosas que parecían pendientes separadas (la segunda cámara y "decirle de qué trata cada proyecto") son en realidad **una con orden**: primero hay que decirle de qué trata; recién ahí el simulado de cualquier cámara vale la pena. Quedó todo anotado y la herramienta lista para cuando se haga ese paso.
+
 ## Cerramos un pendiente urgente: la cadena ya se re-corrió con los linajes nuevos
 Había quedado anotado en la lista de "urgente" que, después de arreglar cómo se agrupan los bloques de izquierda, faltaba volver a correr dos piezas que dependían de ese cambio (el clima político y el simulador de votación) y **guardar todo en el repositorio**. Se verificó contra el disco que las dos piezas ya estaban rehechas y quedaron guardadas en el commit del 13 de agosto. Como ya está resuelto, se sacó de la lista de urgentes (el registro completo queda en la bitácora técnica). La lista de urgentes queda con un solo tema, y de baja prioridad: validar unas pocas filas del listado de jefes de bloque.
 

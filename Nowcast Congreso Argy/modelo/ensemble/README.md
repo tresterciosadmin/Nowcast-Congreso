@@ -58,6 +58,9 @@ embudo?). Consume contratos públicos; no reimplementa la cohorte ni las métric
   (≥2 años) evita etiquetar como "no sancionado" a proyectos que aún podrían serlo.
 - **Memoización:** en v1 la postura NO se condiciona por tema/origen, así que `p_mayoría`
   depende solo de (cámara, mes) → se calcula una vez por mes. Corrida liviana.
+- **Optimizado (2026-08-13):** la canónica (1M+ votos) se carga UNA sola vez, no una por mes
+  (`construir_nowcast_mes_hoisteado`, reproduce EXACTO la cadena de `nowcast_auto`). Un año de
+  Diputados corre en ~20 s (antes, minutos). La corrida completa igual conviene en PowerShell.
 - **Alcance real v1 = Diputados.** El Senado histórico no se puede rostear con el padrón por
   defecto de `nowcast_auto` (`padron_senado.csv` = 72 vigentes; el histórico arranca fin-2017 y
   `nowcast_auto` no expone `padron_file`). Y el hueco Diputados 2020-2023 (pausado) invalida la

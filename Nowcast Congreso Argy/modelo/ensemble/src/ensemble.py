@@ -281,11 +281,29 @@ def _p_llega_de_embudo(proyecto_id: str, p_embudo_path: Path) -> float | None:
 # --------------------------------------------------------------------------- #
 # Nowcast                                                                      #
 # --------------------------------------------------------------------------- #
+# Incertidumbre IRREDUCIBLE (2026-08-14, pedido de Valle). Dos topes contra la
+# sobreconfianza del agregado, que bajo votos independientes daba P(mayoría)=100% exacto:
+#  - DESVIO_MIN_INDIVIDUAL: ni el legislador más leal es un 100% seguro. Se le pone un
+#    piso de desvío a CADA legislador antes de simular (un 0% medido sobre historia
+#    finita no es un 0 real: siempre hay ausencia/enfermedad/sorpresa).
+#  - P_INCERTIDUMBRE: ninguna votación es 0%/100% segura — hay riesgo SISTÉMICO
+#    (ausencias masivas, un sacudón político, una sorpresa de bloque) que el supuesto
+#    de votos INDEPENDIENTES no capta. P(mayoría) se reporta en [ε, 1-ε].
+DESVIO_MIN_INDIVIDUAL = 0.02
+P_INCERTIDUMBRE = 0.01
+
+
 def nowcast_proyecto(proyecto_id: str, lineas: np.ndarray, desvios: np.ndarray,
                      tipo_mayoria: str, camara: str, p_embudo_path: Path,
-                     p_llega=None, n_sims: int = 2000) -> dict:
+                     p_llega=None, n_sims: int = 2000,
+                     desvio_min: float = DESVIO_MIN_INDIVIDUAL,
+                     p_incertidumbre: float = P_INCERTIDUMBRE) -> dict:
     """Nowcast end-to-end de un proyecto sobre un roster NOMINAL ya armado
-    (una línea y un desvío POR LEGISLADOR). P(aprobación) descompuesta."""
+    (una línea y un desvío POR LEGISLADOR). P(aprobación) descompuesta.
+
+    `desvio_min`: piso de desvío por legislador (nadie es un 100% lock).
+    `p_incertidumbre`: ε de incertidumbre sistémica; P(mayoría) se clampa a [ε, 1-ε]
+    (nunca 0%/100%). Poné ambos en 0 para el comportamiento crudo anterior."""
     simular = _cargar_simulador()
 
     # factor 1: P(llega al recinto) — del embudo (o override explícito).
@@ -299,11 +317,16 @@ def nowcast_proyecto(proyecto_id: str, lineas: np.ndarray, desvios: np.ndarray,
             "el denominador, o pasá p_llega explícito.")
     p_llega = float(np.clip(p_llega, 0.0, 1.0))
 
-    # factor 2: P(mayoría | recinto) — simulación legislador por legislador
-    sim = simular(np.asarray(lineas), np.asarray(desvios, dtype=float),
+    # factor 2: P(mayoría | recinto) — simulación legislador por legislador.
+    # piso de desvío: ni el más leal es un lock (nadie con P(acompaña)=1 exacto).
+    desv = np.maximum(np.asarray(desvios, dtype=float), float(max(desvio_min, 0.0)))
+    sim = simular(np.asarray(lineas), desv,
                   tipo_mayoria=tipo_mayoria, camara=str(camara).strip().lower(),
                   n_sims=n_sims)
-    p_mayoria = float(sim["p_aprobacion"])
+    # techo/piso de confianza: nunca 0%/100% (riesgo sistémico no captado por la
+    # independencia entre legisladores).
+    eps = float(np.clip(p_incertidumbre, 0.0, 0.5))
+    p_mayoria = float(np.clip(sim["p_aprobacion"], eps, 1.0 - eps))
 
     p_aprob = componer(p_llega, p_mayoria)
     return {

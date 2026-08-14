@@ -56,8 +56,18 @@ embudo?). Consume contratos públicos; no reimplementa la cohorte ni las métric
 
 - **Point-in-time honesto:** cada proyecto se evalúa a su `fecha_publicacion`; `cohorte_madura`
   (≥2 años) evita etiquetar como "no sancionado" a proyectos que aún podrían serlo.
-- **Memoización:** en v1 la postura NO se condiciona por tema/origen, así que `p_mayoría`
-  depende solo de (cámara, mes) → se calcula una vez por mes. Corrida liviana.
+- **Memoización:** por defecto la postura NO se condiciona, así que `p_mayoría` depende solo de
+  (cámara, mes) → se calcula una vez por mes. Corrida liviana.
+- **`--origen-por-proyecto` (2026-08-14):** condiciona la postura de bloque por el ORIGEN FINO de
+  cada proyecto (EJECUTIVO=mensaje del PE/JGM · OFICIALISMO=legislador del gobierno · OPOSICION),
+  leído de `variables/proyecto/features_proyecto.parquet`. La memoización pasa a
+  (cámara, mes, **origen**). Es opt-in y aditivo: sin el flag el comportamiento es idéntico a v1.
+  Motivo (medido contra votos reales era-Milei, control `validar_condicionamiento_votos.py`,
+  69.628 votos walk-forward): condicionar sube el acierto del voto de **59% a 76%**, y **separar el
+  PE del oficialista es clave** — el oficialista agrupado con el PE da 42% (peor que no condicionar),
+  separado da 78%. OJO: en Diputados el P(mayoría) AGREGADO satura ~1 igual (la cámara es goleada),
+  así que la mejora vive en la fidelidad del voto por bloque/legislador, no necesariamente en el
+  pass/fail. Salida → `outputs/backtest_cadena_origen.json`.
 - **Optimizado (2026-08-13):** la canónica (1M+ votos) se carga UNA sola vez, no una por mes
   (`construir_nowcast_mes_hoisteado`, reproduce EXACTO la cadena de `nowcast_auto`). Un año de
   Diputados corre en ~20 s (antes, minutos). La corrida completa igual conviene en PowerShell.
@@ -72,12 +82,16 @@ embudo?). Consume contratos públicos; no reimplementa la cohorte ni las métric
 ```powershell
 # corrida real (Valle, en su PC): Diputados, cohorte completa
 python "Nowcast Congreso Argy\modelo\ensemble\src\backtest_cadena.py" --camara Diputados --n-sims 2000
+# con condicionamiento por origen fino (PE/oficialista/oposicion):
+python "Nowcast Congreso Argy\modelo\ensemble\src\backtest_cadena.py" --camara Diputados --n-sims 2000 --origen-por-proyecto
+# control de fidelidad del voto vs votos reales (apagado/lado/fino):
+python "Nowcast Congreso Argy\modelo\ensemble\validar_condicionamiento_votos.py"
 ```
 
 ## Tests
 ```bash
 python modelo/ensemble/tests/test_ensemble.py          # 32 chequeos offline (sin datos)
-python modelo/ensemble/tests/test_backtest_cadena.py   # 31 chequeos offline, dos backends de dtype
+python modelo/ensemble/tests/test_backtest_cadena.py   # 53 chequeos offline, dos backends de dtype
 ```
 
 ## Pendientes / v2

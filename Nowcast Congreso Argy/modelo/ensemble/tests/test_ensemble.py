@@ -128,6 +128,22 @@ def main():
     chk(a_favor["p_aprobacion"] <= a_favor["p_llega_recinto"] + 1e-9,
         "el embudo es techo: P(aprobación) <= P(llega al recinto)")
 
+    # --- incertidumbre irreducible: P(mayoría) nunca 0%/100% (pedido de Valle) ---
+    goleada = np.array(["AFIRMATIVO"] * 257)          # todos leales, colchón enorme
+    dev_cero = np.zeros(257)                            # desvío 0: sin piso serían locks
+    g = E.nowcast_proyecto("PG", goleada, dev_cero, "SIMPLE", "diputados", dummy, p_llega=1.0)
+    chk(g["p_mayoria_recinto"] <= 0.99 + 1e-9,
+        "goleada total NO da 100%: se clampa a 99% (riesgo sistémico)")
+    chk(g["p_mayoria_recinto"] >= 0.99 - 1e-9,
+        "y queda EN el techo 0,99 (no menos: es una goleada)")
+    derrota = np.array(["NEGATIVO"] * 257)
+    d = E.nowcast_proyecto("PD", derrota, dev_cero, "SIMPLE", "diputados", dummy, p_llega=1.0)
+    chk(d["p_mayoria_recinto"] >= 0.01 - 1e-9, "derrota total NO da 0%: piso 1%")
+    # apagar los topes (=0) recupera el comportamiento crudo (para el backtest del agregador)
+    crudo = E.nowcast_proyecto("PC", goleada, dev_cero, "SIMPLE", "diputados", dummy,
+                               p_llega=1.0, desvio_min=0.0, p_incertidumbre=0.0)
+    chk(crudo["p_mayoria_recinto"] >= 0.999, "con topes en 0, la goleada vuelve a ~1 (crudo)")
+
     # --- el desvío individual MUEVE el resultado (las bisagras pesan) ---
     lin_justa = np.array(["AFIRMATIVO"] * 130 + ["NEGATIVO"] * 127)
     disciplinados = E.nowcast_proyecto("P5", lin_justa, np.full(257, 0.01),

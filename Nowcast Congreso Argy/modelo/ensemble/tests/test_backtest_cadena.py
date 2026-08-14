@@ -243,7 +243,77 @@ def test_factor_empirico_walkforward():
     chk(abs(k2022 - 0.375) < 1e-9, "2022 acumula 2020+2021 = 0.375 (walk-forward)")
 
 
+# --- condicionar por ORIGEN FINO (camara, mes, origen) ------------------- #
+def _cohorte_con_origen():
+    """Cohorte con origen_fino: mismos (camara,mes) pero DISTINTO origen -> deben
+    ser claves separadas."""
+    filas = []
+    origenes = ["EJECUTIVO", "OFICIALISMO", "OPOSICION", None]
+    for i in range(8):
+        filas.append({
+            "proyecto_id": f"P{i}", "camara": "Diputados", "mes": "2023-05", "anio": 2023,
+            "sancionado": 1 if i % 2 == 0 else 0, "p_llega": 0.5,
+            "p_sancion_embudo": 0.3, "origen_fino": origenes[i % 4],
+        })
+    return pd.DataFrame(filas)
+
+
+def test_norm_origen():
+    chk(B._norm_origen(None) is None, "None -> None")
+    chk(B._norm_origen(float("nan")) is None, "nan -> None (pyarrow pd.NA cubierto)")
+    chk(B._norm_origen("EJECUTIVO") == "EJECUTIVO", "str se conserva")
+
+
+def test_grupo_memoizacion():
+    llamadas = []
+
+    def fake(camara, mes, origen):
+        llamadas.append((camara, mes, origen))
+        return 0.5
+
+    c = _cohorte_con_origen()
+    pmay = B.construir_p_mayoria_por_grupo(c, fake)
+    # 1 camara x 1 mes x 4 origenes (incl. None) = 4 claves, aunque hay 8 proyectos
+    chk(len(pmay) == 4, "4 (camara,mes,origen) unicos memoizados")
+    chk(len(llamadas) == 4, "el factor se calculo 4 veces (una por origen), no 8")
+    chk(("Diputados", "2023-05", "EJECUTIVO") in pmay, "clave con origen EJECUTIVO")
+    chk(("Diputados", "2023-05", None) in pmay, "clave con origen None (incondicional)")
+
+
+def test_componer_por_origen():
+    c = _cohorte_con_origen()
+    pmay = {("Diputados", "2023-05", "EJECUTIVO"): 0.9,
+            ("Diputados", "2023-05", "OFICIALISMO"): 0.4,
+            ("Diputados", "2023-05", "OPOSICION"): 0.2,
+            ("Diputados", "2023-05", None): 0.5}
+    out = B.componer_backtest(c, pmay, por_origen=True)
+    chk(len(out) == 8, "todas las filas encuentran su p_mayoria por origen")
+    fila_pe = out[out["proyecto_id"] == "P0"].iloc[0]   # EJECUTIVO
+    chk(abs(fila_pe["p_mayoria"] - 0.9) < 1e-9, "P0 (EJECUTIVO) toma 0.9, no el incondicional")
+    fila_ofi = out[out["proyecto_id"] == "P1"].iloc[0]  # OFICIALISMO
+    chk(abs(fila_ofi["p_mayoria"] - 0.4) < 1e-9, "P1 (OFICIALISMO) toma 0.4 (distinto del PE)")
+
+
+def test_por_origen_dos_backends():
+    base = _cohorte_con_origen()
+    pmay = {("Diputados", "2023-05", "EJECUTIVO"): 0.9,
+            ("Diputados", "2023-05", "OFICIALISMO"): 0.4,
+            ("Diputados", "2023-05", "OPOSICION"): 0.2,
+            ("Diputados", "2023-05", None): 0.5}
+    for backend in ("numpy_nullable", "pyarrow"):
+        try:
+            c = base.convert_dtypes(dtype_backend=backend)
+        except Exception:
+            continue
+        out = B.componer_backtest(c, pmay, por_origen=True)
+        chk(len(out) == 8, f"backend {backend}: por_origen no rompe (pd.NA en origen cubierto)")
+
+
 if __name__ == "__main__":
+    test_norm_origen()
+    test_grupo_memoizacion()
+    test_componer_por_origen()
+    test_por_origen_dos_backends()
     test_factor_empirico_walkforward()
     test_skill_score()
     test_memoizacion()

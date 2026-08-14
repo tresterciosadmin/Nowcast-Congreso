@@ -157,6 +157,36 @@ def preparar_cohorte(embudo, p_embudo: pd.DataFrame,
 
 
 # --------------------------------------------------------------------------- #
+# Origen FINO por proyecto (EJECUTIVO / OFICIALISMO / OPOSICION) para condicionar #
+# --------------------------------------------------------------------------- #
+_ORIGEN_FINO = ("EJECUTIVO", "OFICIALISMO", "OPOSICION")
+
+
+def origen_fino_por_proyecto(cohorte: pd.DataFrame) -> pd.Series:
+    """Serie alineada a `cohorte` con el ORIGEN FINO de cada proyecto
+    (EJECUTIVO=mensaje del PE/JGM, OFICIALISMO=legislador del gobierno, OPOSICION),
+    leido del contrato `variables/proyecto/features_proyecto.parquet` por proyecto_id.
+    Devuelve None donde no hay match o el origen es DESCONOCIDO -> ese proyecto se
+    proyecta SIN condicionar (idéntico a v1). Guardas de faltante con pd.isna()."""
+    fp_path = _root() / "variables" / "proyecto" / "data" / "features_proyecto.parquet"
+    if not fp_path.exists():
+        logger.warning("sin features_proyecto (%s): no puedo condicionar por origen; "
+                       "queda incondicional", fp_path)
+        return pd.Series([None] * len(cohorte), index=cohorte.index, dtype="object")
+    fp = pd.read_parquet(fp_path, columns=["proyecto_id", "origen"])
+    mp = dict(zip(fp["proyecto_id"].astype(str), fp["origen"].astype("string")))
+
+    def _fino(pid) -> object:
+        o = mp.get(str(pid))
+        if o is None or pd.isna(o):
+            return None
+        o = str(o).upper()
+        return o if o in _ORIGEN_FINO else None
+
+    return cohorte["proyecto_id"].astype(str).map(_fino)
+
+
+# --------------------------------------------------------------------------- #
 # Factor 2 memoizado por (camara, mes) via nowcast_auto (contrato del ensemble) #
 # --------------------------------------------------------------------------- #
 def nowcast_mes_auto(nowcast_auto, camara: str, mes: str, *, n_sims: int,
@@ -171,7 +201,11 @@ def nowcast_mes_auto(nowcast_auto, camara: str, mes: str, *, n_sims: int,
     return float(nc["p_mayoria_recinto"])
 
 
+_SENT = object()
+
+
 def construir_nowcast_mes_hoisteado(*, n_sims: int, tema=None, origen=None,
+                                    cond_siempre: bool = False,
                                     p_embudo_path: Path):
     """OPTIMIZACION: carga la canonica UNA sola vez (no una por mes) y devuelve el
     `nowcast_mes_fn(camara, mes)` que usa esos votos precargados. Reproduce EXACTO la
@@ -186,13 +220,17 @@ def construir_nowcast_mes_hoisteado(*, n_sims: int, tema=None, origen=None,
     cargar_bloque, proyectar_postura, cargar_tema_por_acta = _cargar_proyector()
     canon = _root() / "datos" / "canonica" / "data" / "clean"
     votos = cargar_bloque(canon)                       # <-- UNA sola vez
-    cond = cargar_tema_por_acta() if (tema or origen) else None
+    # el mapa tema/origen por acta se necesita si hay condicionamiento global (tema/origen)
+    # o si se va a condicionar por-proyecto (cond_siempre): en ese caso el origen llega por
+    # llamada, asi que hay que tenerlo cargado aunque el global sea None.
+    cond = cargar_tema_por_acta() if (tema or origen or cond_siempre) else None
     logger.info("canonica precargada una vez (%d filas); proyeccion por mes reusa esto",
                 len(votos))
 
-    def nowcast_mes_fn(camara: str, mes: str) -> float:
+    def nowcast_mes_fn(camara: str, mes: str, origen_override=_SENT) -> float:
+        o = origen if origen_override is _SENT else origen_override
         fecha = f"{mes}-15"
-        bloques = proyectar_postura(votos, fecha, camara, tema=tema, origen=origen,
+        bloques = proyectar_postura(votos, fecha, camara, tema=tema, origen=o,
                                     cond_por_acta=cond)
         lineas, desvios, _ = roster_nominal(camara, fecha, bloques)
         nc = nowcast_proyecto("BACKTEST-MES", lineas, desvios, "SIMPLE", camara,
@@ -218,6 +256,36 @@ def construir_p_mayoria_por_mes(cohorte: pd.DataFrame, nowcast_mes_fn) -> dict:
             fallidas += 1
             logger.warning("sin p_mayoria para (%s, %s): %s", camara, mes, e)
     logger.info("p_mayoria calculado para %d meses-camara (%d fallidos)",
+                len(out), fallidas)
+    return out
+
+
+def _norm_origen(o) -> object:
+    """Normaliza el origen a str o None (cubre None y el pd.NA de pyarrow)."""
+    if o is None or (not isinstance(o, str) and pd.isna(o)):
+        return None
+    return str(o)
+
+
+def construir_p_mayoria_por_grupo(cohorte: pd.DataFrame, nowcast_mes_fn) -> dict:
+    """Como construir_p_mayoria_por_mes pero memoiza por (camara, mes, ORIGEN FINO):
+    un p_mayoria por cada combinacion unica. `nowcast_mes_fn(camara, mes, origen)->float`
+    recibe el origen (o None -> incondicional). Requiere cohorte con `origen_fino`."""
+    claves = (cohorte[["camara", "mes", "origen_fino"]]
+              .drop_duplicates().itertuples(index=False))
+    out: dict[tuple[str, str, object], float] = {}
+    fallidas = 0
+    for camara, mes, origen in claves:
+        oc = _norm_origen(origen)
+        try:
+            p = nowcast_mes_fn(str(camara), str(mes), oc)
+            if pd.isna(p):
+                raise ValueError("p_mayoria NaN")
+            out[(str(camara), str(mes), oc)] = float(np.clip(p, 0.0, 1.0))
+        except (ValueError, KeyError, RuntimeError, FileNotFoundError) as e:
+            fallidas += 1
+            logger.warning("sin p_mayoria para (%s, %s, %s): %s", camara, mes, origen, e)
+    logger.info("p_mayoria calculado para %d (mes-camara-origen) (%d fallidos)",
                 len(out), fallidas)
     return out
 
@@ -288,14 +356,22 @@ def factor_revisora_empirico(cohorte: pd.DataFrame, min_prev: int = 30) -> pd.Se
 # Composicion + metricas                                                        #
 # --------------------------------------------------------------------------- #
 def componer_backtest(cohorte: pd.DataFrame, p_mayoria_map: dict,
-                      p_revisora_map: dict | None = None) -> pd.DataFrame:
+                      p_revisora_map: dict | None = None,
+                      por_origen: bool = False) -> pd.DataFrame:
     """Agrega p_mayoria (por mes) y p_aprob. Sin `p_revisora_map`: la cadena de v1,
     p_aprob = p_llega x p_mayoria (cámara de origen). Con `p_revisora_map` (versión
     FINA): p_aprob = p_llega x p_mayoria_origen x p_mayoria_revisora — la segunda
-    cámara simulada. Descarta las filas sin el factor de su mes."""
+    cámara simulada. Descarta las filas sin el factor de su mes.
+
+    `por_origen=True`: busca p_mayoria por (camara, mes, ORIGEN FINO) — requiere que
+    cohorte traiga `origen_fino` y que p_mayoria_map este keyed por esa terna."""
     c = cohorte.copy()
-    c["p_mayoria"] = [p_mayoria_map.get((str(cam), str(mes)))
-                      for cam, mes in zip(c["camara"], c["mes"])]
+    if por_origen:
+        c["p_mayoria"] = [p_mayoria_map.get((str(cam), str(mes), _norm_origen(ori)))
+                          for cam, mes, ori in zip(c["camara"], c["mes"], c["origen_fino"])]
+    else:
+        c["p_mayoria"] = [p_mayoria_map.get((str(cam), str(mes)))
+                          for cam, mes in zip(c["camara"], c["mes"])]
     antes = len(c)
     c = c[c["p_mayoria"].notna()].copy()
     if len(c) < antes:
@@ -375,7 +451,8 @@ def resumen(embudo, c: pd.DataFrame, con_revisora: bool = False,
 # --------------------------------------------------------------------------- #
 def correr(desde=None, hasta=None, camaras=None, n_sims=2000, muestra=None,
            seed=0, tema=None, origen=None, fuente="sqlite",
-           revisora_desde=None, revisora_empirico=False) -> tuple[pd.DataFrame, dict]:
+           revisora_desde=None, revisora_empirico=False,
+           condicionar_origen=False) -> tuple[pd.DataFrame, dict]:
     embudo = _import_embudo()
     p_embudo_path = _root() / "variables" / "embudo" / "outputs" / "p_embudo.parquet"
     p_embudo = pd.read_parquet(p_embudo_path)
@@ -392,8 +469,19 @@ def correr(desde=None, hasta=None, camaras=None, n_sims=2000, muestra=None,
 
     # OPTIMIZADO: la canonica se carga UNA vez (antes se recargaba por mes -> minutos).
     nowcast_mes_fn = construir_nowcast_mes_hoisteado(
-        n_sims=n_sims, tema=tema, origen=origen, p_embudo_path=p_embudo_path)
-    pmay = construir_p_mayoria_por_mes(c, nowcast_mes_fn)
+        n_sims=n_sims, tema=tema, origen=origen, cond_siempre=condicionar_origen,
+        p_embudo_path=p_embudo_path)
+
+    if condicionar_origen:
+        # postura CONDICIONADA por el origen fino de cada proyecto (PE/oficialista/oposicion):
+        # p_mayoria propia de cada terna (camara, mes, origen). El origen sale de features_proyecto.
+        c["origen_fino"] = origen_fino_por_proyecto(c)
+        n_cond = int(c["origen_fino"].notna().sum())
+        logger.info("condicionar-origen ON: %d/%d proyectos con origen fino resuelto",
+                    n_cond, len(c))
+        pmay = construir_p_mayoria_por_grupo(c, nowcast_mes_fn)
+    else:
+        pmay = construir_p_mayoria_por_mes(c, nowcast_mes_fn)
 
     prev = None
     if revisora_desde is not None:
@@ -403,10 +491,10 @@ def correr(desde=None, hasta=None, camaras=None, n_sims=2000, muestra=None,
             return nowcast_revisora_mes_auto(p_voto_revisora, camara, mes, n_sims=n_sims)
 
         # solo pedimos revisora para los meses que sobrevivieron al factor de origen
-        c_origen = componer_backtest(c, pmay)
+        c_origen = componer_backtest(c, pmay, por_origen=condicionar_origen)
         prev = construir_p_revisora_por_mes(c_origen, revisora_mes_fn)
 
-    c = componer_backtest(c, pmay, p_revisora_map=prev)
+    c = componer_backtest(c, pmay, p_revisora_map=prev, por_origen=condicionar_origen)
 
     if revisora_empirico:
         # 2a camara MEDIDA (walk-forward), cubre toda la cohorte
@@ -440,6 +528,10 @@ def main(argv: list[str]) -> None:
     ap.add_argument("--revisora-empirico", action="store_true",
                     help="2a camara MEDIDA (walk-forward P(sancion|llego al recinto)); cubre toda "
                          "la cohorte y captura la atenuacion real. RECOMENDADA.")
+    ap.add_argument("--origen-por-proyecto", action="store_true",
+                    help="condiciona la postura de bloque por el ORIGEN FINO de cada proyecto "
+                         "(EJECUTIVO/OFICIALISMO/OPOSICION, de features_proyecto): p_mayoria propia "
+                         "por (camara, mes, origen) en vez de solo (camara, mes). Sin el flag = v1.")
     ap.add_argument("--out", default=None, help="ruta del JSON resumen (default outputs/)")
     a = ap.parse_args(argv)
 
@@ -447,10 +539,15 @@ def main(argv: list[str]) -> None:
     detalle, res = correr(desde=a.desde, hasta=a.hasta, camaras=camaras,
                           n_sims=a.n_sims, muestra=a.muestra, seed=a.seed,
                           fuente=a.fuente, revisora_desde=a.revisora_desde,
-                          revisora_empirico=a.revisora_empirico)
+                          revisora_empirico=a.revisora_empirico,
+                          condicionar_origen=a.origen_por_proyecto)
 
-    default_out = ("backtest_cadena_fina.json"
-                   if (a.revisora_desde or a.revisora_empirico) else "backtest_cadena.json")
+    if a.revisora_desde or a.revisora_empirico:
+        default_out = "backtest_cadena_fina.json"
+    elif a.origen_por_proyecto:
+        default_out = "backtest_cadena_origen.json"
+    else:
+        default_out = "backtest_cadena.json"
     out = Path(a.out) if a.out else _root() / "modelo" / "ensemble" / "outputs" / default_out
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(res, ensure_ascii=False, indent=2), encoding="utf-8")

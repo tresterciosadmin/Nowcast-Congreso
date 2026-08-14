@@ -38,6 +38,15 @@ Depende de otros (no empezar hasta que su dependencia esté HECHA):
 - [ ] **evaluacion/backtesting** — necesita al menos un modelo nuevo.
 - [ ] **producto/dashboard** — necesita ensemble.
 
+## Sesion 2026-08-14 (Valle+Claude) — ABIERTA, condicionar la postura por ORIGEN FINO del proyecto
+
+| Modulo | Quien | Desde | Que se esta haciendo |
+|---|---|---|---|
+| **modelo/ensemble** | Claude (con Valle) | 2026-08-14 | **Claim a coordinar con Franco.** Cablear en `backtest_cadena.py` el condicionamiento de la postura por el ORIGEN FINO del proyecto (EJECUTIVO / OFICIALISMO / OPOSICION), leido de `features_proyecto`. Aditivo: flag opt-in `--origen-por-proyecto`, memoizacion por `(camara, mes, origen)`; sin el flag el comportamiento v1 queda intacto. Motivo: medido contra votos reales era-Milei (walk-forward, 69.628 votos), condicionar sube el acierto del voto de 59% a 76%; y separar el PE del oficialista es clave (oficialista agrupado da 42%, separado 78%). `proyectar_postura` (Franco) NO se toca: ya condiciona por origen. |
+| **casos/ (Parte B, PENDIENTE)** | — | — | Unificar los informes bicamerales hacia `proyectar_postura` condicionado por origen fino (hoy usan `proyectar_lineas_alineacion`, que promedia todas las leyes y no separa PE de oficialista). Proximo incremento. |
+
+**Decision de Valle (2026-08-14):** condicionar por TRES categorias (PE / oficialistas / oposicion), no dos; y UNIFICAR hacia `proyectar_postura` (un solo motor de condicionamiento). Evidencia en `medir_condicionamiento.py` (control nuevo).
+
 ## Sesion 2026-08-13 (Valle+Claude) — CERRADA, backtest de la cadena completa (modelo/ensemble). MODULO LIBRE.
 
 | Modulo | Quien | Desde | Que se hizo |

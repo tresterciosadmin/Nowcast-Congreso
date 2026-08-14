@@ -51,17 +51,31 @@ UMBRAL_PRODUCTOR = 3   # leyes previas de su autoría para contar como "alto pro
 
 # Ventanas de gobierno: (desde inclusive, hasta exclusive, linajes oficialistas).
 # Fechas de recambio presidencial (10-dic). Linajes = los de datos/canonica.
+# El conjunto oficialista = NÚCLEO ∪ ALIADOS (ver NUCLEO abajo). Se deja 3-tuplas
+# porque varios consumidores desempaquetan (desde, hasta, ofi); el split núcleo/aliado
+# va en la lista paralela NUCLEO para no romper esa firma.
 GOBIERNOS = [
     ("1900-01-01", "2015-12-10", {"KIRCHNERISMO"}),                 # Néstor/CFK
     ("2015-12-10", "2019-12-10", {"PRO", "RADICALISMO", "CC"}),     # Cambiemos (Macri)
     ("2019-12-10", "2023-12-10", {"KIRCHNERISMO"}),                 # Frente de Todos (A. Fernández)
     ("2023-12-10", "2100-01-01", {"LLA", "PRO"}),                   # La Libertad Avanza (Milei) + PRO
 ]
-# PRO sumado a Milei (Valle 2026-08-09): PRO acompaña la agenda del gobierno en el
-# Congreso. Matiz sin resolver: la alianza se consolidó DURANTE 2024, no desde el
-# 10-dic-2023; los votos PRO de los primeros meses de Milei quedan etiquetados como
-# oficialismo aunque el acuerdo todavía no estaba cerrado. Se deja así por ahora
-# (la tabla usa los recambios del 10-dic como únicos cortes); afinar si hace ruido.
+# NÚCLEO (partido de gobierno) dentro de cada conjunto oficialista, ALINEADO 1:1 con
+# GOBIERNOS. Lo que está en el conjunto oficialista pero NO en el núcleo = ALIADO.
+# Decisión de Valle (2026-08-14): distinguir el partido propio de sus aliados, porque
+# no se comportan igual — LLA no acompaña la agenda regulatoria de PRO aunque sea aliado
+# (la categoría "OFICIALISMO" vieja mezclaba PRO con LLA y daba señales absurdas).
+NUCLEO = [
+    {"KIRCHNERISMO"},   # Néstor/CFK: sin aliados con etiqueta propia
+    {"PRO"},            # Macri: núcleo PRO; aliados = RADICALISMO, CC (Cambiemos)
+    {"KIRCHNERISMO"},   # Frente de Todos: sin aliados con etiqueta propia
+    {"LLA"},            # Milei: núcleo LLA; aliado = PRO
+]
+# PRO aliado de Milei (Valle 2026-08-09): PRO acompaña la agenda del gobierno en el
+# Congreso pero NO es el partido de gobierno. Matiz sin resolver: la alianza se consolidó
+# DURANTE 2024, no desde el 10-dic-2023; los votos PRO de los primeros meses de Milei
+# quedan etiquetados como aliado aunque el acuerdo todavía no estaba cerrado. Se deja así
+# por ahora (la tabla usa los recambios del 10-dic como únicos cortes); afinar si hace ruido.
 
 
 def _norm(s) -> str:
@@ -107,13 +121,33 @@ def _linaje_code(linaje) -> str | None:
 
 
 def oficialista_por_fecha(linaje, fecha):
-    """True si el linaje gobernaba en esa fecha; False si no; None si sin dato."""
+    """True si el linaje gobernaba (núcleo O aliado) en esa fecha; False si no;
+    None si sin dato. (Sin cambios de contrato: sigue agrupando núcleo+aliados.)"""
     code = _linaje_code(linaje)
     if code is None or pd.isna(fecha):
         return None
     for desde, hasta, ofi in GOBIERNOS:
         if pd.Timestamp(desde) <= fecha < pd.Timestamp(hasta):
             return code in ofi
+    return None
+
+
+def clase_oficialismo(linaje, fecha):
+    """Distingue el partido de gobierno de sus aliados en esa fecha:
+      'NUCLEO'  -> partido propio de gobierno (LLA en Milei, PRO en Macri, ...)
+      'ALIADO'  -> bloque oficialista NO-núcleo (PRO en Milei, UCR/CC en Macri, ...)
+      None      -> opositor o sin dato.
+    Es el refinamiento de `oficialista_por_fecha` (que devuelve True para núcleo Y aliado)."""
+    code = _linaje_code(linaje)
+    if code is None or pd.isna(fecha):
+        return None
+    for (desde, hasta, ofi), nuc in zip(GOBIERNOS, NUCLEO):
+        if pd.Timestamp(desde) <= fecha < pd.Timestamp(hasta):
+            if code in nuc:
+                return "NUCLEO"
+            if code in ofi:
+                return "ALIADO"
+            return None
     return None
 
 
@@ -268,12 +302,16 @@ def construir_features(dfs: dict, jefes_csv: Path) -> pd.DataFrame:
     exp["match_autor"] = exp["autor_linaje"].notna()
     exp["oficialista"] = [
         oficialista_por_fecha(lin, f) for lin, f in zip(exp["autor_linaje"], exp["fecha"])]
+    exp["clase_ofi"] = [
+        clase_oficialismo(lin, f) for lin, f in zip(exp["autor_linaje"], exp["fecha"])]
 
     def _origen(r):
         if r["es_ejecutivo"]:
             return "EJECUTIVO"
-        if r["oficialista"] is True:
-            return "OFICIALISMO"
+        if r["clase_ofi"] == "NUCLEO":
+            return "OFICIALISMO"     # partido propio de gobierno
+        if r["clase_ofi"] == "ALIADO":
+            return "ALIADOS"         # aliado oficialista (PRO en Milei, UCR/CC en Macri)
         if r["oficialista"] is False:
             return "OPOSICION"
         return "DESCONOCIDO"

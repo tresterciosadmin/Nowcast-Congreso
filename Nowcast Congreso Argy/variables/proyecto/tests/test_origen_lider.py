@@ -68,8 +68,22 @@ def main():
         "PRO oficialista en 2017")
     chk(O.oficialista_por_fecha("LLA", pd.Timestamp("2024-06-01")) is True,
         "LLA oficialista en 2024")
-    chk(O.oficialista_por_fecha("PRO", pd.Timestamp("2024-06-01")) is False,
-        "PRO opositor/aliado en 2024 (no cuenta como oficialista)")
+    chk(O.oficialista_por_fecha("PRO", pd.Timestamp("2024-06-01")) is True,
+        "PRO oficialista (aliado) en 2024 con Milei — fix PRO-Milei 08-09")
+
+    # --- núcleo vs aliado (Valle 2026-08-14) ---
+    chk(O.clase_oficialismo("LLA", pd.Timestamp("2024-06-01")) == "NUCLEO",
+        "LLA = NUCLEO en Milei (partido de gobierno)")
+    chk(O.clase_oficialismo("PRO", pd.Timestamp("2024-06-01")) == "ALIADO",
+        "PRO = ALIADO en Milei (oficialista no-núcleo)")
+    chk(O.clase_oficialismo("PRO", pd.Timestamp("2017-06-01")) == "NUCLEO",
+        "PRO = NUCLEO con Macri")
+    chk(O.clase_oficialismo("RADICALISMO", pd.Timestamp("2017-06-01")) == "ALIADO",
+        "RADICALISMO = ALIADO con Macri (Cambiemos)")
+    chk(O.clase_oficialismo("FDT-UXP", pd.Timestamp("2013-06-01")) == "NUCLEO",
+        "kirchnerismo = NUCLEO en 2013")
+    chk(O.clase_oficialismo("PRO", pd.Timestamp("2013-06-01")) is None,
+        "PRO opositor en 2013 -> clase None")
 
     # --- construir features ---
     dfs = fixture()
@@ -82,7 +96,7 @@ def main():
     chk(by.loc["5-D-2020", "origen"] == "EJECUTIVO", "MENSAJE -> origen EJECUTIVO")
     chk(by.loc["1-D-2013", "origen"] == "OFICIALISMO", "Perón 2013 -> OFICIALISMO")
     chk(by.loc["2-D-2017", "origen"] == "OPOSICION", "Perón 2017 (Macri) -> OPOSICION")
-    chk(by.loc["4-D-2024", "origen"] == "OPOSICION", "Macrista 2024 (Milei) -> OPOSICION")
+    chk(by.loc["4-D-2024", "origen"] == "ALIADOS", "PRO/Macrista 2024 (Milei) -> ALIADOS (aliado, no núcleo)")
     chk(bool(by.loc["1-D-2013", "match_autor"]), "autor emparejado con bloque")
 
     # --- líder: alto productor walk-forward (3 leyes previas a 2021) ---

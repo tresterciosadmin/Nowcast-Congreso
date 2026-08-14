@@ -120,7 +120,8 @@ def main():
 
     reporte(df, "TODAS las actas")
     reporte(df[df["fino"] == "EJECUTIVO"], "Proyectos del PODER EJECUTIVO (mensajes PE / JGM)")
-    reporte(df[df["fino"] == "OFICIALISMO"], "Proyectos de LEGISLADORES OFICIALISTAS")
+    reporte(df[df["fino"] == "OFICIALISMO"], "Proyectos del OFICIALISMO (partido de gobierno propio)")
+    reporte(df[df["fino"] == "ALIADOS"], "Proyectos de ALIADOS (PRO y otros oficialistas no-núcleo)")
     reporte(df[df["lado"] == "OPOSICION"], "Proyectos de la OPOSICION")
 
 if __name__ == "__main__":

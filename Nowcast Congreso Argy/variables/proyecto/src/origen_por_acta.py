@@ -3,8 +3,11 @@
 Etiqueta cada acta de la canónica con QUIÉN impulsa el proyecto votado, leído
 contra el gobierno de turno A LA FECHA DEL ACTA (no de la presentación):
 
-  origen      ∈ {EJECUTIVO, OFICIALISMO, OPOSICION, DESCONOCIDO}
-  origen_lado ∈ {GOBIERNO, OPOSICION, None}   (EJECUTIVO+OFICIALISMO -> GOBIERNO)
+  origen      ∈ {EJECUTIVO, OFICIALISMO, ALIADOS, OPOSICION, DESCONOCIDO}
+                (OFICIALISMO=partido propio de gobierno; ALIADOS=aliado oficialista,
+                 ej. PRO en Milei — Valle 2026-08-14, separado del núcleo porque no
+                 se comportan igual)
+  origen_lado ∈ {GOBIERNO, OPOSICION, None}   (EJECUTIVO+OFICIALISMO+ALIADOS -> GOBIERNO)
   gobierno    ∈ {KIRCHNER, MACRI, AF, MILEI}  (quién gobernaba a la fecha del acta)
 
 POR QUÉ: condicionar la dirección del bloque sólo por TEMA da el signo político
@@ -53,7 +56,7 @@ _SRC = Path(__file__).resolve().parent
 if str(_SRC) not in sys.path:
     sys.path.insert(0, str(_SRC))
 from origen_lider import (_norm, _linaje_autor, _mapa_autor_linaje,  # noqa: E402
-                          oficialista_por_fecha, GOBIERNOS)
+                          oficialista_por_fecha, clase_oficialismo, GOBIERNOS)
 
 _RAIZ = Path(__file__).resolve().parents[3]
 DEFAULT_ACTAS = _RAIZ / "datos" / "canonica" / "data" / "clean" / "actas_canonico.parquet"
@@ -262,9 +265,13 @@ def _resolver_origen(fila_exp: dict | None, code: str | None, fecha_acta,
         anio_pres = anio_pres.year if pd.notna(anio_pres) else None
         linaje = _linaje_autor(autor_nn, anio_pres, mapa_autor) if autor_nn else None
         if linaje is not None:
-            ofi = oficialista_por_fecha(linaje, pd.to_datetime(fecha_acta, errors="coerce"))
-            if ofi is True:
-                return "OFICIALISMO", linaje
+            f = pd.to_datetime(fecha_acta, errors="coerce")
+            cl = clase_oficialismo(linaje, f)
+            if cl == "NUCLEO":
+                return "OFICIALISMO", linaje      # partido propio de gobierno
+            if cl == "ALIADO":
+                return "ALIADOS", linaje          # aliado oficialista (PRO en Milei, ...)
+            ofi = oficialista_por_fecha(linaje, f)
             if ofi is False:
                 return "OPOSICION", linaje
             return "DESCONOCIDO", linaje
@@ -309,7 +316,7 @@ def etiquetar(dfs: dict) -> pd.DataFrame:
                     via = "titulo"
         fila_exp = por_pid.get(pid) if pid else (por_code.get(code) if code else None)
         origen, linaje = _resolver_origen(fila_exp, code, fecha, mapa_autor)
-        lado = ("GOBIERNO" if origen in ("EJECUTIVO", "OFICIALISMO")
+        lado = ("GOBIERNO" if origen in ("EJECUTIVO", "OFICIALISMO", "ALIADOS")
                 else "OPOSICION" if origen == "OPOSICION" else None)
         vias[via or "sin_via"] += 1
         filas.append({

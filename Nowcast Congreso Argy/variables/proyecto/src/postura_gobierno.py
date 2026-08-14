@@ -64,6 +64,7 @@ _RE_PROC = re.compile(
     r"|HOMENAJE|PLAN DE LABOR|PREFERENCIA\b", re.I)
 
 GOBIERNO_QUIERE = {"EJECUTIVO": "AFIRMATIVO", "OFICIALISMO": "AFIRMATIVO",
+                   "ALIADOS": "AFIRMATIVO",  # bill de aliado: origen del lado del gobierno
                    "OPOSICION": "NEGATIVO"}
 
 

@@ -44,6 +44,15 @@ Para coordinarnos hay tres papeles siempre a la vista:
 ## En una frase
 Ya sabemos que adivinar el voto individual no sirve (el bloque lo explica casi todo); el valor está en la asistencia, el embudo y la cúpula. Estamos armando una base de datos propia (arrancada con el trabajo de Andy Tow y mantenida por un bot), con un formato común y una forma de trabajar en equipo sin pisarnos.
 
+## Avance grande: el modelo ahora mira DE QUÉ LADO juega cada proyecto (y mejora mucho)
+Veníamos con un problema: para adivinar cómo vota cada bloque, el modelo miraba su historial promediando TODAS las leyes del gobierno juntas —las fáciles de consenso y las peleadas—. En una reforma dura eso le hacía creer que la oposición acompañaba más de lo que realmente acompaña. La solución fue enseñarle a mirar sólo el historial en leyes PARECIDAS: si el proyecto lo empuja el gobierno o lo empuja la oposición.
+
+Lo medimos contra votos reales de la era Milei (casi 70.000 votos, sin hacer trampa de mirar el futuro): prender ese "filtro" sube el acierto de cómo vota cada legislador **del 59% al 76%**. Y salió un hallazgo tuyo importante: no es lo mismo un proyecto del **Poder Ejecutivo** (un mensaje que manda el gobierno) que uno de un **diputado oficialista suelto** —y menos todavía uno de un **aliado** como el PRO—. Cuando mirás fino, ves que LLA no acompaña la agenda regulatoria del PRO aunque sean aliados. Así que ahora el sistema distingue cuatro tipos de proyecto: del Ejecutivo, del partido de gobierno, de aliados, y de la oposición.
+
+También arreglamos una sobreconfianza: el sistema a veces decía "esto se aprueba con 100% de seguridad". Eso no puede ser: ni el legislador más leal es un 100% seguro, y siempre puede pasar algo raro (una ausencia masiva, una sorpresa). Ahora nunca dice 0% ni 100% —como máximo, 99%—.
+
+Todavía falta un paso de tu parte (regenerar unas planillas en tu computadora) para que la categoría "aliados" quede escrita en los datos, y después volver a medir si separar a los aliados mejora. Nada de esto se subió al repositorio todavía.
+
 ## Corrección de rumbo: la segunda cámara se mide como VOTO, no como "¿la tratan?"
 Durante la sesión me fui por un camino equivocado y Valle lo corrigió. Yo había intentado estimar "qué chance hay de que la segunda cámara trate el proyecto" con un promedio histórico. Pero eso es justo lo que decidimos NO medir cuando sacamos la etapa de comisiones: si una cámara pone o no un proyecto en el recinto es una decisión política pura (negociación de bloques, la vice, la oposición), volátil y atada al contexto —más aún en un período tan atípico como el de Milei—. Ningún promedio la captura.
 

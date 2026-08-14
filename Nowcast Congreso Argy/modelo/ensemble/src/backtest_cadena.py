@@ -159,7 +159,7 @@ def preparar_cohorte(embudo, p_embudo: pd.DataFrame,
 # --------------------------------------------------------------------------- #
 # Origen FINO por proyecto (EJECUTIVO / OFICIALISMO / OPOSICION) para condicionar #
 # --------------------------------------------------------------------------- #
-_ORIGEN_FINO = ("EJECUTIVO", "OFICIALISMO", "OPOSICION")
+_ORIGEN_FINO = ("EJECUTIVO", "OFICIALISMO", "ALIADOS", "OPOSICION")
 
 
 def origen_fino_por_proyecto(cohorte: pd.DataFrame) -> pd.Series:

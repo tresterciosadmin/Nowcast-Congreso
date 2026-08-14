@@ -18,18 +18,22 @@ from pathlib import Path
 import pandas as pd
 
 RAIZ = Path(__file__).resolve().parents[1]
-for sub in ("variables/proyecto/src", "modelo/ensemble/src",
+for sub in ("variables/proyecto/src", "variables/bloque/src", "modelo/ensemble/src",
             "modelo/agregador_institucional/src"):
     sys.path.insert(0, str(RAIZ / sub))
-from postura_gobierno import proyectar_lineas_alineacion  # noqa: E402
+from bloque import (cargar as cargar_bloque, proyectar_postura,  # noqa: E402
+                    cargar_tema_por_acta)
 from ensemble import roster_nominal                        # noqa: E402
 
 # ─── el proyecto hipotético y la coyuntura ───
+# UNIFICADO 2026-08-14 (Parte B): la postura de bloque y el récord individual se
+# CONDICIONAN por el ORIGEN FINO del proyecto (motor validado, 59%→76%). Antes se
+# promediaban TODAS las leyes del gobierno (no distinguía PE de un aliado como PRO).
 FECHA = "2026-06-01"
 ASUNTO = "Reforma del impuesto a las ganancias"
 SUBTITULO = "Iniciativa del Poder Ejecutivo · proyecto con media sanción, en revisión"
 CAMARA_ORIGEN = "diputados"          # nace en Diputados; el Senado revisa
-POSTURA_GOBIERNO = "AFIRMATIVO"      # es un proyecto del gobierno
+ORIGEN = "EJECUTIVO"                 # qué empuja el proyecto (EJECUTIVO/OFICIALISMO/ALIADOS/OPOSICION)
 ICG_VALOR = 2.07                     # ICG de 2026-06 (icg_mensual.csv)
 ICG_NEUTRO = 1.90                    # nivel de referencia (break-even reciente)
 MES_MANDATO = 30
@@ -42,42 +46,38 @@ DISC = RAIZ / "modelo/voto_individual/outputs/disciplina_individual.csv"
 MIN_HIST = 8   # votos mínimos en proyectos del gobierno para usar el dato INDIVIDUAL
 
 
-def alineacion_individual(votos, postura, era_desde="2023-12-10"):
-    """P(afirmativo) de CADA legislador, medida sobre su PROPIO récord en
-    proyectos del gobierno (postura AFIRMATIVO) del gobierno actual. Ausente/
-    abstención/negativo cuentan como no-afirmativo. Es la regla fundacional
-    (nivel legislador); el promedio del bloque queda sólo como fallback.
-    Devuelve {(camara, legislador_id): (p_af, n)}."""
-    pgmap = dict(zip(postura["acta_id"], postura["postura_gobierno"]))
+def alineacion_individual(votos, origen_map, era_desde="2023-12-10"):
+    """P(afirmativo) de CADA legislador, medida sobre su PROPIO récord en proyectos
+    del MISMO ORIGEN que el proyecto objetivo (CONDICIONADA — antes mezclaba todas
+    las leyes del gobierno). Ausente/abstención/negativo cuentan como no-afirmativo.
+    Es la regla fundacional (nivel legislador); el bloque queda como fallback.
+    Devuelve {(camara, legislador_id): (p_af, n, presencia)}."""
     d = votos[votos["fecha"] >= pd.Timestamp(era_desde)].copy()
-    d["pg"] = d["acta_id"].map(pgmap)
-    d = d[d["pg"] == "AFIRMATIVO"]                       # proyectos del gobierno
-    V = d["voto"].astype(str).str.upper().str[:2]
+    d["ori"] = d["acta_id"].map(origen_map)
+    d = d[d["ori"] == ORIGEN]                            # proyectos del origen objetivo
+    V = d["conducta"].astype(str).str.upper().str[:2]
     d["af"] = V.eq("AF")
     d["emitio"] = V.isin(["AF", "NE"])                   # votó (no ausente/abstención)
     g = d.groupby(["camara", "legislador_id"]).agg(
         n=("af", "size"), p_af=("af", "mean"), presencia=("emitio", "mean"))
-    # p_af = tasa afirmativa sobre TODAS las actas (ausente cuenta como no-af):
-    #   ya incorpora la presencia, así que el CONTEO queda bien. `presencia` se
-    #   guarda aparte sólo para no ETIQUETAR "en contra" a quien preside/no vota.
     return {idx: (float(r["p_af"]), int(r["n"]), float(r["presencia"]))
             for idx, r in g.iterrows()}
 
 
-def datos_camara(camara, votos, postura, ind):
-    L = proyectar_lineas_alineacion(votos, FECHA, camara, postura, POSTURA_GOBIERNO)
-    alin = {b["bloque"]: b["alineacion"] for b in L}
-    _, _, det = roster_nominal(camara, FECHA, L, padron_file=str(PADRON[camara]),
+def datos_camara(camara, votos, cond, ind):
+    # postura de bloque CONDICIONADA por el origen del proyecto (motor validado).
+    bloques = proyectar_postura(votos, FECHA, camara, origen=ORIGEN, cond_por_acta=cond,
+                                padron_path=str(PADRON[camara]))
+    share = {b["bloque"]: b["_share_afirm"] for b in bloques}
+    _, _, det = roster_nominal(camara, FECHA, bloques, padron_file=str(PADRON[camara]),
                                disciplina_path=str(DISC))
     legs = []
     for f in det["filas"]:
         lid = f["legislador_id"]
         p_ind, n_h, pres = ind.get((camara, lid), (None, 0, 1.0))
-        a_bloque = alin.get(f["bloque_linaje"], 0.5)
-        if POSTURA_GOBIERNO != "AFIRMATIVO":
-            a_bloque = 1 - a_bloque
+        a_bloque = share.get(f["bloque_linaje"], 0.5)   # _share_afirm ya es P(afirmativo) condicionada
         if p_ind is not None and n_h >= MIN_HIST:
-            p_af, fuente = p_ind, "individual"          # su propio récord
+            p_af, fuente = p_ind, "individual"          # su propio récord (mismo origen)
         else:
             p_af, fuente = a_bloque, "bloque"           # fallback (novato)
         legs.append({
@@ -94,22 +94,17 @@ def datos_camara(camara, votos, postura, ind):
 
 
 def main():
-    votos = pd.read_parquet(RAIZ / "datos/canonica/data/clean/votos_resuelto.parquet")
-    act = pd.read_parquet(RAIZ / "datos/canonica/data/clean/actas_canonico.parquet")[
-        ["acta_id", "camara", "fecha"]]
-    for c in ("fecha", "camara"):
-        if c in votos.columns:
-            votos = votos.drop(columns=c)
-    votos = votos.merge(act, on="acta_id", how="left")
-    votos["fecha"] = pd.to_datetime(votos["fecha"], errors="coerce")
-    postura = pd.read_parquet(RAIZ / "variables/proyecto/data/postura_gobierno_por_acta.parquet")
-    ind = alineacion_individual(votos, postura)
+    votos = cargar_bloque()          # formato canónico (con `conducta`), el que espera proyectar_postura
+    cond = cargar_tema_por_acta()    # tema + origen fusionados, para condicionar el bloque
+    opa = pd.read_parquet(RAIZ / "variables/proyecto/data/origen_por_acta.parquet")
+    origen_map = dict(zip(opa["acta_id"].astype(str), opa["origen"]))
+    ind = alineacion_individual(votos, origen_map)
 
     data = {
         "asunto": ASUNTO, "subtitulo": SUBTITULO, "fecha": FECHA,
         "icg": ICG_VALOR, "icg_neutro": ICG_NEUTRO, "mandato_meses": MES_MANDATO,
-        "camaras": [datos_camara("diputados", votos, postura, ind),
-                    datos_camara("senado", votos, postura, ind)],
+        "camaras": [datos_camara("diputados", votos, cond, ind),
+                    datos_camara("senado", votos, cond, ind)],
     }
     html = PLANTILLA.replace("/*DATA*/", json.dumps(data, ensure_ascii=False))
     out = RAIZ / "Nowcast-Ganancias-bicameral.html"
@@ -219,7 +214,9 @@ function pmod(l){ // p(afirmativo) con clima
 }
 function paprob(cam){ // P(afirmativos >= umbral), normal approx Poisson-binomial
   let m=0,v=0; cam.legisladores.forEach(l=>{const p=pmod(l);m+=p;v+=p*(1-p);});
-  const z=(cam.umbral-0.5-m)/Math.sqrt(v||1); return {p:1-ncdf(z),m};
+  const z=(cam.umbral-0.5-m)/Math.sqrt(v||1);
+  // nunca 0%/100%: hay riesgo sistemico que el modelo no capta (incertidumbre irreducible)
+  const P=Math.min(Math.max(1-ncdf(z),0.01),0.99); return {p:P,m};
 }
 function accion(p,l){
   if(l && l.presencia!==undefined && l.presencia<0.15) return ["RARA VEZ VOTA","b-na"];
@@ -233,7 +230,7 @@ function render(){
   $("#meta").innerHTML=`<div class="chip"><span class="k">Evaluado al</span><b>${f}</b></div>
     <div class="chip"><span class="k">ICG del momento</span><b>${DATA.icg.toFixed(2)}</b></div>
     <div class="chip"><span class="k">Mes de mandato</span><b>${DATA.mandato_meses}</b></div>
-    <div class="chip"><span class="k">Modelo</span><b>alineación con el gobierno · por legislador</b></div>`;
+    <div class="chip"><span class="k">Modelo</span><b>récord por legislador · condicionado por tipo de proyecto</b></div>`;
   $("#icg").value=ICG; $("#icgv").textContent=ICG.toFixed(2);
   $("#icgtag").textContent=ICG>DATA.icg_neutro?"(clima a favor del gobierno)":ICG<DATA.icg_neutro?"(clima en contra)":"(neutro)";
 
@@ -291,9 +288,10 @@ $("#fbloque").addEventListener("change",tabla);
 document.querySelectorAll("th[data-k]").forEach(th=>th.onclick=()=>{
   const k=th.dataset.k; if(SORT===k)DIR*=-1;else{SORT=k;DIR=k==="nombre"||k==="bloque"?1:-1;} tabla();});
 $("#foot").innerHTML="Nowcast Legislativo Argentino · proyección por puertas (origen + revisora). "+
-  "La probabilidad por legislador combina la <b>alineación de su bloque con el gobierno</b> con su "+
-  "desvío individual; el ICG modula legislador por legislador (los bisagra se mueven más). "+
-  "Cifras del modelo sobre datos al "+DATA.fecha+" — simulación, no asesoramiento.";
+  "La probabilidad por legislador sale de su <b>récord en proyectos del mismo tipo</b> (según quién "+
+  "los impulsa: Ejecutivo, oficialismo, aliados u oposición), con el promedio de su bloque como "+
+  "respaldo; el ICG modula legislador por legislador (los bisagra se mueven más). Nunca se reporta "+
+  "0% ni 100%: ninguna votación es segura. Cifras del modelo sobre datos al "+DATA.fecha+" — simulación, no asesoramiento.";
 fillBloques(); render();
 </script></body></html>"""
 

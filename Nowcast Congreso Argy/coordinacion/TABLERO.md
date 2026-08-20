@@ -36,7 +36,47 @@ Depende de otros (no empezar hasta que su dependencia esté HECHA):
 - [x] ~~**datos/bot_recoleccion**~~ → reclamado 2026-07-11 por Claude+Franco (dependencia cumplida; ver "En curso").
 - [x] ~~**modelo/ensemble**~~ → reclamado 2026-07-12 por Valle (ver "En curso"). Dependencias cumplidas: embudo v1 + agregador.
 - [ ] **evaluacion/backtesting** — necesita al menos un modelo nuevo.
-- [x] ~~**producto/dashboard**~~ → reclamado 2026-08-20 por Claude+Franco (ver la sesion abierta, abajo). Dependencia cumplida: ensemble v1.
+- [x] ~~**producto/dashboard**~~ → reclamado 2026-08-20 por Claude+Franco; **re-reclamado 2026-08-20 por Claude+Valle** (ronda 2 del Mapa del Modelo; ver la sesion abierta, abajo). Dependencia cumplida: ensemble v1.
+
+## Sesion 2026-08-20 (Valle+Claude) — CERRADA, MAPA-MODELO.html: el flujo bicameral
+
+| Modulo | Quien | Desde | Que se esta haciendo |
+|---|---|---|---|
+| **producto/dashboard** | Claude (con Valle) | 2026-08-20 | **HECHO, modulo LIBRE.** Ronda 2 sobre `MAPA-MODELO.html`, sobre un croquis a mano de Valle. (1) El grafo por columnas pasa a ser un **diagrama de flujo bicameral**: dos bloques espejo (Camara de origen / Camara revisora) con el tronco compartido dibujado en los dos lados, formas por rol (rectangulo = base/fuente, hexagono = script, circulo = variable, rectangulo grueso = probabilidad), flecha curva gruesa `P(aprobar en Revisora \| se aprobo en Origen)` entre bloques, y lo condicionado por el paso previo agrupado y resaltado dentro de la revisora. (2) Se saca la capa de presentacion comercial (header, subtitulo, franja de formulas): las dos formulaciones se mudan a la leyenda, el lienzo arranca en el primer pixel y arriba queda una sola barra fina de instrumentos. (3) La ficha lateral por nodo se queda y se agranda. (4) Se resuelve la contradiccion de estado de las Puertas A y C. Sin CDN: el layout y el ruteo de aristas se escriben dentro del archivo. |
+
+**HAY DOS CANDIDATOS Y FALTA ELEGIR UNO (2026-08-20).** Sobre los MISMOS datos
+(`mapa_modelo_datos.js`; los dos archivos son solo diseno) conviven:
+
+| Archivo | Como ordena el flujo |
+|---|---|
+| `MAPA-MODELO.html` | los dos bloques **lado a lado**, con el condicionamiento como un arco grueso por encima de todo el dibujo |
+| `MAPA-MODELO-V2.html` | una **banda por camara, apiladas**, las dos sobre la MISMA grilla de columnas: el mismo nodo cae en la misma vertical arriba y abajo, los dos resultados terminan en la misma columna final, el numero publicado va a la derecha entre las dos bandas y el condicionamiento es una flecha corta que baja de un resultado al otro. Los encabezados de columna dicen la etapa; la banda de controles/evaluacion arranca plegada. **Encuadra a 0,42 contra 0,29 de la V1**, o sea entra en pantalla legible. |
+
+**Cuando Valle elija, el que pierde se va a `Archivos_Borrar/` y el que gana queda
+como `MAPA-MODELO.html`.** Mientras tanto quedan los dos: no se toca el generador
+ni la capa curada, que son comunes.
+
+**Pendiente de Valle (no lo puedo correr yo):** `python -m pytest tests/ datos/proyectos/tests -q`
+en PowerShell (en el sandbox no hay pytest) y `git check-ignore -q` sobre los archivos tocados
+antes de commitear. El generador quedo idempotente (dos corridas seguidas, mismo `.js`) y el
+HTML se verifico abriendolo desde `file://` con la red cortada: dibuja, sin errores de consola
+y sin un solo pedido de red.
+
+**Regla de estado, decidida el 2026-08-20 (Valle):** las Puertas A y C quedan
+**REPLANTEADO + suspendidas** — no se modela comision ni caducidad, por ser de
+naturaleza estrictamente politica y no predecible estadisticamente. Como eso
+contradice el `**Estado:** EN CURSO` del README de `modelo/ensemble` —que el
+generador declaraba como su unica fuente—, el estado de un nodo ahora **puede
+declararse por nodo** en la capa curada, con motivo obligatorio, y el mapa dice
+en la ficha de donde salio cada estado. El estado de una puerta NO es el de su
+modulo, y ahora esta escrito.
+
+**URGENTE leido al empezar (regla de la casa).** `coordinacion/URGENTE.md` tiene
+vivo el punto 1 (validar 15 filas MEDIA del roster de jefes de bloque). **Se
+posterga explicitamente y se deja dicho por que:** es de `variables/proyecto`, no
+de `producto/dashboard`; no bloquea ni ensucia este trabajo; y su prioridad ya
+fue rebajada el 31-07 al medirse que `lider_jefe_bloque` aporta 1,25x y no 7x.
+Queda en URGENTE sin tocar.
 
 ## Sesion 2026-08-20 (Franco+Claude) — CERRADA, MAPA-MODELO.html: el mapa de la maquinaria del calculo
 

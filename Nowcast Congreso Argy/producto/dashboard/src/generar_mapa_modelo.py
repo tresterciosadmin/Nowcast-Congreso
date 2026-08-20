@@ -59,6 +59,11 @@ logger = logging.getLogger("generar_mapa_modelo")
 # Los mismos seis estados que usa tablero_datos.js. Cualquier otra cosa es un typo.
 # Orden logico (de terminado a inexistente), no alfabetico: asi se lee la leyenda.
 ESTADOS_ORDEN = ["HECHO", "EN CURSO", "PARCIAL", "PENDIENTE", "FUTURO", "REPLANTEADO"]
+
+# De que lado del dibujo bicameral cae un nodo. Solo se declara en la punta de
+# cada cadena; de los de mas arriba se ocupa el HTML, por alcance -- y los que
+# alimentan a las DOS camaras se dibujan de los dos lados.
+BLOQUES_VALIDOS = {"origen", "revisora", "final", "fuera"}
 ESTADOS_VALIDOS = set(ESTADOS_ORDEN)
 
 # `**Estado:** ...` y `**Owner actual:** ...` en el README de cada modulo.
@@ -293,6 +298,7 @@ def fusionar(raiz: Path, sem: dict, indice: dict, rutas_dec: dict[str, Path]) ->
     etapas_validas = {e["id"] for e in sem["etapas"]}
     roles_validos = {r["id"] for r in sem["roles"]}
     tipos_validos = {t["id"] for t in sem["tipos_arista"]}
+    grupos_validos = {g["id"] for g in sem.get("grupos", []) or []}
 
     nodos = []
     for n in sem["nodos"]:
@@ -302,6 +308,13 @@ def fusionar(raiz: Path, sem: dict, indice: dict, rutas_dec: dict[str, Path]) ->
             raise ErrorDeMapa(f"nodo {nodo['id']}: etapa desconocida '{nodo['etapa']}'")
         if nodo["rol"] not in roles_validos:
             raise ErrorDeMapa(f"nodo {nodo['id']}: rol desconocido '{nodo['rol']}'")
+        if nodo.get("bloque") and nodo["bloque"] not in BLOQUES_VALIDOS:
+            raise ErrorDeMapa(
+                f"nodo {nodo['id']}: bloque '{nodo['bloque']}' desconocido "
+                f"(validos: {sorted(BLOQUES_VALIDOS)})")
+        if nodo.get("grupo") and nodo["grupo"] not in grupos_validos:
+            raise ErrorDeMapa(
+                f"nodo {nodo['id']}: grupo '{nodo['grupo']}' no esta declarado en `grupos`")
 
         # --- archivo del repo -------------------------------------------------
         arch = nodo.get("archivo") or nodo.get("archivo_dato")
@@ -384,18 +397,38 @@ def fusionar(raiz: Path, sem: dict, indice: dict, rutas_dec: dict[str, Path]) ->
 
     for nodo in nodos:
         mod = nodo.get("modulo")
-        if nodo.get("estado_override"):
-            nodo["estado"] = nodo["estado_override"]
+        if nodo.get("estado_declarado"):
+            # REGLA (2026-08-20). Por defecto el estado de un nodo es el de su
+            # modulo. Un nodo puede declarar el suyo -- las Puertas A y C estan
+            # SUSPENDIDAS aunque `modelo/ensemble` este EN CURSO -- pero entonces
+            # tiene que decir POR QUE, y el mapa muestra de donde salio cada
+            # estado. Lo que no puede pasar es que el mapa afirme en silencio un
+            # estado que su fuente declarada contradice.
+            declarado = _estado_canonico(nodo["estado_declarado"])
+            if not declarado:
+                raise ErrorDeMapa(
+                    f"nodo {nodo['id']}: `estado_declarado` = "
+                    f"'{nodo['estado_declarado']}' no es uno de {ESTADOS_ORDEN}")
+            if not str(nodo.get("estado_motivo", "")).strip():
+                raise ErrorDeMapa(
+                    f"nodo {nodo['id']}: declara su propio estado "
+                    f"('{declarado}') pero no dice por que. `estado_motivo` es "
+                    "obligatorio: un estado a mano sin motivo es la copia que "
+                    "envejece.")
+            nodo["estado"] = declarado
+            nodo["estado_fuente"] = "capa curada"
             nodo["owner"] = readmes.get(mod, {}).get("owner", "—") if mod else "—"
-            nodo["estado_texto"] = (nodo.get("estado_texto")
-                                    or "parqueada por decision del equipo")
+            nodo["estado_texto"] = nodo["estado_motivo"]
+            nodo["estado_modulo"] = readmes.get(mod, {}).get("estado", "") if mod else ""
         elif mod and mod in readmes and readmes[mod]["estado"]:
             nodo["estado"] = readmes[mod]["estado"]
             nodo["estado_texto"] = readmes[mod]["estado_texto"]
+            nodo["estado_fuente"] = f"{mod}/README.md"
             nodo["owner"] = readmes[mod]["owner"]
         elif nodo["rol"] == "fuente":
             nodo["estado"] = "HECHO"
             nodo["owner"] = "externo"
+            nodo["estado_fuente"] = "—"
             nodo["estado_texto"] = "fuente externa: no la controlamos"
         elif mod and mod in readmes:
             # Hay modulo pero su README no declara estado: se dice asi, no se
@@ -435,6 +468,7 @@ def fusionar(raiz: Path, sem: dict, indice: dict, rutas_dec: dict[str, Path]) ->
             "problemas": problemas,
         },
         "etapas": sem["etapas"],
+        "grupos": sem.get("grupos", []) or [],
         "roles": sem["roles"],
         "tipos_arista": sem["tipos_arista"],
         "formulaciones": sem.get("formulaciones", []),
@@ -458,7 +492,9 @@ CABECERA = """// ===============================================================
 //
 // Para cambiar QUE dice un nodo -> producto/dashboard/data/mapa_modelo_semantica.json
 // Para cambiar el estado o el dueno de un modulo -> el `**Estado:**` /
-//   `**Owner actual:**` de su README.md (de ahi sale, y de ningun otro lado).
+//   `**Owner actual:**` de su README.md (de ahi sale por defecto).
+// Un nodo puede declarar SU estado con `estado_declarado` + `estado_motivo`
+//   (obligatorio) en la capa curada: el mapa dice cual de los dos esta mostrando.
 // Despues: python producto/dashboard/src/generar_mapa_modelo.py
 // =====================================================================
 """

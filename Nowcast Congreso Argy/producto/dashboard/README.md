@@ -11,7 +11,7 @@ paneles construidos. **2026-08-20: el módulo tiene por primera vez código prop
 en la raíz.
 **Owner actual:** Claude+Valle (desde 2026-07-10)
 
-**Resumen:** Tablero interno: radar de traccion, mapa de pivotes y escenarios, y el MAPA DEL MODELO: el grafo de como se calcula P(sancion), generado desde el indice del repo. Los entregables se abren con doble clic desde la RAIZ; el codigo del generador vive aca.
+**Resumen:** Tablero interno: radar de traccion, mapa de pivotes y escenarios, y el MAPA DEL MODELO: el diagrama de flujo BICAMERAL de como se calcula P(sancion) -dos bloques espejo, origen y revisora, con el condicionamiento entre camaras dibujado-, generado desde el indice del repo. Los entregables se abren con doble clic desde la RAIZ; el codigo del generador vive aca.
 
 ## Buscar acá si
 
@@ -21,6 +21,8 @@ en la raíz.
 - que script transforma que dato, o que archivo implementa una etapa del calculo
 - las DOS formulaciones que conviven (v1 en produccion y las puertas A-B-C-D)
 - que piezas del modelo estan parqueadas, pendientes o son huecos conocidos
+- como se dibuja el circuito bicameral y que nodos se duplican en las dos camaras
+- de donde sale el estado de un nodo del mapa (README del modulo o capa curada)
 - regenerar los datos de un panel sin tocar su HTML
 - los informes bicamerales por caso (los generadores estan en `casos/`)
 
@@ -60,7 +62,7 @@ envejece y a los tres meses miente).
 
 | Archivo | Qué es | Se edita a mano |
 |---|---|---|
-| `MAPA-MODELO.html` (raíz) | el diseño: grafo SVG, filtros, ficha lateral, tabla gemela, leyenda | **NO** |
+| `MAPA-MODELO.html` (raíz) | el diseño: el flujo bicameral en SVG, la barra de instrumentos, la ficha lateral, la tabla gemela y la leyenda | **NO** (salvo el aspecto) |
 | `mapa_modelo_datos.js` (raíz) | los datos del grafo | **NO** — se genera |
 | `src/generar_mapa_modelo.py` | la capa **mecánica**: lee el repo | sí (es código) |
 | `data/mapa_modelo_semantica.json` | la capa **curada**: el significado | **SÍ — es el único archivo que se toca para corregir un nodo** |
@@ -84,11 +86,43 @@ nada**. Un mapa que apunta a un archivo que se movió es peor que no tener mapa.
 
     python producto/dashboard/src/generar_mapa_modelo.py
 
-Tiene que imprimir `OK  96 nodos - 130 aristas - N problemas`. Los "problemas" son
+Tiene que imprimir `OK  96 nodos - 131 aristas - N problemas`. Los "problemas" son
 avisos, no errores: outputs que todavía no se corrieron, o READMEs sin la línea
 `**Estado:**`. Se listan arriba de la tabla gemela, dentro del propio mapa.
 
 Para ver qué cambiaría sin escribir nada: `--verificar`.
+
+### La forma del dibujo (ronda 2, 2026-08-20)
+
+El mapa es un **diagrama de flujo bicameral**, no un grafo por columnas. Lo que hay que
+saber para tocarlo:
+
+| Cosa | Dónde se declara | Quién la resuelve |
+|---|---|---|
+| de qué lado del circuito va un nodo | `bloque` en la capa curada, **sólo en la punta de cada cadena** (`origen` / `revisora` / `final` / `fuera`) | el HTML deduce el resto por alcance hacia atrás, sin atravesar un nodo declarado de otro bloque |
+| qué nodos se dibujan **dos veces** | nadie: se deduce | un nodo que alimenta a las dos cámaras se dibuja de los dos lados, marcado «⇄» |
+| la forma de cada rol | `forma` en `roles` (capa curada) | el HTML la lee; no hay formas cableadas |
+| el rectángulo grueso | rol `resultado` en la capa curada | hoy: P(origen), P(revisora), P(sanción) |
+| la flecha gruesa entre cámaras | arista de tipo `condiciona` | el HTML la rutea por arriba, hasta el recuadro del grupo |
+| el recuadro resaltado | `grupos` + `grupo` en cada nodo | el HTML calcula la caja que los envuelve |
+| la profundidad (qué va más a la derecha) | nadie: se calcula | camino más largo contando sólo `flujo` y `calcula`; `config` y `alerta` no empujan |
+
+**El estado de un nodo — la regla, escrita (decisión de Valle, 2026-08-20).**
+Por defecto sale del `**Estado:**` del README de su módulo. Un nodo **puede declarar el
+suyo** con `estado_declarado` **y `estado_motivo`** (obligatorio: sin motivo el generador
+FALLA y no escribe nada), y entonces el generador NO lo pisa con el del README. El mapa
+muestra en la ficha y en la tabla gemela **de cuál de los dos** viene cada estado
+(`estado_fuente`), y cuál es el estado del módulo cuando difieren.
+
+Hoy lo usan las Puertas A y C: quedan **REPLANTEADO + suspendidas** —no se modela la etapa
+de comisión ni la caducidad, por ser de naturaleza estrictamente política y no predecible
+estadísticamente— mientras `modelo/ensemble` sigue EN CURSO. **El estado de una puerta no es
+el estado de su módulo**, y por eso hace falta decirlo en vez de derivarlo.
+
+**Sin CDN y sin `fetch`.** El layout, el ruteo de aristas y el barrido de baricentro están
+escritos dentro del HTML. Con `fetch` el doble clic (`file://`) se rompe por CORS, y un CDN
+lo rompe sin internet. Si el mapa sale en blanco, mirá la consola: casi siempre es una de
+esas dos cosas.
 
 **Qué tocar según lo que cambió:**
 
@@ -99,6 +133,8 @@ Para ver qué cambiaría sin escribir nada: `--verificar`.
 | se agregó un artefacto que cruza módulos | `rutas.py` primero, después la capa curada |
 | se despachó la Puerta C, o se estimó `delta` en la D | sólo la capa curada |
 | el aspecto del mapa | `MAPA-MODELO.html` (es diseño, y es lo único que se edita ahí) |
+| de qué lado del circuito cae un nodo, o qué queda agrupado | la capa curada (`bloque`, `grupo`, `grupos`) |
+| el estado de una pieza que NO es el de su módulo | la capa curada (`estado_declarado` + `estado_motivo`) |
 
 ## Contrato
 - **Entradas:** modelo/ensemble, variables/embudo, variables/proyecto (ICG); y para el

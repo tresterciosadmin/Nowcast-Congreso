@@ -6,7 +6,9 @@
 //
 // Para cambiar QUE dice un nodo -> producto/dashboard/data/mapa_modelo_semantica.json
 // Para cambiar el estado o el dueno de un modulo -> el `**Estado:**` /
-//   `**Owner actual:**` de su README.md (de ahi sale, y de ningun otro lado).
+//   `**Owner actual:**` de su README.md (de ahi sale por defecto).
+// Un nodo puede declarar SU estado con `estado_declarado` + `estado_motivo`
+//   (obligatorio) en la capa curada: el mapa dice cual de los dos esta mostrando.
 // Despues: python producto/dashboard/src/generar_mapa_modelo.py
 // =====================================================================
 
@@ -17,11 +19,11 @@ const MAPA_MODELO = {
     "para_que": "Uso interno del equipo. Cuando alguien pregunte «de dónde sale este número», la respuesta es señalar un nodo, no abrir quince archivos.",
     "no_es": "No es un tablero. TABLERO-CONTROL.html muestra plan y avance; esto muestra la maquinaria.",
     "verificado": "2026-08-20",
-    "generado": "2026-08-20 16:25 UTC",
+    "generado": "2026-08-20 19:33 UTC",
     "indice_archivos": 123,
     "rutas_declaradas": 52,
     "nodos": 96,
-    "aristas": 130,
+    "aristas": 131,
     "problemas": [
       "docs/taxonomias/README.md no tiene la linea `**Estado:**` (la usa este mapa y la usa el router de MAPA.md)"
     ]
@@ -76,11 +78,19 @@ const MAPA_MODELO = {
       "descripcion": "Contra qué se mide el número: Brier, skill, calibración, y la línea de base."
     }
   ],
+  "grupos": [
+    {
+      "id": "condicionado_por_origen",
+      "bloque": "revisora",
+      "nombre": "Condicionado por lo que pasó en origen",
+      "descripcion": "Con media sanción, las puertas A y B dejan de ser probabilidades y valen 1 (regla del colapso). Todo lo de adentro se lee bajo ese supuesto."
+    }
+  ],
   "roles": [
     {
       "id": "fuente",
       "nombre": "Fuente oficial",
-      "forma": "cuadrado",
+      "forma": "rectangulo",
       "descripcion": "Página, API o dataset externo. No lo controlamos."
     },
     {
@@ -91,8 +101,8 @@ const MAPA_MODELO = {
     },
     {
       "id": "dato",
-      "nombre": "Dato",
-      "forma": "rombo",
+      "nombre": "Base de datos / dato",
+      "forma": "rectangulo",
       "descripcion": "Parquet, base SQLite, CSV o config que queda en disco."
     },
     {
@@ -100,6 +110,12 @@ const MAPA_MODELO = {
       "nombre": "Variable / etapa del cálculo",
       "forma": "circulo",
       "descripcion": "Una señal del modelo o un paso del cálculo. El tamaño indica jerarquía."
+    },
+    {
+      "id": "resultado",
+      "nombre": "Resultado / probabilidad",
+      "forma": "rectangulo-grueso",
+      "descripcion": "Un número publicable: la probabilidad con la que termina una cadena."
     }
   ],
   "tipos_arista": [
@@ -122,6 +138,11 @@ const MAPA_MODELO = {
       "id": "alerta",
       "nombre": "Alerta",
       "descripcion": "Control o advertencia. NO es el valor publicado."
+    },
+    {
+      "id": "condiciona",
+      "nombre": "Condiciona",
+      "descripcion": "El resultado de una cámara cambia el supuesto con el que se lee la otra. NO es flujo de datos: en código nada se pasa de un lado al otro."
     }
   ],
   "formulaciones": [
@@ -275,6 +296,7 @@ const MAPA_MODELO = {
       ],
       "estado": "HECHO",
       "owner": "externo",
+      "estado_fuente": "—",
       "estado_texto": "fuente externa: no la controlamos"
     },
     {
@@ -290,6 +312,7 @@ const MAPA_MODELO = {
       ],
       "estado": "HECHO",
       "owner": "externo",
+      "estado_fuente": "—",
       "estado_texto": "fuente externa: no la controlamos"
     },
     {
@@ -305,6 +328,7 @@ const MAPA_MODELO = {
       ],
       "estado": "HECHO",
       "owner": "externo",
+      "estado_fuente": "—",
       "estado_texto": "fuente externa: no la controlamos"
     },
     {
@@ -320,6 +344,7 @@ const MAPA_MODELO = {
       ],
       "estado": "HECHO",
       "owner": "externo",
+      "estado_fuente": "—",
       "estado_texto": "fuente externa: no la controlamos"
     },
     {
@@ -335,6 +360,7 @@ const MAPA_MODELO = {
       ],
       "estado": "HECHO",
       "owner": "externo",
+      "estado_fuente": "—",
       "estado_texto": "fuente externa: no la controlamos"
     },
     {
@@ -350,6 +376,7 @@ const MAPA_MODELO = {
       ],
       "estado": "HECHO",
       "owner": "externo",
+      "estado_fuente": "—",
       "estado_texto": "fuente externa: no la controlamos"
     },
     {
@@ -364,6 +391,7 @@ const MAPA_MODELO = {
       ],
       "estado": "HECHO",
       "owner": "externo",
+      "estado_fuente": "—",
       "estado_texto": "fuente externa: no la controlamos"
     },
     {
@@ -378,6 +406,7 @@ const MAPA_MODELO = {
       ],
       "estado": "HECHO",
       "owner": "externo",
+      "estado_fuente": "—",
       "estado_texto": "fuente externa: no la controlamos"
     },
     {
@@ -398,6 +427,7 @@ const MAPA_MODELO = {
       "fuera_del_arbol": true,
       "estado": "EN CURSO",
       "estado_texto": "EN CURSO — bicameral, automatizado en GitHub Actions **y entregando a `proyectos.db`** desde el 07-08-2026 (ADR-0009).",
+      "estado_fuente": "datos/bot_recoleccion/README.md",
       "owner": "Claude+Franco (2026-07-11)"
     },
     {
@@ -418,6 +448,7 @@ const MAPA_MODELO = {
       "fuera_del_arbol": true,
       "estado": "EN CURSO",
       "estado_texto": "EN CURSO",
+      "estado_fuente": "variables/proyecto/README.md",
       "owner": "Valle (con Claude)"
     },
     {
@@ -438,6 +469,7 @@ const MAPA_MODELO = {
       "fuera_del_arbol": true,
       "estado": "EN CURSO",
       "estado_texto": "EN CURSO (v1: Diputados 257 + Senado 72 vigentes) · **Owner:** Valle (2026-07-14)",
+      "estado_fuente": "datos/padron/README.md",
       "owner": "Valle (2026-07-14)"
     },
     {
@@ -481,6 +513,7 @@ const MAPA_MODELO = {
       "entrypoint": true,
       "estado": "HECHO",
       "estado_texto": "HECHO. **La migración desde `fase0/` ya se hizo** (`src/to_canonical.py`",
+      "estado_fuente": "datos/ckan_diputados/README.md",
       "owner": "cerrado"
     },
     {
@@ -540,6 +573,7 @@ const MAPA_MODELO = {
       "entrypoint": true,
       "estado": "EN CURSO",
       "estado_texto": "EN CURSO — backfill CKAN **refrescado el 07-08-2026**.",
+      "estado_fuente": "datos/expedientes/README.md",
       "owner": "Claude+Franco (2026-07-11)"
     },
     {
@@ -595,6 +629,7 @@ const MAPA_MODELO = {
       "entrypoint": true,
       "estado": "EN CURSO",
       "estado_texto": "EN CURSO — bicameral, automatizado en GitHub Actions **y entregando a `proyectos.db`** desde el 07-08-2026 (ADR-0009).",
+      "estado_fuente": "datos/bot_recoleccion/README.md",
       "owner": "Claude+Franco (2026-07-11)"
     },
     {
@@ -650,6 +685,7 @@ const MAPA_MODELO = {
       "entrypoint": true,
       "estado": "EN CURSO",
       "estado_texto": "EN CURSO — bicameral, automatizado en GitHub Actions **y entregando a `proyectos.db`** desde el 07-08-2026 (ADR-0009).",
+      "estado_fuente": "datos/bot_recoleccion/README.md",
       "owner": "Claude+Franco (2026-07-11)"
     },
     {
@@ -705,6 +741,7 @@ const MAPA_MODELO = {
       "entrypoint": true,
       "estado": "EN CURSO",
       "estado_texto": "EN CURSO — bicameral, automatizado en GitHub Actions **y entregando a `proyectos.db`** desde el 07-08-2026 (ADR-0009).",
+      "estado_fuente": "datos/bot_recoleccion/README.md",
       "owner": "Claude+Franco (2026-07-11)"
     },
     {
@@ -760,6 +797,7 @@ const MAPA_MODELO = {
       "entrypoint": true,
       "estado": "HECHO",
       "estado_texto": "HECHO (integrado 2026-07-11) · reabierto 2026-08-06 por el bloque del Senado",
+      "estado_fuente": "datos/argentinadatos/README.md",
       "owner": "Claude (con Valle), desde 2026-08-06"
     },
     {
@@ -818,6 +856,7 @@ const MAPA_MODELO = {
       "entrypoint": true,
       "estado": "HECHO",
       "estado_texto": "HECHO (2015–2023 completo; quedan filas `REVISAR` en el padrón manual)",
+      "estado_fuente": "datos/senado/README.md",
       "owner": "Claude+Franco (2026-07-01/02)"
     },
     {
@@ -843,6 +882,7 @@ const MAPA_MODELO = {
       "entrypoint": true,
       "estado": "HECHO",
       "estado_texto": "HECHO (2015–2023 completo; quedan filas `REVISAR` en el padrón manual)",
+      "estado_fuente": "datos/senado/README.md",
       "owner": "Claude+Franco (2026-07-01/02)"
     },
     {
@@ -886,6 +926,7 @@ const MAPA_MODELO = {
       "entrypoint": true,
       "estado": "HECHO",
       "estado_texto": "HECHO — semilla integrada vía CSV (Diputados 2001-2010 + Senado 2004-2014).",
+      "estado_fuente": "datos/decada_votada/README.md",
       "owner": "Claude+Franco (cerrado 2026-06-29)"
     },
     {
@@ -929,6 +970,7 @@ const MAPA_MODELO = {
       "entrypoint": true,
       "estado": "HECHO",
       "estado_texto": "HECHO (primera carga). Fuente viva: Franco la sigue completando a mano.",
+      "estado_fuente": "datos/manual_2026/README.md",
       "owner": "—"
     },
     {
@@ -984,6 +1026,7 @@ const MAPA_MODELO = {
       "entrypoint": true,
       "estado": "EN CURSO",
       "estado_texto": "EN CURSO",
+      "estado_fuente": "variables/proyecto/README.md",
       "owner": "Valle (con Claude)"
     },
     {
@@ -1039,6 +1082,7 @@ const MAPA_MODELO = {
       "entrypoint": true,
       "estado": "EN CURSO",
       "estado_texto": "EN CURSO (v1: Diputados 257 + Senado 72 vigentes) · **Owner:** Valle (2026-07-14)",
+      "estado_fuente": "datos/padron/README.md",
       "owner": "Valle (2026-07-14)"
     },
     {
@@ -1095,6 +1139,7 @@ const MAPA_MODELO = {
       "entrypoint": true,
       "estado": "EN CURSO",
       "estado_texto": "EN CURSO (v1: Diputados 257 + Senado 72 vigentes) · **Owner:** Valle (2026-07-14)",
+      "estado_fuente": "datos/padron/README.md",
       "owner": "Valle (2026-07-14)"
     },
     {
@@ -1150,6 +1195,7 @@ const MAPA_MODELO = {
       "entrypoint": true,
       "estado": "EN CURSO",
       "estado_texto": "EN CURSO (v1: Diputados 257 + Senado 72 vigentes) · **Owner:** Valle (2026-07-14)",
+      "estado_fuente": "datos/padron/README.md",
       "owner": "Valle (2026-07-14)"
     },
     {
@@ -1193,6 +1239,7 @@ const MAPA_MODELO = {
       "entrypoint": true,
       "estado": "EN CURSO",
       "estado_texto": "EN CURSO — v1 en producción. **1.016.632 votos / 6.231 actas**, 2001-2026,",
+      "estado_fuente": "datos/canonica/README.md",
       "owner": "Claude+Franco (desde 2026-06-25)"
     },
     {
@@ -1248,6 +1295,7 @@ const MAPA_MODELO = {
       "entrypoint": true,
       "estado": "EN CURSO",
       "estado_texto": "EN CURSO — v1 en producción. **1.016.632 votos / 6.231 actas**, 2001-2026,",
+      "estado_fuente": "datos/canonica/README.md",
       "owner": "Claude+Franco (desde 2026-06-25)"
     },
     {
@@ -1303,6 +1351,7 @@ const MAPA_MODELO = {
       "entrypoint": true,
       "estado": "EN CURSO",
       "estado_texto": "EN CURSO — **la base existe y es la fuente de verdad del universo de proyectos** (ADR-0009, 2026-08-07).",
+      "estado_fuente": "datos/proyectos/README.md",
       "owner": "—"
     },
     {
@@ -1358,6 +1407,7 @@ const MAPA_MODELO = {
       "entrypoint": true,
       "estado": "EN CURSO",
       "estado_texto": "EN CURSO — **la base existe y es la fuente de verdad del universo de proyectos** (ADR-0009, 2026-08-07).",
+      "estado_fuente": "datos/proyectos/README.md",
       "owner": "—"
     },
     {
@@ -1408,6 +1458,7 @@ const MAPA_MODELO = {
       "entrypoint": true,
       "estado": "EN CURSO",
       "estado_texto": "EN CURSO — **la base existe y es la fuente de verdad del universo de proyectos** (ADR-0009, 2026-08-07).",
+      "estado_fuente": "datos/proyectos/README.md",
       "owner": "—"
     },
     {
@@ -1461,6 +1512,7 @@ const MAPA_MODELO = {
       "entrypoint": true,
       "estado": "EN CURSO",
       "estado_texto": "EN CURSO — **la base existe y es la fuente de verdad del universo de proyectos** (ADR-0009, 2026-08-07).",
+      "estado_fuente": "datos/proyectos/README.md",
       "owner": "—"
     },
     {
@@ -1516,6 +1568,7 @@ const MAPA_MODELO = {
       "entrypoint": true,
       "estado": "EN CURSO",
       "estado_texto": "EN CURSO (primer extractor de giros, ambas cámaras, validado contra fixtures).",
+      "estado_fuente": "datos/seguimiento/README.md",
       "owner": "—"
     },
     {
@@ -1574,6 +1627,7 @@ const MAPA_MODELO = {
       "entrypoint": true,
       "estado": "EN CURSO",
       "estado_texto": "EN CURSO — backfill CKAN **refrescado el 07-08-2026**.",
+      "estado_fuente": "datos/expedientes/README.md",
       "owner": "Claude+Franco (2026-07-11)"
     },
     {
@@ -1621,6 +1675,7 @@ const MAPA_MODELO = {
       "entrypoint": true,
       "estado": "EN CURSO",
       "estado_texto": "EN CURSO — backfill CKAN **refrescado el 07-08-2026**.",
+      "estado_fuente": "datos/expedientes/README.md",
       "owner": "Claude+Franco (2026-07-11)"
     },
     {
@@ -1676,6 +1731,7 @@ const MAPA_MODELO = {
       "entrypoint": true,
       "estado": "EN CURSO",
       "estado_texto": "EN CURSO — v1 (falta corrida completa de los Excel en PC del equipo)",
+      "estado_fuente": "datos/export/README.md",
       "owner": "Claude+Valle (desde 2026-07-02)"
     },
     {
@@ -1692,6 +1748,7 @@ const MAPA_MODELO = {
       "modulo_inferido": true,
       "estado": "EN CURSO",
       "estado_texto": "EN CURSO — v1 en producción. **1.016.632 votos / 6.231 actas**, 2001-2026,",
+      "estado_fuente": "datos/canonica/README.md",
       "owner": "Claude+Franco (desde 2026-06-25)"
     },
     {
@@ -1708,6 +1765,7 @@ const MAPA_MODELO = {
       "modulo_inferido": true,
       "estado": "EN CURSO",
       "estado_texto": "EN CURSO — v1 en producción. **1.016.632 votos / 6.231 actas**, 2001-2026,",
+      "estado_fuente": "datos/canonica/README.md",
       "owner": "Claude+Franco (desde 2026-06-25)"
     },
     {
@@ -1724,6 +1782,7 @@ const MAPA_MODELO = {
       "modulo_inferido": true,
       "estado": "EN CURSO",
       "estado_texto": "EN CURSO — v1 en producción. **1.016.632 votos / 6.231 actas**, 2001-2026,",
+      "estado_fuente": "datos/canonica/README.md",
       "owner": "Claude+Franco (desde 2026-06-25)"
     },
     {
@@ -1743,6 +1802,7 @@ const MAPA_MODELO = {
       "modulo_inferido": true,
       "estado": "EN CURSO",
       "estado_texto": "EN CURSO — backfill CKAN **refrescado el 07-08-2026**.",
+      "estado_fuente": "datos/expedientes/README.md",
       "owner": "Claude+Franco (2026-07-11)"
     },
     {
@@ -1759,6 +1819,7 @@ const MAPA_MODELO = {
       "modulo_inferido": true,
       "estado": "EN CURSO",
       "estado_texto": "EN CURSO — bicameral, automatizado en GitHub Actions **y entregando a `proyectos.db`** desde el 07-08-2026 (ADR-0009).",
+      "estado_fuente": "datos/bot_recoleccion/README.md",
       "owner": "Claude+Franco (2026-07-11)"
     },
     {
@@ -1779,6 +1840,7 @@ const MAPA_MODELO = {
       "modulo_inferido": true,
       "estado": "EN CURSO",
       "estado_texto": "EN CURSO — **la base existe y es la fuente de verdad del universo de proyectos** (ADR-0009, 2026-08-07).",
+      "estado_fuente": "datos/proyectos/README.md",
       "owner": "—"
     },
     {
@@ -1795,6 +1857,7 @@ const MAPA_MODELO = {
       "modulo_inferido": true,
       "estado": "EN CURSO",
       "estado_texto": "EN CURSO — **la base existe y es la fuente de verdad del universo de proyectos** (ADR-0009, 2026-08-07).",
+      "estado_fuente": "datos/proyectos/README.md",
       "owner": "—"
     },
     {
@@ -1811,6 +1874,7 @@ const MAPA_MODELO = {
       "modulo_inferido": true,
       "estado": "EN CURSO",
       "estado_texto": "EN CURSO (v1: Diputados 257 + Senado 72 vigentes) · **Owner:** Valle (2026-07-14)",
+      "estado_fuente": "datos/padron/README.md",
       "owner": "Valle (2026-07-14)"
     },
     {
@@ -1830,6 +1894,7 @@ const MAPA_MODELO = {
       "modulo_inferido": true,
       "estado": "EN CURSO",
       "estado_texto": "EN CURSO (v1: Diputados 257 + Senado 72 vigentes) · **Owner:** Valle (2026-07-14)",
+      "estado_fuente": "datos/padron/README.md",
       "owner": "Valle (2026-07-14)"
     },
     {
@@ -1846,6 +1911,7 @@ const MAPA_MODELO = {
       "modulo_inferido": true,
       "estado": "EN CURSO",
       "estado_texto": "EN CURSO (v1: Diputados 257 + Senado 72 vigentes) · **Owner:** Valle (2026-07-14)",
+      "estado_fuente": "datos/padron/README.md",
       "owner": "Valle (2026-07-14)"
     },
     {
@@ -1862,6 +1928,7 @@ const MAPA_MODELO = {
       "modulo_inferido": true,
       "estado": "EN CURSO",
       "estado_texto": "EN CURSO (v1: Diputados 257 + Senado 72 vigentes) · **Owner:** Valle (2026-07-14)",
+      "estado_fuente": "datos/padron/README.md",
       "owner": "Valle (2026-07-14)"
     },
     {
@@ -1878,6 +1945,7 @@ const MAPA_MODELO = {
       "modulo_inferido": true,
       "estado": "HECHO",
       "estado_texto": "HECHO (2015–2023 completo; quedan filas `REVISAR` en el padrón manual)",
+      "estado_fuente": "datos/senado/README.md",
       "owner": "Claude+Franco (2026-07-01/02)"
     },
     {
@@ -1894,6 +1962,7 @@ const MAPA_MODELO = {
       "modulo_inferido": true,
       "estado": "HECHO",
       "estado_texto": "HECHO (primera carga). Fuente viva: Franco la sigue completando a mano.",
+      "estado_fuente": "datos/manual_2026/README.md",
       "owner": "—"
     },
     {
@@ -1928,6 +1997,7 @@ const MAPA_MODELO = {
       "modulo_inferido": true,
       "estado": "EN CURSO",
       "estado_texto": "EN CURSO — v1 (falta corrida completa de los Excel en PC del equipo)",
+      "estado_fuente": "datos/export/README.md",
       "owner": "Claude+Valle (desde 2026-07-02)"
     },
     {
@@ -1987,6 +2057,7 @@ const MAPA_MODELO = {
       "entrypoint": true,
       "estado": "EN CURSO",
       "estado_texto": "EN CURSO (v1: embudo por etapas + modelo de supervivencia + backtest temporal)",
+      "estado_fuente": "variables/embudo/README.md",
       "owner": "Claude+Valle (2026-07-12)"
     },
     {
@@ -2045,6 +2116,7 @@ const MAPA_MODELO = {
       "entrypoint": true,
       "estado": "EN CURSO",
       "estado_texto": "EN CURSO (v1) · **Owner:** Claude+Valle (2026-07-12)",
+      "estado_fuente": "variables/bloque/README.md",
       "owner": "Claude+Valle (2026-07-12)"
     },
     {
@@ -2103,6 +2175,7 @@ const MAPA_MODELO = {
       "entrypoint": true,
       "estado": "EN CURSO",
       "estado_texto": "EN CURSO — pieza (a) implementada; gate 1 APROBADO sobre base completa (ver `RESULTADOS.md`)",
+      "estado_fuente": "modelo/voto_individual/README.md",
       "owner": "Claude+Valle (desde 2026-07-01)"
     },
     {
@@ -2158,6 +2231,7 @@ const MAPA_MODELO = {
       "entrypoint": true,
       "estado": "EN CURSO",
       "estado_texto": "EN CURSO — v1 con dimensión período (re-correr tras cada rebuild de la canónica)",
+      "estado_fuente": "variables/legislador/README.md",
       "owner": "Claude+Valle (desde 2026-07-01)"
     },
     {
@@ -2198,6 +2272,7 @@ const MAPA_MODELO = {
       "entrypoint": true,
       "estado": "EN CURSO",
       "estado_texto": "EN CURSO — Owner: Valle (reclamado 2026-07-11). **Escalón 1 hecho:** `asistencia.py`",
+      "estado_fuente": "variables/asistencia_quorum/README.md",
       "owner": "—"
     },
     {
@@ -2257,6 +2332,7 @@ const MAPA_MODELO = {
       "entrypoint": true,
       "estado": "EN CURSO",
       "estado_texto": "EN CURSO",
+      "estado_fuente": "variables/proyecto/README.md",
       "owner": "Valle (con Claude)"
     },
     {
@@ -2312,6 +2388,7 @@ const MAPA_MODELO = {
       "entrypoint": true,
       "estado": "EN CURSO",
       "estado_texto": "EN CURSO",
+      "estado_fuente": "variables/proyecto/README.md",
       "owner": "Valle (con Claude)"
     },
     {
@@ -2370,6 +2447,7 @@ const MAPA_MODELO = {
       "entrypoint": true,
       "estado": "EN CURSO",
       "estado_texto": "EN CURSO",
+      "estado_fuente": "variables/proyecto/README.md",
       "owner": "Valle (con Claude)"
     },
     {
@@ -2428,6 +2506,7 @@ const MAPA_MODELO = {
       "entrypoint": false,
       "estado": "EN CURSO",
       "estado_texto": "EN CURSO",
+      "estado_fuente": "variables/proyecto/README.md",
       "owner": "Valle (con Claude)"
     },
     {
@@ -2446,6 +2525,7 @@ const MAPA_MODELO = {
       "modulo_inferido": true,
       "estado": "EN CURSO",
       "estado_texto": "EN CURSO (v1: embudo por etapas + modelo de supervivencia + backtest temporal)",
+      "estado_fuente": "variables/embudo/README.md",
       "owner": "Claude+Valle (2026-07-12)"
     },
     {
@@ -2463,6 +2543,7 @@ const MAPA_MODELO = {
       "modulo_inferido": true,
       "estado": "EN CURSO",
       "estado_texto": "EN CURSO (v1: embudo por etapas + modelo de supervivencia + backtest temporal)",
+      "estado_fuente": "variables/embudo/README.md",
       "owner": "Claude+Valle (2026-07-12)"
     },
     {
@@ -2479,6 +2560,7 @@ const MAPA_MODELO = {
       "modulo_inferido": true,
       "estado": "EN CURSO",
       "estado_texto": "EN CURSO",
+      "estado_fuente": "variables/proyecto/README.md",
       "owner": "Valle (con Claude)"
     },
     {
@@ -2495,6 +2577,7 @@ const MAPA_MODELO = {
       "modulo_inferido": true,
       "estado": "EN CURSO",
       "estado_texto": "EN CURSO",
+      "estado_fuente": "variables/proyecto/README.md",
       "owner": "Valle (con Claude)"
     },
     {
@@ -2511,6 +2594,7 @@ const MAPA_MODELO = {
       "modulo_inferido": true,
       "estado": "EN CURSO",
       "estado_texto": "EN CURSO",
+      "estado_fuente": "variables/proyecto/README.md",
       "owner": "Valle (con Claude)"
     },
     {
@@ -2527,6 +2611,7 @@ const MAPA_MODELO = {
       "modulo_inferido": true,
       "estado": "EN CURSO",
       "estado_texto": "EN CURSO",
+      "estado_fuente": "variables/proyecto/README.md",
       "owner": "Valle (con Claude)"
     },
     {
@@ -2546,6 +2631,7 @@ const MAPA_MODELO = {
       "modulo_inferido": true,
       "estado": "EN CURSO",
       "estado_texto": "EN CURSO",
+      "estado_fuente": "variables/proyecto/README.md",
       "owner": "Valle (con Claude)"
     },
     {
@@ -2562,6 +2648,7 @@ const MAPA_MODELO = {
       "modulo_inferido": true,
       "estado": "EN CURSO",
       "estado_texto": "EN CURSO — pieza (a) implementada; gate 1 APROBADO sobre base completa (ver `RESULTADOS.md`)",
+      "estado_fuente": "modelo/voto_individual/README.md",
       "owner": "Claude+Valle (desde 2026-07-01)"
     },
     {
@@ -2574,6 +2661,7 @@ const MAPA_MODELO = {
       "que_es": "¿El proyecto siquiera llega a votarse? Es el diferencial del nowcast: la mayoría de los proyectos mueren en comisión.",
       "estado": "EN CURSO",
       "estado_texto": "EN CURSO (v1: embudo por etapas + modelo de supervivencia + backtest temporal)",
+      "estado_fuente": "variables/embudo/README.md",
       "owner": "Claude+Valle (2026-07-12)"
     },
     {
@@ -2586,6 +2674,7 @@ const MAPA_MODELO = {
       "que_es": "¿Qué postura toma cada bloque en este tema, con este origen, a esta fecha? Y ¿cuán cohesionado está?",
       "estado": "EN CURSO",
       "estado_texto": "EN CURSO (v1) · **Owner:** Claude+Valle (2026-07-12)",
+      "estado_fuente": "variables/bloque/README.md",
       "owner": "Claude+Valle (2026-07-12)"
     },
     {
@@ -2598,6 +2687,7 @@ const MAPA_MODELO = {
       "que_es": "La ficha individual: quién es, por qué bloques pasó, cuánto falta, cuánto se desvía.",
       "estado": "EN CURSO",
       "estado_texto": "EN CURSO — v1 con dimensión período (re-correr tras cada rebuild de la canónica)",
+      "estado_fuente": "variables/legislador/README.md",
       "owner": "Claude+Valle (desde 2026-07-01)"
     },
     {
@@ -2610,6 +2700,7 @@ const MAPA_MODELO = {
       "que_es": "¿Quién va a estar presente? Muchas leyes se ganan o se pierden por quién falta ese día.",
       "estado": "EN CURSO",
       "estado_texto": "EN CURSO — Owner: Valle (reclamado 2026-07-11). **Escalón 1 hecho:** `asistencia.py`",
+      "estado_fuente": "variables/asistencia_quorum/README.md",
       "owner": "—"
     },
     {
@@ -2622,6 +2713,7 @@ const MAPA_MODELO = {
       "que_es": "Qué ES el proyecto: tema, origen (Ejecutivo/Oficialismo/Aliados/Oposición), si lo firma un jefe de bloque, qué mayoría requiere, y el ICG como modulador de coyuntura.",
       "estado": "EN CURSO",
       "estado_texto": "EN CURSO",
+      "estado_fuente": "variables/proyecto/README.md",
       "owner": "Valle (con Claude)"
     },
     {
@@ -2636,6 +2728,7 @@ const MAPA_MODELO = {
       "parqueada": true,
       "estado": "FUTURO",
       "estado_texto": "FUTURO",
+      "estado_fuente": "variables/contexto/README.md",
       "owner": "vacante"
     },
     {
@@ -2648,6 +2741,7 @@ const MAPA_MODELO = {
       "que_es": "Cuánto se aparta cada legislador de la línea de su bloque. Es la puerta por la que las bisagras cambian una votación.",
       "estado": "EN CURSO",
       "estado_texto": "EN CURSO — pieza (a) implementada; gate 1 APROBADO sobre base completa (ver `RESULTADOS.md`)",
+      "estado_fuente": "modelo/voto_individual/README.md",
       "owner": "Claude+Valle (desde 2026-07-01)"
     },
     {
@@ -2662,8 +2756,10 @@ const MAPA_MODELO = {
         "Si el proyecto no está en p_embudo y no vino como override explícito, el ensemble corta con error. No inventa un valor."
       ],
       "modulo": "variables/embudo",
+      "bloque": "origen",
       "estado": "EN CURSO",
       "estado_texto": "EN CURSO (v1: embudo por etapas + modelo de supervivencia + backtest temporal)",
+      "estado_fuente": "variables/embudo/README.md",
       "owner": "Claude+Valle (2026-07-12)"
     },
     {
@@ -2680,6 +2776,7 @@ const MAPA_MODELO = {
         "El v2 (clonar el promedio del bloque `bancas` veces) se ELIMINÓ el 22-07: aplicaba el promedio incluso a los 753 legisladores con desvío medido."
       ],
       "modulo": "modelo/ensemble",
+      "bloque": "origen",
       "existe": true,
       "loc": 444,
       "simbolos": [
@@ -2724,6 +2821,7 @@ const MAPA_MODELO = {
       "entrypoint": true,
       "estado": "EN CURSO",
       "estado_texto": "EN CURSO (v1: composición + nowcast por proyecto + tests)",
+      "estado_fuente": "modelo/ensemble/README.md",
       "owner": "Claude+Valle (2026-07-12)"
     },
     {
@@ -2741,6 +2839,7 @@ const MAPA_MODELO = {
         "Umbrales: SIMPLE = emitidos/2 · ABSOLUTA = miembros//2+1 (129 dip / 37 sen) · DOS_TERCIOS = ceil(emitidos·2/3) · DOS_TERCIOS_CUERPO = ceil(miembros·2/3) · TRES_CUARTOS = ceil(emitidos·3/4).",
         "v1 modela el quórum de forma laxa: se asume reunido si los presentes ≥ mitad+1 de los miembros."
       ],
+      "bloque": "origen",
       "existe": true,
       "loc": 345,
       "simbolos": [
@@ -2785,6 +2884,7 @@ const MAPA_MODELO = {
       "entrypoint": true,
       "estado": "EN CURSO",
       "estado_texto": "EN CURSO — Owner: Valle (reclamado 2026-07-10). Gate de pase: reglas validadas",
+      "estado_fuente": "modelo/agregador_institucional/README.md",
       "owner": "—"
     },
     {
@@ -2800,8 +2900,10 @@ const MAPA_MODELO = {
         "⚠ Sin condicionar por tema/origen el factor está DEGENERADO: da p≥0,99 en 33.284 de 37.341 casos. Condicionar sube el acierto del voto por legislador de 59% a 76%."
       ],
       "modulo": "modelo/agregador_institucional",
+      "bloque": "origen",
       "estado": "EN CURSO",
       "estado_texto": "EN CURSO — Owner: Valle (reclamado 2026-07-10). Gate de pase: reglas validadas",
+      "estado_fuente": "modelo/agregador_institucional/README.md",
       "owner": "—"
     },
     {
@@ -2810,7 +2912,6 @@ const MAPA_MODELO = {
       "rol": "variable",
       "etapa": "origen",
       "jerarquia": 3,
-      "estado_override": "REPLANTEADO",
       "parqueada": true,
       "formula": "P(A)",
       "que_es": "¿El proyecto sale de comisión? PARQUEADA: no se predice, se OBSERVA el dictamen (firmas, bloques).",
@@ -2819,9 +2920,15 @@ const MAPA_MODELO = {
         "Decisión de Valle, 2026-08-08."
       ],
       "modulo": "modelo/ensemble",
+      "bloque": "origen",
+      "estado_declarado": "REPLANTEADO",
+      "suspendida": true,
+      "estado_motivo": "SUSPENDIDA por decisión de Valle (2026-08-08, ratificada el 20-08): no se modela la etapa de comisión. Es de naturaleza estrictamente política y no se puede predecir estadísticamente. El estado es del NODO, no del módulo: `modelo/ensemble` sigue EN CURSO.",
       "estado": "REPLANTEADO",
+      "estado_fuente": "capa curada",
       "owner": "Claude+Valle (2026-07-12)",
-      "estado_texto": "parqueada por decision del equipo"
+      "estado_texto": "SUSPENDIDA por decisión de Valle (2026-08-08, ratificada el 20-08): no se modela la etapa de comisión. Es de naturaleza estrictamente política y no se puede predecir estadísticamente. El estado es del NODO, no del módulo: `modelo/ensemble` sigue EN CURSO.",
+      "estado_modulo": "EN CURSO"
     },
     {
       "id": "g_B",
@@ -2835,8 +2942,10 @@ const MAPA_MODELO = {
         "Es la misma maquinaria que P(mayoría | recinto) de la v1, leída en el lenguaje de puertas."
       ],
       "modulo": "modelo/agregador_institucional",
+      "bloque": "origen",
       "estado": "EN CURSO",
       "estado_texto": "EN CURSO — Owner: Valle (reclamado 2026-07-10). Gate de pase: reglas validadas",
+      "estado_fuente": "modelo/agregador_institucional/README.md",
       "owner": "—"
     },
     {
@@ -2845,7 +2954,6 @@ const MAPA_MODELO = {
       "rol": "variable",
       "etapa": "revisora",
       "jerarquia": 3,
-      "estado_override": "REPLANTEADO",
       "parqueada": true,
       "formula": "P(C|A,B)",
       "que_es": "¿La cámara revisora la trata antes de que caduque? PARQUEADA post-lanzamiento: se OBSERVA el estado + el reloj de caducidad de la Ley 13.640.",
@@ -2854,9 +2962,16 @@ const MAPA_MODELO = {
         "Hallazgo del 13-08: de lo que llega al recinto, 53,7% termina en ley. El ~46% que se pierde es AGENDA en la revisora, no perder la votación. O sea: el peso está en C, y C es lo que está parqueado."
       ],
       "modulo": "modelo/ensemble",
+      "bloque": "revisora",
+      "grupo": "condicionado_por_origen",
+      "estado_declarado": "REPLANTEADO",
+      "suspendida": true,
+      "estado_motivo": "SUSPENDIDA por la misma decisión: no se modela la caducidad (pérdida de estado parlamentario, Ley 13.640) ni el tiempo de tratamiento. Es política pura. El estado es del NODO: `modelo/ensemble` sigue EN CURSO.",
       "estado": "REPLANTEADO",
+      "estado_fuente": "capa curada",
       "owner": "Claude+Valle (2026-07-12)",
-      "estado_texto": "parqueada por decision del equipo"
+      "estado_texto": "SUSPENDIDA por la misma decisión: no se modela la caducidad (pérdida de estado parlamentario, Ley 13.640) ni el tiempo de tratamiento. Es política pura. El estado es del NODO: `modelo/ensemble` sigue EN CURSO.",
+      "estado_modulo": "EN CURSO"
     },
     {
       "id": "c_roster_revisora",
@@ -2871,6 +2986,7 @@ const MAPA_MODELO = {
         "La revisora es la otra respecto de `camara_origen`. Única fuente de esa regla en el módulo."
       ],
       "modulo": "modelo/ensemble",
+      "bloque": "revisora",
       "existe": true,
       "loc": 217,
       "simbolos": [
@@ -2915,12 +3031,13 @@ const MAPA_MODELO = {
       "entrypoint": true,
       "estado": "EN CURSO",
       "estado_texto": "EN CURSO (v1: composición + nowcast por proyecto + tests)",
+      "estado_fuente": "modelo/ensemble/README.md",
       "owner": "Claude+Valle (2026-07-12)"
     },
     {
       "id": "g_D",
-      "label": "Puerta D — voto en revisora",
-      "rol": "variable",
+      "label": "P(aprobación en Cámara Revisora)",
+      "rol": "resultado",
       "etapa": "revisora",
       "jerarquia": 3,
       "archivo": "modelo/ensemble/src/puerta_d.py",
@@ -2933,6 +3050,9 @@ const MAPA_MODELO = {
         "El ajuste se estimaría sobre los ~243 proyectos con votación en las dos cámaras (60 desde 2015), con ómnibus excluidos. `estimar_delta_paso_origen` está pendiente.",
         "NO transfiere posturas de origen a la revisora por linaje: se evaluó y se descartó."
       ],
+      "bloque": "revisora",
+      "sublabel": "Puerta D — voto en revisora",
+      "grupo": "condicionado_por_origen",
       "existe": true,
       "loc": 217,
       "simbolos": [
@@ -2977,12 +3097,13 @@ const MAPA_MODELO = {
       "entrypoint": true,
       "estado": "EN CURSO",
       "estado_texto": "EN CURSO (v1: composición + nowcast por proyecto + tests)",
+      "estado_fuente": "modelo/ensemble/README.md",
       "owner": "Claude+Valle (2026-07-12)"
     },
     {
       "id": "n_v1",
-      "label": "P(aprobación) — v1",
-      "rol": "variable",
+      "label": "P(aprobación en Cámara de Origen)",
+      "rol": "resultado",
       "etapa": "nowcast",
       "jerarquia": 3,
       "archivo": "modelo/ensemble/src/ensemble.py",
@@ -2991,6 +3112,8 @@ const MAPA_MODELO = {
       "formulacion": "v1",
       "formula": "P(aprobación) = P(llega al recinto) × P(mayoría | recinto)",
       "que_es": "EL NÚMERO QUE CORRE HOY. Producto de los dos factores. Cubre sólo la cámara de origen: no dice nada de la revisora.",
+      "bloque": "origen",
+      "sublabel": "v1 — el número que corre hoy",
       "existe": true,
       "loc": 444,
       "simbolos": [
@@ -3035,12 +3158,13 @@ const MAPA_MODELO = {
       "entrypoint": true,
       "estado": "EN CURSO",
       "estado_texto": "EN CURSO (v1: composición + nowcast por proyecto + tests)",
+      "estado_fuente": "modelo/ensemble/README.md",
       "owner": "Claude+Valle (2026-07-12)"
     },
     {
       "id": "n_puertas",
-      "label": "P(sanción) — puertas",
-      "rol": "variable",
+      "label": "P(aprobación de un proyecto de ley)",
+      "rol": "resultado",
       "etapa": "nowcast",
       "jerarquia": 3,
       "archivo": "modelo/ensemble/PUERTA-D.md",
@@ -3048,10 +3172,13 @@ const MAPA_MODELO = {
       "formulacion": "puertas",
       "formula": "P(sanción) = P(A) · P(B|A) · P(C|A,B) · P(D|A,B,C)",
       "que_es": "El reencuadre completo, de punta a punta por las dos cámaras. PARCIAL: B y D existen, A y C están parqueadas y se observan.",
+      "bloque": "final",
+      "sublabel": "P(sanción), por puertas A·B·C·D",
       "existe": true,
       "entrypoint": false,
       "estado": "EN CURSO",
       "estado_texto": "EN CURSO (v1: composición + nowcast por proyecto + tests)",
+      "estado_fuente": "modelo/ensemble/README.md",
       "owner": "Claude+Valle (2026-07-12)"
     },
     {
@@ -3066,8 +3193,10 @@ const MAPA_MODELO = {
         "Es lo que hace que el mismo proyecto tenga un número distinto según en qué etapa esté. No es una inconsistencia: es la regla."
       ],
       "modulo": "modelo/ensemble",
+      "bloque": "final",
       "estado": "EN CURSO",
       "estado_texto": "EN CURSO (v1: composición + nowcast por proyecto + tests)",
+      "estado_fuente": "modelo/ensemble/README.md",
       "owner": "Claude+Valle (2026-07-12)"
     },
     {
@@ -3078,12 +3207,14 @@ const MAPA_MODELO = {
       "jerarquia": 2,
       "ruta_declarada": "ENSEMBLE_OUT",
       "que_es": "La tarjeta de salida por proyecto: p_llega_recinto, p_mayoria_recinto, p_aprobacion, y el detalle del escenario (ADR-0007).",
+      "bloque": "final",
       "archivo": "modelo/ensemble/outputs",
       "existe": true,
       "modulo": "modelo/ensemble",
       "modulo_inferido": true,
       "estado": "EN CURSO",
       "estado_texto": "EN CURSO (v1: composición + nowcast por proyecto + tests)",
+      "estado_fuente": "modelo/ensemble/README.md",
       "owner": "Claude+Valle (2026-07-12)"
     },
     {
@@ -3099,8 +3230,10 @@ const MAPA_MODELO = {
         "No se parchea de a un síntoma: queda como insumo de la Revisión de las Comisiones. Decisión de Valle, 07-08."
       ],
       "modulo": "modelo/ensemble",
+      "bloque": "final",
       "estado": "EN CURSO",
       "estado_texto": "EN CURSO (v1: composición + nowcast por proyecto + tests)",
+      "estado_fuente": "modelo/ensemble/README.md",
       "owner": "Claude+Valle (2026-07-12)"
     },
     {
@@ -3117,6 +3250,7 @@ const MAPA_MODELO = {
         "⚠ v1 corre efectivamente sólo sobre DIPUTADOS: el Senado histórico no es rosteable con el padrón por defecto, y el hueco Dip 2020-2023 invalida la ventana de postura.",
         "La corrida pesada la corre Valle en PowerShell."
       ],
+      "bloque": "fuera",
       "existe": true,
       "loc": 565,
       "simbolos": [
@@ -3161,6 +3295,7 @@ const MAPA_MODELO = {
       "entrypoint": true,
       "estado": "EN CURSO",
       "estado_texto": "EN CURSO (v1: composición + nowcast por proyecto + tests)",
+      "estado_fuente": "modelo/ensemble/README.md",
       "owner": "Claude+Valle (2026-07-12)"
     },
     {
@@ -3175,8 +3310,10 @@ const MAPA_MODELO = {
         "El límite conocido: sin condicionar la postura, el factor de mayoría multiplica por ~1 y no aporta."
       ],
       "modulo": "variables/embudo",
+      "bloque": "fuera",
       "estado": "EN CURSO",
       "estado_texto": "EN CURSO (v1: embudo por etapas + modelo de supervivencia + backtest temporal)",
+      "estado_fuente": "variables/embudo/README.md",
       "owner": "Claude+Valle (2026-07-12)"
     },
     {
@@ -3190,6 +3327,7 @@ const MAPA_MODELO = {
       "notas": [
         "Skill 0,3643 sancionado / 0,4195 recinto, medido el 07-08 sobre datos frescos."
       ],
+      "bloque": "fuera",
       "archivo": "variables/embudo/outputs/backtest_embudo.json",
       "existe": true,
       "entrypoint": false,
@@ -3197,6 +3335,7 @@ const MAPA_MODELO = {
       "modulo_inferido": true,
       "estado": "EN CURSO",
       "estado_texto": "EN CURSO (v1: embudo por etapas + modelo de supervivencia + backtest temporal)",
+      "estado_fuente": "variables/embudo/README.md",
       "owner": "Claude+Valle (2026-07-12)"
     },
     {
@@ -3210,8 +3349,10 @@ const MAPA_MODELO = {
       "notas": [
         "Por eso el negocio no está en el voto individual medio, sino en asistencia, embudo, postura de bloque y las 10-20 bisagras."
       ],
+      "bloque": "fuera",
       "estado": "HECHO",
       "estado_texto": "HECHO",
+      "estado_fuente": "evaluacion/baseline/README.md",
       "owner": "vacante"
     },
     {
@@ -3223,9 +3364,11 @@ const MAPA_MODELO = {
       "modulo": "evaluacion/metricas",
       "que_es": "Métricas comunes (Brier, calibración, accuracy en votos cruzados, cobertura de bandas). PENDIENTE: la carpeta está vacía; hoy cada módulo trae las suyas.",
       "es_hueco": true,
+      "bloque": "fuera",
       "parqueada": true,
       "estado": "PENDIENTE",
       "estado_texto": "PENDIENTE",
+      "estado_fuente": "evaluacion/metricas/README.md",
       "owner": "vacante"
     },
     {
@@ -3237,9 +3380,11 @@ const MAPA_MODELO = {
       "modulo": "evaluacion/backtesting",
       "que_es": "Validación walk-forward con test de no-leakage, transversal al repo. PENDIENTE: la carpeta está vacía.",
       "es_hueco": true,
+      "bloque": "fuera",
       "parqueada": true,
       "estado": "PENDIENTE",
       "estado_texto": "PENDIENTE",
+      "estado_fuente": "evaluacion/backtesting/README.md",
       "owner": "vacante"
     },
     {
@@ -3257,6 +3402,7 @@ const MAPA_MODELO = {
       "parqueada": true,
       "estado": "EN CURSO",
       "estado_texto": "EN CURSO — v1 en producción. **1.016.632 votos / 6.231 actas**, 2001-2026,",
+      "estado_fuente": "datos/canonica/README.md",
       "owner": "Claude+Franco (desde 2026-06-25)"
     },
     {
@@ -3268,9 +3414,11 @@ const MAPA_MODELO = {
       "modulo": "producto/api",
       "es_hueco": true,
       "que_es": "Servir el nowcast por HTTP. FUTURO: no se abre sin pagador validado.",
+      "bloque": "fuera",
       "parqueada": true,
       "estado": "FUTURO",
       "estado_texto": "FUTURO",
+      "estado_fuente": "producto/api/README.md",
       "owner": "vacante"
     }
   ],
@@ -3969,6 +4117,13 @@ const MAPA_MODELO = {
       "a": "e_backtest_cadena",
       "tipo": "alerta",
       "nota": "sólo 72 vigentes ⇒ el backtest corre sobre Diputados"
+    },
+    {
+      "de": "n_v1",
+      "a": "g_D",
+      "tipo": "condiciona",
+      "nota": "P(aprobar en Revisora | se aprobó en Origen)",
+      "detalle": "No es flujo de datos: `puerta_d.py` no lee P(origen). Lo que cambia es el supuesto — con media sanción A y B ya ocurrieron y valen 1, y el número publicado queda P(C)·P(D)."
     }
   ]
 };

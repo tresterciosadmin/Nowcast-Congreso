@@ -16,17 +16,25 @@
   NO es el tablero: TABLERO-CONTROL.html muestra plan y avance,
   esto muestra la maquinaria.
 
-  Ronda 2 (2026-08-20): dejó de ser un grafo por columnas y pasó a ser un
-  DIAGRAMA DE FLUJO BICAMERAL. Dos bloques espejo —cámara de origen y
-  cámara revisora— con el tronco compartido dibujado de los dos lados, la
-  forma diciendo qué es cada nodo, y el condicionamiento entre cámaras
-  como una flecha gruesa por arriba. El layout se calcula acá abajo, en JS.
+  V2 (2026-08-20). Misma estructura que la V1, otro dibujo. El requisito
+  es el ORDEN, no la estética: una banda por cámara, cada una con su flujo
+  COMPLETO de punta a punta.
+
+    banda 1 (arriba) ....... todo el flujo hasta P(aprobación en ORIGEN)
+    banda 2 (abajo)  ....... todo el flujo hasta P(aprobación en REVISORA)
+    a la derecha, entre las dos ... P(aprobación de un proyecto de ley)
+
+  Las dos bandas comparten la MISMA grilla de columnas, así que el mismo
+  nodo cae en la misma vertical arriba y abajo y el espejo se ve solo.
+  El condicionamiento entre cámaras es una flecha corta y gruesa que baja
+  de un resultado al otro, no un arco por encima de todo.
+  El layout se calcula acá abajo, en JS. Sin CDN y sin fetch.
 ================================================================= -->
 <html lang="es">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Mapa del Modelo — Nowcast Legislativo</title>
+<title>Mapa del Modelo (V2) — Nowcast Legislativo</title>
 <style>
   /* Paleta base heredada de TABLERO-CONTROL.html (el estilo de la casa).
      El color codifica el ROL. El ESTADO se codifica con borde y opacidad,
@@ -132,15 +140,18 @@
   #svg.arrastrando{cursor:grabbing}
 
   /* marcos de bloque: el esqueleto bicameral es el dibujo, no un detalle */
-  .marco{fill:var(--marco);stroke:var(--marco-linea);stroke-width:1}
-  .marco.b-revisora{fill:var(--marco-rev);stroke:var(--marco-rev-linea)}
+  .marco{fill:var(--marco);stroke:none}
+  .marco.b-revisora{fill:var(--marco-rev)}
   .marco.b-fuera{fill:none;stroke:var(--marco-linea);stroke-dasharray:6 5}
   .marco.b-final{fill:var(--marco);stroke:var(--marco-linea)}
-  .marcoTit{font-size:15px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;
-            fill:var(--brand);opacity:.75}
-  .marcoSub{font-size:11px;fill:var(--muted);opacity:.85}
-  .capaTit{font-size:9.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;
-           fill:var(--muted);opacity:.55}
+  .rejilla{stroke:var(--marco-linea);stroke-width:1;opacity:.7}
+  .cabCol{fill:var(--panel2);stroke:var(--marco-linea);stroke-width:1}
+  .cabColTxt{font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;
+             fill:var(--muted)}
+  .bandaTit{font-size:13px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;
+            fill:var(--brand);opacity:.8}
+  .bandaSub{font-size:10.5px;fill:var(--muted)}
+  .bandaNum{font-size:20px;font-weight:800;fill:var(--brand);opacity:.22}
   .grupoCaja{fill:var(--grupo-bg);stroke:var(--grupo);stroke-width:2;rx:18}
   .grupoTit{font-size:11px;font-weight:800;fill:var(--grupo);letter-spacing:.03em}
 
@@ -169,6 +180,7 @@
   .arista.apagada{opacity:.05}
   .arista.viva{stroke:var(--resalte);stroke-width:3;opacity:1}
   .rotArista{font-size:11.5px;font-weight:700;fill:var(--condiciona)}
+  .rotFondo{fill:var(--bg);opacity:.92;stroke:var(--condiciona);stroke-opacity:.25}
 
   /* ---------------------------------------------------------- ficha */
   /* Lo más útil de la página: click en un nodo y acá está de dónde sale.
@@ -259,6 +271,7 @@
   .pie{margin-top:10px;padding-top:9px;border-top:1px solid var(--line);font-size:.75rem}
   .aviso{background:var(--repl-bg);color:var(--repl);border:1px solid var(--repl);
          border-radius:8px;padding:8px 12px;font-size:.8rem;margin:10px 0;font-weight:600}
+  body[data-extra="off"] .b-fuera-grupo{display:none}
   .solo-lectores{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
   @media(max-width:900px){
     .ficha{position:absolute;right:0;top:0;bottom:0;z-index:15;box-shadow:var(--sombra);flex-basis:340px}
@@ -266,7 +279,7 @@
   }
 </style>
 </head>
-<body data-tema="claro" data-vista="grafo">
+<body data-tema="claro" data-vista="grafo" data-extra="off">
 
 <div class="barra" role="toolbar" aria-label="Instrumentos del mapa">
   <div class="grupo">
@@ -297,6 +310,8 @@
   </div>
   <div class="sep" aria-hidden="true"></div>
   <div class="grupo">
+    <button class="btn" id="b-extra" aria-pressed="false"
+            title="Mostrar u ocultar lo que no entra al número: controles, exports y evaluación">Controles: no</button>
     <button class="btn" id="b-tema" aria-label="Alternar tema claro y oscuro">Tema oscuro</button>
     <button class="btn" id="b-vista" aria-pressed="false"
             aria-label="Alternar entre el grafo y la tabla gemela">Ver tabla</button>
@@ -306,15 +321,17 @@
 <div class="cuerpo">
   <div class="lienzo" id="lienzo">
     <svg id="svg" role="img" aria-labelledby="svg-titulo svg-desc">
-      <title id="svg-titulo">Flujo del cálculo del Nowcast, por las dos cámaras</title>
-      <desc id="svg-desc">Diagrama de flujo de izquierda a derecha, en dos bloques: la cadena
-        completa hasta la probabilidad de aprobación en la cámara de origen, y la misma cadena
-        hasta la probabilidad de aprobación en la cámara revisora, que está condicionada por la
-        primera. Las dos confluyen abajo en la probabilidad de aprobación de un proyecto de ley.
+      <title id="svg-titulo">Flujo del cálculo del Nowcast, una banda por cámara</title>
+      <desc id="svg-desc">Diagrama de flujo de izquierda a derecha, en dos bandas apiladas que
+        comparten la misma grilla de columnas. La banda de arriba es el flujo completo hasta la
+        probabilidad de aprobación en la cámara de origen; la de abajo, el flujo completo hasta la
+        probabilidad de aprobación en la cámara revisora, condicionada por la primera. A la derecha,
+        entre las dos, confluyen en la probabilidad de aprobación de un proyecto de ley.
         La misma información está disponible en formato de tabla con el botón «Ver tabla».</desc>
       <defs id="defs"></defs>
       <g id="raiz">
         <g id="capaMarcos"></g>
+        <g id="capaRejilla"></g>
         <g id="capaGrupos"></g>
         <g id="capaAristas"></g>
         <g id="capaNodos"></g>
@@ -611,14 +628,102 @@ function ordenar(bloqueId, pasadas){
   }
 }
 
-/* ------------------------------------------------------ posiciones locales */
-/* Escalonado, no cuadriculado: cada capa ocupa el ancho que necesita (no hay
-   una grilla de columnas iguales) y dentro de la capa los nodos se corren un
-   poco en x, alternando. Así se lee como un recorrido y no como una tabla. */
-var CAPTIONS = [], CAPS_TMP = [];
-function acomodar(bloqueId){
+/* =================================================================== V2 ====
+   UNA BANDA POR CÁMARA, y las dos sobre la MISMA grilla de columnas.
+
+   La banda de arriba es el flujo completo hasta P(aprobación en origen); la de
+   abajo, el flujo completo hasta P(aprobación en revisora). Como las columnas
+   son las mismas para las dos, el mismo nodo cae en la misma vertical arriba y
+   abajo: el espejo se ve sin que haya que decirlo, y la columna dice en qué
+   etapa del cálculo estás parado.
+
+   Apilar en vez de poner los bloques lado a lado no es un gusto: dos cadenas de
+   diez columnas una al lado de la otra dan un dibujo del triple de ancho que de
+   alto, y «Ajustar» lo deja ilegible. Apiladas, el dibujo entra en la pantalla
+   con la forma de la pantalla.
+
+   El número final va a la DERECHA, a la misma altura que la juntura de las dos
+   bandas: las dos cadenas terminan apuntando al mismo lugar. */
+var GAP_COL = 54, GAP_FILA = 14, GAP_BANDA = 76, GAP_FINAL = 86;
+/* Una columna con catorce fuentes apiladas deja la banda altísima y flaca, y
+   «Ajustar» la achica hasta que no se lee. Cuando una columna pasa de MAX_FILAS
+   se abre en sub-columnas DENTRO de la misma columna de la grilla: sigue siendo
+   la misma etapa y las dos bandas siguen alineadas, pero ocupa el ancho que
+   necesita en vez del alto que no hay. */
+var MAX_FILAS = 8, SUB_GAP = 12;
+var CAB_H = 26, TIT_H = 40, PAD_BANDA = 16, MARGEN = 34;
+
+var GRID = { colX:[], colW:[], ancho:0, x0:0, y0:0, y1:0 };
+var MARCOS = [], CAJAS = [], CABS = [], ANCHO = 0, ALTO = 0;
+
+function disponer(){
+  /* Las dos camaras no tienen la misma cantidad de capas (la revisora es mas
+     corta). Si cada una terminara donde le toca, los dos resultados quedarian
+     desalineados y el espejo se perderia. Se empuja el nodo `resultado` de cada
+     banda a la ULTIMA columna de la grilla: las dos cadenas terminan a la misma
+     altura, y esa columna final pasa a ser «el resultado de la camara». */
+  var camaras = ["origen", "revisora"], maxc = 0;
+  camaras.forEach(function(b){
+    (PORBLOQUE[b] || []).forEach(function(it){ maxc = Math.max(maxc, it.capa); });
+  });
+  camaras.forEach(function(b){
+    (PORBLOQUE[b] || []).forEach(function(it){
+      if (it.n.rol === "resultado") it.capa = maxc;
+    });
+  });
+  BLOQUES.forEach(function(b){
+    armarColumnas(PORBLOQUE[b.id], b.id);
+    ordenar(b.id, 12);
+  });
+  colocar();
+}
+
+/* apila una banda sobre la grilla compartida y devuelve su alto */
+function altoDeColumna(col){
+  var subs = Math.max(1, Math.ceil(col.length / MAX_FILAS));
+  var filas = Math.ceil(col.length / subs), h = 0, k = 0;
+  for (var f = 0; f < filas; f++){
+    var alto = 0;
+    for (var s = 0; s < subs; s++){
+      var it = col[s * filas + f];
+      if (it) alto = Math.max(alto, it.h);
+    }
+    h += alto + GAP_FILA;
+  }
+  return { h: Math.max(0, h - GAP_FILA), subs: subs, filas: filas };
+}
+
+function apilarBanda(bloqueId, x0, y0){
   var cols = COLS[bloqueId] || [];
-  CAPS_TMP = [];
+  var altoMax = 0;
+  cols.forEach(function(col){ altoMax = Math.max(altoMax, altoDeColumna(col).h); });
+  cols.forEach(function(col, ci){
+    var m = altoDeColumna(col);
+    var anchoUsado = m.subs * GRID.colUnit[ci] + (m.subs - 1) * SUB_GAP;
+    var xIni = x0 + GRID.colX[ci] + (GRID.colW[ci] - anchoUsado) / 2;
+    var y = y0 + (altoMax - m.h) / 2;
+    for (var f = 0; f < m.filas; f++){
+      var alto = 0;
+      for (var s = 0; s < m.subs; s++){
+        var it = col[s * m.filas + f];
+        if (it) alto = Math.max(alto, it.h);
+      }
+      for (var s2 = 0; s2 < m.subs; s2++){
+        var it2 = col[s2 * m.filas + f];
+        if (!it2) continue;
+        it2.col = ci;
+        it2.x = xIni + s2 * (GRID.colUnit[ci] + SUB_GAP) + GRID.colUnit[ci] / 2;
+        it2.y = y + alto / 2;
+      }
+      y += alto + GAP_FILA;
+    }
+  });
+  return altoMax;
+}
+
+/* mismo apilado pero con grilla propia: para lo que no es una cámara */
+function apilarSuelto(bloqueId, x0, y0){
+  var cols = COLS[bloqueId] || [];
   var x = 0, altoMax = 0;
   var anchos = cols.map(function(col){
     var w = 0; col.forEach(function(it){ w = Math.max(w, it.w); }); return w;
@@ -630,90 +735,144 @@ function acomodar(bloqueId){
   cols.forEach(function(col, ci){
     var h = 0; col.forEach(function(it){ h += it.h + GAP_FILA; });
     h -= GAP_FILA;
-    var y = (altoMax - h) / 2;
-    var cuenta = {};
-    col.forEach(function(it){ cuenta[it.n.etapa] = (cuenta[it.n.etapa]||0) + 1; });
-    var dom = Object.keys(cuenta).sort(function(a,b){ return cuenta[b]-cuenta[a]; })[0];
-    if (dom && cuenta[dom] / col.length >= .5)
-      CAPS_TMP.push({ bloque:bloqueId, x: x + anchos[ci]/2, etapa: dom });
-    col.forEach(function(it, k){
-      it.x = x + anchos[ci]/2 + (k % 2 ? ESCALON : 0);
+    var y = y0 + (altoMax - h) / 2;
+    col.forEach(function(it){
+      it.col = -1;
+      it.x = x0 + x + anchos[ci]/2;
       it.y = y + it.h/2;
       y += it.h + GAP_FILA;
     });
-    x += anchos[ci] + ESCALON + GAP_CAPA;
+    x += anchos[ci] + GAP_COL;
   });
-  var ancho = Math.max(0, x - GAP_CAPA);
-  return { w: ancho, h: altoMax, caps: CAPS_TMP.slice() };
-}
-
-/* ------------------------------------------------------- armado del dibujo */
-var MARCOS = [], CAJAS = [], ANCHO = 0, ALTO = 0;
-
-function disponer(){
-  BLOQUES.forEach(function(b){
-    armarColumnas(PORBLOQUE[b.id], b.id);
-    ordenar(b.id, 12);
-  });
-  colocar();
+  return { w: Math.max(0, x - GAP_COL), h: altoMax };
 }
 
 function colocar(){
-  var dim = {};
-  BLOQUES.forEach(function(b){ dim[b.id] = acomodar(b.id); });
-
-  var PADL = 26, PADT = 58, PADB = 22, PADR = 26;
-  var offs = {};
-  var y0 = ARCO_Y + 46;
-
-  offs.origen   = { x: MARGEN + PADL, y: y0 + PADT };
-  var wO = dim.origen.w + PADL + PADR;
-  offs.revisora = { x: MARGEN + wO + GAP_BLOQUE + PADL, y: y0 + PADT };
-  var wR = dim.revisora.w + PADL + PADR;
-
-  /* Abajo, una sola banda: a la izquierda el numero publicado -al que bajan las
-     dos camaras-, a la derecha lo que no entra al numero sino que lo vigila.
-     Antes iban uno debajo del otro y dejaban media pantalla en blanco. */
-  var altoCam = Math.max(dim.origen.h, dim.revisora.h);
-  var yBanda = y0 + PADT + altoCam + 74;
-  var centro = MARGEN + (wO + GAP_BLOQUE + wR) / 2;
-  var wF = dim.final.w + PADL + PADR;
-  var wX = dim.fuera.w + PADL + PADR;
-  var derecha = MARGEN + wO + GAP_BLOQUE + wR;        /* borde derecho de la revisora */
-  offs.final = { x: Math.max(MARGEN + PADL, centro - wF/2), y: yBanda + PADT };
-  offs.fuera = { x: Math.max(offs.final.x - PADL + wF + GAP_BLOQUE, derecha - wX) + PADL,
-                 y: yBanda + PADT };
-
-  MARCOS = []; CAPTIONS = [];
-  BLOQUES.forEach(function(b){
-    var o = offs[b.id], d = dim[b.id];
-    PORBLOQUE[b.id].forEach(function(it){ it.x += o.x; it.y += o.y; });
-    if (!PORBLOQUE[b.id].length) return;
-    (d.caps || []).forEach(function(c){
-      CAPTIONS.push({ x: c.x + o.x, y: o.y - 10, etapa: c.etapa });
+  /* --- 1. la grilla compartida: ancho de columna = el más ancho de las dos --- */
+  var camaras = ["origen", "revisora"];
+  var nCols = 0;
+  camaras.forEach(function(b){ nCols = Math.max(nCols, (COLS[b]||[]).length); });
+  GRID.colUnit = new Array(nCols).fill(0);
+  var subs = new Array(nCols).fill(1);
+  camaras.forEach(function(b){
+    (COLS[b]||[]).forEach(function(col, ci){
+      col.forEach(function(it){ GRID.colUnit[ci] = Math.max(GRID.colUnit[ci], it.w); });
+      subs[ci] = Math.max(subs[ci], Math.ceil(col.length / MAX_FILAS));
     });
-    MARCOS.push({ id:b.id, nombre:b.nombre, sub:b.sub,
-      x: o.x - PADL, y: o.y - PADT, w: d.w + PADL + PADR, h: d.h + PADT + PADB });
   });
+  GRID.colW = GRID.colUnit.map(function(u, ci){
+    return u * subs[ci] + (subs[ci] - 1) * SUB_GAP;
+  });
+  GRID.colX = []; var x = 0;
+  for (var c = 0; c < nCols; c++){ GRID.colX.push(x); x += GRID.colW[c] + GAP_COL; }
+  GRID.ancho = Math.max(0, x - GAP_COL);
 
-  /* Lo condicionado por el paso previo: recuadro propio dentro de la revisora. */
+  /* --- 2. las dos bandas, apiladas ---------------------------------------- */
+  var x0 = MARGEN + 10;
+  var yTop = MARGEN + CAB_H + 16;
+  GRID.x0 = x0;
+
+  var yO = yTop + TIT_H + PAD_BANDA;
+  var hO = apilarBanda("origen", x0, yO);
+  var yR = yO + hO + PAD_BANDA + GAP_BANDA + TIT_H + PAD_BANDA;
+  var hR = apilarBanda("revisora", x0, yR);
+
+  GRID.y0 = yTop;
+  GRID.y1 = yR + hR + PAD_BANDA;
+
+  MARCOS = [];
+  MARCOS.push({ id:"origen", num:"1", nombre:"Cámara de origen",
+    sub:"Todo el flujo hasta P(aprobación en la cámara donde nace el proyecto).",
+    x: x0 - 14, y: yO - TIT_H - PAD_BANDA, w: GRID.ancho + 28,
+    h: hO + TIT_H + 2*PAD_BANDA });
+  MARCOS.push({ id:"revisora", num:"2", nombre:"Cámara revisora",
+    sub:"El mismo flujo, en la otra cámara — y condicionado por lo que pasó en origen.",
+    x: x0 - 14, y: yR - TIT_H - PAD_BANDA, w: GRID.ancho + 28,
+    h: hR + TIT_H + 2*PAD_BANDA });
+
+  /* --- 3. el número final: a la derecha, entre las dos bandas -------------- */
+  var xF = x0 + GRID.ancho + GAP_FINAL;
+  var mO = MARCOS[0], mR = MARCOS[1];
+  var dimF = apilarSuelto("final", xF, 0);
+  var yCentro = (mO.y + mO.h + mR.y) / 2;
+  var dyF = yCentro - dimF.h/2;
+  apilarSuelto("final", xF, dyF);   /* absoluto: colocar() se puede repetir */
+  MARCOS.push({ id:"final", num:"3", nombre:"El número publicado",
+    sub:"Las dos cámaras terminan acá.",
+    x: xF - 16, y: dyF - TIT_H - 10, w: dimF.w + 32, h: dimF.h + TIT_H + 22 });
+
+  /* --- 4. lo que no entra al número: abajo, y se puede plegar -------------- */
+  var yX = Math.max(GRID.y1, MARCOS[2].y + MARCOS[2].h) + 64;
+  var dimX = apilarSuelto("fuera", x0, yX + TIT_H);
+  MARCOS.push({ id:"fuera", num:"", nombre:"Fuera de la cadena de un proyecto",
+    sub:"Controles, exports y evaluación: no entran al número, lo vigilan.",
+    x: x0 - 14, y: yX - 10, w: dimX.w + 28, h: dimX.h + TIT_H + 24 });
+
+  /* --- 5. encabezados de columna: la etapa que domina cada vertical -------- */
+  /* Un encabezado por TRAMO, no por columna: si tres columnas seguidas son
+     todas «Variables», poner tres carteles que digan Variables es ruido. Se
+     juntan en uno solo que las abarca. */
+  CABS = [];
+  var prev = null;
+  for (var ci = 0; ci < nCols; ci++){
+    var cuenta = {};
+    camaras.forEach(function(b){
+      ((COLS[b]||[])[ci] || []).forEach(function(it){
+        cuenta[it.n.etapa] = (cuenta[it.n.etapa] || 0) + 1;
+      });
+    });
+    var total = Object.keys(cuenta).reduce(function(s,k){ return s + cuenta[k]; }, 0);
+    var dom = Object.keys(cuenta).sort(function(a,b){ return cuenta[b]-cuenta[a]; })[0];
+    var etapa = (dom && total && cuenta[dom]/total >= .4) ? dom : null;
+    var xi = x0 + GRID.colX[ci], wi = GRID.colW[ci];
+    if (prev && prev.etapa && prev.etapa === etapa){
+      prev.w = xi + wi - prev.x;
+      prev.cols++;
+    } else {
+      prev = { x: xi, w: wi, etapa: etapa, cols: 1 };
+      CABS.push(prev);
+    }
+  }
+  /* Las ultimas columnas son el calculo DE CADA camara: arriba dicen origen y
+     abajo revisora, asi que el encabezado compartido no puede decir una de las
+     dos. Se rotula por lo que la columna ES, no por la etapa de la mayoria. */
+  CABS.forEach(function(c){
+    if (c.etapa === "origen" || c.etapa === "revisora") c.titulo = "Cálculo en la cámara";
+    else if (c.etapa === "nowcast") c.titulo = "Resultado";
+    else if (c.etapa) c.titulo = NOM_ETAPA[c.etapa];
+  });
+  if (CABS.length){
+    var ult = CABS[CABS.length-1];
+    ult.titulo = "Resultado de la cámara";
+    ult.etapa = ult.etapa || "nowcast";
+  }
+
+  /* --- 6. lo condicionado por el paso previo ------------------------------ */
+  /* Una caja por miembro y un solo titulo, en vez de una caja unica: los dos
+     nodos condicionados no son vecinos (la Puerta D vive en la ultima columna),
+     y una caja que los envuelva a los dos se traga media banda de nodos que NO
+     estan condicionados. Marcar de mas es mentir. */
   CAJAS = [];
   (D.grupos || []).forEach(function(g){
     var dentro = INST.filter(function(it){
       return it.n.grupo === g.id && it.bloque === (g.bloque || it.bloque);
     });
     if (!dentro.length) return;
-    var x1 = Infinity, y1 = Infinity, x2 = -Infinity, y2 = -Infinity;
-    dentro.forEach(function(it){
-      x1 = Math.min(x1, it.x - it.w/2); x2 = Math.max(x2, it.x + it.w/2);
-      y1 = Math.min(y1, it.y - it.h/2); y2 = Math.max(y2, it.y + it.h/2);
+    dentro.sort(function(a,b){ return a.x - b.x; });
+    var p = 9;
+    dentro.forEach(function(it, i){
+      CAJAS.push({ g:g, ancla: i === 0, dest: it === dentro[dentro.length-1],
+                   x: it.x - it.w/2 - p, y: it.y - it.h/2 - p,
+                   w: it.w + 2*p, h: it.h + 2*p });
     });
-    var p = 22;
-    CAJAS.push({ g:g, x:x1-p, y:y1-p, w:(x2-x1)+2*p, h:(y2-y1)+2*p });
   });
 
+  /* Lo plegado no cuenta para el encuadre: si no, «Ajustar» sigue reservando
+     media pantalla para una banda que no se esta viendo. */
+  var extra = document.body.dataset.extra !== "off";
   ANCHO = 0; ALTO = 0;
   MARCOS.forEach(function(m){
+    if (m.id === "fuera" && !extra) return;
     ANCHO = Math.max(ANCHO, m.x + m.w + MARGEN);
     ALTO  = Math.max(ALTO,  m.y + m.h + MARGEN);
   });
@@ -731,45 +890,75 @@ function forma(it){
       [[-w/2+ch,-h/2],[w/2-ch,-h/2],[w/2,0],[w/2-ch,h/2],[-w/2+ch,h/2],[-w/2,0]]
         .map(function(p){ return p[0].toFixed(1)+","+p[1].toFixed(1); }).join(" ") }));
   }
-  if (tipo === "circulo"){
-    return el("ellipse", Object.assign(a, { rx:w/2, ry:h/2 }));
-  }
-  /* rectangulo y rectangulo-grueso: el grosor lo pone el CSS por rol */
+  if (tipo === "circulo") return el("ellipse", Object.assign(a, { rx:w/2, ry:h/2 }));
   return el("rect", Object.assign(a, {
     x:-w/2, y:-h/2, width:w, height:h, rx: tipo === "rectangulo-grueso" ? 3 : 5 }));
 }
 
 function haloDe(it){
-  var tipo = FORMA_ROL[it.n.rol];
-  if (tipo === "circulo")
+  if (FORMA_ROL[it.n.rol] === "circulo")
     return el("ellipse", { class:"halo", rx:it.w/2+7, ry:it.h/2+7 });
   return el("rect", { class:"halo", x:-it.w/2-7, y:-it.h/2-7,
                       width:it.w+14, height:it.h+14, rx:8 });
 }
 
 /* ----------------------------------------------------------------- aristas */
-/* Carriles: las líneas que salen del mismo nodo se reparten a lo alto de su
-   borde derecho, y las que entran al mismo nodo a lo alto del izquierdo. Sin
-   esto, diez aristas salen del mismo píxel y no se sigue ninguna. */
+/* Dos ruteos, a propósito:
+   - de una columna a la SIGUIENTE, dentro de la misma banda: codo ortogonal con
+     esquinas redondeadas, con un carril propio en el hueco entre columnas. Es
+     lo que hace que un diagrama se lea como un diagrama y no como una madeja.
+   - todo lo demás (saltos de varias columnas, vueltas hacia atrás, lo que cruza
+     de banda): curva. Un codo que atraviesa tres columnas pasa por encima de
+     los nodos del medio; la curva los esquiva. */
 function carriles(){
-  var sale = {}, entra = {};
+  var sale = {}, entra = {}, gaps = {};
   ARISTAS.forEach(function(a){
     (sale[a.de.clave] = sale[a.de.clave] || []).push(a);
     (entra[a.a.clave] = entra[a.a.clave] || []).push(a);
+    a.orto = a.tipo !== "condiciona" && a.de.bloque === a.a.bloque &&
+             a.de.col >= 0 && a.a.col === a.de.col + 1;
+    if (a.orto){
+      var k = a.de.bloque + "#" + a.de.col;
+      (gaps[k] = gaps[k] || []).push(a);
+    }
   });
   function repartir(mapa, campo, otro){
     Object.keys(mapa).forEach(function(k){
       var arr = mapa[k];
       var it = campo === "os" ? arr[0].de : arr[0].a;
       arr.sort(function(p,q){ return (p[otro].y - q[otro].y) || (p[otro].x - q[otro].x); });
-      var n = arr.length, alto = Math.min(it.h - 10, (n-1) * 9);
-      arr.forEach(function(a, i){
-        a[campo] = n === 1 ? 0 : -alto/2 + alto * (i/(n-1));
-      });
+      var n = arr.length, alto = Math.min(it.h - 12, (n-1) * 9);
+      arr.forEach(function(a, i){ a[campo] = n === 1 ? 0 : -alto/2 + alto * (i/(n-1)); });
     });
   }
   repartir(sale, "os", "a");
   repartir(entra, "oe", "de");
+
+  Object.keys(gaps).forEach(function(k){
+    var arr = gaps[k];
+    var ci = arr[0].de.col;
+    var ini = GRID.x0 + GRID.colX[ci] + GRID.colW[ci];
+    var fin = GRID.x0 + GRID.colX[ci+1];
+    var util = Math.max(16, fin - ini);
+    arr.sort(function(p,q){ return (p.de.y + p.a.y) - (q.de.y + q.a.y); });
+    arr.forEach(function(a, i){
+      a.xm = ini + util * ((i + 1) / (arr.length + 1));
+    });
+  });
+}
+
+function codo(x1, y1, x2, y2, xm){
+  if (Math.abs(y1 - y2) < 1.5) return "M" + x1 + "," + y1 + " L" + x2 + "," + y2;
+  var r = Math.min(11, Math.abs(y2-y1)/2, Math.abs(xm-x1) - 1, Math.abs(x2-xm) - 1);
+  if (!(r > 1)) return "M" + x1 + "," + y1 + " L" + xm + "," + y1 +
+                       " L" + xm + "," + y2 + " L" + x2 + "," + y2;
+  var dy = y2 > y1 ? 1 : -1;
+  return "M" + x1 + "," + y1 +
+         " L" + (xm - r) + "," + y1 +
+         " Q" + xm + "," + y1 + " " + xm + "," + (y1 + r*dy) +
+         " L" + xm + "," + (y2 - r*dy) +
+         " Q" + xm + "," + y2 + " " + (xm + r) + "," + y2 +
+         " L" + x2 + "," + y2;
 }
 
 function caminoArista(a){
@@ -777,10 +966,10 @@ function caminoArista(a){
   if (a.tipo === "condiciona") return caminoCondiciona(a);
   var y1 = p.y + (a.os || 0), y2 = q.y + (a.oe || 0);
   var x1 = p.x + p.w/2 + 2, x2 = q.x - q.w/2 - 7;
+  if (a.orto && a.xm != null && x2 > x1 + 10) return codo(x1, y1, x2, y2, a.xm);
   if (x2 <= x1 + 12){
-    /* hacia atrás o dentro de la misma capa: se va por abajo, sin taparlo todo */
     var xa = p.x, xb = q.x;
-    var dip = Math.max(48, Math.abs(q.y - p.y) * .4 + 36);
+    var dip = Math.max(46, Math.abs(q.y - p.y) * .35 + 34);
     return "M" + xa + "," + (p.y + p.h/2) +
            " C" + xa + "," + (p.y + p.h/2 + dip) + " " +
                   xb + "," + (q.y + q.h/2 + dip) + " " +
@@ -791,18 +980,18 @@ function caminoArista(a){
          x2 + "," + y2;
 }
 
-/* La flecha gruesa del croquis: sale del resultado de origen, sube por encima
-   de todo el dibujo y baja sobre el recuadro de lo condicionado en la revisora.
-   No es flujo de datos y la leyenda lo dice: es el cambio de supuesto. */
+/* El condicionamiento entre cámaras: una flecha corta y gruesa que BAJA del
+   resultado de origen al recuadro de lo condicionado en la revisora. Con las
+   bandas apiladas queda a la vista sin tener que rodear el dibujo entero. */
 function caminoCondiciona(a){
   var p = a.de, q = a.a;
-  var caja = CAJAS.filter(function(c){ return c.g.id === q.n.grupo; })[0];
-  var destX = caja ? caja.x + caja.w/2 : q.x;
-  var destY = caja ? caja.y : q.y - q.h/2;
-  var y0 = ARCO_Y;
-  return "M" + p.x + "," + (p.y - p.h/2 - 4) +
-         " C" + p.x + "," + y0 + " " + destX + "," + y0 + " " +
-         destX + "," + (destY - 8);
+  var caja = CAJAS.filter(function(c){ return c.g.id === q.n.grupo && c.dest; })[0];
+  var dx = caja ? caja.x + caja.w/2 : q.x;
+  var dy = caja ? caja.y : q.y - q.h/2;
+  var y0 = p.y + p.h/2 + 2, y1 = dy - 10;
+  var med = (y0 + y1) / 2;
+  return "M" + p.x + "," + y0 +
+         " C" + p.x + "," + med + " " + dx + "," + med + " " + dx + "," + y1;
 }
 
 function marcadores(){
@@ -817,56 +1006,79 @@ function marcadores(){
     defs.appendChild(m);
   });
 }
-
 /* ------------------------------------------------------------------ dibujo */
-var gMar = $("#capaMarcos"), gGr = $("#capaGrupos"),
+var gMar = $("#capaMarcos"), gRej = $("#capaRejilla"), gGr = $("#capaGrupos"),
     gAr  = $("#capaAristas"), gNo = $("#capaNodos");
 
 function dibujar(){
   marcadores();
   carriles();
-  gMar.textContent = ""; gGr.textContent = ""; gAr.textContent = ""; gNo.textContent = "";
+  gMar.textContent = ""; gRej.textContent = ""; gGr.textContent = "";
+  gAr.textContent = ""; gNo.textContent = "";
 
-  /* --- los dos bloques: el esqueleto bicameral -------------------------- */
+  /* --- las bandas: una por camara, misma grilla ------------------------- */
   MARCOS.forEach(function(m){
-    gMar.appendChild(el("rect", { class:"marco b-"+m.id, x:m.x, y:m.y, width:m.w, height:m.h, rx:18 }));
-    var t = el("text", { class:"marcoTit", x:m.x + 20, y:m.y + 26 });
+    var g = el("g", { class:"b-"+m.id+"-grupo" });
+    g.appendChild(el("rect", { class:"marco b-"+m.id, x:m.x, y:m.y,
+                               width:m.w, height:m.h, rx:14 }));
+    if (m.num){
+      var num = el("text", { class:"bandaNum", x:m.x + 18, y:m.y + 30 });
+      num.textContent = m.num;
+      g.appendChild(num);
+    }
+    var t = el("text", { class:"bandaTit", x:m.x + (m.num ? 42 : 18), y:m.y + 24 });
     t.textContent = m.nombre.toUpperCase();
-    gMar.appendChild(t);
+    g.appendChild(t);
     if (m.sub){
-      var s = el("text", { class:"marcoSub", x:m.x + 20, y:m.y + 41 });
-      s.textContent = m.sub.length > 118 ? m.sub.slice(0,117) + "…" : m.sub;
-      gMar.appendChild(s);
+      var s = el("text", { class:"bandaSub", x:m.x + (m.num ? 42 : 18), y:m.y + 38 });
+      s.textContent = m.sub;
+      g.appendChild(s);
+    }
+    gMar.appendChild(g);
+  });
+
+  /* --- la grilla compartida: encabezado arriba y verticales al fondo ----- */
+  var yA = GRID.y0, yB = GRID.y1;
+  CABS.forEach(function(c, i){
+    if (c.etapa){
+      gRej.appendChild(el("rect", { class:"cabCol", x:c.x - 10, y:yA - CAB_H,
+                                    width:c.w + 20, height:CAB_H, rx:7 }));
+      var t = el("text", { class:"cabColTxt", x:c.x + c.w/2, y:yA - CAB_H/2 + 4,
+                           "text-anchor":"middle" });
+      t.textContent = (c.titulo || NOM_ETAPA[c.etapa] || "").toUpperCase();
+      var ti = el("title"); ti.textContent = DESC_ETAPA[c.etapa] || "";
+      t.appendChild(ti);
+      gRej.appendChild(t);
+    }
+    if (i){
+      var x = c.x - GAP_COL/2 - 10;
+      gRej.appendChild(el("line", { class:"rejilla", x1:x, y1:yA - CAB_H, x2:x, y2:yB }));
     }
   });
 
-  /* --- qué etapa domina cada capa: lo que antes decían las columnas ------ */
-  CAPTIONS.forEach(function(c){
-    var t = el("text", { class:"capaTit", x:c.x, y:c.y, "text-anchor":"middle" });
-    t.textContent = (NOM_ETAPA[c.etapa] || "").toUpperCase();
-    var ti = el("title"); ti.textContent = DESC_ETAPA[c.etapa] || "";
-    t.appendChild(ti);
-    gMar.appendChild(t);
-  });
-
-  /* --- lo condicionado por el paso previo ------------------------------- */
+  /* --- lo condicionado por el paso previo -------------------------------- */
   CAJAS.forEach(function(c){
-    gGr.appendChild(el("rect", { class:"grupoCaja", x:c.x, y:c.y, width:c.w, height:c.h, rx:18 }));
-    var t = el("text", { class:"grupoTit", x:c.x + 4, y:c.y - 7 });
+    gGr.appendChild(el("rect", { class:"grupoCaja", x:c.x, y:c.y,
+                                 width:c.w, height:c.h, rx:16 }));
+    if (!c.ancla) return;
+    var t = el("text", { class:"grupoTit", x:c.x + 2, y:c.y - 6 });
     t.textContent = c.g.nombre;
     var ti = el("title"); ti.textContent = c.g.descripcion || "";
     t.appendChild(ti);
     gGr.appendChild(t);
   });
 
-  /* --- aristas ---------------------------------------------------------- */
+  /* --- aristas ----------------------------------------------------------- */
   ARISTAS.forEach(function(a, i){
-    var atras = a.tipo !== "condiciona" &&
+    var atras = a.tipo !== "condiciona" && !a.orto &&
                 (a.a.x - a.a.w/2) <= (a.de.x + a.de.w/2 + 12);
-    var lejos = a.tipo !== "condiciona" && (a.cruza ||
-                 Math.abs(a.a.y - a.de.y) > 260 || Math.abs(a.a.x - a.de.x) > 900);
+    var lejos = a.tipo !== "condiciona" && !a.orto &&
+                (a.cruza || Math.abs(a.a.y - a.de.y) > 300 ||
+                 Math.abs(a.a.x - a.de.x) > 700);
     var p = el("path", { class:"arista t-" + a.tipo + (atras ? " atras" : "") +
-                                (lejos ? " lejos" : ""),
+                                (lejos ? " lejos" : "") +
+                                (a.de.bloque === "fuera" || a.a.bloque === "fuera"
+                                  ? " b-fuera-grupo" : ""),
       d: caminoArista(a), "marker-end":"url(#fl-" + a.tipo + ")" });
     p.dataset.de = a.de.id; p.dataset.a = a.a.id;
     p.dataset.dek = a.de.clave; p.dataset.ak = a.a.clave;
@@ -877,19 +1089,24 @@ function dibujar(){
     p.appendChild(tit);
     gAr.appendChild(p);
     if (a.tipo === "condiciona" && a.l.nota){
-      var caja = CAJAS.filter(function(c){ return c.g.id === a.a.n.grupo; })[0];
+      var caja = CAJAS.filter(function(c){ return c.g.id === a.a.n.grupo && c.dest; })[0];
       var mx = (a.de.x + (caja ? caja.x + caja.w/2 : a.a.x)) / 2;
-      var r = el("text", { class:"rotArista", x:mx, y:ARCO_Y + 2, "text-anchor":"middle" });
+      var my = (a.de.y + a.de.h/2 + (caja ? caja.y : a.a.y)) / 2;
+      var fondo = el("rect", { class:"rotFondo", x:mx - 150, y:my - 13,
+                               width:300, height:20, rx:9 });
+      gAr.appendChild(fondo);
+      var r = el("text", { class:"rotArista", x:mx, y:my + 2, "text-anchor":"middle" });
       r.textContent = a.l.nota;
       gAr.appendChild(r);
     }
   });
 
-  /* --- nodos ------------------------------------------------------------ */
+  /* --- nodos ------------------------------------------------------------- */
   INST.forEach(function(it){
     var n = it.n;
-    var g = el("g", { class:"nodo r-" + n.rol, transform:"translate("+it.x+","+it.y+")",
-      tabindex:"0", role:"button" });
+    var g = el("g", { class:"nodo r-" + n.rol +
+                            (it.bloque === "fuera" ? " b-fuera-grupo" : ""),
+      transform:"translate("+it.x+","+it.y+")", tabindex:"0", role:"button" });
     g.dataset.id = n.id; g.dataset.clave = it.clave;
     g.setAttribute("aria-label", rotuloAccesible(it));
     g.appendChild(haloDe(it));
@@ -916,15 +1133,16 @@ function dibujar(){
                             "text-anchor":"end" });
       mk.textContent = "⇄";
       var mt = el("title");
-      mt.textContent = "Alimenta a las dos cámaras: este mismo nodo está dibujado " +
-        "también del otro lado.";
+      mt.textContent = "Alimenta a las dos cámaras: el mismo nodo está dibujado " +
+        "en la otra banda, en esta misma columna.";
       mk.appendChild(mt);
       g.appendChild(mk);
     }
     if (n.parqueada) g.classList.add("parqueada");
     var tit = el("title");
     tit.textContent = n.label + " — " + NOM_ROL[n.rol] +
-      (n.estado ? " · " + n.estado : "") + (n.owner && n.owner !== "—" ? " · " + n.owner : "");
+      (n.estado ? " · " + n.estado : "") +
+      (n.owner && n.owner !== "—" ? " · " + n.owner : "");
     g.appendChild(tit);
     gNo.appendChild(g);
     it.g = g;
@@ -1074,7 +1292,7 @@ function abrir(id){
     }).join(" y "))+
     ((MIEMBRO[id]||[]).length > 1
       ? '<br><span class="via">Alimenta a las dos cámaras, así que está dibujado dos veces '+
-        '(marca ⇄). Es el mismo nodo: al seleccionarlo se encienden las dos copias.</span>'
+        '(marca ⇄, misma columna en la otra banda). Es el mismo nodo: al seleccionarlo se encienden las dos copias.</span>'
       : '')+'</p>');
 
   h.push('<h3>Dueño y estado</h3><p>'+esc(n.owner || "—")+
@@ -1421,6 +1639,14 @@ function controles(){
 
   $("#q").addEventListener("input", function(e){
     S.q = e.target.value.trim().toLowerCase(); pintar();
+  });
+  $("#b-extra").addEventListener("click", function(){
+    var on = document.body.dataset.extra === "on";
+    document.body.dataset.extra = on ? "off" : "on";
+    this.textContent = "Controles: " + (on ? "no" : "sí");
+    this.setAttribute("aria-pressed", on ? "false" : "true");
+    colocar(); dibujar(); pintar(); ajustar();
+    if (S.sel) abrir(S.sel);
   });
   $("#b-tema").addEventListener("click", function(){
     var osc = document.body.dataset.tema === "oscuro";

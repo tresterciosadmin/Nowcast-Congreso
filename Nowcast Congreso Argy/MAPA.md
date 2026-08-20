@@ -2,7 +2,7 @@
 
 <!-- GENERADO por indexar.py. No editar: los cambios se pierden. -->
 <!-- La prosa vive en el README.md de cada modulo (seccion `Buscar aca si`). -->
-<!-- 2026-08-20 16:25 UTC · 123 archivos · 27,332 LOC -->
+<!-- 2026-08-20 19:33 UTC · 123 archivos · 27,524 LOC -->
 
 ## Como usar este archivo
 
@@ -103,6 +103,8 @@ Es el unico archivo del proyecto que hace falta leer para empezar. Para ubicar a
 | que script transforma que dato, o que archivo implementa una etapa del calculo | `producto/dashboard/` |
 | las DOS formulaciones que conviven (v1 en produccion y las puertas A-B-C-D) | `producto/dashboard/` |
 | que piezas del modelo estan parqueadas, pendientes o son huecos conocidos | `producto/dashboard/` |
+| como se dibuja el circuito bicameral y que nodos se duplican en las dos camaras | `producto/dashboard/` |
+| de donde sale el estado de un nodo del mapa (README del modulo o capa curada) | `producto/dashboard/` |
 | regenerar los datos de un panel sin tocar su HTML | `producto/dashboard/` |
 | los informes bicamerales por caso (los generadores estan en `casos/`) | `producto/dashboard/` |
 | dos modulos tienen una copia de la misma funcion y hay que ver si siguen de acuerdo | `tests/` |
@@ -139,7 +141,7 @@ Es el unico archivo del proyecto que hace falta leer para empezar. Para ubicar a
 | Carpeta | Que es | Arch. | LOC | Bitacora |
 |---|---|---:|---:|---|
 | `variables/proyecto/` _(src+tests)_ | Feature store por proyecto: tema/materia, origen (Ejecutivo/oficialismo/aliados/oposicion), jefe de bloque, mayoria requerida, texto, y el ICG como modulador de coyuntura. | 26 | 4,951 | ok |
-| `./` | La raiz del proyecto: los paneles que se abren con doble clic, el tablero ejecutivo y su unica fuente de datos (`tablero_datos.js`). | 3 | 4,534 | ok |
+| `./` | La raiz del proyecto: los paneles que se abren con doble clic, el tablero ejecutivo y su unica fuente de datos (`tablero_datos.js`). | 3 | 4,690 | **vencida** |
 | `modelo/ensemble/` _(src+tests)_ | La composicion final: el nowcast end-to-end de un proyecto. Compone P(llega al recinto) x P(mayoria dado recinto) y corre el backtest de la cadena completa. | 7 | 2,074 | ok |
 | `datos/proyectos/` _(src+tests)_ | Base de Proyectos de Ley (`proyectos.db`): una fila por proyecto identificado por denominador NNNN-X-AAAA. Fuente de verdad del universo de proyectos y denominador del embudo (ADR-0009). | 10 | 2,073 | ok |
 | `datos/expedientes/` _(src+tests)_ | Registro de todo lo PRESENTADO (no solo lo votado): titulo, autor, tipo, fecha y cadena de vida del expediente. Denominador del embudo y enlace acta -> expediente. | 7 | 1,697 | ok |
@@ -150,7 +152,7 @@ Es el unico archivo del proyecto que hace falta leer para empezar. Para ubicar a
 | `datos/bot_recoleccion/` _(src+tests)_ | El bot diario que trae lo nuevo de ambas camaras (proyectos con firmantes y giros, y votaciones) con upsert idempotente. Corre solo en GitHub Actions. | 7 | 869 | ok |
 | `coordinacion/` | Las bitacoras y el protocolo: que bloquea a otros, que se hizo, quien tomo que modulo y por que se decidio cada cosa. Aca NO hay codigo del producto. | 8 | 680 | ok |
 | `modelo/voto_individual/` _(src+tests)_ | No predice el voto medio (eso lo resuelve la regla de bloque ~0,99): modela el DESVIO del legislador respecto de su bloque y detecta pivotes (ADR-0003). | 2 | 613 | ok |
-| `producto/dashboard/` _(src)_ | Tablero interno: radar de traccion, mapa de pivotes y escenarios, y el MAPA DEL MODELO: el grafo de como se calcula P(sancion), generado desde el indice del repo. Los entregables se abren con doble clic desde la RAIZ; el codigo del generador vive aca. | 1 | 527 | ok |
+| `producto/dashboard/` _(src)_ | Tablero interno: radar de traccion, mapa de pivotes y escenarios, y el MAPA DEL MODELO: el diagrama de flujo BICAMERAL de como se calcula P(sancion) -dos bloques espejo, origen y revisora, con el condicionamiento entre camaras dibujado-, generado desde el indice del repo. Los entregables se abren con doble clic desde la RAIZ; el codigo del generador vive aca. | 1 | 563 | **vencida** |
 | `datos/seguimiento/` _(src+tests)_ | Dado un expediente ya conocido, baja su ficha oficial y extrae el estado de avance: giros, movimientos, fechas y PDF. Insumo del embudo. NO descubre proyectos nuevos. | 2 | 512 | ok |
 | `datos/argentinadatos/` _(src+tests)_ | Ingesta de Diputados 2020-2025 y Senado 2024-2025 desde la API argentinadatos.com, normalizada al mismo esquema que CKAN. | 3 | 469 | ok |
 | `modelo/agregador_institucional/` _(src+tests)_ | Traduce posturas de bloque + asistencia en un resultado institucional: cuenta bancas, quorum, umbrales de mayoria y bandas. Mide la estructura, no la politica. | 2 | 452 | ok |
@@ -211,8 +213,8 @@ Ordenados por cuantos otros archivos dependen de ellos. Tocar uno de arriba tien
 - `variables/bloque/tests/` → `variables/bloque/src/` (4)
 - `datos/bot_recoleccion/tests/` → `datos/bot_recoleccion/src/` (3)
 - `modelo/ensemble/tests/` → `modelo/ensemble/src/` (3)
-- `casos/` → `modelo/ensemble/src/` (2)
 - `casos/` → `variables/bloque/src/` (2)
+- `casos/` → `modelo/ensemble/src/` (2)
 - `datos/expedientes/tests/` → `datos/expedientes/src/` (2)
 - `datos/padron/src/` → `datos/canonica/src/` (2)
 - `datos/padron/tests/` → `datos/padron/src/` (2)
@@ -251,3 +253,7 @@ Ordenados por cuantos otros archivos dependen de ellos. Tocar uno de arriba tien
 - `EXPORT_CACHE` — `datos/export/src/export_base.py`
 - `EXP_CLEAN` — `variables/embudo/src/embudo.py`, `variables/proyecto/src/origen_lider.py`
 - `FINO` — `modelo/ensemble/validar_condicionamiento_votos.py`
+
+## Frescura
+
+- Bitacoras vencidas: `./`, `producto/dashboard/`

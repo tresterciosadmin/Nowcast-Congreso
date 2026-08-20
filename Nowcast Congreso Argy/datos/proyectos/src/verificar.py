@@ -24,9 +24,12 @@ esa mirada en codigo: cada invariante que no se cumple **corta con exit != 0**.
 from __future__ import annotations
 
 import argparse
+import json
 import logging
+import os
 import shutil
 import sqlite3
+import subprocess
 import sys
 import tempfile
 from pathlib import Path
@@ -35,10 +38,18 @@ import pandas as pd
 
 logger = logging.getLogger("verificar")
 
-RAIZ = Path(__file__).resolve().parents[3]
-CLEAN = RAIZ / "datos" / "expedientes" / "data" / "clean"
-BOT = RAIZ / "datos" / "bot_recoleccion" / "data" / "clean"
-DB = RAIZ / "datos" / "proyectos" / "data" / "proyectos.db"
+# Las rutas que cruzan de un modulo a otro salen de `rutas.py` (raiz del
+# proyecto), no se cuentan niveles de carpeta a mano. Las cinco lineas de abajo
+# buscan la raiz HACIA ARRIBA: si este archivo cambia de profundidad, siguen
+# andando. Antes esto era `parents[3]`, repetido en 41 archivos.
+sys.path.insert(0, str(next(d for d in Path(__file__).resolve().parents
+                            if (d / "rutas.py").is_file())))
+from rutas import (RAIZ, EXPEDIENTES_CLEAN, BOT_CLEAN, PROYECTOS_DB,  # noqa: E402
+                   EMBUDO_COHORTE_DOS_RUTAS)
+
+CLEAN = EXPEDIENTES_CLEAN
+BOT = BOT_CLEAN
+DB = PROYECTOS_DB
 
 
 class Control:
@@ -164,25 +175,49 @@ def controles_base(c: Control, etapa: str = "completa") -> None:
     con.close()
 
 
-def control_cohorte(c: Control) -> None:
-    """La prueba fuerte: las dos rutas tienen que coincidir en lo que comparten."""
-    sys.path.insert(0, str(RAIZ / "variables" / "embudo" / "src"))
-    import embudo
-    cp = embudo.construir_cohorte(embudo.cargar(CLEAN))
-    cs = embudo.construir_cohorte(embudo.cargar_sqlite(DB))
-    com = set(cp["proyecto_id"]) & set(cs["proyecto_id"])
-    c.igual(len(com), len(cp), "la ruta SQLite no pierde proyectos de la vieja")
-    c.check(len(cs) > len(cp), "la cohorte CRECIO con lo del bot",
-            f"{len(cp):,} -> {len(cs):,} (+{len(cs)-len(cp):,})")
+MEDIDOR_COHORTE = EMBUDO_COHORTE_DOS_RUTAS
 
-    a = cp[cp["proyecto_id"].isin(com)].sort_values("proyecto_id").reset_index(drop=True)
-    b = cs[cs["proyecto_id"].isin(com)].sort_values("proyecto_id").reset_index(drop=True)
+
+def control_cohorte(c: Control) -> None:
+    """La prueba fuerte: las dos rutas tienen que coincidir en lo que comparten.
+
+    El CONTROL sigue aca (es sobre `proyectos.db`), pero la MEDICION la hace
+    `variables/embudo`, que es el dueno del concepto de cohorte. Se lo invoca
+    como proceso y se consume su salida JSON — su contrato —, no su codigo.
+
+    Antes esto hacia `sys.path.insert(.../variables/embudo/src); import embudo`:
+    una dependencia hacia arriba (datos/ -> variables/) que CLAUDE.md prohibe, y
+    que ademas hacia que `datos/proyectos` no se pudiera verificar si el embudo
+    estaba roto. Cambiado el 2026-08-20; ver el encabezado de
+    `variables/embudo/src/cohorte_dos_rutas.py`.
+    """
+    if not MEDIDOR_COHORTE.exists():
+        c.check(False, "el medidor de cohorte existe",
+                f"falta {MEDIDOR_COHORTE.relative_to(RAIZ)} — sin el, esta prueba NO corre")
+        return
+
+    r = subprocess.run([sys.executable, str(MEDIDOR_COHORTE)],
+                       capture_output=True, text=True,
+                       env={**os.environ, "CLEAN": str(CLEAN), "PROYECTOS_DB": str(DB)})
+    if r.returncode != 0 or not r.stdout.strip():
+        # Un control que no se pudo correr NO se saltea en silencio: eso es
+        # exactamente como se perdieron tres errores el 07-08. Falla y se ve.
+        c.check(False, "el control de cohorte pudo correr",
+                (r.stderr or "sin salida").strip().splitlines()[-1][:160])
+        return
+    try:
+        m = json.loads(r.stdout.strip().splitlines()[-1])
+    except json.JSONDecodeError as e:
+        c.check(False, "el control de cohorte devolvio JSON", str(e)[:160])
+        return
+
+    c.igual(m["n_comun"], m["n_parquet"], "la ruta SQLite no pierde proyectos de la vieja")
+    c.check(m["n_sqlite"] > m["n_parquet"], "la cohorte CRECIO con lo del bot",
+            f"{m['n_parquet']:,} -> {m['n_sqlite']:,} (+{m['n_sqlite'] - m['n_parquet']:,})")
     # Las de RESULTADO no pueden moverse jamas: no dependen del bot.
-    for col in ("sancionado", "llega_recinto", "con_dictamen", "etapa_actual"):
-        if col in a.columns:
-            n = int((~((a[col] == b[col]) | (a[col].isna() & b[col].isna()))).sum())
-            c.igual(n, 0, f"`{col}` sin cambios entre rutas",
-                    "una variable de RESULTADO que cambia = carga rota")
+    for col, n in m["cols_movidas"].items():
+        c.igual(n, 0, f"`{col}` sin cambios entre rutas",
+                "una variable de RESULTADO que cambia = carga rota")
 
 
 def main() -> int:

@@ -1,5 +1,7 @@
 # Módulo: datos/expedientes
 
+<!-- huella: 5a0936c55a05 -->
+
 **Propósito.** El registro de todo lo que se PRESENTÓ en el Congreso (no solo
 lo que se votó): cada proyecto con su título, autor, tipo, fecha y su cadena de
 vida (giros → dictámenes → movimientos → resultados → ley). Es el
@@ -21,6 +23,20 @@ red de autorías (Módulos B/C del plan).
 > (ADR-0009), que es de donde lee el embudo. Este módulo sigue siendo el que baja
 > CKAN y produce su contrato; lo que cambió es quién lo lee.
 **Owner actual:** Claude+Franco (2026-07-11)
+
+**Resumen:** Registro de todo lo PRESENTADO (no solo lo votado): titulo, autor, tipo, fecha y cadena de vida del expediente. Denominador del embudo y enlace acta -> expediente.
+
+## Buscar acá si
+
+- que se presento en el Congreso y en que quedo
+- el enlace entre un acta de votacion y su expediente
+- giros iniciales a comision, dictamenes, o si un expediente llego a ley
+- el backfill de CKAN, o por que HCDN publica con ~5 semanas de atraso
+- la ingesta trae menos/mas de lo esperado (`REFRESH=1`: por defecto usa CACHE)
+
+<!-- Las dos cosas de arriba las levanta `.mapa/indexar.py` al MAPA.md de la
+     raiz: el `Resumen:` va a la columna "Que es" y las pistas al router
+     "Donde buscar que". Si cambia lo que hace el modulo, actualizalas aca. -->
 
 ## Resultados del backfill (corrida 2026-07-11)
 - **113.177 proyectos, 2008 → 30-jun-2026** (40.752 de LEY, 50.851 resoluciones, 20.084 declaraciones). *(medido el 07-08; antes decía 112.793 / 02-jun)*

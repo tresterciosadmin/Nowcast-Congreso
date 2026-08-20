@@ -1,9 +1,26 @@
 # Módulo: variables/proyecto
 
+<!-- huella: 3ff630338c7c -->
+
 **Propósito.** Features por proyecto: tema/materia, autor, cámara de origen, tipo de mayoría requerida, parsing de texto (NLP).
 
 **Estado:** EN CURSO
 **Owner actual:** Valle (con Claude)
+
+**Resumen:** Feature store por proyecto: tema/materia, origen (Ejecutivo/oficialismo/aliados/oposicion), jefe de bloque, mayoria requerida, texto, y el ICG como modulador de coyuntura.
+
+## Buscar acá si
+
+- de que tema es un proyecto (clasificador de taxonomias contra `taxonomias.json`)
+- quien impulsa un proyecto: EJECUTIVO / OFICIALISMO / ALIADOS / OPOSICION
+- el ICG (indice de confianza en el gobierno) y el gamma que modula el desvio
+- el efecto lider / jefe de bloque (1,25x, no el 7x que se creia)
+- postura del gobierno frente a un proyecto
+- carpeta grande: 17 archivos — buscar por simbolo con `.mapa/buscar.py` antes de abrir
+
+<!-- Las dos cosas de arriba las levanta `.mapa/indexar.py` al MAPA.md de la
+     raiz: el `Resumen:` va a la columna "Que es" y las pistas al router
+     "Donde buscar que". Si cambia lo que hace el modulo, actualizalas aca. -->
 
 ## Agente de taxonomías (LLM) — `src/agente_taxonomias.py` + `src/pdf_text.py`
 Clasifica un proyecto leyendo su PDF y asignándole taxonomías del vocabulario controlado

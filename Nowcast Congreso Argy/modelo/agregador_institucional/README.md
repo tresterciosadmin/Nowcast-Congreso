@@ -1,5 +1,7 @@
 # modelo/agregador_institucional
 
+<!-- huella: 1d956c64fdd5 -->
+
 Motor de **agregación institucional**: convierte la postura esperada de cada bloque en una
 **probabilidad de aprobación** de la votación, entregada como **distribución** (rango con
 incertidumbre), no como número puntual. Es la pieza (c) "recuento como distribución" del
@@ -7,6 +9,18 @@ plan de voto_individual, aplicando las reglas de quórum y mayorías.
 
 **Estado:** EN CURSO — Owner: Valle (reclamado 2026-07-10). Gate de pase: reglas validadas
 contra resultados históricos reales (backtest, en curso).
+
+**Resumen:** Traduce posturas de bloque + asistencia en un resultado institucional: cuenta bancas, quorum, umbrales de mayoria y bandas. Mide la estructura, no la politica.
+
+## Buscar acá si
+
+- si un proyecto junta los votos: quorum, mayoria simple/absoluta/dos tercios
+- simular una votacion con un escenario de bloques dado
+- por que sin condicionar por tema y origen todos los bloques quedan 'a favor'
+
+<!-- Las dos cosas de arriba las levanta `.mapa/indexar.py` al MAPA.md de la
+     raiz: el `Resumen:` va a la columna "Que es" y las pistas al router
+     "Donde buscar que". Si cambia lo que hace el modulo, actualizalas aca. -->
 
 ## Qué hace
 Dado, para una votación (acta/proyecto):

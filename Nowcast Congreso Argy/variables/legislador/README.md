@@ -1,11 +1,26 @@
 # Módulo: variables/legislador
 
+<!-- huella: d0a96af4fe87 -->
+
 **Propósito.** La **base de datos individual de legisladores**: una ficha por cada diputado/senador que votó alguna vez en la base canónica, con su historial completo — identidad, cámara(s), distrito, períodos parlamentarios, trayectoria de bloques, presentismo, perfil de voto y tasa de desvío vs. su bloque. Es el "análisis individual de cada legislador" del que la detección de díscolos (`modelo/voto_individual`) es un caso de uso, no el objetivo.
 
 **Unidad de análisis temporal: el período parlamentario.** El Congreso se renueva cada 10 de diciembre de años impares; cada recambio —incluso con reelección— es una nueva configuración de escaños que interviene en el comportamiento y la disciplina. Por eso el análisis fino se hace sobre la tabla legislador × período, no sobre el agregado de carrera.
 
 **Estado:** EN CURSO — v1 con dimensión período (re-correr tras cada rebuild de la canónica)
 **Owner actual:** Claude+Valle (desde 2026-07-01)
+
+**Resumen:** Una ficha por legislador que voto alguna vez: identidad, camara, distrito, periodos, trayectoria de bloques, presentismo, perfil de voto y tasa de desvio.
+
+## Buscar acá si
+
+- el historial completo de un diputado o senador
+- por que bloques paso un legislador
+- presentismo o perfil de voto individual
+- armar el Mapa de Influencia o fichas para el producto
+
+<!-- Las dos cosas de arriba las levanta `.mapa/indexar.py` al MAPA.md de la
+     raiz: el `Resumen:` va a la columna "Que es" y las pistas al router
+     "Donde buscar que". Si cambia lo que hace el modulo, actualizalas aca. -->
 
 ## Contrato
 - **Entradas:** `datos/canonica/data/clean/{votos_resuelto,actas_canonico}.parquet`. Opcional: `modelo/voto_individual/outputs/{disciplina_individual,disciplina_por_anio,disciplina_por_periodo}.csv` (si existen, las tablas incorporan la tasa de desvío; si no, esa columna queda vacía — NUNCA en cero).

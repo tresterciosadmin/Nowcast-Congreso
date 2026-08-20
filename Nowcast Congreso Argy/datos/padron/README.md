@@ -1,5 +1,7 @@
 # Módulo: datos/padron
 
+<!-- huella: 3a1b4340baa7 -->
+
 **Propósito.** Padrón **oficial** de bancas a nivel **LEGISLADOR** (no bloque): quién
 ocupa cada banca y en qué ventana de mandato. Es la **composición de la cámara a la
 fecha** — la pieza que faltaba para que el proyector/agregador usen el roster real
@@ -7,6 +9,20 @@ fecha** — la pieza que faltaba para que el proyector/agregador usen el roster 
 inflaba el cuerpo con el recambio del 10-dic).
 
 **Estado:** EN CURSO (v1: Diputados 257 + Senado 72 vigentes) · **Owner:** Valle (2026-07-14)
+
+**Resumen:** Padron OFICIAL de bancas a nivel LEGISLADOR: quien ocupa cada banca y en que ventana de mandato. Es la composicion real de la camara a una fecha (257 / 72).
+
+## Buscar acá si
+
+- cuantas bancas tiene un bloque a una fecha, o quien estaba en el recinto
+- el cuerpo aparece inflado o desinflado (contar votantes vs. roster real)
+- recambio del 10-dic, reemplazos, renuncias, bancas vacantes
+- el padron cambio y hay que revisarlo (`vigilar_padron.py`, corre los lunes)
+- el padron historico del Senado (reconstruido de nomina oficial + Wikipedia)
+
+<!-- Las dos cosas de arriba las levanta `.mapa/indexar.py` al MAPA.md de la
+     raiz: el `Resumen:` va a la columna "Que es" y las pistas al router
+     "Donde buscar que". Si cambia lo que hace el modulo, actualizalas aca. -->
 
 ## Por qué a nivel legislador (no bloque)
 El valor del nowcast está en los **legisladores pivote de las votaciones disputadas**,

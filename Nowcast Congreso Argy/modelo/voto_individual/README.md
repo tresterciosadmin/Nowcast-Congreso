@@ -1,5 +1,7 @@
 # Módulo: modelo/voto_individual
 
+<!-- huella: e193c2435a95 -->
+
 **Propósito.** Reformulado por **ADR-0003** (2026-07-01): NO predecir el voto medio (eso lo resuelve la regla de bloque ~0,99, benchmark que queda fijo), sino modelar el **desvío del legislador respecto de su bloque** y detectar **pivotes**. Cuatro piezas: (a) índice de disciplina individual, (b) modelo de defección, (c) recuento como distribución, (d) detección de pivotes.
 
 > **Contexto (aclaración 2026-07-01):** este módulo es UNA pieza del análisis individual, no el todo. La **base de datos individual de legisladores** (la ficha completa por diputado/senador) vive en `variables/legislador` y consume la salida de acá como una columna más. Los díscolos fueron el ejemplo que motivó el análisis individual, no su único objetivo.
@@ -10,6 +12,19 @@
 
 **Estado:** EN CURSO — pieza (a) implementada; gate 1 APROBADO sobre base completa (ver `RESULTADOS.md`)
 **Owner actual:** Claude+Valle (desde 2026-07-01)
+
+**Resumen:** No predice el voto medio (eso lo resuelve la regla de bloque ~0,99): modela el DESVIO del legislador respecto de su bloque y detecta pivotes (ADR-0003).
+
+## Buscar acá si
+
+- quien se desvia de su bloque, discolos, bisagras o pivotes
+- separar INDISCIPLINA de AUSENTISMO (son dos tasas distintas)
+- el indice de disciplina por legislador y por periodo
+- presidentes de camara excluidos del calculo
+
+<!-- Las dos cosas de arriba las levanta `.mapa/indexar.py` al MAPA.md de la
+     raiz: el `Resumen:` va a la columna "Que es" y las pistas al router
+     "Donde buscar que". Si cambia lo que hace el modulo, actualizalas aca. -->
 
 ## Contrato
 - **Entradas:** `datos/canonica/data/clean/{votos_resuelto,actas_canonico}.parquet`

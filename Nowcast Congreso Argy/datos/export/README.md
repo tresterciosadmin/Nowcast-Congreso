@@ -1,9 +1,24 @@
 # Módulo: datos/export
 
+<!-- huella: 7e71f968d2b8 -->
+
 **Propósito.** La base de votaciones armonizada en formatos consultables: un **SQLite único para el programa** y **Excel por gobierno para humanos**. Solo LEE la canónica (no toca código de otros módulos).
 
 **Estado:** EN CURSO — v1 (falta corrida completa de los Excel en PC del equipo)
 **Owner actual:** Claude+Valle (desde 2026-07-02)
+
+**Resumen:** La canonica armonizada en formatos consultables: un SQLite unico para el programa y Excel por gobierno para humanos. Solo LEE la canonica.
+
+## Buscar acá si
+
+- abrir las votaciones en Excel o consultarlas con SQL
+- que significa una votacion 'disputada' (margen +-5% de los emitidos)
+- la columna `periodo`, `gobierno` o `desvio` de la base consultable
+- el export salio sin desvio (falta correr antes `disciplina.py`)
+
+<!-- Las dos cosas de arriba las levanta `.mapa/indexar.py` al MAPA.md de la
+     raiz: el `Resumen:` va a la columna "Que es" y las pistas al router
+     "Donde buscar que". Si cambia lo que hace el modulo, actualizalas aca. -->
 
 ## Contrato
 - **Entradas:** `datos/canonica/data/clean/{actas_canonico,votos_resuelto}.parquet`. Opcional: `variables/legislador/data/{legisladores,legislador_periodo}.parquet` (se incluyen como tablas del .db).

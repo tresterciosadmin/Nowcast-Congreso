@@ -1,11 +1,25 @@
 # Módulo: producto/dashboard
 
+<!-- huella: e3b0c44298fc -->
+
 **Propósito.** Tablero interno: radar de tracción + mapa de pivotes + escenarios. Encuadre augmentation.
 
 **Estado:** EN CURSO — v1 entregada como **paneles HTML en la raíz del repo**, no como
 app. Corregido el 2026-08-06: figuraba "PENDIENTE / vacante" cuando ya había cinco
 paneles construidos.
 **Owner actual:** Claude+Valle (desde 2026-07-10)
+
+**Resumen:** Tablero interno: radar de traccion, mapa de pivotes y escenarios. La v1 se entrego como paneles HTML sueltos en la RAIZ del repo, no como app.
+
+## Buscar acá si
+
+- los paneles que se abren con doble clic (estan en la raiz, no aca)
+- el tablero ejecutivo `TABLERO-CONTROL.html` (se edita solo `tablero_datos.js`)
+- los informes bicamerales por caso (los generadores estan en `casos/`)
+
+<!-- Las dos cosas de arriba las levanta `.mapa/indexar.py` al MAPA.md de la
+     raiz: el `Resumen:` va a la columna "Que es" y las pistas al router
+     "Donde buscar que". Si cambia lo que hace el modulo, actualizalas aca. -->
 
 ## Lo que ya existe (todo en la raíz, doble clic, sin internet)
 

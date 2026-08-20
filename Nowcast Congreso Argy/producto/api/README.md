@@ -1,9 +1,21 @@
 # Módulo: producto/api
 
+<!-- huella: e3b0c44298fc -->
+
 **Propósito.** API de servicio (FastAPI) para la fase nube. No abrir sin pagador validado.
 
 **Estado:** FUTURO
 **Owner actual:** _(vacante — reclamalo en coordinacion/TABLERO.md antes de empezar)_
+
+**Resumen:** API de servicio (FastAPI) para la fase nube. FUTURO: no abrir sin pagador validado.
+
+## Buscar acá si
+
+- servir el nowcast por HTTP (todavia no existe)
+
+<!-- Las dos cosas de arriba las levanta `.mapa/indexar.py` al MAPA.md de la
+     raiz: el `Resumen:` va a la columna "Que es" y las pistas al router
+     "Donde buscar que". Si cambia lo que hace el modulo, actualizalas aca. -->
 
 ## Contrato
 - **Entradas:** modelo/ensemble

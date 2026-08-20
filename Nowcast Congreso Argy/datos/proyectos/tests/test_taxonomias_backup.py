@@ -48,85 +48,117 @@ def base(tmp: Path) -> Path:
     return db
 
 
-with tempfile.TemporaryDirectory() as td:
-    tmp = Path(td)
-    db, csv = base(tmp), tmp / "taxo.csv"
+# ---------------------------------------------------------------------------
+# 2026-08-20: esto era un SCRIPT y rompia toda la corrida de pytest.
+#
+# El cuerpo del `with` estaba a nivel de modulo y terminaba en `raise SystemExit`,
+# asi que pytest —que IMPORTA el archivo para recolectarlo— se comia el SystemExit
+# y abortaba con INTERNALERROR *antes de correr un solo test*, incluidos los de
+# otras carpetas. O sea: estos 20 chequeos no corrian en la suite, y ademas
+# tapaban a los demas.
+#
+# Ahora el cuerpo vive en `_correr()`, que sirve para las dos cosas:
+#   - `python datos/proyectos/tests/test_taxonomias_backup.py` sigue andando igual
+#     (con su print y su codigo de salida, como dice el docstring de arriba);
+#   - `test_respaldo_de_taxonomias` lo expone a pytest, asi que ahora SI corre
+#     junto con el resto.
+# ---------------------------------------------------------------------------
 
-    def filas(**kw):
-        con = sqlite3.connect(db)
-        r = con.execute("SELECT denominador, taxonomia_id, fuente FROM proyecto_taxonomias "
-                        "ORDER BY denominador").fetchall()
-        con.close()
-        return r
 
-    def poner(rows):
-        con = sqlite3.connect(db)
-        con.executemany("INSERT OR REPLACE INTO proyecto_taxonomias VALUES (?,?,?,?,?,?)", rows)
+def _correr():
+    """Corre los chequeos. Devuelve (ok, fallas)."""
+    global ok, fail
+    ok = fail = 0
+    with tempfile.TemporaryDirectory() as td:
+        tmp = Path(td)
+        db, csv = base(tmp), tmp / "taxo.csv"
+
+        def filas(**kw):
+            con = sqlite3.connect(db)
+            r = con.execute("SELECT denominador, taxonomia_id, fuente FROM proyecto_taxonomias "
+                            "ORDER BY denominador").fetchall()
+            con.close()
+            return r
+
+        def poner(rows):
+            con = sqlite3.connect(db)
+            con.executemany("INSERT OR REPLACE INTO proyecto_taxonomias VALUES (?,?,?,?,?,?)", rows)
+            con.commit()
+            con.close()
+
+        # --- 1. Tabla vacía: el respaldo igual se escribe (señal de "montado") ---
+        check(T.exportar(db, csv) == 0, "exportar con 0 filas debe devolver 0")
+        check(csv.exists(), "el CSV debe crearse aunque no haya filas")
+        check(csv.read_text(encoding="utf-8").strip() == ",".join(T.COLS),
+              "un respaldo vacío debe tener solo el encabezado")
+
+        # --- 2. EL CASO REAL: migrar_ckan borra la tabla y el respaldo la devuelve ---
+        poner([("0001-D-2026", "POLINST.ETICA", "Transparencia", "agente", 0.9, "2026-08-07"),
+               ("0001-D-2026", "JUST.PENAL", "Penal", "agente", 0.7, "2026-08-07"),
+               ("0002-D-2026", "ECON.TRIB", "Tributario", "humano", 1.0, "2026-08-07")])
+        check(T.exportar(db, csv) == 3, "deben exportarse las 3 filas")
+
+        con = sqlite3.connect(db)          # <- esto es lo que hace migrar_ckan
+        con.execute("DELETE FROM proyecto_taxonomias")
         con.commit()
         con.close()
+        check(len(filas()) == 0, "la simulación de migrar_ckan debe dejar la tabla vacía")
 
-    # --- 1. Tabla vacía: el respaldo igual se escribe (señal de "montado") ---
-    check(T.exportar(db, csv) == 0, "exportar con 0 filas debe devolver 0")
-    check(csv.exists(), "el CSV debe crearse aunque no haya filas")
-    check(csv.read_text(encoding="utf-8").strip() == ",".join(T.COLS),
-          "un respaldo vacío debe tener solo el encabezado")
+        check(T.restaurar(db, csv) == 3, "deben restaurarse las 3")
+        check(len(filas()) == 3, "la tabla debe quedar como estaba")
 
-    # --- 2. EL CASO REAL: migrar_ckan borra la tabla y el respaldo la devuelve ---
-    poner([("0001-D-2026", "POLINST.ETICA", "Transparencia", "agente", 0.9, "2026-08-07"),
-           ("0001-D-2026", "JUST.PENAL", "Penal", "agente", 0.7, "2026-08-07"),
-           ("0002-D-2026", "ECON.TRIB", "Tributario", "humano", 1.0, "2026-08-07")])
-    check(T.exportar(db, csv) == 3, "deben exportarse las 3 filas")
+        # --- 3. Idempotencia: restaurar dos veces no duplica ---
+        T.restaurar(db, csv)
+        check(len(filas()) == 3, "restaurar dos veces no debe duplicar")
 
-    con = sqlite3.connect(db)          # <- esto es lo que hace migrar_ckan
-    con.execute("DELETE FROM proyecto_taxonomias")
-    con.commit()
-    con.close()
-    check(len(filas()) == 0, "la simulación de migrar_ckan debe dejar la tabla vacía")
+        # --- 4. Precedencia: una revisión HUMANA no se pisa con una del agente ---
+        poner([("0003-D-2026", "AMB.AGUA", "Agua", "humano", 1.0, "2026-08-07")])
+        csv2 = tmp / "viejo.csv"
+        csv2.write_text(",".join(T.COLS) + "\n"
+                        "0003-D-2026,AMB.AGUA,Agua,agente,0.4,2026-01-01\n",
+                        encoding="utf-8")
+        T.restaurar(db, csv2)
+        con = sqlite3.connect(db)
+        f = con.execute("SELECT fuente, confianza FROM proyecto_taxonomias "
+                        "WHERE denominador='0003-D-2026'").fetchone()
+        con.close()
+        check(f[0] == "humano" and f[1] == 1.0,
+              f"la clasificación humana no debe ser pisada por la del agente (quedó {f})")
 
-    check(T.restaurar(db, csv) == 3, "deben restaurarse las 3")
-    check(len(filas()) == 3, "la tabla debe quedar como estaba")
+        # --- 5. `estado` es la alarma: base con filas y respaldo viejo ---
+        e = T.estado(db, csv)
+        check(e["en_base"] == 4 and e["en_respaldo"] == 3,
+              f"estado debe contar ambos lados (dio {e})")
+        check(e["desprotegidas"] == 1, "debe avisar cuántas quedan sin respaldar")
 
-    # --- 3. Idempotencia: restaurar dos veces no duplica ---
-    T.restaurar(db, csv)
-    check(len(filas()) == 3, "restaurar dos veces no debe duplicar")
+        # --- 6. Defensivo: sin respaldo no rompe; CSV mal formado avisa ---
+        check(T.restaurar(db, tmp / "no_existe.csv") == 0,
+              "sin archivo de respaldo debe devolver 0, no explotar")
+        malo = tmp / "malo.csv"
+        malo.write_text("otra,cosa\n1,2\n", encoding="utf-8")
+        try:
+            T.restaurar(db, malo)
+            check(False, "un CSV sin las columnas del contrato debe fallar explícito")
+        except ValueError:
+            check(True, "")
 
-    # --- 4. Precedencia: una revisión HUMANA no se pisa con una del agente ---
-    poner([("0003-D-2026", "AMB.AGUA", "Agua", "humano", 1.0, "2026-08-07")])
-    csv2 = tmp / "viejo.csv"
-    csv2.write_text(",".join(T.COLS) + "\n"
-                    "0003-D-2026,AMB.AGUA,Agua,agente,0.4,2026-01-01\n",
-                    encoding="utf-8")
-    T.restaurar(db, csv2)
-    con = sqlite3.connect(db)
-    f = con.execute("SELECT fuente, confianza FROM proyecto_taxonomias "
-                    "WHERE denominador='0003-D-2026'").fetchone()
-    con.close()
-    check(f[0] == "humano" and f[1] == 1.0,
-          f"la clasificación humana no debe ser pisada por la del agente (quedó {f})")
+        # --- 7. Base inexistente: error claro con la receta para crearla ---
+        try:
+            T.exportar(tmp / "nada.db", csv)
+            check(False, "debe fallar si no existe la base")
+        except FileNotFoundError as ex:
+            check("migrar_ckan" in str(ex), "el error debe decir cómo crear la base")
 
-    # --- 5. `estado` es la alarma: base con filas y respaldo viejo ---
-    e = T.estado(db, csv)
-    check(e["en_base"] == 4 and e["en_respaldo"] == 3,
-          f"estado debe contar ambos lados (dio {e})")
-    check(e["desprotegidas"] == 1, "debe avisar cuántas quedan sin respaldar")
+    return ok, fail
 
-    # --- 6. Defensivo: sin respaldo no rompe; CSV mal formado avisa ---
-    check(T.restaurar(db, tmp / "no_existe.csv") == 0,
-          "sin archivo de respaldo debe devolver 0, no explotar")
-    malo = tmp / "malo.csv"
-    malo.write_text("otra,cosa\n1,2\n", encoding="utf-8")
-    try:
-        T.restaurar(db, malo)
-        check(False, "un CSV sin las columnas del contrato debe fallar explícito")
-    except ValueError:
-        check(True, "")
 
-    # --- 7. Base inexistente: error claro con la receta para crearla ---
-    try:
-        T.exportar(tmp / "nada.db", csv)
-        check(False, "debe fallar si no existe la base")
-    except FileNotFoundError as ex:
-        check("migrar_ckan" in str(ex), "el error debe decir cómo crear la base")
+def test_respaldo_de_taxonomias():
+    """Los mismos chequeos, vistos por pytest."""
+    _ok, _fail = _correr()
+    assert _fail == 0, f"{_fail} de {_ok + _fail} chequeos fallaron (el detalle se imprime arriba)"
 
-print(f"\n{ok} chequeos OK, {fail} fallas")
-raise SystemExit(1 if fail else 0)
+
+if __name__ == "__main__":
+    _ok, _fail = _correr()
+    print(f"\n{_ok} chequeos OK, {_fail} fallas")
+    raise SystemExit(1 if _fail else 0)

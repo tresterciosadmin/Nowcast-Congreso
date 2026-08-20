@@ -1,5 +1,7 @@
 # Módulo: datos/canonica
 
+<!-- huella: df5ea5bf5b1b -->
+
 **Propósito.** Nuestra **base de datos propia y única** de votaciones. Unifica todas las fuentes (semilla histórica Andy Tow + CKAN + argentinadatos + Senado + lo que traiga el bot) en una sola tabla normalizada, deduplicada y con resolución de entidades (legislador, bloque, provincia, acta). Es la fuente de verdad de la que leen todos los módulos de `variables/` y `modelo/`.
 
 **Estado:** EN CURSO — v1 en producción. **1.016.632 votos / 6.231 actas**, 2001-2026,
@@ -11,6 +13,20 @@ decisión del 10-07).
 > como disponible en `TABLERO.md`, por arrastre del README original — cuando es la
 > fuente de verdad de la que leen todos los demás. Un README que invita a reclamar un
 > módulo ocupado es el mecanismo anti-colisión fallando al revés.
+
+**Resumen:** La base propia y unica de votaciones nominales: todas las fuentes unificadas, deduplicadas y con entidades resueltas. Fuente de verdad de la que leen `variables/` y `modelo/`.
+
+## Buscar acá si
+
+- de donde sale un voto, un acta o un legislador (la tabla madre)
+- cuantos votos/actas hay en total, o desde/hasta que fecha llega la base
+- reconstruir la base de cero (`run_pipeline.py`, ~20 min con internet)
+- un legislador que aparece dos veces con nombres distintos (resolucion de entidades)
+- el hueco de Diputados 2020-23, o que fuente cubre que periodo
+
+<!-- Las dos cosas de arriba las levanta `.mapa/indexar.py` al MAPA.md de la
+     raiz: el `Resumen:` va a la columna "Que es" y las pistas al router
+     "Donde buscar que". Si cambia lo que hace el modulo, actualizalas aca. -->
 
 ## Contrato
 - **Entradas:** los parquet de `datos/decada_votada`, `datos/ckan_diputados`, `datos/argentinadatos`, `datos/senado`, `datos/expedientes`.

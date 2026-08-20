@@ -1,10 +1,26 @@
 # Módulo: variables/bloque
 
+<!-- huella: f1fdd155eecf -->
+
 **Propósito.** Cohesión, tamaño, posición (postura) y fracturas de cada bloque a lo
 largo del tiempo — y, sobre esa serie, un **proyector point-in-time** que arma el
 **escenario por bloque** que consume el ensemble/agregador (hoy se pone a mano).
 
 **Estado:** EN CURSO (v1) · **Owner:** Claude+Valle (2026-07-12)
+
+**Resumen:** Cohesion, tamano, postura y fracturas de cada bloque en el tiempo, y el proyector point-in-time que arma el escenario por bloque que consume el ensemble.
+
+## Buscar acá si
+
+- que postura toma un bloque en un tema, o cuan cohesionado esta
+- un bloque que se parte (fractura, indice de Rice)
+- linajes de bloque (peronismo federal, progresismo) y como se agrupan
+- proyectar la alineacion de bloques a una fecha (point-in-time)
+- OJO: su columna `periodo` es un ANIO legislativo, no el periodo de dos anios del resto del repo
+
+<!-- Las dos cosas de arriba las levanta `.mapa/indexar.py` al MAPA.md de la
+     raiz: el `Resumen:` va a la columna "Que es" y las pistas al router
+     "Donde buscar que". Si cambia lo que hace el modulo, actualizalas aca. -->
 
 ## Qué produce
 1. **Serie temporal por bloque** (`outputs/serie_bloque.parquet`): una fila por

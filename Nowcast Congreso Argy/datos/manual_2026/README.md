@@ -1,8 +1,21 @@
 # Módulo: datos/manual_2026
 
+<!-- huella: 5e99fac70a7b -->
+
 **Propósito.** Integrar el Excel curado a mano por Franco (período 2025–2027) al esquema canónico. Aporta votos nominales 2026 de **ambas cámaras**, padrón con **bloque del Senado** (resuelve el hueco), provincia, comisión y mandato.
 
 **Estado:** HECHO (primera carga). Fuente viva: Franco la sigue completando a mano.
+
+**Resumen:** El Excel curado a mano por Franco (2025-2027) integrado al esquema canonico: votos 2026 de ambas camaras, con bloque del Senado, provincia y mandato.
+
+## Buscar acá si
+
+- votaciones de 2026 que no vinieron por API
+- el bloque del Senado en el periodo vigente
+
+<!-- Las dos cosas de arriba las levanta `.mapa/indexar.py` al MAPA.md de la
+     raiz: el `Resumen:` va a la columna "Que es" y las pistas al router
+     "Donde buscar que". Si cambia lo que hace el modulo, actualizalas aca. -->
 
 ## Contrato
 - **Entrada:** `Congreso_25-27.xlsx` (hojas Diputados, Senado; una columna por ley con el voto de cada legislador).

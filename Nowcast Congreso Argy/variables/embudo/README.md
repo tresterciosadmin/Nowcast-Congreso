@@ -1,5 +1,7 @@
 # Módulo: variables/embudo
 
+<!-- huella: 8c35459cd8bb -->
+
 **Propósito.** Supervivencia del proyecto de ley: `presentado → comisión →
 dictamen → recinto → sanción`. La mayoría de los proyectos mueren en un cajón,
 no son rechazados. Estimar **cuáles salen del cajón** es el diferencial del
@@ -7,6 +9,21 @@ nowcast (la mitad de la ecuación `P(aprobación) = P(llega al recinto) × P(may
 
 **Estado:** EN CURSO (v1: embudo por etapas + modelo de supervivencia + backtest temporal)
 **Owner actual:** Claude+Valle (2026-07-12)
+
+**Resumen:** Supervivencia del proyecto: presentado -> comision -> dictamen -> recinto -> sancion. Estima P(llega al recinto), la mitad de P(aprobacion). Es el diferencial del nowcast.
+
+## Buscar acá si
+
+- por que la mayoria de los proyectos nunca se votan
+- P(llega al recinto), cohorte, o proyectos maduros vs. en curso
+- escenarios y contrafactuales (`escenarios.py`) — los coeficientes de la logistica NO son efectos
+- el skill del embudo o su backtest temporal
+- leer de `proyectos.db` vs. del parquet (`EMBUDO_FUENTE=parquet`)
+- medir la cohorte por las DOS rutas (parquet vs `proyectos.db`): `src/cohorte_dos_rutas.py`, que consume `datos/proyectos`
+
+<!-- Las dos cosas de arriba las levanta `.mapa/indexar.py` al MAPA.md de la
+     raiz: el `Resumen:` va a la columna "Que es" y las pistas al router
+     "Donde buscar que". Si cambia lo que hace el modulo, actualizalas aca. -->
 
 ## Contrato
 - **Entradas:** `datos/expedientes/data/clean/*.parquet` (contrato estable) y —cuando

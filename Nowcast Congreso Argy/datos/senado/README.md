@@ -1,11 +1,26 @@
 # Módulo: datos/senado
 
+<!-- huella: 097ced4d128d -->
+
 **Propósito.** Ingesta de votaciones nominales del Senado desde la fuente
 oficial (senado.gob.ar/votaciones) + reconstrucción del **bloque histórico**
 contemporáneo a cada voto. Tapa el hueco **2015–2023** de la canónica.
 
 **Estado:** HECHO (2015–2023 completo; quedan filas `REVISAR` en el padrón manual)
 **Owner actual:** Claude+Franco (2026-07-01/02)
+
+**Resumen:** Ingesta de votaciones nominales del Senado desde senado.gob.ar + reconstruccion del bloque historico contemporaneo a cada voto. Tapa el hueco 2015-2023.
+
+## Buscar acá si
+
+- votaciones del Senado que faltan, o el hueco 2015-2023
+- que bloque tenia un senador en el momento de votar
+- scraping del Senado (cachea HTML; la primera corrida tarda ~20 min)
+- filas REVISAR del padron manual de bloques del Senado
+
+<!-- Las dos cosas de arriba las levanta `.mapa/indexar.py` al MAPA.md de la
+     raiz: el `Resumen:` va a la columna "Que es" y las pistas al router
+     "Donde buscar que". Si cambia lo que hace el modulo, actualizalas aca. -->
 
 ## Resultados (corrida 2026-07-02)
 - **749 actas / 53.910 votos**, 2015–2023, cámara completa en cada acta

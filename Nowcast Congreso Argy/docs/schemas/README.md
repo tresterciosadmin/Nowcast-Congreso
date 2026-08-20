@@ -1,8 +1,21 @@
 # docs/schemas — Contrato de datos canónico
 
+<!-- huella: e3b0c44298fc -->
+
 `schema_version` actual: **1**
 
 Toda fuente de `datos/*` normaliza a estas dos tablas antes de entrar a `datos/canonica`. Quien cambie un esquema sube `schema_version` y abre un ADR (ver `coordinacion/DECISIONES/`).
+
+**Resumen:** Los contratos de datos del repo (schema_version). Es lo unico compartido y fragil: cambiarlo exige un ADR.
+
+## Buscar acá si
+
+- que columnas y tipos tiene que tener un parquet de la canonica
+- cambiar un contrato de datos (requiere ADR + aviso en TABLERO)
+
+<!-- Las dos cosas de arriba las levanta `.mapa/indexar.py` al MAPA.md de la
+     raiz: el `Resumen:` va a la columna "Que es" y las pistas al router
+     "Donde buscar que". Si cambia lo que hace el modulo, actualizalas aca. -->
 
 ## Tablas
 

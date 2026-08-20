@@ -1,9 +1,22 @@
 # Módulo: evaluacion/baseline
 
+<!-- huella: 46b6e6f99c57 -->
+
 **Propósito.** Baseline de bloque (HECHO). Documenta el piso a superar por cualquier modelo.
 
 **Estado:** HECHO
 **Owner actual:** _(vacante — reclamalo en coordinacion/TABLERO.md antes de empezar)_
+
+**Resumen:** El piso a superar: el baseline de bloque, ya medido. Cualquier modelo nuevo se compara contra esto.
+
+## Buscar acá si
+
+- cuanto acierta la regla de bloque (~0,99 en direccion del voto individual)
+- contra que se compara un modelo nuevo
+
+<!-- Las dos cosas de arriba las levanta `.mapa/indexar.py` al MAPA.md de la
+     raiz: el `Resumen:` va a la columna "Que es" y las pistas al router
+     "Donde buscar que". Si cambia lo que hace el modulo, actualizalas aca. -->
 
 ## Contrato
 - **Entradas:** datos/* (detalle)

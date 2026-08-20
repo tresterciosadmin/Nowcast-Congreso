@@ -1,6 +1,38 @@
 # Nowcast Legislativo Argentino
 
+<!-- huella: 0eeed6f47804 -->
+
 Sistema que estima la probabilidad de sanción de proyectos de ley en el Congreso argentino.
+
+**Resumen:** La raiz del proyecto: los paneles que se abren con doble clic, el tablero ejecutivo y su unica fuente de datos (`tablero_datos.js`).
+
+## Buscar acá si
+
+- el tablero ejecutivo del proyecto (`TABLERO-CONTROL.html`; se edita SOLO `tablero_datos.js`)
+- los KPIs, hitos o el estado de una pieza de la plataforma
+- los paneles HTML de coyuntura o el informe bicameral (los generadores estan en `casos/`)
+- por donde empezar a leer el repo
+
+<!-- Las dos cosas de arriba las levanta `.mapa/indexar.py` al MAPA.md. -->
+
+## Dónde está cada cosa: `MAPA.md`
+
+**`MAPA.md` (raíz) es el índice del repo** y se genera solo. Leerlo antes de abrir
+cualquier archivo: dice qué hay en cada módulo, qué archivos son centrales, quién
+consume a quién y de qué fuentes externas se baja cada dato.
+
+Para ubicar algo concreto sin abrir nada:
+
+```bash
+python3 .mapa/buscar.py "gamma"                 # simbolo + archivo:linea
+python3 .mapa/buscar.py --carpeta variables/embudo
+python3 .mapa/buscar.py --archivo modelo/ensemble/src/ensemble.py   # quien lo usa
+python3 .mapa/indexar.py .                      # reindexar (lo hace solo el hook pre-commit)
+```
+
+El texto que alimenta el mapa vive en el `README.md` de cada módulo: la línea
+`**Resumen:**` y la sección `## Buscar acá si`. **Si cambia lo que hace un módulo,
+se actualizan ahí** — no en `MAPA.md`, que se sobreescribe.
 
 ## Empezar acá (lectura obligatoria)
 0. 🔴 **`coordinacion/URGENTE.md`** — SIEMPRE primero: lo que bloquea a otros. Si hay algo, se resuelve antes de empezar.

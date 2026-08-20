@@ -13,14 +13,22 @@ Nowcast Legislativo Argentino: estima la probabilidad de sanción de proyectos d
 2. `coordinacion/ESTADO-DEL-PROYECTO.md` — qué se hizo hasta ahora (documento vivo).
 3. `coordinacion/TABLERO.md` — qué tareas están libres / tomadas.
 4. `coordinacion/PROTOCOLO-GIT.md` — cómo ramificar y mergear sin conflictos.
-5. El `README.md` del módulo que vayas a tocar (contrato de entradas/salidas).
-6. `TABLERO-CONTROL.html` (raíz) — el mapa ejecutivo; se actualiza vía `tablero_datos.js` (regla más abajo).
+5. **`MAPA.md`** (raíz) — el índice del repo, generado. Dice qué hay en cada módulo, qué archivos son centrales y quién consume a quién. **Leerlo antes de abrir cualquier archivo de código**, y usar `python3 .mapa/buscar.py "<termino>"` para ubicar algo sin escanear el repo.
+6. El `README.md` del módulo que vayas a tocar (contrato de entradas/salidas).
+7. `TABLERO-CONTROL.html` (raíz) — el mapa ejecutivo; se actualiza vía `tablero_datos.js` (regla más abajo).
 
 ## Regla de oro anti-colisión: **un módulo, un dueño, una rama**
 - El repo está partido en módulos (`datos/`, `variables/<variable>/`, `modelo/`, etc.). Cada módulo es una unidad de trabajo independiente con un contrato de salida estable.
 - **Antes de escribir una línea**, reclamá el módulo en `TABLERO.md` (tu nombre/ID + fecha). Si ya está tomado, elegí otro o coordiná.
 - Trabajás **solo dentro de tu módulo**. No edites archivos de otro módulo. Si necesitás algo de otro módulo, consumí su salida (parquet/contrato), no su código interno.
 - Lo único compartido y "frágil" es `docs/schemas/` (los contratos de datos). **Cambiarlo requiere un ADR** en `coordinacion/DECISIONES/` y aviso en el TABLERO, porque afecta a todos.
+
+## Regla del MAPA: **el índice se regenera, la prosa se escribe a mano**
+`MAPA.md` (raíz) y `.mapa/` son **generados** por `.mapa/indexar.py`: no se editan a mano, los cambios se pierden. Lo que sí se escribe a mano es, en el `README.md` de cada módulo, la línea `**Resumen:**` y la sección `## Buscar acá si` — de ahí salen la columna "Qué es" y el router "Dónde buscar qué" del mapa. **Si cambia lo que hace tu módulo, actualizá esas dos cosas en su README**, en el mismo PR.
+
+El hook `pre-commit` reindexa solo y avisa —sin bloquear— si algún README quedó vencido respecto del código de su módulo. Vive en la **raíz git** (`.git/hooks/pre-commit`), un nivel arriba de esta carpeta. Si no está instalado, desde el repo: `powershell -ExecutionPolicy Bypass -File "Nowcast Congreso Argy\.mapa\instalar-hook.ps1"` (en PowerShell **no hay `bash` en el PATH**; el hook en sí es bash y no importa, git en Windows lo corre con su propio `sh`). En Linux/Mac o Git Bash: `bash "Nowcast Congreso Argy/.mapa/instalar-hook.sh"` desde la raíz git.
+
+**Por qué se eligió el README y no un `BITACORA.md` aparte** (lo que pide la skill `mapa-de-proyectos`): este repo ya tiene cinco documentos vivos que se contradicen entre sí; sumar un sexto archivo por carpeta empeoraba exactamente el problema que el mapa viene a resolver. `.mapa/indexar.py` está forkeado para leer el README, y el fork está documentado en su cabecera.
 
 ## Regla de oro de trazabilidad: **cada cambio se registra**
 Todo avance relevante (terminar algo, cambiar un contrato, tomar una decisión) **agrega una entrada a `coordinacion/ESTADO-DEL-PROYECTO.md`** en el mismo PR. Un PR que cambia código y no actualiza ESTADO no se mergea. Formato en ese archivo.

@@ -1,5 +1,7 @@
 # Módulo: modelo/ensemble
 
+<!-- huella: f93ec516dbef -->
+
 **Propósito.** La composición final del Nowcast — el nowcast **end-to-end de un proyecto**:
 
     P(aprobación) = P(llega al recinto) × P(mayoría | recinto)
@@ -8,6 +10,20 @@ Une las dos piezas ya validadas del sistema en un solo número (con su descompos
 
 **Estado:** EN CURSO (v1: composición + nowcast por proyecto + tests)
 **Owner actual:** Claude+Valle (2026-07-12)
+
+**Resumen:** La composicion final: el nowcast end-to-end de un proyecto. Compone P(llega al recinto) x P(mayoria dado recinto) y corre el backtest de la cadena completa.
+
+## Buscar acá si
+
+- el numero final de P(sancion) de un proyecto
+- el backtest de la cadena completa, Brier, skill o calibracion
+- la Puerta D / camara revisora en el circuito bicameral
+- condicionar la postura por el origen del proyecto
+- P(mayoria) que da 0% o 100% (hay piso y techo por pedido de Valle)
+
+<!-- Las dos cosas de arriba las levanta `.mapa/indexar.py` al MAPA.md de la
+     raiz: el `Resumen:` va a la columna "Que es" y las pistas al router
+     "Donde buscar que". Si cambia lo que hace el modulo, actualizalas aca. -->
 
 ## Contrato
 - **Entradas:**

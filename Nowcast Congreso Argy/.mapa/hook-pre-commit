@@ -1,0 +1,52 @@
+#!/bin/sh
+# OJO con el shebang: `#!/usr/bin/env bash` NO sirve.
+# GitHub Desktop corre los hooks en un entorno minimo donde `env` no encuentra
+# `bash`, y el commit muere con:
+#     /usr/bin/env: 'bash': No such file or directory
+# `/bin/sh` SI existe ahi (git para Windows lo trae adentro). Este script esta
+# escrito en sh POSIX a proposito: nada de arrays, [[ ]] ni otras cosas de bash.
+# Reindexa el proyecto antes de cada commit y avisa si algun README quedo vencido.
+#
+# NUNCA bloquea el commit. Un indice desactualizado es un problema, no una
+# emergencia; y un hook que frena el trabajo se desinstala a la semana.
+#
+# Adaptado del hook de la skill `mapa-de-proyectos` para este repo:
+#  - la raiz git esta UN NIVEL ARRIBA del proyecto: el indice se genera en
+#    "Nowcast Congreso Argy/", no en la raiz;
+#  - en Windows + GitHub Desktop no siempre hay `python3`: se prueban tambien
+#    `python` y `py -3`. Si no hay ninguno, sale en silencio.
+#
+# Instalar (desde la raiz git):
+#   bash "Nowcast Congreso Argy/.mapa/instalar-hook.sh"
+
+set -u
+
+RAIZ="$(git rev-parse --show-toplevel)"
+PROY="$RAIZ/Nowcast Congreso Argy"
+INDEXAR="$PROY/.mapa/indexar.py"
+
+[ -f "$INDEXAR" ] || exit 0
+
+PY=""
+for cand in python3 python; do
+  if command -v "$cand" >/dev/null 2>&1; then PY="$cand"; break; fi
+done
+if [ -z "$PY" ] && command -v py >/dev/null 2>&1; then PY="py -3"; fi
+[ -n "$PY" ] || exit 0
+
+$PY "$INDEXAR" "$PROY" >/dev/null 2>&1 || {
+  echo "mapa: el indexado fallo; el commit sigue igual"
+  exit 0
+}
+
+git add -- "$PROY/MAPA.md" "$PROY/.mapa/mapa.json" 2>/dev/null
+
+VENCIDAS="$($PY "$INDEXAR" "$PROY" --frescura 2>/dev/null)"
+if [ -n "$VENCIDAS" ]; then
+  echo "mapa: modulos cuyo README quedo vencido respecto de su codigo --"
+  echo "$VENCIDAS" | sed 's/^/  /'
+  echo "  actualiza su 'Resumen:' / 'Buscar aca si' y despues sellalo:"
+  echo "  python3 \"Nowcast Congreso Argy/.mapa/indexar.py\" \"Nowcast Congreso Argy\" --sellar <modulo>"
+fi
+
+exit 0

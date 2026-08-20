@@ -1,9 +1,22 @@
 # Módulo: datos/argentinadatos
 
+<!-- huella: f013c2610db7 -->
+
 **Propósito.** Ingesta de Diputados 2020-2025 y Senado 2024-2025 desde la API argentinadatos.com, normalizada al MISMO esquema que CKAN.
 
 **Estado:** HECHO (integrado 2026-07-11) · reabierto 2026-08-06 por el bloque del Senado
 **Owner actual:** Claude (con Valle), desde 2026-08-06
+
+**Resumen:** Ingesta de Diputados 2020-2025 y Senado 2024-2025 desde la API argentinadatos.com, normalizada al mismo esquema que CKAN.
+
+## Buscar acá si
+
+- votaciones 2020-2025 que faltan o llegan mal
+- senadores sin bloque en esos anios (se resuelve con el padron del Senado)
+
+<!-- Las dos cosas de arriba las levanta `.mapa/indexar.py` al MAPA.md de la
+     raiz: el `Resumen:` va a la columna "Que es" y las pistas al router
+     "Donde buscar que". Si cambia lo que hace el modulo, actualizalas aca. -->
 
 ## Contrato
 - **Entradas:** https://api.argentinadatos.com (endpoints `/diputados/actas/` y `/senado/actas/`)

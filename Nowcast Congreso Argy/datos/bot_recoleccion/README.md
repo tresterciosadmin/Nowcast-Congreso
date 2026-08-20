@@ -1,11 +1,26 @@
 # Módulo: datos/bot_recoleccion
 
+<!-- huella: 510308d091f9 -->
+
 **Propósito.** El PADRÓN VIVO (idea de Franco, 11-07-2026): un bot diario que
 trae lo nuevo de ambas cámaras — proyectos ingresados con firmantes y giros —
 y (fase posterior) las votaciones nuevas, con upsert idempotente.
 
 **Estado:** EN CURSO — bicameral, automatizado en GitHub Actions **y entregando a `proyectos.db`** desde el 07-08-2026 (ADR-0009).
 **Owner actual:** Claude+Franco (2026-07-11)
+
+**Resumen:** El bot diario que trae lo nuevo de ambas camaras (proyectos con firmantes y giros, y votaciones) con upsert idempotente. Corre solo en GitHub Actions.
+
+## Buscar acá si
+
+- el modelo no ve los proyectos de las ultimas semanas
+- el bot diario fallo, no commiteo, o abrio un issue
+- scraping de Tramite Parlamentario (Diputados) o DAE (Senado)
+- hasta que fecha llega lo que el bot entrego
+
+<!-- Las dos cosas de arriba las levanta `.mapa/indexar.py` al MAPA.md de la
+     raiz: el `Resumen:` va a la columna "Que es" y las pistas al router
+     "Donde buscar que". Si cambia lo que hace el modulo, actualizalas aca. -->
 
 ## Arquitectura (diseño en README de datos/expedientes, fase 2)
 - **Senado → `src/dae_senado.py`** (LISTO): lee el DAE Digital (diario oficial de

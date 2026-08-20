@@ -779,3 +779,36 @@ La solución, con una idea de Valle: en vez del mes suelto, el modelo ahora mira
 De paso sacamos algo que estaba mal. Había **dos perillas** para el mismo clima: una medida (legislador por legislador) y otra que ponía el analista a mano sobre el total. Mirando el código, las dos multiplicaban la misma señal, o sea contaban el mismo clima dos veces. Nos quedamos con la medida, que es la que tiene respaldo en los datos, y la perilla del analista se elimina. El número final va a ser más honesto: lo que el clima mueve, lo mueve una sola vez.
 
 **Actualización (corrida grande de Valle):** el humor de fondo (6 meses) quedó **confirmado y firme** — el efecto sobre las bisagras más que se duplicó respecto de antes. El sacudón corto (3 meses), en cambio, **no se pudo confirmar**: los datos no alcanzan para asegurar que exista, así que lo apagamos. No publicamos lo que no está medido con confianza. Curiosamente, al apagar el corto el modelo queda mirando solo el humor de 6 meses, que era la idea más simple del principio: los dos caminos llegaron al mismo lado. Una cosa que sí dejamos prendida por criterio de Valle: al núcleo duro no lo damos por insensible al clima aunque el número salga chico — en una caída fuerte hasta los más leales pueden dudar, y "no lo medimos con certeza" no es lo mismo que "no existe". De hecho miramos la caída del gobierno de Alberto (donde el clima se derrumbó de verdad) y los mismos leales bajaron el acompañamiento al gobierno de 82% a 75% — apunta en esa dirección. Con tan pocos datos no alcanza para asegurarlo, así que el número queda puesto pero anotado para revisarlo a medida que pasen los meses.
+
+
+## Le hicimos un índice al repo (y le pusimos alarma a las cosas que se copiaron a mano)
+
+El proyecto creció a unos 30 módulos y encontrar dónde estaba cada cosa empezó a costar tiempo: había que abrir carpetas hasta dar con el archivo. Le armamos un **índice** (`MAPA.md`, en la raíz): una sola página que dice qué hace cada módulo, cuáles son los archivos importantes, quién usa a quién y de qué páginas oficiales se baja cada dato. Se genera solo, así que no puede quedar viejo por olvido, y hay un buscador (`.mapa/buscar.py "presentismo"`) que te dice archivo y línea sin abrir nada.
+
+Una decisión de fondo: el texto que alimenta ese índice lo pusimos **dentro del README de cada módulo**, no en archivos nuevos. La herramienta que usamos pedía crear un archivo aparte por carpeta —44 archivos— y este proyecto ya tiene cinco documentos vivos que a veces se contradicen entre sí. Sumar un sexto era empeorar justo el problema que el índice viene a resolver.
+
+Lo segundo es lo que más puede ahorrar un dolor de cabeza. Al revisar el código apareció algo previsible: como la regla del equipo es que un módulo no toca el código de otro, varias **definiciones quedaron copiadas** en cuatro o cinco lugares. Por ejemplo, "a qué período parlamentario pertenece esta fecha" está escrito cuatro veces, y "qué tipo de mayoría exige este proyecto", tres. Los comentarios decían *"mantener sincronizadas"* — o sea, el único control era que alguien se acordara.
+
+Las revisamos una por una: **hoy dicen todas lo mismo**, no había ningún error dando vueltas. Pero escribimos una prueba que las compara automáticamente, porque si alguna vez una se corrige y las otras no, en este proyecto eso **no daría error**: el número saldría un poco distinto y nadie sabría por qué. Ahora, el día que se separen, la prueba avisa.
+
+También escribimos en un solo archivo (`rutas.py`) **dónde está guardada cada cosa que un módulo le pasa a otro**. Antes eso estaba repartido: 47 lugares del código calculaban a mano dónde queda la carpeta principal contando niveles de carpeta, y mover un archivo de lugar podía hacer que apuntara en silencio a otro lado. Y hay una prueba que revisa que ese archivo esté completo: si alguien conecta dos módulos por un camino nuevo y no lo anota ahí, salta.
+
+Por último, destrabamos un enredo: la base de proyectos, para verificarse a sí misma, estaba usando código del módulo del embudo. Es al revés de como debería ser (el embudo se apoya en la base, no al revés), y significaba que la base no se podía controlar si el embudo estaba roto. Ahora la base le **pide el número** al embudo en vez de meterse en su código.
+
+### Y al probar todo junto aparecio una prueba que apagaba a todas las demas
+
+Al correr las pruebas del proyecto todas juntas por primera vez, no fallo ninguna:
+directamente **no corrio ninguna**. Una de ellas (la del respaldo de temas) estaba
+escrita de una forma que, apenas el programa la abre para mirarla, se ejecuta sola
+y da la orden de terminar — y se llevaba puesta la corrida entera antes de empezar.
+Arreglado: ahora sirve para las dos cosas, se puede correr sola como antes y ademas
+entra en la corrida conjunta. Sus 14 chequeos, que hasta hoy no se ejecutaban nunca
+en el conjunto, ahora si.
+
+Eso destapo algo mas grande y que conviene tener claro: **las pruebas de este
+proyecto estan escritas como programitas sueltos, no como una suite.** Se corren de
+a una, a mano, y asi funcionan perfecto — es como se hicieron siempre y no hay que
+cambiarlo. Lo que no hay que hacer es correrlas todas juntas con la herramienta
+estandar, porque en ese modo algunas cortan la corrida y, peor, otras podrian
+fallar sin que la herramienta lo note: imprimen "FALLA" y el resumen igual sale en
+verde. Quedo escrito donde corresponde, con los comandos que si valen.

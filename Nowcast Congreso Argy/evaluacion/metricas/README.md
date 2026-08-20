@@ -1,9 +1,21 @@
 # Módulo: evaluacion/metricas
 
+<!-- huella: e3b0c44298fc -->
+
 **Propósito.** Métricas comunes: Brier, calibración, accuracy en votos cruzados, cobertura de bandas.
 
 **Estado:** PENDIENTE
 **Owner actual:** _(vacante — reclamalo en coordinacion/TABLERO.md antes de empezar)_
+
+**Resumen:** Metricas comunes: Brier, calibracion, accuracy en votos cruzados, cobertura de bandas. PENDIENTE.
+
+## Buscar acá si
+
+- como se mide si el modelo es bueno
+
+<!-- Las dos cosas de arriba las levanta `.mapa/indexar.py` al MAPA.md de la
+     raiz: el `Resumen:` va a la columna "Que es" y las pistas al router
+     "Donde buscar que". Si cambia lo que hace el modulo, actualizalas aca. -->
 
 ## Contrato
 - **Entradas:** todos los modelos

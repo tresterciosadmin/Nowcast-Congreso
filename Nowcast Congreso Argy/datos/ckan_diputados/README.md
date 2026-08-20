@@ -1,5 +1,7 @@
 # Módulo: datos/ckan_diputados
 
+<!-- huella: 577df58db7dc -->
+
 **Propósito.** Ingesta de votaciones nominales de Diputados 2011-2020 desde CKAN HCDN (cabecera + detalle).
 
 **Estado:** HECHO. **La migración desde `fase0/` ya se hizo** (`src/to_canonical.py`
@@ -10,6 +12,17 @@ quedó de arrastre y se corrigió el 2026-08-06.
 > **Nota:** la fuente CKAN está **congelada en 2020**. De ahí en adelante cubre
 > `datos/argentinadatos`. Este módulo no se vuelve a correr salvo para reconstruir
 > la canónica de cero.
+
+**Resumen:** Ingesta de votaciones nominales de Diputados 2011-2020 desde CKAN HCDN (cabecera + detalle).
+
+## Buscar acá si
+
+- votaciones de Diputados 2011-2020
+- el formato crudo de CKAN HCDN
+
+<!-- Las dos cosas de arriba las levanta `.mapa/indexar.py` al MAPA.md de la
+     raiz: el `Resumen:` va a la columna "Que es" y las pistas al router
+     "Donde buscar que". Si cambia lo que hace el modulo, actualizalas aca. -->
 
 ## Contrato
 - **Entradas:** API CKAN datos.hcdn.gob.ar

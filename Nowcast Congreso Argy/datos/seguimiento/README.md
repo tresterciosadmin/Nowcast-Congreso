@@ -1,8 +1,22 @@
 # Módulo: datos/seguimiento
 
+<!-- huella: daa1722460ef -->
+
 **Propósito.** Dado un expediente **ya conocido**, bajar su ficha oficial y extraer el **estado de avance**: giros a comisiones, movimientos de trámite, fechas y link al PDF. Es el insumo del **embudo** (`variables/embudo`): "qué entró y en qué quedó". No descubre proyectos nuevos (eso es `datos/expedientes` / el monitor); acá se hace el **seguimiento** de los que ya están en la base.
 
 **Estado:** EN CURSO (primer extractor de giros, ambas cámaras, validado contra fixtures).
+
+**Resumen:** Dado un expediente ya conocido, baja su ficha oficial y extrae el estado de avance: giros, movimientos, fechas y PDF. Insumo del embudo. NO descubre proyectos nuevos.
+
+## Buscar acá si
+
+- en que etapa esta un expediente concreto
+- giros a comision o movimientos de tramite de un proyecto
+- el PDF del texto de un proyecto
+
+<!-- Las dos cosas de arriba las levanta `.mapa/indexar.py` al MAPA.md de la
+     raiz: el `Resumen:` va a la columna "Que es" y las pistas al router
+     "Donde buscar que". Si cambia lo que hace el modulo, actualizalas aca. -->
 
 ## Contrato
 - **Entrada:**

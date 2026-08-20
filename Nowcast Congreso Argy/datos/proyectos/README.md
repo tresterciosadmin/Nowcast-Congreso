@@ -1,5 +1,7 @@
 # Módulo: datos/proyectos
 
+<!-- huella: bb6a7eed550f -->
+
 **Propósito.** La **base de Proyectos de Ley**: fuente de verdad del embudo. Una fila por proyecto, identificado por su **denominador** (`NNNN-X-AAAA`). Guarda metadata, autores, giros a comisiones, trámite, estado y taxonomías. Se actualiza en el tiempo sin duplicar (un mismo proyecto avanza de estado).
 
 **Estado:** EN CURSO — **la base existe y es la fuente de verdad del universo de proyectos** (ADR-0009, 2026-08-07).
@@ -43,6 +45,21 @@
 >
 > ⚠️ Queda una regla operativa: **cuando el agente termine una tanda, correr
 > `exportar`**. Es lo que convierte el respaldo en respaldo.
+
+**Resumen:** Base de Proyectos de Ley (`proyectos.db`): una fila por proyecto identificado por denominador NNNN-X-AAAA. Fuente de verdad del universo de proyectos y denominador del embudo (ADR-0009).
+
+## Buscar acá si
+
+- cuantos proyectos de ley hay, o si uno existe en la base
+- autores, cofirmantes, giros a comision o taxonomias de un proyecto
+- la base de proyectos no cuadra / se cargo mal (`verificar.py`, 14 invariantes)
+- una fila rara que no hay que dejar entrar (cuarentena, base aparte)
+- rehacer `proyectos.db` (no viaja a git: `migrar_ckan.py` + `upsert_bot.py`, ~1 min)
+- el control de cohorte (`verificar.py`): la MIDE `variables/embudo` como proceso y aca se controla el resultado
+
+<!-- Las dos cosas de arriba las levanta `.mapa/indexar.py` al MAPA.md de la
+     raiz: el `Resumen:` va a la columna "Que es" y las pistas al router
+     "Donde buscar que". Si cambia lo que hace el modulo, actualizalas aca. -->
 
 ## Cuarentena: lo dudoso va aparte
 

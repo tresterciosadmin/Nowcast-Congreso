@@ -1,9 +1,21 @@
 # Módulo: evaluacion/backtesting
 
+<!-- huella: e3b0c44298fc -->
+
 **Propósito.** Validación walk-forward temporal (entrenar t, validar t+1) con test automatizado de no-leakage.
 
 **Estado:** PENDIENTE
 **Owner actual:** _(vacante — reclamalo en coordinacion/TABLERO.md antes de empezar)_
+
+**Resumen:** Validacion walk-forward (entrenar en t, validar en t+1) con test de no-leakage. PENDIENTE.
+
+## Buscar acá si
+
+- validacion temporal o fuga de informacion del futuro
+
+<!-- Las dos cosas de arriba las levanta `.mapa/indexar.py` al MAPA.md de la
+     raiz: el `Resumen:` va a la columna "Que es" y las pistas al router
+     "Donde buscar que". Si cambia lo que hace el modulo, actualizalas aca. -->
 
 ## Contrato
 - **Entradas:** todos los modelos

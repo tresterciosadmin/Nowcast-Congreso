@@ -38,6 +38,20 @@ Depende de otros (no empezar hasta que su dependencia esté HECHA):
 - [ ] **evaluacion/backtesting** — necesita al menos un modelo nuevo.
 - [ ] **producto/dashboard** — necesita ensemble.
 
+## Sesion 2026-08-20 (Valle+Claude) — CERRADA, estructura del repo: MAPA.md, router en los README y `rutas.py`. NADA RECLAMADO.
+
+| Modulo | Quien | Desde | Que se hizo |
+|---|---|---|---|
+| **(transversal — estructura)** | Claude (con Valle) | 2026-08-20 | **HECHO.** Auditoria de las conexiones entre carpetas + cuatro entregas: (1) `MAPA.md` en la raiz, generado, con `.mapa/` (indice, `buscar.py`, `indexar.py` forkeado, hook de pre-commit); (2) router `**Resumen:**` + `## Buscar aca si` **dentro de los 27 README de modulo** (+5 README nuevos: `coordinacion/`, `casos/`, `tests/`, `docs/taxonomias/`, `fase0/`) — **no** se crearon `BITACORA.md` aparte, ver ADR-0010; (3) `rutas.py` en la raiz con las 52 rutas que cruzan entre modulos; (4) `tests/` de raiz con dos controles entre modulos. Ver ADR-0010 y la entrada del 20-08 en ESTADO. |
+| **datos/proyectos** | Claude (con Valle) | 2026-08-20 | **HECHO, modulo LIBRE.** `verificar.py` deja de hacer `sys.path.insert` + `import embudo` (dependencia hacia arriba, capa 1 -> capa 2). Ahora invoca `variables/embudo/src/cohorte_dos_rutas.py` **como proceso** y consume su JSON. Mismos controles, misma severidad: si el medidor no corre, el control FALLA (no se saltea en silencio). Migrado a `rutas.py`. Tests del modulo: 10 pasan / 6 skip (los que necesitan `proyectos.db`). |
+| **variables/embudo** | Claude (con Valle) | 2026-08-20 | **HECHO, modulo LIBRE.** Archivo NUEVO y aditivo: `src/cohorte_dos_rutas.py` — mide la cohorte por las dos rutas (parquet vs SQLite) e imprime JSON. **No se toco `embudo.py`.** Es el entrypoint publicado que consume `datos/proyectos`. |
+| **evaluacion/baseline** | Claude (con Valle) | 2026-08-20 | **HECHO, modulo LIBRE** (owner estaba vacante). Migrado a `rutas.py` como segundo ejemplo de la migracion; `CANON` sigue mandando si esta seteada. |
+| **datos/proyectos** (2do claim) | Claude (con Valle) | 2026-08-20 | **HECHO, modulo LIBRE.** `tests/test_taxonomias_backup.py` estaba escrito como script (cuerpo a nivel de modulo + `raise SystemExit`) y **abortaba toda la corrida de pytest con INTERNALERROR**, sin ejecutar un solo test. Su cuerpo paso a `_correr()`: sigue andando como script Y ahora corre bajo pytest (14 chequeos que antes no corrian en ninguna suite). Hallazgo asociado: **casi toda la suite del repo son scripts, no modulos de pytest** — es una convencion, no un error; queda escrita en `tests/README.md` con los comandos correctos. NO se convirtio ningun otro archivo. |
+
+**Pendiente de Valle (no lo puedo hacer yo):** correr `bash "Nowcast Congreso Argy/.mapa/instalar-hook.sh"` desde la raiz git — los hooks no viajan en git — y `python -m pytest tests/ datos/proyectos/tests -q` en su PC. Lo del sandbox no cuenta como prueba.
+
+**Migracion a `rutas.py`: va 2 de ~30 modulos, a proposito.** Los demas tienen claim abierto; se migran de a uno, reclamando el modulo. `tests/test_rutas.py` ya cubre el inventario completo aunque los modulos no esten migrados, asi que el valor no depende de terminarla.
+
 ## Sesion 2026-08-14 (Valle+Claude) — ABIERTA, condicionar la postura por ORIGEN FINO del proyecto
 
 | Modulo | Quien | Desde | Que se esta haciendo |

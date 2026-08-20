@@ -4,9 +4,16 @@ Compara niveles de agrupación (bloque_norm / linaje / coalicion), por cámara y
 Mide solo votos sustantivos (AFIRMATIVO/NEGATIVO). Excluye 'SIN BLOQUE' (Senado reciente sin bloque resuelto).
 """
 from __future__ import annotations
-import json, os
+import json, os, sys
 from pathlib import Path
 import numpy as np, pandas as pd
+
+# La canonica se ubica por `rutas.py` (raiz del proyecto), no contando niveles de
+# carpeta. `CANON` sigue mandando si esta seteada: `run_pipeline.py` la usa para
+# apuntar a una carpeta de trabajo distinta.
+sys.path.insert(0, str(next(d for d in Path(__file__).resolve().parents
+                            if (d / "rutas.py").is_file())))
+from rutas import CANONICA_CLEAN  # noqa: E402
 
 SUST = ["AFIRMATIVO", "NEGATIVO"]
 CONT = 0.10  # disputada: minoría >=10% de los sustantivos del acta
@@ -34,7 +41,7 @@ def contested(df):
     return set(((mino / tot).where(tot > 0, 0) >= CONT).loc[lambda s: s].index)
 
 def main():
-    src = Path(os.environ.get("CANON", Path(__file__).resolve().parents[3] / "datos" / "canonica" / "data" / "clean"))
+    src = CANONICA_CLEAN
     out = Path(os.environ.get("OUT", Path(__file__).resolve().parents[1] / "outputs"))
     v = pd.read_parquet(src / "votos_resuelto.parquet")
     a = pd.read_parquet(src / "actas_canonico.parquet")[["acta_id", "camara"]]

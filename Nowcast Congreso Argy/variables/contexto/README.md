@@ -1,9 +1,21 @@
 # Módulo: variables/contexto
 
+<!-- huella: e3b0c44298fc -->
+
 **Propósito.** Señal cualitativa de prensa/contexto político (factor μ). Futuro, no bloquea el MVP.
 
 **Estado:** FUTURO
 **Owner actual:** _(vacante — reclamalo en coordinacion/TABLERO.md antes de empezar)_
+
+**Resumen:** Senal cualitativa de prensa y contexto politico (factor mu). FUTURO: no bloquea el MVP.
+
+## Buscar acá si
+
+- senal de prensa o clima politico como variable (todavia no existe)
+
+<!-- Las dos cosas de arriba las levanta `.mapa/indexar.py` al MAPA.md de la
+     raiz: el `Resumen:` va a la columna "Que es" y las pistas al router
+     "Donde buscar que". Si cambia lo que hace el modulo, actualizalas aca. -->
 
 ## Contrato
 - **Entradas:** prensa, fuentes externas

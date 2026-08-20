@@ -1,0 +1,1070 @@
+<!DOCTYPE html>
+<!-- ================================================================
+  MAPA DEL MODELO — Nowcast Legislativo Argentino
+  De dónde sale la probabilidad de que un proyecto de ley sea aprobado.
+
+  Este archivo es el DISEÑO y NO SE EDITA.
+  Los datos viven en mapa_modelo_datos.js (mismo directorio), que
+  GENERA producto/dashboard/src/generar_mapa_modelo.py a partir de
+  .mapa/mapa.json + rutas.py + los README de cada módulo + la capa
+  curada producto/dashboard/data/mapa_modelo_semantica.json.
+  Mismo patrón que TABLERO-CONTROL.html + tablero_datos.js.
+
+  Se abre con doble click; no necesita servidor ni internet.
+  NO es el tablero: TABLERO-CONTROL.html muestra plan y avance,
+  esto muestra la maquinaria.
+================================================================= -->
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mapa del Modelo — Nowcast Legislativo</title>
+<style>
+  /* Paleta base heredada de TABLERO-CONTROL.html (el estilo de la casa).
+     El color codifica el ROL. El ESTADO se codifica con borde y opacidad,
+     nunca con color de relleno: nada depende sólo del color. */
+  :root{
+    --bg:#f6f7f9; --panel:#ffffff; --panel2:#fbfcfd; --ink:#1a2233; --muted:#5b6577;
+    --line:#e3e7ee; --line2:#c9d1de; --brand:#1e3a5f; --brand2:#2e6da4;
+    --sombra:0 1px 3px rgba(16,24,40,.08),0 6px 18px rgba(16,24,40,.06);
+
+    --hecho:#1e7d46; --hecho-bg:#e3f4ea;
+    --curso:#b97a00; --curso-bg:#fdf3dd;
+    --parcial:#8a6d00; --parcial-bg:#faf6e0;
+    --pend:#7a4ec2;  --pend-bg:#f0eafb;
+    --futuro:#5b6577; --futuro-bg:#eef0f4;
+    --repl:#b3403f;  --repl-bg:#fdeaea;
+
+    --rol-fuente:#2e6da4;   --rol-fuente-bg:#dbe8f5;
+    --rol-script:#7a4ec2;   --rol-script-bg:#ece3fa;
+    --rol-dato:#12796b;     --rol-dato-bg:#d8f0eb;
+    --rol-variable:#b0561a; --rol-variable-bg:#fbe7d6;
+
+    --arista:#8d99ab; --arista-fuerte:#5b6577;
+    --alerta:#b3403f; --resalte:#b97a00;
+    --foco:#2e6da4;
+  }
+  [data-tema="oscuro"]{
+    --bg:#11151d; --panel:#1a202b; --panel2:#151b24; --ink:#e6ebf3; --muted:#98a3b4;
+    --line:#2a3342; --line2:#3a4557; --brand:#8fbbe8; --brand2:#6aa5dc;
+    --sombra:0 1px 3px rgba(0,0,0,.5),0 8px 24px rgba(0,0,0,.35);
+
+    --hecho:#5fd08e; --hecho-bg:#123021;
+    --curso:#e5ab3c; --curso-bg:#332609;
+    --parcial:#d8c45a; --parcial-bg:#2e2a0d;
+    --pend:#b799ef;  --pend-bg:#241b3a;
+    --futuro:#98a3b4; --futuro-bg:#232a36;
+    --repl:#ef8483;  --repl-bg:#3a1c1c;
+
+    --rol-fuente:#6fa8dc;   --rol-fuente-bg:#16293c;
+    --rol-script:#b596f2;   --rol-script-bg:#241b3a;
+    --rol-dato:#45c5ab;     --rol-dato-bg:#0e2f2a;
+    --rol-variable:#e79a5a; --rol-variable-bg:#38220f;
+
+    --arista:#5c6a7e; --arista-fuerte:#93a1b5;
+    --alerta:#ef8483; --resalte:#e5ab3c;
+    --foco:#6aa5dc;
+  }
+
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{margin:0;font-family:"Segoe UI",system-ui,-apple-system,sans-serif;
+       background:var(--bg);color:var(--ink);line-height:1.5;
+       display:flex;flex-direction:column;min-height:100vh}
+
+  header{background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;
+         padding:13px 22px 11px;flex:0 0 auto}
+  header h1{margin:0;font-size:1.16rem;font-weight:600;letter-spacing:-.01em}
+  header .sub{opacity:.9;font-size:.85rem;margin-top:2px}
+  header .meta{opacity:.75;font-size:.73rem;margin-top:5px;line-height:1.35}
+  header .meta b{font-weight:600}
+
+  /* ---------------------------------------------------------- filtros */
+  .barra{position:sticky;top:0;z-index:20;background:var(--panel);
+         border-bottom:1px solid var(--line);padding:7px 14px;flex:0 0 auto;
+         display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center;box-shadow:var(--sombra)}
+  .grupo{display:flex;gap:5px;align-items:center;flex-wrap:wrap}
+  .grupo > .et{font-size:.7rem;text-transform:uppercase;letter-spacing:.05em;
+               color:var(--muted);font-weight:700;margin-right:2px}
+  .chip{border:1px solid var(--line2);background:var(--panel2);border-radius:999px;
+        padding:3px 10px;font-size:.77rem;cursor:pointer;color:var(--muted);
+        font-weight:600;font-family:inherit;display:inline-flex;align-items:center;gap:5px}
+  .chip:hover{border-color:var(--brand2);color:var(--ink)}
+  .chip[aria-pressed="true"]{background:var(--brand);color:#fff;border-color:var(--brand)}
+  .chip .pin{width:9px;height:9px;flex:0 0 auto;display:inline-block}
+  .chip.rol-fuente .pin{background:var(--rol-fuente)}
+  .chip.rol-script .pin{background:var(--rol-script);clip-path:polygon(25% 0,75% 0,100% 50%,75% 100%,25% 100%,0 50%)}
+  .chip.rol-dato .pin{background:var(--rol-dato);clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%)}
+  .chip.rol-variable .pin{background:var(--rol-variable);border-radius:50%}
+  .chip[aria-pressed="true"] .pin{outline:1px solid rgba(255,255,255,.7)}
+
+  input[type="search"]{border:1px solid var(--line2);background:var(--panel2);color:var(--ink);
+        border-radius:8px;padding:6px 11px;font-size:.85rem;min-width:200px;font-family:inherit}
+  input[type="search"]:focus{outline:2px solid var(--foco);outline-offset:1px}
+  select{border:1px solid var(--line2);background:var(--panel2);color:var(--ink);
+         border-radius:8px;padding:6px 9px;font-size:.82rem;font-family:inherit;font-weight:600}
+  .btn{border:1px solid var(--line2);background:var(--panel2);border-radius:8px;
+       padding:5px 10px;font-size:.82rem;cursor:pointer;color:var(--ink);
+       font-weight:600;font-family:inherit;min-width:32px}
+  .btn:hover{border-color:var(--brand2)}
+  .btn[aria-pressed="true"]{background:var(--brand);color:#fff;border-color:var(--brand)}
+  .sep{width:1px;height:22px;background:var(--line);margin:0 2px}
+  :focus-visible{outline:2px solid var(--foco);outline-offset:2px;border-radius:4px}
+
+  /* ------------------------------------------- las dos formulaciones vivas */
+  .formulas{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));
+            gap:9px;padding:8px 14px;background:var(--panel2);
+            border-bottom:1px solid var(--line);flex:0 0 auto}
+  .form{border:1px solid var(--line2);border-radius:10px;padding:8px 13px;background:var(--panel);
+        cursor:pointer;text-align:left;font-family:inherit;color:var(--ink);display:block;width:100%}
+  .form:hover{border-color:var(--brand2)}
+  .form[aria-pressed="true"]{border-color:var(--resalte);box-shadow:0 0 0 2px var(--curso-bg)}
+  .form .n{font-weight:700;font-size:.86rem;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .form .f{font-family:"Cascadia Mono",Consolas,monospace;font-size:.82rem;color:var(--brand2);
+           margin:5px 0 3px;display:block}
+  .form .d{font-size:.75rem;color:var(--muted);line-height:1.38}
+
+  /* ---------------------------------------------------------- lienzo */
+  .cuerpo{flex:0 0 auto;display:flex;min-height:400px;position:relative}
+  .lienzo{flex:1 1 auto;position:relative;overflow:hidden;background:var(--bg);
+          min-height:400px}
+  .lienzo:fullscreen{background:var(--bg);height:100vh}
+  .mandos{position:absolute;left:12px;bottom:12px;z-index:6;display:flex;gap:5px;
+          background:var(--panel);border:1px solid var(--line);border-radius:10px;
+          padding:5px;box-shadow:var(--sombra)}
+  #svg{width:100%;height:100%;display:block;cursor:grab;touch-action:none}
+  #svg.arrastrando{cursor:grabbing}
+
+  .colhead{font-size:.74rem;font-weight:800;letter-spacing:.07em;text-transform:uppercase;
+           fill:var(--muted)}
+  .colrule{stroke:var(--line);stroke-width:1}
+  .colband{fill:var(--panel2);opacity:.55}
+
+  .nodo{cursor:pointer}
+  .nodo .forma{stroke-width:2;transition:opacity .15s}
+  .nodo .rotulo{font-size:11px;fill:var(--ink);pointer-events:none;font-weight:600}
+  .nodo .sub{font-size:9.5px;fill:var(--muted);pointer-events:none}
+  .nodo:focus{outline:none}
+  .nodo:focus .halo,.nodo.sel .halo{opacity:1}
+  .halo{fill:none;stroke:var(--foco);stroke-width:2.5;opacity:0;stroke-dasharray:3 3}
+  .nodo.apagado{opacity:.13}
+  .nodo.apagado .rotulo,.nodo.apagado .sub{opacity:.5}
+  .nodo.parqueada .forma{stroke-dasharray:4 3}
+  .nodo.enCamino .forma{stroke:var(--resalte);stroke-width:3.5}
+
+  .arista{fill:none;stroke:var(--arista);stroke-width:1.5}
+  .arista.t-config{stroke:var(--line2);stroke-width:1.4}
+  .arista.t-calcula{stroke:var(--arista-fuerte);stroke-width:1.5;stroke-dasharray:1.5 3}
+  .arista.t-alerta{stroke:var(--alerta);stroke-width:1.6;stroke-dasharray:7 4}
+  .arista.apagada{opacity:.06}
+  .arista.viva{stroke:var(--resalte);stroke-width:2.6;opacity:1}
+
+  /* ---------------------------------------------------------- ficha */
+  .ficha{flex:0 0 380px;max-width:88vw;background:var(--panel);border-left:1px solid var(--line);
+         overflow-y:auto;padding:16px 18px 40px;display:none}
+  .ficha.on{display:block}
+  .ficha h2{margin:0 0 2px;font-size:1.05rem;line-height:1.3}
+  .ficha .cerrar{float:right;margin:-4px -4px 0 8px}
+  .ficha .qes{color:var(--ink);font-size:.9rem;margin:10px 0 12px}
+  .ficha h3{font-size:.71rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);
+            margin:16px 0 5px;font-weight:800}
+  .ficha ul{margin:4px 0;padding-left:17px;font-size:.85rem;color:var(--ink)}
+  .ficha li{margin-bottom:5px}
+  .ficha .vinculo{background:none;border:0;padding:0;font:inherit;font-size:.85rem;
+                  color:var(--brand2);cursor:pointer;text-align:left;font-weight:600}
+  .ficha .vinculo:hover{text-decoration:underline}
+  .ficha .via{color:var(--muted);font-weight:400;font-size:.78rem}
+  code,.mono{font-family:"Cascadia Mono",Consolas,"SF Mono",monospace;font-size:.8rem;
+       background:var(--panel2);border:1px solid var(--line);border-radius:5px;padding:1px 5px;
+       overflow-wrap:anywhere}
+  .formula{display:block;background:var(--panel2);border:1px solid var(--line);
+           border-left:4px solid var(--brand2);border-radius:0 8px 8px 0;padding:9px 12px;
+           margin:8px 0;font-family:"Cascadia Mono",Consolas,monospace;font-size:.82rem}
+  .nota{border-left:3px solid var(--curso);background:var(--curso-bg);color:var(--ink);
+        padding:7px 11px;border-radius:0 6px 6px 0;font-size:.83rem;margin-bottom:7px}
+  .nota.mala{border-left-color:var(--repl);background:var(--repl-bg)}
+
+  .badge{display:inline-block;padding:2px 9px;border-radius:999px;font-size:.7rem;
+         font-weight:800;letter-spacing:.03em;vertical-align:middle;margin:2px 4px 2px 0;
+         border:1px solid transparent;white-space:nowrap}
+  .e-HECHO{color:var(--hecho);background:var(--hecho-bg);border-color:var(--hecho)}
+  .e-ENCURSO{color:var(--curso);background:var(--curso-bg);border-color:var(--curso)}
+  .e-PARCIAL{color:var(--parcial);background:var(--parcial-bg);border-color:var(--parcial)}
+  .e-PENDIENTE{color:var(--pend);background:var(--pend-bg);border-color:var(--pend);border-style:dashed}
+  .e-FUTURO{color:var(--futuro);background:var(--futuro-bg);border-color:var(--futuro);border-style:dashed}
+  .e-REPLANTEADO{color:var(--repl);background:var(--repl-bg);border-color:var(--repl);border-style:dashed}
+  .e-{color:var(--muted);background:var(--futuro-bg);border-color:var(--line2);border-style:dotted}
+  .rolbadge{display:inline-block;padding:2px 9px;border-radius:999px;font-size:.7rem;font-weight:800}
+  .r-fuente{color:var(--rol-fuente);background:var(--rol-fuente-bg)}
+  .r-script{color:var(--rol-script);background:var(--rol-script-bg)}
+  .r-dato{color:var(--rol-dato);background:var(--rol-dato-bg)}
+  .r-variable{color:var(--rol-variable);background:var(--rol-variable-bg)}
+
+  /* ---------------------------------------------------------- tabla */
+  /* En la vista de tabla scrollea la PAGINA, no un contenedor interno: si no,
+     la tabla queda encerrada en la franja que sobra y no se lee nada. */
+  .tabla{display:none;padding:16px 22px 34px;flex:0 0 auto}
+  body[data-vista="tabla"] .tabla{display:block}
+  body[data-vista="tabla"] .cuerpo{display:none}
+  .tabla h2{font-size:1.05rem;color:var(--brand);margin:22px 0 8px}
+  .tabla h2:first-child{margin-top:0}
+  .tabla p.ayuda{color:var(--muted);font-size:.85rem;margin:0 0 10px;max-width:70ch}
+  table{width:100%;border-collapse:collapse;background:var(--panel);font-size:.83rem;
+        border:1px solid var(--line);border-radius:10px;overflow:hidden;table-layout:fixed}
+  td{overflow-wrap:anywhere}
+  caption{text-align:left;color:var(--muted);font-size:.8rem;padding:0 0 6px}
+  th{background:var(--brand);color:#fff;text-align:left;padding:8px 10px;font-weight:600;
+     font-size:.76rem}
+  td{padding:7px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+  tr:last-child td{border-bottom:0}
+  tr:nth-child(even) td{background:var(--panel2)}
+
+  /* ---------------------------------------------------------- leyenda */
+  footer{flex:0 0 auto;background:var(--panel);border-top:1px solid var(--line);
+         padding:12px 20px 16px;font-size:.79rem;color:var(--muted)}
+  .leyendas{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px 22px}
+  .ley h4{margin:0 0 5px;font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;
+          color:var(--muted);font-weight:800}
+  .ley div{margin-bottom:3px;display:flex;align-items:center;gap:7px;line-height:1.35}
+  .ley svg{flex:0 0 auto}
+  .pie{margin-top:10px;padding-top:9px;border-top:1px solid var(--line);font-size:.75rem}
+  .aviso{background:var(--repl-bg);color:var(--repl);border:1px solid var(--repl);
+         border-radius:8px;padding:8px 12px;font-size:.8rem;margin:10px 0;font-weight:600}
+  .solo-lectores{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  @media(max-width:820px){
+    .ficha{position:absolute;right:0;top:0;bottom:0;z-index:15;box-shadow:var(--sombra);flex-basis:320px}
+    .lienzo{min-height:440px}
+  }
+</style>
+</head>
+<body data-tema="claro" data-vista="grafo">
+
+<header>
+  <h1 id="h-titulo">Mapa del Modelo</h1>
+  <div class="sub" id="h-sub"></div>
+  <div class="meta" id="h-meta"></div>
+</header>
+
+<div class="barra" role="toolbar" aria-label="Filtros y controles del mapa">
+  <div class="grupo">
+    <label class="solo-lectores" for="q">Buscar en el mapa</label>
+    <input type="search" id="q" placeholder="Buscar nodo, archivo, módulo…"
+           aria-label="Buscar nodo, archivo o módulo">
+  </div>
+  <div class="sep" aria-hidden="true"></div>
+  <div class="grupo" id="chips-etapa" role="group" aria-label="Filtrar por etapa">
+    <span class="et" aria-hidden="true">Etapa</span>
+  </div>
+  <div class="sep" aria-hidden="true"></div>
+  <div class="grupo" id="chips-rol" role="group" aria-label="Filtrar por rol">
+    <span class="et" aria-hidden="true">Rol</span>
+  </div>
+  <div class="sep" aria-hidden="true"></div>
+  <div class="grupo">
+    <label class="solo-lectores" for="camino">Seguir un camino</label>
+    <select id="camino" aria-label="Resaltar un camino completo"></select>
+  </div>
+  <div class="sep" aria-hidden="true"></div>
+  <div class="grupo">
+    <button class="btn" id="b-etiquetas" aria-pressed="false"
+            aria-label="Alternar etiquetas: todas o sólo las claves">Etiquetas: claves</button>
+    <button class="btn" id="b-tema" aria-label="Alternar tema claro y oscuro">Tema oscuro</button>
+    <button class="btn" id="b-vista" aria-pressed="false"
+            aria-label="Alternar entre el grafo y la tabla gemela">Ver tabla</button>
+  </div>
+</div>
+
+<div class="formulas" id="formulas" role="group"
+     aria-label="Las dos formulaciones del cálculo, que conviven"></div>
+
+<div class="cuerpo">
+  <div class="lienzo" id="lienzo">
+    <div class="mandos" role="group" aria-label="Zoom y encuadre">
+      <button class="btn" id="b-mas" aria-label="Acercar" title="Acercar (+)">+</button>
+      <button class="btn" id="b-menos" aria-label="Alejar" title="Alejar (−)">−</button>
+      <button class="btn" id="b-ajustar" aria-label="Ajustar el grafo a la ventana" title="Ajustar (0)">Ajustar</button>
+      <button class="btn" id="b-reordenar" aria-label="Reordenar los nodos para cruzar menos líneas" title="Reordenar: vuelve a acomodar las columnas para cruzar menos líneas">Reordenar</button>
+      <button class="btn" id="b-pantalla" aria-label="Pantalla completa" title="Pantalla completa">⛶</button>
+    </div>
+    <svg id="svg" role="img" aria-labelledby="svg-titulo svg-desc">
+      <title id="svg-titulo">Grafo del cálculo del Nowcast</title>
+      <desc id="svg-desc">Grafo de columnas, de fuentes oficiales a la probabilidad de sanción.
+        La misma información está disponible en formato de tabla con el botón «Ver tabla».</desc>
+      <defs id="defs"></defs>
+      <g id="raiz">
+        <g id="capaColumnas"></g>
+        <g id="capaAristas"></g>
+        <g id="capaNodos"></g>
+      </g>
+    </svg>
+  </div>
+  <aside class="ficha" id="ficha" role="complementary" aria-live="polite" aria-label="Ficha del nodo"></aside>
+</div>
+
+<div class="tabla" id="tabla"></div>
+
+<footer>
+  <div class="leyendas" id="leyenda"></div>
+  <div class="pie">
+    El diseño (este HTML) <b>no se edita</b>. Los datos viven en <code>mapa_modelo_datos.js</code>,
+    que genera <code>producto/dashboard/src/generar_mapa_modelo.py</code> desde
+    <code>.mapa/mapa.json</code> + <code>rutas.py</code> + el <code>**Estado:**</code> de cada README
+    + la capa curada <code>producto/dashboard/data/mapa_modelo_semantica.json</code>.
+    Para corregir un nodo se toca la capa curada y se vuelve a correr el generador.
+  </div>
+</footer>
+
+<script src="mapa_modelo_datos.js"></script>
+<script>
+(function(){
+"use strict";
+
+/* ------------------------------------------------------------------ arranque */
+if (typeof MAPA_MODELO === "undefined") {
+  document.body.innerHTML =
+    '<div style="padding:40px;font-family:system-ui">' +
+    '<h1>Falta <code>mapa_modelo_datos.js</code></h1>' +
+    '<p>Este archivo es sólo el diseño. Corré, desde la raíz del proyecto:</p>' +
+    '<pre>python producto/dashboard/src/generar_mapa_modelo.py</pre></div>';
+  return;
+}
+var D = MAPA_MODELO;
+var $ = function(s){ return document.querySelector(s); };
+var esc = function(s){
+  return String(s == null ? "" : s).replace(/[&<>"]/g, function(c){
+    return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];
+  });
+};
+var NS = "http://www.w3.org/2000/svg";
+var el = function(tag, attrs){
+  var n = document.createElementNS(NS, tag);
+  for (var k in attrs) if (attrs[k] != null) n.setAttribute(k, attrs[k]);
+  return n;
+};
+
+var NODOS = D.nodes.slice();
+var IDX = {}; NODOS.forEach(function(n){ IDX[n.id] = n; });
+var LINKS = D.links.slice();
+var ORDEN_ETAPA = {}; D.etapas.forEach(function(e){ ORDEN_ETAPA[e.id] = e.orden; });
+var NOM_ETAPA = {}; D.etapas.forEach(function(e){ NOM_ETAPA[e.id] = e.nombre; });
+var NOM_ROL = {}; D.roles.forEach(function(r){ NOM_ROL[r.id] = r.nombre; });
+var NOM_TIPO = {}; D.tipos_arista.forEach(function(t){ NOM_TIPO[t.id] = t.nombre; });
+
+/* vecinos, para la ficha y para el resaltado */
+var ENTRAN = {}, SALEN = {};
+LINKS.forEach(function(l){
+  (SALEN[l.de] = SALEN[l.de] || []).push(l);
+  (ENTRAN[l.a] = ENTRAN[l.a] || []).push(l);
+});
+
+var S = {
+  etapas: new Set(D.etapas.map(function(e){ return e.id; })),
+  roles:  new Set(D.roles.map(function(r){ return r.id; })),
+  q: "", etiquetas: "claves", sel: null, camino: "",
+  z: 1, px: 0, py: 0
+};
+
+/* ------------------------------------------------------------------ layout */
+/* Una etapa con 27 nodos en una sola pila deja el grafo altísimo y flaco, y el
+   "Ajustar" lo achica a un tamaño ilegible. Por eso cada etapa se abre en
+   sub-columnas de MAX_FILAS: la columna sigue siendo una etapa, pero ocupa el
+   ancho que necesita. */
+var SUB_W = 214, FILA_H = 54, MAX_FILAS = 16, MARGEN_X = 36, MARGEN_Y = 74;
+var RADIO = { 1: 9, 2: 12, 3: 16 };
+var MAX_ROTULO = 22;
+var columnas = [];   // [[nodo,...], ...] indexado por orden de etapa
+var geoEtapa = [];   // [{x, ancho, subs}] por etapa
+var ANCHO = 0, ALTO = 0;
+
+function radio(n){ return RADIO[n.jerarquia] || 11; }
+function recortar(s){
+  s = String(s || "");
+  return s.length > MAX_ROTULO ? s.slice(0, MAX_ROTULO - 1) + "…" : s;
+}
+
+function armarColumnas(){
+  columnas = D.etapas.slice().sort(function(a,b){ return a.orden - b.orden; })
+    .map(function(e){
+      return NODOS.filter(function(n){ return n.etapa === e.id; });
+    });
+}
+
+/** Barrido de baricentro: ordena cada columna por la posición media de sus
+ *  vecinos en la columna anterior (ida) y en la siguiente (vuelta). Es el
+ *  heurístico clásico para cruzar menos líneas; no busca el óptimo. */
+function ordenar(pasadas){
+  var pos = {};
+  columnas.forEach(function(col){ col.forEach(function(n,i){ pos[n.id] = i; }); });
+
+  function bari(n, vecinos){
+    var vs = (vecinos[n.id] || []).map(function(l){
+      var otro = l.de === n.id ? l.a : l.de;
+      return pos[otro];
+    }).filter(function(v){ return v != null; });
+    if (!vs.length) return null;
+    vs.sort(function(a,b){ return a-b; });
+    return vs[Math.floor(vs.length/2)];   // mediana: más estable que el promedio
+  }
+
+  for (var p = 0; p < pasadas; p++){
+    var ida = p % 2 === 0;
+    var rango = ida ? columnas.map(function(_,i){ return i; })
+                    : columnas.map(function(_,i){ return columnas.length-1-i; });
+    rango.forEach(function(ci){
+      var col = columnas[ci];
+      var ref = ida ? ENTRAN : SALEN;
+      var claves = col.map(function(n,i){
+        var b = bari(n, ref);
+        return { n:n, k: b == null ? i : b, i:i };
+      });
+      claves.sort(function(a,b){ return (a.k - b.k) || (a.i - b.i); });
+      columnas[ci] = claves.map(function(c){ return c.n; });
+      columnas[ci].forEach(function(n,i){ pos[n.id] = i; });
+    });
+  }
+}
+
+function posicionar(){
+  var x = MARGEN_X, filasMax = 1;
+  geoEtapa = [];
+  columnas.forEach(function(col){
+    var subs = Math.max(1, Math.ceil(col.length / MAX_FILAS));
+    var filas = Math.ceil(col.length / subs);
+    filasMax = Math.max(filasMax, filas);
+    col.forEach(function(n, i){
+      var s = Math.floor(i / filas), f = i % filas;
+      n._x = x + s * SUB_W + 24;
+      n._y = MARGEN_Y + f * FILA_H;
+    });
+    geoEtapa.push({ x: x, ancho: subs * SUB_W, subs: subs });
+    x += subs * SUB_W;
+  });
+  ANCHO = x + MARGEN_X;
+  ALTO = MARGEN_Y + filasMax * FILA_H + 30;
+}
+
+/* ------------------------------------------------------------------ formas */
+function forma(n){
+  var r = radio(n), c = "var(--rol-" + n.rol + ")", f = "var(--rol-" + n.rol + "-bg)";
+  var a = { class:"forma", fill:f, stroke:c };
+  if (n.rol === "fuente"){
+    return el("rect", Object.assign(a, { x:-r, y:-r, width:2*r, height:2*r, rx:3 }));
+  }
+  if (n.rol === "dato"){
+    return el("polygon", Object.assign(a, {
+      points: [[0,-r*1.15],[r*1.15,0],[0,r*1.15],[-r*1.15,0]].join(" ") }));
+  }
+  if (n.rol === "script"){
+    var pts = [];
+    for (var i = 0; i < 6; i++){
+      var ang = Math.PI/180 * (60*i);
+      pts.push((r*1.1*Math.cos(ang)).toFixed(2) + "," + (r*1.1*Math.sin(ang)).toFixed(2));
+    }
+    return el("polygon", Object.assign(a, { points: pts.join(" ") }));
+  }
+  return el("circle", Object.assign(a, { r:r }));
+}
+
+function haloDe(n){
+  var r = radio(n) + 6;
+  return el("circle", { class:"halo", r:r });
+}
+
+/* ------------------------------------------------------------------ aristas */
+function caminoArista(l){
+  var a = IDX[l.de], b = IDX[l.a];
+  var ra = radio(a), rb = radio(b);
+  var x1 = a._x + ra + 2, y1 = a._y, x2 = b._x - rb - 5, y2 = b._y;
+  if (b._x <= a._x){
+    // arista hacia atrás o dentro de la misma columna: se va por abajo
+    var xa = a._x, xb = b._x, dip = Math.max(46, Math.abs(y2 - y1) * .45 + 34);
+    return "M" + xa + "," + (a._y + ra) +
+           " C" + xa + "," + (a._y + ra + dip) + " " +
+                  xb + "," + (b._y + rb + dip) + " " +
+                  xb + "," + (b._y + rb + 3);
+  }
+  var mx = (x1 + x2) / 2;
+  return "M" + x1 + "," + y1 + " C" + mx + "," + y1 + " " + mx + "," + y2 + " " + x2 + "," + y2;
+}
+
+function marcadores(){
+  var defs = $("#defs");
+  defs.textContent = "";
+  [["flujo","var(--arista)"],["config","var(--line2)"],
+   ["calcula","var(--arista-fuerte)"],["alerta","var(--alerta)"],
+   ["vivo","var(--resalte)"]].forEach(function(par){
+    var m = el("marker", { id:"fl-"+par[0], viewBox:"0 0 10 10", refX:"9", refY:"5",
+      markerWidth:"6", markerHeight:"6", orient:"auto-start-reverse" });
+    m.appendChild(el("path", { d:"M0,1 L9,5 L0,9 z", fill:par[1] }));
+    defs.appendChild(m);
+  });
+}
+
+/* ------------------------------------------------------------------ dibujo */
+var gCols = $("#capaColumnas"), gAr = $("#capaAristas"), gNo = $("#capaNodos");
+
+function dibujar(){
+  marcadores();
+  gCols.textContent = ""; gAr.textContent = ""; gNo.textContent = "";
+
+  D.etapas.slice().sort(function(a,b){ return a.orden-b.orden; }).forEach(function(e, i){
+    var g = geoEtapa[i];
+    if (i % 2 === 0){
+      gCols.appendChild(el("rect", { class:"colband", x:g.x, y:32, width:g.ancho, height:ALTO-38 }));
+    }
+    gCols.appendChild(el("line", { class:"colrule", x1:g.x, y1:32, x2:g.x, y2:ALTO-6 }));
+    var t = el("text", { class:"colhead", x:g.x+14, y:22 });
+    t.textContent = (i+1) + ". " + e.nombre.toUpperCase();
+    gCols.appendChild(t);
+    var d = el("title"); d.textContent = e.descripcion || ""; t.appendChild(d);
+  });
+  var fin = geoEtapa[geoEtapa.length-1];
+  gCols.appendChild(el("line", { class:"colrule", x1:fin.x+fin.ancho, y1:32,
+    x2:fin.x+fin.ancho, y2:ALTO-6 }));
+
+  LINKS.forEach(function(l, i){
+    var p = el("path", { class:"arista t-"+l.tipo, d:caminoArista(l),
+      "marker-end":"url(#fl-"+(l.tipo==="config"?"config":l.tipo==="calcula"?"calcula":l.tipo==="alerta"?"alerta":"flujo")+")" });
+    p.dataset.de = l.de; p.dataset.a = l.a; p.dataset.i = i;
+    var tit = el("title");
+    tit.textContent = IDX[l.de].label + " → " + IDX[l.a].label +
+      " (" + NOM_TIPO[l.tipo] + (l.nota ? ": " + l.nota : "") + ")";
+    p.appendChild(tit);
+    gAr.appendChild(p);
+  });
+
+  NODOS.forEach(function(n){
+    var g = el("g", { class:"nodo", transform:"translate("+n._x+","+n._y+")",
+      tabindex:"0", role:"button" });
+    g.dataset.id = n.id;
+    g.setAttribute("aria-label", rotuloAccesible(n));
+    g.appendChild(haloDe(n));
+    g.appendChild(forma(n));
+    var t = el("text", { class:"rotulo", x: radio(n)+7, y: 4 });
+    t.textContent = recortar(n.label);
+    g.appendChild(t);
+    if (n.parqueada) g.classList.add("parqueada");
+    var tit = el("title");
+    tit.textContent = n.label + " — " + NOM_ROL[n.rol] +
+      (n.estado ? " · " + n.estado : "") + (n.owner && n.owner !== "—" ? " · " + n.owner : "");
+    g.appendChild(tit);
+    gNo.appendChild(g);
+    n._g = g;
+  });
+}
+
+function rotuloAccesible(n){
+  var p = [n.label, NOM_ROL[n.rol], "etapa " + NOM_ETAPA[n.etapa]];
+  if (n.estado) p.push("estado " + n.estado);
+  if (n.owner && n.owner !== "—") p.push("dueño " + n.owner);
+  if (n.parqueada) p.push("parqueado o inexistente");
+  if (n.archivo) p.push("archivo " + n.archivo);
+  var e = (ENTRAN[n.id]||[]).length, s = (SALEN[n.id]||[]).length;
+  p.push(e + " entradas, " + s + " salidas");
+  return p.join(". ");
+}
+
+/* ------------------------------------------------------------------ filtros */
+function visible(n){
+  if (!S.etapas.has(n.etapa) || !S.roles.has(n.rol)) return false;
+  if (!S.q) return true;
+  var heno = [n.label, n.que_es, n.archivo, n.archivo_externo, n.modulo, n.owner,
+              n.estado, n.formula, (n.notas||[]).join(" ")].join(" ").toLowerCase();
+  return heno.indexOf(S.q) >= 0;
+}
+
+function nodosDelCamino(){
+  if (!S.camino) return null;
+  var c = (D.caminos||[]).filter(function(x){ return x.id === S.camino; })[0];
+  return c ? new Set(c.nodos) : null;
+}
+
+function pintar(){
+  var camino = nodosDelCamino();
+  var vecinos = null;
+  if (S.sel){
+    vecinos = new Set([S.sel]);
+    (ENTRAN[S.sel]||[]).forEach(function(l){ vecinos.add(l.de); });
+    (SALEN[S.sel]||[]).forEach(function(l){ vecinos.add(l.a); });
+  }
+
+  NODOS.forEach(function(n){
+    var v = visible(n);
+    if (camino && !camino.has(n.id)) v = false;
+    if (vecinos && !vecinos.has(n.id)) v = v && !S.sel;
+    n._g.classList.toggle("apagado", !v);
+    n._g.classList.toggle("sel", n.id === S.sel);
+    n._g.classList.toggle("enCamino", !!(camino && camino.has(n.id)));
+    var mostrar = S.etiquetas === "todas" || (n.jerarquia||1) >= 3 ||
+                  n.id === S.sel || (camino && camino.has(n.id)) ||
+                  (vecinos && vecinos.has(n.id)) || (S.q && v);
+    n._g.querySelector(".rotulo").style.display = mostrar ? "" : "none";
+    n._g.setAttribute("tabindex", v ? "0" : "-1");
+  });
+
+  Array.prototype.forEach.call(gAr.children, function(p){
+    var de = p.dataset.de, a = p.dataset.a;
+    var vivos = !IDX[de]._g.classList.contains("apagado") &&
+                !IDX[a]._g.classList.contains("apagado");
+    var enCamino = camino && camino.has(de) && camino.has(a);
+    var tocaSel = S.sel && (de === S.sel || a === S.sel);
+    p.classList.toggle("apagada", !vivos);
+    p.classList.toggle("viva", !!(enCamino || tocaSel));
+    p.setAttribute("marker-end",
+      (enCamino || tocaSel) ? "url(#fl-vivo)" :
+      "url(#fl-" + (p.classList.contains("t-config") ? "config" :
+                    p.classList.contains("t-calcula") ? "calcula" :
+                    p.classList.contains("t-alerta") ? "alerta" : "flujo") + ")");
+  });
+}
+
+/* ------------------------------------------------------------------ ficha */
+function abrir(id){
+  S.sel = id;
+  var n = IDX[id];
+  var f = $("#ficha");
+  var h = [];
+  h.push('<button class="btn cerrar" id="b-cerrar" aria-label="Cerrar la ficha">✕</button>');
+  h.push('<span class="rolbadge r-'+n.rol+'">'+esc(NOM_ROL[n.rol])+'</span> ');
+  h.push('<span class="badge e-'+String(n.estado||"").replace(/\s/g,"")+'">'+
+         esc(n.estado || "sin estado declarado")+'</span>');
+  h.push('<h2>'+esc(n.label)+'</h2>');
+  h.push('<div class="via">'+esc(NOM_ETAPA[n.etapa])+
+         (n.modulo ? ' · módulo <code>'+esc(n.modulo)+'</code>'+
+            (n.modulo_inferido ? ' <span class="via">(deducido del path)</span>' : '') : '')+
+         '</div>');
+
+  h.push('<p class="qes">'+esc(n.que_es || "")+'</p>');
+
+  if (n.formula) h.push('<h3>Fórmula</h3><span class="formula">'+esc(n.formula)+'</span>');
+
+  if (n.parqueada && !n.es_hueco)
+    h.push('<div class="nota mala"><b>Parqueada.</b> Se ve, y se ve que no está. '+
+           'Existe como decisión escrita, no como código.</div>');
+  if (n.es_hueco)
+    h.push('<div class="nota mala"><b>Hueco conocido.</b> Está en el mapa a propósito: '+
+           'la carpeta está vacía o el tramo falta.</div>');
+
+  h.push('<h3>Qué archivo lo implementa</h3>');
+  if (n.archivo_externo){
+    h.push('<p><code>'+esc(n.archivo_externo)+'</code><br>'+
+      '<span class="via">Vive en la <b>raíz git</b>, un nivel arriba del proyecto: '+
+      'desde acá no se puede verificar y por eso no se afirma que exista.</span></p>');
+  } else if (n.archivo){
+    h.push('<p><code>'+esc(n.archivo)+'</code>'+
+      (n.existe === false ? ' <span class="via">— todavía no está en disco (es generado)</span>' :
+       n.existe === true ? ' <span class="via">— verificado en disco</span>' : '')+
+      (n.loc ? '<br><span class="via">'+n.loc+' líneas'+(n.entrypoint?' · punto de entrada':'')+'</span>' : '')+
+      '</p>');
+  } else {
+    h.push('<p class="via">No lo implementa un archivo suelto: es un paso del cálculo '+
+           'o una decisión del equipo.</p>');
+  }
+  if (n.simbolo) h.push('<p class="via">Símbolo público: <code>'+esc(n.simbolo)+'</code></p>');
+  if (n.simbolos && n.simbolos.length){
+    h.push('<h3>Símbolos</h3><ul>');
+    n.simbolos.forEach(function(s){
+      h.push('<li><code>'+esc(s.nombre)+'</code> <span class="via">línea '+esc(s.linea)+
+             (s.doc ? ' — '+esc(String(s.doc).slice(0,110)) : '')+'</span></li>');
+    });
+    h.push('</ul>');
+  }
+  if (n.cron){
+    h.push('<h3>Cuándo corre solo</h3><p><code>'+esc(n.cron)+'</code><br>'+
+           '<span class="via">'+esc(n.cron_humano||"")+'</span></p>');
+  }
+  if (n.host) h.push('<h3>Host</h3><p><code>'+esc(n.host)+'</code></p>');
+  if (n.ruta_declarada)
+    h.push('<h3>Ruta declarada</h3><p><code>'+esc(n.ruta_declarada)+'</code> '+
+           '<span class="via">(en <code>rutas.py</code>)</span></p>');
+
+  h.push('<h3>Dueño</h3><p>'+esc(n.owner || "—")+
+    (n.estado_texto ? '<br><span class="via">'+esc(n.estado_texto)+'</span>' : '')+'</p>');
+
+  h.push(listaVecinos("Entradas", ENTRAN[id], "de"));
+  h.push(listaVecinos("Salidas", SALEN[id], "a"));
+
+  if (n.notas && n.notas.length){
+    h.push('<h3>Notas</h3>');
+    n.notas.forEach(function(t){
+      var mala = /^⚠|^\s*OJO|no publicar/i.test(t);
+      h.push('<div class="nota'+(mala?' mala':'')+'">'+esc(t)+'</div>');
+    });
+  }
+
+  f.innerHTML = h.join("");
+  f.classList.add("on");
+  $("#b-cerrar").addEventListener("click", cerrar);
+  Array.prototype.forEach.call(f.querySelectorAll(".vinculo"), function(b){
+    b.addEventListener("click", function(){ abrir(b.dataset.ir); centrarEn(b.dataset.ir); });
+  });
+  pintar();
+}
+
+function listaVecinos(titulo, links, campo){
+  if (!links || !links.length) return '<h3>'+titulo+'</h3><p class="via">ninguna</p>';
+  var h = ['<h3>'+titulo+' ('+links.length+')</h3><ul>'];
+  links.forEach(function(l){
+    var otro = IDX[l[campo]];
+    h.push('<li><button class="vinculo" data-ir="'+esc(otro.id)+'">'+esc(otro.label)+'</button>'+
+           ' <span class="via">'+esc(NOM_TIPO[l.tipo])+(l.nota ? ' · '+esc(l.nota) : '')+'</span></li>');
+  });
+  h.push('</ul>');
+  return h.join("");
+}
+
+function cerrar(){
+  S.sel = null;
+  $("#ficha").classList.remove("on");
+  $("#ficha").innerHTML = "";
+  pintar();
+}
+
+/* ------------------------------------------------------------------ zoom/pan */
+var svg = $("#svg"), raiz = $("#raiz");
+function aplicar(){
+  raiz.setAttribute("transform",
+    "translate("+S.px.toFixed(1)+","+S.py.toFixed(1)+") scale("+S.z.toFixed(3)+")");
+}
+/* El alto del lienzo se calcula contra la ventana real, no se hardcodea: la
+   barra de filtros envuelve distinto segun el ancho y el cromo de arriba cambia
+   de alto. Sin esto, en una notebook baja el grafo queda de miniatura. */
+function altoLienzo(){
+  var c = document.querySelector(".cuerpo");
+  var arriba = 0, e = c;
+  while (e){ arriba += e.offsetTop; e = e.offsetParent; }
+  c.style.height = Math.max(480, window.innerHeight - arriba - 4) + "px";
+}
+function ajustar(){
+  altoLienzo();
+  var r = $("#lienzo").getBoundingClientRect();
+  var z = Math.min((r.width - 24) / ANCHO, (r.height - 24) / ALTO);
+  S.z = Math.max(.16, Math.min(1.6, z));
+  S.px = (r.width - ANCHO * S.z) / 2;
+  S.py = 12;
+  aplicar();
+}
+function zoomA(f, cx, cy){
+  var r = $("#lienzo").getBoundingClientRect();
+  cx = cx == null ? r.width/2 : cx;
+  cy = cy == null ? r.height/2 : cy;
+  var nz = Math.max(.12, Math.min(4, S.z * f));
+  S.px = cx - (cx - S.px) * (nz / S.z);
+  S.py = cy - (cy - S.py) * (nz / S.z);
+  S.z = nz; aplicar();
+}
+function centrarEn(id){
+  var n = IDX[id]; if (!n) return;
+  var r = $("#lienzo").getBoundingClientRect();
+  S.px = r.width/2 - n._x * S.z;
+  S.py = r.height/2 - n._y * S.z;
+  aplicar();
+}
+
+var arr = null;
+svg.addEventListener("pointerdown", function(e){
+  if (e.target.closest(".nodo")) return;
+  arr = { x:e.clientX, y:e.clientY, px:S.px, py:S.py };
+  svg.classList.add("arrastrando");
+  svg.setPointerCapture(e.pointerId);
+});
+svg.addEventListener("pointermove", function(e){
+  if (!arr) return;
+  S.px = arr.px + (e.clientX - arr.x);
+  S.py = arr.py + (e.clientY - arr.y);
+  aplicar();
+});
+["pointerup","pointercancel"].forEach(function(ev){
+  svg.addEventListener(ev, function(){ arr = null; svg.classList.remove("arrastrando"); });
+});
+svg.addEventListener("wheel", function(e){
+  e.preventDefault();
+  var r = $("#lienzo").getBoundingClientRect();
+  zoomA(e.deltaY < 0 ? 1.12 : 1/1.12, e.clientX - r.left, e.clientY - r.top);
+}, { passive:false });
+
+/* ------------------------------------------------------------------ tabla */
+function tabla(){
+  var h = [];
+  h.push('<h2>Tabla gemela</h2>');
+  h.push('<p class="ayuda">Exactamente la misma información que el grafo, sin depender del '+
+         'color ni del hover. Es el modo de leer el mapa con lector de pantalla, y el modo de '+
+         'buscar con Ctrl+F.</p>');
+  if ((D.meta.problemas||[]).length){
+    h.push('<div class="aviso">Al generar este mapa quedaron '+D.meta.problemas.length+
+           ' avisos: '+esc(D.meta.problemas.join(" · "))+'</div>');
+  }
+
+  h.push('<h2 id="t-nodos">Nodos ('+NODOS.length+')</h2>');
+  h.push('<table aria-labelledby="t-nodos"><caption>Cada pieza del cálculo, su archivo, su estado y su dueño.</caption>'+
+    '<colgroup><col style="width:2.6%"><col style="width:6.5%"><col style="width:6.5%">'+
+    '<col style="width:11.5%"><col style="width:20%"><col style="width:10.5%">'+
+    '<col style="width:13%"><col style="width:8%"><col style="width:9%">'+
+    '<col style="width:12.4%"></colgroup><thead><tr>'+
+    '<th scope="col">#</th><th scope="col">Etapa</th><th scope="col">Rol</th>'+
+    '<th scope="col">Nodo</th><th scope="col">Qué es</th><th scope="col">Fórmula</th>'+
+    '<th scope="col">Archivo</th><th scope="col">Estado</th><th scope="col">Dueño</th>'+
+    '<th scope="col">Notas</th></tr></thead><tbody>');
+  NODOS.slice().sort(function(a,b){
+    return (ORDEN_ETAPA[a.etapa]-ORDEN_ETAPA[b.etapa]) || a.label.localeCompare(b.label,"es");
+  }).forEach(function(n, i){
+    h.push('<tr><td>'+(i+1)+'</td><td>'+esc(NOM_ETAPA[n.etapa])+'</td>'+
+      '<td><span class="rolbadge r-'+n.rol+'">'+esc(NOM_ROL[n.rol])+'</span></td>'+
+      '<td><b>'+esc(n.label)+'</b>'+(n.parqueada?' <span class="via">(parqueado)</span>':'')+'</td>'+
+      '<td>'+esc(n.que_es||"")+'</td>'+
+      '<td>'+(n.formula?'<code>'+esc(n.formula)+'</code>':'—')+'</td>'+
+      '<td>'+(n.archivo||n.archivo_externo ? '<code>'+esc(n.archivo||n.archivo_externo)+'</code>'+
+             (n.existe===false?' <span class="via">(aún no en disco)</span>':
+              n.existe===null?' <span class="via">(raíz git, no verificable)</span>':'') : '—')+'</td>'+
+      '<td><span class="badge e-'+String(n.estado||"").replace(/\s/g,"")+'">'+
+          esc(n.estado||"sin declarar")+'</span></td>'+
+      '<td>'+esc(n.owner||"—")+'</td>'+
+      '<td>'+esc((n.notas||[]).join(" · "))+'</td></tr>');
+  });
+  h.push('</tbody></table>');
+
+  h.push('<h2 id="t-links">Conexiones ('+LINKS.length+')</h2>');
+  h.push('<table aria-labelledby="t-links"><caption>Qué depende de qué, y de qué manera.</caption>'+
+    '<colgroup><col style="width:4%"><col style="width:24%"><col style="width:10%">'+
+    '<col style="width:24%"><col style="width:38%"></colgroup><thead><tr>'+
+    '<th scope="col">#</th><th scope="col">De</th><th scope="col">Tipo</th>'+
+    '<th scope="col">A</th><th scope="col">Nota</th></tr></thead><tbody>');
+  LINKS.forEach(function(l, i){
+    h.push('<tr><td>'+(i+1)+'</td><td>'+esc(IDX[l.de].label)+'</td>'+
+      '<td>'+esc(NOM_TIPO[l.tipo])+'</td><td>'+esc(IDX[l.a].label)+'</td>'+
+      '<td>'+esc(l.nota||"")+'</td></tr>');
+  });
+  h.push('</tbody></table>');
+
+  if ((D.trampas||[]).length){
+    h.push('<h2 id="t-trampas">Trampas conocidas</h2>');
+    h.push('<table aria-labelledby="t-trampas"><thead><tr><th scope="col">Qué</th>'+
+           '<th scope="col">Detalle</th></tr></thead><tbody>');
+    D.trampas.forEach(function(t){
+      h.push('<tr><td><b>'+esc(t.titulo)+'</b></td><td>'+esc(t.texto)+'</td></tr>');
+    });
+    h.push('</tbody></table>');
+  }
+  $("#tabla").innerHTML = h.join("");
+}
+
+/* ------------------------------------------------------------------ leyenda */
+function leyenda(){
+  function mini(rol){
+    var c = "var(--rol-"+rol+")", f = "var(--rol-"+rol+"-bg)";
+    if (rol === "fuente") return '<svg width="20" height="20" aria-hidden="true"><rect x="4" y="4" width="12" height="12" rx="2" fill="'+f+'" stroke="'+c+'" stroke-width="2"/></svg>';
+    if (rol === "dato")   return '<svg width="20" height="20" aria-hidden="true"><polygon points="10,3 17,10 10,17 3,10" fill="'+f+'" stroke="'+c+'" stroke-width="2"/></svg>';
+    if (rol === "script") return '<svg width="20" height="20" aria-hidden="true"><polygon points="17,10 13.5,16 6.5,16 3,10 6.5,4 13.5,4" fill="'+f+'" stroke="'+c+'" stroke-width="2"/></svg>';
+    return '<svg width="20" height="20" aria-hidden="true"><circle cx="10" cy="10" r="6.5" fill="'+f+'" stroke="'+c+'" stroke-width="2"/></svg>';
+  }
+  function linea(clase){
+    return '<svg width="34" height="12" aria-hidden="true"><line x1="1" y1="6" x2="33" y2="6" '+
+           'class="arista '+clase+'" /></svg>';
+  }
+  var h = [];
+  h.push('<div class="ley"><h4>Formas — qué es cada nodo</h4>' +
+    D.roles.map(function(r){
+      return '<div>'+mini(r.id)+'<span><b>'+esc(r.nombre)+'</b> — '+esc(r.descripcion)+'</span></div>';
+    }).join("") +
+    '<div><svg width="20" height="20" aria-hidden="true"><circle cx="10" cy="10" r="8.5" fill="none" stroke="var(--muted)" stroke-width="2"/><circle cx="10" cy="10" r="4" fill="none" stroke="var(--muted)" stroke-width="2"/></svg>'+
+    '<span>El <b>tamaño del círculo</b> indica jerarquía: los grandes son las piezas centrales del cálculo.</span></div></div>');
+
+  h.push('<div class="ley"><h4>Líneas — cómo se conectan</h4>' +
+    D.tipos_arista.map(function(t){
+      return '<div>'+linea("t-"+t.id)+'<span><b>'+esc(t.nombre)+'</b> — '+esc(t.descripcion)+'</span></div>';
+    }).join("") + '</div>');
+
+  h.push('<div class="ley"><h4>Estados — cómo se lee el borde</h4>' +
+    (D.estados||[]).map(function(e){
+      return '<div><span class="badge e-'+e.replace(/\s/g,"")+'">'+esc(e)+'</span></div>';
+    }).join("") +
+    '<div><svg width="20" height="20" aria-hidden="true"><circle cx="10" cy="10" r="6.5" fill="none" stroke="var(--muted)" stroke-width="2" stroke-dasharray="4 3"/></svg>'+
+    '<span><b>Borde punteado</b> — la pieza está parqueada, pendiente o es un hueco conocido. '+
+    'Se ve, y se ve que no está.</span></div>'+
+    '<div><span>El color codifica el <b>rol</b>, nunca el estado: el estado va en el borde, '+
+    'en la ficha y en la tabla gemela.</span></div></div>');
+
+  $("#leyenda").innerHTML = h.join("");
+}
+
+/* --------------------------------------------- las dos formulaciones vivas */
+/* Van arriba, fijas y lado a lado, a propósito: son DOS y conviven. Meterlas
+   en una nota al pie sería justo el error que este mapa viene a evitar. */
+function formulas(){
+  var c = $("#formulas");
+  c.innerHTML = (D.formulaciones||[]).map(function(f){
+    return '<button class="form" type="button" aria-pressed="false" data-f="'+esc(f.id)+'">'+
+      '<span class="n">'+esc(f.nombre)+
+        '<span class="badge e-'+String(f.estado||"").replace(/\s/g,"")+'">'+esc(f.estado||"")+'</span>'+
+        (f.archivo ? '<code>'+esc(f.archivo)+'</code>' : '')+'</span>'+
+      '<span class="f">'+esc(f.formula)+'</span>'+
+      '<span class="d">'+esc(f.detalle||"")+
+        (f.regla_clave ? ' <b>'+esc(f.regla_clave)+'</b>' : '')+'</span></button>';
+  }).join("");
+  Array.prototype.forEach.call(c.querySelectorAll(".form"), function(b){
+    b.addEventListener("click", function(){
+      var id = b.dataset.f;
+      var hay = (D.caminos||[]).some(function(x){ return x.id === id; });
+      S.camino = (S.camino === id) ? "" : (hay ? id : "");
+      $("#camino").value = S.camino;
+      Array.prototype.forEach.call(c.querySelectorAll(".form"), function(o){
+        o.setAttribute("aria-pressed", o.dataset.f === S.camino ? "true" : "false");
+      });
+      var cm = (D.caminos||[]).filter(function(x){ return x.id === S.camino; })[0];
+      if (cm){ S.sel = null; avisoCamino(cm); } else cerrar();
+      pintar();
+    });
+  });
+}
+
+/* ------------------------------------------------------------------ cabecera */
+function cabecera(){
+  $("#h-titulo").textContent = D.meta.titulo || "Mapa del Modelo";
+  $("#h-sub").textContent = D.meta.subtitulo || "";
+  var p = [];
+  p.push("Índice generado: " + (D.meta.generado || "?"));
+  p.push(D.meta.nodos + " nodos · " + D.meta.aristas + " conexiones");
+  p.push(D.meta.rutas_declaradas + " rutas declaradas en rutas.py");
+  p.push("verificado contra el disco el " + (D.meta.verificado || "?"));
+  if ((D.meta.problemas||[]).length) p.push(D.meta.problemas.length + " aviso(s) — ver la tabla");
+  $("#h-meta").innerHTML = p.map(esc).join(" · ");
+  $("#h-meta").title = D.meta.no_es || "";
+}
+
+/* ------------------------------------------------------------------ controles */
+function chips(cont, items, set, clasePrefijo){
+  var c = $(cont);
+  items.forEach(function(it){
+    var b = document.createElement("button");
+    b.className = "chip" + (clasePrefijo ? " " + clasePrefijo + it.id : "");
+    b.type = "button";
+    b.setAttribute("aria-pressed", "true");
+    b.innerHTML = (clasePrefijo ? '<span class="pin" aria-hidden="true"></span>' : "") + esc(it.nombre);
+    b.addEventListener("click", function(){
+      var on = b.getAttribute("aria-pressed") === "true";
+      b.setAttribute("aria-pressed", on ? "false" : "true");
+      if (on) set.delete(it.id); else set.add(it.id);
+      pintar();
+    });
+    c.appendChild(b);
+  });
+}
+
+function controles(){
+  chips("#chips-etapa", D.etapas.slice().sort(function(a,b){ return a.orden-b.orden; }), S.etapas, "");
+  chips("#chips-rol", D.roles, S.roles, "rol-");
+
+  var sel = $("#camino");
+  sel.innerHTML = '<option value="">Seguir un camino…</option>' +
+    (D.caminos||[]).map(function(c){
+      return '<option value="'+esc(c.id)+'">'+esc(c.nombre)+'</option>';
+    }).join("");
+  sel.addEventListener("change", function(){
+    S.camino = sel.value;
+    Array.prototype.forEach.call(document.querySelectorAll(".form"), function(o){
+      o.setAttribute("aria-pressed", o.dataset.f === S.camino ? "true" : "false");
+    });
+    var c = (D.caminos||[]).filter(function(x){ return x.id === S.camino; })[0];
+    if (c){ cerrar(); avisoCamino(c); } else { $("#ficha").classList.remove("on"); }
+    pintar();
+  });
+
+  $("#q").addEventListener("input", function(e){
+    S.q = e.target.value.trim().toLowerCase(); pintar();
+  });
+  $("#b-etiquetas").addEventListener("click", function(){
+    S.etiquetas = S.etiquetas === "todas" ? "claves" : "todas";
+    this.textContent = "Etiquetas: " + (S.etiquetas === "todas" ? "todas" : "claves");
+    this.setAttribute("aria-pressed", S.etiquetas === "todas" ? "true" : "false");
+    pintar();
+  });
+  $("#b-tema").addEventListener("click", function(){
+    var osc = document.body.dataset.tema === "oscuro";
+    document.body.dataset.tema = osc ? "claro" : "oscuro";
+    this.textContent = osc ? "Tema oscuro" : "Tema claro";
+  });
+  $("#b-vista").addEventListener("click", function(){
+    var t = document.body.dataset.vista === "tabla";
+    document.body.dataset.vista = t ? "grafo" : "tabla";
+    this.textContent = t ? "Ver tabla" : "Ver grafo";
+    this.setAttribute("aria-pressed", t ? "false" : "true");
+    if (!t) $("#tabla").focus();
+  });
+  $("#b-mas").addEventListener("click", function(){ zoomA(1.25); });
+  $("#b-menos").addEventListener("click", function(){ zoomA(1/1.25); });
+  $("#b-ajustar").addEventListener("click", ajustar);
+  $("#b-reordenar").addEventListener("click", function(){
+    // Empuja el orden con una permutación chica y vuelve a converger: sirve
+    // para salir de un mínimo local feo sin cambiar los datos.
+    columnas.forEach(function(col){
+      if (col.length > 3){
+        var i = 1 + Math.floor(Math.random()*(col.length-2));
+        var t = col[i]; col[i] = col[i-1]; col[i-1] = t;
+      }
+    });
+    ordenar(8); posicionar(); dibujar(); pintar();
+    if (S.sel) abrir(S.sel);
+  });
+  $("#b-pantalla").addEventListener("click", function(){
+    var l = $("#lienzo");
+    if (document.fullscreenElement) document.exitFullscreen();
+    else if (l.requestFullscreen) l.requestFullscreen();
+  });
+
+  gNo.addEventListener("click", function(e){
+    var g = e.target.closest(".nodo");
+    if (g) { $("#camino").value = ""; S.camino = ""; abrir(g.dataset.id); }
+  });
+  gNo.addEventListener("keydown", function(e){
+    var g = e.target.closest(".nodo");
+    if (!g) return;
+    if (e.key === "Enter" || e.key === " "){ e.preventDefault(); abrir(g.dataset.id); }
+  });
+  document.addEventListener("keydown", function(e){
+    if (e.key === "Escape") cerrar();
+    if (e.target.tagName === "INPUT" || e.target.tagName === "SELECT") return;
+    if (e.key === "+" || e.key === "=") zoomA(1.25);
+    if (e.key === "-") zoomA(1/1.25);
+    if (e.key === "0") ajustar();
+  });
+  window.addEventListener("resize", function(){ if (!arr) ajustar(); });
+  document.addEventListener("fullscreenchange", function(){ setTimeout(ajustar, 60); });
+}
+
+function avisoCamino(c){
+  var f = $("#ficha");
+  f.innerHTML = '<button class="btn cerrar" id="b-cerrar" aria-label="Cerrar">✕</button>' +
+    '<h2>'+esc(c.nombre)+'</h2><p class="qes">'+esc(c.descripcion)+'</p>' +
+    '<h3>Los pasos, en orden</h3><ol style="padding-left:18px;font-size:.86rem">' +
+    c.nodos.map(function(id){
+      var n = IDX[id];
+      return '<li style="margin-bottom:6px"><button class="vinculo" data-ir="'+esc(id)+'">'+
+             esc(n.label)+'</button>'+
+             (n.formula ? '<br><code>'+esc(n.formula)+'</code>' : '') +
+             (n.archivo ? '<br><span class="via">'+esc(n.archivo)+'</span>' : '')+'</li>';
+    }).join("") + '</ol>';
+  f.classList.add("on");
+  $("#b-cerrar").addEventListener("click", function(){
+    $("#camino").value = ""; S.camino = ""; cerrar();
+  });
+  Array.prototype.forEach.call(f.querySelectorAll(".vinculo"), function(b){
+    b.addEventListener("click", function(){ centrarEn(b.dataset.ir); abrir(b.dataset.ir); });
+  });
+}
+
+/* ------------------------------------------------------------------ arranque */
+armarColumnas();
+ordenar(10);
+posicionar();
+dibujar();
+cabecera();
+formulas();
+leyenda();
+tabla();
+controles();
+pintar();
+ajustar();
+})();
+</script>
+</body>
+</html>

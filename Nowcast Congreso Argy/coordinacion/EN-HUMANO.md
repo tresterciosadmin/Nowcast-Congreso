@@ -44,6 +44,20 @@ Para coordinarnos hay tres papeles siempre a la vista:
 ## En una frase
 Ya sabemos que adivinar el voto individual no sirve (el bloque lo explica casi todo); el valor está en la asistencia, el embudo y la cúpula. Estamos armando una base de datos propia (arrancada con el trabajo de Andy Tow y mantenida por un bot), con un formato común y una forma de trabajar en equipo sin pisarnos.
 
+## Avance: ahora hay un mapa que muestra de dónde sale el número
+
+Cuando alguien preguntaba «¿de dónde sale este 12%?», la respuesta honesta era abrir quince archivos y armar la historia de memoria. Ahora hay un **mapa** que se abre con doble clic (`MAPA-MODELO.html`, en la carpeta principal, sin internet) y que muestra la máquina entera dibujada: de qué página oficial sale cada dato, qué programa lo transforma, en qué archivo aterriza, qué señal alimenta, y cómo se combinan todas para dar la probabilidad final. Son 96 piezas y 130 conexiones.
+
+Lo importante no es que sea lindo, son tres cosas:
+
+1. **Se puede seguir con el dedo.** Hay un botón «Seguir un camino» que enciende el recorrido completo de un proyecto de ley, paso por paso, y apaga todo lo demás. En diez segundos se ve por dónde pasa el número.
+2. **Cada pieza dice en qué estado está y quién la tiene.** Y eso no está escrito a mano en el mapa: sale del `README` de cada módulo, que es el papel que ya mantenemos. Si mañana un módulo cambia de dueño, el mapa se entera solo.
+3. **Los agujeros se ven.** Lo que todavía no existe (el tramo de Diputados 2020-23, el módulo de contexto, las dos carpetas de evaluación, la API) aparece dibujado con borde punteado. Se ve, y se ve que no está. Esconder los huecos era la mitad del problema.
+
+Y hay una cosa que el mapa muestra a propósito y que veníamos arrastrando como confusión: **hoy conviven dos maneras de escribir la cuenta.** La que está corriendo (probabilidad de llegar a votarse × probabilidad de ganar la votación, y sólo en la cámara donde nace el proyecto) y la que decidió Valle en agosto, que abre el camino en cuatro «puertas» — sale de comisión, gana en origen, la tratan en la otra cámara, gana en la otra cámara — de las cuales dos están **deliberadamente apagadas** porque lo que pasa en comisión y los tiempos de tratamiento son política pura y no se pueden medir: se miran, no se predicen. Las dos aparecen juntas arriba de todo, cada una con su fórmula, para que nadie las confunda. Con una regla que hasta ahora estaba sólo en un documento: **una puerta que ya pasó deja de ser una probabilidad y vale 1** — por eso el mismo proyecto tiene un número distinto según en qué etapa esté, y eso no es un error, es la regla.
+
+Detalle de plomería que vale la pena: el mapa **no tiene los datos adentro**. Los arma un programa que lee el índice del repo y los papeles de cada módulo cada vez que se corre. Es a propósito: el error que este proyecto ya cometió varias veces es escribir un número a mano en un archivo que después nadie vuelve a mirar, y que a los tres meses miente.
+
 ## Avance grande: el modelo ahora mira DE QUÉ LADO juega cada proyecto (y mejora mucho)
 Veníamos con un problema: para adivinar cómo vota cada bloque, el modelo miraba su historial promediando TODAS las leyes del gobierno juntas —las fáciles de consenso y las peleadas—. En una reforma dura eso le hacía creer que la oposición acompañaba más de lo que realmente acompaña. La solución fue enseñarle a mirar sólo el historial en leyes PARECIDAS: si el proyecto lo empuja el gobierno o lo empuja la oposición.
 

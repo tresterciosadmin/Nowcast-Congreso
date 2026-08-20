@@ -36,7 +36,19 @@ Depende de otros (no empezar hasta que su dependencia esté HECHA):
 - [x] ~~**datos/bot_recoleccion**~~ → reclamado 2026-07-11 por Claude+Franco (dependencia cumplida; ver "En curso").
 - [x] ~~**modelo/ensemble**~~ → reclamado 2026-07-12 por Valle (ver "En curso"). Dependencias cumplidas: embudo v1 + agregador.
 - [ ] **evaluacion/backtesting** — necesita al menos un modelo nuevo.
-- [ ] **producto/dashboard** — necesita ensemble.
+- [x] ~~**producto/dashboard**~~ → reclamado 2026-08-20 por Claude+Franco (ver la sesion abierta, abajo). Dependencia cumplida: ensemble v1.
+
+## Sesion 2026-08-20 (Franco+Claude) — CERRADA, MAPA-MODELO.html: el mapa de la maquinaria del calculo
+
+| Modulo | Quien | Desde | Que se esta haciendo |
+|---|---|---|---|
+| **producto/dashboard** | Claude (con Franco) | 2026-08-20 | **HECHO, modulo LIBRE.** `MAPA-MODELO.html` (raiz, doble clic): grafo navegable de como se calcula P(sancion) — fuente oficial → script → base → variable → P(llega al recinto) → P(mayoria en origen) → Puerta D (revisora) → P(sancion). Muestra las **DOS formulaciones vivas**: v1 en produccion (`ensemble.py`: P(llega) × P(mayoria)) y el reencuadre por puertas A·B·C·D (`PUERTA-D.md`), con A y C parqueadas y dibujadas como parqueadas. Dos capas, como el resto del repo: `producto/dashboard/src/generar_mapa_modelo.py` lee `.mapa/mapa.json` + `rutas.py` + el `Estado:`/`Owner actual:` de cada README, lo fusiona con la capa curada a mano `producto/dashboard/data/mapa_modelo_semantica.json` y escribe `mapa_modelo_datos.js`. El HTML es diseno fijo y NO se edita a mano, mismo patron que `TABLERO-CONTROL.html` + `tablero_datos.js`. Es el **primer codigo propio del modulo**: hasta hoy sus entregables vivian sueltos en la raiz. |
+
+**Entregado:** `MAPA-MODELO.html` + `mapa_modelo_datos.js` (raiz) + `producto/dashboard/src/generar_mapa_modelo.py` + `producto/dashboard/data/mapa_modelo_semantica.json`. 96 nodos / 130 aristas; la corrida deja **1 aviso**, que es un hallazgo real y ajeno a este modulo: `docs/taxonomias/README.md` no tiene la linea `**Estado:**` (la usa este mapa y tambien el router de `MAPA.md`). **No se toco**, por la regla un-modulo-un-dueno: lo arregla quien reclame `docs/taxonomias`.
+
+**Pendiente de Valle o Franco (no lo puedo hacer yo):** `git check-ignore -q` sobre los cuatro archivos nuevos antes de commitear — la raiz git esta un nivel arriba del mount y desde el sandbox no corre git —, y `python .mapa/indexar.py .` + `python .mapa/indexar.py . --sellar-todo` para reindexar y sellar.
+
+**URGENTE leido al empezar (regla de la casa).** `coordinacion/URGENTE.md` tiene vivo el punto 1 (validar 15 filas MEDIA del roster de jefes de bloque). **Se posterga explicitamente y se deja dicho por que:** es de `variables/proyecto`, no de `producto/dashboard`; no bloquea ni ensucia este trabajo; y su prioridad ya fue rebajada el 31-07 al medirse que `lider_jefe_bloque` aporta 1,25x y no 7x. Queda en URGENTE sin tocar.
 
 ## Sesion 2026-08-20 (Valle+Claude) — CERRADA, estructura del repo: MAPA.md, router en los README y `rutas.py`. NADA RECLAMADO.
 

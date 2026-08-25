@@ -161,3 +161,28 @@ repo es el modo de fallar que más caro sale: no da error, da una columna vacía
 **Qué hay que hacer:** las tres que faltan pasan por `datetime(y, m, d)` con `try/except
 ValueError -> None`, como la de `giros.py`. Son tres módulos con dueño distinto, por eso
 queda acá y no lo hice.
+
+## 6. Los outputs de `vigilar_padron.py` tienen DOS escritores y chocan todos los lunes (Claude)
+**Detectado:** 2026-08-25 · Claude (lo trajo Valle con el error de GitHub Desktop) · **bloquea: cualquiera que haga pull un lunes**
+
+`datos/padron/data/estado_vigilancia.json` y `datos/padron/outputs/vigilancia_padron.md`
+los escribe **el bot** (`bot-nowcast`, commits *"padrón vivo: …"* los lunes: 10-08, 17-08,
+24-08) **y también cualquier corrida local** de `vigilar_padron.py`. Están versionados —y
+tienen que estarlo, porque el workflow necesita el estado para comparar entre corridas—,
+así que cada lunes el pull encuentra los dos lados modificados y se planta con
+*"Unable to pull when changes are present on your branch"*.
+
+**Ya causó daño, no es hipotético.** El 25-08 el "Stash changes and continue" dejó los
+**marcadores de conflicto escritos adentro** de los dos archivos y así se commitearon y
+pushearon (`5aff5b0`). `estado_vigilancia.json` dejó de ser JSON válido. Y no da error:
+`vigilar_padron.py:349` atrapa el `JSONDecodeError` y **lo trata como primera corrida**,
+con lo que se pierde `hash_visto_desde` — el campo que mide hace cuántos días el raw no
+cambia y dispara el aviso de dato rancio. El del Senado venía del **07-08** (18 días).
+Restaurado desde el commit del bot; el registro queda en ESTADO.
+
+**Qué hay que hacer:** que una corrida local **no pueda** escribir la ruta versionada.
+`vigilar_padron.py` escribiría a una ruta de scratch (o `--dry-run` por defecto fuera de
+CI), y el ÚNICO que escribe `data/estado_vigilancia.json` y `outputs/vigilancia_padron.md`
+es el workflow. Un archivo generado, un escritor. Mientras tanto, si el pull choca ahí:
+**quedate con la versión del bot**, que es la autoritativa —
+`git checkout origin/main -- "<los dos archivos>"` — y NO stashees.

@@ -2,24 +2,14 @@
   "diputados": {
     "huella": "00b85fe482afded8",
     "n": 256,
-<<<<<<< Updated upstream
     "ultima_corrida": "2026-08-24T11:15:50.363358+00:00",
     "hash_raw": null,
     "hash_visto_desde": "2026-08-24T11:15:50.363358+00:00"
-=======
-    "ultima_corrida": "2026-08-21T14:16:42.380692+00:00",
-    "hash_raw": null,
-    "hash_visto_desde": "2026-08-21T14:16:42.380692+00:00"
->>>>>>> Stashed changes
   },
   "senado": {
     "huella": "648d1abba448dcd0",
     "n": 72,
-<<<<<<< Updated upstream
     "ultima_corrida": "2026-08-24T11:15:50.363358+00:00",
-=======
-    "ultima_corrida": "2026-08-21T14:16:42.380692+00:00",
->>>>>>> Stashed changes
     "hash_raw": "eec8b5d10dddf599",
     "hash_visto_desde": "2026-08-07T01:15:08.292550+00:00"
   }

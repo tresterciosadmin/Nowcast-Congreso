@@ -2,6 +2,16 @@
 
 > Documento vivo. Cada cambio importante en el proyecto se explica acá en lenguaje claro, además de registrarse en `ESTADO-DEL-PROYECTO.md`. Si algo del sistema no se entiende leyendo esto, está mal escrito y hay que arreglarlo.
 
+## Se subieron sin querer las marcas que git deja cuando no sabe unir dos versiones (25-08-2026)
+
+Valle intentó traerse los cambios del repositorio y GitHub Desktop la frenó: dos archivos del padrón estaban modificados en su computadora **y** en el servidor. Eligió la opción de guardar sus cambios y seguir, y ahí pasó lo que no se ve: git no supo unir las dos versiones y **escribió adentro de los archivos sus propias marcas de conflicto** —unas líneas con `<<<<<<<` y `>>>>>>>`—, y eso se subió tal cual.
+
+**Por qué no es un detalle.** Uno de esos dos archivos es la memoria del vigilante del padrón: lo que le permite comparar la foto de hoy contra la de la semana pasada y decir si algo cambió. Con esas marcas adentro dejó de ser un archivo legible. Y el programa **no avisa**: está escrito para que, si no puede leer su memoria, siga como si fuera la primera vez que corre. O sea que el lunes que viene habría vuelto a reportar como novedad cosas ya reportadas, y —peor— habría perdido el dato de **hace cuántos días el padrón del Senado no cambia**, que hoy son 18. Ese contador es justamente el que enciende la alarma de "este dato está viejo". Se habría puesto en cero y la alarma no habría sonado.
+
+Restauramos los dos archivos desde la versión que había dejado el robot el lunes, que era la más nueva. No se perdió nada: las dos versiones decían exactamente lo mismo sobre la composición de las cámaras; sólo cambiaba la fecha de la última corrida.
+
+**Y esto va a volver a pasar todos los lunes** mientras esos dos archivos tengan dos autores: el robot que corre en la nube y la computadora de casa. Quedó anotado como urgente. La solución no es sacarlos del control de versiones —el robot los necesita ahí para comparar— sino al revés: que correr el programa localmente **no pueda** tocar la copia oficial.
+
 ## El mapa perdió las puntas de flecha y ganó que se pueda acomodar a mano (25-08-2026)
 
 Dos cosas que pidió Valle mirando el dibujo.

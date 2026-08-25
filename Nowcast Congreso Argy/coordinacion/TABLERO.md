@@ -6,6 +6,22 @@ Cómo reclamar: editá este archivo en tu rama, agregá la fila, y mencioná en 
 
 ---
 
+## Sesion 2026-08-25 — INCIDENTE: marcadores de conflicto commiteados en los outputs de `vigilar_padron`
+
+| Modulo | Quien | Desde | Estado |
+|---|---|---|---|
+| **datos/padron** | Claude (lo trajo Valle) | 2026-08-25 | **Dano REPARADO, modulo LIBRE.** La causa estructural queda en `URGENTE.md` 6. |
+
+El commit `5aff5b0` subio `data/estado_vigilancia.json` y `outputs/vigilancia_padron.md` **con los marcadores `<<<<<<< Updated upstream` / `>>>>>>> Stashed changes` adentro**. El JSON dejo de parsear. Origen: esos dos archivos los escribe **el bot los lunes** (`bot-nowcast`, `131a698`, 24-08 11:15) **y tambien la corrida local**; el pull choco, se eligio *Stash changes and continue*, y al reaplicar el stash git dejo los marcadores.
+
+**No da error, y ese es el problema.** `vigilar_padron.py:349` atrapa el `JSONDecodeError` y **lo trata como primera corrida**: se pierde `hash_visto_desde`, que mide hace cuantos dias el raw no cambia y dispara el aviso de rancio. El del Senado venia del **07-08** (18 dias).
+
+**Reparado** trayendo los dos blobs del commit del bot con `GIT_OPTIONAL_LOCKS=0 git show <commit>:<ruta> > <ruta>` — `git show` NO toma `index.lock`, a diferencia de `git checkout --`. **Sin perdida:** huella y `n` eran identicos en las dos versiones (`00b85fe482afded8`/256 y `648d1abba448dcd0`/72); solo cambiaba `ultima_corrida`, y la del bot es mas nueva. Barrido de todo el repo: **ningun otro archivo con marcadores**.
+
+⚠️ **PENDIENTE DE VALLE: commitear la restauracion.** Los dos archivos figuran modificados.
+
+⚠️ **Causa estructural NO resuelta, en `URGENTE.md` 6:** dos escritores sobre un archivo generado y versionado. No se puede sacar de git (el workflow necesita el estado para comparar entre corridas): la salida es que **una corrida local no pueda escribir la ruta versionada**.
+
 ## Sesion 2026-08-25 (Valle+Claude) — anexo 2. MAPA-MODELO sin puntas de flecha, y nodos arrastrables
 
 | Modulo | Quien | Desde | Estado |

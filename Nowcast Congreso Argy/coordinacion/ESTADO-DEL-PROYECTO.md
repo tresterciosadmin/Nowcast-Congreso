@@ -56,6 +56,19 @@ Mantené esta tabla sincronizada con la bitácora.
 
 ## Bitácora (más reciente arriba)
 
+### [2026-08-25 · datos/padron] Se commitearon marcadores de conflicto: `estado_vigilancia.json` dejó de ser JSON válido
+
+- **Quién:** Claude (lo trajo Valle con el error de GitHub Desktop).
+- **Qué:** el commit `5aff5b0` ("Megacanje") subió `datos/padron/data/estado_vigilancia.json` y `datos/padron/outputs/vigilancia_padron.md` **con los marcadores `<<<<<<< Updated upstream` / `>>>>>>> Stashed changes` escritos adentro**. El JSON dejó de parsear. Restaurados desde el commit del bot.
+- **Cómo pasó:** el pull del 25-08 chocó porque esos dos archivos los escribe **el bot los lunes** (`bot-nowcast`, `131a698`, 24-08 11:15) **y también la corrida local**. Valle eligió *"Stash changes and continue"*; al reaplicar el stash git no pudo unir las versiones, dejó los marcadores, y eso se commiteó y pusheó.
+- **Por qué importa, y es el modo de falla de la casa:** no da error. `vigilar_padron.py:349` atrapa el `JSONDecodeError` y **lo trata como primera corrida** (`logger.warning("estado ilegible … lo trato como primera corrida")`). Consecuencias medidas sobre el archivo: (1) todo lo ya reportado vuelve a reportarse como novedad, porque `nuevas` compara contra `previo.get(camara,{}).get("huella")`, que sin estado es `None`; (2) **se pierde `hash_visto_desde`**, que es lo que mide hace cuántos días el raw no cambia y dispara el aviso de rancio con `--dias-rancio`. El del Senado venía del **2026-08-07** — 18 días — y se habría reseteado a la fecha de la corrida, **apagando el aviso justo cuando correspondía darlo**.
+- **Cómo se arregló:** los dos archivos se traen del blob del bot con `GIT_OPTIONAL_LOCKS=0 git show 131a698:<ruta> > <ruta>` — `git show` es de sólo lectura y **no toma `index.lock`**, así que no le traba el git a Valle (a diferencia de `git checkout --`, que sí escribe el índice). **No se perdió nada:** antes de pisar se comparó, y la huella (`00b85fe482afded8` diputados / `648d1abba448dcd0` senado) y el `n` (256 / 72) eran **idénticos** en las dos versiones; la única diferencia era `ultima_corrida`, y la del bot (24-08) es más nueva que la local (21-08).
+- **Verificado:** el JSON parsea, el `.md` arranca con su título normal (`# Padrón vivo — 2026-08-24 11:15 UTC`), y un barrido de **todo el repo** confirma que **no queda ningún otro archivo con marcadores**.
+- **Queda abierto en `URGENTE.md` punto 6 — el problema estructural, que NO se resolvió:** esos dos archivos generados tienen **dos escritores**. No se pueden sacar de git (el workflow necesita el estado para comparar entre corridas), así que la salida es que **una corrida local no pueda escribir la ruta versionada** — scratch por defecto y sólo el workflow escribiendo la ruta buena. Un archivo generado, un escritor.
+- **Archivos:** `datos/padron/data/estado_vigilancia.json`, `datos/padron/outputs/vigilancia_padron.md` (restaurados, **pendientes de commit por Valle**).
+- **Estado del módulo:** el módulo queda LIBRE; el arreglo de fondo, sin reclamar.
+- **Próximo paso:** que Valle commitee la restauración, y decidir si se implementa la guarda del escritor único.
+
 ### [2026-08-25 · producto/dashboard] El mapa sin puntas de flecha, y los nodos se arrastran a mano
 
 - **Quién:** Claude (con Valle, que lo pidió mirando el dibujo y confirmó las dos cosas en su máquina).

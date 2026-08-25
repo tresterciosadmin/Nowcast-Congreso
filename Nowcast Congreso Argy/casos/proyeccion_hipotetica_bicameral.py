@@ -48,7 +48,9 @@ FECHA, ICG_ACTUAL = icg.ultimo_mes_icg()
 
 # Incertidumbre irreducible: ninguna votación es 0%/100% segura (riesgo sistémico
 # que la independencia entre legisladores no capta). Se reporta en [ε, 1-ε].
-P_INCERTIDUMBRE = 0.01
+# 2026-08-22: se IMPORTA del contrato del modelo en vez de redefinirse acá. Había
+# una copia propia con el mismo valor, y una copia es una divergencia esperando.
+from ensemble import P_INCERTIDUMBRE  # noqa: E402
 
 PADRON = {
     "diputados": RAIZ / "datos/padron/data/padron_diputados.csv",
@@ -96,6 +98,41 @@ def proyectar_camara(camara, votos, cond):
 
 
 def main():
+    """NEUTRALIZADO 2026-08-25 — era la TERCERA formulacion del numero.
+
+    El 22-08 se decidio que la formulacion es UNA SOLA (ADR-0012) y se dio de baja la
+    v1. Este archivo no entro en esa baja y siguio calculando con mecanismo propio.
+    Auditado el 25-08 contra la cadena de puertas, tenia DOS de los siete errores que
+    esa misma sesion habia corregido en los otros dos generadores:
+
+      1. `umbral = n // 2 + 1` (linea 83). Eso es mayoria ABSOLUTA (129 en Diputados),
+         no simple. El repo ya tiene la cuenta buena en
+         `modelo/agregador_institucional/src/agregador.py::umbral_aprobacion`, con el
+         empate arreglado por ADR-0013 — que este archivo nunca recibio.
+      2. `p_acompana` = el share afirmativo del bloque, recortado a [0,02 · 0,98]. No
+         compone `P = share*(1-d) + (1-share)*(d/2)`, que fue el arreglo que bajo a
+         Kirchnerismo de 0,4% a 22,5% y explicaba que todo diera 99%. Tampoco separa
+         DIRECCION de PRESENCIA: el que falta cuenta como que vota en contra (el caso
+         Menem, que preside, vota el 1,3% de las veces y cuando vota acompana el 96%).
+
+    Lo delator: el 22-08 alguien lo toco para importar `P_INCERTIDUMBRE` del contrato
+    del modelo "porque una copia es una divergencia esperando" — y arreglo esa copia
+    sin ver las otras dos. Es exactamente el fallo que esta tarea vino a buscar.
+
+    No se borra porque el slider de ICG legislador-por-legislador no existe en
+    `nowcast_puertas` y puede querer rehacerse ahi. Pero no puede seguir corriendo:
+    produce un numero que alguien va a citar. Copia entera en
+    `Archivos_Borrar/BORRAR_casos-proyeccion_hipotetica_bicameral.py`.
+    """
+    raise SystemExit(
+        "proyeccion_hipotetica_bicameral.py esta NEUTRALIZADO (2026-08-25): era una "
+        "tercera formulacion del numero, con el umbral de mayoria ABSOLUTA en vez de "
+        "simple y sin componer el share del bloque con el desvio. Usa "
+        "casos/nowcast_puertas_html.py, que corre la cadena de puertas. Ver el "
+        "docstring de main, el ADR-0012 y el ADR-0014.")
+
+
+def _main_original():
     votos = cargar_bloque()          # formato canónico (con `conducta`), el que espera proyectar_postura
     cond = cargar_tema_por_acta()    # tema + origen fusionados, para condicionar
 

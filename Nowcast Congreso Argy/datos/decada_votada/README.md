@@ -1,6 +1,6 @@
 # Módulo: datos/decada_votada
 
-<!-- huella: 03879afc5ff7 -->
+<!-- huella: 7f85c976b02b -->
 
 **Propósito.** Usar el trabajo de Andy Tow ("La Década Votada") vía el paquete R **legislAr** como **semilla histórica de un solo uso** para arrancar nuestra base canónica. **No copiamos su dataset ni dependemos de que él lo siga actualizando**: lo exportamos una vez, lo normalizamos a nuestro esquema y de ahí en adelante mantenemos los datos nosotros (ver `datos/canonica` y `datos/bot_recoleccion`).
 

@@ -1,6 +1,6 @@
 # docs/taxonomias/ — el catalogo de temas
 
-<!-- huella: d4ed62fdd164 -->
+<!-- huella: 44eb79257943 -->
 
 **Resumen:** La lista curada de taxonomias (temas/materias) contra la que se clasifican los proyectos, su cargador y el prompt del clasificador. Es un CATALOGO, no un modelo.
 

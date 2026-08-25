@@ -1,6 +1,6 @@
 # Módulo: datos/seguimiento
 
-<!-- huella: daa1722460ef -->
+<!-- huella: e3b0c44298fc -->
 
 **Propósito.** Dado un expediente **ya conocido**, bajar su ficha oficial y extraer el **estado de avance**: giros a comisiones, movimientos de trámite, fechas y link al PDF. Es el insumo del **embudo** (`variables/embudo`): "qué entró y en qué quedó". No descubre proyectos nuevos (eso es `datos/expedientes` / el monitor); acá se hace el **seguimiento** de los que ya están en la base.
 

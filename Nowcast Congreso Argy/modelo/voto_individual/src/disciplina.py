@@ -55,6 +55,19 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
+# ── definiciones compartidas ──────────────────────────────────────────────────
+# `periodo_parlamentario`, `normalizar_mayoria` y `MIEMBROS` vivían copiados acá, sincronizados a mano; el único
+# control era un docstring que pedía "mantener sincronizadas". Unificados el
+# 2026-08-25 en `definiciones.py` (raíz) — ADR-0014. Se RE-EXPORTAN para que
+# `disciplina.<nombre>` siga existiendo: aguas abajo no cambia nada.
+import sys as _sys
+from pathlib import Path as _Path
+_sys.path.insert(0, str(next(d for d in _Path(__file__).resolve().parents
+                             if (d / "rutas.py").is_file())))
+from definiciones import BANCAS as MIEMBROS  # noqa: E402,F401
+from definiciones import normalizar_mayoria  # noqa: E402,F401
+from definiciones import periodo_parlamentario  # noqa: E402,F401
+
 log = logging.getLogger("disciplina")
 logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s: %(message)s")
 
@@ -67,7 +80,6 @@ CONDUCTAS = ["AFIRMATIVO", "NEGATIVO", "NO_ACOMPANA"]
 PRESENTE_VOTOS = {"AFIRMATIVO", "NEGATIVO", "ABSTENCION"}
 LINAJE_BOLSA = "OTRO / PROVINCIAL"   # no es un espacio político real: no sirve para desempatar
 MARGEN_DISPUTADA = 0.05              # ±5% de los emitidos (igual que datos/export)
-MIEMBROS = {"diputados": 257, "senado": 72}
 UMBRALES = [0.02, 0.05, 0.10, 0.15]
 
 # Presidentes de la Cámara de Diputados: por costumbre NO votan (solo desempatan), así
@@ -126,34 +138,6 @@ def excluir_no_medibles(v: pd.DataFrame) -> pd.DataFrame:
     v = v[~fuera]
     log.info("excluidos no medibles: %d filas (placeholders + suspendidos + presidencias)", antes - len(v))
     return v
-
-
-def periodo_parlamentario(fecha: pd.Series, anio: pd.Series) -> pd.Series:
-    """Recambios del 10-dic de años impares (sincronizada con variables/legislador y datos/export)."""
-    f = pd.to_datetime(fecha, errors="coerce")
-    ini = f.dt.year.where(f.dt.year % 2 == 1, f.dt.year - 1)
-    antes = (f.dt.year % 2 == 1) & ((f.dt.month < 12) | ((f.dt.month == 12) & (f.dt.day < 10)))
-    ini = ini.where(~antes, ini - 2)
-    a = pd.to_numeric(anio, errors="coerce")
-    ini = ini.fillna(a.where(a % 2 == 1, a - 1))
-    out = ini.astype("Int64").astype("string")
-    return (out + "-" + (ini + 2).astype("Int64").astype("string")).where(ini.notna())
-
-
-def normalizar_mayoria(tipo: pd.Series) -> pd.Series:
-    """Sincronizada con datos/export/src/export_base.py."""
-    t = tipo.fillna("").astype(str).str.upper()
-
-    def clas(s: str) -> str:
-        if "TERCIO" in s:
-            return "DOS_TERCIOS_CUERPO" if "CUERPO" in s else "DOS_TERCIOS"
-        if "CUARTO" in s:
-            return "TRES_CUARTOS"
-        if s == "ABSOLUTA" or "CUERPO" in s or "MITAD MÁS UNO" in s or "MITAD MAS UNO" in s:
-            return "ABSOLUTA"
-        return "SIMPLE"
-
-    return t.map(clas).astype("string")
 
 
 def actas_disputadas(actas: pd.DataFrame, v: pd.DataFrame) -> set:

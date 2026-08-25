@@ -2,6 +2,126 @@
 
 > Documento vivo. Cada cambio importante en el proyecto se explica acá en lenguaje claro, además de registrarse en `ESTADO-DEL-PROYECTO.md`. Si algo del sistema no se entiende leyendo esto, está mal escrito y hay que arreglarlo.
 
+## El mapa perdió las puntas de flecha y ganó que se pueda acomodar a mano (25-08-2026)
+
+Dos cosas que pidió Valle mirando el dibujo.
+
+**Las flechitas.** Alrededor de algunos nodos aparecían varias puntas de flecha apiladas, sueltas, sin llegar a tocar nada. El motivo: la punta se dibujaba en el borde de la **caja invisible** que rodea a cada nodo, no en el borde del **óvalo** que se ve. En un óvalo esas dos cosas no coinciden —la caja es un rectángulo, el óvalo es una curva—, así que la punta quedaba flotando en el hueco entre las dos. Y cuando varias líneas entran al mismo nodo, cada una por su carril, quedaban todas apiladas ahí.
+
+Valle eligió **sacarlas de todo el diagrama** en vez de reacomodarlas, y tiene sentido: el dibujo se lee de izquierda a derecha por columnas, así que la dirección ya la dice el lugar de cada cosa. Quedan sólo las líneas, más limpias. Dejamos escrito en el código cómo volver atrás por si alguna vez se quieren.
+
+**Y ahora se pueden mover los nodos.** Arrastrás un óvalo con el mouse y las líneas, los recuadros y las bandas lo siguen. **No se guarda nada, a propósito:** al recargar vuelve el orden automático, y eso mismo funciona como "deshacer". Sirve para desenredar una zona apretada, sacar una captura y pedir el arreglo. Si algún día quisiéramos que las posiciones quedaran fijas, no irían en el archivo del dibujo sino en el de datos, que es donde el repo guarda todo lo que se decide a mano.
+
+Un detalle que vale contar porque es el tema de toda la sesión: para que los recuadros siguieran a los nodos hubo que separar en dos el cálculo del armado. Antes, "dónde va cada nodo" y "de qué tamaño es el recuadro que los envuelve" se calculaban juntos, así que mover un nodo obligaba a recalcular todo — y eso devolvía el nodo a su lugar original. Ahora el encuadre es su propia cuenta, y la usan los dos: el armado inicial y el arrastre. **Una cuenta, dos usuarios.**
+
+## El mapa dibujaba una flecha con la fórmula de otra (25-08-2026)
+
+Valle vio algo raro en `MAPA-MODELO.html` y tenía razón: entre "Puerta A" y "P(mayoría en origen)" había **un pinche turquesa asomando sobre el nodo**, y un texto a medias tapado por los círculos.
+
+En el mapa hay **dos flechas de "condicionamiento"**, que son cosas distintas: una cruza de una cámara a la otra —la gruesa que baja hasta el Senado— y la otra se queda dentro de la misma cámara, para decir que el carácter del dictamen condiciona la votación. **Las dos se dibujaban con la misma función**, y esa función estaba escrita sólo para la primera: buscaba el recuadro de la cámara de destino y bajaba hacia él. Como la segunda no cruza a ningún lado y sus dos nodos están uno al lado del otro, la flecha salía apuntando hacia atrás y hacia arriba, y se aplastaba hasta desaparecer. El texto, calculado con la misma fórmula, caía justo encima de los nodos.
+
+Ahora la función distingue los dos casos: si no hay adónde bajar, dibuja un **puente corto por arriba** de los dos nodos. Y la etiqueta dejó de calcularse dos veces —una en cada lado del código— para calcularse en un solo lugar; que es, otra vez, el mismo problema del que veníamos hablando toda la sesión, esta vez en el dibujo en lugar del cálculo.
+
+**Lo verifiqué abriéndolo**, no leyendo el código: abrí el archivo en un navegador sin pantalla, medí la flecha y miré la imagen. Cero errores.
+
+**Y quedó algo anotado que no toqué porque lo tenés que decidir vos:** en los datos del mapa, la relación A→B está marcada como "condiciona" y la C→D como "calcula", cuando según la formulación son la misma cosa espejada. El mapa está diciendo dos cosas distintas sobre la misma relación.
+
+## Fuimos a buscar lo que estaba escrito dos veces — y encontramos un tercer cálculo vivo (25-08-2026)
+
+La sesión pasada se fue entera en un problema que nadie había buscado: convivían **dos** formas de sacar el número. Esta vez la pregunta fue al revés: *¿qué más está escrito dos veces en este repo y todavía no lo sabemos?*
+
+**No leímos el repo entero para averiguarlo.** Se usó el índice del proyecto más un programa corto que lee cada función, le saca los comentarios y le calcula una huella. Dos funciones con la misma huella son la misma función copiada, aunque estén en carpetas distintas y tengan nombres distintos. De 141 archivos salieron **10 grupos de código idéntico** y **32 nombres repetidos**. La mayor parte era ruido: en cualquier programa hay veinte funciones que se llaman `main` y no tienen nada que ver entre sí. Lo que quedó después de mirar una por una fueron tres cosas.
+
+**Una: la definición de "período parlamentario" estaba copiada en cuatro lugares.** Tres eran idénticas letra por letra; la cuarta hacía la misma cuenta escrita distinto. Cada copia llevaba un comentario que pedía *"mantener sincronizadas"* — o sea, el único control era que alguien se acordara.
+
+Lo interesante es que **eso ya se sabía y ya había un control automático**. El 20 de agosto se había escrito una prueba que revisa que las cuatro copias digan lo mismo. Y esa prueba estaba avisando de un problema **que nadie podía arreglar**: las cuatro copias fallan cuando el dato llega en cierto formato, el arreglo es **una línea en cada una**, y llevaba un mes trabado. El motivo estaba escrito ahí mismo: *"toca 4 módulos con dueño"*, y la regla de la casa es que cada módulo lo trabaja una sola persona a la vez.
+
+Ese es el punto y por eso se decidió unificar: **con las copias, un arreglo de una línea costaba pedirle permiso a cuatro dueños.** El control veía el problema y la organización del trabajo impedía repararlo. Ahora la definición vive en un solo archivo, `definiciones.py`, hermano del que ya decía *dónde* está cada cosa: este dice *qué es* cada cosa. Y el arreglo de la línea, hecho.
+
+**Nada cambió de resultado.** Se probó la definición nueva contra las cuatro viejas sobre las fechas donde una diferencia se vería primero —los tres días alrededor del recambio del 10 de diciembre— y da exactamente lo mismo. Lo único que cambia es que ahora también funciona en el formato donde antes fallaba.
+
+**Dos: había un tercer cálculo del número, vivo.** Un archivo que arma una proyección hipotética por las dos cámaras seguía usando mecanismo propio, y tenía **dos de los siete errores que se habían corregido la semana pasada**: pedía la mitad más uno de *todas las bancas* para aprobar (129), cuando la mayoría simple se mide sobre los que efectivamente votan (122); y volvía a tratar el acompañamiento del bloque como un sí o un no, que fue justamente lo que hacía que todo diera 99%.
+
+Y hay un detalle que vale más que el hallazgo: **ese archivo fue tocado el 22 de agosto**, para corregirle otra cosa, con un comentario que decía *"una copia es una divergencia esperando"*. Se arregló esa copia y no se miraron las otras dos que estaban tres líneas más abajo. Es exactamente el mecanismo que esta tarea vino a buscar, atrapado en el acto. El archivo quedó desactivado: si alguien lo corre ahora, avisa por qué no puede correr en vez de escupir un número que alguien iba a citar.
+
+**Tres: dos archivos con el mismo nombre y adentro cosas distintas.** En una carpeta de material de terceros había una copia suelta de una base histórica de votaciones con **exactamente los mismos nombres de archivo** que la versión comprimida que el sistema sí usa — pero con el doble de datos y llegando ocho años más atrás. El programa toma la comprimida, sin decir nada. Es el mismo mecanismo que ya está anotado como urgente para el padrón de diputados, donde correr un comando sin argumentos borra dieciocho años de historia sin dar error. Valle decidió que ese material extra no interesa y hace ruido, así que la copia suelta se fue a la carpeta de descarte. (La comprimida, que sí se usa, no se tocó.)
+
+**Lo que decidimos NO tocar, y por qué importa decirlo.** Hay cuatro funciones en el repo que convierten fechas y se llaman igual. Podría parecer lo mismo copiado cuatro veces, pero no: cada una lee un formato distinto —una lee "14 DE MARZO DE 2026", otra "14/03/2026"— y juntarlas sería peor que dejarlas. **Emprolijar no es el objetivo; que dos cosas no puedan desacomodarse en silencio, sí.** Lo que sí quedó anotado es que tres de las cuatro no verifican que la fecha exista: un "31 de febrero" pasa sin protestar.
+
+**Y una prueba nueva que merece explicación.** Las pruebas que ya había comparaban **resultados**: pasaban igual con una definición o con cinco, mientras las cinco coincidieran. La nueva compara otra cosa: que sea **literalmente la misma**. Se verificó pegando a mano una copia que daba resultados idénticos: las siete pruebas viejas siguieron en verde y sólo la nueva se dio cuenta. Que coincidan hoy nunca fue garantía de nada.
+
+## Ahora hay una sola cuenta, y encontramos siete errores en cómo se calculaba el voto (22-08-2026)
+
+**Lo primero: se dio de baja la forma vieja de calcular.** Hasta hoy convivían dos maneras de sacar el número y eso ya no pasa. La que queda es la de puertas, y arrastra un cambio de fondo: **el modelo dejó de estimar si a un proyecto lo van a tratar.** Eso es política —se decide a puertas cerradas— y no se predice.
+
+La consecuencia hay que decirla de frente: **el número ya no responde "¿va a ser ley?". Responde "si las dos cámaras lo votan, ¿lo aprueban?"**. Es una pregunta más chica y mucho más honesta. La pantalla lo dice.
+
+**Y después, lo que apareció al revisar el cálculo.** Valle pidió mirar cómo se sacaba el porcentaje de acompañamiento de cada legislador. Salieron siete errores. Los tres que más importan:
+
+**Uno.** El modelo miraba cuántas veces acompaña cada bloque —un número entre 0 y 100— y lo **redondeaba a sí o no**. La Coalición Cívica, que acompaña al gobierno el 61% de las veces, quedaba convertida en "sí", y como sus diputados son disciplinados, el modelo terminaba diciendo **97%**. La duda desaparecía. Por eso todas las votaciones daban 99%: no era que el dato fuera pobre, era que la cuenta tiraba la información en el camino.
+
+**Dos.** Para saber de qué lado está cada uno, el modelo miraba a su grupo grande; para saber cuánto se despega, miraba a su bloque real. Dos grupos distintos para la misma persona. Del Caño, del Frente de Izquierda, salía como **voto seguro a favor del Ejecutivo** —100%— cuando su propio historial dice 1%. Le pasaba lo mismo a De la Sota. Ahora, si alguien tiene historial propio suficiente, **manda su historial**.
+
+**Tres.** Faltar se contaba como votar en contra. Martín Menem, que preside la Cámara y por eso casi no vota, aparecía como un voto en contra en la versión vieja y como un voto a favor en la nueva. Las dos mal. Ahora son dos cosas separadas: **de qué lado está** y **con qué frecuencia aparece**. Vota el 1,3% de las veces, así que no suma a la cuenta — y cuando vota, acompaña al gobierno el 96%.
+
+**Lo que se ve ahora que antes no se veía:** el Senado pasó de tener **cero** legisladores indecisos a tener **siete**. No es que hayan cambiado de opinión: es que antes el redondeo los tapaba.
+
+**Un error propio, y lo cuento porque es el tipo de cosa que este proyecto no perdona:** al corregir lo anterior, el umbral para aprobar cayó a 112 sobre 257, o sea que el modelo suponía 45 ausentes en cada votación. No es creíble. La causa era que estaba mezclando "votar distinto" con "no venir". Separadas, el umbral quedó en 122.
+
+**Y una trampa que casi me lleva puesta:** al regenerar el padrón de diputados con el comando normal, el archivo pasó de 1.454 filas a 257 — se llevó dieciocho años de historia sin dar ningún error. Lo detecté porque comparé el antes y el después, no porque algo fallara. Quedó anotado en URGENTE, porque le puede pasar a cualquiera.
+
+## Y también los del Senado: la Puerta C deja de estar vacía (21-08-2026)
+
+El mismo día, la otra mitad. Bajamos **1.761 Órdenes del Día del Senado** y sacamos **17.688 firmas** sobre 1.265 proyectos.
+
+**Lo importante no es el número, es cuáles son.** De esas 1.761, **475 son dictámenes del Senado sobre proyectos que ya habían pasado por Diputados** — o sea, el Senado actuando de cámara revisora. Ese era el eslabón que el modelo no tenía: sabíamos qué pasaba en la cámara donde nace un proyecto, y nada de lo que pasa en la que lo revisa. Ahora hay documentos, con nombres y disidencias.
+
+**El límite, dicho de frente.** De esas firmas, sólo la mitad se pudo enganchar a un legislador con su bloque, contra el 96% de Diputados. La razón está medida y es una sola: **nuestro padrón del Senado empieza en diciembre de 2017**, y 1.102 de las 1.761 Órdenes del Día son anteriores. No es que los nombres no se lean —se leen— es que no tenemos contra qué compararlos. Se puede reconstruir, igual que hicimos con Diputados, pero el Senado renueva por tercios cada dos años con mandatos de seis, así que la receta no se copia: hay que rehacerla. Queda decidido para otro día, con el número a la vista.
+
+**Un hallazgo del camino:** el Senado escribe sus dictámenes distinto que Diputados, y por eso al principio la mitad no se leía. La fórmula de cierre, la fecha al revés, el separador entre nombres: cuatro diferencias chicas que, corregidas, casi duplicaron las firmas encontradas. Y algo que conviene saber: **el Senado no rotula "dictamen de mayoría" ni "de minoría"**. Cuando hay desacuerdo lo escribe como disidencia. No es que falte el dato: es que esa cámara trabaja así.
+
+## Ya sabemos quién firma cada dictamen: 125.504 firmas (21-08-2026)
+
+Ayer descubrimos que nos faltaba un dato clave y que estaba en la fuente. Hoy lo fuimos a buscar.
+
+*(Los números de esta entrada son los de la corrida completa que terminó el 22-08, ya con el lector corregido. Los que se anotaron el 21 eran de una corrida anterior y diferían en menos de cien firmas.)*
+
+**Qué hay ahora.** Para 3.541 proyectos de ley, entre 2008 y junio de 2026, sabemos **quién firmó el dictamen de comisión, en qué carácter y de qué bloque era esa persona ese día**. Son 125.504 firmas, y el 96,0% está enganchado a un legislador concreto de nuestro padrón: 1.227 personas distintas.
+
+Y lo más importante para el modelo: **el carácter del trabajo en comisión ya es visible**. De esas firmas, 35.191 son de dictámenes de mayoría y 12.984 de minoría — o sea, casos donde la comisión no se puso de acuerdo y salieron dos textos enfrentados. Hay 3.564 firmas en disidencia parcial y 147 en disidencia total. Eso es exactamente lo que Valle quería que la Puerta A pasara a medir: no adivinar si una comisión va a tratar algo, sino leer cómo salió cuando lo trató.
+
+**De dónde salió.** De 2.517 PDF de Órdenes del Día, bajados uno por uno del sitio de Diputados. Se leyeron 2.302 (el 91,5%). Las 215 que no, quedan en la tabla **marcadas con el motivo** en vez de desaparecer: 13 son documentos que Diputados directamente no tiene publicados, uno está corrupto, y las otras 201 tienen el texto armado de una forma que el lector todavía no reconoce. Esa distinción importa: un dato que falta y se sabe que falta es manejable; uno que desaparece sin avisar hace que todo parezca más completo de lo que es.
+
+**Una cosa que hubo que arreglar antes.** Para saber de qué bloque era cada firmante hay que consultar el padrón de legisladores a la fecha del dictamen. Y ahí apareció que **nuestro padrón de Diputados sólo tenía la foto actual**: para 2008 conocía 81 de las 257 bancas. Con eso, sólo el 55% de las firmas se podía identificar. Se reconstruyó la historia a partir de las votaciones —si alguien votó un día, ese día tenía banca, y el acta dice de qué bloque era— y el número subió al **98,9%**. El padrón oficial sigue mandando donde llega; lo reconstruido sólo rellena lo que faltaba, y cada fila dice de dónde salió.
+
+**Lo que sigue faltando, dicho claro.** Los años 2021 y 2022 no se pueden reconstruir porque casi no tenemos votaciones de Diputados de esos años — es un hueco viejo y conocido. Y los dictámenes del **Senado** todavía no están: el portal de Diputados publica los dictámenes de las comisiones de Diputados, así que para el Senado hace falta otra fuente. Ya está encontrada, verificada y programada; falta correrla.
+
+**Y una advertencia práctica.** Bajar y leer 18 años de documentos llevó una tarde, pero **es por única vez**. De acá en adelante son entre 50 y 80 documentos nuevos por año: una actualización mensual son segundos. Todos los cálculos del modelo leen un archivo de 900 KB, no los PDF.
+
+## Descubrimos que nos falta un dato clave: quién firma los dictámenes (20-08-2026)
+
+Valle decidió el rumbo del modelo: dejamos de intentar adivinar **si una comisión va a tratar un proyecto** —eso es política y no se predice— y pasamos a mirar **cómo salió el trabajo de la comisión**: quién acompañó el dictamen, si hubo acuerdos entre bloques distintos, si los que firmaron son figuras de peso. Es una señal mucho más honesta, porque no adivina nada: lee lo que efectivamente pasó.
+
+Al ir a buscar ese dato apareció el problema: **no lo tenemos**. Nuestra base sabe que hay dictamen, de qué comisión y de qué fecha —19.702 proyectos, desde 2008— pero **no sabe quién lo firmó**. Y no es que lo estemos tirando al cargarlo: el portal de datos abiertos de Diputados directamente no lo publica.
+
+Pero el dato existe. Está en el PDF de la **Orden del Día**, que es el documento donde se publica cada dictamen: ahí figuran los firmantes uno por uno, quiénes firmaron en disidencia y por qué. Y ya tenemos el número de Orden del Día de cada proyecto, así que sabemos exactamente qué ir a buscar: **18.067 documentos que cubren 18.787 proyectos**. Es trabajo, pero es trabajo acotado y con un final claro.
+
+Mientras tanto hay algo que sí se puede usar desde hoy, porque está en las observaciones que ya cargamos: si el dictamen fue **de mayoría o de minoría**, si tuvo **disidencias**, y si lo firmaron **varias comisiones juntas** (que es una buena señal de acuerdo amplio).
+
+Y hay una consecuencia que conviene tener clara: si el modelo deja de estimar la mortandad en el cajón, el número que publicamos pasa a significar otra cosa. Ya no es «qué chance tiene este proyecto de ser ley» sino «qué chance tiene **dado que llegó hasta acá**». Sólo 1 de cada 6 proyectos llega a tener dictamen, así que la diferencia no es menor y tiene que estar escrita en la pantalla, no escondida en un manual.
+
+
+## El mapa del modelo dejó de dibujar dos veces lo mismo (20-08-2026)
+
+El mapa que muestra de dónde sale el número dibujaba la cadena entera **dos veces**, una por cámara: 153 cajas en pantalla para 96 piezas reales. No era sólo cargoso de mirar — era **falso**. La maquinaria que junta los datos (bajar las votaciones, armar el padrón, limpiar la base) corre **una sola vez** y sirve para las dos cámaras. Dibujarla espejada hacía creer que hay dos maquinarias.
+
+Ahora el dibujo se lee como lo que pasa de verdad: un **tronco común** a la izquierda —la maquinaria de datos, una sola— y recién a la derecha se abre en **dos ramas cortas**, una por cámara, que terminan juntándose en la probabilidad final de que el proyecto sea ley.
+
+Las cámaras se rotulan «ej.: Diputados» y «ej.: Senadores» a propósito. Un proyecto puede nacer en cualquiera de las dos y el modelo no supone cuál: poner «(Diputados)» a secas habría convertido un ejemplo en una afirmación.
+
+De paso apareció algo para mirar: la rama de la cámara revisora **no usa el embudo ni la asistencia**. Puede estar bien o puede ser un agujero; quedó anotado.
+
+
 ## Qué estamos construyendo
 Una herramienta que estima **qué probabilidad tiene un proyecto de ley de ser aprobado** en el Congreso argentino. No para reemplazar al analista político, sino para darle un radar: qué proyectos están ganando tracción y qué legisladores son la bisagra que define una votación.
 
@@ -282,30 +402,7 @@ Hasta ahora los archivos de resultados (los CSV de disciplina y el Excel de legi
 
 ## Nuevo: un tablero de control para saber dónde estamos parados (sin leer 40 archivos)
 El plan original del proyecto vivía en un Word y el estado real vivía repartido entre bitácoras. Ahora hay un solo lugar que junta las dos cosas: **TABLERO-CONTROL.html**, en la raíz de la carpeta — doble click y se abre en el navegador, sin internet ni instalación. Tiene el plan completo de la plataforma (los 4 módulos del producto, las etapas, hasta el presupuesto), el semáforo de los 27 módulos del repo, las métricas clave, la línea de tiempo de hitos y qué falta, en ese orden de prioridad. Todo en lenguaje llano, con el detalle técnico escondido detrás de un click. Regla nueva para todos (Claudes incluidos): cuando cambiás algo del proyecto, actualizás el archivo de datos del tablero (`tablero_datos.js`) igual que actualizás esta bitácora — es un archivo de texto simple donde solo se cambia el estado, la fecha y se agrega el hito. El diseño no se toca nunca, así nadie lo puede romper.
-# EN HUMANO — el sistema explicado sin tecnicismos
 
-> Documento vivo. Cada cambio importante en el proyecto se explica acá en lenguaje claro, además de registrarse en `ESTADO-DEL-PROYECTO.md`. Si algo del sistema no se entiende leyendo esto, está mal escrito y hay que arreglarlo.
-
-## Qué estamos construyendo
-Una herramienta que estima **qué probabilidad tiene un proyecto de ley de ser aprobado** en el Congreso argentino. No para reemplazar al analista político, sino para darle un radar: qué proyectos están ganando tracción y qué legisladores son la bisagra que define una votación.
-
-## Lo más importante que aprendimos (y que cambió el rumbo)
-Probamos lo obvio primero: ¿se puede adivinar cómo vota cada diputado mirando a su bloque? **Sí, y demasiado bien: acierta el 99%.** Los diputados votan casi siempre con su bloque. Eso suena bien, pero en realidad es una mala noticia para el producto: si una regla trivial ("votá con tu bloque") ya acierta el 99%, un modelo sofisticado no agrega nada ahí. Sería gastar pólvora en chimangos.
-
-Entonces, ¿dónde está el valor real? En las tres cosas que el bloque **no** explica:
-1. **Quién va a estar presente** (asistencia y quórum). Muchas leyes se ganan o pierden por quién falta ese día.
-2. **Si el proyecto siquiera llega a votarse** (el "embudo"): la mayoría de los proyectos mueren en comisión y nunca llegan al recinto.
-3. **Qué postura va a tomar el bloque** (la negociación de los líderes), que es política pura y no sale de los datos abiertos.
-
-Ese giro es la decisión más importante del proyecto hasta ahora.
-
-## Cómo conseguimos los datos (la idea de "semilla, base propia y bot")
-Pensalo como una huerta:
-- **La semilla:** Andy Tow tiene un trabajo enorme ("La Década Votada") con votaciones desde 1998. Lo usamos **una sola vez** para arrancar, no para depender de él para siempre. Tomamos su cosecha como punto de partida.
-- **Nuestra base propia (la huerta):** juntamos esa semilla con los datos oficiales (Congreso) y los volcamos en **una sola base de datos nuestra**, ordenada y sin duplicados. Esa base es la fuente de verdad del proyecto.
-- **El bot (el que riega):** un programita que corre solo cada tanto, mira las fuentes oficiales y agrega las votaciones nuevas a nuestra base. Así la base se mantiene fresca sin que dependamos de que otro la actualice.
-
-Detalle importante: la base de datos oficial del Congreso dejó de actualizarse en 2020, así que lo reciente (hasta 2025) lo sacamos de otra fuente (argentinadatos). Y nos falta u
 
 ## Quiénes NO cuentan para el índice de indisciplina (y la herramienta que falta)
 Valle definió las excepciones: al presidente de la Cámara de Diputados (que por costumbre no vota), a los suspendidos (como De Vido, que no PUEDE votar) y a los legisladores con licencia no corresponde contarles la silla vacía como rebeldía — no es una decisión libre. Los dos primeros ya quedaron excluidos automáticamente. Las licencias son el problema: no figuran en ningún dato que tengamos hoy. Quedó anotado como módulo futuro crear una herramienta que detecte y avise cuándo un legislador pide licencia o es suspendido (mirando resoluciones de cámara y Boletín Oficial), para mantener el índice limpio hacia adelante.

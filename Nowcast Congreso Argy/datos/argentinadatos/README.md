@@ -1,6 +1,6 @@
 # Módulo: datos/argentinadatos
 
-<!-- huella: f013c2610db7 -->
+<!-- huella: e3b0c44298fc -->
 
 **Propósito.** Ingesta de Diputados 2020-2025 y Senado 2024-2025 desde la API argentinadatos.com, normalizada al MISMO esquema que CKAN.
 

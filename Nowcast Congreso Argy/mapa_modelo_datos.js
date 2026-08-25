@@ -19,12 +19,13 @@ const MAPA_MODELO = {
     "para_que": "Uso interno del equipo. Cuando alguien pregunte «de dónde sale este número», la respuesta es señalar un nodo, no abrir quince archivos.",
     "no_es": "No es un tablero. TABLERO-CONTROL.html muestra plan y avance; esto muestra la maquinaria.",
     "verificado": "2026-08-20",
-    "generado": "2026-08-20 19:33 UTC",
-    "indice_archivos": 123,
-    "rutas_declaradas": 52,
-    "nodos": 96,
-    "aristas": 131,
+    "generado": "2026-08-25 13:38 UTC",
+    "indice_archivos": 141,
+    "rutas_declaradas": 58,
+    "nodos": 101,
+    "aristas": 144,
     "problemas": [
+      "casos/README.md no tiene la linea `**Estado:**` (la usa este mapa y la usa el router de MAPA.md)",
       "docs/taxonomias/README.md no tiene la linea `**Estado:**` (la usa este mapa y la usa el router de MAPA.md)"
     ]
   },
@@ -57,13 +58,13 @@ const MAPA_MODELO = {
       "id": "origen",
       "nombre": "Cámara de origen",
       "orden": 4,
-      "descripcion": "Donde nace el proyecto: ¿sale de comisión (A) y consigue mayoría (B)?"
+      "descripcion": "Donde nace el proyecto: se OBSERVA el dictamen y su carácter (A) y se calcula la mayoría (B)."
     },
     {
       "id": "revisora",
       "nombre": "Cámara revisora",
       "orden": 5,
-      "descripcion": "La otra cámara: ¿la tratan antes de caducar (C) y consigue mayoría (D)?"
+      "descripcion": "La otra cámara: se OBSERVA el dictamen de sus comisiones (C) y se calcula la mayoría (D)."
     },
     {
       "id": "nowcast",
@@ -147,43 +148,16 @@ const MAPA_MODELO = {
   ],
   "formulaciones": [
     {
-      "id": "v1",
-      "nombre": "v1 — en producción",
-      "formula": "P(aprobación) = P(llega al recinto) × P(mayoría | recinto)",
-      "archivo": "modelo/ensemble/src/ensemble.py",
-      "simbolo": "componer",
-      "estado": "EN CURSO",
-      "detalle": "Es lo que corre hoy. `componer(p_llega, p_mayoria)` en ensemble.py, línea 88. P(llega) sale del embudo; P(mayoría) del agregador institucional vía `simular_votacion`. Cubre sólo la cámara de ORIGEN."
-    },
-    {
       "id": "puertas",
-      "nombre": "Puertas A·B·C·D — el reencuadre",
-      "formula": "P(sanción) = P(A) · P(B|A) · P(C|A,B) · P(D|A,B,C)",
+      "nombre": "La formulación (única)",
+      "formula": "P(sanción) = [A observada] · P(B | carácter del dictamen de origen) · [C observada] · P(D | carácter del dictamen de la revisora)",
       "archivo": "modelo/ensemble/PUERTA-D.md",
-      "estado": "PARCIAL",
-      "detalle": "Decisión de Valle del 2026-08-08, ficha acordada el 09-08. El nowcast deja de intentar predecir la etapa de COMISIÓN (política pura, no medible) y pasa a medir la aprobación en origen y en revisora. B y D existen en código; A y C están parqueadas y se OBSERVAN.",
-      "regla_clave": "Una puerta que ya ocurrió deja de ser probabilidad y vale 1. Con media sanción, A y B son hechos y queda P(C)·P(D)."
+      "estado": "EN CURSO",
+      "detalle": "La UNICA formulacion desde el 2026-08-22 (ADR-0012). Antes convivia con la v1 —P(llega al recinto) x P(mayoria | recinto)— que se dio de baja: `p_llega_recinto` media la chance de que el proyecto fuera TRATADO, y eso es agenda politica. A y C NO son probabilidades: son el CARACTER OBSERVADO del dictamen en cada camara, leido de los PDF de la Orden del Dia, y CONDICIONAN la votacion de su camara en vez de multiplicarla. Sin dato, el condicionante se encoge a 0 y queda la estimacion sin condicionar. Corre en `nowcast_puertas.py`.",
+      "regla_clave": "Un paso que ya ocurrio deja de ser probabilidad y vale 1. Y el numero es CONDICIONAL a que las camaras voten: NO incluye la chance de que el proyecto sea tratado."
     }
   ],
   "caminos": [
-    {
-      "id": "v1",
-      "nombre": "El número que corre hoy (v1)",
-      "descripcion": "De la fuente oficial al número publicado, por la formulación en producción: P(aprobación) = P(llega al recinto) × P(mayoría | recinto). Cubre sólo la cámara de origen.",
-      "nodos": [
-        "f_hcdn_tp",
-        "s_tp_diputados",
-        "d_tp_entradas",
-        "s_upsert_bot",
-        "d_proyectos_db",
-        "s_embudo",
-        "d_p_embudo",
-        "v_embudo",
-        "c_p_llega",
-        "n_v1",
-        "n_salida"
-      ]
-    },
     {
       "id": "mayoria",
       "nombre": "Cómo se arma P(mayoría)",
@@ -200,7 +174,7 @@ const MAPA_MODELO = {
         "c_roster_origen",
         "c_simular_origen",
         "c_p_mayoria_origen",
-        "n_v1"
+        "n_puertas"
       ]
     },
     {
@@ -233,10 +207,10 @@ const MAPA_MODELO = {
     },
     {
       "id": "evaluacion",
-      "nombre": "Contra qué se mide el número",
+      "nombre": "Contra qué se mide el número (decisión pendiente)",
       "descripcion": "El backtest de la cadena completa contra `sancionado` real, con el p_sancion del embudo como vara.",
       "nodos": [
-        "n_v1",
+        "n_puertas",
         "e_backtest_cadena",
         "e_baseline_embudo",
         "e_backtest_embudo"
@@ -2745,24 +2719,6 @@ const MAPA_MODELO = {
       "owner": "Claude+Valle (desde 2026-07-01)"
     },
     {
-      "id": "c_p_llega",
-      "label": "P(llega al recinto)",
-      "rol": "variable",
-      "etapa": "origen",
-      "jerarquia": 3,
-      "formula": "p_llega_recinto ← p_embudo.parquet",
-      "que_es": "Factor 1 del nowcast v1. Sale del modelo de supervivencia del embudo, columna `p_llega_recinto`.",
-      "notas": [
-        "Si el proyecto no está en p_embudo y no vino como override explícito, el ensemble corta con error. No inventa un valor."
-      ],
-      "modulo": "variables/embudo",
-      "bloque": "origen",
-      "estado": "EN CURSO",
-      "estado_texto": "EN CURSO (v1: embudo por etapas + modelo de supervivencia + backtest temporal)",
-      "estado_fuente": "variables/embudo/README.md",
-      "owner": "Claude+Valle (2026-07-12)"
-    },
-    {
       "id": "c_roster_origen",
       "label": "Roster nominal (origen)",
       "rol": "variable",
@@ -2770,7 +2726,7 @@ const MAPA_MODELO = {
       "jerarquia": 2,
       "archivo": "modelo/ensemble/src/ensemble.py",
       "simbolo": "roster_nominal",
-      "que_es": "UNA FILA POR LEGISLADOR del padrón vigente a la fecha, no bancas anónimas por bloque. Cada uno con su línea de bloque proyectada y SU tasa de desvío individual.",
+      "que_es": "UNA FILA POR LEGISLADOR de la camara a la fecha, no bancas anonimas. Desde el 22-08 el padron es la foto COMPLETA (oficial + historico, sin duplicados): antes leia un solo archivo y el oficial cubre 81 de 257 bancas en 2008 y 203 en 2019.",
       "notas": [
         "Escalera del desvío: (1) tasa reciente si n≥MIN_VOTOS_FICHA, (2) tasa global si alcanza, (3) desvío promedio del bloque — sólo para camada nueva. Es la única excepción admitida.",
         "El v2 (clonar el promedio del bloque `bancas` veces) se ELIMINÓ el 22-07: aplicaba el promedio incluso a los 753 legisladores con desvío medido."
@@ -2778,42 +2734,42 @@ const MAPA_MODELO = {
       "modulo": "modelo/ensemble",
       "bloque": "origen",
       "existe": true,
-      "loc": 444,
+      "loc": 396,
       "simbolos": [
         {
           "nombre": "_cargar_simulador",
           "tipo": "funcion",
-          "linea": 59,
+          "linea": 68,
           "doc": "Importa simular_votacion del agregador sin tocar su código."
         },
         {
           "nombre": "_cargar_proyector",
           "tipo": "funcion",
-          "linea": 72,
+          "linea": 81,
           "doc": "Importa cargar + proyectar_postura de variables/bloque (contrato publico)."
         },
         {
           "nombre": "componer",
           "tipo": "funcion",
-          "linea": 88,
-          "doc": "P(aprobación) = P(llega al recinto) × P(mayoría | recinto)."
+          "linea": 107,
+          "doc": "DADA DE BAJA (2026-08-22) - era el corazon de la v1. Ver `_BAJA_V1`."
         },
         {
           "nombre": "_root",
           "tipo": "funcion",
-          "linea": 100,
+          "linea": 115,
           "doc": null
         },
         {
           "nombre": "_padron_csv",
           "tipo": "funcion",
-          "linea": 104,
+          "linea": 119,
           "doc": null
         },
         {
           "nombre": "_disciplina_csv",
           "tipo": "funcion",
-          "linea": 111,
+          "linea": 126,
           "doc": null
         }
       ],
@@ -2841,7 +2797,7 @@ const MAPA_MODELO = {
       ],
       "bloque": "origen",
       "existe": true,
-      "loc": 345,
+      "loc": 350,
       "simbolos": [
         {
           "nombre": "normalizar_mayoria",
@@ -2858,25 +2814,25 @@ const MAPA_MODELO = {
         {
           "nombre": "_prob_conductas",
           "tipo": "funcion",
-          "linea": 88,
+          "linea": 93,
           "doc": "Vector [p(AFIRM), p(NEG), p(NO_ACOMPANA)] para un legislador dada su línea y"
         },
         {
           "nombre": "simular_votacion",
           "tipo": "funcion",
-          "linea": 104,
+          "linea": 109,
           "doc": "Simula la votación n_sims veces a partir del roster (una línea y un desvío por"
         },
         {
           "nombre": "_linea_bloque_por_acta",
           "tipo": "funcion",
-          "linea": 178,
+          "linea": 183,
           "doc": "Línea observada de cada bloque en cada acta = conducta con mayoría simple sobre"
         },
         {
           "nombre": "_direccion_bloque_por_acta",
           "tipo": "funcion",
-          "linea": 196,
+          "linea": 201,
           "doc": "DIRECCIÓN del bloque = mayoría AFIRMATIVO vs NEGATIVO SOLO entre los que emitieron"
         }
       ],
@@ -2889,15 +2845,16 @@ const MAPA_MODELO = {
     },
     {
       "id": "c_p_mayoria_origen",
-      "label": "P(mayoría | recinto)",
+      "label": "P(mayoría en origen) — Paso B",
       "rol": "variable",
       "etapa": "origen",
       "jerarquia": 3,
-      "formula": "clip(sim[\"p_aprobacion\"], 0,01 , 0,99)",
-      "que_es": "Factor 2 del nowcast v1. Lo que devuelve el agregador sobre el roster de la cámara de origen.",
+      "formula": "P(afirma) = share·(1−d) + (1−share)·(d/2), escalado por la asistencia",
+      "que_es": "La votacion en la camara de origen. Desde el 22-08 la P de cada legislador COMPONE el numero real de su bloque con su desvio individual, en vez de redondear el bloque a SI/NO: antes la Coalicion Civica, que acompaña el 60,9% de las veces, salia en 96,7%. Si tiene historial propio suficiente, la direccion sale de SU historial y no del linaje.",
       "notas": [
-        "Nunca da 0% ni 100%: hay piso y techo por pedido de Valle (ni el legislador más leal es un lock; hay riesgo sistémico).",
-        "⚠ Sin condicionar por tema/origen el factor está DEGENERADO: da p≥0,99 en 33.284 de 37.341 casos. Condicionar sube el acierto del voto por legislador de 59% a 76%."
+        "Ese redondeo era la razon de que casi todas las votaciones dieran 99%.",
+        "Faltar ya no es votar en contra: la asistencia va por su propio canal (p_presente).",
+        "Umbral de mayoria simple = mitad de los EMITIDOS mas uno (ADR-0013: el empate no aprueba)."
       ],
       "modulo": "modelo/agregador_institucional",
       "bloque": "origen",
@@ -2912,22 +2869,68 @@ const MAPA_MODELO = {
       "rol": "variable",
       "etapa": "origen",
       "jerarquia": 3,
-      "parqueada": true,
-      "formula": "P(A)",
-      "que_es": "¿El proyecto sale de comisión? PARQUEADA: no se predice, se OBSERVA el dictamen (firmas, bloques).",
+      "parqueada": false,
+      "formula": "A observada (no es probabilidad)",
+      "que_es": "¿Hay dictamen en la cámara de origen y con qué carácter? Se OBSERVA, no se predice: quién firmó, si hubo disidencias y de qué bloques son los firmantes. Ese carácter CONDICIONA la votación (B).",
       "notas": [
-        "Lo que pasa en comisión se define en reuniones de labor parlamentaria a puertas cerradas. Es política pura y no hay estadística que la capture.",
-        "Decisión de Valle, 2026-08-08."
+        "3.970 proyectos con dictamen leido sobre los 42.141 del embudo.",
+        "TRES estados, y el tercero no colapsa al segundo: con caracter / sin dictamen / SIN DATO.",
+        "En 'sin dato' el condicionante se ENCOGE A 0 y queda la estimacion sin condicionar: el fallback no es un `if`. Reusa puerta_d.ajuste_paso_origen.",
+        "Point-in-time obligatorio: un dictamen sin fecha utilizable sale 'sin dato', nunca 'con caracter' — darlo por existente seria fuga del futuro.",
+        "El condicionante arranca en CERO: la etiqueta binaria del voto esta degenerada (2 RECHAZADO en 1.898), asi que todavia no hay contra que calibrarlo."
       ],
       "modulo": "modelo/ensemble",
       "bloque": "origen",
-      "estado_declarado": "REPLANTEADO",
-      "suspendida": true,
-      "estado_motivo": "SUSPENDIDA por decisión de Valle (2026-08-08, ratificada el 20-08): no se modela la etapa de comisión. Es de naturaleza estrictamente política y no se puede predecir estadísticamente. El estado es del NODO, no del módulo: `modelo/ensemble` sigue EN CURSO.",
-      "estado": "REPLANTEADO",
+      "estado_declarado": "EN CURSO",
+      "suspendida": false,
+      "estado_motivo": "Implementada el 2026-08-22 (ADR-0012). Dejo de estar parqueada como probabilidad —esa probabilidad no existe mas— y pasa a ser señal OBSERVADA. Lo que sigue suspendido para siempre es modelar si la comision va a tratar el proyecto.",
+      "archivo": "modelo/ensemble/src/puerta_a.py",
+      "existe": true,
+      "loc": 445,
+      "simbolos": [
+        {
+          "nombre": "_texto",
+          "tipo": "funcion",
+          "linea": 113,
+          "doc": "Un faltante puede llegar como None, NaN o pd.NA según el backend de dtype."
+        },
+        {
+          "nombre": "_fecha",
+          "tipo": "funcion",
+          "linea": 118,
+          "doc": null
+        },
+        {
+          "nombre": "_algun_si",
+          "tipo": "funcion",
+          "linea": 122,
+          "doc": "¿Alguna fila dice que sí? Tolera None/NaN/pd.NA sin el downcast deprecado."
+        },
+        {
+          "nombre": "_fecha_dictamen",
+          "tipo": "funcion",
+          "linea": 129,
+          "doc": "Fecha del dictamen, en cascada, porque las dos cámaras no traen lo mismo."
+        },
+        {
+          "nombre": "_n_expedientes",
+          "tipo": "funcion",
+          "linea": 169,
+          "doc": "Cuántos expedientes dictamina la Orden del Día (el sumario los lista con `;`)."
+        },
+        {
+          "nombre": "cargar_caracter",
+          "tipo": "funcion",
+          "linea": 185,
+          "doc": "Una fila por (proyecto_id, camara) con el carácter observado del dictamen."
+        }
+      ],
+      "lenguaje": "python",
+      "entrypoint": false,
+      "estado": "EN CURSO",
       "estado_fuente": "capa curada",
       "owner": "Claude+Valle (2026-07-12)",
-      "estado_texto": "SUSPENDIDA por decisión de Valle (2026-08-08, ratificada el 20-08): no se modela la etapa de comisión. Es de naturaleza estrictamente política y no se puede predecir estadísticamente. El estado es del NODO, no del módulo: `modelo/ensemble` sigue EN CURSO.",
+      "estado_texto": "Implementada el 2026-08-22 (ADR-0012). Dejo de estar parqueada como probabilidad —esa probabilidad no existe mas— y pasa a ser señal OBSERVADA. Lo que sigue suspendido para siempre es modelar si la comision va a tratar el proyecto.",
       "estado_modulo": "EN CURSO"
     },
     {
@@ -2936,7 +2939,7 @@ const MAPA_MODELO = {
       "rol": "variable",
       "etapa": "origen",
       "jerarquia": 3,
-      "formula": "P(B|A)",
+      "formula": "P(B | carácter del dictamen de origen)",
       "que_es": "¿Hay mayoría en la cámara donde nació el proyecto? EXISTE: es el agregador institucional corriendo sobre el roster de origen.",
       "notas": [
         "Es la misma maquinaria que P(mayoría | recinto) de la v1, leída en el lenguaje de puertas."
@@ -2954,23 +2957,69 @@ const MAPA_MODELO = {
       "rol": "variable",
       "etapa": "revisora",
       "jerarquia": 3,
-      "parqueada": true,
-      "formula": "P(C|A,B)",
-      "que_es": "¿La cámara revisora la trata antes de que caduque? PARQUEADA post-lanzamiento: se OBSERVA el estado + el reloj de caducidad de la Ley 13.640.",
+      "parqueada": false,
+      "formula": "C observada (no es probabilidad)",
+      "que_es": "¿Hay dictamen en las comisiones de la cámara revisora y con qué carácter? Se OBSERVA igual que A. Ese carácter CONDICIONA la votación de la revisora (D).",
       "notas": [
-        "Los tiempos de tratamiento son políticos; lo que va a ser ley se trata rápido.",
-        "Hallazgo del 13-08: de lo que llega al recinto, 53,7% termina en ley. El ~46% que se pierde es AGENDA en la revisora, no perder la votación. O sea: el peso está en C, y C es lo que está parqueado."
+        "809 proyectos tienen dictamen leido en LAS DOS camaras.",
+        "TRES estados, y el tercero no colapsa al segundo: con caracter / sin dictamen / SIN DATO.",
+        "En 'sin dato' el condicionante se ENCOGE A 0 y queda la estimacion sin condicionar: el fallback no es un `if`. Reusa puerta_d.ajuste_paso_origen.",
+        "Point-in-time obligatorio: un dictamen sin fecha utilizable sale 'sin dato', nunca 'con caracter' — darlo por existente seria fuga del futuro.",
+        "El condicionante arranca en CERO: la etiqueta binaria del voto esta degenerada (2 RECHAZADO en 1.898), asi que todavia no hay contra que calibrarlo."
       ],
       "modulo": "modelo/ensemble",
       "bloque": "revisora",
       "grupo": "condicionado_por_origen",
-      "estado_declarado": "REPLANTEADO",
-      "suspendida": true,
-      "estado_motivo": "SUSPENDIDA por la misma decisión: no se modela la caducidad (pérdida de estado parlamentario, Ley 13.640) ni el tiempo de tratamiento. Es política pura. El estado es del NODO: `modelo/ensemble` sigue EN CURSO.",
-      "estado": "REPLANTEADO",
+      "estado_declarado": "EN CURSO",
+      "suspendida": false,
+      "estado_motivo": "Implementada el 2026-08-22 (ADR-0012). Dejo de estar parqueada como probabilidad —esa probabilidad no existe mas— y pasa a ser señal OBSERVADA. Lo que sigue suspendido para siempre es modelar si la comision va a tratar el proyecto.",
+      "archivo": "modelo/ensemble/src/puerta_a.py",
+      "existe": true,
+      "loc": 445,
+      "simbolos": [
+        {
+          "nombre": "_texto",
+          "tipo": "funcion",
+          "linea": 113,
+          "doc": "Un faltante puede llegar como None, NaN o pd.NA según el backend de dtype."
+        },
+        {
+          "nombre": "_fecha",
+          "tipo": "funcion",
+          "linea": 118,
+          "doc": null
+        },
+        {
+          "nombre": "_algun_si",
+          "tipo": "funcion",
+          "linea": 122,
+          "doc": "¿Alguna fila dice que sí? Tolera None/NaN/pd.NA sin el downcast deprecado."
+        },
+        {
+          "nombre": "_fecha_dictamen",
+          "tipo": "funcion",
+          "linea": 129,
+          "doc": "Fecha del dictamen, en cascada, porque las dos cámaras no traen lo mismo."
+        },
+        {
+          "nombre": "_n_expedientes",
+          "tipo": "funcion",
+          "linea": 169,
+          "doc": "Cuántos expedientes dictamina la Orden del Día (el sumario los lista con `;`)."
+        },
+        {
+          "nombre": "cargar_caracter",
+          "tipo": "funcion",
+          "linea": 185,
+          "doc": "Una fila por (proyecto_id, camara) con el carácter observado del dictamen."
+        }
+      ],
+      "lenguaje": "python",
+      "entrypoint": false,
+      "estado": "EN CURSO",
       "estado_fuente": "capa curada",
       "owner": "Claude+Valle (2026-07-12)",
-      "estado_texto": "SUSPENDIDA por la misma decisión: no se modela la caducidad (pérdida de estado parlamentario, Ley 13.640) ni el tiempo de tratamiento. Es política pura. El estado es del NODO: `modelo/ensemble` sigue EN CURSO.",
+      "estado_texto": "Implementada el 2026-08-22 (ADR-0012). Dejo de estar parqueada como probabilidad —esa probabilidad no existe mas— y pasa a ser señal OBSERVADA. Lo que sigue suspendido para siempre es modelar si la comision va a tratar el proyecto.",
       "estado_modulo": "EN CURSO"
     },
     {
@@ -2988,7 +3037,7 @@ const MAPA_MODELO = {
       "modulo": "modelo/ensemble",
       "bloque": "revisora",
       "existe": true,
-      "loc": 217,
+      "loc": 236,
       "simbolos": [
         {
           "nombre": "camara_revisora",
@@ -3042,7 +3091,7 @@ const MAPA_MODELO = {
       "jerarquia": 3,
       "archivo": "modelo/ensemble/src/puerta_d.py",
       "modulo": "modelo/ensemble",
-      "formula": "P(D|A,B,C) = logit⁻¹( logit(p₀) + delta )",
+      "formula": "P(D | carácter del dictamen de la revisora) = logit⁻¹( logit(p₀) + delta )",
       "que_es": "¿Un proyecto que ya tiene media sanción consigue mayoría en la cámara que lo revisa? EXISTE en código.",
       "notas": [
         "p₀ = P(mayoría | composición de la revisora), del mismo agregador. `delta` corrige por «ya pasó por origen», encogido por tamaño de muestra.",
@@ -3054,7 +3103,7 @@ const MAPA_MODELO = {
       "sublabel": "Puerta D — voto en revisora",
       "grupo": "condicionado_por_origen",
       "existe": true,
-      "loc": 217,
+      "loc": 236,
       "simbolos": [
         {
           "nombre": "camara_revisora",
@@ -3101,85 +3150,67 @@ const MAPA_MODELO = {
       "owner": "Claude+Valle (2026-07-12)"
     },
     {
-      "id": "n_v1",
-      "label": "P(aprobación en Cámara de Origen)",
-      "rol": "resultado",
-      "etapa": "nowcast",
-      "jerarquia": 3,
-      "archivo": "modelo/ensemble/src/ensemble.py",
-      "simbolo": "componer",
-      "modulo": "modelo/ensemble",
-      "formulacion": "v1",
-      "formula": "P(aprobación) = P(llega al recinto) × P(mayoría | recinto)",
-      "que_es": "EL NÚMERO QUE CORRE HOY. Producto de los dos factores. Cubre sólo la cámara de origen: no dice nada de la revisora.",
-      "bloque": "origen",
-      "sublabel": "v1 — el número que corre hoy",
-      "existe": true,
-      "loc": 444,
-      "simbolos": [
-        {
-          "nombre": "_cargar_simulador",
-          "tipo": "funcion",
-          "linea": 59,
-          "doc": "Importa simular_votacion del agregador sin tocar su código."
-        },
-        {
-          "nombre": "_cargar_proyector",
-          "tipo": "funcion",
-          "linea": 72,
-          "doc": "Importa cargar + proyectar_postura de variables/bloque (contrato publico)."
-        },
-        {
-          "nombre": "componer",
-          "tipo": "funcion",
-          "linea": 88,
-          "doc": "P(aprobación) = P(llega al recinto) × P(mayoría | recinto)."
-        },
-        {
-          "nombre": "_root",
-          "tipo": "funcion",
-          "linea": 100,
-          "doc": null
-        },
-        {
-          "nombre": "_padron_csv",
-          "tipo": "funcion",
-          "linea": 104,
-          "doc": null
-        },
-        {
-          "nombre": "_disciplina_csv",
-          "tipo": "funcion",
-          "linea": 111,
-          "doc": null
-        }
-      ],
-      "lenguaje": "python",
-      "entrypoint": true,
-      "estado": "EN CURSO",
-      "estado_texto": "EN CURSO (v1: composición + nowcast por proyecto + tests)",
-      "estado_fuente": "modelo/ensemble/README.md",
-      "owner": "Claude+Valle (2026-07-12)"
-    },
-    {
       "id": "n_puertas",
       "label": "P(aprobación de un proyecto de ley)",
       "rol": "resultado",
       "etapa": "nowcast",
       "jerarquia": 3,
-      "archivo": "modelo/ensemble/PUERTA-D.md",
+      "archivo": "modelo/ensemble/src/nowcast_puertas.py",
       "modulo": "modelo/ensemble",
       "formulacion": "puertas",
-      "formula": "P(sanción) = P(A) · P(B|A) · P(C|A,B) · P(D|A,B,C)",
-      "que_es": "El reencuadre completo, de punta a punta por las dos cámaras. PARCIAL: B y D existen, A y C están parqueadas y se observan.",
+      "formula": "P = [A observada] · P(B | carácter de origen) · [C observada] · P(D | carácter de la revisora)",
+      "que_es": "LA UNICA FORMULACION desde el 22-08-2026. A y C se OBSERVAN y CONDICIONAN; B y D se CALCULAN. El numero es CONDICIONAL a que las camaras voten: NO incluye la chance de que el proyecto sea tratado.",
       "bloque": "final",
-      "sublabel": "P(sanción), por puertas A·B·C·D",
+      "sublabel": "P(aprobación), la única cadena",
+      "estado_declarado": "EN CURSO",
+      "estado_motivo": "EN CURSO y ya no PARCIAL: desde el 2026-08-22 (ADR-0012) es la UNICA formulacion y corre de punta a punta. A y C estan implementadas como señal observada (`puerta_a.py`), B y D calculan. Lo que falta no es la cadena sino su CALIBRACION: el condicionante del caracter vale 0 porque no hay contra que ajustarlo.",
       "existe": true,
-      "entrypoint": false,
+      "loc": 479,
+      "simbolos": [
+        {
+          "nombre": "_bloque",
+          "tipo": "funcion",
+          "linea": 79,
+          "doc": null
+        },
+        {
+          "nombre": "alineacion_individual",
+          "tipo": "funcion",
+          "linea": 88,
+          "doc": "P(afirmativo) de CADA legislador sobre su PROPIO récord."
+        },
+        {
+          "nombre": "perfil_legislador",
+          "tipo": "funcion",
+          "linea": 136,
+          "doc": "Cómo se espera que vote esta persona. Devuelve p_afirma_si_vota y p_presente."
+        },
+        {
+          "nombre": "a_linea_y_desvio",
+          "tipo": "funcion",
+          "linea": 178,
+          "doc": "Traduce una P(afirmativo) al par (línea, desvío) que el agregador reproduce."
+        },
+        {
+          "nombre": "_p_afirmativo_del_simulador",
+          "tipo": "funcion",
+          "linea": 199,
+          "doc": "P(este legislador vote AFIRMATIVO) según el MISMO modelo que simula la votación."
+        },
+        {
+          "nombre": "armar_roster",
+          "tipo": "funcion",
+          "linea": 215,
+          "doc": "Perfil de cada legislador -> los arrays que entran al agregador."
+        }
+      ],
+      "lenguaje": "python",
+      "entrypoint": true,
       "estado": "EN CURSO",
-      "estado_texto": "EN CURSO (v1: composición + nowcast por proyecto + tests)",
-      "estado_fuente": "modelo/ensemble/README.md",
-      "owner": "Claude+Valle (2026-07-12)"
+      "estado_fuente": "capa curada",
+      "owner": "Claude+Valle (2026-07-12)",
+      "estado_texto": "EN CURSO y ya no PARCIAL: desde el 2026-08-22 (ADR-0012) es la UNICA formulacion y corre de punta a punta. A y C estan implementadas como señal observada (`puerta_a.py`), B y D calculan. Lo que falta no es la cadena sino su CALIBRACION: el condicionante del caracter vale 0 porque no hay contra que ajustarlo.",
+      "estado_modulo": "EN CURSO"
     },
     {
       "id": "n_colapso",
@@ -3238,65 +3269,69 @@ const MAPA_MODELO = {
     },
     {
       "id": "e_backtest_cadena",
-      "label": "backtest_cadena.py",
+      "label": "backtest_cadena.py — NEUTRALIZADO",
       "rol": "script",
       "etapa": "evaluacion",
       "jerarquia": 3,
       "archivo": "modelo/ensemble/src/backtest_cadena.py",
       "modulo": "modelo/ensemble",
-      "que_es": "Mide la cadena COMPLETA contra la realidad: compone los dos factores sobre la cohorte madura y etiquetada del embudo y la compara con `sancionado` real. Brier, skill y calibración.",
+      "que_es": "NEUTRALIZADO el 22-08-2026: medía la v1. Su `main` levanta SystemExit con el motivo. Re-apuntarlo pide decidir ANTES contra que se mide.",
       "notas": [
-        "Point-in-time: cada proyecto se evalúa a su `fecha_publicacion`; postura y padrón se proyectan walk-forward.",
-        "⚠ v1 corre efectivamente sólo sobre DIPUTADOS: el Senado histórico no es rosteable con el padrón por defecto, y el hueco Dip 2020-2023 invalida la ventana de postura.",
-        "La corrida pesada la corre Valle en PowerShell."
+        "p_sancion da skill +0,4478 en total, pero +0,2916 entre los 3.898 proyectos CON dictamen y -0,0257 entre los 34.799 sin el: su merito es separar con-dictamen de sin-dictamen, justo lo que la Puerta A ahora OBSERVA en vez de estimar.",
+        "Medir la cadena nueva contra `sancionado` la mide contra algo que por diseño no predice: el 69% de los proyectos con dictamen que no llegan a ley se pierden en agenda.",
+        "La unica vara con varianza real es el MARGEN del recuento (6.237 actas, 1.849 enganchadas a su expediente). DECISION PENDIENTE."
       ],
       "bloque": "fuera",
+      "parqueada": true,
+      "estado_declarado": "REPLANTEADO",
+      "estado_motivo": "NEUTRALIZADO el 2026-08-22 (ADR-0012): medía la v1. Su `main` levanta SystemExit. Re-apuntarlo pide decidir antes contra que se mide.",
       "existe": true,
-      "loc": 565,
+      "loc": 549,
       "simbolos": [
         {
           "nombre": "_root",
-          "tipo": "funcion",
-          "linea": 70,
-          "doc": null
-        },
-        {
-          "nombre": "_import_embudo",
           "tipo": "funcion",
           "linea": 74,
           "doc": null
         },
         {
+          "nombre": "_import_embudo",
+          "tipo": "funcion",
+          "linea": 78,
+          "doc": null
+        },
+        {
           "nombre": "_import_nowcast_auto",
           "tipo": "funcion",
-          "linea": 85,
+          "linea": 89,
           "doc": null
         },
         {
           "nombre": "_import_p_voto_revisora",
           "tipo": "funcion",
-          "linea": 96,
+          "linea": 100,
           "doc": "Factor de la SEGUNDA cámara: reusa puerta_d.p_voto_revisora (Manera 1)."
         },
         {
           "nombre": "preparar_cohorte",
           "tipo": "funcion",
-          "linea": 111,
+          "linea": 115,
           "doc": "Devuelve una fila por proyecto MADURO con: proyecto_id, fecha (point-in-time),"
         },
         {
           "nombre": "origen_fino_por_proyecto",
           "tipo": "funcion",
-          "linea": 165,
+          "linea": 169,
           "doc": "Serie alineada a `cohorte` con el ORIGEN FINO de cada proyecto"
         }
       ],
       "lenguaje": "python",
       "entrypoint": true,
-      "estado": "EN CURSO",
-      "estado_texto": "EN CURSO (v1: composición + nowcast por proyecto + tests)",
-      "estado_fuente": "modelo/ensemble/README.md",
-      "owner": "Claude+Valle (2026-07-12)"
+      "estado": "REPLANTEADO",
+      "estado_fuente": "capa curada",
+      "owner": "Claude+Valle (2026-07-12)",
+      "estado_texto": "NEUTRALIZADO el 2026-08-22 (ADR-0012): medía la v1. Su `main` levanta SystemExit. Re-apuntarlo pide decidir antes contra que se mide.",
+      "estado_modulo": "EN CURSO"
     },
     {
       "id": "e_baseline_embudo",
@@ -3420,6 +3455,367 @@ const MAPA_MODELO = {
       "estado_texto": "FUTURO",
       "estado_fuente": "producto/api/README.md",
       "owner": "vacante"
+    },
+    {
+      "id": "s_ingesta_od",
+      "label": "ingesta_od.py + parser_od.py",
+      "rol": "script",
+      "etapa": "ingesta",
+      "archivo": "datos/expedientes/src/parser_od.py",
+      "modulo": "datos/expedientes",
+      "que_es": "Baja los PDF de la Orden del Dia y saca los FIRMANTES del dictamen. El CKAN no los publica: el dato solo vive en el PDF.",
+      "notas": [
+        "Ancla del parser: 'Sala de las comisiones, <fecha>.' — la misma formula en las DOS camaras.",
+        "En 2020-2021 esa formula NO EXISTE y las firmas se reconocen por su FORMA; salen marcadas sin_ancla y resuelven al 96,2%, la misma tasa que las demas.",
+        "Lo que no se puede leer queda MARCADO con su motivo, no se descarta en silencio."
+      ],
+      "bloque": "origen",
+      "existe": true,
+      "loc": 487,
+      "simbolos": [
+        {
+          "nombre": "Dictamen",
+          "tipo": "clase",
+          "linea": 117,
+          "doc": null
+        },
+        {
+          "nombre": "OrdenDelDia",
+          "tipo": "clase",
+          "linea": 125,
+          "doc": null
+        },
+        {
+          "nombre": "_normalizar",
+          "tipo": "funcion",
+          "linea": 143,
+          "doc": "Colapsa los espacios que mete la extracción de PDF, sin tocar los saltos."
+        },
+        {
+          "nombre": "_sin_acentos_mayus",
+          "tipo": "funcion",
+          "linea": 149,
+          "doc": null
+        },
+        {
+          "nombre": "_parece_nombre",
+          "tipo": "funcion",
+          "linea": 154,
+          "doc": "Filtro conservador: preferimos perder un nombre raro a inventar uno."
+        },
+        {
+          "nombre": "_firmantes_de",
+          "tipo": "funcion",
+          "linea": 176,
+          "doc": null
+        }
+      ],
+      "lenguaje": "python",
+      "entrypoint": true,
+      "estado": "EN CURSO",
+      "estado_texto": "EN CURSO — backfill CKAN **refrescado el 07-08-2026**.",
+      "estado_fuente": "datos/expedientes/README.md",
+      "owner": "Claude+Franco (2026-07-11)"
+    },
+    {
+      "id": "d_firmas",
+      "label": "dictamenes_firmas.parquet",
+      "rol": "dato",
+      "etapa": "bases",
+      "modulo": "datos/expedientes",
+      "que_es": "Quien firmo cada dictamen, en que caracter, con que disidencia y de que bloque. 125.504 firmas en Diputados (2008-2026) y 17.688 en el Senado.",
+      "notas": [
+        "Indexado por (proyecto, camara, comision, dictamen): un mismo expediente puede tener dictamen en las dos camaras.",
+        "96,0% de las firmas emparejadas a un legislador concreto del padron."
+      ],
+      "bloque": "origen",
+      "estado": "EN CURSO",
+      "estado_texto": "EN CURSO — backfill CKAN **refrescado el 07-08-2026**.",
+      "estado_fuente": "datos/expedientes/README.md",
+      "owner": "Claude+Franco (2026-07-11)"
+    },
+    {
+      "id": "s_puerta_a",
+      "label": "puerta_a.py",
+      "rol": "script",
+      "etapa": "origen",
+      "archivo": "modelo/ensemble/src/puerta_a.py",
+      "modulo": "modelo/ensemble",
+      "que_es": "Lee el CARACTER observado del dictamen y lo convierte en un condicionante de la votacion de su camara. Sirve a A sobre B y a C sobre D.",
+      "notas": [
+        "Devuelve uno de tres estados y, cuando no hay dato, un condicionante que vale 0.",
+        "Marca los ACUMULADOS: una Orden del Dia dictamina varios expedientes y su destino esta atado al texto unificado."
+      ],
+      "bloque": "origen",
+      "existe": true,
+      "loc": 445,
+      "simbolos": [
+        {
+          "nombre": "_texto",
+          "tipo": "funcion",
+          "linea": 113,
+          "doc": "Un faltante puede llegar como None, NaN o pd.NA según el backend de dtype."
+        },
+        {
+          "nombre": "_fecha",
+          "tipo": "funcion",
+          "linea": 118,
+          "doc": null
+        },
+        {
+          "nombre": "_algun_si",
+          "tipo": "funcion",
+          "linea": 122,
+          "doc": "¿Alguna fila dice que sí? Tolera None/NaN/pd.NA sin el downcast deprecado."
+        },
+        {
+          "nombre": "_fecha_dictamen",
+          "tipo": "funcion",
+          "linea": 129,
+          "doc": "Fecha del dictamen, en cascada, porque las dos cámaras no traen lo mismo."
+        },
+        {
+          "nombre": "_n_expedientes",
+          "tipo": "funcion",
+          "linea": 169,
+          "doc": "Cuántos expedientes dictamina la Orden del Día (el sumario los lista con `;`)."
+        },
+        {
+          "nombre": "cargar_caracter",
+          "tipo": "funcion",
+          "linea": 185,
+          "doc": "Una fila por (proyecto_id, camara) con el carácter observado del dictamen."
+        }
+      ],
+      "lenguaje": "python",
+      "entrypoint": false,
+      "estado": "EN CURSO",
+      "estado_texto": "EN CURSO (v1: composición + nowcast por proyecto + tests)",
+      "estado_fuente": "modelo/ensemble/README.md",
+      "owner": "Claude+Valle (2026-07-12)"
+    },
+    {
+      "id": "s_padron_vigente",
+      "label": "padron_vigente.py",
+      "rol": "script",
+      "etapa": "bases",
+      "archivo": "datos/padron/src/padron_vigente.py",
+      "modulo": "datos/padron",
+      "que_es": "La foto de la camara a una fecha: UNA fila por banca. El padron oficial gana, el historico rellena lo que aquel no cubre.",
+      "notas": [
+        "Pegarlos sin mas da 513 diputados en vez de 257, y deduplicar por id tampoco alcanza: la misma persona tiene otro id en cada archivo cuando su nombre esta escrito distinto.",
+        "Se resuelve con match por SUBCONJUNTO de tokens, la misma regla que empareja los firmantes. Un empate NUNCA se rompe por la fuerza: se cuenta como ambiguo.",
+        "Control contra las bancas reales: 256/257/259/258/257 en cinco fechas, cero ambiguedades."
+      ],
+      "bloque": "origen",
+      "existe": true,
+      "loc": 186,
+      "simbolos": [
+        {
+          "nombre": "_tokenizar",
+          "tipo": "funcion",
+          "linea": 79,
+          "doc": "El tokenizador de `datos/expedientes` — el mismo que empareja las firmas."
+        },
+        {
+          "nombre": "archivos_de",
+          "tipo": "funcion",
+          "linea": 88,
+          "doc": "Los archivos de esa cámara, EN ORDEN DE PRIORIDAD: oficial primero."
+        },
+        {
+          "nombre": "_vigentes",
+          "tipo": "funcion",
+          "linea": 96,
+          "doc": null
+        },
+        {
+          "nombre": "padron_vigente",
+          "tipo": "funcion",
+          "linea": 105,
+          "doc": "Una fila por banca a `fecha`, oficial primero y el histórico rellenando."
+        },
+        {
+          "nombre": "verificar",
+          "tipo": "funcion",
+          "linea": 159,
+          "doc": "Contrasta el conteo contra las bancas reales. El control que puede decir NO."
+        }
+      ],
+      "lenguaje": "python",
+      "entrypoint": true,
+      "estado": "EN CURSO",
+      "estado_texto": "EN CURSO (v1: Diputados 257 + Senado 72 vigentes) · **Owner:** Valle (2026-07-14)",
+      "estado_fuente": "datos/padron/README.md",
+      "owner": "Valle (2026-07-14)"
+    },
+    {
+      "id": "s_nowcast_puertas",
+      "label": "nowcast_puertas.py",
+      "rol": "script",
+      "etapa": "nowcast",
+      "archivo": "modelo/ensemble/src/nowcast_puertas.py",
+      "modulo": "modelo/ensemble",
+      "que_es": "EL PUNTO DE ENTRADA. Entra un proyecto —real o hipotetico— y corre la cadena HACIA ADELANTE sobre la configuracion actual de las dos camaras.",
+      "notas": [
+        "Devuelve el numero CON el desagregado por legislador: quien acompaña, quien no, sobre quien hay incognita y a quien ir a buscar.",
+        "El tablero por legislador y la probabilidad salen del MISMO calculo: antes eran dos, y la tabla contradecia al numero.",
+        "No reimplementa nada: reusa roster_nominal, simular_con_guardas, proyectar_postura, puerta_a y puerta_d."
+      ],
+      "bloque": "origen",
+      "existe": true,
+      "loc": 479,
+      "simbolos": [
+        {
+          "nombre": "_bloque",
+          "tipo": "funcion",
+          "linea": 79,
+          "doc": null
+        },
+        {
+          "nombre": "alineacion_individual",
+          "tipo": "funcion",
+          "linea": 88,
+          "doc": "P(afirmativo) de CADA legislador sobre su PROPIO récord."
+        },
+        {
+          "nombre": "perfil_legislador",
+          "tipo": "funcion",
+          "linea": 136,
+          "doc": "Cómo se espera que vote esta persona. Devuelve p_afirma_si_vota y p_presente."
+        },
+        {
+          "nombre": "a_linea_y_desvio",
+          "tipo": "funcion",
+          "linea": 178,
+          "doc": "Traduce una P(afirmativo) al par (línea, desvío) que el agregador reproduce."
+        },
+        {
+          "nombre": "_p_afirmativo_del_simulador",
+          "tipo": "funcion",
+          "linea": 199,
+          "doc": "P(este legislador vote AFIRMATIVO) según el MISMO modelo que simula la votación."
+        },
+        {
+          "nombre": "armar_roster",
+          "tipo": "funcion",
+          "linea": 215,
+          "doc": "Perfil de cada legislador -> los arrays que entran al agregador."
+        }
+      ],
+      "lenguaje": "python",
+      "entrypoint": true,
+      "estado": "EN CURSO",
+      "estado_texto": "EN CURSO (v1: composición + nowcast por proyecto + tests)",
+      "estado_fuente": "modelo/ensemble/README.md",
+      "owner": "Claude+Valle (2026-07-12)"
+    },
+    {
+      "id": "c_guardas",
+      "label": "Guardas de sobreconfianza",
+      "rol": "variable",
+      "etapa": "origen",
+      "archivo": "modelo/ensemble/src/ensemble.py",
+      "modulo": "modelo/ensemble",
+      "formula": "piso de desvío 0,02 · P(mayoría) ∈ [1%, 99%]",
+      "que_es": "Ni el legislador mas leal es un lock, y ninguna votacion es 0%/100%: hay riesgo sistemico que la independencia entre legisladores no capta.",
+      "notas": [
+        "Un SOLO lugar en todo el repo, y hay un test que recorre el codigo y falla si alguien define las constantes en otro archivo.",
+        "Hasta el 22-08 vivian solo en el camino de la v1: la Puerta D devolvia el numero CRUDO y un roster unanime le daba 1,0 exacto."
+      ],
+      "bloque": "origen",
+      "existe": true,
+      "loc": 396,
+      "simbolos": [
+        {
+          "nombre": "_cargar_simulador",
+          "tipo": "funcion",
+          "linea": 68,
+          "doc": "Importa simular_votacion del agregador sin tocar su código."
+        },
+        {
+          "nombre": "_cargar_proyector",
+          "tipo": "funcion",
+          "linea": 81,
+          "doc": "Importa cargar + proyectar_postura de variables/bloque (contrato publico)."
+        },
+        {
+          "nombre": "componer",
+          "tipo": "funcion",
+          "linea": 107,
+          "doc": "DADA DE BAJA (2026-08-22) - era el corazon de la v1. Ver `_BAJA_V1`."
+        },
+        {
+          "nombre": "_root",
+          "tipo": "funcion",
+          "linea": 115,
+          "doc": null
+        },
+        {
+          "nombre": "_padron_csv",
+          "tipo": "funcion",
+          "linea": 119,
+          "doc": null
+        },
+        {
+          "nombre": "_disciplina_csv",
+          "tipo": "funcion",
+          "linea": 126,
+          "doc": null
+        }
+      ],
+      "lenguaje": "python",
+      "entrypoint": true,
+      "estado": "EN CURSO",
+      "estado_texto": "EN CURSO (v1: composición + nowcast por proyecto + tests)",
+      "estado_fuente": "modelo/ensemble/README.md",
+      "owner": "Claude+Valle (2026-07-12)"
+    },
+    {
+      "id": "x_nowcast_puertas_html",
+      "label": "Nowcast-Puertas.html",
+      "rol": "resultado",
+      "etapa": "nowcast",
+      "archivo": "casos/nowcast_puertas_html.py",
+      "modulo": "casos",
+      "que_es": "El entregable: la cadena a la vista con lo que se OBSERVA y lo que se CALCULA distinguido, el slider de clima, y la tabla por legislador.",
+      "notas": [
+        "Dice en pantalla que el numero es CONDICIONAL, y avisa cuando esta en el techo de confianza para que un slider que no mueve nada no se lea como un slider roto."
+      ],
+      "bloque": "origen",
+      "existe": true,
+      "loc": 373,
+      "simbolos": [
+        {
+          "nombre": "icg_del_mes",
+          "tipo": "funcion",
+          "linea": 45,
+          "doc": "El ICG del mes de la fecha; si no está, el más nuevo que haya."
+        },
+        {
+          "nombre": "construir",
+          "tipo": "funcion",
+          "linea": 62,
+          "doc": null
+        },
+        {
+          "nombre": "escribir",
+          "tipo": "funcion",
+          "linea": 75,
+          "doc": null
+        },
+        {
+          "nombre": "main",
+          "tipo": "funcion",
+          "linea": 81,
+          "doc": null
+        }
+      ],
+      "lenguaje": "python",
+      "entrypoint": true,
+      "estado": "",
+      "owner": "—",
+      "estado_texto": "su README no declara `**Estado:**`"
     }
   ],
   "links": [
@@ -3880,11 +4276,6 @@ const MAPA_MODELO = {
       "nota": "FUTURO: no existe"
     },
     {
-      "de": "v_embudo",
-      "a": "c_p_llega",
-      "tipo": "calcula"
-    },
-    {
       "de": "v_bloque",
       "a": "c_roster_origen",
       "tipo": "flujo",
@@ -3939,18 +4330,6 @@ const MAPA_MODELO = {
       "de": "c_simular_origen",
       "a": "c_p_mayoria_origen",
       "tipo": "calcula"
-    },
-    {
-      "de": "c_p_llega",
-      "a": "n_v1",
-      "tipo": "calcula",
-      "nota": "factor 1"
-    },
-    {
-      "de": "c_p_mayoria_origen",
-      "a": "n_v1",
-      "tipo": "calcula",
-      "nota": "factor 2"
     },
     {
       "de": "g_A",
@@ -4045,9 +4424,10 @@ const MAPA_MODELO = {
       "nota": "puerta ocurrida ⇒ vale 1"
     },
     {
-      "de": "n_v1",
+      "de": "n_puertas",
       "a": "n_salida",
-      "tipo": "flujo"
+      "tipo": "flujo",
+      "nota": "el numero publicado, condicional a que las camaras voten"
     },
     {
       "de": "n_alerta_senado",
@@ -4060,11 +4440,6 @@ const MAPA_MODELO = {
       "a": "n_salida",
       "tipo": "alerta",
       "nota": "FUTURO"
-    },
-    {
-      "de": "n_v1",
-      "a": "e_backtest_cadena",
-      "tipo": "flujo"
     },
     {
       "de": "d_p_embudo",
@@ -4119,11 +4494,109 @@ const MAPA_MODELO = {
       "nota": "sólo 72 vigentes ⇒ el backtest corre sobre Diputados"
     },
     {
-      "de": "n_v1",
+      "de": "c_p_mayoria_origen",
       "a": "g_D",
       "tipo": "condiciona",
-      "nota": "P(aprobar en Revisora | se aprobó en Origen)",
-      "detalle": "No es flujo de datos: `puerta_d.py` no lee P(origen). Lo que cambia es el supuesto — con media sanción A y B ya ocurrieron y valen 1, y el número publicado queda P(C)·P(D)."
+      "nota": "P(aprobar en Revisora | se aprobo en Origen)",
+      "detalle": "No es flujo de datos: `puerta_d.py` no lee la P de origen. Lo que cambia es el SUPUESTO — con media sancion, el dictamen y la votacion de origen ya ocurrieron y valen 1, y el numero queda [C observada] · P(D)."
+    },
+    {
+      "de": "s_ingesta_od",
+      "a": "d_firmas",
+      "tipo": "flujo"
+    },
+    {
+      "de": "d_firmas",
+      "a": "s_puerta_a",
+      "tipo": "flujo",
+      "nota": "el caracter observado del dictamen"
+    },
+    {
+      "de": "d_padron_dip",
+      "a": "s_padron_vigente",
+      "tipo": "flujo",
+      "nota": "el oficial gana"
+    },
+    {
+      "de": "s_padron_vigente",
+      "a": "c_roster_origen",
+      "tipo": "flujo",
+      "nota": "la foto completa de la camara"
+    },
+    {
+      "de": "s_padron_vigente",
+      "a": "c_roster_revisora",
+      "tipo": "flujo"
+    },
+    {
+      "de": "s_puerta_a",
+      "a": "g_A",
+      "tipo": "calcula"
+    },
+    {
+      "de": "s_puerta_a",
+      "a": "g_C",
+      "tipo": "calcula"
+    },
+    {
+      "de": "g_A",
+      "a": "c_p_mayoria_origen",
+      "tipo": "condiciona",
+      "nota": "el caracter CONDICIONA la votacion; no la multiplica",
+      "detalle": "Sin dictamen leido el condicionante se encoge a 0 y queda la estimacion sin condicionar. Hoy vale 0 para todos: falta contra que calibrarlo."
+    },
+    {
+      "de": "c_guardas",
+      "a": "c_p_mayoria_origen",
+      "tipo": "config",
+      "nota": "nunca 0%/100%"
+    },
+    {
+      "de": "c_guardas",
+      "a": "g_D",
+      "tipo": "config",
+      "nota": "la Puerta D hereda las MISMAS guardas desde el 22-08"
+    },
+    {
+      "de": "s_nowcast_puertas",
+      "a": "n_puertas",
+      "tipo": "calcula"
+    },
+    {
+      "de": "c_p_mayoria_origen",
+      "a": "s_nowcast_puertas",
+      "tipo": "flujo",
+      "nota": "paso B"
+    },
+    {
+      "de": "g_D",
+      "a": "s_nowcast_puertas",
+      "tipo": "flujo",
+      "nota": "paso D"
+    },
+    {
+      "de": "n_puertas",
+      "a": "x_nowcast_puertas_html",
+      "tipo": "flujo"
+    },
+    {
+      "de": "f_hcdn_tp",
+      "a": "s_ingesta_od",
+      "tipo": "flujo",
+      "nota": "los PDF de la Orden del Dia (el CKAN no publica firmantes)"
+    },
+    {
+      "de": "f_senado",
+      "a": "s_ingesta_od",
+      "tipo": "flujo",
+      "nota": "el Senado publica sus Ordenes del Dia por su propia via"
+    },
+    {
+      "de": "v_embudo",
+      "a": "e_baseline_embudo",
+      "tipo": "flujo",
+      "nota": "p_sancion: la unica vara que sobrevive a la baja de la v1",
+      "detalle": "`p_sancion` NO entra a la cadena: ya contiene A, B, C y D adentro, asi que meterlo como factor la haria multiplicarse por si misma. Su lugar es la baseline."
     }
   ]
 };

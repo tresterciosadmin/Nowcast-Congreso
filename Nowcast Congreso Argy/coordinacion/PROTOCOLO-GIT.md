@@ -74,5 +74,21 @@ costó días). Al crear la salida de un módulo nuevo, decidí **en el mismo com
 si entra al régimen transitorio, y verificá:
 
 ```powershell
-git check-ignore -q <archivo>   # si sale 0, está IGNORADO y no viaja
+git add -n <archivo>   # ARCHIVO NUEVO: si imprime `add '<ruta>'`, VIAJA.
+
+# Para auditar archivos que YA estan en el repo, `add -n` NO sirve (un archivo
+# trackeado y sin cambios tampoco imprime nada). Ahi va:
+git check-ignore -v --non-matching -- <rutas>   # ignorado si la regla NO empieza con !
 ```
+
+**No uses `git check-ignore -q`.** Devolvia 0 tambien cuando matchea una
+**excepcion** (`!...`), o sea justo sobre los archivos que rescatamos a mano,
+y el `-q` esconde cual fue la regla. Leerlo como "esta ignorado" es al reves.
+Ver **ADR-0011**. Si queres ver POR QUE, `git check-ignore -v <archivo>` y mira
+la regla: si empieza con `!`, el archivo viaja.
+
+**Y la ruta va relativa a donde estas parado.** El prefijo
+`"Nowcast Congreso Argy/"` es correcto **desde la raiz git** y veneno desde
+adentro del proyecto: ahi arma una ruta que no existe, no le pega a ninguna
+excepcion, cae en `*.csv` y un archivo sano se ve ignorado. No falla: contesta
+otra cosa.

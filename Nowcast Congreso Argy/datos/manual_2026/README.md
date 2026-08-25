@@ -1,6 +1,6 @@
 # Módulo: datos/manual_2026
 
-<!-- huella: 5e99fac70a7b -->
+<!-- huella: e3b0c44298fc -->
 
 **Propósito.** Integrar el Excel curado a mano por Franco (período 2025–2027) al esquema canónico. Aporta votos nominales 2026 de **ambas cámaras**, padrón con **bloque del Senado** (resuelve el hueco), provincia, comisión y mandato.
 

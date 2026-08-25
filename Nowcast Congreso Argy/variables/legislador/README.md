@@ -1,6 +1,6 @@
 # Módulo: variables/legislador
 
-<!-- huella: d0a96af4fe87 -->
+<!-- huella: e3b0c44298fc -->
 
 **Propósito.** La **base de datos individual de legisladores**: una ficha por cada diputado/senador que votó alguna vez en la base canónica, con su historial completo — identidad, cámara(s), distrito, períodos parlamentarios, trayectoria de bloques, presentismo, perfil de voto y tasa de desvío vs. su bloque. Es el "análisis individual de cada legislador" del que la detección de díscolos (`modelo/voto_individual`) es un caso de uso, no el objetivo.
 

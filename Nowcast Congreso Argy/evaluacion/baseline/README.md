@@ -1,6 +1,6 @@
 # Módulo: evaluacion/baseline
 
-<!-- huella: 46b6e6f99c57 -->
+<!-- huella: e3b0c44298fc -->
 
 **Propósito.** Baseline de bloque (HECHO). Documenta el piso a superar por cualquier modelo.
 

@@ -1,6 +1,6 @@
 # Módulo: producto/dashboard
 
-<!-- huella: 8d96242db60d -->
+<!-- huella: e5d193d4e732 -->
 
 **Propósito.** Tablero interno: radar de tracción + mapa de pivotes + escenarios. Encuadre augmentation.
 
@@ -15,16 +15,11 @@ en la raíz.
 
 ## Buscar acá si
 
-- los paneles que se abren con doble clic (estan en la raiz, no aca)
-- el tablero ejecutivo `TABLERO-CONTROL.html` (se edita solo `tablero_datos.js`)
+- los paneles y el tablero ejecutivo que se abren con doble clic (estan en la RAIZ, no aca; se edita solo `tablero_datos.js`)
 - de donde sale el numero: el mapa de la maquinaria del calculo (`MAPA-MODELO.html`)
 - que script transforma que dato, o que archivo implementa una etapa del calculo
-- las DOS formulaciones que conviven (v1 en produccion y las puertas A-B-C-D)
-- que piezas del modelo estan parqueadas, pendientes o son huecos conocidos
-- como se dibuja el circuito bicameral y que nodos se duplican en las dos camaras
-- de donde sale el estado de un nodo del mapa (README del modulo o capa curada)
-- regenerar los datos de un panel sin tocar su HTML
-- los informes bicamerales por caso (los generadores estan en `casos/`)
+- que piezas del modelo estan parqueadas o son huecos conocidos, y de donde sale el estado de cada nodo
+- como se dibuja el circuito bicameral, y regenerar los datos de un panel sin tocar su HTML
 
 <!-- Las dos cosas de arriba las levanta `.mapa/indexar.py` al MAPA.md de la
      raiz: el `Resumen:` va a la columna "Que es" y las pistas al router

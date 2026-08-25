@@ -74,6 +74,12 @@ CANONICA_VOTOS_RESUELTO = CANONICA_CLEAN / "votos_resuelto.parquet"
 
 EXPEDIENTES_CLEAN = _env("EXP_CLEAN", RAIZ / "datos" / "expedientes" / "data" / "clean")
 EXPEDIENTES_ACTA_EXP = EXPEDIENTES_CLEAN / "acta_expediente.parquet"
+# Los FIRMANTES del dictamen (leidos de los PDF de la Orden del Dia). Cruzan de
+# datos/expedientes a modelo/ensemble: son el insumo de la Puerta A y de la C.
+EXPEDIENTES_FIRMAS = EXPEDIENTES_CLEAN / "dictamenes_firmas.parquet"
+EXPEDIENTES_FIRMAS_SENADO = EXPEDIENTES_CLEAN / "dictamenes_firmas_senado.parquet"
+EXPEDIENTES_DICTAMENES_COMISIONES = EXPEDIENTES_CLEAN / "dictamenes_comisiones.parquet"
+EXPEDIENTES_RESULTADOS = EXPEDIENTES_CLEAN / "expedientes_resultados.parquet"
 
 BOT_CLEAN = RAIZ / "datos" / "bot_recoleccion" / "data" / "clean"
 BOT_TP_ENTRADAS = BOT_CLEAN / "tp_entradas.parquet"
@@ -85,8 +91,12 @@ PROYECTOS_SCHEMA_SQL = RAIZ / "datos" / "proyectos" / "src" / "schema.sql"
 PADRON_DIR = RAIZ / "datos" / "padron" / "data"
 PADRON_DIPUTADOS = PADRON_DIR / "padron_diputados.csv"
 PADRON_SENADO = PADRON_DIR / "padron_senado.csv"
+PADRON_DIPUTADOS_HISTORICO = PADRON_DIR / "padron_diputados_historico.csv"
 PADRON_SENADO_HISTORICO = PADRON_DIR / "padron_senado_historico.csv"
 PADRON_SENADO_LINAJE_MANUAL = PADRON_DIR / "senado_linaje_manual.csv"
+# La foto de la camara a una fecha (oficial + historico, sin duplicados). Cruza de
+# datos/padron a modelo/ensemble: es lo que arma el roster nominal.
+PADRON_VIGENTE_PY = RAIZ / "datos" / "padron" / "src" / "padron_vigente.py"
 
 SENADO_DATA = RAIZ / "datos" / "senado" / "data"
 SENADO_PADRON_BLOQUES = SENADO_DATA / "padron_bloques_senado.csv"
@@ -150,7 +160,9 @@ WORKFLOWS = RAIZ_GIT / ".github" / "workflows"
 # o estar fuera de git por peso). Lo que NO esta aca tiene que existir en disco.
 GENERADOS = {
     "CANONICA_CLEAN", "CANONICA_ACTAS", "CANONICA_VOTOS", "CANONICA_VOTOS_RESUELTO",
-    "EXPEDIENTES_CLEAN", "EXPEDIENTES_ACTA_EXP",
+    "EXPEDIENTES_CLEAN", "EXPEDIENTES_ACTA_EXP", "PADRON_DIPUTADOS_HISTORICO",
+    "EXPEDIENTES_FIRMAS", "EXPEDIENTES_FIRMAS_SENADO",
+    "EXPEDIENTES_DICTAMENES_COMISIONES", "EXPEDIENTES_RESULTADOS",
     "BOT_CLEAN", "BOT_TP_ENTRADAS",
     "PROYECTOS_DB", "PROYECTOS_CUARENTENA_DB",
     "PADRON_SENADO_HISTORICO",

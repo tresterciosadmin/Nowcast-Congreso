@@ -1,6 +1,6 @@
 # Módulo: datos/canonica
 
-<!-- huella: df5ea5bf5b1b -->
+<!-- huella: e3b0c44298fc -->
 
 **Propósito.** Nuestra **base de datos propia y única** de votaciones. Unifica todas las fuentes (semilla histórica Andy Tow + CKAN + argentinadatos + Senado + lo que traiga el bot) en una sola tabla normalizada, deduplicada y con resolución de entidades (legislador, bloque, provincia, acta). Es la fuente de verdad de la que leen todos los módulos de `variables/` y `modelo/`.
 

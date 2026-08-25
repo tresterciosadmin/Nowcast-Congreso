@@ -6,6 +6,103 @@ Cómo reclamar: editá este archivo en tu rama, agregá la fila, y mencioná en 
 
 ---
 
+## Sesion 2026-08-25 (Valle+Claude) — anexo 2. MAPA-MODELO sin puntas de flecha, y nodos arrastrables
+
+| Modulo | Quien | Desde | Estado |
+|---|---|---|---|
+| **producto/dashboard** | Claude (con Valle) | 2026-08-25 | **HECHO, modulo LIBRE.** Sin `marker-end` en todo el diagrama + arrastre de nodos. |
+
+**Fuera las puntas de flecha, en todo el diagrama.** Se dibujaban en el borde de la CAJA del nodo y no en el de su FORMA: en un ovalo eso las deja flotando en el hueco, y con varias aristas entrando por carriles distintos aparecian **apiladas y sueltas** (`Roster nominal`). Decision de Valle: sacarlas, no reanclarlas — el sentido lo da el layout (izquierda a derecha por columnas) y el camino vivo se distingue por color y grosor. **Como volver atras quedo escrito en el codigo:** anclar el final del camino a la forma, no a la caja. `marcadores()` quedo vacia y el `<defs>` como enganche.
+
+**Los nodos se arrastran.** Las lineas, los recuadros de grupo y las bandas siguen al nodo. Captura del puntero sobre el `svg` (cada cuadro se redibuja el diagrama y el `<g>` del nodo deja de existir), umbral de 4 px para no correr un nodo al abrir su ficha, y `NODO_MOVIDO` para que el `click` posterior a un arrastre no abra la ficha.
+
+**`encuadrar()` es funcion nueva, sacada de `colocar()`.** Los recuadros y el tamano del lienzo salen de donde quedaron los nodos, pero llamar a `colocar()` entero devolveria el nodo a su lugar. Una cuenta, dos usuarios: layout inicial y arrastre.
+
+**NO persiste, a proposito** (decision de Valle): recargar devuelve el layout automatico y eso ES el deshacer; el uso previsto es desenredar una zona, sacar la captura y pedir la correccion. Si alguna vez hay que conservarlo, **las posiciones son DATOS y van a `mapa_modelo_datos.js`**, no al HTML.
+
+**Verificado:** las puntas en Chromium headless sobre `file://` — 144 lineas, 0 con `marker-end`, 0 marcadores en `defs`, cero errores de consola, mas captura. **El arrastre lo confirmo Valle en su maquina** (la prueba de render se cayo porque el sandbox dejo de aceptar comandos de shell; la corrida de Valle es la que vale igual).
+
+**NO es de este cambio y sigue pendiente:** el dibujo arranca encajado abajo y *Ajustar* no lo recentra.
+
+## Sesion 2026-08-25 (Valle+Claude) — anexo. El arco A→B del MAPA-MODELO se dibujaba con el camino del arco entre camaras
+
+| Modulo | Quien | Desde | Estado |
+|---|---|---|---|
+| **producto/dashboard** | Claude (con Valle) | 2026-08-25 | **HECHO, modulo LIBRE.** `caminoCondiciona()` ahora tiene los DOS casos. |
+
+**Lo vio Valle en pantalla.** La arista `condiciona` de `g_A` → `c_p_mayoria_origen` salia como **un pinche turquesa de 6 px** asomando sobre el nodo Paso B, con la etiqueta **debajo de los dos nodos**. Causa: hay **dos** aristas `condiciona` en `mapa_modelo_datos.js` y **una sola** funcion de camino, escrita —segun su propio comentario— para el arco **entre camaras**. `g_A` y `c_p_mayoria_origen` estan en la misma camara, misma fila, sin recuadro de grupo: el camino apuntaba hacia atras y hacia arriba y colapsaba. Ahora, sin recuadro destino o sin 60 px para bajar, dibuja un **puente corto por arriba**.
+
+**Y la etiqueta se calculaba DOS veces** (la formula del caso (a) repetida en la rutina de dibujo). Ahora el ancla sale de `caminoCondiciona` via `a._rot` y el dibujo la consume: una sola cuenta. Mismo problema de la sesion, esta vez en el dibujo.
+
+**Verificado renderizando en Chromium headless sobre `file://`:** cero errores de consola; el camino medido en el DOM pasa a `M2823.5,302.5 C2823.5,258.5 3034.5,258.5 3034.5,300.5` (211×33 px sobre los dos nodos) y el rotulo sube a la cima del puente. Captura revisada a ojo.
+
+⚠️ **ANOTADO Y NO TOCADO (capa de datos, decision de Valle):** `g_A → c_p_mayoria_origen` esta declarada `condiciona` pero **`g_C → g_D` esta declarada `calcula`**, cuando segun la formulacion son simetricas. El mapa dice dos cosas distintas sobre la misma relacion.
+
+**NO es de este cambio y sigue pendiente:** el dibujo arranca encajado abajo y *Ajustar* no lo recentra (medido el 22-08: viene de antes).
+
+## Sesion 2026-08-25 (Valle+Claude) — CERRADA. Auditoria de duplicaciones: definiciones compartidas + la TERCERA formulacion
+
+| Modulo | Quien | Desde | Estado |
+|---|---|---|---|
+| **datos/export** | Claude (con Valle) | 2026-08-25 | **HECHO, modulo LIBRE.** Re-exporta las definiciones en vez de copiarlas. |
+| **modelo/voto_individual** | Claude (con Valle) | 2026-08-25 | **HECHO, modulo LIBRE.** Idem. |
+| **modelo/agregador_institucional** | Claude (con Valle) | 2026-08-25 | **HECHO, modulo LIBRE.** Idem (version escalar). |
+| **variables/asistencia_quorum** | Claude (con Valle) | 2026-08-25 | **HECHO, modulo LIBRE.** Idem. |
+| **variables/legislador** | Claude (con Valle) | 2026-08-25 | **HECHO, modulo LIBRE.** Idem. |
+| **casos** | Claude (con Valle) | 2026-08-25 | **HECHO, modulo LIBRE.** `proyeccion_hipotetica_bicameral.py` neutralizado. |
+
+**ADR-0014: las definiciones compartidas viven en UN solo lugar.** `definiciones.py` en la raiz, hermano de `rutas.py`: **`rutas.py` dice DONDE esta cada cosa, `definiciones.py` dice QUE ES cada cosa.** Entran `periodo_parlamentario` (estaba en 4 modulos), `normalizar_mayoria` (3, en dos formas: Serie y escalar), `MAYORIAS` y `BANCAS` (`MIEMBROS`, 3). Los modulos **RE-EXPORTAN** el nombre, asi que `export_base.periodo_parlamentario` sigue existiendo y **aguas abajo no cambia nada**.
+
+**El argumento, y esta medido.** El guardian ya existia (`tests/test_definiciones_compartidas.py`, 20-08) y estaba **avisando de un bug que nadie podia arreglar**: las CUATRO copias revientan con backend pyarrow (`a % 2` sobre `int64[pyarrow]` -> `NotImplementedError`), el arreglo era **una linea por copia**, y llevaba un mes trabado con el motivo en el propio `xfail`: *"toca 4 modulos con dueno"*. **Con las copias, un arreglo de una linea costaba cuatro claims de modulo.** El bug quedo arreglado y al test se le saco el `xfail`.
+
+**Cero cambio de comportamiento, verificado antes de aplicar:** 15 casos borde de fecha y 13 de mayoria, en los **dos backends de dtype**, contra las cuatro copias viejas transcritas del disco. Identico con numpy; con pyarrow las viejas levantan `NotImplementedError` y la nueva responde.
+
+**Test que falla con el codigo viejo:** `test_ninguna_copia_redefine_las_definiciones` compara **identidad de objeto**, no resultados. Los tests que ya estaban comparaban valores, y por eso pasaban igual con una definicion o con cinco. Verificado re-pegando a mano en `export_base.py` una copia *behaviorally identica*: los otros siete siguen en verde y **solo ese falla**. Archivo completo: **8 chequeos**.
+
+**LA TERCERA FORMULACION, viva y sin neutralizar.** `casos/proyeccion_hipotetica_bicameral.py` calculaba con `umbral = n // 2 + 1` —mayoria **ABSOLUTA** (129 en Diputados), no simple, y sin el arreglo del empate del ADR-0013— y con `p_acompana` = share del bloque recortado a [0,02·0,98], sin componer `share·(1−d) + (1−share)·(d/2)` y sin separar direccion de presencia. **El detalle que lo delata:** el 22-08 alguien lo toco para importar `P_INCERTIDUMBRE` del contrato del modelo *"porque una copia es una divergencia esperando"* — y arreglo esa copia sin ver las otras dos, tres lineas mas abajo. Neutralizado (`main` levanta `SystemExit`; el cuerpo viejo quedo como `_main_original`). Copia en `Archivos_Borrar/`.
+
+**Segunda aparicion del patron "dos archivos, mismo nombre, contenido distinto".** `Aportes sobre dataset congreso/Decada Votada/asuntos-diputados.csv` = **3.034 actas, 1993–2026**; el del ZIP que lee `run_pipeline.py:29` = **1.499, 2001–2014**. Contrastado contra `actas_canonico.parquet` (6.237 actas): de Diputados, antes de 2001 la canonica tiene **1994: 14 actas y 1997: 12, y nada mas**. Habia ~242 actas de 1993–2000 en disco que la base nunca vio. **Valle decidio que no interesan y hacen ruido** -> la carpeta suelta (19 MB) se fue a `Archivos_Borrar/`. **El ZIP NO se toco:** es dependencia viva.
+
+**Lo que se miro y se decidio NO tocar** (homonimia legitima, no duplicacion): `main` ×73, `cargar` ×10, `construir` ×7, `_get` ×8, `_pedir` ×4, `to_canonical.py` ×3, los `check`/`chk` de los tests, y los cuatro `_fecha_iso` —que parsean formatos genuinamente distintos y unificarlos seria peor—. `variables/bloque::_periodo_parlamentario` tampoco se unifica: es un ANIO legislativo, otro concepto con nombre parecido, ya cubierto por su propio test.
+
+⚠️ **PENDIENTE DE VALLE — la corrida es la que vale.** `python -m pytest tests/ -q` en PowerShell, mas los tests de los 5 modulos tocados (`datos/export/tests`, `modelo/voto_individual/tests`, `modelo/agregador_institucional/tests`, `variables/legislador/tests`, y `variables/asistencia_quorum` si tiene). **"Pasa en el sandbox" no es "pasa".**
+
+⚠️ **DOS COSAS MEDIDAS Y NO TOCADAS, en `URGENTE.md` 4 y 5:** (a) el panel de puertas muestra **dos umbrales distintos** —la barra contra 122,1 y el margen contra 129—, que es el bug del 22-08 sobreviviendo en la mitad del codigo; (b) tres de los cuatro `_fecha_iso` arman el ISO sin validar, asi que `31/02/2026` sale como `"2026-02-31"`.
+
+## Sesion 2026-08-22 (Valle+Claude) — CERRADA. UNA SOLA FORMULACION + siete errores del calculo del voto
+
+| Modulo | Quien | Desde | Estado |
+|---|---|---|---|
+| **modelo/ensemble** | Claude (con Valle) | 2026-08-22 | **HECHO, modulo LIBRE.** Baja de la v1 (ADR-0012) y punto de entrada unico por puertas. |
+| **modelo/agregador_institucional** | Claude (con Valle) | 2026-08-22 | **HECHO, modulo LIBRE.** El empate ya no aprueba (ADR-0013). |
+| **datos/padron** | Claude (con Valle) | 2026-08-22 | **HECHO, modulo LIBRE.** Foto completa de la camara + linaje re-sincronizado. |
+
+**LA FORMULACION ES UNA SOLA (ADR-0012).** `P(aprobacion) = [A observada] · P(B | caracter de origen) · [C observada] · P(D | caracter de la revisora)`. **A y C NO son probabilidades**: son el caracter observado del dictamen y CONDICIONAN, no multiplican; sin dato el condicionante se encoge a 0. `p_llega_recinto` sale de la cadena (es agenda politica, y no se modela). **El numero pasa a ser CONDICIONAL** —"si las dos camaras lo votan, ¿lo aprueban?"— y la interfaz lo dice.
+
+**La baja se hizo sin borrar:** `componer`, `_p_llega_de_embudo`, `nowcast_proyecto`, `nowcast_auto`, `imprimir_tarjeta`, la CLI de `ensemble.py` y el `main` de `backtest_cadena.py` levantan `SystemExit` con el motivo y a donde ir. Copias enteras en `Archivos_Borrar/BORRAR_modelo-ensemble-src-*.py`.
+
+**Punto de entrada vivo:** `modelo/ensemble/src/nowcast_puertas.py` — corre la cadena HACIA ADELANTE sobre la configuracion actual de las dos camaras y devuelve el numero **con el desagregado por legislador**: quien acompaña, quien no, sobre quien hay incognita y a quien ir a buscar. Su HTML: `casos/nowcast_puertas_html.py` -> `Nowcast-Puertas.html`.
+
+**SIETE ERRORES en el calculo del voto, encontrados auditando el mecanismo a pedido de Valle.** Los tres de fondo:
+
+1. **El numero del bloque se redondeaba a SI/NO en 0,5.** Coalicion Civica acompaña el 60,9% y el modelo daba 96,7%; Peronismo Federal con desvio 0,000 daba **1,000 exacto**. **Era la razon de que todo diera 99%.** Ahora se componen: `P = share·(1−d) + (1−share)·(d/2)`. Kirchnerismo: de 0,4% a **22,5%**.
+2. **La DIRECCION salia del linaje y el DESVIO del bloque real.** Del Caño salia con **P=1,00** de acompañar al Ejecutivo teniendo un record de 0,01; De la Sota igual. Ahora con historial propio suficiente **manda el historial**.
+3. **Faltar se leia como votar en contra.** Menem: vota el **1,3%** de las veces (preside) y cuando vota acompaña el **96%**. Direccion y presencia quedaron separadas; la presencia lo saca del conteo. Cubre tambien a Schiaretti (6%), marcado desde el 13-08.
+
+Los otros cuatro: el record miraba el futuro (un nowcast de 2024 usaba el 85% de sus votos de despues); el tablero y la probabilidad salian de cuentas distintas; el umbral del navegador (129) no era el del modelo (125,5); y **el empate aprobaba** (ADR-0013).
+
+**Cifras (medidas sobre el archivo generado).** Reforma de Ganancias al 2026-06-01, origen EJECUTIVO: **P 98,0% condicional**. Diputados 257 bancas · 132 acompañan / 107 no / **16 incognita** / 2 no votan · 150,5 afirmativos (banda 143-158) · umbral 122,1. Senado 72 · 40 / 25 / **7 incognita** / 0 · 45,5 afirmativos (banda 40-51) · umbral 35,6. **Antes el Senado tenia CERO incognitas y su banda era 46-51:** el modelo recupero incertidumbre real.
+
+**Padron re-sincronizado con la taxonomia.** El arreglo del FIT por patron (Franco, 07-08) funciona, pero `padron_diputados.csv` se genero antes y nunca se recalculo: **24 filas cambian, 23 correctas**, `IZQUIERDA` pasa de 8 a **32**. La 24ª (Daer) es falso positivo del patron y quedo en URGENTE para Franco.
+
+**El MAPA del modelo quedo actualizado:** la capa curada pasa de 96 a **103 nodos** y de 131 a **147 aristas**. Entran `nowcast_puertas.py`, `puerta_a.py`, `padron_vigente.py`, `dictamenes_firmas.parquet`, la ingesta de las Ordenes del Dia, las guardas de sobreconfianza y el `Nowcast-Puertas.html`; la v1 y `p_llega_recinto` quedan dibujadas como suspendidas. ⚠️ Anotado y NO tocado: el dibujo arranca encajado abajo y *Ajustar* no lo recentra — **no es de este cambio** (antes 3799x754, ahora 4312x754), es del HTML, que es capa de diseño y sigue pendiente de que elijas entre V1 y V2.
+
+**Tests: 287 chequeos verdes.** Verificado ademas renderizando el HTML en un navegador: cero errores de consola.
+
+⚠️ **PENDIENTE INMEDIATO, y bloquea dos cosas a la vez: decidir CONTRA QUE SE MIDE.** El backtest quedo neutralizado porque media la v1. Medido el 22-08: `p_sancion` da skill +0,4478 en total, pero **+0,2916 entre los 3.898 proyectos CON dictamen y −0,0257 entre los 34.799 sin el** — o sea que su merito es separar con-dictamen de sin-dictamen, justo lo que la Puerta A ahora OBSERVA. Medir la cadena nueva contra `sancionado` la mide contra algo que por diseño no predice. La unica salida con varianza real es el **MARGEN** del recuento (6.237 actas, 1.849 enganchadas). Esa misma decision destraba el condicionante del caracter (`estimar_delta_caracter`), hoy en 0 porque la etiqueta binaria esta degenerada: **2 RECHAZADO en 1.898**.
+
+**Pendientes anotados:** el peso del firmante (jefes de bloque y presidentes de comision; las dos fuentes ya existen en el repo), el padron historico del Senado, y la Tarea 2 (nombres de las puertas).
+
 ## Disponible (libre para reclamar)
 
 Prioridad alta — datos (estrategia semilla → canónica → bot, ver ADR-0002):
@@ -38,23 +135,76 @@ Depende de otros (no empezar hasta que su dependencia esté HECHA):
 - [ ] **evaluacion/backtesting** — necesita al menos un modelo nuevo.
 - [x] ~~**producto/dashboard**~~ → reclamado 2026-08-20 por Claude+Franco; **re-reclamado 2026-08-20 por Claude+Valle** (ronda 2 del Mapa del Modelo; ver la sesion abierta, abajo). Dependencia cumplida: ensemble v1.
 
+## Sesion 2026-08-21 (Valle+Claude) — CERRADA, firmantes del dictamen (Tarea 0 de la Puerta A). MODULOS LIBRES.
+
+| Modulo | Quien | Desde | Que se esta haciendo |
+|---|---|---|---|
+| **datos/expedientes** | Claude (con Valle) | 2026-08-21 | **HECHO, modulo LIBRE.** Ingestar los FIRMANTES del dictamen, que el CKAN no publica, desde el PDF de la Orden del Dia — en las DOS camaras. Prerrequisito de la Puerta A como senal observada (y de la C). Rama `feat/expedientes-firmantes-dictamen`. |
+
+| **datos/padron** | Claude (con Valle) | 2026-08-21 | **HECHO, modulo LIBRE — cedido por Valle**, que era la owner. Construir el HISTORICO de Diputados: hoy el padron es la foto vigente y cubre **81 de 257 bancas en 2008** (209 en 2010, 142 en 2022, 257 recien en 2026). Es el pendiente que el propio README declara como "fase 2". Analogo de `src/padron_senado_historico.py`: archivo aparte, MISMO esquema, `fuente=derivado:canonica`. Sin esto, el bloque de las firmas del dictamen se resuelve para el 55% de los casos. |
+
+**Decisiones de Valle (21-08):** (1) el backfill arranca **solo con proyectos de LEY** — 2.523 OD, no 18.087: las declaraciones y resoluciones no sirven; (2) el **bloque de cada firmante se resuelve contra `datos/padron`**, no se parsea del PDF (mas estable y manipulable); (3) la sonda del Senado se corrio en PowerShell.
+
+**Hallazgos verificados el 21-08 (contra el disco y contra la fuente, no contra bitacoras):**
+
+- **Regla de la URL de la OD de Diputados, cerrada:** `periodo = anio(od_publicacion) - 1882 - (1 si el mes es enero o febrero)`, y `https://www3.hcdn.gob.ar/dependencias/dcomisiones/periodo-<P>/<P>-<od_sin_ceros>.pdf`. El periodo parlamentario va del 1-mar al 28/29-feb (selector oficial de HCDN). Comprobada contra 7 PDF reales de 2008 a 2026. **El numero de OD NO reinicia con el periodo** (reinicia con la renovacion de la Camara, 10-dic de anios impares), asi que el periodo se deduce de la FECHA y nunca del numero. `www3` y `www4` son espejos.
+- **El backfill es 7x mas chico de lo que decia el plan:** de 18.087 OD unicas totales, solo **2.523 son de proyectos de LEY** (cubren 3.176 proyectos). El resto son 2.988 de resolucion y 2.254 de declaracion.
+- **HCDN ya cubre parte de la camara REVISORA.** El CKAN de Diputados publica los dictamenes de las comisiones DE Diputados, sea origen o revisora: de las 6.854 filas de dictamen de proyectos de ley, **1.515 son de proyectos con origen Senado**. El hueco real es el sistema de comisiones del Senado, no "la revisora".
+- **El Senado es viable.** Formulario POST a `/parlamentario/parlamentaria/ordenDelDiaResultado` con `busqueda_orden[ordenDelDiaPeriodo]` (anios **1983-2026**) y `tipoExpedientes` (`PL` = proyecto de ley, `CD` = venido en revision de Diputados). Descarga por id interno `/parlamentario/parlamentaria/<id>/downloadOrdenDia`. **Los PDF del Senado SI traen la lista de firmantes**, con el mismo separador `–` que Diputados; verificado sobre OD 1/2026 (CD-21/24, "proyecto de ley venido en revision" = caso Puerta C) y OD 2/2026 (PE-46/24).
+
+**RESULTADO FINAL (corrida completa del 22-08 con el parser nuevo, medido sobre el parquet y no sobre la consola).** `dictamenes_firmas.parquet`, 125.820 filas / 27 columnas: **125.504 firmas sobre 3.541 proyectos de ley, 2008-04-07 a 2026-06-19, 96,0% emparejado a un legislador** (120.545 firmas, 1.227 legisladores distintos). Dictamen unico 77.329 / mayoria 35.191 / minoria 12.984. Disidencia parcial 3.564 / total 147 / sin especificar 1.109. 5.373 primeros firmantes. Emparejamiento: exacto 114.188 · iniciales 3.429 · gana-el-oficial 2.928 · fuera de ventana 2.664 · sin match 1.879 · ambiguo 387 · nombre corto 29. Mas `dictamenes_comisiones.parquet`: 10.046 filas, 328 comisiones, 3.514 proyectos. De 2.517 Ordenes del Dia se leyeron **2.302 (91,5%)**; las 215 restantes entran **marcadas con su motivo**, no desaparecen (117 con ancla y sin nombres, 84 sin formula ni bloque reconocible, 13 con 404 de HCDN, 1 PDF corrupto).
+
+**Control que valida el metodo (re-medido en la corrida final):** las 3.187 firmas leidas SIN la formula de cierre (las de 2020-2021, 152 Ordenes del Dia) resuelven al **96,2%, la misma tasa** que las 122.317 leidas con ella (96,0%). Si el reconocimiento por forma levantara texto cualquiera, esa tasa se desplomaria.
+
+**Y el padron historico de Diputados** (`padron_diputados_historico.csv`, 7.323 filas / 2.060 legisladores): el emparejamiento paso de **55% a 98,9%**. El padron oficial cubria 81 de 257 bancas en 2008.
+
+**Tests nuevos:** 44 (`test_od_url.py`) + 38 (`test_parser_od.py`) + 46 (`test_padron_diputados_historico.py`) = **128 checks**. Los del parser incluyen uno que **falla con el codigo viejo**: una OD con ancla y sin nombres devolvia cero filas y **115 Ordenes del Dia se evaporaban** del conteo sin que nada fallara.
+
+**ADR-0011:** el chequeo del `.gitignore` que documentaba `PROTOCOLO-GIT.md` daba el resultado equivocado justo sobre los archivos con excepcion `!` — o sea sobre los que el equipo rescato a mano. Pasa a ser `git add -n`.
+
+**Hallazgo ajeno, listado y NO tocado (es de `datos/canonica`, Franco):** 74 pares de `legislador_id` que son la misma persona con dos grafias -> `Archivos_Borrar/duplicados_entity_resolution_diputados.csv`.
+
+**Pendiente de Valle (no lo puedo hacer yo):** `python -m pytest tests/ datos/proyectos/tests -q` en PowerShell, los tres tests nuevos, `git add -n` sobre los archivos nuevos, y reindexar (`python .mapa/indexar.py .` + `--sellar-todo`).
+
+**OJO al limpiar:** `Archivos_Borrar/od_pdf/` esta en descartables porque el PDF crudo es regenerable, pero adentro viven el **cache y el checkpoint**, que son lo que hace que la actualizacion mensual cueste segundos en vez de 25 minutos. **No borrarla mientras el modulo este vivo.** El regimen normal son 50-80 Ordenes del Dia nuevas por anio, no 2.517.
+
+**EL SENADO, CERRADO EN LA MISMA SESION.** `dictamenes_firmas_senado.parquet`: **17.688 firmas / 1.265 proyectos**, de 1.385 Ordenes del Dia leidas sobre **1.761 reales** (el listado da 1.882 filas pero 98 son el mismo documento repetido con otro id interno). **475 son de camara REVISORA** — la Puerta C con documentos contables por primera vez. El rol se lee del ORIGEN del expediente (`CD-` = revisora, `PE-`/`S-` = origen), no se supone.
+
+**Emparejamiento 52,0% contra el 96,0% de Diputados, y el motivo esta medido:** `sin_candidatos = 7.450`, o sea que a esa fecha el padron del Senado no tiene ninguna banca cargada. **Arranca el 10-dic-2017 y 1.102 de las 1.761 OD son anteriores.** La canonica si cubre el Senado (220.426 votos desde 2004, 72 senadores exactos por anio no electoral), asi que se puede reconstruir — pero **NO se copia la receta de Diputados**: el Senado renueva por tercios cada dos anios con mandatos de seis. **Decision pendiente, con el numero que la justifica.**
+
+**Cuatro diferencias de formato del Senado viejo** (formula "Sala de Comision," singular y sin articulo, fecha al reves, sin punto final, separador `.-`): al corregirlas las firmas saltaron de 9.454 a 17.688 y la lectura de 44% a 79%. **El Senado NO rotula mayoria/minoria** — cero coincidencias en 35 OD; el desacuerdo va como disidencia. Es diferencia entre camaras, no hueco del parser.
+
+**Dos errores propios en el camino:** (1) el scraper extraia el enlace de paginacion y **no lo usaba**, asi que las paginas 2+ traian 2026 en vez del anio pedido — el sintoma fue que TODOS los anios daban exactamente 20 OD; el listado paso de 465 a 1.882. (2) La sonda de 3 paginas cortaba la lista de firmas al medio (`139-410.pdf` de 64 a 34 firmas); ahora sirve solo para detectar PDF escaneados, verificado con 25/25 OD de Diputados identicas.
+
+✅ **CERRADO el 22-08: la corrida de Diputados con `--desde-cero` termino.** Las dos camaras ya salen del mismo codigo y las cifras de arriba son las de esa corrida. Diferencia contra la corrida previa: **+99 firmas, +3 Ordenes del Dia leidas**, y el reparto de clase se movio (minoria 13.267 → 12.984, unico 77.044 → 77.329). Son las Ordenes del Dia que la sonda de 3 paginas cortaba al medio, ahora leidas enteras.
+
+⚠️ **PENDIENTE INMEDIATO, lo unico que separa al Senado del 96% de Diputados:** decidir el **padron historico del Senado**. Ver el bloque de arriba: la reconstruccion es viable pero no se copia la receta de Diputados.
+
+**Descartable de la sonda:** `Archivos_Borrar/sonda_senado/` (33 HTML + 4 PDF + `ids_od_senado.csv`). Anotado en `PENDIENTES-DE-BORRAR.md`.
+
+**URGENTE leido al empezar (regla de la casa).** `coordinacion/URGENTE.md` tiene vivo el punto 1 (validar 15 filas MEDIA del roster de jefes de bloque). **Se posterga explicitamente y se deja dicho por que:** es de `variables/proyecto`, no de `datos/expedientes`; no bloquea ni ensucia este trabajo; y su prioridad ya fue rebajada el 31-07 al medirse que `lider_jefe_bloque` aporta 1,25x y no 7x. Queda en URGENTE sin tocar.
+
 ## Sesion 2026-08-20 (Valle+Claude) — CERRADA, MAPA-MODELO.html: el flujo bicameral
 
 | Modulo | Quien | Desde | Que se esta haciendo |
 |---|---|---|---|
 | **producto/dashboard** | Claude (con Valle) | 2026-08-20 | **HECHO, modulo LIBRE.** Ronda 2 sobre `MAPA-MODELO.html`, sobre un croquis a mano de Valle. (1) El grafo por columnas pasa a ser un **diagrama de flujo bicameral**: dos bloques espejo (Camara de origen / Camara revisora) con el tronco compartido dibujado en los dos lados, formas por rol (rectangulo = base/fuente, hexagono = script, circulo = variable, rectangulo grueso = probabilidad), flecha curva gruesa `P(aprobar en Revisora \| se aprobo en Origen)` entre bloques, y lo condicionado por el paso previo agrupado y resaltado dentro de la revisora. (2) Se saca la capa de presentacion comercial (header, subtitulo, franja de formulas): las dos formulaciones se mudan a la leyenda, el lienzo arranca en el primer pixel y arriba queda una sola barra fina de instrumentos. (3) La ficha lateral por nodo se queda y se agranda. (4) Se resuelve la contradiccion de estado de las Puertas A y C. Sin CDN: el layout y el ruteo de aristas se escriben dentro del archivo. |
 
-**HAY DOS CANDIDATOS Y FALTA ELEGIR UNO (2026-08-20).** Sobre los MISMOS datos
-(`mapa_modelo_datos.js`; los dos archivos son solo diseno) conviven:
+✅ **ELEGIDO POR VALLE EL 2026-08-22: gana la V2** (tronco unico y despues la horqueta). Se
+ejecuto el protocolo que estaba escrito acá: el que pierde se fue a `Archivos_Borrar/` y el que
+gana quedo como **`MAPA-MODELO.html`**, asi que todas las referencias del repo siguen valiendo sin
+tocar nada. El descartado esta en `Archivos_Borrar/BORRAR_MAPA-MODELO-v1-descartado.html`.
 
-| Archivo | Como ordena el flujo |
-|---|---|
-| `MAPA-MODELO.html` | los dos bloques **lado a lado**, con el condicionamiento como un arco grueso por encima de todo el dibujo |
-| `MAPA-MODELO-V2.html` | una **banda por camara, apiladas**, las dos sobre la MISMA grilla de columnas: el mismo nodo cae en la misma vertical arriba y abajo, los dos resultados terminan en la misma columna final, el numero publicado va a la derecha entre las dos bandas y el condicionamiento es una flecha corta que baja de un resultado al otro. Los encabezados de columna dicen la etapa; la banda de controles/evaluacion arranca plegada. **Encuadra a 0,42 contra 0,29 de la V1**, o sea entra en pantalla legible. |
+⚠️ **Y se saco la v1 del MODELO de adentro del mapa**, que es cosa distinta del archivo: la leyenda
+mostraba **dos formulaciones** cuando desde el ADR-0012 hay una sola. Fuera los nodos `n_v1` y
+`c_p_llega`, fuera el camino "El numero que corre hoy (v1)" del selector, y re-cableado lo que
+colgaba de ellos: el arco de condicionamiento hacia la revisora ahora sale del **paso B**, y el
+embudo conserva su unico rol vivo (`p_sancion` -> la baseline). El mapa queda en **101 nodos y 144
+aristas**. Ojo con la confusion de nombres, que ya mordio: **"v1" significa DOS cosas** en este repo
+—la formulacion del modelo y el dibujo del mapa— y no se dieron de baja por el mismo motivo.
 
-**Cuando Valle elija, el que pierde se va a `Archivos_Borrar/` y el que gana queda
-como `MAPA-MODELO.html`.** Mientras tanto quedan los dos: no se toca el generador
-ni la capa curada, que son comunes.
+**TAREA NUEVA IDENTIFICADA — `datos/expedientes`: ingestar los firmantes del dictamen (20-08-2026).**
+Nuestra base sabe que hay dictamen (23.891 filas / 19.702 proyectos, 2008-2026) pero **no quien lo firmo**, y no es culpa del loader: el dataset `dictamenes` de CKAN no lo publica. El dato esta en el PDF de la Orden del Dia, y el enganche ya existe (`od_numero` + `od_publicacion` en `expedientes_resultados.parquet`): **18.067 OD unicas que cubren 18.787 proyectos**. Es prerrequisito de la Puerta A como senal. Plan completo en `coordinacion/PROMPT-3-Formulacion-unica-y-nombres.md`. **Modulo LIBRE, candidato al proximo claim.** Ojo: las OD son de Diputados; el Senado necesita otra fuente.
 
 **Pendiente de Valle (no lo puedo correr yo):** `python -m pytest tests/ datos/proyectos/tests -q`
 en PowerShell (en el sandbox no hay pytest) y `git check-ignore -q` sobre los archivos tocados

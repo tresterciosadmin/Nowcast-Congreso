@@ -1,6 +1,6 @@
 # fase0/ — el baseline ya ejecutado (CERRADO)
 
-<!-- huella: 9dc68d15827d -->
+<!-- huella: e3b0c44298fc -->
 
 **Resumen:** La Fase 0, cerrada: medir cuanto acierta predecir el voto individual mirando al bloque. Resultado ~0,99, y ese resultado ordena todo el proyecto. Se conserva como registro; no se desarrolla mas.
 

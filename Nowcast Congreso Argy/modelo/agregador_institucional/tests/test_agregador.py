@@ -24,7 +24,14 @@ check(ag.normalizar_mayoria("Absoluta") == "ABSOLUTA", "absoluta")
 check(ag.normalizar_mayoria("Tres cuartos") == "TRES_CUARTOS", "tres cuartos")
 
 # --- umbrales ---
-check(ag.umbral_aprobacion("SIMPLE", 200, "diputados") == 100.0, "simple = emitidos/2")
+# SIMPLE = MAS de la mitad de los emitidos (ADR-0013, 2026-08-22). Con `emitidos/2` un
+# EMPATE aprobaba, porque la aprobacion se decide con `afirm >= umbral`.
+check(ag.umbral_aprobacion("SIMPLE", 200, "diputados") == 101.0,
+      "simple = mitad de los emitidos MAS UNO (101 sobre 200)")
+check(ag.umbral_aprobacion("SIMPLE", 256, "diputados") == 129.0,
+      "con 256 emitidos hacen falta 129: 128 contra 128 es empate y NO aprueba")
+check(ag.umbral_aprobacion("SIMPLE", 251, "diputados") == 126.0,
+      "con emitidos impares tambien: 126 sobre 251")
 check(ag.umbral_aprobacion("ABSOLUTA", 200, "diputados") == 129.0, "absoluta dip = 129")
 check(ag.umbral_aprobacion("ABSOLUTA", 60, "senado") == 37.0, "absoluta sen = 37")
 check(ag.umbral_aprobacion("DOS_TERCIOS", 90, "diputados") == 60.0, "2/3 de 90 = 60")

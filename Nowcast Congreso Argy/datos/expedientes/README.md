@@ -1,6 +1,6 @@
 # Módulo: datos/expedientes
 
-<!-- huella: 5a0936c55a05 -->
+<!-- huella: e3b0c44298fc -->
 
 **Propósito.** El registro de todo lo que se PRESENTÓ en el Congreso (no solo
 lo que se votó): cada proyecto con su título, autor, tipo, fecha y su cadena de
@@ -33,6 +33,9 @@ red de autorías (Módulos B/C del plan).
 - giros iniciales a comision, dictamenes, o si un expediente llego a ley
 - el backfill de CKAN, o por que HCDN publica con ~5 semanas de atraso
 - la ingesta trae menos/mas de lo esperado (`REFRESH=1`: por defecto usa CACHE)
+- QUIEN firmo un dictamen, si hubo disidencias y de que bloque es cada firma
+- como se arma la URL del PDF de una Orden del Dia de HCDN
+- los dictamenes del Senado (otra fuente, otro scraper: `ingesta_od_senado.py`)
 
 <!-- Las dos cosas de arriba las levanta `.mapa/indexar.py` al MAPA.md de la
      raiz: el `Resumen:` va a la columna "Que es" y las pistas al router
@@ -201,3 +204,122 @@ título` → `O.D. en el título (sólo Diputados)`. La columna `origen_clave`
 - ✏️ El módulo se llama `enlace_senado.py` y ya resuelve las **dos** cámaras.
   El nombre quedó chico; no se renombró porque el entorno no puede borrar y
   quedaría un archivo zombi.
+
+---
+
+## Firmantes del dictamen (2026-08-21) — contrato NUEVO
+
+**El problema.** Sabíamos que un proyecto tenía dictamen, pero no **quién lo
+firmó**. No era culpa del loader: el dataset `dictamenes` del CKAN de Diputados
+no publica los firmantes. Su propia ingesta ya lo decía — *«`autor` es solo el
+firmante PRIMARIO (el CKAN no publica cofirmantes)»*. El dato existe únicamente
+en el PDF de la Orden del Día.
+
+Es el prerrequisito de la **Puerta A como señal observada**: la puerta deja de
+ser una probabilidad de que la comisión actúe y pasa a ser el **carácter** del
+trabajo en comisión.
+
+### La cadena, en cuatro archivos
+
+| archivo | qué hace |
+|---|---|
+| `src/od_url.py` | de una Orden del Día a la URL de su PDF |
+| `src/ingesta_od.py` | baja los PDF a `Archivos_Borrar/od_pdf/` (caché descartable) |
+| `src/parser_od.py` | saca comisiones, dictámenes, firmantes y disidencias |
+| `src/construir_firmas.py` | resuelve contra el padrón y escribe los dos parquet |
+
+### La regla de la URL (verificada contra 7 PDF reales, 2008-2026)
+
+    periodo = anio(od_publicacion) - 1882 - (1 si el mes es enero o febrero)
+    https://www3.hcdn.gob.ar/dependencias/dcomisiones/periodo-<P>/<P>-<N>.pdf
+
+El período parlamentario va del 1-mar al 28/29-feb, así que una OD impresa en
+enero o febrero cae en el período del año anterior. **El número de OD NO reinicia
+con el período** —reinicia con la renovación de la Cámara, el 10-dic de los años
+impares— así que el período se deduce de la FECHA y nunca del número. `www3` y
+`www4` son espejos del mismo archivo.
+
+### Salida (`data/clean/`)
+
+`dictamenes_firmas.parquet` — una fila por **(proyecto, cámara, dictamen, firmante)**:
+
+    proyecto_id · camara · od_numero · od_publicacion · comisiones · expedientes_sumario
+    dictamen_orden · dictamen_clase (mayoria|minoria|unico) · fecha_sala
+    firmante_raw · orden_firma · primer_firmante · disidencia (none|parcial|total)
+    dos_comisiones (el asterisco del PDF: integra las DOS comisiones que firman)
+    origen_firmas (ancla|sin_ancla)
+    legislador_id · legislador · bloque · bloque_norm · bloque_linaje · metodo_match
+    enlace (expediente|orden_del_dia) · fuente_url · parseo_ok · motivo
+
+`dictamenes_comisiones.parquet` — el índice **(proyecto, cámara, comisión, dictamen)**.
+
+**Son dos tablas y no una, a propósito.** Un dictamen conjunto de dos comisiones
+trae **una sola lista de firmas**: el PDF no dice cuál de las dos integra cada
+diputado. Meter todo junto obligaría a repetir cada firmante una vez por comisión,
+**inventando una atribución que el documento no da**.
+
+### Lo que hay que saber antes de usarlo
+
+- **El ancla del parser es `Sala de las comisiones, <fecha>.`** y es la misma en
+  las dos cámaras. No se buscan "cosas que parezcan nombres": después del
+  articulado viene la firma del **Poder Ejecutivo** sobre el mensaje, que no
+  firmó ningún dictamen, y un parser ingenuo la mete adentro de la comisión.
+- **El bloque NO sale del PDF.** Se resuelve contra `datos/padron` a la fecha del
+  dictamen. En el dictamen de mayoría los firmantes vienen sin bloque, y sacarlo
+  de ahí daría una segunda fuente contradictoria para un dato que ya tenemos.
+- **Lo que no se pudo leer entra igual**, con `parseo_ok=False` y su `motivo`. Si
+  desapareciera, la cobertura se vería mejor de lo que es.
+- **El enganche con el proyecto** es por expediente del sumario cuando matchea
+  (`enlace=expediente`) y por Orden del Día cuando no (`enlace=orden_del_dia`),
+  que es más flojo y por eso está dicho en una columna.
+- **Sólo proyectos de LEY.** 2.517 Órdenes del Día, no las 18.087 totales: las
+  otras ~15.500 son resoluciones y declaraciones, que no alimentan ninguna puerta.
+- **`origen_firmas` no es decorativo.** En las Órdenes del Día de **2020 y 2021**
+  —las de las sesiones remotas— la fórmula `Sala de las comisiones` **no existe**:
+  la palabra "sala" aparece cero veces y los firmantes van pegados al final del
+  dictamen. Esas se leen reconociendo el bloque **por su forma** (líneas seguidas
+  separadas por `–`, entre la cabecera del dictamen y el primer encabezado en
+  mayúsculas) y salen marcadas `sin_ancla`. Son **152 de 2.517** (corrida completa
+  del 22-08-2026), con el grueso concentrado en esos dos períodos. **Control:** esas
+  3.187 firmas resuelven contra el padrón al **96,2%**, la misma tasa que las 122.317
+  leídas con la fórmula (96,0%) — si el reconocimiento por forma levantara texto
+  cualquiera, la tasa se desplomaría. **Una firma leída sin ancla es más frágil que
+  una leída con la fórmula: al medir, separalas.**
+- **`139-1.pdf` cuelga a pdfminer para siempre** (2,2 MB, 72 páginas, 58 fuentes
+  con 38 CMaps). Por eso `texto_de_pdf` lee con tope de 20 páginas y, si no
+  aparece el ancla, se pasa a pypdf sobre el archivo completo —2 segundos— con
+  el espaciado reparado. No hay timeouts ni procesos aparte.
+
+### El Senado
+
+**Volumen real (medido el 21-08-2026): el listado da 1.882 filas, pero son 1.761
+Órdenes del Día reales** — 98 son el mismo documento repetido con otro id interno
+(mismo número, año y expediente). 2008-2026.
+Entre 100 y 120 por año hasta 2022, y después cae (79 en 2023, 69 en 2024, 54 en
+2025, 43 en 2026), igual que la actividad de comisiones en Diputados.
+
+**Y el dato que la Puerta C no tenía: 475 de esas 1.761 (27%) son de cámara
+REVISORA** — dictámenes del Senado sobre proyectos que ya tenían media sanción de
+Diputados. La proporción se sostiene entre el 13% y el 50% a lo largo de casi
+veinte años, sin ninguna ventana en cero. Va en la columna `rol_camara`, que se
+deriva del **origen del expediente** y no de un supuesto: `CD-` = revisora
+(Puerta C), `PE-`/`S-` = origen (Puerta A).
+
+⚠️ **El padrón del Senado sólo cubre desde el 10-dic-2017**, así que **1.102 de las
+1.761 (63%) son anteriores** y su bloque no resuelve. En la corrida completa el Senado
+dio **52,0%** contra el **96,0%** de Diputados, con el desglose apuntando a eso: `sin_candidatos`
+significa "a esa fecha el padrón no tiene ninguna banca cargada", no que el nombre
+no matchee. La canónica **sí** tiene el Senado cubierto (220.426 votos, 2004-2026,
+con exactamente 72 senadores por año no electoral), así que la reconstrucción es
+viable — pero **no se copia la de Diputados**: el Senado se renueva por tercios cada
+dos años con mandatos de seis, y la regla de "el período va del 10-dic de año impar"
+no aplica.
+
+`src/ingesta_od_senado.py`. Las Órdenes del Día de arriba son de **Diputados**;
+el CKAN publica los dictámenes de las comisiones **de Diputados**, sea origen o
+revisora (1.515 filas de LEY son de proyectos con origen Senado). El hueco real
+es el sistema de comisiones del Senado, que publica por su propia vía: POST a
+`/parlamentario/parlamentaria/ordenDelDiaResultado` con
+`busqueda_orden[ordenDelDiaPeriodo]` (1983-2026) y `tipoExpedientes` (`PL`,
+`CD`), y descarga por id interno. **Sus PDF traen los firmantes con la misma
+fórmula de cierre**, así que los lee el mismo `parser_od.py`.

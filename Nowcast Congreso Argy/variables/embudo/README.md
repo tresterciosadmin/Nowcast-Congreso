@@ -1,6 +1,6 @@
 # Módulo: variables/embudo
 
-<!-- huella: 8c35459cd8bb -->
+<!-- huella: e3b0c44298fc -->
 
 **Propósito.** Supervivencia del proyecto de ley: `presentado → comisión →
 dictamen → recinto → sanción`. La mayoría de los proyectos mueren en un cajón,

@@ -1,6 +1,6 @@
 # Módulo: modelo/voto_individual
 
-<!-- huella: e193c2435a95 -->
+<!-- huella: e3b0c44298fc -->
 
 **Propósito.** Reformulado por **ADR-0003** (2026-07-01): NO predecir el voto medio (eso lo resuelve la regla de bloque ~0,99, benchmark que queda fijo), sino modelar el **desvío del legislador respecto de su bloque** y detectar **pivotes**. Cuatro piezas: (a) índice de disciplina individual, (b) modelo de defección, (c) recuento como distribución, (d) detección de pivotes.
 

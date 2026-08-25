@@ -61,6 +61,37 @@ listado de la raíz antes de escribir nada**.
 
 ---
 
+## Tarea transversal — una skill de funcionamiento parlamentario argentino *(a crear; pedido de Valle 2026-08-20)*
+
+**Por qué.** El 20-08 Claude escribió «los 243 casos bicamerales» para referirse a los
+proyectos con votación en las **dos cámaras**. En el Congreso «bicameral» nombra otra cosa
+—las **comisiones bicamerales**, que tratan asuntos que requieren las dos cámaras, como el
+control de decretos del Ejecutivo—. Una palabra mal usada en una conversación de diseño se
+convierte en un supuesto mal puesto en el modelo.
+
+**Qué tiene que cubrir, como mínimo:**
+- El circuito completo de un proyecto de ley: presentación → **giro a comisión(es) de la
+  cámara de origen** → **dictamen de comisión** → pleno de origen → **media sanción / primera
+  sanción** → **giro a las comisiones de la cámara revisora** → **nuevos dictámenes** → pleno
+  de la revisora → **sanción**. Los dictámenes existen en LAS DOS cámaras: no son un evento
+  de la cámara de origen.
+- Dictamen de mayoría / de minoría / con disidencias (parciales y totales) / con
+  observaciones, y qué significa cada uno para el tratamiento posterior.
+- Comisiones **permanentes**, **especiales** y **bicamerales** — y por qué las bicamerales no
+  son «un proyecto votado en las dos cámaras».
+- Vías de tratamiento sin dictamen: **sobre tablas**, mociones de preferencia con y sin
+  despacho, artículo 114 del reglamento de Diputados.
+- Caducidad (**Ley 13.640**), períodos parlamentarios, sesiones ordinarias / de prórroga /
+  extraordinarias, y qué cambia en cada una.
+- Vocabulario que en el repo se usa con sentido propio: *denominador*, *acta*, *expediente*,
+  *giro*, *linaje de bloque*, *roster nominal*.
+
+**Para qué sirve, operativamente:** que cualquier Claude que entre al repo hable con
+precisión institucional antes de tocar el modelo, y que los nombres de las puertas y de los
+nodos del mapa salgan del vocabulario real y no de una analogía.
+
+**Dueño:** sin asignar. **Estado:** PENDIENTE.
+
 ## Fase 1A — Base de datos propia: semilla → canónica → bot (ver ADR-0002)
 **Principio:** Andy Tow es **semilla de un solo uso**, no dependencia viva. Construimos nuestra base y la mantenemos con un bot. Paralelizable salvo donde se indica.
 

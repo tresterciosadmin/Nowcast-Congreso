@@ -1,6 +1,6 @@
 # Módulo: datos/ckan_diputados
 
-<!-- huella: 577df58db7dc -->
+<!-- huella: e3b0c44298fc -->
 
 **Propósito.** Ingesta de votaciones nominales de Diputados 2011-2020 desde CKAN HCDN (cabecera + detalle).
 

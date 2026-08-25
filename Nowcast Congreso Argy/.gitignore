@@ -115,6 +115,9 @@ datos/expedientes/data/clean/*
 # `nomina_*` es el crudo bajado; `padron_*` es el contrato que consume
 # variables/bloque. Chicos y de alto valor -> se versionan.
 !datos/padron/data/nomina_diputados.csv
+# 2026-08-21 - QUINTA vez: la regla `*.csv` iba a esconder el padron historico de
+# Diputados, porque las excepciones de abajo estan escritas por NOMBRE de archivo.
+!datos/padron/data/padron_diputados_historico.csv
 !datos/padron/data/padron_diputados.csv
 
 # Base CANÓNICA de votaciones (~6 MB). Decisión 31-07: SÍ se versiona.

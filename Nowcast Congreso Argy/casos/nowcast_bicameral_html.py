@@ -94,25 +94,26 @@ def datos_camara(camara, votos, cond, ind):
 
 
 def main():
-    votos = cargar_bloque()          # formato canónico (con `conducta`), el que espera proyectar_postura
-    cond = cargar_tema_por_acta()    # tema + origen fusionados, para condicionar el bloque
-    opa = pd.read_parquet(RAIZ / "variables/proyecto/data/origen_por_acta.parquet")
-    origen_map = dict(zip(opa["acta_id"].astype(str), opa["origen"]))
-    ind = alineacion_individual(votos, origen_map)
+    """NEUTRALIZADO 2026-08-22 — lo reemplaza `casos/nowcast_puertas_html.py`.
 
-    data = {
-        "asunto": ASUNTO, "subtitulo": SUBTITULO, "fecha": FECHA,
-        "icg": ICG_VALOR, "icg_neutro": ICG_NEUTRO, "mandato_meses": MES_MANDATO,
-        "camaras": [datos_camara("diputados", votos, cond, ind),
-                    datos_camara("senado", votos, cond, ind)],
-    }
-    html = PLANTILLA.replace("/*DATA*/", json.dumps(data, ensure_ascii=False))
-    out = RAIZ / "Nowcast-Ganancias-bicameral.html"
-    out.write_text(html, encoding="utf-8")
-    print(f"escrito: {out}")
-    for c in data["camaras"]:
-        af = sum(l["p_af"] for l in c["legisladores"])
-        print(f"  {c['camara']:10} n={c['n']} afirmativos~{af:.0f} umbral={c['umbral']}")
+    Este generador calculaba el acompanamiento con el mecanismo que la auditoria del
+    22-08 encontro con SIETE errores, y los tres de fondo cambian el resultado de
+    verdad: el numero del bloque se redondeaba a SI/NO (la Coalicion Civica, que
+    acompana el 60,9%, salia en 96,7%), la direccion salia del linaje mientras el
+    desvio salia del bloque real (Del Caño salia en 100% con un record de 1%), y
+    faltar se contaba como votar en contra (Menem, que preside y vota el 1,3% de las
+    veces, aparecia EN CONTRA). Ademas el umbral usaba n//2+1, que es mayoria
+    ABSOLUTA, no simple.
+
+    No se borra para no perder el diseno del HTML, que se reuso. Pero no puede seguir
+    corriendo: produciria numeros que alguien va a citar. Copia entera en
+    Archivos_Borrar/BORRAR_casos-nowcast_bicameral_html.py
+    """
+    raise SystemExit(
+        "nowcast_bicameral_html.py esta NEUTRALIZADO (2026-08-22): calculaba el "
+        "acompanamiento con el mecanismo que tenia siete errores. Usa "
+        "casos/nowcast_puertas_html.py, que corre la cadena de puertas. Ver el "
+        "docstring de main y el ADR-0012.")
 
 
 PLANTILLA = r"""<!DOCTYPE html>

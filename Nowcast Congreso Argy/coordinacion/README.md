@@ -1,6 +1,6 @@
 # coordinacion/ — el estado vivo del proyecto
 
-<!-- huella: 71167c3886e0 -->
+<!-- huella: 44513fe83307 -->
 
 **Resumen:** Las bitacoras y el protocolo: que bloquea a otros, que se hizo, quien tomo que modulo y por que se decidio cada cosa. Aca NO hay codigo del producto.
 

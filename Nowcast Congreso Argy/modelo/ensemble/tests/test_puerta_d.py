@@ -96,7 +96,11 @@ with tempfile.TemporaryDirectory() as td:
     check(r["camara_revisora"] == "senado", "revisora correcta en el resultado")
     check(r["n_roster"] == 10, f"roster point-in-time = 10 (dio {r['n_roster']})")
     check(0.0 <= r["p_aprobacion"] <= 1.0, "p_aprobacion en rango")
-    check(r["p_aprobacion"] > 0.9, "6 afirmativos vs 4 negativos -> aprueba casi seguro")
+    # 6 a favor y 4 en contra sobre 10 bancas NO es "casi seguro": desde el ADR-0013 el
+    # umbral de mayoria simple es la MITAD MAS UNO de los emitidos (6, no 5), asi que una
+    # sola desercion lo pierde. Medido: 0,862. Antes daba >0,9 porque un empate aprobaba.
+    check(0.80 < r["p_aprobacion"] < 0.92,
+          f"6 vs 4 con umbral 6 aprueba, pero no de taquito (dio {r['p_aprobacion']:.3f})")
     check(r["manera"] == "1", "sin delta corre en Manera 1")
     check(r["p0"] == r["p_aprobacion"], "en Manera 1, p0 == p_aprobacion")
 

@@ -1,20 +1,21 @@
 # tests/ — los controles que NO son de un modulo
 
-<!-- huella: 07465b16e4ae -->
+<!-- huella: 7eccfc0dbead -->
 
 **Resumen:** Tests que cruzan modulos y por eso no pueden vivir dentro de ninguno. Cada modulo tiene sus propios tests en `<modulo>/tests/`; acá van solo los que verifican acuerdos ENTRE modulos.
 
 ## Buscar acá si
 
-- dos modulos tienen una copia de la misma funcion y hay que ver si siguen de acuerdo
 - una definicion compartida (periodo parlamentario, tipo de mayoria, bancas por camara) cambio en un lado
+- alguien volvio a pegar adentro de un modulo una definicion que vive en `definiciones.py`
+- dos modulos tienen una copia de la misma funcion y hay que ver si siguen de acuerdo
 - un test falla y no pertenece a ningun modulo en particular
 
 ## Que hay acá
 
 | Archivo | Que verifica |
 |---|---|
-| `test_definiciones_compartidas.py` | que las 4 copias de `periodo_parlamentario`, las 3 de `normalizar_mayoria` y las constantes `MIEMBROS` / `MARGEN_DISPUTADA` / `CONDUCTAS` / presentes sigan diciendo lo mismo, sobre fechas borde y los dos backends de dtype |
+| `test_definiciones_compartidas.py` | que `periodo_parlamentario` y `normalizar_mayoria` sigan viniendo de `definiciones.py` y **no** de una copia repegada adentro de un modulo (ADR-0014), y que las constantes `MIEMBROS` / `MARGEN_DISPUTADA` / `CONDUCTAS` / presentes sigan diciendo lo mismo — sobre fechas borde y los dos backends de dtype. **8 chequeos.** |
 
 ## Como correr
 
@@ -68,4 +69,5 @@ python -m pytest tests/ datos/proyectos/tests -q # + el unico modulo ya migrado
 ## Trampas
 
 - **Un test de acá que falla no se arregla tocando el test.** Falla porque dos modulos dejaron de estar de acuerdo: hay que decidir cual tiene razon y corregir el otro.
-- Hay un `xfail` vivo: las cuatro copias de `periodo_parlamentario` revientan con backend `pyarrow` (`pd.to_numeric` conserva `int64[pyarrow]` y `a % 2` no esta implementado). No se nota en produccion porque `read_parquet` devuelve numpy. El arreglo es una linea por copia; esta anotado en ESTADO.
+- **El `xfail` de `pyarrow` ya no esta: se arreglo el 2026-08-25.** Las cuatro copias de `periodo_parlamentario` reventaban con backend `pyarrow` (`pd.to_numeric` conserva `int64[pyarrow]` y `a % 2` no esta implementado) y no se notaba en produccion porque `read_parquet` devuelve numpy. El arreglo era **una linea por copia** y estuvo trabado un mes porque tocaba cuatro modulos con dueño — ese fue el argumento para unificar en `definiciones.py` (ADR-0014). Hoy ese test pasa de verdad.
+- **`test_ninguna_copia_redefine_las_definiciones` compara IDENTIDAD, no resultados.** Los otros comparan valores y pasan igual con una definicion o con cinco, mientras las cinco coincidan. Ese es el punto: hasta el 25-08 las cuatro copias coincidian y aun asi habia un bug que ninguna podia arreglar sola.

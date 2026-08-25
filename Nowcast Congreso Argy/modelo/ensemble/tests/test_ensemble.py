@@ -66,14 +66,19 @@ BLOQUES = [
 
 
 def main():
-    # --- componer ---
-    chk(abs(E.componer(0.5, 0.4) - 0.20) < 1e-9, "componer = producto de los dos factores")
-    chk(E.componer(1.0, 0.9) == 0.9, "componer con p_llega=1 devuelve p_mayoria")
-    for bad in [(-0.1, 0.5), (0.5, 1.2)]:
+    # --- la formulacion v1 esta DADA DE BAJA (2026-08-22, ADR-0012) ---
+    # No se borraron las funciones: levantan SystemExit con el motivo y a donde ir.
+    # Este bloque falla si alguien las revive sin pasar por el ADR.
+    for nombre in ('componer', '_p_llega_de_embudo', 'nowcast_proyecto',
+                   'nowcast_auto', 'imprimir_tarjeta', 'main'):
         try:
-            E.componer(*bad); chk(False, "componer rechaza fuera de [0,1]")
-        except ValueError:
-            chk(True, f"componer rechaza fuera de [0,1] {bad}")
+            getattr(E, nombre)([]) if nombre == 'main' else getattr(E, nombre)()
+            chk(False, f'{nombre} deberia estar dado de baja y no lo esta')
+        except SystemExit as e:
+            chk('ADR-0012' in str(e) and 'nowcast_puertas' in str(e),
+                f'{nombre}: dado de baja, y el mensaje dice el ADR y a donde ir')
+        except TypeError:
+            chk(False, f'{nombre} sigue con la firma vieja: no se dio de baja')
 
     # --- roster nominal ---
     tmp = Path(tempfile.mkdtemp())
@@ -112,64 +117,50 @@ def main():
     except ValueError:
         chk(True, "roster falla claro si no hay mandatos vigentes a la fecha")
 
-    # --- nowcast sobre roster nominal: mayorías claras ---
-    dummy = Path("/no/existe")
-    lin_si = np.array(["AFIRMATIVO"] * 200 + ["NEGATIVO"] * 57)
-    lin_no = np.array(["NEGATIVO"] * 200 + ["AFIRMATIVO"] * 57)
+    # --- la simulacion con guardas (lo que sobrevivio de la v1) ---
+    # Estos chequeos eran de `nowcast_proyecto`, que se dio de baja. La cobertura NO
+    # se pierde: se mudan a `simular_con_guardas`, que es donde vive ahora la cuenta
+    # y lo que consumen la Puerta B y la Puerta D.
+    lin_si = np.array(['AFIRMATIVO'] * 200 + ['NEGATIVO'] * 57)
+    lin_no = np.array(['NEGATIVO'] * 200 + ['AFIRMATIVO'] * 57)
     dev_chico = np.full(257, 0.02)
-    a_favor = E.nowcast_proyecto("P1", lin_si, dev_chico, "SIMPLE", "diputados",
-                                 dummy, p_llega=0.5)
-    en_contra = E.nowcast_proyecto("P2", lin_no, dev_chico, "SIMPLE", "diputados",
-                                   dummy, p_llega=0.5)
-    chk(a_favor["p_mayoria_recinto"] > 0.95, "roster holgado a favor -> P(mayoría) ~1")
-    chk(en_contra["p_mayoria_recinto"] < 0.05, "roster en contra -> P(mayoría) ~0")
-    chk(abs(a_favor["p_aprobacion"] - a_favor["p_llega_recinto"] * a_favor["p_mayoria_recinto"]) < 0.02,
-        "p_aprobacion = p_llega × p_mayoría")
-    chk(a_favor["p_aprobacion"] <= a_favor["p_llega_recinto"] + 1e-9,
-        "el embudo es techo: P(aprobación) <= P(llega al recinto)")
+    dev_cero = np.zeros(257)
 
-    # --- incertidumbre irreducible: P(mayoría) nunca 0%/100% (pedido de Valle) ---
-    goleada = np.array(["AFIRMATIVO"] * 257)          # todos leales, colchón enorme
-    dev_cero = np.zeros(257)                            # desvío 0: sin piso serían locks
-    g = E.nowcast_proyecto("PG", goleada, dev_cero, "SIMPLE", "diputados", dummy, p_llega=1.0)
-    chk(g["p_mayoria_recinto"] <= 0.99 + 1e-9,
-        "goleada total NO da 100%: se clampa a 99% (riesgo sistémico)")
-    chk(g["p_mayoria_recinto"] >= 0.99 - 1e-9,
-        "y queda EN el techo 0,99 (no menos: es una goleada)")
-    derrota = np.array(["NEGATIVO"] * 257)
-    d = E.nowcast_proyecto("PD", derrota, dev_cero, "SIMPLE", "diputados", dummy, p_llega=1.0)
-    chk(d["p_mayoria_recinto"] >= 0.01 - 1e-9, "derrota total NO da 0%: piso 1%")
-    # apagar los topes (=0) recupera el comportamiento crudo (para el backtest del agregador)
-    crudo = E.nowcast_proyecto("PC", goleada, dev_cero, "SIMPLE", "diputados", dummy,
-                               p_llega=1.0, desvio_min=0.0, p_incertidumbre=0.0)
-    chk(crudo["p_mayoria_recinto"] >= 0.999, "con topes en 0, la goleada vuelve a ~1 (crudo)")
+    a_favor = E.simular_con_guardas(lin_si, dev_chico, 'SIMPLE', 'diputados', n_sims=300)
+    en_contra = E.simular_con_guardas(lin_no, dev_chico, 'SIMPLE', 'diputados', n_sims=300)
+    chk(a_favor['p_aprobacion'] > 0.9, 'roster holgado a favor -> P(mayoria) ~1')
+    chk(en_contra['p_aprobacion'] < 0.1, 'roster en contra -> P(mayoria) ~0')
 
-    # --- el desvío individual MUEVE el resultado (las bisagras pesan) ---
-    lin_justa = np.array(["AFIRMATIVO"] * 130 + ["NEGATIVO"] * 127)
-    disciplinados = E.nowcast_proyecto("P5", lin_justa, np.full(257, 0.01),
-                                       "SIMPLE", "diputados", dummy, p_llega=1.0)
-    dev_bisagra = np.full(257, 0.01)
-    dev_bisagra[:20] = 0.45  # 20 afirmativos poco confiables
-    con_bisagras = E.nowcast_proyecto("P6", lin_justa, dev_bisagra,
-                                      "SIMPLE", "diputados", dummy, p_llega=1.0)
-    chk(con_bisagras["p_mayoria_recinto"] < disciplinados["p_mayoria_recinto"],
-        "20 bisagras en una votación justa BAJAN P(mayoría): el individuo pesa")
+    g = E.simular_con_guardas(lin_si, dev_cero, 'SIMPLE', 'diputados', n_sims=300,
+                              desvio_min=0.0)
+    chk(g['p_aprobacion'] == 1.0 - E.P_INCERTIDUMBRE,
+        'goleada total NO da 100%: se clampa a 99% (riesgo sistemico)')
+    d = E.simular_con_guardas(lin_no, dev_cero, 'SIMPLE', 'diputados', n_sims=300,
+                              desvio_min=0.0)
+    chk(d['p_aprobacion'] == E.P_INCERTIDUMBRE, 'derrota total NO da 0%: piso 1%')
+    crudo = E.simular_con_guardas(lin_si, dev_cero, 'SIMPLE', 'diputados', n_sims=300,
+                                  desvio_min=0.0, p_incertidumbre=0.0)
+    chk(crudo['p_aprobacion'] == 1.0, 'con los topes en 0, la goleada vuelve a 1 (crudo)')
 
-    # --- monotonía en el embudo ---
-    bajo = E.nowcast_proyecto("P3", lin_si, dev_chico, "SIMPLE", "diputados", dummy, p_llega=0.10)
-    alto = E.nowcast_proyecto("P4", lin_si, dev_chico, "SIMPLE", "diputados", dummy, p_llega=0.80)
-    chk(alto["p_aprobacion"] > bajo["p_aprobacion"], "más P(llega) -> más P(aprobación)")
+    lin_justa = np.array(['AFIRMATIVO'] * 130 + ['NEGATIVO'] * 127)
+    dev_bisagra = np.concatenate([np.full(20, 0.45), np.full(237, 0.01)])
+    disciplinados = E.simular_con_guardas(lin_justa, np.full(257, 0.01), 'SIMPLE',
+                                          'diputados', n_sims=600)
+    con_bisagras = E.simular_con_guardas(lin_justa, dev_bisagra, 'SIMPLE', 'diputados',
+                                         n_sims=600)
+    chk(con_bisagras['p_aprobacion'] < disciplinados['p_aprobacion'],
+        '20 bisagras en una votacion justa BAJAN P(mayoria): el individuo pesa')
+    chk(a_favor['afirm_p5'] <= a_favor['afirm_medio'] <= a_favor['afirm_p95'],
+        'banda 5-95 contiene la media')
 
-    # --- banda de votos presente y ordenada ---
-    b = a_favor["afirmativos_banda_5_95"]
-    chk(b[0] <= a_favor["afirmativos_medio"] <= b[1], "banda 5-95 contiene la media")
+    # (los chequeos de topes y bisagras se mudaron arriba, a simular_con_guardas)
 
-    # --- error claro si no hay p_llega por ningún lado ---
-    try:
-        E.nowcast_proyecto("PX", lin_si, dev_chico, "SIMPLE", "diputados", dummy)
-        chk(False, "sin p_llega debe fallar")
-    except ValueError:
-        chk(True, "falla claro si no hay p_llega (ni embudo ni override)")
+    # --- lo que MURIO con la v1, y por que no hay reemplazo ---
+    # 'mas P(llega) -> mas P(aprobacion)' y 'falla si no hay p_llega' probaban el
+    # factor del embudo. Ese factor salio de la cadena (ADR-0012): medía la mortandad
+    # en el cajon, que es agenda politica. No se reemplazan por otra cosa: se van.
+    # El numero de hoy es CONDICIONAL a que las camaras voten, y eso se prueba en
+    # modelo/ensemble/tests/test_nowcast_puertas.py.
 
     # --- roster PREFIERE la columna de CONDUCTA (URGENTE 1, 2026-08-13) ---
     tmpc = Path(tempfile.mkdtemp())

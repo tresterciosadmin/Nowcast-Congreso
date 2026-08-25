@@ -1,6 +1,6 @@
 # Nowcast Legislativo Argentino
 
-<!-- huella: 63ce4bedc59d -->
+<!-- huella: 2e22fc6a70f0 -->
 
 Sistema que estima la probabilidad de sanción de proyectos de ley en el Congreso argentino.
 
@@ -8,10 +8,10 @@ Sistema que estima la probabilidad de sanción de proyectos de ley en el Congres
 
 ## Buscar acá si
 
-- el tablero ejecutivo del proyecto (`TABLERO-CONTROL.html`; se edita SOLO `tablero_datos.js`)
-- los KPIs, hitos o el estado de una pieza de la plataforma
+- el tablero ejecutivo, los KPIs, los hitos o el estado de una pieza de la plataforma (`TABLERO-CONTROL.html`; se edita SOLO `tablero_datos.js`)
 - los paneles HTML de coyuntura o el informe bicameral (los generadores estan en `casos/`)
 - por donde empezar a leer el repo
+- que significa "periodo parlamentario", que mayoria exige un proyecto o cuantas bancas tiene una camara (`definiciones.py`)
 
 <!-- Las dos cosas de arriba las levanta `.mapa/indexar.py` al MAPA.md. -->
 

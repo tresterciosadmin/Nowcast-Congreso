@@ -48,26 +48,23 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
+# ── definiciones compartidas ──────────────────────────────────────────────────
+# `normalizar_mayoria` y `MIEMBROS` vivían copiados acá, sincronizados a mano; el único
+# control era un docstring que pedía "mantener sincronizadas". Unificados el
+# 2026-08-25 en `definiciones.py` (raíz) — ADR-0014. Se RE-EXPORTAN para que
+# `agregador.<nombre>` siga existiendo: aguas abajo no cambia nada.
+import sys as _sys
+from pathlib import Path as _Path
+_sys.path.insert(0, str(next(d for d in _Path(__file__).resolve().parents
+                             if (d / "rutas.py").is_file())))
+from definiciones import BANCAS as MIEMBROS  # noqa: E402,F401
+from definiciones import normalizar_mayoria_valor as normalizar_mayoria  # noqa: E402,F401
+
 log = logging.getLogger("agregador")
 logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s: %(message)s")
 
-# --- constantes compartidas (mantener sincronizadas con export/voto_individual) ---
-MIEMBROS = {"diputados": 257, "senado": 72}
 CONDUCTAS = ("AFIRMATIVO", "NEGATIVO", "NO_ACOMPANA")
 SUST = ("AFIRMATIVO", "NEGATIVO")
-
-
-def normalizar_mayoria(tipo) -> str:
-    """SIMPLE | ABSOLUTA | DOS_TERCIOS | DOS_TERCIOS_CUERPO | TRES_CUARTOS.
-    Sin dato -> SIMPLE (el caso abrumadoramente más común)."""
-    s = ("" if tipo is None else str(tipo)).upper()
-    if "TERCIO" in s:
-        return "DOS_TERCIOS_CUERPO" if "CUERPO" in s else "DOS_TERCIOS"
-    if "CUARTO" in s:
-        return "TRES_CUARTOS"
-    if s == "ABSOLUTA" or "CUERPO" in s or "MITAD MÁS UNO" in s or "MITAD MAS UNO" in s:
-        return "ABSOLUTA"
-    return "SIMPLE"
 
 
 def umbral_aprobacion(tipo_norm: str, emitidos: float, camara: str) -> float:
@@ -81,8 +78,13 @@ def umbral_aprobacion(tipo_norm: str, emitidos: float, camara: str) -> float:
         return float(np.ceil(miembros * 2 / 3))
     if tipo_norm == "TRES_CUARTOS":
         return float(np.ceil(emitidos * 3 / 4))
-    # SIMPLE
-    return emitidos / 2
+    # SIMPLE = MAS de la mitad de los emitidos, o sea la mitad mas uno.
+    # CORREGIDO 2026-08-22 (ADR-0013). Antes devolvia `emitidos / 2` y la aprobacion se
+    # decide con `afirm >= umbral`: con 256 emitidos daba `128 >= 128` y **un EMPATE
+    # aprobaba**. Un empate no aprueba — en Diputados desempata el presidente, que
+    # justamente no vota en el resto de la votacion. El error corria a favor de la
+    # aprobacion en exactamente los casos mas ajustados, que son los que importan.
+    return float(int(emitidos) // 2 + 1)
 
 
 def _prob_conductas(linea: str, desvio: float, reparto_desvio: float = 0.5) -> np.ndarray:

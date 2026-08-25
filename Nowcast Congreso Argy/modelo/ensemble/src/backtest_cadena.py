@@ -1,5 +1,11 @@
 """modelo/ensemble - BACKTEST DE LA CADENA COMPLETA (opcion B, 2026-08-13).
 
+NEUTRALIZADO el 2026-08-22 (ADR-0012): medía la formulación v1, que se dio de baja.
+`main` levanta SystemExit con el motivo. Las funciones internas siguen sirviendo y se
+pueden importar. Ver el docstring de `main` para qué hace falta decidir antes de
+re-apuntarlo.
+
+
 Mide la calibracion del nowcast END-TO-END contra la realidad:
 
     P(aprobacion) = P(llega al recinto)  x  P(mayoria | recinto)
@@ -39,8 +45,6 @@ Uso (la corrida pesada la corre Valle en PowerShell):
 """
 from __future__ import annotations
 
-import argparse
-import json
 import logging
 import sys
 from pathlib import Path
@@ -513,51 +517,31 @@ def correr(desde=None, hasta=None, camaras=None, n_sims=2000, muestra=None,
 
 
 def main(argv: list[str]) -> None:
-    logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s: %(message)s")
-    ap = argparse.ArgumentParser(description="Backtest de la cadena completa (ensemble).")
-    ap.add_argument("--desde", type=int, default=None, help="anio minimo de presentacion")
-    ap.add_argument("--hasta", type=int, default=None, help="anio maximo de presentacion")
-    ap.add_argument("--camara", choices=["Diputados", "Senado"], default=None)
-    ap.add_argument("--n-sims", type=int, default=2000)
-    ap.add_argument("--muestra", type=int, default=None, help="submuestra aleatoria")
-    ap.add_argument("--seed", type=int, default=0)
-    ap.add_argument("--fuente", choices=["sqlite", "clean"], default="sqlite")
-    ap.add_argument("--revisora-desde", type=int, default=None,
-                    help="2a camara SIMULADA (mecanica), desde este anio (necesita roster del "
-                         "Senado historico; da p~1, no capta la atenuacion real). Preferir la empirica.")
-    ap.add_argument("--revisora-empirico", action="store_true",
-                    help="2a camara MEDIDA (walk-forward P(sancion|llego al recinto)); cubre toda "
-                         "la cohorte y captura la atenuacion real. RECOMENDADA.")
-    ap.add_argument("--origen-por-proyecto", action="store_true",
-                    help="condiciona la postura de bloque por el ORIGEN FINO de cada proyecto "
-                         "(EJECUTIVO/OFICIALISMO/OPOSICION, de features_proyecto): p_mayoria propia "
-                         "por (camara, mes, origen) en vez de solo (camara, mes). Sin el flag = v1.")
-    ap.add_argument("--out", default=None, help="ruta del JSON resumen (default outputs/)")
-    a = ap.parse_args(argv)
+    """NEUTRALIZADO 2026-08-22 (ADR-0012): medía la formulación v1, que se dio de baja.
 
-    camaras = {a.camara.lower()} if a.camara else None  # la cohorte usa minusculas
-    detalle, res = correr(desde=a.desde, hasta=a.hasta, camaras=camaras,
-                          n_sims=a.n_sims, muestra=a.muestra, seed=a.seed,
-                          fuente=a.fuente, revisora_desde=a.revisora_desde,
-                          revisora_empirico=a.revisora_empirico,
-                          condicionar_origen=a.origen_por_proyecto)
+    Este backtest compone `p_llega_recinto` x `p_mayoria` y lo contrasta contra
+    `sancionado`. Las dos mitades quedaron sin sentido a la vez: `p_llega_recinto` salió
+    de la cadena (es agenda, y no se modela), y medir la cadena nueva contra `sancionado`
+    la mide contra algo que POR DISEÑO no predice — el 69% de los proyectos con dictamen
+    que no llegan a ley se pierden en la agenda.
 
-    if a.revisora_desde or a.revisora_empirico:
-        default_out = "backtest_cadena_fina.json"
-    elif a.origen_por_proyecto:
-        default_out = "backtest_cadena_origen.json"
-    else:
-        default_out = "backtest_cadena.json"
-    out = Path(a.out) if a.out else _root() / "modelo" / "ensemble" / "outputs" / default_out
-    out.parent.mkdir(parents=True, exist_ok=True)
-    out.write_text(json.dumps(res, ensure_ascii=False, indent=2), encoding="utf-8")
-    # el detalle por proyecto es regenerable y voluminoso -> Archivos_Borrar (y *.csv esta gitignored)
-    det_dir = _root() / "Archivos_Borrar"
-    det_dir.mkdir(parents=True, exist_ok=True)
-    detalle.to_csv(det_dir / "backtest_cadena_detalle.csv", index=False, encoding="utf-8")
+    No se apaga por comodidad: se apaga porque un backtest que sigue corriendo sobre una
+    formulación muerta produce números que alguien va a citar. Las funciones de adentro
+    (`preparar_cohorte`, `_metricas`, `factor_revisora_empirico`) siguen sirviendo y se
+    pueden importar.
 
-    print(json.dumps(res, ensure_ascii=False, indent=2))
-    print(f"\nresumen -> {out}\ndetalle por proyecto -> {det_dir / 'backtest_cadena_detalle.csv'}")
+    Re-apuntarlo pide decidir ANTES contra qué se mide. Medido el 22-08 sobre la cohorte
+    madura: p_sancion del embudo da skill +0,4478 en total, pero +0,2916 entre los 3.898
+    proyectos CON dictamen y -0,0257 entre los 34.799 sin él. O sea que su mérito es
+    sobre todo separar con-dictamen de sin-dictamen: justo lo que la Puerta A ahora
+    OBSERVA en vez de estimar. La vara con varianza real es el MARGEN del recuento
+    (6.237 actas de la canónica, 1.849 ya enganchadas a su expediente).
+    """
+    raise SystemExit(
+        "backtest_cadena esta NEUTRALIZADO (2026-08-22, ADR-0012): media la formulacion "
+        "v1, dada de baja. Re-apuntarlo pide decidir contra que se mide; ver el docstring "
+        "de main y el ADR. El codigo entero quedo en "
+        "Archivos_Borrar/BORRAR_modelo-ensemble-src-backtest_cadena-v1.py")
 
 
 if __name__ == "__main__":

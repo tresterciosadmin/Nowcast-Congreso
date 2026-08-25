@@ -1,6 +1,6 @@
 # Módulo: variables/proyecto
 
-<!-- huella: 3ff630338c7c -->
+<!-- huella: e3b0c44298fc -->
 
 **Propósito.** Features por proyecto: tema/materia, autor, cámara de origen, tipo de mayoría requerida, parsing de texto (NLP).
 

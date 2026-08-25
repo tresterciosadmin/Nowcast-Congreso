@@ -16,17 +16,25 @@
   NO es el tablero: TABLERO-CONTROL.html muestra plan y avance,
   esto muestra la maquinaria.
 
-  Ronda 2 (2026-08-20): dejó de ser un grafo por columnas y pasó a ser un
-  DIAGRAMA DE FLUJO BICAMERAL. Dos bloques espejo —cámara de origen y
-  cámara revisora— con el tronco compartido dibujado de los dos lados, la
-  forma diciendo qué es cada nodo, y el condicionamiento entre cámaras
-  como una flecha gruesa por arriba. El layout se calcula acá abajo, en JS.
+  V2 (2026-08-20). Misma estructura que la V1, otro dibujo. El requisito
+  es el ORDEN, no la estética: una banda por cámara, cada una con su flujo
+  COMPLETO de punta a punta.
+
+    banda 1 (arriba) ....... todo el flujo hasta P(aprobación en ORIGEN)
+    banda 2 (abajo)  ....... todo el flujo hasta P(aprobación en REVISORA)
+    a la derecha, entre las dos ... P(aprobación de un proyecto de ley)
+
+  Las dos bandas comparten la MISMA grilla de columnas, así que el mismo
+  nodo cae en la misma vertical arriba y abajo y el espejo se ve solo.
+  El condicionamiento entre cámaras es una flecha corta y gruesa que baja
+  de un resultado al otro, no un arco por encima de todo.
+  El layout se calcula acá abajo, en JS. Sin CDN y sin fetch.
 ================================================================= -->
 <html lang="es">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Mapa del Modelo — Nowcast Legislativo</title>
+<title>Mapa del Modelo (V3) — Nowcast Legislativo</title>
 <style>
   /* Paleta base heredada de TABLERO-CONTROL.html (el estilo de la casa).
      El color codifica el ROL. El ESTADO se codifica con borde y opacidad,
@@ -132,15 +140,19 @@
   #svg.arrastrando{cursor:grabbing}
 
   /* marcos de bloque: el esqueleto bicameral es el dibujo, no un detalle */
-  .marco{fill:var(--marco);stroke:var(--marco-linea);stroke-width:1}
-  .marco.b-revisora{fill:var(--marco-rev);stroke:var(--marco-rev-linea)}
+  .marco{fill:var(--marco);stroke:none}
+  .marco.b-revisora{fill:var(--marco-rev)}
+  .marco.b-tronco{fill:var(--panel2)}
   .marco.b-fuera{fill:none;stroke:var(--marco-linea);stroke-dasharray:6 5}
   .marco.b-final{fill:var(--marco);stroke:var(--marco-linea)}
-  .marcoTit{font-size:15px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;
-            fill:var(--brand);opacity:.75}
-  .marcoSub{font-size:11px;fill:var(--muted);opacity:.85}
-  .capaTit{font-size:9.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;
-           fill:var(--muted);opacity:.55}
+  .rejilla{stroke:var(--marco-linea);stroke-width:1;opacity:.7}
+  .cabCol{fill:var(--panel2);stroke:var(--marco-linea);stroke-width:1}
+  .cabColTxt{font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;
+             fill:var(--muted)}
+  .bandaTit{font-size:13px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;
+            fill:var(--brand);opacity:.8}
+  .bandaSub{font-size:10.5px;fill:var(--muted)}
+  .bandaNum{font-size:20px;font-weight:800;fill:var(--brand);opacity:.22}
   .grupoCaja{fill:var(--grupo-bg);stroke:var(--grupo);stroke-width:2;rx:18}
   .grupoTit{font-size:11px;font-weight:800;fill:var(--grupo);letter-spacing:.03em}
 
@@ -169,6 +181,7 @@
   .arista.apagada{opacity:.05}
   .arista.viva{stroke:var(--resalte);stroke-width:3;opacity:1}
   .rotArista{font-size:11.5px;font-weight:700;fill:var(--condiciona)}
+  .rotFondo{fill:var(--bg);opacity:.92;stroke:var(--condiciona);stroke-opacity:.25}
 
   /* ---------------------------------------------------------- ficha */
   /* Lo más útil de la página: click en un nodo y acá está de dónde sale.
@@ -259,6 +272,7 @@
   .pie{margin-top:10px;padding-top:9px;border-top:1px solid var(--line);font-size:.75rem}
   .aviso{background:var(--repl-bg);color:var(--repl);border:1px solid var(--repl);
          border-radius:8px;padding:8px 12px;font-size:.8rem;margin:10px 0;font-weight:600}
+  body[data-extra="off"] .b-fuera-grupo{display:none}
   .solo-lectores{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
   @media(max-width:900px){
     .ficha{position:absolute;right:0;top:0;bottom:0;z-index:15;box-shadow:var(--sombra);flex-basis:340px}
@@ -266,7 +280,7 @@
   }
 </style>
 </head>
-<body data-tema="claro" data-vista="grafo">
+<body data-tema="claro" data-vista="grafo" data-extra="off">
 
 <div class="barra" role="toolbar" aria-label="Instrumentos del mapa">
   <div class="grupo">
@@ -297,6 +311,8 @@
   </div>
   <div class="sep" aria-hidden="true"></div>
   <div class="grupo">
+    <button class="btn" id="b-extra" aria-pressed="false"
+            title="Mostrar u ocultar lo que no entra al número: controles, exports y evaluación">Controles: no</button>
     <button class="btn" id="b-tema" aria-label="Alternar tema claro y oscuro">Tema oscuro</button>
     <button class="btn" id="b-vista" aria-pressed="false"
             aria-label="Alternar entre el grafo y la tabla gemela">Ver tabla</button>
@@ -306,15 +322,17 @@
 <div class="cuerpo">
   <div class="lienzo" id="lienzo">
     <svg id="svg" role="img" aria-labelledby="svg-titulo svg-desc">
-      <title id="svg-titulo">Flujo del cálculo del Nowcast, por las dos cámaras</title>
-      <desc id="svg-desc">Diagrama de flujo de izquierda a derecha, en dos bloques: la cadena
-        completa hasta la probabilidad de aprobación en la cámara de origen, y la misma cadena
-        hasta la probabilidad de aprobación en la cámara revisora, que está condicionada por la
-        primera. Las dos confluyen abajo en la probabilidad de aprobación de un proyecto de ley.
+      <title id="svg-titulo">Flujo del cálculo del Nowcast, una banda por cámara</title>
+      <desc id="svg-desc">Diagrama de flujo de izquierda a derecha, en dos bandas apiladas que
+        comparten la misma grilla de columnas. La banda de arriba es el flujo completo hasta la
+        probabilidad de aprobación en la cámara de origen; la de abajo, el flujo completo hasta la
+        probabilidad de aprobación en la cámara revisora, condicionada por la primera. A la derecha,
+        entre las dos, confluyen en la probabilidad de aprobación de un proyecto de ley.
         La misma información está disponible en formato de tabla con el botón «Ver tabla».</desc>
       <defs id="defs"></defs>
       <g id="raiz">
         <g id="capaMarcos"></g>
+        <g id="capaRejilla"></g>
         <g id="capaGrupos"></g>
         <g id="capaAristas"></g>
         <g id="capaNodos"></g>
@@ -389,17 +407,25 @@ var S = {
    en la PUNTA de cada cadena (`bloque`: origen / revisora / final / fuera);
    de todo lo que está más arriba se ocupa esto, por alcance hacia atrás.
 
-   Un nodo que alimenta a las DOS cámaras -la canónica, el padrón, casi toda la
-   ingesta- se dibuja de los DOS lados, marcado como compartido. Es lo que pidió
-   el croquis: cada bloque muestra su cadena entera, para poder seguirla con el
-   dedo sin saltar de un lado al otro. Que sean el mismo nodo se ve en la marca
-   de compartido, en la ficha, y en que al seleccionarlo se encienden las dos.
+   TRONCO ÚNICO (2026-08-20). Antes, un nodo que alimentaba a las dos cámaras
+   -la canónica, el padrón, casi toda la ingesta- se dibujaba de los DOS lados.
+   Eran 153 nodos en pantalla para 96 reales, y sobre todo era FALSO: el
+   pipeline corre UNA vez y produce bases que ya cubren las dos cámaras
+   (`padron_diputados.csv` y `padron_senado_historico.csv` conviven adentro del
+   mismo tronco). Dibujarlo dos veces sugiere dos pipelines que no existen.
+
+   Ahora: lo que alimenta a las dos va al bloque `tronco`, y el dibujo se abre
+   en dos ramas sólo donde el cálculo se separa de verdad.
 
    La expansión NO atraviesa un nodo declarado de otro bloque: por eso la cadena
    de la revisora no se traga la de origen a través de `g_B -> g_C`. */
 var BLOQUES = [
-  { id:"origen",   nombre:"Cámara de origen",  sub:DESC_ETAPA["origen"]   || "" },
-  { id:"revisora", nombre:"Cámara revisora",   sub:DESC_ETAPA["revisora"] || "" },
+  { id:"tronco",   nombre:"Tronco común — corre una sola vez",
+    sub:"Fuentes, ingesta y bases que alimentan a las DOS cámaras. No se duplica: el pipeline es uno solo." },
+  { id:"origen",   nombre:"Cámara de origen — ej.: Diputados",
+    sub:"Donde nace el proyecto. El modelo NO fija cuál es: `origen` es una variable y hay expedientes que nacen en el Senado." },
+  { id:"revisora", nombre:"Cámara revisora — ej.: Senadores",
+    sub:"La otra cámara, y condicionada por lo que pasó en origen." },
   { id:"final",    nombre:"El número publicado", sub:DESC_ETAPA["nowcast"] || "" },
   { id:"fuera",    nombre:"Fuera de la cadena de un proyecto",
     sub:"Controles, exports y evaluación: no entran al número, lo vigilan." }
@@ -426,13 +452,21 @@ function ancestros(bloque){
 }
 var ANC_O = ancestros("origen"), ANC_R = ancestros("revisora");
 
-var MIEMBRO = {};   /* id -> [bloques donde se dibuja] */
+var MIEMBRO = {};   /* id -> [bloque donde se dibuja] (uno solo: no hay copias) */
+/* DÓNDE CORTA LA HORQUETA. En la rama de cada cámara va sólo lo que la capa
+   curada declaró como suyo: el cálculo de la probabilidad. Todo lo de más
+   arriba -fuentes, ingesta, bases y variables- es el pipeline de datos, que
+   corre una sola vez, y va al tronco aunque de hecho alimente a una sola
+   cámara (`Wikipedia (anexos)` es de la revisora; `embudo.py`, de origen).
+
+   La alternativa -mandar a la rama todo lo que alimente a una sola cámara-
+   se probó y quedaba peor: metía scrapers y parquets en una banda titulada
+   «Cámara de origen», y como su profundidad real es la del tronco, las ramas
+   se aplastaban contra la última columna. Que un nodo alimente a una sola
+   cámara igual se ve: está en su ficha y en las flechas que salen de él. */
 NODOS.forEach(function(n){
   if (DECL[n.id]) { MIEMBRO[n.id] = [DECL[n.id]]; return; }
-  var b = [];
-  if (ANC_O.has(n.id)) b.push("origen");
-  if (ANC_R.has(n.id)) b.push("revisora");
-  MIEMBRO[n.id] = b.length ? b : ["fuera"];
+  MIEMBRO[n.id] = [ (ANC_O.has(n.id) || ANC_R.has(n.id)) ? "tronco" : "fuera" ];
 });
 
 /* ---------------------------------------------------- instancias y aristas */
@@ -611,14 +645,148 @@ function ordenar(bloqueId, pasadas){
   }
 }
 
-/* ------------------------------------------------------ posiciones locales */
-/* Escalonado, no cuadriculado: cada capa ocupa el ancho que necesita (no hay
-   una grilla de columnas iguales) y dentro de la capa los nodos se corren un
-   poco en x, alternando. Así se lee como un recorrido y no como una tabla. */
-var CAPTIONS = [], CAPS_TMP = [];
-function acomodar(bloqueId){
+/* =================================================================== V3 ====
+   TRONCO ÚNICO, y recién después la horqueta.
+
+     [ tronco común ]  ──┬──►  [ rama: cámara de origen ]   ──┐
+                         │                                    ├──►  P(sanción)
+                         └──►  [ rama: cámara revisora ]   ──┘
+
+   El tronco se dibuja UNA vez y ocupa toda la altura a la izquierda; a su
+   derecha el dibujo se abre en dos ramas cortas, una arriba y otra abajo, y las
+   dos caen en el número final. Son 96 nodos dibujados en vez de 153.
+
+   Todo -tronco y ramas- va sobre la MISMA grilla de columnas, así que la
+   columna sigue diciendo en qué etapa del cálculo estás parado, y las dos ramas
+   quedan alineadas entre sí.
+
+   El condicionamiento entre cámaras es una flecha corta que baja del resultado
+   de origen al recuadro de lo condicionado en la revisora. */
+var GAP_COL = 44, GAP_FILA = 14, GAP_BANDA = 70, GAP_FINAL = 78;
+/* Una columna con catorce fuentes apiladas deja la banda altísima y flaca, y
+   «Ajustar» la achica hasta que no se lee. Cuando una columna pasa de MAX_FILAS
+   se abre en sub-columnas DENTRO de la misma columna de la grilla: sigue siendo
+   la misma etapa y las dos bandas siguen alineadas, pero ocupa el ancho que
+   necesita en vez del alto que no hay. */
+var MAX_FILAS = 8, SUB_GAP = 12;   /* MAX_FILAS lo elige disponer() */
+/* Un nodo agrupado lleva un recuadro alrededor. Si el layout lo apila como a
+   cualquier otro, el recuadro se le monta encima del vecino de arriba y del
+   titulo. El lugar del recuadro se RESERVA en el apilado, no se dibuja encima. */
+var GRUPO_PAD = 9, GRUPO_TIT = 15;
+function margenY(it){ return it.n.grupo ? GRUPO_PAD + GRUPO_TIT + 6 : 0; }
+function margenX(it){ return it.n.grupo ? GRUPO_PAD + 4 : 0; }
+function altoCon(it){ return it.h + 2 * margenY(it); }
+function anchoCon(it){ return it.w + 2 * margenX(it); }
+var CAB_H = 26, TIT_H = 40, PAD_BANDA = 16, MARGEN = 34;
+
+var GRID = { colX:[], colW:[], colUnit:[], ancho:0, x0:0, y0:0, y1:0 };
+var BLOQ_NOM = {}, BLOQ_SUB = {};
+BLOQUES.forEach(function(b){ BLOQ_NOM[b.id] = b.nombre; BLOQ_SUB[b.id] = b.sub; });
+var MARCOS = [], CAJAS = [], CABS = [], ANCHO = 0, ALTO = 0;
+
+function disponer(){
+  /* La horqueta arranca donde TERMINA el tronco: todo lo de las ramas se empuja
+     a la derecha del tronco aunque su profundidad real sea menor. Si no, una
+     rama corta empezaría a mitad del tronco y el dibujo dejaría de leerse como
+     «primero esto, después se abre». */
+  var base = 0;
+  (PORBLOQUE["tronco"] || []).forEach(function(it){ base = Math.max(base, it.capa); });
+  var ramas = ["origen", "revisora"], maxc = base;
+  var enRama = {};
+  ramas.forEach(function(b){
+    (PORBLOQUE[b] || []).forEach(function(it){
+      it.capa = base + 1; enRama[it.clave] = it;
+    });
+  });
+  /* y después se recupera la profundidad INTERNA de la rama: sin esto el clamp
+     apila los siete nodos del cálculo en una sola columna y deja de leerse
+     como una secuencia. Punto fijo, que el subgrafo es chico y acíclico. */
+  for (var v = 0; v < 12; v++){
+    var movio = false;
+    ARISTAS.forEach(function(a2){
+      if (a2.tipo === "config" || a2.tipo === "alerta") return;
+      var de = enRama[a2.de.clave], a3 = enRama[a2.a.clave];
+      if (!de || !a3) return;
+      if (a3.capa <= de.capa){ a3.capa = de.capa + 1; movio = true; }
+    });
+    if (!movio) break;
+  }
+  Object.keys(enRama).forEach(function(k){ maxc = Math.max(maxc, enRama[k].capa); });
+  /* y los dos resultados de cámara terminan en la MISMA última columna */
+  ramas.forEach(function(b){
+    (PORBLOQUE[b] || []).forEach(function(it){
+      if (it.n.rol === "resultado") it.capa = maxc;
+    });
+  });
+  BLOQUES.forEach(function(b){
+    armarColumnas(PORBLOQUE[b.id], b.id);
+    ordenar(b.id, 12);
+  });
+
+  /* MAX_FILAS decide cuántas veces se parte una columna alta en sub-columnas,
+     y con eso si el dibujo sale ancho y chato o alto y flaco. No hay un valor
+     bueno fijo: depende de cuántos nodos tenga cada etapa. Se prueban unos
+     cuantos y se elige el que deja el dibujo con la forma de la PANTALLA, que
+     es lo que hace que «Ajustar» encuadre grande y se lea. */
+  var lienzo = $("#lienzo").getBoundingClientRect();
+  var objetivo = (lienzo.width || 1400) / (lienzo.height || 800);
+  var mejor = null;
+  [5, 6, 7, 8, 10, 12, 14, 18].forEach(function(k){
+    MAX_FILAS = k;
+    colocar();
+    var d = Math.abs(Math.log((ANCHO / ALTO) / objetivo));
+    if (!mejor || d < mejor.d) mejor = { d:d, k:k };
+  });
+  MAX_FILAS = mejor.k;
+  colocar();
+}
+
+/* apila una banda sobre la grilla compartida y devuelve su alto */
+function altoDeColumna(col){
+  var subs = Math.max(1, Math.ceil(col.length / MAX_FILAS));
+  var filas = Math.ceil(col.length / subs), h = 0, k = 0;
+  for (var f = 0; f < filas; f++){
+    var alto = 0;
+    for (var s = 0; s < subs; s++){
+      var it = col[s * filas + f];
+      if (it) alto = Math.max(alto, altoCon(it));
+    }
+    h += alto + GAP_FILA;
+  }
+  return { h: Math.max(0, h - GAP_FILA), subs: subs, filas: filas };
+}
+
+function apilarBanda(bloqueId, x0, y0){
   var cols = COLS[bloqueId] || [];
-  CAPS_TMP = [];
+  var altoMax = 0;
+  cols.forEach(function(col){ altoMax = Math.max(altoMax, altoDeColumna(col).h); });
+  cols.forEach(function(col, ci){
+    var m = altoDeColumna(col);
+    var anchoUsado = m.subs * GRID.colUnit[ci] + (m.subs - 1) * SUB_GAP;
+    var xIni = x0 + GRID.colX[ci] + (GRID.colW[ci] - anchoUsado) / 2;
+    var y = y0 + (altoMax - m.h) / 2;
+    for (var f = 0; f < m.filas; f++){
+      var alto = 0;
+      for (var s = 0; s < m.subs; s++){
+        var it = col[s * m.filas + f];
+        if (it) alto = Math.max(alto, altoCon(it));
+      }
+      for (var s2 = 0; s2 < m.subs; s2++){
+        var it2 = col[s2 * m.filas + f];
+        if (!it2) continue;
+        it2.col = ci;
+        it2.x = xIni + s2 * (GRID.colUnit[ci] + SUB_GAP) + GRID.colUnit[ci] / 2;
+        it2.y = y + alto / 2;
+      }
+      y += alto + GAP_FILA;
+    }
+  });
+  return altoMax;
+}
+
+/* mismo apilado pero con grilla propia: para lo que no es una cámara */
+function apilarSuelto(bloqueId, x0, y0){
+  var cols = COLS[bloqueId] || [];
   var x = 0, altoMax = 0;
   var anchos = cols.map(function(col){
     var w = 0; col.forEach(function(it){ w = Math.max(w, it.w); }); return w;
@@ -630,90 +798,160 @@ function acomodar(bloqueId){
   cols.forEach(function(col, ci){
     var h = 0; col.forEach(function(it){ h += it.h + GAP_FILA; });
     h -= GAP_FILA;
-    var y = (altoMax - h) / 2;
-    var cuenta = {};
-    col.forEach(function(it){ cuenta[it.n.etapa] = (cuenta[it.n.etapa]||0) + 1; });
-    var dom = Object.keys(cuenta).sort(function(a,b){ return cuenta[b]-cuenta[a]; })[0];
-    if (dom && cuenta[dom] / col.length >= .5)
-      CAPS_TMP.push({ bloque:bloqueId, x: x + anchos[ci]/2, etapa: dom });
-    col.forEach(function(it, k){
-      it.x = x + anchos[ci]/2 + (k % 2 ? ESCALON : 0);
+    var y = y0 + (altoMax - h) / 2;
+    col.forEach(function(it){
+      it.col = -1;
+      it.x = x0 + x + anchos[ci]/2;
       it.y = y + it.h/2;
       y += it.h + GAP_FILA;
     });
-    x += anchos[ci] + ESCALON + GAP_CAPA;
+    x += anchos[ci] + GAP_COL;
   });
-  var ancho = Math.max(0, x - GAP_CAPA);
-  return { w: ancho, h: altoMax, caps: CAPS_TMP.slice() };
-}
-
-/* ------------------------------------------------------- armado del dibujo */
-var MARCOS = [], CAJAS = [], ANCHO = 0, ALTO = 0;
-
-function disponer(){
-  BLOQUES.forEach(function(b){
-    armarColumnas(PORBLOQUE[b.id], b.id);
-    ordenar(b.id, 12);
-  });
-  colocar();
+  return { w: Math.max(0, x - GAP_COL), h: altoMax };
 }
 
 function colocar(){
-  var dim = {};
-  BLOQUES.forEach(function(b){ dim[b.id] = acomodar(b.id); });
-
-  var PADL = 26, PADT = 58, PADB = 22, PADR = 26;
-  var offs = {};
-  var y0 = ARCO_Y + 46;
-
-  offs.origen   = { x: MARGEN + PADL, y: y0 + PADT };
-  var wO = dim.origen.w + PADL + PADR;
-  offs.revisora = { x: MARGEN + wO + GAP_BLOQUE + PADL, y: y0 + PADT };
-  var wR = dim.revisora.w + PADL + PADR;
-
-  /* Abajo, una sola banda: a la izquierda el numero publicado -al que bajan las
-     dos camaras-, a la derecha lo que no entra al numero sino que lo vigila.
-     Antes iban uno debajo del otro y dejaban media pantalla en blanco. */
-  var altoCam = Math.max(dim.origen.h, dim.revisora.h);
-  var yBanda = y0 + PADT + altoCam + 74;
-  var centro = MARGEN + (wO + GAP_BLOQUE + wR) / 2;
-  var wF = dim.final.w + PADL + PADR;
-  var wX = dim.fuera.w + PADL + PADR;
-  var derecha = MARGEN + wO + GAP_BLOQUE + wR;        /* borde derecho de la revisora */
-  offs.final = { x: Math.max(MARGEN + PADL, centro - wF/2), y: yBanda + PADT };
-  offs.fuera = { x: Math.max(offs.final.x - PADL + wF + GAP_BLOQUE, derecha - wX) + PADL,
-                 y: yBanda + PADT };
-
-  MARCOS = []; CAPTIONS = [];
-  BLOQUES.forEach(function(b){
-    var o = offs[b.id], d = dim[b.id];
-    PORBLOQUE[b.id].forEach(function(it){ it.x += o.x; it.y += o.y; });
-    if (!PORBLOQUE[b.id].length) return;
-    (d.caps || []).forEach(function(c){
-      CAPTIONS.push({ x: c.x + o.x, y: o.y - 10, etapa: c.etapa });
+  /* --- 1. la grilla, común a tronco y ramas -------------------------------- */
+  var partes = ["tronco", "origen", "revisora"];
+  var nCols = 0;
+  partes.forEach(function(b){ nCols = Math.max(nCols, (COLS[b]||[]).length); });
+  GRID.colUnit = new Array(nCols).fill(0);
+  var subs = new Array(nCols).fill(1);
+  partes.forEach(function(b){
+    (COLS[b]||[]).forEach(function(col, ci){
+      col.forEach(function(it){ GRID.colUnit[ci] = Math.max(GRID.colUnit[ci], anchoCon(it)); });
+      subs[ci] = Math.max(subs[ci], Math.ceil(col.length / MAX_FILAS));
     });
-    MARCOS.push({ id:b.id, nombre:b.nombre, sub:b.sub,
-      x: o.x - PADL, y: o.y - PADT, w: d.w + PADL + PADR, h: d.h + PADT + PADB });
   });
+  GRID.colW = GRID.colUnit.map(function(u, ci){
+    return u * subs[ci] + (subs[ci] - 1) * SUB_GAP;
+  });
+  GRID.colX = []; var x = 0;
+  for (var c = 0; c < nCols; c++){ GRID.colX.push(x); x += GRID.colW[c] + GAP_COL; }
+  GRID.ancho = Math.max(0, x - GAP_COL);
 
-  /* Lo condicionado por el paso previo: recuadro propio dentro de la revisora. */
+  /* --- 2. alturas, en seco, para poder centrar una cosa contra la otra ----- */
+  var x0 = MARGEN + 10, yTop = MARGEN + CAB_H + 16;
+  GRID.x0 = x0;
+  var hT = apilarBanda("tronco",   x0, 0);
+  var hO = apilarBanda("origen",   x0, 0);
+  var hR = apilarBanda("revisora", x0, 0);
+  var cajaT = TIT_H + 2*PAD_BANDA + hT;
+  var cajaO = TIT_H + 2*PAD_BANDA + hO;
+  var cajaR = TIT_H + 2*PAD_BANDA + hR;
+  var altoRamas = cajaO + GAP_BANDA + cajaR;
+  var H = Math.max(cajaT, altoRamas);
+
+  /* --- 3. colocado de verdad ---------------------------------------------- */
+  var yT = yTop + (H - cajaT) / 2;
+  var yRam = yTop + (H - altoRamas) / 2;
+  var yO = yRam, yR = yRam + cajaO + GAP_BANDA;
+  apilarBanda("tronco",   x0, yT + TIT_H + PAD_BANDA);
+  apilarBanda("origen",   x0, yO + TIT_H + PAD_BANDA);
+  apilarBanda("revisora", x0, yR + TIT_H + PAD_BANDA);
+
+  GRID.y0 = yTop;
+  GRID.y1 = yTop + H;
+
+  /* el marco de cada parte abarca SOLO las columnas que esa parte usa */
+  function tramo(bloqueId){
+    var cols = COLS[bloqueId] || [], ini = -1, fin = -1;
+    cols.forEach(function(col, ci){
+      if (!col.length) return;
+      if (ini < 0) ini = ci;
+      fin = ci;
+    });
+    if (ini < 0) return { x: x0, w: 60 };
+    return { x: x0 + GRID.colX[ini] - 14,
+             w: GRID.colX[fin] + GRID.colW[fin] - GRID.colX[ini] + 28 };
+  }
+  var tT = tramo("tronco"), tO = tramo("origen"), tR = tramo("revisora");
+  var xRam = Math.min(tO.x, tR.x), wRam = Math.max(tO.x + tO.w, tR.x + tR.w) - xRam;
+
+  MARCOS = [];
+  MARCOS.push({ id:"tronco", num:"1", nombre:BLOQ_NOM["tronco"], sub:BLOQ_SUB["tronco"],
+                x:tT.x, y:yT, w:tT.w, h:cajaT });
+  MARCOS.push({ id:"origen", num:"2", nombre:BLOQ_NOM["origen"], sub:BLOQ_SUB["origen"],
+                x:xRam, y:yO, w:wRam, h:cajaO });
+  MARCOS.push({ id:"revisora", num:"3", nombre:BLOQ_NOM["revisora"], sub:BLOQ_SUB["revisora"],
+                x:xRam, y:yR, w:wRam, h:cajaR });
+
+  /* --- 4. el número final: a la derecha, entre las dos ramas --------------- */
+  var xF = x0 + GRID.ancho + GAP_FINAL;
+  var dimF = apilarSuelto("final", xF, 0);
+  var dyF = (yO + cajaO + yR) / 2 - dimF.h/2;
+  apilarSuelto("final", xF, dyF);   /* absoluto: colocar() se puede repetir */
+  MARCOS.push({ id:"final", num:"4", nombre:BLOQ_NOM["final"],
+                sub:"Las dos cámaras terminan acá.",
+                x: xF - 16, y: dyF - TIT_H - 10, w: dimF.w + 32, h: dimF.h + TIT_H + 22 });
+
+  /* --- 5. lo que no entra al número: abajo, y se puede plegar -------------- */
+  var yX = Math.max(GRID.y1, MARCOS[3].y + MARCOS[3].h) + 64;
+  var dimX = apilarSuelto("fuera", x0, yX + TIT_H);
+  MARCOS.push({ id:"fuera", num:"", nombre:BLOQ_NOM["fuera"], sub:BLOQ_SUB["fuera"],
+                x: x0 - 14, y: yX - 10, w: dimX.w + 28, h: dimX.h + TIT_H + 24 });
+
+  /* --- 6. encabezados de columna, por tramo -------------------------------- */
+  CABS = [];
+  var prev = null;
+  for (var ci = 0; ci < nCols; ci++){
+    var cuenta = {};
+    partes.forEach(function(b){
+      ((COLS[b]||[])[ci] || []).forEach(function(it){
+        cuenta[it.n.etapa] = (cuenta[it.n.etapa] || 0) + 1;
+      });
+    });
+    var total = Object.keys(cuenta).reduce(function(s,k){ return s + cuenta[k]; }, 0);
+    var dom = Object.keys(cuenta).sort(function(a,b){ return cuenta[b]-cuenta[a]; })[0];
+    var etapa = (dom && total && cuenta[dom]/total >= .4) ? dom : null;
+    var xi = x0 + GRID.colX[ci], wi = GRID.colW[ci];
+    if (prev && prev.etapa && prev.etapa === etapa){
+      prev.w = xi + wi - prev.x; prev.cols++;
+    } else {
+      prev = { x: xi, w: wi, etapa: etapa, cols: 1 };
+      CABS.push(prev);
+    }
+  }
+  CABS.forEach(function(c){
+    if (c.etapa === "origen" || c.etapa === "revisora") c.titulo = "Cálculo en la cámara";
+    else if (c.etapa === "nowcast") c.titulo = "Resultado";
+    else if (c.etapa) c.titulo = NOM_ETAPA[c.etapa];
+  });
+  if (CABS.length){
+    var ult = CABS[CABS.length-1];
+    ult.titulo = "Resultado de la cámara";
+    ult.etapa = ult.etapa || "nowcast";
+  }
+
+  encuadrar();
+}
+
+/* Los recuadros de grupo y el tamaño del lienzo salen de DÓNDE quedaron los
+   nodos, así que se recalculan cada vez que un nodo se mueve. Vive aparte de
+   `colocar()` para que arrastrar a mano no tenga que recalcular el layout
+   entero — que devolvería el nodo a su lugar. Una cuenta, dos usuarios. */
+function encuadrar(){
+  /* --- lo condicionado por el paso previo --------------------------------- */
   CAJAS = [];
   (D.grupos || []).forEach(function(g){
     var dentro = INST.filter(function(it){
       return it.n.grupo === g.id && it.bloque === (g.bloque || it.bloque);
     });
     if (!dentro.length) return;
-    var x1 = Infinity, y1 = Infinity, x2 = -Infinity, y2 = -Infinity;
-    dentro.forEach(function(it){
-      x1 = Math.min(x1, it.x - it.w/2); x2 = Math.max(x2, it.x + it.w/2);
-      y1 = Math.min(y1, it.y - it.h/2); y2 = Math.max(y2, it.y + it.h/2);
+    dentro.sort(function(a,b){ return a.x - b.x; });
+    dentro.forEach(function(it, i){
+      var ancla = i === 0;
+      var arriba = GRUPO_PAD + (ancla ? GRUPO_TIT : 0);
+      CAJAS.push({ g:g, ancla: ancla, dest: it === dentro[dentro.length-1],
+                   x: it.x - it.w/2 - GRUPO_PAD, y: it.y - it.h/2 - arriba,
+                   w: it.w + 2*GRUPO_PAD, h: it.h + arriba + GRUPO_PAD });
     });
-    var p = 22;
-    CAJAS.push({ g:g, x:x1-p, y:y1-p, w:(x2-x1)+2*p, h:(y2-y1)+2*p });
   });
 
+  var extra = document.body.dataset.extra !== "off";
   ANCHO = 0; ALTO = 0;
   MARCOS.forEach(function(m){
+    if (m.id === "fuera" && !extra) return;
     ANCHO = Math.max(ANCHO, m.x + m.w + MARGEN);
     ALTO  = Math.max(ALTO,  m.y + m.h + MARGEN);
   });
@@ -731,45 +969,75 @@ function forma(it){
       [[-w/2+ch,-h/2],[w/2-ch,-h/2],[w/2,0],[w/2-ch,h/2],[-w/2+ch,h/2],[-w/2,0]]
         .map(function(p){ return p[0].toFixed(1)+","+p[1].toFixed(1); }).join(" ") }));
   }
-  if (tipo === "circulo"){
-    return el("ellipse", Object.assign(a, { rx:w/2, ry:h/2 }));
-  }
-  /* rectangulo y rectangulo-grueso: el grosor lo pone el CSS por rol */
+  if (tipo === "circulo") return el("ellipse", Object.assign(a, { rx:w/2, ry:h/2 }));
   return el("rect", Object.assign(a, {
     x:-w/2, y:-h/2, width:w, height:h, rx: tipo === "rectangulo-grueso" ? 3 : 5 }));
 }
 
 function haloDe(it){
-  var tipo = FORMA_ROL[it.n.rol];
-  if (tipo === "circulo")
+  if (FORMA_ROL[it.n.rol] === "circulo")
     return el("ellipse", { class:"halo", rx:it.w/2+7, ry:it.h/2+7 });
   return el("rect", { class:"halo", x:-it.w/2-7, y:-it.h/2-7,
                       width:it.w+14, height:it.h+14, rx:8 });
 }
 
 /* ----------------------------------------------------------------- aristas */
-/* Carriles: las líneas que salen del mismo nodo se reparten a lo alto de su
-   borde derecho, y las que entran al mismo nodo a lo alto del izquierdo. Sin
-   esto, diez aristas salen del mismo píxel y no se sigue ninguna. */
+/* Dos ruteos, a propósito:
+   - de una columna a la SIGUIENTE, dentro de la misma banda: codo ortogonal con
+     esquinas redondeadas, con un carril propio en el hueco entre columnas. Es
+     lo que hace que un diagrama se lea como un diagrama y no como una madeja.
+   - todo lo demás (saltos de varias columnas, vueltas hacia atrás, lo que cruza
+     de banda): curva. Un codo que atraviesa tres columnas pasa por encima de
+     los nodos del medio; la curva los esquiva. */
 function carriles(){
-  var sale = {}, entra = {};
+  var sale = {}, entra = {}, gaps = {};
   ARISTAS.forEach(function(a){
     (sale[a.de.clave] = sale[a.de.clave] || []).push(a);
     (entra[a.a.clave] = entra[a.a.clave] || []).push(a);
+    a.orto = a.tipo !== "condiciona" && a.de.bloque === a.a.bloque &&
+             a.de.col >= 0 && a.a.col === a.de.col + 1;
+    if (a.orto){
+      var k = a.de.bloque + "#" + a.de.col;
+      (gaps[k] = gaps[k] || []).push(a);
+    }
   });
   function repartir(mapa, campo, otro){
     Object.keys(mapa).forEach(function(k){
       var arr = mapa[k];
       var it = campo === "os" ? arr[0].de : arr[0].a;
       arr.sort(function(p,q){ return (p[otro].y - q[otro].y) || (p[otro].x - q[otro].x); });
-      var n = arr.length, alto = Math.min(it.h - 10, (n-1) * 9);
-      arr.forEach(function(a, i){
-        a[campo] = n === 1 ? 0 : -alto/2 + alto * (i/(n-1));
-      });
+      var n = arr.length, alto = Math.min(it.h - 12, (n-1) * 9);
+      arr.forEach(function(a, i){ a[campo] = n === 1 ? 0 : -alto/2 + alto * (i/(n-1)); });
     });
   }
   repartir(sale, "os", "a");
   repartir(entra, "oe", "de");
+
+  Object.keys(gaps).forEach(function(k){
+    var arr = gaps[k];
+    var ci = arr[0].de.col;
+    var ini = GRID.x0 + GRID.colX[ci] + GRID.colW[ci];
+    var fin = GRID.x0 + GRID.colX[ci+1];
+    var util = Math.max(16, fin - ini);
+    arr.sort(function(p,q){ return (p.de.y + p.a.y) - (q.de.y + q.a.y); });
+    arr.forEach(function(a, i){
+      a.xm = ini + util * ((i + 1) / (arr.length + 1));
+    });
+  });
+}
+
+function codo(x1, y1, x2, y2, xm){
+  if (Math.abs(y1 - y2) < 1.5) return "M" + x1 + "," + y1 + " L" + x2 + "," + y2;
+  var r = Math.min(11, Math.abs(y2-y1)/2, Math.abs(xm-x1) - 1, Math.abs(x2-xm) - 1);
+  if (!(r > 1)) return "M" + x1 + "," + y1 + " L" + xm + "," + y1 +
+                       " L" + xm + "," + y2 + " L" + x2 + "," + y2;
+  var dy = y2 > y1 ? 1 : -1;
+  return "M" + x1 + "," + y1 +
+         " L" + (xm - r) + "," + y1 +
+         " Q" + xm + "," + y1 + " " + xm + "," + (y1 + r*dy) +
+         " L" + xm + "," + (y2 - r*dy) +
+         " Q" + xm + "," + y2 + " " + (xm + r) + "," + y2 +
+         " L" + x2 + "," + y2;
 }
 
 function caminoArista(a){
@@ -777,10 +1045,10 @@ function caminoArista(a){
   if (a.tipo === "condiciona") return caminoCondiciona(a);
   var y1 = p.y + (a.os || 0), y2 = q.y + (a.oe || 0);
   var x1 = p.x + p.w/2 + 2, x2 = q.x - q.w/2 - 7;
+  if (a.orto && a.xm != null && x2 > x1 + 10) return codo(x1, y1, x2, y2, a.xm);
   if (x2 <= x1 + 12){
-    /* hacia atrás o dentro de la misma capa: se va por abajo, sin taparlo todo */
     var xa = p.x, xb = q.x;
-    var dip = Math.max(48, Math.abs(q.y - p.y) * .4 + 36);
+    var dip = Math.max(46, Math.abs(q.y - p.y) * .35 + 34);
     return "M" + xa + "," + (p.y + p.h/2) +
            " C" + xa + "," + (p.y + p.h/2 + dip) + " " +
                   xb + "," + (q.y + q.h/2 + dip) + " " +
@@ -791,83 +1059,141 @@ function caminoArista(a){
          x2 + "," + y2;
 }
 
-/* La flecha gruesa del croquis: sale del resultado de origen, sube por encima
-   de todo el dibujo y baja sobre el recuadro de lo condicionado en la revisora.
-   No es flujo de datos y la leyenda lo dice: es el cambio de supuesto. */
+/* El condicionamiento tiene DOS formas, y hasta el 2026-08-25 se dibujaban con
+   el mismo camino — que sólo servía para una:
+
+   (a) ENTRE CÁMARAS (`P(mayoría en origen)` → el recuadro de la revisora): baja
+       del resultado de origen al recuadro de lo condicionado. Con las bandas
+       apiladas queda a la vista sin rodear el dibujo entero.
+   (b) DENTRO DE LA MISMA CÁMARA (`Puerta A` → `Paso B`: el carácter del dictamen
+       condiciona la votación): los dos nodos están en la MISMA FILA y el destino
+       no pertenece a ningún recuadro. El camino de (a) arrancaba abajo del
+       origen y apuntaba 10 px ARRIBA del destino, o sea hacia atrás y hacia
+       arriba: colapsaba en un pinche de 6 px asomando sobre el nodo, y la
+       etiqueta caía justo encima de los dos nodos. Ahora va por arriba, como un
+       puente entre hermanos.
+
+   `a._rot` queda con el ancla de la etiqueta para que la calcule UN solo lugar:
+   antes la rutina de dibujo la recalculaba por su cuenta con la fórmula de (a). */
 function caminoCondiciona(a){
   var p = a.de, q = a.a;
-  var caja = CAJAS.filter(function(c){ return c.g.id === q.n.grupo; })[0];
-  var destX = caja ? caja.x + caja.w/2 : q.x;
-  var destY = caja ? caja.y : q.y - q.h/2;
-  var y0 = ARCO_Y;
-  return "M" + p.x + "," + (p.y - p.h/2 - 4) +
-         " C" + p.x + "," + y0 + " " + destX + "," + y0 + " " +
-         destX + "," + (destY - 8);
+  var caja = CAJAS.filter(function(c){ return c.g.id === q.n.grupo && c.dest; })[0];
+  var dx = caja ? caja.x + caja.w/2 : q.x;
+  var dy = caja ? caja.y : q.y - q.h/2;
+  var y0 = p.y + p.h/2 + 2, y1 = dy - 10;
+
+  // (b) sin recuadro destino, o sin lugar para bajar: puente corto por arriba.
+  if (!caja || (y1 - y0) < 60){
+    var cima = Math.min(p.y - p.h/2, q.y - q.h/2) - COND_PUENTE;
+    a._rot = { x:(p.x + q.x) / 2, y:cima + 14 };
+    return "M" + p.x + "," + (p.y - p.h/2 - 2) +
+           " C" + p.x + "," + cima + " " + q.x + "," + cima + " " +
+           q.x + "," + (q.y - q.h/2 - 4);
+  }
+
+  // (a) el arco entre cámaras.
+  var med = (y0 + y1) / 2;
+  a._rot = { x:(p.x + dx) / 2, y:med };
+  return "M" + p.x + "," + y0 +
+         " C" + p.x + "," + med + " " + dx + "," + med + " " + dx + "," + y1;
 }
 
+/* Cuánto sube el puente de (b) por encima del nodo más alto de los dos. */
+var COND_PUENTE = 46;
+
+/* SIN PUNTAS DE FLECHA — decisión de Valle, 2026-08-25.
+   Las puntas se dibujaban en el borde de la CAJA del nodo, no en el borde de su
+   forma. En un óvalo eso las deja flotando en el hueco entre la caja y la curva,
+   y cuando varias aristas entran al mismo nodo por carriles distintos aparecen
+   apiladas, sueltas, sin tocar nada (el caso que se veía en `Roster nominal`).
+   Se sacan de todo el diagrama en vez de reanclarlas: el sentido ya lo dice el
+   layout —se lee de izquierda a derecha, por columnas— y el camino vivo se
+   distingue por color y grosor. Si alguna vez se quieren de vuelta, hay que
+   anclar el final del camino a la forma del nodo, no a su caja.
+   El `<defs id="defs">` queda vacío a propósito: es el enganche por si vuelven. */
 function marcadores(){
   var defs = $("#defs");
-  defs.textContent = "";
-  [["flujo","var(--arista)",6],["config","var(--line2)",6],
-   ["calcula","var(--arista-fuerte)",6],["alerta","var(--alerta)",6],
-   ["condiciona","var(--condiciona)",5],["vivo","var(--resalte)",6]].forEach(function(par){
-    var m = el("marker", { id:"fl-"+par[0], viewBox:"0 0 10 10", refX:"9", refY:"5",
-      markerWidth:par[2], markerHeight:par[2], orient:"auto-start-reverse" });
-    m.appendChild(el("path", { d:"M0,1 L9,5 L0,9 z", fill:par[1] }));
-    defs.appendChild(m);
-  });
+  if (defs) defs.textContent = "";
 }
-
 /* ------------------------------------------------------------------ dibujo */
-var gMar = $("#capaMarcos"), gGr = $("#capaGrupos"),
+var gMar = $("#capaMarcos"), gRej = $("#capaRejilla"), gGr = $("#capaGrupos"),
     gAr  = $("#capaAristas"), gNo = $("#capaNodos");
 
 function dibujar(){
   marcadores();
   carriles();
-  gMar.textContent = ""; gGr.textContent = ""; gAr.textContent = ""; gNo.textContent = "";
+  gMar.textContent = ""; gRej.textContent = ""; gGr.textContent = "";
+  gAr.textContent = ""; gNo.textContent = "";
 
-  /* --- los dos bloques: el esqueleto bicameral -------------------------- */
+  /* --- las bandas: una por camara, misma grilla ------------------------- */
   MARCOS.forEach(function(m){
-    gMar.appendChild(el("rect", { class:"marco b-"+m.id, x:m.x, y:m.y, width:m.w, height:m.h, rx:18 }));
-    var t = el("text", { class:"marcoTit", x:m.x + 20, y:m.y + 26 });
+    var g = el("g", { class:"b-"+m.id+"-grupo" });
+    g.appendChild(el("rect", { class:"marco b-"+m.id, x:m.x, y:m.y,
+                               width:m.w, height:m.h, rx:14 }));
+    if (m.num){
+      var num = el("text", { class:"bandaNum", x:m.x + 18, y:m.y + 30 });
+      num.textContent = m.num;
+      g.appendChild(num);
+    }
+    var t = el("text", { class:"bandaTit", x:m.x + (m.num ? 42 : 18), y:m.y + 24 });
     t.textContent = m.nombre.toUpperCase();
-    gMar.appendChild(t);
+    g.appendChild(t);
     if (m.sub){
-      var s = el("text", { class:"marcoSub", x:m.x + 20, y:m.y + 41 });
-      s.textContent = m.sub.length > 118 ? m.sub.slice(0,117) + "…" : m.sub;
-      gMar.appendChild(s);
+      var s = el("text", { class:"bandaSub", x:m.x + (m.num ? 42 : 18), y:m.y + 38 });
+      s.textContent = m.sub;
+      g.appendChild(s);
+    }
+    gMar.appendChild(g);
+  });
+
+  /* --- la grilla compartida: encabezado arriba y verticales al fondo ----- */
+  var yA = GRID.y0, yB = GRID.y1;
+  CABS.forEach(function(c, i){
+    if (c.etapa){
+      gRej.appendChild(el("rect", { class:"cabCol", x:c.x - 10, y:yA - CAB_H,
+                                    width:c.w + 20, height:CAB_H, rx:7 }));
+      var t = el("text", { class:"cabColTxt", x:c.x + c.w/2, y:yA - CAB_H/2 + 4,
+                           "text-anchor":"middle" });
+      t.textContent = (c.titulo || NOM_ETAPA[c.etapa] || "").toUpperCase();
+      var ti = el("title"); ti.textContent = DESC_ETAPA[c.etapa] || "";
+      t.appendChild(ti);
+      gRej.appendChild(t);
+    }
+    if (i){
+      var x = c.x - GAP_COL/2 - 10;
+      gRej.appendChild(el("line", { class:"rejilla", x1:x, y1:yA - CAB_H, x2:x, y2:yB }));
     }
   });
 
-  /* --- qué etapa domina cada capa: lo que antes decían las columnas ------ */
-  CAPTIONS.forEach(function(c){
-    var t = el("text", { class:"capaTit", x:c.x, y:c.y, "text-anchor":"middle" });
-    t.textContent = (NOM_ETAPA[c.etapa] || "").toUpperCase();
-    var ti = el("title"); ti.textContent = DESC_ETAPA[c.etapa] || "";
-    t.appendChild(ti);
-    gMar.appendChild(t);
-  });
-
-  /* --- lo condicionado por el paso previo ------------------------------- */
+  /* --- lo condicionado por el paso previo -------------------------------- */
   CAJAS.forEach(function(c){
-    gGr.appendChild(el("rect", { class:"grupoCaja", x:c.x, y:c.y, width:c.w, height:c.h, rx:18 }));
-    var t = el("text", { class:"grupoTit", x:c.x + 4, y:c.y - 7 });
-    t.textContent = c.g.nombre;
+    gGr.appendChild(el("rect", { class:"grupoCaja", x:c.x, y:c.y,
+                                 width:c.w, height:c.h, rx:16 }));
+    if (!c.ancla) return;
+    var t = el("text", { class:"grupoTit", x:c.x + 9, y:c.y + 12 });
+    /* El titulo va ADENTRO del recuadro: si no entra se corta y el texto
+       completo queda en el tooltip. Desbordarlo pisa al vecino de al lado. */
+    var cabe = Math.max(4, Math.floor((c.w - 18) / 6.3));
+    t.textContent = c.g.nombre.length > cabe
+      ? c.g.nombre.slice(0, cabe - 1).replace(/[ ,]+$/, "") + "…"
+      : c.g.nombre;
     var ti = el("title"); ti.textContent = c.g.descripcion || "";
     t.appendChild(ti);
     gGr.appendChild(t);
   });
 
-  /* --- aristas ---------------------------------------------------------- */
+  /* --- aristas ----------------------------------------------------------- */
   ARISTAS.forEach(function(a, i){
-    var atras = a.tipo !== "condiciona" &&
+    var atras = a.tipo !== "condiciona" && !a.orto &&
                 (a.a.x - a.a.w/2) <= (a.de.x + a.de.w/2 + 12);
-    var lejos = a.tipo !== "condiciona" && (a.cruza ||
-                 Math.abs(a.a.y - a.de.y) > 260 || Math.abs(a.a.x - a.de.x) > 900);
+    var lejos = a.tipo !== "condiciona" && !a.orto &&
+                (a.cruza || Math.abs(a.a.y - a.de.y) > 300 ||
+                 Math.abs(a.a.x - a.de.x) > 700);
     var p = el("path", { class:"arista t-" + a.tipo + (atras ? " atras" : "") +
-                                (lejos ? " lejos" : ""),
-      d: caminoArista(a), "marker-end":"url(#fl-" + a.tipo + ")" });
+                                (lejos ? " lejos" : "") +
+                                (a.de.bloque === "fuera" || a.a.bloque === "fuera"
+                                  ? " b-fuera-grupo" : ""),
+      d: caminoArista(a) });
     p.dataset.de = a.de.id; p.dataset.a = a.a.id;
     p.dataset.dek = a.de.clave; p.dataset.ak = a.a.clave;
     p.dataset.tipo = a.tipo; p.dataset.i = i;
@@ -877,19 +1203,31 @@ function dibujar(){
     p.appendChild(tit);
     gAr.appendChild(p);
     if (a.tipo === "condiciona" && a.l.nota){
-      var caja = CAJAS.filter(function(c){ return c.g.id === a.a.n.grupo; })[0];
-      var mx = (a.de.x + (caja ? caja.x + caja.w/2 : a.a.x)) / 2;
-      var r = el("text", { class:"rotArista", x:mx, y:ARCO_Y + 2, "text-anchor":"middle" });
+      // El ancla la calcula `caminoCondiciona` junto con el camino: si se
+      // recalcula acá, las dos cuentas se desacomodan (que es como la etiqueta
+      // de A→B terminó dibujada encima de los nodos).
+      var an = a._rot || { x:(a.de.x + a.a.x) / 2, y:(a.de.y + a.a.y) / 2 };
+      var r = el("text", { class:"rotArista", x:an.x, y:an.y + 2,
+                           "text-anchor":"middle" });
       r.textContent = a.l.nota;
       gAr.appendChild(r);
+      // El fondo se mide del texto, no 300 px fijos: la nota de A→B es más larga
+      // que la del arco entre cámaras y se desbordaba.
+      var w = 300;
+      try { var bb = r.getBBox(); if (bb && bb.width) w = bb.width + 22; }
+      catch (e) { w = a.l.nota.length * 6.6 + 22; }
+      var fondo = el("rect", { class:"rotFondo", x:an.x - w/2, y:an.y - 13,
+                               width:w, height:20, rx:9 });
+      gAr.insertBefore(fondo, r);
     }
   });
 
-  /* --- nodos ------------------------------------------------------------ */
+  /* --- nodos ------------------------------------------------------------- */
   INST.forEach(function(it){
     var n = it.n;
-    var g = el("g", { class:"nodo r-" + n.rol, transform:"translate("+it.x+","+it.y+")",
-      tabindex:"0", role:"button" });
+    var g = el("g", { class:"nodo r-" + n.rol +
+                            (it.bloque === "fuera" ? " b-fuera-grupo" : ""),
+      transform:"translate("+it.x+","+it.y+")", tabindex:"0", role:"button" });
     g.dataset.id = n.id; g.dataset.clave = it.clave;
     g.setAttribute("aria-label", rotuloAccesible(it));
     g.appendChild(haloDe(it));
@@ -911,20 +1249,11 @@ function dibujar(){
       });
       g.appendChild(t2);
     }
-    if (it.compartido){
-      var mk = el("text", { class:"gemelo", x: it.w/2 - 9, y: -it.h/2 + 11,
-                            "text-anchor":"end" });
-      mk.textContent = "⇄";
-      var mt = el("title");
-      mt.textContent = "Alimenta a las dos cámaras: este mismo nodo está dibujado " +
-        "también del otro lado.";
-      mk.appendChild(mt);
-      g.appendChild(mk);
-    }
     if (n.parqueada) g.classList.add("parqueada");
     var tit = el("title");
     tit.textContent = n.label + " — " + NOM_ROL[n.rol] +
-      (n.estado ? " · " + n.estado : "") + (n.owner && n.owner !== "—" ? " · " + n.owner : "");
+      (n.estado ? " · " + n.estado : "") +
+      (n.owner && n.owner !== "—" ? " · " + n.owner : "");
     g.appendChild(tit);
     gNo.appendChild(g);
     it.g = g;
@@ -990,8 +1319,7 @@ function pintar(){
     var tocaSel = S.sel && (p.dataset.de === S.sel || p.dataset.a === S.sel);
     p.classList.toggle("apagada", !vivos);
     p.classList.toggle("viva", !!(enCamino || tocaSel));
-    p.setAttribute("marker-end",
-      (enCamino || tocaSel) ? "url(#fl-vivo)" : "url(#fl-" + p.dataset.tipo + ")");
+    // Sin puntas (2026-08-25): el camino vivo se distingue por color y grosor.
   });
 }
 
@@ -1074,7 +1402,7 @@ function abrir(id){
     }).join(" y "))+
     ((MIEMBRO[id]||[]).length > 1
       ? '<br><span class="via">Alimenta a las dos cámaras, así que está dibujado dos veces '+
-        '(marca ⇄). Es el mismo nodo: al seleccionarlo se encienden las dos copias.</span>'
+        '(marca ⇄, misma columna en la otra banda). Es el mismo nodo: al seleccionarlo se encienden las dos copias.</span>'
       : '')+'</p>');
 
   h.push('<h3>Dueño y estado</h3><p>'+esc(n.owner || "—")+
@@ -1189,6 +1517,62 @@ svg.addEventListener("wheel", function(e){
   var r = $("#lienzo").getBoundingClientRect();
   zoomA(e.deltaY < 0 ? 1.12 : 1/1.12, e.clientX - r.left, e.clientY - r.top);
 }, { passive:false });
+
+/* ------------------------------------------- arrastrar nodos a mano (25-08) */
+/* A propósito NO guarda nada: el layout automático vuelve al recargar, y eso
+   ES el deshacer. Sirve para desenredar una zona, sacar la captura y pedir la
+   corrección; si algún día hay que conservarlo, las posiciones son DATOS y van
+   a `mapa_modelo_datos.js`, no acá (regla de las dos capas del repo).
+
+   La captura del puntero va sobre el `svg`, no sobre el nodo: cada cuadro se
+   redibuja el diagrama entero y el `<g>` del nodo deja de existir. */
+var arrN = null, cuadro = 0, NODO_MOVIDO = false;
+svg.addEventListener("pointerdown", function(e){
+  if (e.button !== 0) return;
+  var g = e.target.closest(".nodo"); if (!g) return;
+  var it = POR_CLAVE[g.dataset.clave]; if (!it) return;
+  arrN = { it:it, id:e.pointerId, sx:e.clientX, sy:e.clientY,
+           x0:it.x, y0:it.y, movido:false, capt:false };
+  /* 🔴 ACÁ NO SE CAPTURA EL PUNTERO, y el motivo cuesta encontrarlo dos veces:
+     con `setPointerCapture` activo el `click` posterior se dispara sobre el
+     ELEMENTO QUE CAPTURA (el `<svg>`), no sobre el nodo. Como el listener de
+     la ficha cuelga de `gNo`, nunca lo veía y **el panel de la derecha dejaba
+     de abrirse con un clic simple** (regresión del 25-08, la vio Valle).
+     Se captura recién al cruzar el umbral, cuando ya sabemos que es arrastre. */
+});
+svg.addEventListener("pointermove", function(e){
+  if (!arrN) return;
+  var dx = e.clientX - arrN.sx, dy = e.clientY - arrN.sy;
+  if (!arrN.movido){
+    // Por debajo de 4 px es un clic que tembló, no un arrastre. Sin esto, abrir
+    // la ficha de un nodo lo correría un pixel.
+    if (Math.abs(dx) < 4 && Math.abs(dy) < 4) return;
+    arrN.movido = true;
+    svg.classList.add("arrastrando");
+    try { svg.setPointerCapture(arrN.id); arrN.capt = true; } catch (err) {}
+  }
+  arrN.it.x = arrN.x0 + dx / S.z;
+  arrN.it.y = arrN.y0 + dy / S.z;
+  if (cuadro) return;
+  cuadro = requestAnimationFrame(function(){
+    cuadro = 0;
+    encuadrar();          // los recuadros y las bandas siguen al nodo
+    dibujar(); pintar();  // aristas, rótulos y formas, todo desde el estado
+  });
+});
+["pointerup","pointercancel"].forEach(function(ev){
+  svg.addEventListener(ev, function(){
+    if (!arrN) return;
+    // Si de verdad se movió, el `click` que viene atrás no tiene que abrir la
+    // ficha: soltar un nodo no es elegirlo. Si NO se movió, esto queda en false
+    // y el clic abre el panel como siempre.
+    NODO_MOVIDO = arrN.movido;
+    if (arrN.movido) setTimeout(function(){ NODO_MOVIDO = false; }, 0);
+    if (arrN.capt){ try { svg.releasePointerCapture(arrN.id); } catch (err) {} }
+    arrN = null;
+    svg.classList.remove("arrastrando");
+  });
+});
 
 /* ------------------------------------------------------------------ tabla */
 function tabla(){
@@ -1422,6 +1806,14 @@ function controles(){
   $("#q").addEventListener("input", function(e){
     S.q = e.target.value.trim().toLowerCase(); pintar();
   });
+  $("#b-extra").addEventListener("click", function(){
+    var on = document.body.dataset.extra === "on";
+    document.body.dataset.extra = on ? "off" : "on";
+    this.textContent = "Controles: " + (on ? "no" : "sí");
+    this.setAttribute("aria-pressed", on ? "false" : "true");
+    colocar(); dibujar(); pintar(); ajustar();
+    if (S.sel) abrir(S.sel);
+  });
   $("#b-tema").addEventListener("click", function(){
     var osc = document.body.dataset.tema === "oscuro";
     document.body.dataset.tema = osc ? "claro" : "oscuro";
@@ -1460,6 +1852,7 @@ function controles(){
   });
 
   gNo.addEventListener("click", function(e){
+    if (NODO_MOVIDO) return;              // vengo de arrastrar, no de elegir
     var g = e.target.closest(".nodo");
     if (g) { $("#camino").value = ""; S.camino = ""; abrir(g.dataset.id); }
   });

@@ -1,6 +1,16 @@
-"""modelo/ensemble - composición final del Nowcast.
+"""modelo/ensemble - la maquinaria compartida del roster y la simulación.
 
-    P(aprobación) = P(llega al recinto) × P(mayoría | recinto)
+⚠️ LA FORMULACIÓN v1 DE ESTE ARCHIVO ESTÁ DADA DE BAJA (2026-08-22, ADR-0012).
+   Era: P(aprobación) = P(llega al recinto) × P(mayoría | recinto).
+   `componer`, `_p_llega_de_embudo`, `nowcast_proyecto`, `nowcast_auto`,
+   `imprimir_tarjeta` y la CLI **levantan SystemExit con el motivo**. No se borraron a
+   propósito: quien las llame recibe una explicación y a dónde ir, en vez de un
+   ImportError sin contexto. El punto de entrada vivo es `nowcast_puertas.nowcast(...)`.
+
+LO QUE SIGUE VIVO Y ES DE ACÁ: `roster_nominal` (el roster point-in-time, con la
+escalera de desvío y la foto completa de la cámara) y `simular_con_guardas` (el
+agregador con el piso de desvío y el techo de confianza). Los consumen la Puerta B, la
+Puerta D y `casos/`.
 
 Conecta las piezas ya validadas:
   - P(llega al recinto): `variables/embudo/outputs/p_embudo.parquet` (col p_llega_recinto).
@@ -31,7 +41,6 @@ interno del embudo (HCDN...).
 """
 from __future__ import annotations
 
-import json
 import logging
 import os
 import re
@@ -85,13 +94,19 @@ def _cargar_proyector():
 # --------------------------------------------------------------------------- #
 # Composición (el corazón del ensemble)                                        #
 # --------------------------------------------------------------------------- #
-def componer(p_llega: float, p_mayoria: float) -> float:
-    """P(aprobación) = P(llega al recinto) × P(mayoría | recinto)."""
-    if not (0.0 <= p_llega <= 1.0):
-        raise ValueError(f"p_llega fuera de [0,1]: {p_llega}")
-    if not (0.0 <= p_mayoria <= 1.0):
-        raise ValueError(f"p_mayoria fuera de [0,1]: {p_mayoria}")
-    return float(p_llega * p_mayoria)
+_BAJA_V1 = (
+    "La formulacion v1 -P(aprobacion) = P(llega al recinto) x P(mayoria | recinto)- se "
+    "dio de BAJA el 2026-08-22 (ADR-0012). `p_llega_recinto` media la mortandad en el "
+    "cajon: agenda politica, y se decidio no modelarla. El punto de entrada vivo es "
+    "`modelo/ensemble/src/nowcast_puertas.py` (funcion `nowcast`), que corre la cadena "
+    "de puertas y devuelve un numero CONDICIONAL a que las camaras voten, con el "
+    "desagregado por legislador. El codigo viejo quedo entero en "
+    "Archivos_Borrar/BORRAR_modelo-ensemble-src-ensemble-v1.py")
+
+
+def componer(*args, **kwargs):
+    """DADA DE BAJA (2026-08-22) - era el corazon de la v1. Ver `_BAJA_V1`."""
+    raise SystemExit(_BAJA_V1)
 
 
 # --------------------------------------------------------------------------- #
@@ -136,23 +151,41 @@ def roster_nominal(camara: str, fecha, bloques: list[dict],
     """
     import pandas as pd
 
-    pcsv = Path(padron_file) if padron_file else _padron_csv(camara, padron_dir)
-    if not pcsv.exists():
-        raise FileNotFoundError(f"falta el padrón oficial: {pcsv}")
-    pad = pd.read_csv(pcsv, dtype=str, encoding="utf-8-sig")
-    need = {"legislador_id", "bloque_linaje", "desde", "hasta"}
-    faltan = need - set(pad.columns)
-    if faltan:
-        raise KeyError(f"padrón sin columnas {faltan}; hay {list(pad.columns)}")
-
     F = pd.to_datetime(fecha)
     if pd.isna(F):
         raise ValueError(f"fecha inválida para el roster: {fecha}")
-    d0 = pd.to_datetime(pad["desde"], errors="coerce")
-    d1 = pd.to_datetime(pad["hasta"], errors="coerce")
-    vig = pad[(d0 <= F) & (F <= d1)].copy()
+
+    if padron_file or padron_dir:
+        # Ruta EXPLÍCITA: un solo archivo, tal cual se pidió. La usan los tests con
+        # padrones sintéticos y cualquiera que quiera fijar la fuente a mano.
+        pcsv = Path(padron_file) if padron_file else _padron_csv(camara, padron_dir)
+        if not pcsv.exists():
+            raise FileNotFoundError(f"falta el padrón oficial: {pcsv}")
+        pad = pd.read_csv(pcsv, dtype=str, encoding="utf-8-sig")
+        need = {"legislador_id", "bloque_linaje", "desde", "hasta"}
+        faltan = need - set(pad.columns)
+        if faltan:
+            raise KeyError(f"padrón sin columnas {faltan}; hay {list(pad.columns)}")
+        d0 = pd.to_datetime(pad["desde"], errors="coerce")
+        d1 = pd.to_datetime(pad["hasta"], errors="coerce")
+        vig = pad[(d0 <= F) & (F <= d1)].copy()
+        origen_padron = pcsv.name
+    else:
+        # Por DEFECTO: la foto completa de la cámara (oficial + histórico, sin
+        # duplicados). Antes se leía un solo archivo y el oficial cubre 81 de 257
+        # bancas en 2008 y 203 en 2019: todo cálculo sobre fechas viejas corría
+        # sobre una cámara agujereada. Ver datos/padron/src/padron_vigente.py, que
+        # es el único lugar donde vive la regla de fusión.
+        sys.path.insert(0, str(_root() / "datos" / "padron" / "src"))
+        from padron_vigente import padron_vigente  # type: ignore
+        vig = padron_vigente(camara, F).copy()
+        origen_padron = "oficial+histórico"
+        need = {"legislador_id", "bloque_linaje", "desde", "hasta"}
+        faltan = need - set(vig.columns)
+        if faltan:
+            raise KeyError(f"padrón sin columnas {faltan}; hay {list(vig.columns)}")
     if vig.empty:
-        raise ValueError(f"padrón {pcsv.name}: ningún mandato vigente al {F.date()}")
+        raise ValueError(f"padrón {origen_padron}: ningún mandato vigente al {F.date()}")
 
     # línea y desvío-fallback por linaje (del proyector de bloque)
     por_linaje: dict[str, dict] = {}
@@ -218,7 +251,8 @@ def roster_nominal(camara: str, fecha, bloques: list[dict],
     if n_sin_linea:
         logger.warning("roster nominal: %d legisladores con linaje sin línea proyectada "
                        "(entran NO_ACOMPANA, desvío neutro)", n_sin_linea)
-    detalle = {"n": len(lineas), "ficha_reciente": n_rec, "ficha_global": n_glob,
+    detalle = {"n": len(lineas), "padron": origen_padron,
+               "ficha_reciente": n_rec, "ficha_global": n_glob,
                "fallback_bloque": n_blo, "sin_linea_proyectada": n_sin_linea,
                "min_votos_ficha": int(min_votos), "filas": filas}
     logger.info("roster nominal %s @%s: %d legisladores (ficha reciente %d, ficha "
@@ -263,19 +297,9 @@ def _resolver_proyecto_id(entrada: str, expedientes_path: Path | None = None) ->
     return pid
 
 
-def _p_llega_de_embudo(proyecto_id: str, p_embudo_path: Path) -> float | None:
-    """Busca p_llega_recinto del proyecto en el contrato del embudo."""
-    if not p_embudo_path.exists():
-        logger.warning("no encontré %s (paso p_llega por escenario)", p_embudo_path)
-        return None
-    import pandas as pd
-    df = pd.read_parquet(p_embudo_path, columns=["proyecto_id", "p_llega_recinto"])
-    fila = df[df["proyecto_id"].astype(str) == str(proyecto_id)]
-    if fila.empty:
-        logger.warning("proyecto %s no está en p_embudo (paso p_llega por escenario)",
-                       proyecto_id)
-        return None
-    return float(fila["p_llega_recinto"].iloc[0])
+def _p_llega_de_embudo(*args, **kwargs):
+    """DADA DE BAJA (2026-08-22) - leia p_llega_recinto del contrato del embudo. Ver `_BAJA_V1`."""
+    raise SystemExit(_BAJA_V1)
 
 
 # --------------------------------------------------------------------------- #
@@ -293,104 +317,65 @@ DESVIO_MIN_INDIVIDUAL = 0.02
 P_INCERTIDUMBRE = 0.01
 
 
-def nowcast_proyecto(proyecto_id: str, lineas: np.ndarray, desvios: np.ndarray,
-                     tipo_mayoria: str, camara: str, p_embudo_path: Path,
-                     p_llega=None, n_sims: int = 2000,
-                     desvio_min: float = DESVIO_MIN_INDIVIDUAL,
-                     p_incertidumbre: float = P_INCERTIDUMBRE) -> dict:
-    """Nowcast end-to-end de un proyecto sobre un roster NOMINAL ya armado
-    (una línea y un desvío POR LEGISLADOR). P(aprobación) descompuesta.
+def simular_con_guardas(lineas, desvios, tipo_mayoria: str, camara: str, *,
+                        n_sims: int = 2000, seed: int | None = 0,
+                        desvio_min: float = DESVIO_MIN_INDIVIDUAL,
+                        p_incertidumbre: float = P_INCERTIDUMBRE,
+                        p_presente=None, reparto_desvio: float = 0.5) -> dict:
+    """Corre el agregador CON las dos guardas contra la sobreconfianza.
 
-    `desvio_min`: piso de desvío por legislador (nadie es un 100% lock).
-    `p_incertidumbre`: ε de incertidumbre sistémica; P(mayoría) se clampa a [ε, 1-ε]
-    (nunca 0%/100%). Poné ambos en 0 para el comportamiento crudo anterior."""
+    ÚNICO lugar donde viven esas dos guardas (2026-08-22). Antes estaban sólo dentro
+    de `nowcast_proyecto` —o sea, sólo en el camino de la formulación v1—, mientras
+    que `puerta_d.p_voto_revisora` tomaba `sim["p_aprobacion"]` crudo y
+    `casos/proyeccion_hipotetica_bicameral.py` tenía su PROPIA copia del clamp. Tres
+    lugares, dos definiciones y una ausencia: al dar de baja v1, la producción se
+    quedaba sin el techo de confianza justo en la puerta que sobrevive.
+
+    Las dos guardas (pedido de Valle, 2026-08-14):
+      - `desvio_min`: piso de desvío POR LEGISLADOR. Un 0% medido sobre historia
+        finita no es un 0 real: siempre hay ausencia, enfermedad o sorpresa.
+      - `p_incertidumbre`: ε de riesgo SISTÉMICO que el supuesto de votos
+        independientes no capta. P(mayoría) se reporta en [ε, 1-ε], nunca 0%/100%.
+
+    Poner las dos en 0 devuelve el comportamiento crudo del agregador.
+
+    Devuelve el dict de `simular_votacion` con `p_aprobacion` YA acotada, más la
+    trazabilidad de lo que se aplicó (`p_aprobacion_cruda`, `desvio_min_aplicado`,
+    `p_incertidumbre_aplicada`) para que el clamp nunca sea invisible.
+    """
     simular = _cargar_simulador()
-
-    # factor 1: P(llega al recinto) — del embudo (o override explícito).
-    proyecto_id_interno = _resolver_proyecto_id(proyecto_id)
-    if p_llega is None:
-        p_llega = _p_llega_de_embudo(proyecto_id_interno, p_embudo_path)
-    if p_llega is None:
-        raise ValueError(
-            f"sin p_llega_recinto para {proyecto_id} (interno {proyecto_id_interno}): no "
-            "está en p_embudo y no vino como override. Corré variables/embudo, verificá "
-            "el denominador, o pasá p_llega explícito.")
-    p_llega = float(np.clip(p_llega, 0.0, 1.0))
-
-    # factor 2: P(mayoría | recinto) — simulación legislador por legislador.
-    # piso de desvío: ni el más leal es un lock (nadie con P(acompaña)=1 exacto).
     desv = np.maximum(np.asarray(desvios, dtype=float), float(max(desvio_min, 0.0)))
-    sim = simular(np.asarray(lineas), desv,
-                  tipo_mayoria=tipo_mayoria, camara=str(camara).strip().lower(),
-                  n_sims=n_sims)
-    # techo/piso de confianza: nunca 0%/100% (riesgo sistémico no captado por la
-    # independencia entre legisladores).
+    # `p_presente` es el modo ASISTENCIA del agregador: la línea es la dirección del
+    # voto y cada legislador la emite SÓLO si está presente. Sin esto, alguien que casi
+    # nunca vota entra igual como un voto entero — que es lo que pasaba con el
+    # presidente de la Cámara, contado como afirmativo casi seguro.
+    extra = {} if p_presente is None else {"p_presente": np.asarray(p_presente, dtype=float)}
+    sim = simular(np.asarray(lineas), desv, tipo_mayoria=tipo_mayoria,
+                  camara=str(camara).strip().lower(), n_sims=n_sims, seed=seed,
+                  reparto_desvio=float(reparto_desvio), **extra)
+    cruda = float(sim["p_aprobacion"])
     eps = float(np.clip(p_incertidumbre, 0.0, 0.5))
-    p_mayoria = float(np.clip(sim["p_aprobacion"], eps, 1.0 - eps))
-
-    p_aprob = componer(p_llega, p_mayoria)
-    return {
-        "proyecto_id": proyecto_id,
-        "proyecto_id_interno": proyecto_id_interno,
-        "camara": sim["camara"],
-        "tipo_mayoria": sim["tipo_mayoria"],
-        "n_roster": sim["n_roster"],
-        "p_llega_recinto": round(p_llega, 4),
-        "p_mayoria_recinto": round(p_mayoria, 4),
-        "p_aprobacion": round(p_aprob, 4),
-        "afirmativos_medio": round(sim["afirm_medio"], 1),
-        "afirmativos_banda_5_95": [round(sim["afirm_p5"], 1), round(sim["afirm_p95"], 1)],
-        "umbral_medio": round(sim["umbral_medio"], 1),
-    }
+    sim = dict(sim)
+    sim["p_aprobacion"] = float(np.clip(cruda, eps, 1.0 - eps))
+    sim["p_aprobacion_cruda"] = cruda
+    sim["desvio_min_aplicado"] = float(max(desvio_min, 0.0))
+    sim["p_incertidumbre_aplicada"] = eps
+    return sim
 
 
-def nowcast_auto(proyecto_id: str, fecha: str, camara: str, tipo_mayoria: str,
-                 p_embudo_path: Path, p_llega=None, canon_dir=None,
-                 n_sims: int = 2000, tema=None, origen=None) -> dict:
-    """Nowcast end-to-end con roster NOMINAL automático: padrón oficial vigente a la
-    fecha (una fila por legislador, desvío individual de su ficha con escalera
-    reciente→global→bloque) + línea de bloque proyectada por variables/bloque
-    (walk-forward; condicionable por tema/origen vía tema_por_acta)."""
-    cargar_bloque, proyectar_postura, cargar_tema_por_acta = _cargar_proyector()
-    canon = Path(canon_dir) if canon_dir else _root() / "datos" / "canonica" / "data" / "clean"
-    votos = cargar_bloque(canon)
-    cond = cargar_tema_por_acta() if (tema or origen) else None
-    bloques = proyectar_postura(votos, fecha, camara, tema=tema, origen=origen,
-                                cond_por_acta=cond)
-    lineas, desvios, detalle = roster_nominal(camara, fecha, bloques)
-    logger.info("escenario auto NOMINAL: %d legisladores%s", detalle["n"],
-                f" | condicionado tema={tema} origen={origen}" if (tema or origen) else "")
-    nc = nowcast_proyecto(proyecto_id, lineas, desvios, tipo_mayoria, camara,
-                          p_embudo_path, p_llega=p_llega, n_sims=n_sims)
-    nc["fecha_escenario"] = fecha
-    nc["bancas_totales"] = detalle["n"]
-    nc["escenario_auto"] = True
-    nc["roster_nominal"] = {k: v for k, v in detalle.items() if k != "filas"}
-    nc["tema"] = tema
-    nc["origen"] = origen
-    nc["bloques_proyectados"] = bloques
-    return nc
+def nowcast_proyecto(*args, **kwargs):
+    """DADA DE BAJA (2026-08-22) - exigia p_llega_recinto y sin el tiraba ValueError. Ver `_BAJA_V1`."""
+    raise SystemExit(_BAJA_V1)
 
 
-def imprimir_tarjeta(nc: dict) -> None:
-    print("\n" + "=" * 56)
-    print(f"  NOWCAST — proyecto {nc['proyecto_id']}  ({nc['camara']}, mayoría {nc['tipo_mayoria']})")
-    if nc.get("proyecto_id_interno") and nc["proyecto_id_interno"] != nc["proyecto_id"]:
-        print(f"  (id interno embudo: {nc['proyecto_id_interno']})")
-    print("=" * 56)
-    print(f"  P(llega al recinto)   {nc['p_llega_recinto']*100:6.1f}%   (embudo)")
-    print(f"  P(mayoría | recinto)  {nc['p_mayoria_recinto']*100:6.1f}%   (agregador)")
-    print(f"  {'-'*40}")
-    print(f"  P(APROBACIÓN)         {nc['p_aprobacion']*100:6.1f}%   = producto")
-    print(f"\n  Afirmativos esperados: {nc['afirmativos_medio']} "
-          f"(banda 5-95%: {nc['afirmativos_banda_5_95'][0]}–{nc['afirmativos_banda_5_95'][1]}) "
-          f"| umbral {nc['umbral_medio']}")
-    rn = nc.get("roster_nominal")
-    if rn:
-        print(f"  Roster nominal: {rn['n']} legisladores "
-              f"(ficha reciente {rn['ficha_reciente']} · ficha global {rn['ficha_global']} "
-              f"· fallback bloque {rn['fallback_bloque']})")
-    print("=" * 56)
+def nowcast_auto(*args, **kwargs):
+    """DADA DE BAJA (2026-08-22) - componia la cadena v1 con roster automatico. Ver `_BAJA_V1`."""
+    raise SystemExit(_BAJA_V1)
+
+
+def imprimir_tarjeta(*args, **kwargs):
+    """DADA DE BAJA (2026-08-22) - imprimia la tarjeta de la v1. Ver `_BAJA_V1`."""
+    raise SystemExit(_BAJA_V1)
 
 
 # --------------------------------------------------------------------------- #
@@ -402,41 +387,8 @@ def _p_embudo_path() -> Path:
 
 
 def main(argv: list[str]) -> None:
-    logging.basicConfig(level=logging.INFO,
-                        format="%(asctime)s %(levelname)s %(name)s %(message)s")
-    cmd = argv[1] if len(argv) > 1 else ""
-    if cmd in ("demo", "nowcast"):
-        raise SystemExit(f"'{cmd}' se eliminó 2026-07-22 (era de la puesta en marcha; "
-                         "clonaba promedios de bloque). Usá nowcast_auto.")
-    if cmd == "nowcast_auto":
-        if len(argv) < 5:
-            raise SystemExit("uso: python ensemble.py nowcast_auto <proyecto_id> "
-                             "<YYYY-MM-DD> <camara> [tipo_mayoria] [p_llega] "
-                             "[--tema AREA] [--origen ORIGEN]")
-        tema = origen = None
-        rest = list(argv[2:])
-        pos = []
-        i = 0
-        while i < len(rest):
-            if rest[i] == "--tema" and i + 1 < len(rest):
-                tema = rest[i + 1]; i += 2
-            elif rest[i] == "--origen" and i + 1 < len(rest):
-                origen = rest[i + 1]; i += 2
-            else:
-                pos.append(rest[i]); i += 1
-        proyecto_id, fecha, camara = pos[0], pos[1], pos[2]
-        tipo = pos[3] if len(pos) > 3 else "SIMPLE"
-        p_llega = float(pos[4]) if len(pos) > 4 else None
-        nc = nowcast_auto(proyecto_id, fecha, camara, tipo, _p_embudo_path(),
-                          p_llega=p_llega, tema=tema, origen=origen)
-        imprimir_tarjeta(nc)
-        out = Path(__file__).resolve().parents[1] / "outputs"
-        out.mkdir(exist_ok=True)
-        (out / f"nowcast_{proyecto_id}.json").write_text(
-            json.dumps(nc, ensure_ascii=False, indent=2), encoding="utf-8")
-        print(f"\n  -> outputs/nowcast_{proyecto_id}.json")
-        return
-    raise SystemExit(f"comando desconocido: {cmd!r} (usá nowcast_auto)")
+    """DADA DE BAJA (2026-08-22) - la CLI corria nowcast_auto. Ver `_BAJA_V1`."""
+    raise SystemExit(_BAJA_V1)
 
 
 if __name__ == "__main__":

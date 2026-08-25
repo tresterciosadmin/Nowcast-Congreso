@@ -7,8 +7,11 @@ La regla del repo es "no importes el codigo de otro modulo, consumi su salida"
 (CLAUDE.md). Es una buena regla, pero tiene un costo: las DEFINICIONES
 compartidas (que periodo parlamentario es una fecha, que mayoria exige un
 proyecto, cuantas bancas tiene cada camara) terminan copiadas en varios modulos,
-sincronizadas a mano. Hoy los docstrings dicen "mantener sincronizadas" — o sea,
-el unico control es que alguien se acuerde.
+sincronizadas a mano. Hasta el 2026-08-25 el unico control era un
+docstring que pedia "mantener sincronizadas" — o sea, que alguien se acuerde.
+Desde el ADR-0014 la definicion vive UNA sola vez en `definiciones.py` (raiz) y
+los modulos la re-exportan; lo que este test cuida ahora es que no vuelvan a
+aparecer copias.
 
 Y este proyecto ya sabe como termina eso: sus errores de datos NO dan error.
 Si `periodo_parlamentario` se corrige en un modulo y no en los otros, nada se
@@ -32,6 +35,8 @@ import pandas as pd
 import pytest
 
 RAIZ = Path(__file__).resolve().parents[1]
+if str(RAIZ) not in sys.path:            # para `import definiciones`
+    sys.path.insert(0, str(RAIZ))
 
 # Las copias, con la ruta de su modulo. Si aparece una quinta copia, se agrega aca.
 COPIAS_PERIODO = {
@@ -167,22 +172,17 @@ def test_periodo_parlamentario_todas_las_copias_coinciden():
     assert esperado == base
 
 
-@pytest.mark.xfail(
-    raises=NotImplementedError, strict=False,
-    reason="las CUATRO copias revientan con backend pyarrow: `pd.to_numeric(anio)` "
-           "conserva el dtype int64[pyarrow] y `a % 2` levanta "
-           "NotImplementedError: mod not implemented (verificado en pandas 2.2.3 y 3.0.2). "
-           "Arreglo: una linea por copia -> "
-           "a = pd.to_numeric(anio, errors='coerce').astype('float64'). "
-           "No se aplica desde aca porque toca 4 modulos con dueno; ver ESTADO 2026-08-20. "
-           "Cuando se arregle, este test pasa a XPASS y hay que sacarle el xfail.")
 def test_periodo_parlamentario_backend_pyarrow():
-    """Hoy NINGUNA copia sobrevive a una columna con backend Arrow.
+    """El mismo resultado con backend Arrow. Hasta el 25-08 NINGUNA copia sobrevivia.
 
-    En produccion no se nota porque `pd.read_parquet` devuelve numpy. Pero la
-    metodologia del repo pide ejercitar los dos backends justamente porque el
-    08-08-2026 un test dio 83/83 en el sandbox y reventó en la PC de Valle.
-    Este test deja el agujero anotado en vez de escondido.
+    Las cuatro compartian el bug: `pd.to_numeric(anio)` conserva `int64[pyarrow]` y
+    `a % 2` levanta `NotImplementedError: mod not implemented` (pandas 2.2.3 y 3.0.2).
+    En produccion no se veia porque `read_parquet` devuelve numpy — o sea que el bug
+    estaba esperando al primer modulo que leyera con Arrow.
+
+    El arreglo era UNA linea por copia. Estuvo trabado desde el 20-08 con el motivo
+    por escrito: "toca 4 modulos con dueno". Al unificar en `definiciones.py` paso a
+    costar un solo claim de modulo. Ese es el argumento del ADR-0014 en una linea.
     """
     resultados = _correr_periodo("pyarrow")
     base = resultados[next(iter(resultados))]
@@ -261,6 +261,47 @@ def test_conductas_y_presentes_coinciden():
     assert set(disc.PRESENTE_VOTOS) == set(asi.PRESENTES), (
         f"quien cuenta como PRESENTE divergio: voto_individual={sorted(disc.PRESENTE_VOTOS)} "
         f"vs asistencia_quorum={sorted(asi.PRESENTES)}")
+
+
+# --------------------------------------- que no vuelvan a aparecer las copias
+
+def test_ninguna_copia_redefine_las_definiciones():
+    """FALLA CON EL CODIGO VIEJO, a proposito: es la prueba de que la unificacion
+    del 25-08 (ADR-0014) hizo algo.
+
+    Los tests de arriba comparan RESULTADOS: pasan igual con una definicion o con
+    cinco, mientras las cinco coincidan. Este compara IDENTIDAD: exige que cada
+    modulo exponga el MISMO objeto funcion que `definiciones.py`, no una copia que
+    hoy da lo mismo.
+
+    Por que importa la diferencia: hasta el 25-08 las cuatro copias coincidian y aun
+    asi el repo tenia un bug que ninguna podia arreglar sola (ver el test de pyarrow
+    de arriba). Coincidir no alcanzaba; tener un solo dueno si.
+
+    Si esto falla, alguien volvio a pegar la definicion adentro de un modulo. La
+    respuesta correcta NO es tocar el test: es importarla de `definiciones.py`.
+    """
+    import definiciones
+
+    esperado = {
+        "periodo_parlamentario": (definiciones.periodo_parlamentario, COPIAS_PERIODO),
+        "normalizar_mayoria": (definiciones.normalizar_mayoria, COPIAS_MAYORIA_SERIE),
+    }
+    for nombre, (canonica, copias) in esperado.items():
+        for alias, rel in copias.items():
+            mod = cargar(f"identidad_{nombre}_{alias}", rel)
+            fn = getattr(mod, nombre, None)
+            assert fn is canonica, (
+                f"[{alias}] {rel} expone su PROPIA {nombre}, no la de definiciones.py.\n"
+                f"Volvio a haber dos definiciones de la misma regla. Reemplazala por:\n"
+                f"    from definiciones import {nombre}")
+
+    # la del agregador es la version ESCALAR de la misma regla
+    agg = cargar("identidad_mayoria_agregador", COPIAS_MAYORIA_ESCALAR["agregador"])
+    assert agg.normalizar_mayoria is definiciones.normalizar_mayoria_valor, (
+        "modelo/agregador_institucional volvio a tener su propia normalizar_mayoria "
+        "escalar. Reemplazala por:\n"
+        "    from definiciones import normalizar_mayoria_valor as normalizar_mayoria")
 
 
 # ------------------------------------- la QUINTA copia, que NO es la misma cosa

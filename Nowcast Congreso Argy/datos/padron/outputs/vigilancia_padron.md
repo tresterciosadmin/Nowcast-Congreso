@@ -1,4 +1,8 @@
+<<<<<<< Updated upstream
 # Padrón vivo — 2026-08-24 11:15 UTC
+=======
+# Padrón vivo — 2026-08-21 14:16 UTC
+>>>>>>> Stashed changes
 
 ## 🟡 Hay novedades en la composición
 

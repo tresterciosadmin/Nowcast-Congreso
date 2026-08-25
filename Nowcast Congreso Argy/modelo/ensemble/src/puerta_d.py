@@ -126,6 +126,8 @@ def p_voto_revisora(
     tipo_mayoria: str = "SIMPLE",
     delta: float = 0.0,
     factor_encogimiento: float = 0.0,
+    roster=None,
+    reparto_desvio: float = 0.5,
     n_sims: int = 400,
     seed: Optional[int] = 0,
     padron_file: Optional[str] = None,
@@ -147,28 +149,40 @@ def p_voto_revisora(
     Devuelve dict con p_aprobacion (ya ajustada), p0 (base), camara_revisora,
     manera ('1' | '2'), n_roster y el detalle del roster.
     """
-    from ensemble import roster_nominal  # contrato del propio módulo
-    agg = RAIZ / "modelo" / "agregador_institucional" / "src"
-    if str(agg) not in sys.path:
-        sys.path.insert(0, str(agg))
-    from agregador import simular_votacion  # type: ignore
+    # Las dos guardas contra la sobreconfianza viven en UN solo lugar (ensemble):
+    # antes esta función tomaba p_aprobacion cruda y D salía sin piso de desvío ni
+    # techo de confianza, mientras B (v1) sí los tenía. Ver simular_con_guardas.
+    from ensemble import roster_nominal, simular_con_guardas  # contrato del módulo
 
     revisora = camara_revisora(camara_origen)
     if bloques is None:
         bloques = posturas_revisora(fecha, revisora, tema=tema, origen=origen, canon=canon)
-    pfile = padron_file or str(_padron_de(revisora))
-    if not Path(pfile).exists():
+    # Sin `padron_file` explícito, `roster_nominal` arma la foto COMPLETA de la
+    # cámara (oficial + histórico, sin duplicados). Antes acá se clavaba UN archivo:
+    # para Diputados era `padron_diputados.csv`, que cubre 81 de 257 bancas en 2008 y
+    # 203 en 2019 — o sea que D, cuando Diputados era la revisora, simulaba sobre una
+    # cámara agujereada. Ver datos/padron/src/padron_vigente.py.
+    pfile = padron_file
+    if pfile and not Path(pfile).exists():
         raise FileNotFoundError(
             f"falta el padrón de la revisora ({revisora}): {pfile}\n"
             "  para el Senado hace falta padron_senado_historico.csv "
             "(datos/padron/src/padron_senado_historico.py)")
 
-    lineas, desvios, detalle = roster_nominal(
-        revisora, fecha, bloques,
-        padron_file=pfile, disciplina_path=disciplina_path)
+    if roster is not None:
+        # El llamador ya armó el roster con el perfil por legislador (composición del
+        # número del bloque + desvío + récord propio + presencia). Se usa tal cual:
+        # rearmarlo acá daría un número distinto del que muestra su tablero.
+        lineas, desvios, p_presente, detalle = roster
+    else:
+        lineas, desvios, detalle = roster_nominal(
+            revisora, fecha, bloques,
+            padron_file=pfile, disciplina_path=disciplina_path)
+        p_presente = None
 
-    sim = simular_votacion(lineas, desvios, tipo_mayoria, revisora,
-                           n_sims=n_sims, seed=seed)
+    sim = simular_con_guardas(lineas, desvios, tipo_mayoria, revisora,
+                              n_sims=n_sims, seed=seed, p_presente=p_presente,
+                              reparto_desvio=reparto_desvio)
     p0 = float(sim["p_aprobacion"])
     p_aj = ajuste_paso_origen(p0, delta, factor_encogimiento)
 
@@ -184,7 +198,12 @@ def p_voto_revisora(
         "tipo_mayoria": tipo_mayoria,
         "n_roster": int(detalle["n"]),
         "afirm_medio": float(sim["afirm_medio"]),
+        "afirm_p5": float(sim["afirm_p5"]),
+        "afirm_p95": float(sim["afirm_p95"]),
         "umbral_medio": float(sim["umbral_medio"]),
+        "p0_cruda": float(sim["p_aprobacion_cruda"]),
+        "guardas": {"desvio_min": float(sim["desvio_min_aplicado"]),
+                    "p_incertidumbre": float(sim["p_incertidumbre_aplicada"])},
         "roster_detalle": detalle,
     }
 

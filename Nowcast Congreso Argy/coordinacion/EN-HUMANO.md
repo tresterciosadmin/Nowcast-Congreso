@@ -939,3 +939,28 @@ cambiarlo. Lo que no hay que hacer es correrlas todas juntas con la herramienta
 estandar, porque en ese modo algunas cortan la corrida y, peor, otras podrian
 fallar sin que la herramienta lo note: imprimen "FALLA" y el resumen igual sale en
 verde. Quedo escrito donde corresponde, con los comandos que si valen.
+
+## Revisamos el motor a fondo, y aparecieron cuatro cosas para corregir
+Franco revisó la fórmula completa del sistema y planteó ocho objeciones. Fui verificando cada una contra el código, y el saldo es que cuatro dan en el blanco y obligan a cambiar cosas, dos eran malentendidos que generé yo por explicar a medias, y dos abren discusiones que necesitan que el equipo se ponga de acuerdo.
+
+Lo más importante salió de una pregunta lateral. Franco preguntó si el tratamiento "sobre tablas" —cuando dos tercios de la cámara deciden tratar un proyecto que no pasó por comisión— debería considerarse. Fuimos a medirlo: de los proyectos que consiguen el sobre tablas, más de la mitad terminan siendo ley, contra menos del dos por ciento del resto. Y hay algo más grave detrás: una de cada ocho leyes sancionadas nunca tuvo dictamen de comisión. Todo el modelo está construido asumiendo que el camino es comisión y después recinto, y resulta que hay una autopista paralela que no estábamos mirando.
+
+También apareció un error concreto y acotado: cuando el sistema cuenta si hay quórum, descarta a los que se abstuvieron junto con los ausentes. Pero quien se abstiene está sentado en su banca. Es un caso puntual pero justo en el escenario que más nos interesa, el de las abstenciones tácticas.
+
+El tercero es conceptual: el sistema calcula la probabilidad de cada cámara por separado y las multiplica, como si fueran independientes. No lo son — un proyecto que sale de Diputados con doscientos votos llega al Senado en una posición muy distinta de uno que salió raspando.
+
+Y el cuarto tiene algo de irónico. Franco observó que la manera en que medimos el clima político trata igual una subida que una bajada, cuando en política las malas noticias pesan más. Tiene razón, y lo llamativo es que esa asimetría existía en el diseño original: se perdió hace dos semanas, cuando se eliminó —con buen criterio— una parte del mecanismo que duplicaba la señal. Se fue la duplicación y se llevó puesta la asimetría.
+
+Dos objeciones no eran problemas del sistema sino de cómo se lo expliqué, y quedaron anotadas para que nadie las "arregle": la ausencia sí está modelada, y que los ausentes no cuenten como votos emitidos es correcto.
+
+Todo quedó en un documento aparte con las fórmulas y el detalle de qué hacer en cada caso, y los puntos a resaltar se propagaron al mapa del proyecto y al diagrama del modelo, que ahora avisa de estas cinco trampas cuando alguien lo abre.
+
+
+## Ahora la fórmula del sistema está escrita en un solo lugar
+Franco pidió dos cosas para adelante. La primera es una regla de trabajo: cada vez que toquemos el motor de cálculo, no alcanza con mostrar qué hace la función que cambió. Hay que mostrar también a quién afecta dentro del sistema y cómo queda la fórmula general después del cambio.
+
+La razón es lo que aprendimos esta semana. Los cuatro problemas que encontramos llevaban semanas funcionando y ninguno era un error de programación: eran supuestos. Cada cambio se había revisado por separado y ninguno estaba mal en sí mismo — lo que nadie miraba era qué le hacía cada uno al conjunto. El caso más claro: al sacar una parte del mecanismo del clima político, decisión correcta porque duplicaba la señal, se fue con ella la idea de que las malas noticias pesan más que las buenas. Nadie lo notó durante dos semanas.
+
+La segunda cosa es la fórmula completa, escrita y abierta hasta la última variable. Arranca en algo simple —la probabilidad de que una ley se apruebe es la de Diputados por la del Senado— y se va desarmando hasta llegar a cómo se calcula la posición de un solo legislador. Cada símbolo tiene su explicación al lado, cada constante su valor, y cada pieza dice de qué archivo sale.
+
+Lo más útil de tenerla escrita es lo que se ve de un vistazo: hoy el número lo mueven apenas cinco cosas. El clima político y el análisis del dictamen están construidos pero desconectados, y la vía del "sobre tablas" —por donde pasa una de cada ocho leyes— no aparece en ninguna parte del cálculo.

@@ -19,8 +19,8 @@ const MAPA_MODELO = {
     "para_que": "Uso interno del equipo. Cuando alguien pregunte «de dónde sale este número», la respuesta es señalar un nodo, no abrir quince archivos.",
     "no_es": "No es un tablero. TABLERO-CONTROL.html muestra plan y avance; esto muestra la maquinaria.",
     "verificado": "2026-08-20",
-    "generado": "2026-08-25 13:38 UTC",
-    "indice_archivos": 141,
+    "generado": "2026-08-25 19:09 UTC",
+    "indice_archivos": 142,
     "rutas_declaradas": 58,
     "nodos": 101,
     "aristas": 144,
@@ -245,6 +245,26 @@ const MAPA_MODELO = {
     {
       "titulo": "Mitad del repo está en CRLF",
       "texto": "Si se reescribe un archivo hay que preservar el final de línea original, o el diff de git pasa a ser el archivo entero."
+    },
+    {
+      "titulo": "Las cámaras NO son independientes",
+      "texto": "`P = P_B · P_D` supone independencia y es falsa: un proyecto con media sanción holgada llega distinto a la revisora. El hook existe (`estimar_delta_paso_origen`) y está en 0. Revisión 25-08."
+    },
+    {
+      "titulo": "12,5% de las leyes se sancionan SIN dictamen",
+      "texto": "El sobre tablas (2/3 para incorporar al temario) tiene 53% de tasa de sanción contra 1,9% general, y 107 de sus 221 casos no tenían dictamen. La formulación por puertas asume comisión → recinto: una de cada ocho leyes salta la comisión."
+    },
+    {
+      "titulo": "El quórum ignora las abstenciones",
+      "texto": "`presentes = afirm + neg`: quien se abstiene está en el recinto y cuenta para el quórum, pero el modelo lo descarta junto con los ausentes. Subestima P donde el quórum es el límite."
+    },
+    {
+      "titulo": "El épsilon es un clip, no un modelo",
+      "texto": "`clip(P, 0,01, 0,99)` tapa la sobreconcentración que produce suponer votos independientes. El riesgo sistémico real (468 sesiones caídas por falta de quórum) pide un shock común compartido por simulación."
+    },
+    {
+      "titulo": "El ICG es simétrico y la política no",
+      "texto": "`ln(MM6/base)` da el mismo corrimiento subiendo 10% que bajando 10%. La asimetría (caída pesa ~2x) existía en el mecanismo 2 del ADR-0008 y se perdió al eliminarlo el 11-08."
     }
   ],
   "estados": [
@@ -1662,42 +1682,42 @@ const MAPA_MODELO = {
       "modulo": "datos/export",
       "que_es": "La canónica en formatos consultables: un SQLite único para el programa y Excel por gobierno para humanos. Sólo LEE.",
       "existe": true,
-      "loc": 316,
+      "loc": 298,
       "simbolos": [
-        {
-          "nombre": "periodo_parlamentario",
-          "tipo": "funcion",
-          "linea": 59,
-          "doc": "Recambios legislativos del 10-dic de años impares (misma definición que"
-        },
         {
           "nombre": "gobierno",
           "tipo": "funcion",
-          "linea": 72,
+          "linea": 71,
           "doc": null
-        },
-        {
-          "nombre": "normalizar_mayoria",
-          "tipo": "funcion",
-          "linea": 87,
-          "doc": "SIMPLE | ABSOLUTA | DOS_TERCIOS | DOS_TERCIOS_CUERPO | TRES_CUARTOS."
         },
         {
           "nombre": "calcular_disputada",
           "tipo": "funcion",
-          "linea": 104,
+          "linea": 86,
           "doc": "Agrega n_emitidos, umbral_aprobacion y disputada (definición ±5% del umbral)."
         },
         {
           "nombre": "cargar",
           "tipo": "funcion",
-          "linea": 131,
+          "linea": 113,
           "doc": null
         },
         {
           "nombre": "hoja_metodologia",
           "tipo": "funcion",
-          "linea": 240,
+          "linea": 222,
+          "doc": null
+        },
+        {
+          "nombre": "export_db",
+          "tipo": "funcion",
+          "linea": 227,
+          "doc": "Escribe a un temporal local y copia al final: SQLite falla sobre carpetas"
+        },
+        {
+          "nombre": "export_xlsx",
+          "tipo": "funcion",
+          "linea": 257,
           "doc": null
         }
       ],
@@ -2106,43 +2126,43 @@ const MAPA_MODELO = {
         "13-08: se separó INDISCIPLINA de AUSENTISMO. El desvío mezclado correlacionaba r=0,65 con la inasistencia — el top de «díscolos» eran ausentes crónicos con desvío de conducta CERO."
       ],
       "existe": true,
-      "loc": 422,
+      "loc": 406,
       "simbolos": [
         {
           "nombre": "_sin_acentos",
           "tipo": "funcion",
-          "linea": 91,
+          "linea": 103,
           "doc": null
         },
         {
           "nombre": "excluir_no_medibles",
           "tipo": "funcion",
-          "linea": 96,
+          "linea": 108,
           "doc": "Saca (1) filas placeholder de las fuentes (bancas no incorporadas), (2) suspendidos"
-        },
-        {
-          "nombre": "periodo_parlamentario",
-          "tipo": "funcion",
-          "linea": 131,
-          "doc": "Recambios del 10-dic de años impares (sincronizada con variables/legislador y datos/export)."
-        },
-        {
-          "nombre": "normalizar_mayoria",
-          "tipo": "funcion",
-          "linea": 143,
-          "doc": "Sincronizada con datos/export/src/export_base.py."
         },
         {
           "nombre": "actas_disputadas",
           "tipo": "funcion",
-          "linea": 159,
+          "linea": 143,
           "doc": "Disputada = resultado a ±5% de los emitidos respecto del umbral (def. de Valle,"
         },
         {
           "nombre": "cargar",
           "tipo": "funcion",
-          "linea": 181,
+          "linea": 165,
           "doc": null
+        },
+        {
+          "nombre": "_linea",
+          "tipo": "funcion",
+          "linea": 191,
+          "doc": "Conducta con >50% de los escaños del nivel (bloque o linaje) en cada acta."
+        },
+        {
+          "nombre": "marcar_desvios",
+          "tipo": "funcion",
+          "linea": 203,
+          "doc": "Desvío v2 por voto: línea del bloque → desempate por linaje → desvío parcial."
         }
       ],
       "lenguaje": "python",
@@ -2162,42 +2182,42 @@ const MAPA_MODELO = {
       "modulo": "variables/legislador",
       "que_es": "Una ficha por legislador que votó alguna vez: identidad, cámara, distrito, períodos, trayectoria de bloques, presentismo y tasa de desvío.",
       "existe": true,
-      "loc": 297,
+      "loc": 292,
       "simbolos": [
-        {
-          "nombre": "periodo_parlamentario",
-          "tipo": "funcion",
-          "linea": 37,
-          "doc": "Período entre recambios legislativos (10 de diciembre de años impares)."
-        },
         {
           "nombre": "cargar",
           "tipo": "funcion",
-          "linea": 53,
+          "linea": 48,
           "doc": "Carga votos resueltos + cámara del acta. Falla con mensaje claro si no está la base."
         },
         {
           "nombre": "_nombre_canonico",
           "tipo": "funcion",
-          "linea": 74,
+          "linea": 69,
           "doc": "El nombre más frecuente (y más largo ante empate) entre las variantes."
         },
         {
           "nombre": "historial_bloques",
           "tipo": "funcion",
-          "linea": 81,
+          "linea": 76,
           "doc": null
         },
         {
           "nombre": "por_periodo",
           "tipo": "funcion",
-          "linea": 93,
+          "linea": 88,
           "doc": "LA tabla de análisis: legislador x período parlamentario x cámara."
         },
         {
           "nombre": "por_anio",
           "tipo": "funcion",
-          "linea": 118,
+          "linea": 113,
+          "doc": null
+        },
+        {
+          "nombre": "ficha",
+          "tipo": "funcion",
+          "linea": 129,
           "doc": null
         }
       ],
@@ -2221,24 +2241,18 @@ const MAPA_MODELO = {
         "⚠ Alimentar el motor con presentismo PROMEDIO lo EMPEORA. Lo que se usa es la posición del bloque entre los PRESENTES. La asistencia condicional es el escalón 2, pendiente."
       ],
       "existe": true,
-      "loc": 104,
+      "loc": 102,
       "simbolos": [
-        {
-          "nombre": "periodo_parlamentario",
-          "tipo": "funcion",
-          "linea": 36,
-          "doc": "Recambios del 10-dic de años impares (misma definición que disciplina/ficha/export;"
-        },
         {
           "nombre": "calcular_presentismo",
           "tipo": "funcion",
-          "linea": 49,
+          "linea": 47,
           "doc": "Devuelve (presentismo_global, presentismo_por_periodo). p_present en [0,1]."
         },
         {
           "nombre": "main",
           "tipo": "funcion",
-          "linea": 77,
+          "linea": 75,
           "doc": null
         }
       ],
@@ -2797,43 +2811,43 @@ const MAPA_MODELO = {
       ],
       "bloque": "origen",
       "existe": true,
-      "loc": 350,
+      "loc": 347,
       "simbolos": [
-        {
-          "nombre": "normalizar_mayoria",
-          "tipo": "funcion",
-          "linea": 60,
-          "doc": "SIMPLE | ABSOLUTA | DOS_TERCIOS | DOS_TERCIOS_CUERPO | TRES_CUARTOS."
-        },
         {
           "nombre": "umbral_aprobacion",
           "tipo": "funcion",
-          "linea": 73,
+          "linea": 70,
           "doc": "Umbral de afirmativos para aprobar, según el tipo de mayoría."
         },
         {
           "nombre": "_prob_conductas",
           "tipo": "funcion",
-          "linea": 93,
+          "linea": 90,
           "doc": "Vector [p(AFIRM), p(NEG), p(NO_ACOMPANA)] para un legislador dada su línea y"
         },
         {
           "nombre": "simular_votacion",
           "tipo": "funcion",
-          "linea": 109,
+          "linea": 106,
           "doc": "Simula la votación n_sims veces a partir del roster (una línea y un desvío por"
         },
         {
           "nombre": "_linea_bloque_por_acta",
           "tipo": "funcion",
-          "linea": 183,
+          "linea": 180,
           "doc": "Línea observada de cada bloque en cada acta = conducta con mayoría simple sobre"
         },
         {
           "nombre": "_direccion_bloque_por_acta",
           "tipo": "funcion",
-          "linea": 201,
+          "linea": 198,
           "doc": "DIRECCIÓN del bloque = mayoría AFIRMATIVO vs NEGATIVO SOLO entre los que emitieron"
+        },
+        {
+          "nombre": "backtest",
+          "tipo": "funcion",
+          "linea": 211,
+          "doc": "Corre el agregador sobre las actas históricas (alimentándolo con la línea de"
         }
       ],
       "lenguaje": "python",

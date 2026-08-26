@@ -2,11 +2,13 @@
 
 <!-- GENERADO por indexar.py. No editar: los cambios se pierden. -->
 <!-- La prosa vive en el README.md de cada modulo (seccion `Buscar aca si`). -->
-<!-- 2026-08-25 19:09 UTC · 142 archivos · 33,313 LOC -->
+<!-- 2026-08-26 15:03 UTC · 142 archivos · 33,327 LOC -->
 
 ## Como usar este archivo
 
 Es el unico archivo del proyecto que hace falta leer para empezar. Para ubicar algo concreto: `python3 .mapa/buscar.py "<termino>"` devuelve archivo y linea sin abrir nada. Recien despues abrir los archivos que salgan, y solo esos.
+
+Rama `main` — ultimo commit: 2026-08-25 a72c96c ahora siii · **hay cambios sin commitear**
 
 ## Donde buscar que
 
@@ -27,6 +29,8 @@ Es el unico archivo del proyecto que hace falta leer para empezar. Para ubicar a
 | por que se decidio algo (`DECISIONES/`, los ADR) | `coordinacion/` |
 | como ramificar y mergear sin conflictos (`PROTOCOLO-GIT.md`) | `coordinacion/` |
 | que hacer y en que orden, por modulo y fase (`PLAN-DE-TRABAJO.md`) | `coordinacion/` |
+| la FORMULA del numero abierta hasta la ultima variable (`FORMULA-COMPLETA.md`; se actualiza al tocar el motor, ADR-0015) | `coordinacion/` |
+| que supuestos tiene el motor y cuales estan mal (`REVISION-METODOLOGICA-2026-08-25.md`) | `coordinacion/` |
 | votaciones 2020-2025 que faltan o llegan mal | `datos/argentinadatos/` |
 | senadores sin bloque en esos anios (se resuelve con el padron del Senado) | `datos/argentinadatos/` |
 | el modelo no ve los proyectos de las ultimas semanas | `datos/bot_recoleccion/` |
@@ -92,15 +96,23 @@ Es el unico archivo del proyecto que hace falta leer para empezar. Para ubicar a
 | si un proyecto junta los votos: quorum, mayoria simple/absoluta/dos tercios | `modelo/agregador_institucional/` |
 | simular una votacion con un escenario de bloques dado | `modelo/agregador_institucional/` |
 | por que sin condicionar por tema y origen todos los bloques quedan 'a favor' | `modelo/agregador_institucional/` |
+| REVISION 25-08: el quorum NO cuenta las abstenciones (`presentes = afirm + neg`) y deberia — ver `coordinacion/REVISION-METODOLOGICA-2026-08-25.md` | `modelo/agregador_institucional/` |
+| por que la ausencia NO sale del desvio sino de `p_presente` (con `REPARTO_DESVIO=1`, NO_ACOMPANA = 1-presencia) | `modelo/agregador_institucional/` |
+| el epsilon de incertidumbre es un CLIP, no un modelo de riesgo sistemico (propuesta: shock comun) | `modelo/agregador_institucional/` |
 | el numero final de P(sancion) de un proyecto | `modelo/ensemble/` |
 | el backtest de la cadena completa, Brier, skill o calibracion | `modelo/ensemble/` |
 | la Puerta D / camara revisora en el circuito bicameral | `modelo/ensemble/` |
 | condicionar la postura por el origen del proyecto | `modelo/ensemble/` |
 | P(mayoria) que da 0% o 100% (hay piso y techo por pedido de Valle) | `modelo/ensemble/` |
+| REVISION 25-08: multiplicar P_B x P_D supone INDEPENDENCIA entre camaras, y es falsa — ver `coordinacion/REVISION-METODOLOGICA-2026-08-25.md` | `modelo/ensemble/` |
+| por que `P(B|A)` es notacion enganosa: A y C son un corrimiento en logit, no un condicional bayesiano | `modelo/ensemble/` |
+| el sobre tablas: 12,5% de las leyes se sancionan SIN dictamen y el modelo no lo contempla | `modelo/ensemble/` |
+| diferencia entre la BANDA (p5-p95, agregada) y los PIVOTES (P individual en [0,35;0,65]) | `modelo/ensemble/` |
 | quien se desvia de su bloque, discolos, bisagras o pivotes | `modelo/voto_individual/` |
 | separar INDISCIPLINA de AUSENTISMO (son dos tasas distintas) | `modelo/voto_individual/` |
 | el indice de disciplina por legislador y por periodo | `modelo/voto_individual/` |
 | presidentes de camara excluidos del calculo | `modelo/voto_individual/` |
+| por que el desvio tiene piso (0,02) y no techo: ningun legislador llega a 1,0 (max observado 0,944) | `modelo/voto_individual/` |
 | servir el nowcast por HTTP (todavia no existe) | `producto/api/` |
 | los paneles y el tablero ejecutivo que se abren con doble clic (estan en la RAIZ, no aca; se edita solo `tablero_datos.js`) | `producto/dashboard/` |
 | de donde sale el numero: el mapa de la maquinaria del calculo (`MAPA-MODELO.html`) | `producto/dashboard/` |
@@ -136,12 +148,14 @@ Es el unico archivo del proyecto que hace falta leer para empezar. Para ubicar a
 | el efecto lider / jefe de bloque (1,25x, no el 7x que se creia) | `variables/proyecto/` |
 | postura del gobierno frente a un proyecto | `variables/proyecto/` |
 | carpeta grande: 17 archivos — buscar por simbolo con `.mapa/buscar.py` antes de abrir | `variables/proyecto/` |
+| REVISION 25-08: el log del ICG es SIMETRICO y la politica no — la asimetria existia en el mecanismo eliminado el 11-08 | `variables/proyecto/` |
+| por que el promedio del gobierno no tiene leakage (`shift(1)` + `expanding`) | `variables/proyecto/` |
 
 ## Carpetas
 
 | Carpeta | Que es | Arch. | LOC | Bitacora |
 |---|---|---:|---:|---|
-| `./` | La raiz del proyecto: los paneles que se abren con doble clic, el tablero ejecutivo y su unica fuente de datos (`tablero_datos.js`). | 4 | 5,376 | **vencida** |
+| `./` | La raiz del proyecto: los paneles que se abren con doble clic, el tablero ejecutivo y su unica fuente de datos (`tablero_datos.js`). | 4 | 5,390 | **vencida** |
 | `variables/proyecto/` _(src+tests)_ | Feature store por proyecto: tema/materia, origen (Ejecutivo/oficialismo/aliados/oposicion), jefe de bloque, mayoria requerida, texto, y el ICG como modulador de coyuntura. | 26 | 4,951 | **vencida** |
 | `datos/expedientes/` _(src+tests)_ | Registro de todo lo PRESENTADO (no solo lo votado): titulo, autor, tipo, fecha y cadena de vida del expediente. Denominador del embudo y enlace acta -> expediente. | 15 | 4,083 | **vencida** |
 | `modelo/ensemble/` _(src+tests)_ | La composicion final: el nowcast end-to-end de un proyecto. Compone P(llega al recinto) x P(mayoria dado recinto) y corre el backtest de la cadena completa. | 12 | 3,487 | **vencida** |
@@ -221,6 +235,21 @@ Ordenados por cuantos otros archivos dependen de ellos. Tocar uno de arriba tien
 - `datos/padron/src/` → `datos/canonica/src/` (3)
 - `casos/` → `variables/bloque/src/` (2)
 - `datos/padron/src/` → `./` (2)
+
+## Se tocan juntos
+
+Segun el historial de git. Si vas a cambiar uno, mira el otro.
+
+- `Nowcast Congreso Argy/coordinacion/EN-HUMANO.md` + `Nowcast Congreso Argy/coordinacion/ESTADO-DEL-PROYECTO.md` (34 commits)
+- `Nowcast Congreso Argy/coordinacion/ESTADO-DEL-PROYECTO.md` + `Nowcast Congreso Argy/tablero_datos.js` (28 commits)
+- `Nowcast Congreso Argy/coordinacion/EN-HUMANO.md` + `Nowcast Congreso Argy/tablero_datos.js` (26 commits)
+- `Nowcast Congreso Argy/coordinacion/ESTADO-DEL-PROYECTO.md` + `Nowcast Congreso Argy/coordinacion/TABLERO.md` (22 commits)
+- `Nowcast Congreso Argy/coordinacion/EN-HUMANO.md` + `Nowcast Congreso Argy/coordinacion/TABLERO.md` (20 commits)
+- `Nowcast Congreso Argy/coordinacion/TABLERO.md` + `Nowcast Congreso Argy/tablero_datos.js` (16 commits)
+- `Nowcast Congreso Argy/coordinacion/EN-HUMANO.md` + `Nowcast Congreso Argy/coordinacion/URGENTE.md` (9 commits)
+- `Nowcast Congreso Argy/coordinacion/ESTADO-DEL-PROYECTO.md` + `Nowcast Congreso Argy/coordinacion/URGENTE.md` (9 commits)
+- `Nowcast Congreso Argy/coordinacion/URGENTE.md` + `Nowcast Congreso Argy/tablero_datos.js` (8 commits)
+- `Nowcast Congreso Argy/datos/padron/data/estado_vigilancia.json` + `Nowcast Congreso Argy/datos/padron/outputs/vigilancia_padron.md` (6 commits)
 
 ## Fuentes externas
 

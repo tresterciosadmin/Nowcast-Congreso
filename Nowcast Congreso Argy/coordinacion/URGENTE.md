@@ -25,7 +25,33 @@
 > Está desarrollado en `PLAN-DE-TRABAJO.md`. **Precaución vigente mientras tanto: no publicar
 > P(sanción) de proyectos con origen Senado.**
 
-## 1. `ingesta_padron.py` sin argumentos BORRA la historia del padrón (Claude)
+## 1. 📋 LEER antes de tocar el motor: revisión metodológica del 25-08
+**Detectado:** 2026-08-25 · Franco (objeciones) + Claude (verificación) · **bloquea: cambios al motor hechos sin conocer estos supuestos**
+
+Franco revisó la formulación completa y planteó ocho objeciones. **Cuatro obligan a
+cambiar el modelo.** Todo el detalle —posiciones, argumentos, fórmulas y qué hacer en
+cada caso— en **`coordinacion/REVISION-METODOLOGICA-2026-08-25.md`**.
+
+Los cuatro hallazgos que un cambio al motor NO puede ignorar:
+
+| | hallazgo | consecuencia |
+|---|---|---|
+| 🔴 | **12,5% de las leyes se sancionan SIN dictamen** | el sobre tablas tiene **53% de sanción contra 1,9% general** y no está modelado en ninguna parte |
+| 🔴 | **el quórum ignora las abstenciones** | `presentes = afirm + neg`; quien se abstiene está en el recinto. Bug acotado |
+| 🔴 | **`P_B · P_D` supone independencia entre cámaras** | es falsa; el hook `estimar_delta_paso_origen` está en 0 |
+| 🟡 | **el ε de incertidumbre es un clip, no un modelo** | tapa la sobreconcentración de suponer votos independientes |
+
+**Lo que NO hay que "arreglar"** (verificado, funciona): la ausencia entra por
+`p_presente` y da `NO_ACOMPANA = 1-π`; los ausentes fuera de emitidos es correcto;
+el desvío tiene piso y no techo a propósito; `expanding`+`shift(1)` del ICG no tiene
+leakage.
+
+**Orden sugerido:** quórum (acotado) → condicionante del dictamen `δ = β₁ρ + β₂W`
+(desbloquea el backtest) → sobre tablas (necesita ADR).
+
+---
+
+## 2. `ingesta_padron.py` sin argumentos BORRA la historia del padrón (Claude)
 **Detectado:** 2026-08-22 · Claude · **bloquea: cualquiera que regenere el padrón**
 
 La entrada por defecto del script es `datos/padron/data/raw/nomina_diputados.csv`, que
@@ -57,7 +83,7 @@ pisar. Lo segundo es mejor: es un control que puede decir que no.
 > `ingesta_padron.py`: es una forma de fallar que el repo repite. El control que se niega
 > a escribir vale más que el default corregido, justamente por eso.
 
-## 2. Falso positivo del patrón IZQUIERDA en `entity_resolution` (Franco)
+## 3. Falso positivo del patrón IZQUIERDA en `entity_resolution` (Franco)
 **Detectado:** 2026-08-22 · Claude · **ensucia: `bloque_linaje` de `datos/canonica` y del padrón**
 
 El arreglo del 07-08 que reconoce al Frente de Izquierda **por patrón** (para cubrir las
@@ -72,7 +98,7 @@ además aparezca alguna de las palabras del FIT (frente de izquierda / partido o
 PTS / MST / izquierda socialista). Es un caso y una ventana de siete meses, pero el
 patrón va a seguir agarrando etiquetas con "trabajadores" que no son de izquierda.
 
-## 3. Validar 15 filas MEDIA del roster de jefes (equipo)
+## 4. Validar 15 filas MEDIA del roster de jefes (equipo)
 **Detectado:** 2026-07-30 · Claude+Franco · **bloquea: confiar en `lider_jefe_bloque`**
 
 > **Prioridad rebajada el 31-07.** Medido el efecto real, `lider_jefe_bloque` aporta
@@ -116,7 +142,7 @@ disfrazada de otra**. Una sola fila mal puesta contaminó cientos de casos.
 actualizar `confianza` a ALTA con la fuente, o eliminar la fila dejando el
 motivo como comentario `#` en el propio CSV (como se hizo con Bianchi).
 
-## 4. El panel de puertas muestra DOS umbrales distintos (Claude)
+## 5. El panel de puertas muestra DOS umbrales distintos (Claude)
 **Detectado:** 2026-08-25 · Claude · **ensucia: el número que se lee en `Nowcast-Puertas.html`**
 
 `nowcast_puertas.py:302` devuelve **dos** umbrales en el mismo payload:
@@ -140,7 +166,7 @@ si se queda, renombrarlo a `umbral_mayoria_absoluta`, que es lo que es. Con un t
 falle con el código de hoy. **No lo toqué**: `modelo/ensemble` y `casos/` no eran los
 módulos de esta sesión y el cambio mueve un número publicado.
 
-## 5. Tres de los cuatro `_fecha_iso` arman la fecha sin validarla (Claude)
+## 6. Tres de los cuatro `_fecha_iso` arman la fecha sin validarla (Claude)
 **Detectado:** 2026-08-25 · Claude · **ensucia: fechas de padrón, Senado y bot**
 
 Los cuatro `_fecha_iso` del repo parsean formatos genuinamente distintos y **está bien
@@ -162,7 +188,7 @@ repo es el modo de fallar que más caro sale: no da error, da una columna vacía
 ValueError -> None`, como la de `giros.py`. Son tres módulos con dueño distinto, por eso
 queda acá y no lo hice.
 
-## 6. Los outputs de `vigilar_padron.py` tienen DOS escritores y chocan todos los lunes (Claude)
+## 7. Los outputs de `vigilar_padron.py` tienen DOS escritores y chocan todos los lunes (Claude)
 **Detectado:** 2026-08-25 · Claude (lo trajo Valle con el error de GitHub Desktop) · **bloquea: cualquiera que haga pull un lunes**
 
 `datos/padron/data/estado_vigilancia.json` y `datos/padron/outputs/vigilancia_padron.md`

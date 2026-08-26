@@ -21,6 +21,7 @@
 - separar INDISCIPLINA de AUSENTISMO (son dos tasas distintas)
 - el indice de disciplina por legislador y por periodo
 - presidentes de camara excluidos del calculo
+- por que el desvio tiene piso (0,02) y no techo: ningun legislador llega a 1,0 (max observado 0,944)
 
 <!-- Las dos cosas de arriba las levanta `.mapa/indexar.py` al MAPA.md de la
      raiz: el `Resumen:` va a la columna "Que es" y las pistas al router

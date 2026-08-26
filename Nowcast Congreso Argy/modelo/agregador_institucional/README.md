@@ -17,6 +17,9 @@ contra resultados históricos reales (backtest, en curso).
 - si un proyecto junta los votos: quorum, mayoria simple/absoluta/dos tercios
 - simular una votacion con un escenario de bloques dado
 - por que sin condicionar por tema y origen todos los bloques quedan 'a favor'
+- REVISION 25-08: el quorum NO cuenta las abstenciones (`presentes = afirm + neg`) y deberia — ver `coordinacion/REVISION-METODOLOGICA-2026-08-25.md`
+- por que la ausencia NO sale del desvio sino de `p_presente` (con `REPARTO_DESVIO=1`, NO_ACOMPANA = 1-presencia)
+- el epsilon de incertidumbre es un CLIP, no un modelo de riesgo sistemico (propuesta: shock comun)
 
 <!-- Las dos cosas de arriba las levanta `.mapa/indexar.py` al MAPA.md de la
      raiz: el `Resumen:` va a la columna "Que es" y las pistas al router

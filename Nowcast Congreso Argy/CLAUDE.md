@@ -33,6 +33,36 @@ El hook `pre-commit` reindexa solo y avisa —sin bloquear— si algún README q
 ## Regla de oro de trazabilidad: **cada cambio se registra**
 Todo avance relevante (terminar algo, cambiar un contrato, tomar una decisión) **agrega una entrada a `coordinacion/ESTADO-DEL-PROYECTO.md`** en el mismo PR. Un PR que cambia código y no actualiza ESTADO no se mergea. Formato en ese archivo.
 
+
+## Regla del MOTOR: **todo cambio se presenta en la fórmula** (ADR-0015)
+
+Motor = `modelo/ensemble`, `modelo/agregador_institucional`, `modelo/voto_individual`,
+`variables/bloque`, `variables/proyecto` (modulador y origen), `variables/embudo`.
+
+Al tocar cualquiera de esos, la presentación del cambio tiene **tres niveles**:
+
+1. **La función** — qué hace ahora, qué hacía antes, por qué.
+2. **El motor en su conjunto** — quién consume lo que cambió (`.mapa/buscar.py
+   --archivo <ruta>` lo responde), si mueve el número publicado o sólo el desagregado,
+   si algún contrato cambia de forma, y **qué supuesto se agrega, se saca o se
+   modifica sin querer**.
+3. **La fórmula** — cómo queda `coordinacion/FORMULA-COMPLETA.md` después del cambio,
+   con el término tocado señalado. Se actualiza **en el mismo commit**.
+
+**Por qué.** Los cuatro problemas de modelo que encontró la revisión del 25-08 llevaban
+semanas en producción, y ninguno era un bug: eran supuestos. Se aprobaron función por
+función, y ninguna función estaba mal — lo que nadie miraba era qué le hacía cada una a
+la fórmula general. El caso testigo: al eliminar el mecanismo 2 del ICG (correcto,
+duplicaba señal) **se fue con él la asimetría de la teoría prospectiva**, y nadie lo
+notó por dos semanas.
+
+Si un cambio no se puede ubicar en la fórmula, es señal de que **no se entiende del todo
+qué se está cambiando**. Ese es el momento de frenar, no de mergear.
+
+Un cambio que no altera la fórmula igual declara el nivel 3 con una línea ("la fórmula
+no cambia"). Y los cambios que **apagan** algo dejan el término en la fórmula, marcado
+como inactivo: así no se pierde qué se sacó y por qué.
+
 ## Regla de URGENCIAS: **lo urgente salta al principio de cada sesión**
 `coordinacion/URGENTE.md` es la bandeja de lo que **bloquea o ensucia trabajo de otros**: datos que hay que regenerar tras un pull, filas dudosas que pueden contaminar un modelo, contratos rotos. **Cualquiera del equipo —persona o Claude— lo abre al EMPEZAR, antes de elegir en qué trabajar.** Si hay algo, se resuelve; si se posterga, se deja escrito por qué. Al resolver, se BORRA de URGENTE (el registro permanente queda en `ESTADO-DEL-PROYECTO.md`): el archivo debe estar vacío la mayor parte del tiempo. Quien detecta algo urgente lo agrega ahí en el mismo PR, con fecha, qué hacer y por qué es urgente.
 
@@ -97,6 +127,8 @@ El estado vivo está, y sólo está, acá:
 | Dónde | Qué |
 |---|---|
 | `coordinacion/URGENTE.md` | lo que bloquea a otros — **se lee primero, siempre** |
+| `coordinacion/FORMULA-COMPLETA.md` | **la fórmula del número, abierta hasta la última variable.** Se actualiza al tocar el motor (ADR-0015) |
+| `coordinacion/REVISION-METODOLOGICA-2026-08-25.md` | los supuestos del motor y qué está mal: leer antes de cambiar modelo |
 | `coordinacion/ESTADO-DEL-PROYECTO.md` | bitácora técnica, entrada más reciente arriba |
 | `coordinacion/TABLERO.md` | qué módulo está tomado y por quién |
 | `coordinacion/EN-HUMANO.md` | lo mismo sin tecnicismos |

@@ -17,6 +17,8 @@
 - el efecto lider / jefe de bloque (1,25x, no el 7x que se creia)
 - postura del gobierno frente a un proyecto
 - carpeta grande: 17 archivos — buscar por simbolo con `.mapa/buscar.py` antes de abrir
+- REVISION 25-08: el log del ICG es SIMETRICO y la politica no — la asimetria existia en el mecanismo eliminado el 11-08
+- por que el promedio del gobierno no tiene leakage (`shift(1)` + `expanding`)
 
 <!-- Las dos cosas de arriba las levanta `.mapa/indexar.py` al MAPA.md de la
      raiz: el `Resumen:` va a la columna "Que es" y las pistas al router

@@ -13,6 +13,8 @@
 - por que se decidio algo (`DECISIONES/`, los ADR)
 - como ramificar y mergear sin conflictos (`PROTOCOLO-GIT.md`)
 - que hacer y en que orden, por modulo y fase (`PLAN-DE-TRABAJO.md`)
+- la FORMULA del numero abierta hasta la ultima variable (`FORMULA-COMPLETA.md`; se actualiza al tocar el motor, ADR-0015)
+- que supuestos tiene el motor y cuales estan mal (`REVISION-METODOLOGICA-2026-08-25.md`)
 
 ## Que hay acá
 

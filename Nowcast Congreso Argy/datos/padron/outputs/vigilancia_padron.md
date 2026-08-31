@@ -1,4 +1,4 @@
-# Padrón vivo — 2026-08-24 11:15 UTC
+# Padrón vivo — 2026-08-31 17:43 UTC
 
 ## 🟡 Hay novedades en la composición
 
@@ -9,12 +9,6 @@
 **Bajas (1)**
 
   - Pitrola, Nestor — PO-FIT-U-PARTIDO OBRERO EN EL FRENTE DE LA IZQUIERDA Y DE TRABAJADORES - UNIDAD (nan)
-
-**Cambios de bloque (3)** — señal política, no ruido administrativo
-
-  - Bregman, Myriam: OTRO / PROVINCIAL → IZQUIERDA
-  - Del Caño, Nicolas: OTRO / PROVINCIAL → IZQUIERDA
-  - Del Pla, Romina: OTRO / PROVINCIAL → IZQUIERDA
 
 **Composición por linaje**
 

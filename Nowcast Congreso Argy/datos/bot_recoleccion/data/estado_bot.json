@@ -1,11 +1,11 @@
 {
  "dae_normal": {
   "anio": 2026,
-  "numero": 66
+  "numero": 69
  },
  "tp_diputados": {
   "periodo": 144,
-  "numero": 125
+  "numero": 126
  },
  "actas_diputados_2025": {
   "ids": [
@@ -238,7 +238,7 @@
    "argentinadatos:diputados:5995"
   ],
   "n": 105,
-  "ultima_revision": "2026-09-04"
+  "ultima_revision": "2026-09-05"
  },
  "actas_senado_2025": {
   "ids": [
@@ -574,9 +574,13 @@
    "argentinadatos:senado:2797",
    "argentinadatos:senado:2798",
    "argentinadatos:senado:2799",
-   "argentinadatos:senado:2800"
+   "argentinadatos:senado:2800",
+   "argentinadatos:senado:2801",
+   "argentinadatos:senado:2802",
+   "argentinadatos:senado:2803",
+   "argentinadatos:senado:2804"
   ],
-  "n": 180,
-  "ultima_revision": "2026-09-04"
+  "n": 184,
+  "ultima_revision": "2026-09-05"
  }
 }

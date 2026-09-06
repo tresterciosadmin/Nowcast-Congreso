@@ -54,12 +54,22 @@ UMBRAL_PRODUCTOR = 3   # leyes previas de su autoría para contar como "alto pro
 # El conjunto oficialista = NÚCLEO ∪ ALIADOS (ver NUCLEO abajo). Se deja 3-tuplas
 # porque varios consumidores desempaquetan (desde, hasta, ofi); el split núcleo/aliado
 # va en la lista paralela NUCLEO para no romper esa firma.
-GOBIERNOS = [
-    ("1900-01-01", "2015-12-10", {"KIRCHNERISMO"}),                 # Néstor/CFK
-    ("2015-12-10", "2019-12-10", {"PRO", "RADICALISMO", "CC"}),     # Cambiemos (Macri)
-    ("2019-12-10", "2023-12-10", {"KIRCHNERISMO"}),                 # Frente de Todos (A. Fernández)
-    ("2023-12-10", "2100-01-01", {"LLA", "PRO"}),                   # La Libertad Avanza (Milei) + PRO
+# Las FECHAS salen de `definiciones.py` (ADR-0014); quién era oficialista se queda acá,
+# porque eso sí es lógica de este módulo. Alineado 1:1 con `definiciones.GOBIERNOS`.
+import sys as _sys
+from pathlib import Path as _Path
+_sys.path.insert(0, str(next(d for d in _Path(__file__).resolve().parents
+                             if (d / "rutas.py").is_file())))
+from definiciones import GOBIERNOS as _GOB_DEF  # noqa: E402
+
+OFICIALISTAS = [
+    {"KIRCHNERISMO"},                 # Néstor/CFK
+    {"PRO", "RADICALISMO", "CC"},     # Cambiemos (Macri)
+    {"KIRCHNERISMO"},                 # Frente de Todos (A. Fernández)
+    {"LLA", "PRO"},                   # La Libertad Avanza (Milei) + PRO
 ]
+GOBIERNOS = [(desde, hasta, ofi)
+             for (_n, desde, hasta), ofi in zip(_GOB_DEF, OFICIALISTAS)]
 # NÚCLEO (partido de gobierno) dentro de cada conjunto oficialista, ALINEADO 1:1 con
 # GOBIERNOS. Lo que está en el conjunto oficialista pero NO en el núcleo = ALIADO.
 # Decisión de Valle (2026-08-14): distinguir el partido propio de sus aliados, porque

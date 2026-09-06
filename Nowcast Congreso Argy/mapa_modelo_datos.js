@@ -19,7 +19,7 @@ const MAPA_MODELO = {
     "para_que": "Uso interno del equipo. Cuando alguien pregunte «de dónde sale este número», la respuesta es señalar un nodo, no abrir quince archivos.",
     "no_es": "No es un tablero. TABLERO-CONTROL.html muestra plan y avance; esto muestra la maquinaria.",
     "verificado": "2026-08-20",
-    "generado": "2026-08-25 19:09 UTC",
+    "generado": "2026-08-26 15:03 UTC",
     "indice_archivos": 142,
     "rutas_declaradas": 58,
     "nodos": 101,
@@ -265,6 +265,10 @@ const MAPA_MODELO = {
     {
       "titulo": "El ICG es simétrico y la política no",
       "texto": "`ln(MM6/base)` da el mismo corrimiento subiendo 10% que bajando 10%. La asimetría (caída pesa ~2x) existía en el mecanismo 2 del ADR-0008 y se perdió al eliminarlo el 11-08."
+    },
+    {
+      "titulo": "`expedientes_giros` mezcla las dos cámaras",
+      "texto": "Los giros acumulan comisiones de Diputados Y del Senado: un proyecto girado a TRANSPORTES (Dip) y a INFRAESTRUCTURA, VIVIENDA Y TRANSPORTE (Sen) parece tener 2 giros y 1 dictamen. Sin filtrar por cámara la cobertura de dictámenes da 2,1%; filtrando, 63,6%. Y la fuente buena para las comisiones del dictamen son los PDF de la OD (`dictamenes_firmas.comisiones`), no `expedientes_dictamenes`."
     }
   ],
   "estados": [

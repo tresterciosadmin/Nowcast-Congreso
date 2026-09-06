@@ -304,6 +304,114 @@ def test_ninguna_copia_redefine_las_definiciones():
         "    from definiciones import normalizar_mayoria_valor as normalizar_mayoria")
 
 
+# ------------------------------------- ventanas de gobierno (ADR-0018 obligo a unificar)
+
+VIEJO_BLOQUE = [("1900-01-01", "2015-12-10", "KIRCHNER"),
+                ("2015-12-10", "2019-12-10", "MACRI"),
+                ("2019-12-10", "2023-12-10", "AF"),
+                ("2023-12-10", "2100-01-01", "MILEI")]
+VIEJO_ORIGEN_LIDER = [("1900-01-01", "2015-12-10", {"KIRCHNERISMO"}),
+                      ("2015-12-10", "2019-12-10", {"PRO", "RADICALISMO", "CC"}),
+                      ("2019-12-10", "2023-12-10", {"KIRCHNERISMO"}),
+                      ("2023-12-10", "2100-01-01", {"LLA", "PRO"})]
+FECHAS_BORDE = ["2001-01-01", "2013-06-01", "2015-12-09", "2015-12-10", "2019-12-09",
+                "2019-12-10", "2023-12-09", "2023-12-10", "2026-06-01", "2099-12-31",
+                "2200-01-01", None, "", "no es una fecha"]
+
+
+def _gobierno_como_antes(f):
+    """La copia vieja, transcrita del codigo del 04-09. Es la vara del refactor."""
+    f = pd.to_datetime(f, errors="coerce")
+    if f is None or pd.isna(f):
+        return None
+    for desde, hasta, nombre in VIEJO_BLOQUE:
+        if pd.Timestamp(desde) <= f < pd.Timestamp(hasta):
+            return nombre
+    return None
+
+
+def test_ventanas_de_gobierno_una_sola_copia():
+    """Las TRES copias del calendario de gobiernos salen ahora de definiciones.py.
+
+    Estaban en `variables/bloque` (_GOBIERNOS), `variables/proyecto/origen_lider`
+    (GOBIERNOS) y `variables/proyecto/origen_por_acta` (GOBIERNO_NOMBRES), las tres con
+    un comentario pidiendo "mantener sincronizadas". Lo que obligo a unificarlas fue el
+    CUARTO consumidor: el guard de era del record individual (ADR-0018). Si el record se
+    corta por una lista y `proyectar_postura` por otra, el numero no cierra y nada falla.
+
+    Este test compara contra las LITERALES viejas: el refactor no puede haber movido una
+    frontera.
+    """
+    import definiciones
+
+    blo = cargar("gob_bloque", "variables/bloque/src/bloque.py")
+    ol = cargar("gob_origen_lider", "variables/proyecto/src/origen_lider.py")
+    opa = cargar("gob_origen_por_acta", "variables/proyecto/src/origen_por_acta.py")
+
+    assert blo._GOBIERNOS == VIEJO_BLOQUE, f"cambio la ventana en bloque: {blo._GOBIERNOS}"
+    assert ol.GOBIERNOS == VIEJO_ORIGEN_LIDER, f"cambio la ventana en origen_lider: {ol.GOBIERNOS}"
+    assert opa.GOBIERNO_NOMBRES == ("KIRCHNER", "MACRI", "AF", "MILEI")
+    assert opa.GOBIERNO_NOMBRES is definiciones.GOBIERNO_NOMBRES, (
+        "origen_por_acta volvio a tener su propia tupla de nombres")
+    # las fronteras de las dos listas con carga util tienen que ser LA MISMA
+    assert [(d, h) for d, h, _ in blo._GOBIERNOS] == [(d, h) for d, h, _ in ol.GOBIERNOS]
+
+
+def test_gobierno_por_fecha_todas_las_copias_coinciden():
+    """Las dos funciones publicas y la vieja transcrita, sobre los bordes."""
+    import definiciones
+
+    blo = cargar("gpf_bloque", "variables/bloque/src/bloque.py")
+    opa = cargar("gpf_origen_por_acta", "variables/proyecto/src/origen_por_acta.py")
+    for f in FECHAS_BORDE:
+        esperado = _gobierno_como_antes(f)
+        assert definiciones.gobierno_por_fecha(f) == esperado, f"definiciones, fecha {f!r}"
+        assert blo._gobierno_por_fecha(f) == esperado, f"bloque, fecha {f!r}"
+        assert opa.gobierno_por_fecha(f) == esperado, f"origen_por_acta, fecha {f!r}"
+
+
+def test_era_de_es_el_arranque_del_gobierno():
+    """`era_de` es lo que consume el guard del record (ADR-0018): desde cuando vale la
+    historia de una persona si el nowcast esta fechado aca."""
+    import definiciones
+
+    for f, esperado in (("2026-06-01", "2023-12-10"), ("2023-12-10", "2023-12-10"),
+                        ("2023-12-09", "2019-12-10"), ("2018-06-01", "2015-12-10"),
+                        ("2013-06-01", "1900-01-01")):
+        assert definiciones.era_de(f) == esperado, f"era_de({f})"
+    # sin fecha usable: el arranque del primero, que es toda la historia (conservador)
+    for f in (None, "", "no es una fecha", "2200-01-01"):
+        assert definiciones.era_de(f) == "1900-01-01", f"era_de({f!r}) tiene que ser conservador"
+    # y el motor tiene que usar ESTA, no una copia
+    np_ = cargar("era_nowcast", "modelo/ensemble/src/nowcast_puertas.py")
+    for f in FECHAS_BORDE:
+        assert np_.era_de(f) == definiciones.era_de(f), f"nowcast_puertas.era_de({f!r})"
+
+
+def test_icg_contexto_NO_es_la_misma_lista_y_no_se_unifica():
+    """La QUINTA copia aparente, que no es copia. Documentado, no arreglado.
+
+    `variables/proyecto/src/icg_contexto.py::GOBIERNOS` se parece —se llama igual y
+    tiene fechas de recambio— pero es OTRA regla: nueve ventanas en vez de cuatro,
+    arranca en De la Rua, parte CFK en I y II, tiene un tramo "Crisis" de once dias y
+    cierra cada ventana con el dia ANTERIOR al recambio (inclusive) en vez del dia del
+    recambio (exclusivo). Necesita mandatos presidenciales a resolucion mensual para el
+    neutro del ICG; la otra necesita las cuatro eras que cambian la composicion de la
+    camara.
+
+    Unificarlas seria el error que `definiciones.py` advierte en "Que va aca y que NO".
+    Este test existe para que la proxima persona que las vea juntas no las "arregle".
+    """
+    icg = cargar("icg_gobiernos", "variables/proyecto/src/icg_contexto.py")
+    assert len(icg.GOBIERNOS) == 9, (
+        f"icg_contexto.GOBIERNOS tiene {len(icg.GOBIERNOS)} ventanas, esperaba 9")
+    assert icg.GOBIERNOS[0][0] == "De la Rua"
+    # el borde es INCLUSIVO en icg y EXCLUSIVO en el calendario compartido
+    assert ("Macri", "2015-12-10", "2019-12-09") in icg.GOBIERNOS
+    nombres_icg = {n for n, _, _ in icg.GOBIERNOS}
+    assert "KIRCHNER" not in nombres_icg, "si esto falla, alguien las unifico: leer el docstring"
+
+
 # ------------------------------------- la QUINTA copia, que NO es la misma cosa
 
 def test_bloque_publica_otro_periodo_con_el_mismo_nombre():

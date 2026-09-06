@@ -6,10 +6,9 @@
 
 ## Buscar acá si
 
-- el informe o el HTML de una ley concreta (Ganancias, lobby, ...), y el generador de los paneles que estan en la raiz
+- el informe o el HTML de una ley concreta (Ganancias, lobby, ...), y el generador de los paneles que estan en la RAIZ
 - proyectar un proyecto por las DOS camaras (origen + revisora)
-- por que un caso da un numero distinto al del ensemble
-- por que un generador de esta carpeta esta neutralizado y cual lo reemplaza
+- por que un caso da un numero distinto al del ensemble, o por que un generador de esta carpeta esta neutralizado y cual lo reemplaza
 
 ## Que hay acá
 

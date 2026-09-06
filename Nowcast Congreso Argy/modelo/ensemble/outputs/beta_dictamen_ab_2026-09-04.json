@@ -1,0 +1,34 @@
+{
+  "_que_es": "A/B controlado del 2026-09-04. Aisla las DOS cosas que se tocaron ese dia: (1) la tabla de enlace acta->expediente y (2) el roster de jefes de bloque. Todo con --muestra 400 --seed 7, o sea que los NIVELES no son comparables con los de FORMULA-COMPLETA (que salen de la corrida completa); lo comparable es la diferencia entre filas.",
+  "_como_se_reproduce": "python modelo/ensemble/src/estimar_beta_dictamen.py  (completa, PowerShell). El A/B se hizo forzando ENLACE_TODAS a una ruta inexistente para el 'enlace viejo' y anulando la columna legislador_id del roster para el 'roster viejo'.",
+  "corridas": [
+    {"enlace": "acta_expediente.parquet (solo Diputados)", "roster": "50/80 por cruce de nombre",
+     "camara": "ambas", "n_actas": 400, "n_votos": 78016,
+     "beta1_F_i": 1.7187, "beta2_jefe": 1.3430, "se_beta2": 0.2512, "p_beta2": 0.0, "share_J_l": 0.0629},
+    {"enlace": "acta_expediente.parquet (solo Diputados)", "roster": "76/80 con legislador_id explicito",
+     "camara": "ambas", "n_actas": 400, "n_votos": 78016,
+     "beta1_F_i": 1.7187, "beta2_jefe": 1.3430, "se_beta2": 0.2512, "p_beta2": 0.0, "share_J_l": 0.0629},
+    {"enlace": "acta_expediente_todas.parquet (bicameral)", "roster": "50/80 por cruce de nombre",
+     "camara": "ambas", "n_actas": 400, "n_votos": 62080,
+     "beta1_F_i": 1.9891, "beta2_jefe": 2.4034, "se_beta2": 0.3478, "p_beta2": 0.0, "share_J_l": 0.0696},
+    {"enlace": "acta_expediente_todas.parquet (bicameral)", "roster": "76/80 con legislador_id explicito",
+     "camara": "ambas", "n_actas": 400, "n_votos": 62080,
+     "beta1_F_i": 1.9889, "beta2_jefe": 2.3782, "se_beta2": 0.3427, "p_beta2": 0.0, "share_J_l": 0.0697},
+    {"enlace": "acta_expediente_todas.parquet (bicameral)", "roster": "50/80 por cruce de nombre",
+     "camara": "senado", "n_actas": 400, "n_votos": 23047,
+     "beta1_F_i": 2.2303, "beta2_jefe": 2.3867, "se_beta2": 0.7223, "p_beta2": 0.00095, "share_J_l": 0.0936,
+     "reparto_caracter": {"UNICO": 23047}},
+    {"enlace": "acta_expediente_todas.parquet (bicameral)", "roster": "76/80 con legislador_id explicito",
+     "camara": "senado", "n_actas": 400, "n_votos": 23047,
+     "beta1_F_i": 2.2156, "beta2_jefe": 2.2754, "se_beta2": 0.6336, "p_beta2": 0.00033, "share_J_l": 0.0970,
+     "reparto_caracter": {"UNICO": 23047}}
+  ],
+  "lecturas": [
+    "Lo que mueve beta_2 es la TABLA DE ENLACE, no el roster: 1,343 -> 2,403 (+79%) con el roster viejo fijo.",
+    "El roster completo NO mueve el punto: 2,4034 -> 2,3782, muy adentro de un error estandar. URGENTE 10 esperaba que subiera y no sube.",
+    "Lo que si hace el roster es BAJAR EL RUIDO en el Senado, que es donde estaban los 30 que faltaban: SE 0,7223 -> 0,6336 (-12%) y p 0,00095 -> 0,00033, con el coeficiente quieto. Es atenuacion por error de medicion, pero mucho mas chica de lo que decia URGENTE 10.",
+    "Por que el roster casi no mueve nada: 23 de los 30 jefes que faltaban son del snapshot oficial 2026-07-30, y la canonica llega al 2026-06-25 en Diputados. Todavia no tienen actas que tocar.",
+    "El Senado pasa de 0 actas a un panel con datos: beta_1 = +2,22 y beta_2 = +2,28 (p = 0,0003) sobre 400 actas y 23.047 votos.",
+    "PERO el caracter del dictamen sigue SIN VARIANZA en el Senado: 100% UNICO. delta NO es estimable ahi, y no por el parser. Ver ADR-0017."
+  ]
+}

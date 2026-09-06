@@ -77,6 +77,10 @@ __all__ = [
     "normalizar_mayoria",
     "normalizar_mayoria_valor",
     "MAYORIAS",
+    "GOBIERNOS",
+    "GOBIERNO_NOMBRES",
+    "gobierno_por_fecha",
+    "era_de",
 ]
 
 # ─────────────────────────── bancas por camara ───────────────────────────
@@ -116,6 +120,69 @@ def periodo_parlamentario(fecha: pd.Series, anio: pd.Series) -> pd.Series:
     ini = ini.fillna(a.where(a % 2 == 1, a - 1))
     out = ini.astype("Int64").astype("string")
     return (out + "-" + (ini + 2).astype("Int64").astype("string")).where(ini.notna())
+
+
+# ──────────────────────── ventanas de gobierno ────────────────────────
+# Recambios presidenciales (10-dic). Media abierta: [desde, hasta).
+#
+# ESTABA ESCRITO EN TRES LUGARES, con la misma frontera y distinta carga util:
+#
+#   variables/bloque/src/bloque.py          _GOBIERNOS      (desde, hasta, nombre)
+#   variables/proyecto/src/origen_lider.py  GOBIERNOS       (desde, hasta, oficialistas)
+#   variables/proyecto/src/origen_por_acta  GOBIERNO_NOMBRES  tupla paralela de nombres
+#
+# Los tres tenian un comentario pidiendo "mantener sincronizadas", que es el control
+# que el ADR-0014 dice que no alcanza. Y el 06-09 apareció el cuarto consumidor -- el
+# guard de era del record individual (ADR-0018) -- que es el que obliga: si el record
+# se corta por una lista y `proyectar_postura` por otra, el numero no cierra y nada
+# falla. Aca vive la FRONTERA; la carga util (quien era oficialista) se queda en su
+# modulo, porque eso si es logica de ese modulo.
+#
+# NO ESTA ACA, a proposito: `variables/proyecto/src/icg_contexto.py::GOBIERNOS`. Se
+# parece pero NO es la misma regla y unificarlas seria un error del tipo que este
+# archivo advierte en "Que va aca y que NO". Esa lista tiene NUEVE ventanas, arranca en
+# De la Rua, parte CFK en I y II, tiene un tramo "Crisis" de once dias y cierra cada
+# ventana con el dia ANTERIOR al recambio (2019-12-09, inclusive) en vez del dia del
+# recambio (2019-12-10, exclusivo). Necesita mandatos presidenciales a resolucion
+# mensual para el neutro del ICG; esta necesita las cuatro eras que cambian la CAMARA.
+# Que las dos hablen de "gobiernos" no las hace la misma cosa.
+GOBIERNOS = (
+    ("KIRCHNER", "1900-01-01", "2015-12-10"),   # Nestor / CFK
+    ("MACRI",    "2015-12-10", "2019-12-10"),   # Cambiemos
+    ("AF",       "2019-12-10", "2023-12-10"),   # Frente de Todos
+    ("MILEI",    "2023-12-10", "2100-01-01"),   # La Libertad Avanza
+)
+GOBIERNO_NOMBRES = tuple(n for n, _, _ in GOBIERNOS)
+
+
+def gobierno_por_fecha(fecha):
+    """Nombre del gobierno que contiene `fecha`, o None si no cae en ninguno.
+
+    Media abierta `desde <= f < hasta`, que es como lo hacian las tres copias: el
+    10-dic pertenece al gobierno que ASUME. Sin fecha usable devuelve None.
+    """
+    f = pd.to_datetime(fecha, errors="coerce")
+    if f is None or pd.isna(f):
+        return None
+    for nombre, desde, hasta in GOBIERNOS:
+        if pd.Timestamp(desde) <= f < pd.Timestamp(hasta):
+            return nombre
+    return None
+
+
+def era_de(fecha) -> str:
+    """Arranque ('AAAA-MM-DD') del gobierno que contiene `fecha`.
+
+    Es lo que consume el guard de era del record individual (ADR-0018): "desde cuando
+    vale la historia de esta persona si el nowcast esta fechado aca". Fuera de todo
+    rango cae al arranque del primero, que es el mas conservador (toda la historia).
+    """
+    f = pd.to_datetime(fecha, errors="coerce")
+    if f is not None and not pd.isna(f):
+        for _, desde, hasta in GOBIERNOS:
+            if pd.Timestamp(desde) <= f < pd.Timestamp(hasta):
+                return desde
+    return GOBIERNOS[0][1]
 
 
 # ────────────────────────── tipo de mayoria ──────────────────────────

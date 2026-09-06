@@ -50,10 +50,8 @@
 
 ## Buscar acá si
 
-- cuantos proyectos de ley hay, o si uno existe en la base
-- autores, cofirmantes, giros a comision o taxonomias de un proyecto
-- la base de proyectos no cuadra / se cargo mal (`verificar.py`, 14 invariantes)
-- una fila rara que no hay que dejar entrar (cuarentena, base aparte)
+- cuantos proyectos de ley hay, si uno existe, y sus autores, cofirmantes, giros o taxonomias
+- la base de proyectos no cuadra / se cargo mal (`verificar.py`, 14 invariantes), o una fila rara que no hay que dejar entrar (cuarentena, base aparte)
 - rehacer `proyectos.db` (no viaja a git: `migrar_ckan.py` + `upsert_bot.py`, ~1 min)
 - el control de cohorte (`verificar.py`): la MIDE `variables/embudo` como proceso y aca se controla el resultado
 

@@ -19,6 +19,7 @@ falla con el código anterior a su arreglo:
 """
 from __future__ import annotations
 
+import re
 import sys
 from pathlib import Path
 
@@ -31,6 +32,7 @@ from nowcast_puertas import (  # noqa: E402
     DESVIO_BISAGRA,
     INCERTIDUMBRE_INCOGNITA,
     MIN_HIST_INDIVIDUAL,
+    K_SHRINK_RECORD,
     PRESENCIA_MINIMA,
     REPARTO_DESVIO,
     _tablero_camara,
@@ -95,15 +97,42 @@ for p in (0.05, 0.35, 0.5, 0.61, 0.985):
 print("\n2. con historial propio suficiente, manda el historial")
 # De la Sota: linaje-bolsa que acompaña mucho, ella no, y no se desvía de SU bloque
 sin = perfil_legislador(0.889, 0.000)
-con = perfil_legislador(0.889, 0.000, record=0.17, n_emitidos=145)
+crudo = perfil_legislador(0.889, 0.000, record=0.17, n_emitidos=145, shrink=False)
 check(sin["p_afirma_si_vota"] > 0.85, "sin historial hereda el linaje (0,89)")
-check(abs(con["p_afirma_si_vota"] - 0.17) < 1e-9,
-      f"con historial manda el suyo (dio {con['p_afirma_si_vota']:.3f}) — antes daba 1,00")
-check(con["fuente_direccion"] == "record_individual" and sin["fuente_direccion"] == "bloque",
+check(abs(crudo["p_afirma_si_vota"] - 0.17) < 1e-9,
+      f"con historial manda el suyo (dio {crudo['p_afirma_si_vota']:.3f}) — antes daba 1,00")
+check(crudo["fuente_direccion"] == "record_individual" and sin["fuente_direccion"] == "bloque",
       "y la salida dice de dónde salió la dirección")
 poco = perfil_legislador(0.889, 0.000, record=0.17, n_emitidos=MIN_HIST_INDIVIDUAL - 1)
 check(poco["fuente_direccion"] == "bloque",
       "con poca historia NO se le hace caso: un novato hereda a su bloque")
+
+# ── 2b. el récord se ENCOGE hacia el bloque (ADR-0018, prendido el 06-09) ────
+# Con el corte por era mucha gente queda con poca historia, y un récord de 9 votos no
+# vale lo que uno de 900. En vez de creerle del todo o tirarlo, se encoge con
+# Empirical-Bayes contra el share de su linaje, k=5 — el mismo de proyectar_postura.
+print("\n2b. el récord se encoge hacia el bloque, y con mucha historia casi no se nota")
+con = perfil_legislador(0.889, 0.000, record=0.17, n_emitidos=145)   # default: encoge
+esperado = (145 * 0.17 + K_SHRINK_RECORD * 0.889) / (145 + K_SHRINK_RECORD)
+check(abs(con["p_afirma_si_vota"] - esperado) < 1e-9,
+      f"encogido tendría que dar {esperado:.4f}, dio {con['p_afirma_si_vota']:.4f}")
+check(con["fuente_direccion"] == "record_individual_encogido",
+      "y la salida tiene que decir que se encogió")
+check(abs(con["p_afirma_si_vota"] - 0.17) < 0.03,
+      "con 145 votos el encogimiento tiene que ser CHICO (mueve 0,024)")
+poquito = perfil_legislador(0.889, 0.000, record=0.17, n_emitidos=10)
+check(poquito["p_afirma_si_vota"] > con["p_afirma_si_vota"],
+      "con 10 votos tiene que apoyarse MÁS en el bloque que con 145")
+check(abs(poquito["p_afirma_si_vota"] - (10 * 0.17 + 5 * 0.889) / 15) < 1e-9,
+      "y la cuenta es la de Empirical-Bayes, no otra")
+# el encogimiento NUNCA cruza al otro lado: queda entre el récord y el share
+for n in (8, 20, 100, 1000):
+    q = perfil_legislador(0.889, 0.0, record=0.17, n_emitidos=n)["p_afirma_si_vota"]
+    check(0.17 <= q <= 0.889, f"con n={n} el encogido se fue fuera de [récord, share]: {q}")
+# y apagado, es exactamente lo de antes
+check(perfil_legislador(0.889, 0.0, record=0.17, n_emitidos=145,
+                        shrink=False)["p_afirma_si_vota"] == 0.17,
+      "con shrink=False tiene que dar el récord crudo, como antes del 06-09")
 
 
 # ── 3. el récord no mira el futuro ──────────────────────────────────────────
@@ -194,6 +223,24 @@ try:
     check(False, "sin percentiles tiene que romper, no rellenar con la media")
 except KeyError:
     check(True, "sin percentiles rompe")
+
+
+# ─────────── 7. UN SOLO umbral en el payload (URGENTE 6) ───────────
+print("\n7. el payload no puede llevar dos umbrales que se contradigan")
+import inspect  # noqa: E402
+import nowcast_puertas as _np  # noqa: E402
+
+_fuente = inspect.getsource(_np)
+_claves = set(re.findall(r'"(umbral_[a-z_]+)":', _fuente))
+check("umbral_mayoria_simple" not in _claves,
+      "`umbral_mayoria_simple` era mayoría ABSOLUTA (129 sobre 257) con nombre de "
+      "simple, y el panel calculaba el margen contra ella mientras dibujaba la "
+      f"barra contra `umbral_simulado`. Claves de umbral en el payload: {sorted(_claves)}")
+check("umbral_mayoria_absoluta" in _claves,
+      f"tiene que quedar con el nombre que dice lo que es: {sorted(_claves)}")
+check("umbral_simulado" in _claves,
+      "y el umbral que USÓ la simulación sigue viajando: es contra el que se "
+      "dibujan la barra, la probabilidad y el margen")
 
 
 print(f"\n{corridos - len(fallos)}/{corridos} OK")

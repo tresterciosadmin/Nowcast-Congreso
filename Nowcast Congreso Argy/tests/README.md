@@ -6,8 +6,7 @@
 
 ## Buscar acá si
 
-- una definicion compartida (periodo parlamentario, tipo de mayoria, bancas por camara) cambio en un lado
-- alguien volvio a pegar adentro de un modulo una definicion que vive en `definiciones.py`
+- una definicion compartida (periodo parlamentario, tipo de mayoria, bancas por camara) cambio en un lado, o alguien volvio a pegarla adentro de un modulo en vez de usar `definiciones.py`
 - dos modulos tienen una copia de la misma funcion y hay que ver si siguen de acuerdo
 - un test falla y no pertenece a ningun modulo en particular
 

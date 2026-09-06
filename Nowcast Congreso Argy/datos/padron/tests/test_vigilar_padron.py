@@ -115,6 +115,34 @@ def main():
     chk("Ruiz, Juan" in md and "novedades" in md.lower(),
         "el markdown nombra al que asumio y marca que hay novedades")
 
+    # ─── un archivo generado, UN escritor (URGENTE 8bis) ───
+    import os
+    previo_ci = {k: os.environ.pop(k, None) for k in ("CI", "GITHUB_ACTIONS")}
+    try:
+        est, md_, versionada = V.destinos()
+        chk(not versionada,
+            "fuera de CI la corrida NO puede apuntar a la ruta versionada")
+        chk("Archivos_Borrar" in str(est) and "Archivos_Borrar" in str(md_),
+            f"tiene que ir al scratch descartable, dio {est} / {md_}")
+        chk(V.ESTADO not in (est,) and (V.OUT / "vigilancia_padron.md") != md_,
+            "y no puede coincidir con las rutas que escribe el workflow")
+
+        est_f, md_f, versionada_f = V.destinos(escribir_versionado=True)
+        chk(versionada_f and est_f == V.ESTADO,
+            "con --escribir-versionado sí escribe la versionada: se puede, hay que pedirlo")
+
+        os.environ["CI"] = "true"
+        est_ci, md_ci, versionada_ci = V.destinos()
+        chk(versionada_ci and est_ci == V.ESTADO,
+            "en CI (CI=true) escribe la versionada sin pedir nada: es SU archivo")
+        chk(md_ci == V.OUT / "vigilancia_padron.md",
+            "y el reporte también")
+    finally:
+        os.environ.pop("CI", None)
+        for k, v in previo_ci.items():
+            if v is not None:
+                os.environ[k] = v
+
     print(f"\n{OK} chequeos OK")
 
 

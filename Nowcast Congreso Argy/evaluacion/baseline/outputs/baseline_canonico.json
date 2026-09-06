@@ -1,37 +1,37 @@
 {
-  "n_votos_sustantivos": 705269,
+  "n_votos_sustantivos": 657133,
   "por_nivel": {
     "bloque_norm": {
-      "todas": 0.9813,
-      "n_todas": 642955,
-      "disputadas": 0.9689,
-      "n_disputadas": 346110
+      "todas": 0.9807,
+      "n_todas": 599423,
+      "disputadas": 0.9682,
+      "n_disputadas": 326019
     },
     "bloque_linaje": {
-      "todas": 0.953,
-      "n_todas": 701447,
-      "disputadas": 0.9195,
-      "n_disputadas": 374222
+      "todas": 0.9533,
+      "n_todas": 653474,
+      "disputadas": 0.9204,
+      "n_disputadas": 352132
     },
     "coalicion": {
-      "todas": 0.9529,
-      "n_todas": 701460,
-      "disputadas": 0.9193,
-      "n_disputadas": 374227
+      "todas": 0.9531,
+      "n_todas": 653487,
+      "disputadas": 0.9201,
+      "n_disputadas": 352137
     }
   },
   "por_camara": {
     "diputados": {
-      "todas": 0.9816,
-      "n_todas": 507208,
-      "disputadas": 0.9716,
-      "n_disputadas": 295776
+      "todas": 0.981,
+      "n_todas": 465474,
+      "disputadas": 0.9709,
+      "n_disputadas": 276618
     },
     "senado": {
-      "todas": 0.9798,
-      "n_todas": 135747,
+      "todas": 0.9799,
+      "n_todas": 133949,
       "disputadas": 0.9532,
-      "n_disputadas": 50334
+      "n_disputadas": 49401
     }
   },
   "por_anio_disputadas": {
@@ -69,31 +69,31 @@
     },
     "2009": {
       "acc": 0.9629,
-      "n": 9968
+      "n": 9532
     },
     "2010": {
       "acc": 0.9782,
       "n": 8948
     },
     "2011": {
-      "acc": 0.9793,
-      "n": 6772
+      "acc": 0.9796,
+      "n": 5976
     },
     "2012": {
-      "acc": 0.983,
-      "n": 15082
+      "acc": 0.9857,
+      "n": 12005
     },
     "2013": {
-      "acc": 0.9782,
-      "n": 15095
+      "acc": 0.9764,
+      "n": 11863
     },
     "2014": {
-      "acc": 0.9867,
-      "n": 20664
+      "acc": 0.9848,
+      "n": 12334
     },
     "2015": {
-      "acc": 0.9927,
-      "n": 7982
+      "acc": 0.9917,
+      "n": 6489
     },
     "2016": {
       "acc": 0.9593,

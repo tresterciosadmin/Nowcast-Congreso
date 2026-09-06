@@ -20,7 +20,9 @@ Uso:
 from __future__ import annotations
 
 import logging
+import csv
 import re
+from datetime import date
 import sys
 import unicodedata
 from pathlib import Path
@@ -63,14 +65,29 @@ def _norm_col(c: str) -> str:
 
 
 def _fecha_iso(s) -> str | None:
-    """dd/mm/YYYY -> YYYY-MM-DD (formato del padron oficial)."""
+    """dd/mm/YYYY -> YYYY-MM-DD (formato del padron oficial). Si no existe, None.
+
+    Valida contra el calendario (URGENTE 7, 04-09-2026): un "31/02/2026" armado
+    a mano sale como "2026-02-31", y despues `pd.to_datetime(errors="coerce")`
+    lo convierte en `NaT` EN SILENCIO. En este repo ese es el modo de fallar mas
+    caro: no da error, da una columna vacia. `giros.py` ya lo hacia asi.
+    """
     s = str(s).strip()
     m = re.match(r"(\d{1,2})/(\d{1,2})/(\d{4})", s)
     if m:
         d, mo, y = m.groups()
-        return f"{y}-{int(mo):02d}-{int(d):02d}"
+        try:
+            return date(int(y), int(mo), int(d)).isoformat()
+        except ValueError:
+            return None
     m = re.match(r"(\d{4})-(\d{2})-(\d{2})", s)
-    return m.group(0) if m else None
+    if not m:
+        return None
+    y, mo, d = m.groups()
+    try:
+        return date(int(y), int(mo), int(d)).isoformat()
+    except ValueError:
+        return None
 
 
 def _limpiar_nombre(s: str) -> str:
@@ -132,10 +149,61 @@ def construir_padron(df: pd.DataFrame, camara: str, fuente: str) -> pd.DataFrame
     return out.sort_values(["bloque_linaje", "legislador"]).reset_index(drop=True)
 
 
+# Cuanto puede ENCOGER una salida sin que el control la frene. 0,90 = se tolera
+# perder hasta un 10%: bajas, renuncias y correcciones se mueven en ese orden.
+# La corrida que motivo el control pasaba de 1.454 filas a 257 (-82%).
+TOLERANCIA_ENCOGIMIENTO = 0.90
+FLAG_ACHICAR = "--permitir-achicar"
+
+
+def _filas_de_csv(ruta: Path) -> int:
+    """Cuenta filas de datos de un CSV ya escrito, sin cargar pandas encima."""
+    try:
+        with ruta.open("r", encoding="utf-8-sig", newline="") as fh:
+            return max(0, sum(1 for _ in csv.reader(fh)) - 1)
+    except OSError:
+        return 0
+
+
+def control_de_encogimiento(salida: Path, filas_nuevas: int,
+                            permitir: bool = False) -> str | None:
+    """Devuelve el motivo por el que NO hay que escribir, o None si se puede.
+
+    **Por que existe (URGENTE 3).** La entrada por defecto de este script es
+    `data/raw/nomina_diputados.csv`, que tiene 257 filas: la foto vigente. La
+    nomina acumulada, con 18 anios de mandatos, es `data/nomina_diputados.csv`
+    y tiene 1.454. Correr el script sin argumentos pisaba el padron con las 257
+    y **se llevaba puesta la historia, sin error ni aviso**. Se detecto el
+    2026-08-22 comparando antes/despues, no porque algo fallara.
+
+    Se eligio el control que se NIEGA a escribir por sobre corregir el default,
+    y el motivo esta escrito en URGENTE: el mismo patron —dos archivos con el
+    mismo nombre, contenido distinto, el pipeline toma uno y nadie se entera—
+    aparecio DOS veces en el repo (aca y en el dump de La Decada Votada). Un
+    default corregido arregla un caso; un control que puede decir que no
+    arregla la forma de fallar.
+    """
+    if permitir or not salida.exists():
+        return None
+    filas_viejas = _filas_de_csv(salida)
+    if filas_viejas == 0 or filas_nuevas >= filas_viejas * TOLERANCIA_ENCOGIMIENTO:
+        return None
+    return (f"la salida que voy a escribir tiene {filas_nuevas} filas y la que "
+            f"esta en disco tiene {filas_viejas} "
+            f"({filas_nuevas / filas_viejas:.0%} del original). NO escribo: casi "
+            f"seguro estas corriendo con la nomina de `data/raw/` (la foto "
+            f"vigente) en vez de la acumulada. El comando correcto suele ser:\n"
+            f"    python datos/padron/src/ingesta_padron.py diputados "
+            f"datos/padron/data/nomina_diputados.csv\n"
+            f"Si de verdad querias achicarla, repetilo con {FLAG_ACHICAR}.")
+
+
 def main(argv=None) -> int:
     logging.basicConfig(level=logging.INFO,
                         format="%(asctime)s %(levelname)s %(name)s %(message)s")
     argv = list(sys.argv[1:] if argv is None else argv)
+    permitir_achicar = FLAG_ACHICAR in argv
+    argv = [a for a in argv if a != FLAG_ACHICAR]
     camara = argv[0] if argv else "diputados"
     data = _HERE.parents[1] / "data"
     default_in = data / "raw" / f"nomina_{camara}.csv"
@@ -148,6 +216,10 @@ def main(argv=None) -> int:
     except (FileNotFoundError, KeyError, ValueError) as e:
         logger.error("%s: %s", type(e).__name__, e)
         return 1
+    motivo = control_de_encogimiento(salida, len(pad), permitir_achicar)
+    if motivo:
+        logger.error("%s", motivo)
+        return 2
     salida.parent.mkdir(parents=True, exist_ok=True)
     pad.to_csv(salida, index=False, encoding="utf-8-sig")
     logger.info("-> %s (%d filas)", salida, len(pad))

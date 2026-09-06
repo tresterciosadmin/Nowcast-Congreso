@@ -2180,6 +2180,10 @@
   {
    "titulo": "El ICG es simétrico y la política no",
    "texto": "`ln(MM6/base)` da el mismo corrimiento subiendo 10% que bajando 10%. La asimetría (caída pesa ~2x) existía en el mecanismo 2 del ADR-0008 y se perdió al eliminarlo el 11-08."
+  },
+  {
+   "titulo": "`expedientes_giros` mezcla las dos cámaras",
+   "texto": "Los giros acumulan comisiones de Diputados Y del Senado: un proyecto girado a TRANSPORTES (Dip) y a INFRAESTRUCTURA, VIVIENDA Y TRANSPORTE (Sen) parece tener 2 giros y 1 dictamen. Sin filtrar por cámara la cobertura de dictámenes da 2,1%; filtrando, 63,6%. Y la fuente buena para las comisiones del dictamen son los PDF de la OD (`dictamenes_firmas.comisiones`), no `expedientes_dictamenes`."
   }
  ],
  "caminos": [

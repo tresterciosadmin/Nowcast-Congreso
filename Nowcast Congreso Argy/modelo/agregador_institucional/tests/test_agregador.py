@@ -110,4 +110,61 @@ try:
 except ValueError:
     check(True, "p_presente mal dimensionado lanza ValueError")
 
+
+# --- el quórum y las abstenciones: BANDERA APAGADA (revisión 25-08) ---
+# Lo que fija: que apagada NO mueva nada, que prendida cuente al que se abstiene, y
+# que en ningún caso toque el conteo de votos (sólo el quórum).
+_lin = np.array(["AFIRMATIVO"] * 140 + ["NEGATIVO"] * 117)
+_dv = np.full(257, 0.05)
+
+check(ag.QUORUM_CUENTA_ABSTENCIONES is False,
+      "la bandera arranca APAGADA: sin QUORUM_ABSTENCIONES=1 el número publicado no cambia")
+
+_base = ag.simular_votacion(_lin, _dv, "SIMPLE", "diputados", n_sims=2000, seed=0)
+_off = ag.simular_votacion(_lin, _dv, "SIMPLE", "diputados", n_sims=2000, seed=0,
+                           quorum_cuenta_abstenciones=False)
+check(_base["p_aprobacion"] == _off["p_aprobacion"] and
+      _base["afirm_medio"] == _off["afirm_medio"],
+      "pedir explícitamente False tiene que dar exactamente lo mismo que el default")
+check(_off["presentes_medio"] == _off["emitidos_medio"],
+      "apagada, presentes == emitidos (que es el v1 que se está corrigiendo)")
+check(_off["abstenciones_medio"] == 0.0, "apagada no cuenta abstenciones")
+check(_off["quorum_cuenta_abstenciones"] is False, "y lo declara en la salida")
+
+# SIN modelo de asistencia no hay ausentes: todo el roster está en el recinto
+_on = ag.simular_votacion(_lin, _dv, "SIMPLE", "diputados", n_sims=2000, seed=0,
+                          quorum_cuenta_abstenciones=True)
+check(_on["presentes_medio"] == 257.0,
+      f"sin p_presente nadie falta: presentes = 257, dio {_on['presentes_medio']}")
+check(_on["abstenciones_medio"] > 0, "y el desvío produce abstenciones que hacen quórum")
+check(_on["afirm_medio"] == _off["afirm_medio"],
+      "LA BANDERA NO TOCA LOS VOTOS: sólo el quórum. Si esto falla, mueve el conteo "
+      f"y no es lo que dice hacer ({_on['afirm_medio']} vs {_off['afirm_medio']})")
+
+# CON modelo de asistencia sí hay ausentes, y la abstención se separa de la ausencia
+_pp = np.full(257, 0.55)
+_a_off = ag.simular_votacion(_lin, _dv, "SIMPLE", "diputados", n_sims=2000, seed=0,
+                             p_presente=_pp)
+_a_on = ag.simular_votacion(_lin, _dv, "SIMPLE", "diputados", n_sims=2000, seed=0,
+                            p_presente=_pp, quorum_cuenta_abstenciones=True)
+check(_a_on["afirm_medio"] == _a_off["afirm_medio"],
+      "tampoco en modo asistencia puede moverse el conteo de votos")
+check(_a_off["emitidos_medio"] < _a_on["presentes_medio"] < 257.0,
+      "los presentes están ENTRE los que emitieron y el roster entero: hay ausentes "
+      f"de verdad ({_a_off['emitidos_medio']:.1f} < {_a_on['presentes_medio']:.1f} < 257)")
+check(_a_on["sims_sin_quorum"] < _a_off["sims_sin_quorum"],
+      "con presentismo 0,55 el quórum muerde menos al contar a los que se abstienen "
+      f"({100*_a_on['sims_sin_quorum']:.1f}% vs {100*_a_off['sims_sin_quorum']:.1f}%)")
+check(_a_on["p_aprobacion"] > _a_off["p_aprobacion"],
+      "y por lo tanto la probabilidad sube, no baja")
+
+# el caso donde HOY no cambia nada, que es el que explica por qué está apagada
+_pp85 = np.full(257, 0.85)
+_b_off = ag.simular_votacion(_lin, _dv, "SIMPLE", "diputados", n_sims=2000, seed=0, p_presente=_pp85)
+_b_on = ag.simular_votacion(_lin, _dv, "SIMPLE", "diputados", n_sims=2000, seed=0,
+                            p_presente=_pp85, quorum_cuenta_abstenciones=True)
+check(_b_off["p_aprobacion"] == _b_on["p_aprobacion"],
+      "con presentismo realista (0,85) el quórum no muerde y prender la bandera no "
+      "mueve NADA. Es el motivo por el que el bug es real y hoy es inerte")
+
 print(f"OK — {ok} chequeos pasaron")

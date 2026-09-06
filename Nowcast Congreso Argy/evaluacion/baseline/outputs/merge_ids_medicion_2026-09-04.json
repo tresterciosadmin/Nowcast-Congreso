@@ -1,0 +1,84 @@
+{
+ "_que_es": "Medicion PREVIA a aplicar el merge de legislador_id duplicados (URGENTE C), 2026-09-04. Franco pidio medir antes. NO se aplico nada.",
+ "_como_se_midio": "Proxy enfocado de la rama del RECORD INDIVIDUAL, que es la pieza que el merge toca: mismo MIN_HIST_INDIVIDUAL=8 y mismo record con shift(1).expanding() que el baseline, con el linaje como respaldo. Es una comparacion PAREADA sobre los mismos 741.275 votos, asi que la diferencia es limpia aunque los niveles no sean identicos a los del baseline completo. Control de que el proxy no miente: reproduce el skill del censo del 03-09 (Diputados 0,131 vs 0,130 publicado; Senado 0,074 vs 0,072) y los dos valles de era.",
+ "_alias": "114 pares aprobados (grupos 1 y 3, menos el falso positivo SNOPEK), 112 ids colapsados en 111 canonicos, 19.532 filas de voto tocadas.",
+ "resultados": {
+  "ANTES": {
+   "skill_global": 0.1317,
+   "brier": 0.139,
+   "n_ids": 2285,
+   "pct_rama_individual": 97.59,
+   "por_era": {
+    "2011-2015": 0.209,
+    "2015-2019": 0.026,
+    "2019-2023": 0.1385,
+    "desde 2023": 0.0151,
+    "hasta 2011": 0.1597
+   },
+   "por_camara": {
+    "diputados": 0.131,
+    "senado": 0.074
+   }
+  },
+  "DESPUES": {
+   "skill_global": 0.1301,
+   "brier": 0.13926,
+   "n_ids": 2178,
+   "pct_rama_individual": 97.7,
+   "por_era": {
+    "2011-2015": 0.2071,
+    "2015-2019": 0.0244,
+    "2019-2023": 0.1325,
+    "desde 2023": 0.0106,
+    "hasta 2011": 0.1601
+   },
+   "por_camara": {
+    "diputados": 0.1291,
+    "senado": 0.0737
+   }
+  },
+  "ANTES_GUARD": {
+   "skill_global": 0.1607,
+   "brier": 0.13436,
+   "n_ids": 2285,
+   "pct_rama_individual": 96.08,
+   "por_era": {
+    "2011-2015": 0.2538,
+    "2015-2019": 0.0899,
+    "2019-2023": 0.1905,
+    "desde 2023": 0.0509,
+    "hasta 2011": 0.1597
+   },
+   "por_camara": {
+    "diputados": 0.1584,
+    "senado": 0.1138
+   }
+  },
+  "DESPUES_GUARD": {
+   "skill_global": 0.1607,
+   "brier": 0.13437,
+   "n_ids": 2178,
+   "pct_rama_individual": 96.21,
+   "por_era": {
+    "2011-2015": 0.2547,
+    "2015-2019": 0.0897,
+    "2019-2023": 0.1833,
+    "desde 2023": 0.0509,
+    "hasta 2011": 0.1601
+   },
+   "por_camara": {
+    "diputados": 0.1583,
+    "senado": 0.114
+   }
+  }
+ },
+ "lecturas": [
+  "EL MERGE SOLO EMPEORA EL SKILL: 0,1317 -> 0,1301 (-0,0016). Contraintuitivo y hay explicacion.",
+  "LA EXPLICACION, verificada: la fragmentacion de ids estaba funcionando como un GUARD DE ERA ACCIDENTAL. La costura entre fuentes (ckan_diputados vs argentinadatos/manual_2026) cae casi siempre en un recambio, asi que cada mitad de la carrera tenia su propio record y el legislador 'arrancaba de nuevo' despues del recambio. Al unir, el record viejo vuelve a contaminar la era nueva, que es exactamente el problema de URGENTE 9.",
+  "EL DANO se concentra donde predice la hipotesis: 2019-2023 (-0,0060) y desde 2023 (-0,0045). Y la rama individual pasa de 97,59% a 97,70% de las predicciones: mas gente califica, con un record que cruza la costura.",
+  "CON EL GUARD DE ERA PUESTO, EL MERGE ES GRATIS: 0,1607 con y sin merge. El merge deja de costar nada.",
+  "Y DE PASO QUEDA MEDIDO URGENTE 9: el guard de era solo vale +0,0290 de skill global, y arregla los dos valles sin hundir las eras viejas — que es literalmente el criterio de verificacion que pide ese item. 2015-2019: 0,0260 -> 0,0899. desde 2023: 0,0151 -> 0,0509. Senado: 0,0740 -> 0,1138 (+54%).",
+  "SALVEDAD del guard medido aca: es un corte por ERA CALENDARIA FIJA, la implementacion mas tosca. URGENTE 9 propone ventana movil + Empirical-Bayes contra el linaje, que deberia rendir MAS. O sea que +0,0290 es un PISO, no un techo.",
+  "RECOMENDACION: no aplicar el merge solo. O va junto con el guard de era, o se aplica solo donde no toca el motor (el roster de jefes, que hoy tiene filas vacias por este mismo problema)."
+ ]
+}

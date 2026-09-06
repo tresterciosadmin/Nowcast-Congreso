@@ -25,7 +25,184 @@
 > Está desarrollado en `PLAN-DE-TRABAJO.md`. **Precaución vigente mientras tanto: no publicar
 > P(sanción) de proyectos con origen Senado.**
 
-## 1. 📋 LEER antes de tocar el motor: revisión metodológica del 25-08
+## D. δ en el Senado: ya NO es 100% UNICO — pero sigue sin ser estimable, por otro motivo
+**Detectado:** 2026-09-04 · **Corregido el diagnóstico:** 2026-09-06 · **necesita a Franco**
+
+**Lo que decía este ítem, y ya no es cierto:** que el `reparto_caracter` del Senado era
+**100% UNICO** y por lo tanto δ no tenía varianza. Eso salía del A/B del 04-09, sobre una
+muestra de 400 actas y con el dato viejo. Con la regeneración completa:
+
+| carácter | votos | **actas** |
+|---|---:|---:|
+| UNICO | 25.322 | 438 |
+| mayoría | 1.138 | **20** |
+| sólo minoría | 53 | **1** |
+
+O sea que **hay varianza**, y el modelo la estima: `dict_mayoria = −0,6261` (p = 0,0014) y
+`dict_solo_minoria = +2,5026` (p = 0,0).
+
+### Y ese +2,50 con p = 0,0 es un artefacto, no un hallazgo
+
+**Sale de UN acta.** El error estándar es cluster-robusto **por acta**; con un solo cluster
+no es un error estándar, es un número que el estimador devuelve porque tiene que devolver
+algo. Se nota en que su SE (0,157) es del mismo orden que el de la constante, con n = 53.
+
+La regla de la casa lo agarra: *un número imposible es un bug, no un fenómeno.* Quedó
+puesto en el código — `MIN_CLUSTERS_CONFIABLE = 20` en `estimar_beta_dictamen.py`, el
+reparto se publica ahora **en actas además de en votos**, y por debajo del piso sale un
+`logger.error` que dice explícitamente "NO leas dict_X como un hallazgo".
+
+**`dict_mayoria` (20 actas) es el que se puede mirar**, y aun así 20 clusters está por
+debajo de lo que la inferencia cluster-robusta pide (30-50): el signo se puede creer, la
+magnitud y el p no.
+
+### Lo que queda para Franco
+
+1. **La propuesta original sigue en pie y ahora es más fuerte:** en el Senado el término
+   del dictamen debería salir de la **disidencia** (213 firmas de 18.105 dicen "EN
+   DISIDENCIA"), no del carácter — porque el carácter, aunque ya no sea degenerado, se
+   apoya en 21 actas de 459. Es un cambio de definición de una variable de la fórmula, así
+   que va con ADR.
+2. **Re-correr el paso 6 completo** para que `beta_dictamen.json` (ambas cámaras) traiga
+   también el diagnóstico de clusters. En mi entorno no entra; en el tuyo son ~9 min:
+   `python modelo\ensemble\src\estimar_beta_dictamen.py`.
+
+## K. 🔵 El parser recupera los 95 `desconocido` — falta re-correr las firmas
+**Detectado y arreglado:** 2026-09-06 · Claude · **necesita una corrida de ~60 min**
+
+Las 95 Órdenes del Día que quedaban en `desconocido` (39 del Senado, 56 de Diputados)
+**eran todas legibles**. Detalle en el anexo del ADR-0017. Con el arreglo: Senado 39
+`unico`; Diputados 55 `unico` + 1 `mayoria` + 1 `minoria`.
+
+Control sobre 340 OD con clase ya asignada (377 dictámenes): **cero cambios**. El rescate
+sólo corre cuando la respuesta habría sido `desconocido`.
+
+**Qué falta:** el código está arreglado y testeado, pero el dato no. Hay que re-correr:
+
+```powershell
+python datos\expedientes\src\construir_firmas.py --desde-cero            # ~40 min, sin red
+python datos\expedientes\src\construir_firmas.py --senado --desde-cero   # ~20 min, sin red
+.\REGENERAR.ps1 -Desde 5                                                  # el resto, ~25 min
+```
+
+Recupera **2,7% de los proyectos de Diputados y 2,3% de los del Senado** que hoy salen del
+panel de β por no tener carácter. Y `131-2469.pdf` pasa a `DISPUTADO`, que es la categoría
+que más informa.
+
+## E. 🔵 El techo del récord por tema no era 24,6%: era la tabla equivocada
+**Detectado:** 2026-09-04 · **Corregido el diagnóstico:** 2026-09-06 · **necesita una corrida con API**
+
+Este ítem y el 8 decían que el récord por tema estaba bloqueado porque *"sólo el 24,6% de
+las actas tiene tema"* y que había que **poblar la taxonomía**. El diagnóstico estaba mal.
+
+`variables/proyecto/src/tema_por_acta.py` leía `acta_expediente.parquet`. **Es la tabla
+angosta: 892 actas únicas, todas de `ckan_diputados`.** Es el MISMO cableado que trababa el
+β del Senado hasta el ADR-0017 — hay dos tablas de enlace y se estaba usando la chica.
+
+| | actas únicas | fuentes |
+|---|---:|---|
+| `acta_expediente.parquet` (la que leía) | 892 | sólo `ckan_diputados` |
+| `acta_expediente_todas.parquet` | **5.036** | ckan + argentinadatos + senado + decada |
+
+| | |
+|---|---|
+| cobertura de tema hoy | 1.535 de 6.237 — **24,6%** |
+| cobertura **potencial** con la tabla ancha | 5.247 — **84,1%** |
+| títulos que faltan clasificar | **3.712** |
+
+**Y son títulos, no PDFs.** El clasificador es por texto con Haiku; el propio docstring del
+módulo dice que por eso se eligió esta vía y no el batch de 112k PDFs.
+
+**Lo hecho:** `DEFAULT_ACTA_EXP` apunta a la tabla ancha. **Lo que falta** (necesita API key):
+
+```powershell
+python variables\proyecto\src\tema_por_acta.py
+```
+
+Es idempotente: no reclasifica lo ya resuelto, así que corre sólo sobre los 3.712 que
+faltan. **Con eso se destraban el ítem 8 y ρ**, que están esperando esto desde el 26-08.
+
+### Lo que sigue vacío, y es otra cosa
+
+`proyecto_taxonomias` en `proyectos.db` (0 filas) y su respaldo
+`datos/proyectos/data/taxonomias.csv` (sólo la cabecera) son a nivel **proyecto**, no acta.
+`tema_por_acta` es a nivel **acta** y es lo que consumen el v2 de bloque y el récord por
+tema. Son dos tablas distintas y sólo la segunda hacía falta para esto.
+
+**Y el vocabulario nunca fue el problema:** `docs/taxonomias/taxonomias.json` está completo
+(74 ids, áreas + auxiliares + reglas de frontera) desde el 30-06, con su loader y su test.
+Lo que faltaba era correr el clasificador sobre la tabla correcta.
+
+## H. `_sources/` está VIEJO: rehacer la canónica desde ahí borra 181.309 votos
+**Detectado:** 2026-09-06 · Claude · **bloquea: correr `build.py` sin el `run_pipeline` completo**
+
+`datos/canonica/data/clean/_sources/` es la carpeta de insumos de la que sale
+`votos_canonico.parquet`. Sus archivos son del **11-07**; la canónica publicada es del
+**25-08**. La diferencia está toda en una fuente:
+
+| fuente | en `_sources` (11-07) | en la canónica (25-08) |
+|---|---:|---:|
+| **argentinadatos** | **84.311** | **265.620** |
+| decada_votada | 436.875 | 436.875 |
+| ckan_diputados | 256.581 | 256.581 |
+| senado | 53.910 | 53.910 |
+
+O sea: `SOURCES=_sources python datos/canonica/src/build.py` reconstruye una canónica de
+**834.749 votos en vez de 1.016.058**, sin avisar. Lo encontré el 06-09 queriendo pasar
+el arreglo del distrito por el pipeline en vez de a mano: el rebuild dio 834.749 y por eso
+el arreglo se aplicó **quirúrgicamente** sobre `votos_canonico.parquet` (ver la bitácora).
+
+`run_pipeline.py` completo **no** tiene el problema: baja argentinadatos de nuevo antes de
+buildear. El problema es el atajo — correr sólo los pasos 5 y 6.
+
+**Qué hacer:** correr `python datos/canonica/src/run_pipeline.py` entero una vez, que deja
+`_sources` al día. Hasta entonces, **no correr `build.py` suelto**. Lo ideal sería que
+`build.py` avise cuando una fuente encoge, como ya hace `ingesta_padron.py` (URGENTE 3):
+es el mismo control de encogimiento.
+
+## I. Actas gemelas: aplicado. Queda decidir si el skill publicado se corrige
+**Detectado y aplicado:** 2026-09-06 · **necesita a Franco: una lectura, no una tarea**
+
+**274 actas entraban dos veces** (67.570 votos, 6,7%): 259 de `ckan_diputados` con su
+gemela de `argentinadatos`, 15 de `decada_votada`, y las 17 de `manual_2026`. El dedup era
+por `acta_id` y los ingestores prefijan distinto el MISMO id.
+
+**Verificado que CKAN es la fuente más completa, como decía Franco** — yo había
+recomendado lo contrario sin medirlo:
+
+| en las 250 actas duplicadas | `ckan_diputados` | `argentinadatos` |
+|---|---:|---:|
+| `tipo_mayoria` | **100%** | 0% |
+| `expediente` | **88%** | 0% |
+| temas ya clasificados | **248** | 0 |
+
+De esas 250, **12 no son de mayoría simple** (10 "Dos tercios", 2 "La mitad más uno"): con
+argentinadatos ganando, esas 12 caían al default SIMPLE y el umbral del recuento era el
+equivocado. **La `PRECEDENCIA` que ya estaba escrita da el resultado correcto** — no hubo
+que cambiarla, sólo que el dedup viera las gemelas.
+
+`manual_2026` salió del pipeline (`MANUAL_2026=1` para volver a prenderlo). El Excel no se
+borra: sigue siendo la planilla de Franco.
+
+### 🔵 Lo que hay que leer: el skill publicado estaba inflado
+
+| | con duplicados | deduplicada |
+|---|---:|---:|
+| skill | 0,1720 | **0,1682** |
+| Brier | 0,13255 | 0,13427 |
+
+**Baja, y está bien que baje.** Los 46.979 votos duplicados se predecían mucho mejor que el
+resto —skill 0,2032 contra 0,1698, Brier 0,111 contra 0,134— porque al predecir la segunda
+copia el récord walk-forward **ya contenía la primera**: misma persona, mismo voto, mismo
+día. El modelo estaba prediciendo algo que ya había visto.
+
+O sea que **0,1682 es el número honesto y 0,1720 estaba inflado por duplicación**. Ninguna
+era se mueve (2015-2019 y desde 2023 quedan iguales al cuarto decimal).
+
+**Lo que falta:** re-correr el baseline completo para tener el número publicado sobre la
+base limpia. Es la misma corrida de siempre.
+
+## 2. 📋 LEER antes de tocar el motor: revisión metodológica del 25-08
 **Detectado:** 2026-08-25 · Franco (objeciones) + Claude (verificación) · **bloquea: cambios al motor hechos sin conocer estos supuestos**
 
 Franco revisó la formulación completa y planteó ocho objeciones. **Cuatro obligan a
@@ -51,164 +228,155 @@ leakage.
 
 ---
 
-## 2. `ingesta_padron.py` sin argumentos BORRA la historia del padrón (Claude)
-**Detectado:** 2026-08-22 · Claude · **bloquea: cualquiera que regenere el padrón**
+## F. ¿A qué linaje va el bloque personal de Daer? (queda de URGENTE 4)
+**Detectado:** 2026-09-04 · Claude · **necesita a Franco** · no bloquea a nadie
 
-La entrada por defecto del script es `datos/padron/data/raw/nomina_diputados.csv`, que
-tiene **257 filas** (la foto vigente). La nómina acumulada con toda la historia es
-`datos/padron/data/nomina_diputados.csv`, con **1.454 filas**.
+URGENTE 4 se resolvió el 04-09: `BLOQUE DE LOS TRABAJADORES` salió del patrón de
+IZQUIERDA y hoy cae en **OTRO / PROVINCIAL**. Lo que queda abierto es si ahí se queda.
 
-Correr `python datos/padron/src/ingesta_padron.py` sin argumentos deja
-`padron_diputados.csv` con 257 filas y **se lleva puestos 18 años de mandatos**, sin
-error ni aviso. Me pasó hoy: lo detecté porque comparé antes/después, no porque algo
-fallara.
+**Ojo con el diagnóstico viejo, que estaba mal en el mecanismo:** no era un match
+accidental por la palabra *trabajadores*. `BLOQUE DE LOS TRABAJADORES` era una
+**alternativa literal** del regex, puesta a mano. Por eso el arreglo no fue una excepción
+por delante del patrón: fue sacar la alternativa.
 
-**Mientras tanto, el comando correcto es:**
+**Y era más grande de lo que decía:** no son 7 meses de 2017 sino **237 votos entre
+2014-04-24 y 2017-11-23**, más 3 filas de padrón. Una sola persona en toda la canónica usa
+esa etiqueta.
 
-    python datos/padron/src/ingesta_padron.py diputados datos/padron/data/nomina_diputados.csv
+**La evidencia, con el mismo método con el que entró AUTODETERMINACION Y LIBERTAD**
+(coincidencia con el núcleo de cada linaje, 89 actas con voto emitido):
 
-**Qué hay que hacer:** que el default apunte a la nómina acumulada, o que el script
-**se niegue a escribir** si la salida tiene muchas menos filas que el archivo que va a
-pisar. Lo segundo es mejor: es un control que puede decir que no.
+| linaje | coincidencia | actas |
+|---|---:|---:|
+| PERONISMO FEDERAL | **90,0%** | 80 |
+| FRENTE RENOVADOR (massismo) | **88,9%** | 63 |
+| OTRO / PROVINCIAL | 86,5% | 89 |
+| PROGRESISMO | 86,1% | 79 |
+| FdT-UxP | 80,9% | 89 |
+| RADICALISMO | 78,8% | 85 |
+| **IZQUIERDA** | **78,6%** | 70 |
 
-> **Re-verificado y POSTERGADO otra vez el 2026-08-25, con el motivo por escrito (Claude).**
-> Las dos cifras se re-midieron con `csv.reader` sobre el disco y dan **exacto**: 1.454
-> filas la acumulada, **257** la de `raw/`. Sigue vigente tal cual.
-> No lo resolví porque `datos/padron` no era módulo de esta sesión (fueron las
-> definiciones compartidas) y el arreglo bueno —el control que se niega a escribir— es un
-> cambio de comportamiento en módulo ajeno.
-> **Dato nuevo que lo agranda:** este mismo patrón —dos archivos con el mismo nombre,
-> contenido distinto, el pipeline toma uno y nadie se entera— apareció **una segunda vez**
-> el 25-08, en el dump suelto de La Década Votada. O sea que no es un descuido puntual de
-> `ingesta_padron.py`: es una forma de fallar que el repo repite. El control que se niega
-> a escribir vale más que el default corregido, justamente por eso.
+AUTODETERMINACION Y LIBERTAD entró con 100,0%. Daer con 78,6% y **séptimo de nueve**: no
+es izquierda, y de eso no hay duda.
 
-## 3. Falso positivo del patrón IZQUIERDA en `entity_resolution` (Franco)
-**Detectado:** 2026-08-22 · Claude · **ensucia: `bloque_linaje` de `datos/canonica` y del padrón**
+**La pregunta que queda:** 88,9% (massismo, que es donde están sus otros dos bloques en la
+misma ventana) contra 90,0% (peronismo federal) está **demasiado parejo para decidirlo con
+el dato solo**. Se dejó en OTRO / PROVINCIAL, que es el default conservador del mapa. Si
+Franco quiere mandarlo a massismo, es una línea en `LINAJE_VENTANAS`.
 
-El arreglo del 07-08 que reconoce al Frente de Izquierda **por patrón** (para cubrir las
-13 variantes de etiqueta que el FIT rota cada elección) funciona bien: al re-sincronizar
-el padrón oficial cambió 24 filas y **23 son correctas**.
+## 5. Roster de jefes: quedan 9 filas MEDIA (eran 15) — y dos estaban MAL
+**Detectado:** 2026-07-30 · **Trabajado:** 2026-09-04 · **bloquea: confiar en `lider_jefe_bloque`**
 
-La 24ª no: **Héctor Daer**, bloque "Bloque de los Trabajadores" (2017-05 a 2017-12), cae
-en IZQUIERDA por la palabra *trabajadores*. Daer es de la CGT, peronista.
+**El detalle completo, con fuentes y con cuánto aporta cada fila, está en
+`variables/proyecto/data/VALIDACION-JEFES-2026-09-04.md`.** Resumen:
 
-**Qué hay que hacer:** una excepción por etiqueta exacta antes del patrón, o exigir que
-además aparezca alguna de las palabras del FIT (frente de izquierda / partido obrero /
-PTS / MST / izquierda socialista). Es un caso y una ventana de siete meses, pero el
-patrón va a seguir agarrando etiquetas con "trabajadores" que no son de izquierda.
+- **4 confirmadas → ALTA:** PINEDO/PRO Diputados (La Nación 01-12-2015, y se corrigió el
+  `hasta` de 2015-12-01 a 2015-12-09), ATAUCHE/LLA Senado (El Tribuno de Jujuy 03-12-2023),
+  MAYANS/FNyP (Río Negro 20-04-2022), CAMAÑO/Frente Renovador (Wikipedia + Chequeado 2018).
+- **2 ELIMINADAS por estar mal**, con el motivo como comentario en el CSV (precedente Bianchi):
+  - **LOSADA/UCR Senado**: no presidió el bloque. Naidenoff siguió hasta dic-2023 (letrap
+    06-12-2023). Lo de Losada fue la **vicepresidencia del Senado** (Infobae 08-12-2021).
+  - **FERNÁNDEZ SAGASTI/Unidad Ciudadana**: lo presidía **Juliana Di Tullio** (Río Negro,
+    20-04-2022, con los dos bloques y su número de bancas).
+- **9 siguen MEDIA**, cada una con qué le falta exactamente.
 
-## 4. Validar 15 filas MEDIA del roster de jefes (equipo)
-**Detectado:** 2026-07-30 · Claude+Franco · **bloquea: confiar en `lider_jefe_bloque`**
+### Lo que necesita a Franco
 
-> **Prioridad rebajada el 31-07.** Medido el efecto real, `lider_jefe_bloque` aporta
-> **1,25x** (no el 7x que se creía): el jefe de bloque es *aceite del motor*, no
-> propositor. Estas 15 filas siguen valiendo para interpretabilidad y para el Mapa
-> de Influencia, pero **ya no contaminan una señal predictiva fuerte**.
+1. **Extender el `hasta` de `PETCOFF NAIDENOFF`** de `2021-12-09` a `2023-12-09`. La fuente
+   es explícita, pero **agrega** cobertura en vez de sacarla, así que no se tocó.
+2. **Reemplazar la fila borrada por `DI TULLIO, JULIANA`** (Unidad Ciudadana, 2022-04 a
+   2025-12). Mismo motivo: es agregar.
+3. **Decidir qué mide la columna `bloque`: el bloque o el interbloque.** De eso dependen
+   dos filas: Chequeado atribuye la presidencia del bloque UNA 2015-2017 a **Claudia
+   Rucci**, no a Massa —que era el referente del **interbloque**—, y la de Federal-UNA a
+   Camaño. **La fila de Massa aporta 62 proyectos y tiene la forma exacta del caso
+   Bianchi.**
+4. **Extender el `desde` de CICILIANI** de 2017-12 a 2015-12 (Chequeado 08-03-2018 la da
+   asumiendo la jefatura socialista en 2015). Agrega cobertura.
 
-En `variables/proyecto/data/jefes_bloque.csv` hay **15 filas con confianza
-MEDIA** (marcadas "VALIDAR"/"REVISAR"): jefaturas inferidas de contexto, no
-confirmadas por fuente explícita.
+### La de más volumen, y la que más conviene resolver
 
-**Prioridad por volumen de proyectos que aportan:**
+**DEL CAÑO / Frente de Izquierda aporta 349 proyectos** y es la única cuya duda es
+*estructural*: si el FIT rota la jefatura entre PTS y PO —como rota las bancas—, una fila
+única desde 2014 **no es imprecisa, es incorrecta**. No encontré fuente que nombre al
+presidente del bloque del FIT por tramos.
 
-| Nombre | Bloque | Período | Aporta |
-|---|---|---|---|
-| FERRARO, MAXIMILIANO | Coalición Cívica | 2019– | 140 |
-| CAMAÑO, GRACIELA | Frente Renovador / UNA | 2015-2019 | 124 |
-| DEL CAÑO, NICOLÁS | Frente de Izquierda | 2014– | 101 |
-| PINEDO, FEDERICO | PRO | 2013-2019 | 76 |
-| + 11 filas menores | (Losada, Atauche, Massa, Ciciliani, Zamora, Thomas, Mayans/FNyP, Fernández Sagasti/UC, Pichetto/etiqueta "Justicialista") | | |
+> **La regla que deja el trabajo:** las dos filas que estaban mal tenían la misma forma —
+> confundir un cargo del cuerpo (vicepresidencia del Senado) o el liderazgo de un espacio
+> (referente del interbloque) con la **presidencia del bloque parlamentario**, que es lo
+> único que mide esta tabla. Cuando una fuente dice "referente", "conduce" o "lidera" en
+> vez de "preside el bloque", la fila NO está validada.
 
-**Caso especial — Del Caño:** el FIT **rota** la jefatura entre PTS y PO;
-probablemente requiera tramos más finos que una fila única.
+## 8. Récord por TEMA — DESTRABADO el 06-09: era la tabla de enlace equivocada
 
-**Por qué sigue acá — el caso Bianchi:** el 30-07 se detectó que
-"BIANCHI, IVANA MARÍA" figuraba como jefa de Compromiso Federal aportando **610
-proyectos (27% de la señal)**. No presidía el bloque: era la diputada con más
-proyectos de toda la Cámara en 2017 — la señal se habría **duplicado a sí misma
-disfrazada de otra**. Una sola fila mal puesta contaminó cientos de casos.
+> 🔵 **Leer primero el ítem E.** Lo que este ítem daba por techo —*sólo el 24,6% de las
+> actas tiene tema*— no era un techo: `tema_por_acta.py` leía la tabla de enlace angosta
+> (892 actas, sólo `ckan_diputados`) en vez de la ancha (5.036, las dos cámaras). Con la
+> ancha el potencial es **84,1%** y faltan clasificar 3.712 títulos, que es una corrida
+> de Haiku. Todo lo de abajo se escribió con el diagnóstico viejo.
 
-> **Postergado otra vez el 2026-08-22, con el motivo por escrito (Claude).** No es de
-> `datos/expedientes` ni de `modelo/ensemble`, que son los módulos de esta sesión, y no
-> bloquea ni ensucia lo que se hizo. Se mantiene la prioridad rebajada del 31-07 (aporta
-> 1,25x, no 7x). **Dato nuevo que lo vuelve más interesante, no más urgente:** dos de los
-> cuatro nombres de la tabla —FERRARO y DEL CAÑO— aparecieron hoy en la auditoría del
-> cálculo por otro motivo (Ferraro quedó como incógnita real al 49%, Del Caño estaba
-> clasificado con P=1,00 cuando su récord es 0,01). O sea que las mismas filas mal
-> curadas tocan dos señales distintas.
 
-**Cómo validar:** buscar fuente explícita ("presidente/jefe del bloque X"),
-actualizar `confianza` a ALTA con la fuente, o eliminar la fila dejando el
-motivo como comentario `#` en el propio CSV (como se hizo con Bianchi).
+> **⚠️ MEDIDO el 2026-09-04 y el resultado es NO ALCANZA — pero por otro motivo del que
+> decía este ítem.** La medición pendiente ("cuántos legisladores llegan a
+> $n_i^{tema} \ge 8$") está hecha, con corte walk-forward, en
+> `evaluacion/baseline/outputs/record_por_tema_2026-09-04.json`. **El cuello de botella
+> no es el umbral: es que sólo el 24,6% de las actas tiene tema** y
+> `proyecto_taxonomias` está vacía (ítem E). Dentro de ese 24,6%, el 65,3% de los votos
+> llega a n≥8 por **área** (17 categorías) y el 43,3% por **tema_id** (70). Sobre toda la
+> base, la cobertura efectiva es **16,1%** por área y **10,6%** por tema_id, contra
+> **96,5%** del récord general. Conclusión: el término entra **encogido** contra el
+> récord general (Empirical-Bayes, k=5), y **antes** hay que poblar la taxonomía.
+> Lo que sigue vivo de este ítem es el compromiso con Franco sobre ρ, no la medición.
 
-## 5. El panel de puertas muestra DOS umbrales distintos (Claude)
-**Detectado:** 2026-08-25 · Claude · **ensucia: el número que se lee en `Nowcast-Puertas.html`**
 
-`nowcast_puertas.py:302` devuelve **dos** umbrales en el mismo payload:
+**Qué falta:** `rec_i^tema` — afirmativos/emitidos de cada legislador **condicionado a
+la taxonomía del proyecto**, con corte walk-forward. Hoy sólo existe el récord general.
 
-- `umbral_mayoria_simple` = `n // 2 + 1` → **129** en Diputados. Eso es mayoría
-  ABSOLUTA, no simple.
-- `umbral_simulado` = el que efectivamente usó la simulación (mitad de los que votan)
-  → **122,1** en el caso medido.
+**Qué desbloquea:**
 
-Y el HTML usa **los dos, en el mismo panel**: la barra se dibuja contra el simulado
-(`casos/nowcast_puertas_html.py:236`), pero **el margen se calcula contra el otro**
-(línea 283, `rs[i].m - c.umbral_mayoria_simple`).
+1. **El término $\rho$ del sobre tablas.** Quedó fuera de la formulación del 26-08 por
+   falta de insumo, **no por haber sido descartado**. Franco: *"cuando modelemos la
+   probabilidad de apoyar un proyecto con determinado tema, deberíamos revisar esta
+   formulación, ya que el tema impactaría en el legislador"*. **Es una revisión
+   comprometida, no opcional.**
+2. **La medición que quedó pendiente:** cuántos legisladores llegan a
+   $n_i^{tema} \ge 8$. Si son pocos, el término entra como ruido y hay que encogerlo
+   contra el récord general (mismo esquema Empirical-Bayes que el share, $k=5$).
 
-Es el error "el umbral del navegador (129) no era el del modelo (125,5)" del 22-08,
-**sobreviviendo en la mitad del código**. Se arregló donde se dibuja la barra y quedó
-donde se calcula el margen.
+**Ojo con el sesgo que ya conocemos:** el récord general tiene Brier 0,435 en sobre
+tablas —peor que decir 0,50— porque está calibrado para otra base. El temático puede
+tener el mismo problema si la muestra por tema es chica. **Medir antes de creerle.**
 
-**Qué hay que hacer:** decidir si `umbral_mayoria_simple` tiene que seguir en el
-payload. Si no lo usa nadie más, sacarlo y que el margen salga de `umbral_simulado`;
-si se queda, renombrarlo a `umbral_mayoria_absoluta`, que es lo que es. Con un test que
-falle con el código de hoy. **No lo toqué**: `modelo/ensemble` y `casos/` no eran los
-módulos de esta sesión y el cambio mueve un número publicado.
+**Dónde:** taxonomías en `datos/proyectos/data/proyectos.db` (`proyecto_taxonomias`),
+enlace acta↔expediente en `datos/expedientes/data/clean/acta_expediente.parquet`,
+votos en `datos/canonica/data/clean/votos_canonico.parquet`.
 
-## 6. Tres de los cuatro `_fecha_iso` arman la fecha sin validarla (Claude)
-**Detectado:** 2026-08-25 · Claude · **ensucia: fechas de padrón, Senado y bot**
+## J. `MAPA.md` dio 301 líneas en la máquina de Franco y 259 acá — no lo pude reproducir
+**Detectado:** 2026-09-06 · Claude · no bloquea a nadie · **necesita correr una vez**
 
-Los cuatro `_fecha_iso` del repo parsean formatos genuinamente distintos y **está bien
-que sean cuatro** (uno lee "14 DE MARZO DE 2026", otro `dd/mm/YYYY`, otro `dd-mm-YYYY`).
-Eso no se unifica. Lo que sí divergió es la **validación**:
+La verificación del 06-09 marcó `MAPA.md` en **301 líneas** contra un presupuesto de 260.
+En el repo hoy da **259**, y generar dos veces seguidas da lo mismo. Las dos corridas
+indexaron **exactamente** los mismos 158 archivos y 37.669 LOC, así que la diferencia no
+está en el contenido sino en el entorno.
 
-| Archivo | Valida? |
-|---|---|
-| `datos/seguimiento/src/giros.py:131` | sí — pasa por `datetime(y, m, d)` y devuelve `None` si no existe |
-| `datos/bot_recoleccion/src/tp_diputados.py:95` | **no** |
-| `datos/padron/src/ingesta_padron.py:65` | **no** |
-| `datos/senado/src/padron_bloques.py:61` | **no** |
+**Dos hipótesis descartadas:** los finales de línea de Windows (`read_text` ya normaliza a
+`\n`, así que la huella de carpeta no depende de CRLF) y que `git` fallara y dejara vacía
+la sección "Se tocan juntos" (acá funciona y está poblada, con 10 filas).
 
-En los tres que no validan, un `31/02/2026` sale como `"2026-02-31"` sin chistar. Después
-`pd.to_datetime(..., errors="coerce")` lo convierte en `NaT` **en silencio**, que en este
-repo es el modo de fallar que más caro sale: no da error, da una columna vacía.
+**Qué se hizo para que la próxima vez se vea de una:** `indexar.py` imprime el desglose de
+líneas por sección cuando excede el presupuesto, y siempre con `--verbose`. "Excede el
+presupuesto" sin decir DÓNDE no es un aviso accionable.
 
-**Qué hay que hacer:** las tres que faltan pasan por `datetime(y, m, d)` con `try/except
-ValueError -> None`, como la de `giros.py`. Son tres módulos con dueño distinto, por eso
-queda acá y no lo hice.
+**Qué falta:** correr `python .mapa/indexar.py --verbose` en la máquina de Franco. Si vuelve
+a dar 301, la sección que crece sale en la salida y se poda esa.
 
-## 7. Los outputs de `vigilar_padron.py` tienen DOS escritores y chocan todos los lunes (Claude)
-**Detectado:** 2026-08-25 · Claude (lo trajo Valle con el error de GitHub Desktop) · **bloquea: cualquiera que haga pull un lunes**
+## L. `test_ensemble.py` aborta 1 de cada 6 corridas, sin fallar ningún chequeo
+**Detectado:** 2026-09-06 · Claude · no bloquea, pero ensucia la suite
 
-`datos/padron/data/estado_vigilancia.json` y `datos/padron/outputs/vigilancia_padron.md`
-los escribe **el bot** (`bot-nowcast`, commits *"padrón vivo: …"* los lunes: 10-08, 17-08,
-24-08) **y también cualquier corrida local** de `vigilar_padron.py`. Están versionados —y
-tienen que estarlo, porque el workflow necesita el estado para comparar entre corridas—,
-así que cada lunes el pull encuentra los dos lados modificados y se planta con
-*"Unable to pull when changes are present on your branch"*.
+Los 33 chequeos pasan siempre. Lo que falla es el CIERRE del intérprete: sale
+`terminate called without an active exception` y código 134 (SIGABRT), o sea un abort de
+C++ en el teardown de alguna librería. Medido: 1 de 6 corridas, y después 5 limpias
+seguidas.
 
-**Ya causó daño, no es hipotético.** El 25-08 el "Stash changes and continue" dejó los
-**marcadores de conflicto escritos adentro** de los dos archivos y así se commitearon y
-pushearon (`5aff5b0`). `estado_vigilancia.json` dejó de ser JSON válido. Y no da error:
-`vigilar_padron.py:349` atrapa el `JSONDecodeError` y **lo trata como primera corrida**,
-con lo que se pierde `hash_visto_desde` — el campo que mide hace cuántos días el raw no
-cambia y dispara el aviso de dato rancio. El del Senado venía del **07-08** (18 días).
-Restaurado desde el commit del bot; el registro queda en ESTADO.
-
-**Qué hay que hacer:** que una corrida local **no pueda** escribir la ruta versionada.
-`vigilar_padron.py` escribiría a una ruta de scratch (o `--dry-run` por defecto fuera de
-CI), y el ÚNICO que escribe `data/estado_vigilancia.json` y `outputs/vigilancia_padron.md`
-es el workflow. Un archivo generado, un escritor. Mientras tanto, si el pull choca ahí:
-**quedate con la versión del bot**, que es la autoritativa —
-`git checkout origin/main -- "<los dos archivos>"` — y NO stashees.
+**Por qué importa igual:** un test que falla al azar entrena a la gente a re-correr en vez
+de mirar, y el día que falle de verdad nadie le va a creer. No lo perseguí.

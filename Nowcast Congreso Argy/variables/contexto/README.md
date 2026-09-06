@@ -11,7 +11,7 @@
 
 ## Buscar acá si
 
-- senal de prensa o clima politico como variable (todavia no existe)
+_Carpeta vacia todavia: su estado vive en la tabla de Carpetas del MAPA. Cuando tenga codigo, poner aca las pistas._
 
 <!-- Las dos cosas de arriba las levanta `.mapa/indexar.py` al MAPA.md de la
      raiz: el `Resumen:` va a la columna "Que es" y las pistas al router

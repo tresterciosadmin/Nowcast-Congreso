@@ -300,31 +300,60 @@ naturalmente tuvo que haber dictamen:
 
 $$\text{logit}(P_B) = \text{logit}(P_B^{0}) + \delta, \qquad \delta \text{ definido sólo si } \mathcal{D}$$
 
-### (a) Cobertura de comisiones
+### (a) Cobertura de comisiones — CORREGIDO 26-08: es un GATE, no un gradiente
 
-Definición precisada por Franco: si el proyecto se giró a `m` comisiones y obtuvo
-dictamen de mayoría en `k`:
+**Precisión de Franco (26-08):** por reglamento el proyecto necesita dictamen de
+mayoría **en todas** las comisiones giradas, o en un **plenario de todas ellas**.
+Tener dictamen en 2 de 3 no da "menos probabilidad": **no habilita el tratamiento**.
+La única excepción es el sobre tablas.
 
-$$\rho = \frac{k}{m} \ \in [0,1]$$
+Entonces la cobertura **sale de δ** y pasa a ser una condición de admisibilidad:
 
-Con tres reglas:
-- girado a UNA comisión con dictamen → `ρ = 1`
-- sin dictamen en ninguna → `ρ = 0` (fuera del condicionamiento)
-- **dictamen de PLENARIO de comisiones → equivale a dictamen en cada una: `k = m`, `ρ = 1`**
+$$\mathcal{C}_c = \mathbb{1}\big[\,K_c \supseteq G_c \;\lor\; \text{plenario}(G_c)\,\big]$$
 
-### (b) Anchura de la coalición firmante, ponderada
+con $G_c$ = comisiones giradas y $K_c$ = comisiones con dictamen de mayoría.
 
-$$W = \sum_{\ell \in L} w_\ell \cdot \frac{b_\ell}{B}$$
+**Medido el 26-08** sobre los PDF de la Orden del Día (2.919 proyectos de ley):
+**72,7% de los dictámenes son de plenario**; la cobertura completa entre los que
+llegaron al recinto da **63,6%**, y al **88%** de los incompletos le falta
+**exactamente una** comisión — patrón que apunta a registro incompleto, no a una regla
+flexible. **Hay que cerrar esa brecha antes de usar el gate en duro**, o rechazaría
+proyectos que sí eran tratables.
 
-donde `L` son los linajes que firmaron el dictamen, `b_ℓ` las bancas de cada linaje,
-`B` el total de la cámara, y `w_ℓ` un **peso por quién firma**:
+> 🔴 **Trampa de medición encontrada acá:** `expedientes_giros` acumula comisiones de
+> **las dos cámaras**. Sin separar por cámara la cobertura da 2,1%; separando, 63,6%.
 
-$$w_\ell = 1 + \omega_1\mathbb{1}[\text{jefe de bloque}] + \omega_2\mathbb{1}[\text{pdte. de comisión}]$$
+### (b) Anchura ponderada por BANCAS — CORREGIDO 26-08
 
-**Por qué el peso.** La firma de un jefe de bloque compromete a su bloque; la de un
-diputado raso, no. Es el pendiente que el ADR-0012 ya había anotado, y las fuentes
-existen: `jefes_bloque.csv` (roster curado 2002-2026) y
-`comisiones_autoridades.parquet` (46 presidentes).
+**Planteo de Franco:** *"si el jefe de bloque del partido A, que cuenta con 90/257
+bancas, firma el dictamen es mucho más significativo que si lo firma el jefe del
+partido B que tiene sólo 10/257"*.
+
+$$W_c = \sum_{\ell \in L_c} \frac{b_\ell}{M_c} \cdot a_\ell$$
+
+con $b_\ell$ = bancas del linaje, $M_c$ = total de la cámara, y $a_\ell$ el **grado de
+compromiso**:
+
+$$a_\ell = \begin{cases} 1 & \text{firmó el JEFE de bloque}\\ \max(f_\ell/b_\ell,\ \omega) & \text{sólo miembros rasos}\end{cases}$$
+
+**La corrección respecto de la versión del 25-08:** aquella tenía el peso del jefe
+como un factor multiplicativo constante ($w_\ell = 1 + \omega_1$), lo que hacía que
+firmar como jefe valiera lo mismo en un bloque de 90 que en uno de 10. Ahora el jefe
+**compromete su bloque entero** ($a_\ell = 1$) y el raso sólo su voto
+($a_\ell = f_\ell/b_\ell$), así que el tamaño entra donde tiene que entrar:
+
+| quién firma | aporte a $W$ |
+|---|---:|
+| jefe de un bloque de 90 bancas | **0,350** |
+| jefe de un bloque de 10 bancas | 0,039 |
+| 3 rasos de un bloque de 90 | 0,012 |
+
+$W_c \in [0,1]$ se lee directo: **qué fracción de la cámara compromete el dictamen**.
+
+**Fuentes verificadas (26-08):** `dictamenes_firmas.parquet` trae `bloque_linaje` y
+`legislador_id` por firma (125.820 en Diputados, 18.105 en el Senado), más
+`primer_firmante` (5.373) y `dos_comisiones`. Bancas del padrón point-in-time; jefes
+de `jefes_bloque.csv`.
 
 ### El condicionante completo
 

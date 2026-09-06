@@ -350,24 +350,24 @@ def _bancas_padron(camara: str, fecha, padron_path=None):
     return vig.groupby("bloque_linaje").size().astype(int).to_dict()
 
 
-# Recambios presidenciales (10-dic). MANTENER SINCRONIZADAS con
-# variables/proyecto/src/origen_lider.py (GOBIERNOS) y origen_por_acta (nombres).
-_GOBIERNOS = [
-    ("1900-01-01", "2015-12-10", "KIRCHNER"),
-    ("2015-12-10", "2019-12-10", "MACRI"),
-    ("2019-12-10", "2023-12-10", "AF"),
-    ("2023-12-10", "2100-01-01", "MILEI"),
-]
+# Recambios presidenciales (10-dic). SALEN DE `definiciones.py` (ADR-0014): estaban
+# escritos igual acá, en `origen_lider.GOBIERNOS` y en `origen_por_acta.GOBIERNO_NOMBRES`,
+# los tres con un comentario pidiendo "mantener sincronizadas". El cuarto consumidor
+# (el guard de era del récord individual, ADR-0018) es el que obliga: si el récord se
+# corta por una lista y `proyectar_postura` por otra, el número no cierra y nada falla.
+# La forma (desde, hasta, nombre) se conserva: hay código que desempaqueta así.
+import sys as _sys
+from pathlib import Path as _Path
+_sys.path.insert(0, str(next(d for d in _Path(__file__).resolve().parents
+                             if (d / "rutas.py").is_file())))
+from definiciones import GOBIERNOS as _GOB_DEF  # noqa: E402
+
+_GOBIERNOS = [(desde, hasta, nombre) for nombre, desde, hasta in _GOB_DEF]
 
 
 def _gobierno_por_fecha(fecha):
-    f = pd.to_datetime(fecha, errors="coerce")
-    if pd.isna(f):
-        return None
-    for desde, hasta, nombre in _GOBIERNOS:
-        if pd.Timestamp(desde) <= f < pd.Timestamp(hasta):
-            return nombre
-    return None
+    from definiciones import gobierno_por_fecha as _g  # noqa: E402
+    return _g(fecha)
 
 
 def _cond_map(cond_por_acta) -> dict:

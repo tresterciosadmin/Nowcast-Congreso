@@ -1,0 +1,218 @@
+{
+ "n_votos": 57848,
+ "n_actas": 497,
+ "epsilon": {
+  "eps0_optimo_brier": 0.025,
+  "eps0_optimo_logloss": 0.02,
+  "brier_sin": 0.13688,
+  "brier_con_optimo": 0.13659,
+  "mejora_brier_pct": 0.21,
+  "logloss_sin": 0.45238,
+  "logloss_con_optimo": 0.42465,
+  "mejora_logloss_pct": 6.13,
+  "curva": [
+   {
+    "eps0": 0.0,
+    "brier": 0.13688,
+    "logloss": 0.45238
+   },
+   {
+    "eps0": 0.05,
+    "brier": 0.13692,
+    "logloss": 0.42768
+   },
+   {
+    "eps0": 0.1,
+    "brier": 0.13946,
+    "logloss": 0.44032
+   },
+   {
+    "eps0": 0.15,
+    "brier": 0.14451,
+    "logloss": 0.45859
+   },
+   {
+    "eps0": 0.2,
+    "brier": 0.15207,
+    "logloss": 0.48108
+   },
+   {
+    "eps0": 0.25,
+    "brier": 0.16213,
+    "logloss": 0.50725
+   },
+   {
+    "eps0": 0.3,
+    "brier": 0.17469,
+    "logloss": 0.53693
+   }
+  ]
+ },
+ "tau_sin_epsilon": {
+  "tau_mediana": 1.1972,
+  "tau_IQR": [
+   0.8806,
+   1.4578
+  ],
+  "tau_lstsq_NO_USAR": 0.4859,
+  "coef_S_lstsq": 36.415,
+  "n_actas": 497,
+  "sobredispersion_observada": 38.87,
+  "sesgo_medio_votos": 0.64,
+  "fraccion_del_error_que_es_sesgo": 0.0007,
+  "lectura": "la varianza real del recuento es ~39 veces la que produce suponer votos independientes"
+ },
+ "tau_con_epsilon": {
+  "tau_mediana": 1.1778,
+  "tau_IQR": [
+   0.8442,
+   1.415
+  ],
+  "tau_lstsq_NO_USAR": 0.6042,
+  "coef_S_lstsq": 29.4467,
+  "n_actas": 497,
+  "sobredispersion_observada": 36.18,
+  "sesgo_medio_votos": 2.02,
+  "fraccion_del_error_que_es_sesgo": 0.0072,
+  "lectura": "la varianza real del recuento es ~36 veces la que produce suponer votos independientes"
+ },
+ "por_camara": {
+  "diputados": {
+   "epsilon": {
+    "eps0_optimo_brier": 0.03,
+    "eps0_optimo_logloss": 0.025,
+    "brier_sin": 0.14962,
+    "brier_con_optimo": 0.1492,
+    "mejora_brier_pct": 0.29,
+    "logloss_sin": 0.49151,
+    "logloss_con_optimo": 0.4571,
+    "mejora_logloss_pct": 7.0,
+    "curva": [
+     {
+      "eps0": 0.0,
+      "brier": 0.14962,
+      "logloss": 0.49151
+     },
+     {
+      "eps0": 0.05,
+      "brier": 0.14937,
+      "logloss": 0.45882
+     },
+     {
+      "eps0": 0.1,
+      "brier": 0.1514,
+      "logloss": 0.46885
+     },
+     {
+      "eps0": 0.15,
+      "brier": 0.15572,
+      "logloss": 0.4843
+     },
+     {
+      "eps0": 0.2,
+      "brier": 0.16233,
+      "logloss": 0.50379
+     },
+     {
+      "eps0": 0.25,
+      "brier": 0.17122,
+      "logloss": 0.52678
+     },
+     {
+      "eps0": 0.3,
+      "brier": 0.18241,
+      "logloss": 0.55308
+     }
+    ]
+   },
+   "tau": {
+    "tau_mediana": 1.2937,
+    "tau_IQR": [
+     0.5771,
+     1.5047
+    ],
+    "tau_lstsq_NO_USAR": 0.1735,
+    "coef_S_lstsq": 43.8058,
+    "n_actas": 237,
+    "sobredispersion_observada": 43.52,
+    "sesgo_medio_votos": 1.12,
+    "fraccion_del_error_que_es_sesgo": 0.0011,
+    "lectura": "la varianza real del recuento es ~44 veces la que produce suponer votos independientes"
+   }
+  },
+  "senado": {
+   "epsilon": {
+    "eps0_optimo_brier": 0.01,
+    "eps0_optimo_logloss": 0.01,
+    "brier_sin": 0.09593,
+    "brier_con_optimo": 0.09586,
+    "mejora_brier_pct": 0.06,
+    "logloss_sin": 0.32656,
+    "logloss_con_optimo": 0.3191,
+    "mejora_logloss_pct": 2.28,
+    "curva": [
+     {
+      "eps0": 0.0,
+      "brier": 0.09593,
+      "logloss": 0.32656
+     },
+     {
+      "eps0": 0.05,
+      "brier": 0.0969,
+      "logloss": 0.32754
+     },
+     {
+      "eps0": 0.1,
+      "brier": 0.10108,
+      "logloss": 0.34858
+     },
+     {
+      "eps0": 0.15,
+      "brier": 0.10847,
+      "logloss": 0.37593
+     },
+     {
+      "eps0": 0.2,
+      "brier": 0.11907,
+      "logloss": 0.40807
+     },
+     {
+      "eps0": 0.25,
+      "brier": 0.13287,
+      "logloss": 0.44447
+     },
+     {
+      "eps0": 0.3,
+      "brier": 0.14988,
+      "logloss": 0.485
+     }
+    ]
+   },
+   "tau": {
+    "tau_mediana": 1.1873,
+    "tau_IQR": [
+     1.0583,
+     1.3062
+    ],
+    "tau_lstsq_NO_USAR": 2.4427,
+    "coef_S_lstsq": -16.0177,
+    "n_actas": 260,
+    "sobredispersion_observada": 16.23,
+    "sesgo_medio_votos": 0.2,
+    "fraccion_del_error_que_es_sesgo": 0.0005,
+    "lectura": "la varianza real del recuento es ~16 veces la que produce suponer votos independientes"
+   }
+  }
+ },
+ "_avisos": {
+  "padron_cae_a_ventana": 193,
+  "sin_actas_condicionadas": 46,
+  "excluyo_aux": 144
+ },
+ "_args": {
+  "muestra": 500,
+  "camara": "",
+  "seed": 7,
+  "salida": "modelo/ensemble/outputs/epsilon_tau.json"
+ }
+}

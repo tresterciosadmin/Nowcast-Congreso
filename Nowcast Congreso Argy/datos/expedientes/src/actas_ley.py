@@ -16,7 +16,7 @@ El mismo efecto en Diputados (53,7% -> 27,1%). No es un problema de una cámara:
 es el filtro que faltaba, uniforme para las dos.
 
 CÓMO SE SABE EL TIPO
-    El enlace acta→expediente (`acta_expediente_senado.parquet`) da el
+    El enlace acta→expediente (`acta_expediente_todas.parquet`) da el
     `proyecto_id`, y el maestro `expedientes.parquet` da el `tipo`. Este módulo
     los cruza y devuelve el conjunto de `acta_id` que son de ley.
 
@@ -134,7 +134,7 @@ def actas_de_ley(
     designaciones/pliegos/acuerdos (ver `es_designacion`). Si `auditar_a` es una ruta,
     escribe ahí la lista revisable de lo que excluyó (por defecto NO, para no tener
     efectos de lado cuando la llaman como librería; `__main__` la pasa siempre)."""
-    enl_p = Path(enlace_path or CLEAN / "acta_expediente_senado.parquet")
+    enl_p = Path(enlace_path or CLEAN / "acta_expediente_todas.parquet")
     exp_p = Path(expedientes_path or CLEAN / "expedientes.parquet")
     for p, q in ((enl_p, "el enlace acta→expediente"), (exp_p, "el maestro de expedientes")):
         if not p.exists():

@@ -6,8 +6,7 @@
 
 ## Buscar acá si
 
-- de donde sale el 0,99 del baseline de bloque
-- por que el proyecto NO apunta a predecir la direccion del voto individual
+- de donde sale el 0,99 del baseline de bloque, y por que el proyecto NO apunta a predecir la direccion del voto individual
 - el codigo original de ingesta, anterior a `datos/`
 
 ## Trampas

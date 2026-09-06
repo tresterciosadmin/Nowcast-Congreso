@@ -73,9 +73,39 @@ RE_EXPEDIENTE = re.compile(r"(\d{1,4}(?:\.\d{3})?)\s*-\s*([A-Z]{1,3}(?:\.[A-Z])?
 RE_ANCLA = re.compile(
     r"Sala\s+de\s+(?:la\s+|las\s+)?comisi[oó]n(?:es)?\s*,\s*"
     r"([^\n]{0,45}?\d{4})\s*\.?\s*-?", re.I)
+# Cómo rotula cada cámara el carácter del dictamen. Verificado el 04-09-2026
+# sobre 193 Órdenes del Día reales del Senado (2008-2026) y las de Diputados:
+#
+#   Diputados — la cabecera va pegada al cuerpo del dictamen:
+#       "Dictamen de mayoría" / "Dictamen de minoría" / "Dictamen de las comisiones"
+#
+#   Senado — el carácter se rotula en el SUMARIO, no en el cuerpo:
+#       "Dictamen de mayoría en el proyecto de ley venido en revisión ..."
+#     y el cuerpo lleva SIEMPRE la genérica "DICTAMEN DE COMISIÓN"; a veces
+#     además calificada: "DICTAMEN DE COMISIÓN EN MAYORIA" (senado-2009-485.pdf).
+#     Sin la segunda alternativa, esa forma caía en la rama genérica.
+#
+#   Senado, cuarta forma (06-09-2026) — sin "de comisión" ni calificativo:
+#       "Dictamen EN el proyecto de ley de la señora senadora Latorre, por el ..."
+#       "Dictamen EN el mensaje y proyecto de ley ..."
+#     Es un dictamen a secas. Se encontraron leyendo las 39 Órdenes del Día del
+#     Senado que quedaban en `desconocido`: las 39 usan esta forma, sin una sola
+#     excepción, y ninguna tiene un segundo dictamen que pudiera confundirse.
+#     Entra como GENÉRICA (dice "hay un dictamen", no de qué carácter es).
+#
+# El orden de las alternativas importa: "comisión EN mayoría" tiene que probarse
+# ANTES que la genérica "comisión", o la genérica se la come. Y la forma nueva va
+# ÚLTIMA por lo mismo: "Dictamen de mayoría en el proyecto..." tiene que caer en la
+# primera alternativa, no en ésta.
 RE_CABECERA_DICTAMEN = re.compile(
     r"Dictamen\s+de\s+(?:la\s+)?(mayor[ií]a|minor[ií]a)"
-    r"|Dictamen\s+de\s+(?:las?\s+)?(comisi[oó]n(?:es)?)", re.I)
+    r"|Dictamen\s+de\s+(?:las?\s+)?comisi[oó]n(?:es)?\s+en\s+(mayor[ií]a|minor[ií]a)"
+    r"|Dictamen\s+de\s+(?:las?\s+)?(comisi[oó]n(?:es)?)"
+    r"|Dictamen(?:es)?\s+(en)\s+(?:el|los|la|las)\s+"
+    r"(?:proyecto|mensaje|expediente|proyectos)\b", re.I)
+# Hasta dónde se busca hacia ADELANTE cuando no hubo cabecera antes del ancla.
+# Ver el "rescate hacia adelante" en `_clase_del_dictamen`.
+RESCATE_ADELANTE = 3000
 RE_DISIDENCIA = re.compile(r"En\s+disidencia(\s+parcial|\s+total)?\s*:", re.I)
 
 # dónde termina el bloque de firmas
@@ -86,6 +116,12 @@ CORTES = re.compile(
     r"|INFORME\b"
     r"|FUNDAMENTOS\b"
     r"|ANTECEDENTE"
+    # `ANEXO` cierra el bloque de firmas y no estaba: en `senado-2018-16.pdf` el
+    # bloque seguía leyendo el ANEXO I —un padrón catastral— y le sacaba **18
+    # nombres inventados** ("Quebrada del Portugués", "Estancia El Mollar"), 37
+    # firmantes donde el documento tiene 19. Va anclado a principio de línea, que
+    # es como aparece el encabezado.
+    r"|ANEXO\b"
     r"|Dictamen\s+de\b"
     r"|El\s+Senado\s+y\s+C[áa]mara\s+de\s+Diputados"
     r"|Honorable\s+C[áa]mara\s*:"
@@ -115,7 +151,7 @@ CORTES_SIN_ANCLA = re.compile(
 
 @dataclass
 class Dictamen:
-    clase: str                       # 'mayoria' | 'minoria' | 'unico'
+    clase: str                       # 'mayoria' | 'minoria' | 'unico' | 'desconocido'
     orden: int                       # 1, 2, 3... en el orden en que aparecen
     fecha_sala: str = ""
     firmantes: list[dict] = field(default_factory=list)
@@ -136,6 +172,11 @@ class OrdenDelDia:
     # Viaja al parquet: una firma leída sin ancla es más frágil que una leída
     # con la fórmula, y hay que poder separarlas al medir.
     origen_firmas: str = ""
+    # Cuántos bloques de firmas se descartaron por ser el MISMO dictamen impreso
+    # dos veces (misma fecha de sala y la misma lista de firmantes). Ver
+    # `_sin_repetidos`. Viaja al parquet para que la deduplicación se pueda medir
+    # en vez de tener que confiar en ella.
+    dictamenes_repetidos: int = 0
 
 
 # ─────────────────────────── ayudas ───────────────────────────
@@ -203,19 +244,75 @@ def _bloque_de_firmas(texto: str, desde: int) -> str:
     return resto[: corte.start()] if corte else resto[:2000]
 
 
-def _clase_del_dictamen(texto: str, pos_ancla: int, vistos: int) -> str:
-    """La cabecera de dictamen más cercana ANTES del ancla manda."""
-    clase = "unico"
+CLASE_DESCONOCIDA = "desconocido"
+
+
+def _etiqueta_de(m: 're.Match') -> str:
+    """La etiqueta capturada por `RE_CABECERA_DICTAMEN`, sin acentos y en mayúscula."""
+    return _sin_acentos_mayus(m.group(1) or m.group(2) or m.group(3) or m.group(4) or "")
+
+
+def _clase_del_dictamen(texto: str, pos_ancla: int, vistos: int,
+                        fin: int | None = None) -> str:
+    """La cabecera de dictamen más cercana ANTES del ancla manda, con dos reglas.
+
+    **1. Una cabecera GENÉRICA no pisa a una calificada.** El Senado rotula
+    "Dictamen de mayoría" en el sumario y después abre el cuerpo con la genérica
+    "DICTAMEN DE COMISIÓN". Con la regla vieja —la última cabecera gana, sin
+    importar cuál— la genérica del cuerpo borraba el rótulo del sumario **en
+    todas** las Órdenes del Día del Senado. Testigo: `senado-2008-1168.pdf` dice
+    literalmente *"Dictamen de mayoría en el proyecto de ley venido en revisión
+    por el que se dispone la unificación del Sistema Integrado de Jubilaciones y
+    Pensiones"* y el parquet lo tenía como `unico`.
+    En Diputados esto no cambia nada: sus cabeceras calificadas se siguen pisando
+    entre sí en orden (mayoría, después minoría), que es lo que hace falta para
+    que cada ancla reciba la suya.
+
+    **2. Si no hay NINGUNA cabecera, la clase es `desconocido`, no `unico`.**
+    Arrancar en "unico" convertía "no encontré el rótulo" en una afirmación
+    positiva sobre el documento. Son dos cosas distintas y los consumidores tienen
+    que poder separarlas: `desconocido` es sin dato, no "despacho único".
+    """
+    clase = None
     for m in RE_CABECERA_DICTAMEN.finditer(texto, 0, pos_ancla):
-        etiqueta = m.group(1) or m.group(2) or ""
-        e = _sin_acentos_mayus(etiqueta)
+        e = _etiqueta_de(m)
         if e.startswith("MAYOR"):
             clase = "mayoria"
         elif e.startswith("MINOR"):
             clase = "minoria"
-        else:
+        elif clase is None:
+            # genérica: informa "hay un dictamen", no su carácter. Sólo cuenta
+            # cuando no hubo antes una cabecera calificada que decir.
             clase = "unico"
-    # un segundo dictamen sin cabecera explícita es, por construcción, de minoría
+    if clase is None:
+        # RESCATE HACIA ADELANTE. La búsqueda hacia atrás falla en dos casos que
+        # medimos el 06-09 sobre las 56 Órdenes del Día de Diputados que quedaban
+        # en `desconocido`:
+        #
+        #   1. La cabecera arranca EXACTAMENTE en `pos_ancla`. Pasa en la rama
+        #      `sin_ancla` (2020-2021), donde el "ancla" es el arranque del bloque
+        #      de firmas y la cabecera abre ese mismo bloque. `finditer(t, 0, pos)`
+        #      es medio abierto y la excluye por un carácter. `131-2469.pdf` dice
+        #      "Dictamen de mayoría" en la posición 627 y el bloque también empieza
+        #      en 627: se perdía una MAYORÍA entera por un off-by-one.
+        #   2. La cabecera está DESPUÉS del ancla. Pasa cuando el documento cierra
+        #      con "Sala de la comisión" antes de abrir el cuerpo del dictamen
+        #      (`126-445.pdf`: ancla en 657, cabecera en 1030).
+        #
+        # Sólo corre cuando la respuesta habría sido `desconocido`, así que no
+        # puede cambiar ninguna clase que hoy sale bien. Y toma la PRIMERA
+        # cabecera, no la última: hacia adelante, la primera es la que ABRE este
+        # dictamen; las de más allá son del siguiente.
+        tope = len(texto) if fin is None else min(fin, len(texto))
+        tope = min(tope, pos_ancla + RESCATE_ADELANTE)
+        m = RE_CABECERA_DICTAMEN.search(texto, pos_ancla, tope)
+        if m is not None:
+            e = _etiqueta_de(m)
+            clase = ("mayoria" if e.startswith("MAYOR")
+                     else "minoria" if e.startswith("MINOR") else "unico")
+    if clase is None:
+        return CLASE_DESCONOCIDA
+    # un segundo dictamen sin cabecera propia es, por construcción, de minoría
     if vistos > 0 and clase == "unico":
         clase = "minoria"
     return clase
@@ -272,6 +369,32 @@ def _bloques_sin_ancla(texto: str) -> list[tuple[int, str]]:
     return salida
 
 
+def _sin_repetidos(crudos: list[tuple[int, str, str]]) -> tuple[list, int]:
+    """Saca los bloques de firmas que son el MISMO dictamen impreso dos veces.
+
+    **Por qué hace falta.** `senado-2018-16.pdf` (Parque Nacional Aconquija)
+    imprime el dictamen dos veces: misma fecha de sala —"4 de abril de 2018"— y
+    exactamente los mismos 19 firmantes, de Julio C. Martínez a Beatriz G. Mirkin.
+    El parser veía dos anclas, y la regla "un segundo dictamen sin cabecera propia
+    es de minoría" lo rotulaba como **dictamen de minoría**. Esas 19 filas eran
+    LAS ÚNICAS 19 "minorías" del Senado en todo el parquet (18.105 filas): un
+    fenómeno entero que no existía, nacido de una reimpresión.
+
+    Se compara por (fecha de sala, conjunto de firmantes). Dos despachos distintos
+    con exactamente la misma lista de firmas y la misma fecha no son dos despachos.
+    """
+    salida, vistos, repetidos = [], set(), 0
+    for pos, bloque, fecha in crudos:
+        clave = (fecha.strip().lower(),
+                 tuple(f["firmante_raw"] for f in _firmantes_de(bloque, "none")))
+        if clave[1] and clave in vistos:
+            repetidos += 1
+            continue
+        vistos.add(clave)
+        salida.append((pos, bloque, fecha))
+    return salida, repetidos
+
+
 def parsear(texto: str, archivo: str = "") -> OrdenDelDia:
     t = _normalizar(texto)
     od = OrdenDelDia(archivo=archivo)
@@ -311,8 +434,11 @@ def parsear(texto: str, archivo: str = "") -> OrdenDelDia:
             od.motivo += "tampoco un bloque de firmas reconocible"
             return od
 
+    crudos, od.dictamenes_repetidos = _sin_repetidos(crudos)
+
     for i, (pos, bloque, fecha_sala) in enumerate(crudos):
-        dic = Dictamen(clase=_clase_del_dictamen(t, pos, i),
+        sig = crudos[i + 1][0] if i + 1 < len(crudos) else None
+        dic = Dictamen(clase=_clase_del_dictamen(t, pos, i, sig),
                        orden=i + 1,
                        fecha_sala=fecha_sala)
         # el bloque se parte en tramos: firmas plenas y tramos "En disidencia ...:"
@@ -357,7 +483,8 @@ def a_filas(od: OrdenDelDia) -> list[dict]:
             "comisiones": ";".join(od.comisiones),
             "expedientes_sumario": ";".join(od.expedientes),
             "parseo_ok": od.parseo_ok, "motivo": od.motivo,
-            "origen_firmas": od.origen_firmas}
+            "origen_firmas": od.origen_firmas,
+            "dictamenes_repetidos": od.dictamenes_repetidos}
     vacia = dict(base, dictamen_orden=0, dictamen_clase="", fecha_sala="",
                  firmante_raw="", orden_firma=0, disidencia="", primer_firmante=False,
                  dos_comisiones=False)

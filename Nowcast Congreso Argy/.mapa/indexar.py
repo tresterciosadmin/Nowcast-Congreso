@@ -740,6 +740,8 @@ def main():
     ap = argparse.ArgumentParser(description="Indice vivo de un proyecto")
     ap.add_argument("ruta", nargs="?", default=".")
     ap.add_argument("--estructura", action="store_true", help="diagnostico de estructura")
+    ap.add_argument("--verbose", action="store_true",
+                    help="desglose de lineas por seccion del MAPA")
     ap.add_argument("--solo-json", action="store_true", help="no reescribir MAPA.md")
     ap.add_argument("--frescura", action="store_true", help="solo reportar desactualizados")
     ap.add_argument("--sellar", metavar="CARPETA",
@@ -793,6 +795,20 @@ def main():
         n = texto.count("\n")
         aviso = "  ← excede el presupuesto, podar secciones" if n > MAX_LINEAS_MAPA else ""
         print(f"MAPA.md: {n} lineas{aviso}", file=sys.stderr)
+        # DESGLOSE POR SECCION. No es adorno: el 06-09-2026 la corrida de Franco
+        # reporto 301 lineas y la del sandbox 259, con EXACTAMENTE los mismos 158
+        # archivos y 37.669 LOC. O sea que la diferencia no estaba en el contenido
+        # indexado sino en el entorno, y sin desglose no habia forma de saber que
+        # seccion crecia. "Excede el presupuesto" sin decir DONDE no es un aviso
+        # accionable.
+        if n > MAX_LINEAS_MAPA or args.verbose:
+            sec, actual = {}, "(cabecera)"
+            for l in texto.split("\n"):
+                if l.startswith("## "):
+                    actual = l[3:]
+                sec[actual] = sec.get(actual, 0) + 1
+            for k, v in sorted(sec.items(), key=lambda x: -x[1]):
+                print(f"    {v:>4} lineas  {k}", file=sys.stderr)
 
     print(f".mapa/mapa.json: {m['tamano']['archivos']} archivos, "
           f"{m['tamano']['loc']:,} LOC, {len(m['carpetas'])} carpetas", file=sys.stderr)

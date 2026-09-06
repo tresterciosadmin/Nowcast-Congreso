@@ -233,7 +233,7 @@ function pmod(l){const lr=Math.log(ICG/DATA.icg_neutro);
 // porque los dos estaban saturados, y en una votacion ajustada se habrian contradicho.
 // El clima cambia la DIRECCION del voto, no quien asiste, asi que el umbral no se mueve.
 function paprob(cam){let m=0,v=0;cam.legisladores.forEach(l=>{const p=pmod(l);m+=p;v+=p*(1-p);});
-  const u=(cam.umbral_simulado!==undefined)?cam.umbral_simulado:cam.umbral_mayoria_simple;
+  const u=(cam.umbral_simulado!==undefined)?cam.umbral_simulado:cam.umbral_mayoria_absoluta;
   const z=(u-0.5-m)/Math.sqrt(v||1);
   return {p:Math.min(Math.max(1-ncdf(z),0.01),0.99),m:m,u:u};}
 function pct(x){return (100*x).toFixed(0)+"%";}
@@ -280,7 +280,12 @@ function render(){
   // dice en pantalla, porque un control mudo se lee como un control roto.
   const topeB=pv.B>=0.989, topeD=pv.D>=0.989, pisoB=pv.B<=0.011, pisoD=pv.D<=0.011;
   const enTope=(topeB||pisoB)&&(topeD||pisoD);
-  const margenes=camaras().map((c,i)=>Math.round(rs[i].m-c.umbral_mayoria_simple));
+  // El margen va contra EL MISMO umbral con el que se dibuja la barra y se calcula
+  // la probabilidad: `rs[i].u`, el que uso la simulacion. Hasta el 04-09-2026 salia
+  // contra `umbral_mayoria_simple` (129, que ademas era mayoria ABSOLUTA) mientras
+  // la barra usaba 122,1 — el mismo error del 22-08 sobreviviendo en la mitad del
+  // codigo: se arreglo donde se dibuja y quedo donde se calcula. URGENTE 6.
+  const margenes=camaras().map((c,i)=>Math.round(rs[i].m-rs[i].u));
   const nota=enTope
     ? `<div style="color:var(--mut);font-size:12px;margin-top:8px">El número está en el
        ${topeB?"techo":"piso"} de confianza y por eso no se mueve con el clima: los márgenes son

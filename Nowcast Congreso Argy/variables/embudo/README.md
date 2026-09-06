@@ -14,12 +14,10 @@ nowcast (la mitad de la ecuación `P(aprobación) = P(llega al recinto) × P(may
 
 ## Buscar acá si
 
-- por que la mayoria de los proyectos nunca se votan
-- P(llega al recinto), cohorte, o proyectos maduros vs. en curso
+- por que la mayoria de los proyectos nunca se votan; P(llega al recinto), cohorte, maduros vs. en curso
 - escenarios y contrafactuales (`escenarios.py`) — los coeficientes de la logistica NO son efectos
 - el skill del embudo o su backtest temporal
-- leer de `proyectos.db` vs. del parquet (`EMBUDO_FUENTE=parquet`)
-- medir la cohorte por las DOS rutas (parquet vs `proyectos.db`): `src/cohorte_dos_rutas.py`, que consume `datos/proyectos`
+- leer de `proyectos.db` vs. del parquet (`EMBUDO_FUENTE=parquet`), y medir la cohorte por las DOS rutas (`src/cohorte_dos_rutas.py`)
 
 <!-- Las dos cosas de arriba las levanta `.mapa/indexar.py` al MAPA.md de la
      raiz: el `Resumen:` va a la columna "Que es" y las pistas al router

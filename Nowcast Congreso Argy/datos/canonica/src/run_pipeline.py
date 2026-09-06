@@ -33,11 +33,28 @@ def main():
         run("datos/decada_votada/src/from_csv.py", {"CSV": csvdir, "OUT": SRC})
     else:
         print("[warn] no está DecadaVotadaCSV.zip; salteo la semilla histórica")
-    # 2. CKAN Diputados (2011-2019)   3. argentinadatos (2020-2025)   4. Excel 2026
+    # 2. CKAN Diputados (2011-2019)   3. argentinadatos (2020-2025)
     run("datos/ckan_diputados/src/to_canonical.py", {"OUT": SRC})
     run("datos/argentinadatos/src/to_canonical.py", {"OUT": SRC})
+    # 4. EL EXCEL 2026 SALIÓ DEL PIPELINE (2026-09-06, decisión de Franco).
+    #
+    # Se armó cuando `argentinadatos` no cubría 2026 y cumplió su función. Hoy
+    # `argentinadatos` tiene 205 actas desde el recambio del 10-dic-2025, y las 17 del
+    # Excel resultaron ser LAS MISMAS votaciones: 12 coinciden voto por voto al 100% y
+    # las otras 5 tienen el recuento idéntico (139/97/21, 130/106/14/7, 40/22/10) y
+    # difieren sólo en el `legislador_id` de algunas personas.
+    #
+    # No aportaba y sí confundía: entraba sin fecha, sin expediente y sin tipo_mayoría,
+    # con la PRECEDENCIA más alta de todas, y obligaba a `disciplina.py` y a `ficha.py`
+    # a parchear `anio = 2026` cada uno por su lado.
+    #
+    # El Excel NO se borra: sigue siendo la planilla de trabajo de Franco y la hoja
+    # RESUMEN tiene la fila "Tema que trata la ley". Lo que sale es su ingesta.
+    # Para volver a prenderla: MANUAL_2026=1.
     xlsx = ROOT / "datos" / "manual_2026" / "Congreso_25-27.xlsx"
-    if xlsx.exists():
+    if os.environ.get("MANUAL_2026") == "1" and xlsx.exists():
+        print("[aviso] MANUAL_2026=1: el Excel vuelve a entrar. Sus 17 actas son gemelas "
+              "de actas de argentinadatos; `build.py` las va a reportar como INDICIO.")
         run("datos/manual_2026/src/to_canonical.py", {"XLSX": xlsx, "OUT": SRC})
     # 4b. Senado oficial 2015-2023 (módulo datos/senado): scrape (con caché)
     #     + bloque histórico. Consumimos su SALIDA publicada (contrato), no su

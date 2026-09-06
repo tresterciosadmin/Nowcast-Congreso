@@ -1,0 +1,160 @@
+{
+ "P1_psi_unico": {
+  "n": 24570,
+  "llf": -6876.5,
+  "coef": {
+   "const": -2.0953,
+   "margen_origen": 7.2215
+  },
+  "se_cluster_acta": {
+   "const": 0.1886,
+   "margen_origen": 0.6953
+  },
+  "p": {
+   "const": 0.0,
+   "margen_origen": 0.0
+  }
+ },
+ "P1b_psi_con_tema_origen": {
+  "n": 24570,
+  "llf": -6547.1,
+  "coef": {
+   "const": 22.2241,
+   "margen_origen": 7.7253,
+   "t_AUX": -24.2357,
+   "t_CULT": -25.9083,
+   "t_DEF": -23.865,
+   "t_DERSOC": -24.5065,
+   "t_DESREG": -24.4239,
+   "t_ECON": -25.5038,
+   "t_EDU": -25.216,
+   "t_ENER": -24.7498,
+   "t_INFRA": -25.5798,
+   "t_JUST": -23.2031,
+   "t_POLINST": -24.9335,
+   "t_PROD": -0.316,
+   "t_SALUD": 0.4674,
+   "t_SIN_TEMA": -24.2307,
+   "t_TRAB": -24.7956,
+   "o_EJECUTIVO": -0.1305,
+   "o_OFICIALISMO": -0.5474,
+   "o_OPOSICION": 0.022,
+   "o_SIN_ORIGEN": 0.2933
+  },
+  "se_cluster_acta": {
+   "const": 7333.9425,
+   "margen_origen": 0.8161,
+   "t_AUX": 7231.9866,
+   "t_CULT": 9302.4833,
+   "t_DEF": 8980.1783,
+   "t_DERSOC": 7014.6908,
+   "t_DESREG": 8171.1936,
+   "t_ECON": 6897.5531,
+   "t_EDU": 8030.8415,
+   "t_ENER": 6951.13,
+   "t_INFRA": 7384.1208,
+   "t_JUST": 8683.1401,
+   "t_POLINST": 8560.7542,
+   "t_PROD": 7944.2464,
+   "t_SALUD": 7298.0798,
+   "t_SIN_TEMA": 6793.0254,
+   "t_TRAB": 7331.1454,
+   "o_EJECUTIVO": 0.4861,
+   "o_OFICIALISMO": 0.5567,
+   "o_OPOSICION": 0.4267,
+   "o_SIN_ORIGEN": 0.4846
+  },
+  "p": {
+   "const": 0.99758,
+   "margen_origen": 0.0,
+   "t_AUX": 0.99733,
+   "t_CULT": 0.99778,
+   "t_DEF": 0.99788,
+   "t_DERSOC": 0.99721,
+   "t_DESREG": 0.99762,
+   "t_ECON": 0.99705,
+   "t_EDU": 0.99749,
+   "t_ENER": 0.99716,
+   "t_INFRA": 0.99724,
+   "t_JUST": 0.99787,
+   "t_POLINST": 0.99768,
+   "t_PROD": 0.99997,
+   "t_SALUD": 0.99995,
+   "t_SIN_TEMA": 0.99715,
+   "t_TRAB": 0.9973,
+   "o_EJECUTIVO": 0.78836,
+   "o_OFICIALISMO": 0.32542,
+   "o_OPOSICION": 0.95887,
+   "o_SIN_ORIGEN": 0.54501
+  }
+ },
+ "P2_psi_por_lado": {
+  "n": 23360,
+  "llf": -5146.0,
+  "coef": {
+   "const": -1.5012,
+   "margen_origen": 1.4586,
+   "lado_linaje": 2.6028,
+   "margen_x_lado": 5.4902
+  },
+  "se_cluster_acta": {
+   "const": 0.2256,
+   "margen_origen": 1.1087,
+   "lado_linaje": 1.1605,
+   "margen_x_lado": 3.1481
+  },
+  "p": {
+   "const": 0.0,
+   "margen_origen": 0.1883,
+   "lado_linaje": 0.02491,
+   "margen_x_lado": 0.08116
+  }
+ },
+ "P3_psi_por_linaje": {
+  "n": 19643,
+  "llf": -4445.5,
+  "coef": {
+   "const": -2.3061,
+   "psi__FdT-UxP (kirchneri": 9.3387,
+   "psi__OTRO / PROVINCIAL": 7.509,
+   "psi__RADICALISMO": 7.5462
+  },
+  "se_cluster_acta": {
+   "const": 0.1779,
+   "psi__FdT-UxP (kirchneri": 1.3349,
+   "psi__OTRO / PROVINCIAL": 0.6743,
+   "psi__RADICALISMO": 0.8536
+  },
+  "p": {
+   "const": 0.0,
+   "psi__FdT-UxP (kirchneri": 0.0,
+   "psi__OTRO / PROVINCIAL": 0.0,
+   "psi__RADICALISMO": 0.0
+  }
+ },
+ "_descriptivos": {
+  "n_votos": 24570,
+  "n_proyectos": 239,
+  "n_actas_revisoras": 239,
+  "reparto_camara_revisora": {
+   "diputados": 15748,
+   "senado": 8822
+  },
+  "margen_origen_medio": 0.3881,
+  "margen_origen_p10_p90": [
+   0.0982,
+   0.5
+  ],
+  "cobertura_lado_linaje": 0.9508,
+  "linajes_en_P3": [
+   "FdT-UxP (kirchnerismo)",
+   "OTRO / PROVINCIAL",
+   "RADICALISMO"
+  ]
+ },
+ "_avisos": {
+  "padron_cae_a_ventana": 80,
+  "sin_actas_condicionadas": 20,
+  "excluyo_aux": 60
+ }
+}

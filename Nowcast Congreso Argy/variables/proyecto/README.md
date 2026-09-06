@@ -11,11 +11,9 @@
 
 ## Buscar acá si
 
-- de que tema es un proyecto (clasificador de taxonomias contra `taxonomias.json`)
-- quien impulsa un proyecto: EJECUTIVO / OFICIALISMO / ALIADOS / OPOSICION
+- de que tema es un proyecto, quien lo impulsa (EJECUTIVO / OFICIALISMO / ALIADOS / OPOSICION) y cual es la postura del gobierno
 - el ICG (indice de confianza en el gobierno) y el gamma que modula el desvio
 - el efecto lider / jefe de bloque (1,25x, no el 7x que se creia)
-- postura del gobierno frente a un proyecto
 - carpeta grande: 17 archivos — buscar por simbolo con `.mapa/buscar.py` antes de abrir
 - REVISION 25-08: el log del ICG es SIMETRICO y la politica no — la asimetria existia en el mecanismo eliminado el 11-08
 - por que el promedio del gobierno no tiene leakage (`shift(1)` + `expanding`)

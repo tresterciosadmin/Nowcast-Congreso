@@ -18,10 +18,8 @@ Une las dos piezas ya validadas del sistema en un solo número (con su descompos
 - el numero final de P(sancion) de un proyecto
 - el backtest de la cadena completa, Brier, skill o calibracion
 - la Puerta D / camara revisora en el circuito bicameral
-- condicionar la postura por el origen del proyecto
 - P(mayoria) que da 0% o 100% (hay piso y techo por pedido de Valle)
-- REVISION 25-08: multiplicar P_B x P_D supone INDEPENDENCIA entre camaras, y es falsa — ver `coordinacion/REVISION-METODOLOGICA-2026-08-25.md`
-- por que `P(B|A)` es notacion enganosa: A y C son un corrimiento en logit, no un condicional bayesiano
+- REVISION 25-08: multiplicar P_B x P_D supone INDEPENDENCIA entre camaras y es falsa; y `P(B|A)` es notacion enganosa (A y C son un corrimiento en logit, no un condicional bayesiano)
 - el sobre tablas: 12,5% de las leyes se sancionan SIN dictamen y el modelo no lo contempla
 - diferencia entre la BANDA (p5-p95, agregada) y los PIVOTES (P individual en [0,35;0,65])
 

@@ -64,6 +64,42 @@ log = logging.getLogger("agregador")
 logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s: %(message)s")
 
 CONDUCTAS = ("AFIRMATIVO", "NEGATIVO", "NO_ACOMPANA")
+
+# ── BANDERA APAGADA: el quórum y las abstenciones (revisión metodológica 25-08) ──
+#
+# **El hallazgo.** `presentes = afirm + neg`: el quórum cuenta sólo a los que
+# EMITIERON. Pero quien se abstiene **está en el recinto** y hace quórum. El modelo
+# tiene tres conductas y la tercera, `NO_ACOMPANA`, mezcla dos cosas que
+# institucionalmente son opuestas: **abstenerse (presente)** y **faltar (ausente)**.
+#
+# **Cuánto mueve, medido el 04-09-2026** (4.000 simulaciones por escenario, roster de
+# 257 con 140 a favor y 117 en contra):
+#
+#   escenario                            sims sin quórum   delta P(aprobación)
+#   Diputados típico (desvío 0,05)             0,0%              0,0000
+#   Diputados desvío alto (0,25)               0,0%              0,0000
+#   modo asistencia, presentismo 0,85          0,0%              0,0000
+#   Senado típico                              0,0%              0,0000
+#   modo asistencia, presentismo 0,55         12,5%             +0,1115
+#   modo asistencia, presentismo 0,50         64,4%             +0,5667
+#
+# **O sea: hoy el bug es INERTE.** Con presentismo realista sobran ~120 votos sobre el
+# umbral de quórum y la guarda no muerde nunca. Aparece sólo cuando la asistencia se
+# acerca a la mitad del cuerpo — que es, justamente, el escenario donde el quórum es
+# la pregunta interesante. Por eso se implementa igual: el día que
+# `variables/asistencia_quorum` entregue presentismo real y bajo, esto pasa de valer
+# 0,0000 a valer medio punto de probabilidad.
+#
+# **Qué hace cuando se prende:**
+#   - CON modelo de asistencia (`p_presente`): separa abstención de ausencia.
+#     `p(abstención presente) = p_presente x p(NO_ACOMPANA)`.
+#   - SIN modelo de asistencia: no hay ausentes que modelar, así que todo el roster
+#     cuenta como presente.
+#
+# **Por qué queda apagada:** mueve el número publicado, y eso va con backtest
+# (ADR-0015). Se prende con `QUORUM_ABSTENCIONES=1` o pasando
+# `quorum_cuenta_abstenciones=True` a `simular_votacion`.
+QUORUM_CUENTA_ABSTENCIONES = os.environ.get("QUORUM_ABSTENCIONES") == "1"
 SUST = ("AFIRMATIVO", "NEGATIVO")
 
 
@@ -112,6 +148,7 @@ def simular_votacion(
     reparto_desvio: float = 0.5,
     seed: int | None = 0,
     p_presente=None,
+    quorum_cuenta_abstenciones: bool | None = None,
 ) -> dict:
     """Simula la votación n_sims veces a partir del roster (una línea y un desvío por
     legislador) y devuelve la distribución del resultado.
@@ -122,6 +159,8 @@ def simular_votacion(
       es la DIRECCIÓN del bloque (AFIRMATIVO/NEGATIVO) y cada legislador la emite solo
       si está presente: se escala P(afirm) y P(neg) por p_presente y el resto va a
       NO_ACOMPANA (ausencia). Corrige el sesgo pesimista de contar ausentes como línea.
+    quorum_cuenta_abstenciones: BANDERA, APAGADA POR DEFECTO (revisión 25-08). Ver
+      `QUORUM_CUENTA_ABSTENCIONES` arriba. `None` = usar el default del módulo.
     Devuelve dict con p_aprobacion, afirm_medio, afirm_std, banda (p5,p50,p95), etc.
     """
     n = len(lineas)
@@ -134,10 +173,16 @@ def simular_votacion(
 
     # matriz de probabilidades por legislador (n x 3), muestreo categórico vectorizado
     probs = np.vstack([_prob_conductas(l, dv, reparto_desvio) for l, dv in zip(lineas, desvios)])
+    # p(abstención ESTANDO en el recinto). Sólo se puede separar en modo asistencia.
+    p_abst_presente = None
     if p_presente is not None:
         pp = np.clip(np.asarray(p_presente, dtype=float), 0.0, 1.0)
         if len(pp) != n:
             raise ValueError(f"p_presente ({len(pp)}) no coincide con roster ({n})")
+        # El NO_ACOMPANA de `_prob_conductas` es "no sigue la línea y tampoco vota
+        # en contra": ESTANDO en el recinto, eso es una ABSTENCIÓN. Se guarda ANTES
+        # de escalar, porque después queda mezclado con la ausencia y ya no se separan.
+        p_abst_presente = pp * probs[:, 2]
         # solo emite si está presente: afirm/neg se escalan por pp; el resto = ausencia
         probs[:, 0] *= pp
         probs[:, 1] *= pp
@@ -151,7 +196,29 @@ def simular_votacion(
     neg = (elec == 1).sum(axis=1).astype(float)          # sims
     no_ac = (elec == 2).sum(axis=1).astype(float)
     emitidos = afirm + neg
-    presentes = afirm + neg  # v1: no_acompaña incluye ausentes; quórum se trata laxo abajo
+    cuenta_abst = (QUORUM_CUENTA_ABSTENCIONES if quorum_cuenta_abstenciones is None
+                   else bool(quorum_cuenta_abstenciones))
+    if not cuenta_abst:
+        # v1, y es el default: no_acompaña mezcla ausencia y abstención, así que el
+        # quórum cuenta sólo a los que emitieron.
+        presentes = afirm + neg
+        abstenciones = np.zeros_like(afirm)
+    elif p_abst_presente is None:
+        # SIN modelo de asistencia no hay ausentes que modelar: todo el roster está
+        # en el recinto. Es el supuesto que v1 ya hace en todo lo demás.
+        presentes = np.full_like(afirm, float(n))
+        abstenciones = no_ac
+    else:
+        # Con modelo de asistencia se sortea, entre los que NO emitieron, quiénes
+        # estaban igual en el recinto. Se usa un sorteo APARTE (`v`) para no correr
+        # el rng de la elección: con la bandera apagada la corrida tiene que salir
+        # bit a bit igual que antes, y sale.
+        with np.errstate(divide="ignore", invalid="ignore"):
+            p_abst_dado_no_emite = np.where(probs[:, 2] > 0,
+                                            p_abst_presente / probs[:, 2], 0.0)
+        v = rng.random((n_sims, n))
+        abstenciones = ((elec == 2) & (v < p_abst_dado_no_emite[None, :])).sum(axis=1).astype(float)
+        presentes = emitidos + abstenciones
 
     # umbral por simulación (depende de emitidos para SIMPLE/DOS_TERCIOS/TRES_CUARTOS)
     umbrales = np.array([umbral_aprobacion(tipo, e, camara) for e in emitidos])
@@ -173,6 +240,10 @@ def simular_votacion(
         "afirm_p95": float(np.percentile(afirm, 95)),
         "umbral_medio": float(np.mean(umbrales)),
         "emitidos_medio": float(emitidos.mean()),
+        "presentes_medio": float(presentes.mean()),
+        "abstenciones_medio": float(abstenciones.mean()),
+        "sims_sin_quorum": float((~con_quorum).mean()),
+        "quorum_cuenta_abstenciones": bool(cuenta_abst),
     }
 
 

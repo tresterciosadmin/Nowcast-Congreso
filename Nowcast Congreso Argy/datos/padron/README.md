@@ -58,13 +58,10 @@ el TABLERO, y acá se ve sin tener que buscarla.
 ## Buscar acá si
 
 - cuantas bancas tiene un bloque a una fecha, o quien estaba en el recinto
-- el cuerpo aparece inflado o desinflado (contar votantes vs. roster real)
+- el cuerpo aparece inflado o desinflado; un anio da mas de 257 bancas (son duplicados de entity resolution)
 - recambio del 10-dic, reemplazos, renuncias, bancas vacantes
-- el padron cambio y hay que revisarlo (`vigilar_padron.py`, corre los lunes)
-- el padron historico del Senado (reconstruido de nomina oficial + Wikipedia)
-- el padron historico de DIPUTADOS (reconstruido de la canonica; la nomina
-  oficial solo cubre la foto vigente: 81 de 257 bancas en 2008)
-- un anio da mas de 257 bancas (son duplicados de entity resolution)
+- el padron cambio y hay que revisarlo (`vigilar_padron.py`, corre los lunes en CI; local escribe a `Archivos_Borrar/`)
+- el padron HISTORICO (Senado: nomina oficial + Wikipedia; Diputados: reconstruido de la canonica, porque la nomina oficial solo cubre la foto vigente — 81 de 257 bancas en 2008)
 
 <!-- Las dos cosas de arriba las levanta `.mapa/indexar.py` al MAPA.md de la
      raiz: el `Resumen:` va a la columna "Que es" y las pistas al router

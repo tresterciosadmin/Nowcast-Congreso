@@ -28,7 +28,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from parser_od import a_filas, parsear  # noqa: E402
+from parser_od import _clase_del_dictamen, a_filas, parsear  # noqa: E402
 
 DIP_DISIDENCIA = """CAMARA DE DIPUTADOS DE LA NACION
 
@@ -185,6 +185,209 @@ Guillermo E. Andrada.
 """
 
 
+# Transcripción literal de `senado-2008-1168.pdf` (SIPA/AFJP), recortada. Es EL
+# testigo del bug del 04-09-2026: el sumario dice "Dictamen de mayoría" y el
+# cuerpo abre con la genérica "DICTAMEN DE COMISION". Con la regla vieja —la
+# última cabecera gana— la genérica pisaba al rótulo y el parquet lo guardaba
+# como `unico`. Cero mayorías en 18.105 filas del Senado salían de acá.
+SEN_MAYORIA_EN_SUMARIO = """CONGRESO NACIONAL
+
+CAMARA  DE  SENADORES
+
+SESIONES ORDINARIAS DE 2008
+
+ORDEN DEL DIA Nº 1168
+
+Impreso el día 12 de noviembre de 2008
+
+SUMARIO
+
+COMISION DE PRESUPUESTO Y HACIENDA Y DE TRABAJO Y
+PREVISIÓN SOCIAL
+
+Dictamen  de  mayoría  en  el  proyecto  de  ley  venido  en  revisión  por  el
+que se dispone la unificación del Sistema Integrado de Jubilaciones y
+Pensiones en un único régimen previsional público. (CD-70/08)
+
+DICTAMEN DE COMISION
+
+Honorable Senado:
+
+Vuestras Comisiones de PRESUPUESTO Y HACIENDA y de TRABAJO Y
+PREVISIÓN SOCIAL, han considerado el proyecto de ley en revisión
+registrado bajo el número CD-70/08 y os aconsejan la aprobación del mismo.
+
+Sala de las Comisiones, 12 de Noviembre de 2008
+
+Roberto F. Ríos.- Julio A. Miranda.- Isabel J. Viudes.- Eric Calcagno y
+Maillman.- Marcel A. H. Guinle.- Nicolás A. Fernández.-
+
+EN DISIDENCIA PARCIAL:
+
+Roxana I. Latorre.
+"""
+
+# Transcripción literal de `senado-2009-485.pdf`: la OTRA forma del Senado, la
+# calificada en el cuerpo — "DICTAMEN DE COMISIÓN EN MAYORIA". El regex viejo la
+# leía por la rama genérica ("Dictamen de comisión") y devolvía `unico`.
+SEN_COMISION_EN_MAYORIA = """CONGRESO NACIONAL
+
+CAMARA DE SENADORES
+
+ORDEN DEL DIA Nº 485
+
+Impreso el día 24 de septiembre de 2009
+
+SUMARIO
+
+COMISION DE PRESUPUESTO Y HACIENDA
+
+Dictamen de mayoría en el proyecto de ley venido en revisión por el que
+se modifican las leyes de impuestos internos y al valor agregado.(CD-31/09)
+
+DICTAMEN DE COMISIÓN EN MAYORIA
+
+Honorable Senado:
+
+Vuestra Comisión de PRESUPUESTO Y HACIENDA ha considerado el
+proyecto de ley en revisión registrado bajo el número CD-31/09.
+
+Sala de la comisión, 24 de septiembre de 2009
+
+Carlos A. Verna.- Roberto G. Basualdo.- José M. A. Mayans.- Elena M.
+Corregido.- Nicolás A. Fernández.
+"""
+
+# Transcripción literal de `senado-2018-16.pdf` (Parque Nacional Aconquija): el
+# MISMO dictamen impreso dos veces, con la misma fecha de sala y los mismos
+# firmantes, y con un ANEXO catastral en el medio. Antes del 04-09 esto producía
+# (1) un "dictamen de minoría" que no existe —las únicas 19 minorías del Senado
+# en todo el parquet— y (2) nombres inventados leídos del padrón catastral.
+SEN_REIMPRESO = """CONGRESO NACIONAL
+
+CÁMARA DE SENADORES
+
+ORDEN DEL DÍA Nº 16
+
+Impreso el día 4 de abril de 2018
+
+SUMARIO
+
+COMISIÓN DE ASUNTOS ADMINISTRATIVOS Y MUNICIPALES
+
+Dictamen en el proyecto de ley venido en revisión por el que se acepta la
+cesión de la jurisdicción efectuada por la provincia de Tucumán. (CD-68/17)
+
+DICTAMEN DE COMISIÓN
+
+Honorable Senado de la Nación:
+
+Art. 8º.- Comuníquese al Poder Ejecutivo Nacional.
+
+Sala de la comision, 4 de abril de 2018
+
+Julio C. Martínez.- Fernando E. Solanas.- Esteban J. Bullrich.- José A.
+Ojeda.- Julio C. Cobos.-
+
+En disidencia parcial: Beatriz G. Mirkin.-
+
+ANEXO I
+
+1) Padrón denominado "QUEBRADA DEL PORTUGUES" Matrícula 35234, Orden
+398, Circunscripción 1, Sección D, Lámina 287.
+
+Sala de la comision , 4 de abril de 2018
+
+Julio C. Martínez.- Fernando E. Solanas.- Esteban J. Bullrich.- José A.
+Ojeda.- Julio C. Cobos.-
+
+En disidencia parcial: Beatriz G. Mirkin
+"""
+
+
+# ── 06-09-2026: las tres formas que caían en `desconocido` sin tener por qué ──
+# Salieron de leer las 95 Órdenes del Día (39 del Senado + 56 de Diputados) que el
+# parquet regenerado dejaba en `desconocido`. Las tres FALLAN con el parser del 04-09.
+
+# 1. El Senado tiene una CUARTA forma: dictamen a secas, sin "de comisión" ni
+#    calificativo. Las 39 del Senado usan ésta, sin una sola excepción.
+SEN_DICTAMEN_EN_EL = """CONGRESO NACIONAL
+
+CÁMARA DE SENADORES
+
+ORDEN DEL DÍA Nº 876
+
+SUMARIO
+
+Dictamen en el proyecto de ley de la señora senadora Latorre, por el que se
+declara de interés el aniversario de la ciudad. (S-1234/14)
+
+Honorable Senado:
+
+Vuestra comisión ha considerado el proyecto y aconseja su aprobación.
+
+Sala de la comisión, 12 de noviembre de 2014
+
+Ada R. del Valle Iturrez de Cappellini.- Marta Varela.
+"""
+
+# 3. La cabecera está DESPUÉS del ancla: el documento cierra con "Sala de la
+#    comisión" antes de abrir el cuerpo del dictamen (`126-445.pdf`).
+DIP_CABECERA_DESPUES = """ORDEN DEL DÍA Nº 445
+
+Sala de la comisión, 15 de septiembre de 2008
+
+Dictamen de comisión
+
+Honorable Cámara:
+
+Las comisiones han considerado el proyecto y aconsejan su aprobación.
+
+Sala de las comisiones, 15 de septiembre de 2008
+
+Juan C. Perez.- Maria L. Gonzalez.
+"""
+
+# 4. CONTROL: la forma nueva NO puede pisar a una calificada. Si "Dictamen de
+#    mayoría en el proyecto..." cayera en la alternativa genérica, el arreglo del
+#    04-09 (ADR-0017) se desharía en silencio.
+SEN_MAYORIA_CON_EN_EL = """ORDEN DEL DÍA Nº 1168
+
+SUMARIO
+
+Dictamen de mayoría en el proyecto de ley venido en revisión por el que se
+dispone la unificación del Sistema Integrado de Jubilaciones y Pensiones.
+
+DICTAMEN DE COMISIÓN
+
+Honorable Senado:
+
+Sala de la comisión, 20 de noviembre de 2008
+
+Nicolas A. Fernandez.- Carlos A. Rossi.
+"""
+
+# Un dictamen SIN ninguna cabecera reconocible: no se puede afirmar que sea único.
+SEN_SIN_CABECERA = """CONGRESO NACIONAL
+
+CÁMARA DE SENADORES
+
+ORDEN DEL DÍA Nº 999
+
+Impreso el día 3 de mayo de 2017
+
+SUMARIO
+
+Honorable Senado:
+
+Las comisiones han considerado el asunto y aconsejan su aprobación.
+
+Sala de la comisión, 3 de mayo de 2017
+
+Ada R. del Valle Iturrez de Cappellini.- Marta Varela.- Julio C. Cobos.
+"""
+
+
 def _correr() -> int:
     fallos: list[str] = []
     corridos = 0
@@ -242,6 +445,78 @@ def _correr() -> int:
     check(f3[0]["firmante_raw"] == "Francisco M. Paoltroni", f"primer firmante: {f3[0]}")
     check(f3[-1]["firmante_raw"] == "Guillermo E. Andrada", f"último firmante: {f3[-1]}")
     check(all(f["disidencia"] == "none" for f in f3), "este dictamen no tiene disidencias")
+
+    # ─────────────── el carácter del dictamen en el Senado (04-09-2026) ───────────────
+    print("Senado O.D. 1168/2008 — 'Dictamen de mayoría' va en el SUMARIO")
+    od4 = parsear(SEN_MAYORIA_EN_SUMARIO, "senado-2008-1168.pdf")
+    check(od4.parseo_ok, f"tendría que parsear ok, dijo: {od4.motivo}")
+    check(od4.dictamenes[0].clase == "mayoria",
+          "el rótulo del sumario manda: la genérica 'DICTAMEN DE COMISION' del "
+          f"cuerpo NO puede pisarlo. Dio {od4.dictamenes[0].clase!r}")
+    check({f["disidencia"] for f in od4.dictamenes[0].firmantes} == {"none", "parcial"},
+          "y la disidencia parcial se sigue leyendo")
+
+    print("Senado O.D. 485/2009 — 'DICTAMEN DE COMISIÓN EN MAYORIA'")
+    od5 = parsear(SEN_COMISION_EN_MAYORIA, "senado-2009-485.pdf")
+    check(od5.dictamenes[0].clase == "mayoria",
+          f"la forma calificada del cuerpo también es mayoría, dio {od5.dictamenes[0].clase!r}")
+
+    print("Senado O.D. 16/2018 — el mismo dictamen impreso dos veces")
+    od6 = parsear(SEN_REIMPRESO, "senado-2018-16.pdf")
+    check(len(od6.dictamenes) == 1,
+          f"una reimpresión no es un segundo despacho, dio {len(od6.dictamenes)}")
+    check(od6.dictamenes_repetidos == 1,
+          f"y la reimpresión queda contada, no escondida: {od6.dictamenes_repetidos}")
+    check(od6.dictamenes[0].clase != "minoria",
+          "y sobre todo NO puede inventar un dictamen de minoría")
+    nombres = {f["firmante_raw"] for f in od6.dictamenes[0].firmantes}
+    check(not any("QUEBRADA" in n.upper() or "Matrícula" in n for n in nombres),
+          f"el ANEXO catastral no es una lista de firmas: {sorted(nombres)}")
+    check(len(od6.dictamenes[0].firmantes) == 6,
+          f"5 firmas plenas + 1 en disidencia, dio {len(od6.dictamenes[0].firmantes)}")
+
+    print("sin cabecera de dictamen → 'desconocido', nunca 'unico'")
+    od7 = parsear(SEN_SIN_CABECERA, "sin-cabecera.pdf")
+    check(od7.parseo_ok, f"las firmas se leen igual, dijo: {od7.motivo}")
+    check(od7.dictamenes[0].clase == "desconocido",
+          "no encontrar el rótulo NO es lo mismo que 'despacho único': "
+          f"dio {od7.dictamenes[0].clase!r}")
+
+    print("las tres formas que caían en 'desconocido' y no tenían por qué (06-09)")
+    o1 = parsear(SEN_DICTAMEN_EN_EL, "senado-2014-876.pdf")
+    check(o1.dictamenes[0].clase == "unico",
+          "el Senado tiene una CUARTA forma, 'Dictamen EN el proyecto de ley': es un "
+          f"dictamen a secas, o sea unico. Dio {o1.dictamenes[0].clase!r}")
+    # La cabecera arranca EXACTAMENTE donde arranca el bloque. Se chequea la función
+    # directamente y no un documento entero, porque la posición la elige
+    # `_bloques_sin_ancla` y un fixture sintético no la reproduce: el primer intento de
+    # este test PASABA con el parser viejo, o sea que no probaba nada. En el documento
+    # real (`131-2469.pdf`) el bloque y "Dictamen de mayoría" arrancan los dos en 627 y
+    # se perdía una MAYORÍA entera por el intervalo medio abierto.
+    check(_clase_del_dictamen("Dictamen de mayoría\nHonorable Cámara:", 0, 0) == "mayoria",
+          "con la cabecera en la misma posición que el ancla, `finditer(t, 0, pos)` la "
+          "excluye por un carácter: tiene que rescatarla hacia adelante")
+    check(_clase_del_dictamen("Dictamen de las comisiones\nHonorable Cámara:", 0, 0) == "unico",
+          "lo mismo con la cabecera genérica")
+    # y el rescate NO puede robarle la cabecera al dictamen siguiente
+    dos = "xxxx\nDictamen de minoría\nfirmas"
+    check(_clase_del_dictamen(dos, 0, 0, 4) == "desconocido",
+          "con `fin` en 4, el rescate no puede llegar a la cabecera del que sigue: "
+          f"dio {_clase_del_dictamen(dos, 0, 0, 4)!r}")
+    o3 = parsear(DIP_CABECERA_DESPUES, "126-445.pdf")
+    check(o3.dictamenes[0].clase == "unico",
+          "la cabecera puede estar DESPUÉS del ancla cuando el documento cierra antes "
+          f"de abrir el cuerpo. Dio {o3.dictamenes[0].clase!r}")
+
+    print("y el control: la forma nueva NO pisa a una calificada (ADR-0017)")
+    o4 = parsear(SEN_MAYORIA_CON_EN_EL, "senado-2008-1168.pdf")
+    check(o4.dictamenes[0].clase == "mayoria",
+          "'Dictamen de mayoría EN el proyecto...' tiene que caer en la alternativa "
+          f"calificada, no en la genérica nueva. Dio {o4.dictamenes[0].clase!r}")
+
+    print("Diputados: la cabecera genérica sigue dando 'unico'")
+    check(od.dictamenes[0].clase == "unico",
+          f"'Dictamen de las comisiones' es único, dio {od.dictamenes[0].clase!r}")
 
     # ─────────────── falla ruidosa ───────────────
     print("un PDF escaneado (sin capa de texto)")

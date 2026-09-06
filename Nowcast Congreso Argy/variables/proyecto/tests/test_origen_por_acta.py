@@ -31,8 +31,10 @@ def _dfs():
         {"acta_id": "a3", "fecha": "2021-06-01", "titulo": "lo que sea", "expediente": "0100-D-2016"},
         # vía od: "O.D. 7" publicado antes de la fecha -> proyecto MENSAJE -> EJECUTIVO (Milei)
         {"acta_id": "a4", "fecha": "2024-04-30", "titulo": "O.D. 7 - LEY DE BASES", "expediente": None},
-        # vía titulo: match exacto normalizado -> autor PRO en era Milei -> OPOSICION... no:
-        # PRO no gobierna con Milei en linajes (LLA); PRO es OPOSICION segun GOBIERNOS
+        # vía titulo: match exacto normalizado -> autor PRO en era Milei.
+        # ⚠️ Este comentario decía "-> OPOSICION" y quedó viejo: el 2026-08-14 Valle
+        # separó ALIADOS de OPOSICION justamente para este caso. Con Milei el NÚCLEO es
+        # LLA y PRO es ALIADO (origen_lider.NUCLEO), no oposición. Ver abajo.
         {"acta_id": "a5", "fecha": "2024-08-01",
          "titulo": "REGIMEN ESPECIAL DE PROMOCION DE LA ECONOMIA DEL CONOCIMIENTO Y SUS BENEFICIOS",
          "expediente": None},
@@ -107,9 +109,15 @@ def main():
     chk(res.loc["a4", "origen"] == "EJECUTIVO" and res.loc["a4", "via"] == "od"
         and res.loc["a4", "proyecto_id"] == "H3",
         "vía od: O.D. 7 elige la publicación previa MÁS CERCANA (H3, no el O.D. 7 de 2016)")
+    # ⚠️ ESTE CHEQUEO ESTUVO ROJO Y EL QUE ESTABA MAL ERA EL TEST (revisado el 06-09-2026).
+    # Esperaba OPOSICION y el código da ALIADOS. El código tiene razón: el 2026-08-14
+    # Valle creó la categoría ALIADOS precisamente porque agrupar a PRO con la oposición
+    # daba señales absurdas bajo Milei (y agruparlo con el gobierno, también). El test
+    # quedó escrito contra el mundo de dos categorías, anterior a ese cambio.
     chk(res.loc["a5", "via"] == "titulo" and res.loc["a5", "proyecto_id"] == "H4"
-        and res.loc["a5", "origen"] == "OPOSICION",
-        "vía titulo: match exacto normalizado -> autor PRO en era Milei = OPOSICION")
+        and res.loc["a5", "origen"] == "ALIADOS",
+        "vía titulo: match exacto normalizado -> autor PRO en era Milei = ALIADOS "
+        "(núcleo LLA, aliado PRO), no OPOSICION")
     chk(res.loc["a6", "origen"] == "DESCONOCIDO" and res.loc["a6", "origen_lado"] is None,
         "sin vía -> DESCONOCIDO con lado None (no inventa)")
 

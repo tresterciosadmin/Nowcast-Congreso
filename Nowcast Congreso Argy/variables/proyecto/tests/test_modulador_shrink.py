@@ -46,12 +46,35 @@ check(M.encoger_desvio(None, 3, 0.20) == 0.20, "None debe caer al prior")
 check(M.encoger_desvio(pd.NA, 3, 0.20) == 0.20, "pd.NA debe caer al prior")
 
 # --- 2. El caso que motivó el fix: 2 de 2 no puede quedar en el tramo máximo -
+#
+# ⚠️ ESTE TEST ESTUVO ROJO Y EL QUE ESTABA MAL ERA EL TEST (revisado el 06-09-2026).
+# Pedía `tf[0.40]` y reventaba con KeyError. No es que el tramo >=0.40 se haya perdido:
+# `estimar_gamma_individual.TRAMOS_DOSIS` lo incluye, pero el estimador **saltea un
+# tramo con menos de 5.000 votos** y el >=0.40 no llega (el >=0.30 ya está en 11.454 con
+# 62 legisladores). O sea que la tabla oficial tiene cuatro bandas y la provisional
+# tiene cinco, y el test estaba escrito contra la provisional.
+#
+# Se reescribe contra el TRAMO MÁS ALTO QUE EXISTA, sea cual sea, para que no vuelva a
+# romperse cuando se re-estime la dose-response.
 tf = dict(M.TRAMOS_FONDO)
-check(M.gamma_fondo(1.0) == tf[0.40], "desvío 1,0 debe usar el tramo >=0.40 de la tabla")
+tope = max(tf)
+check(tope in (0.30, 0.40),
+      f"el tramo más alto de la tabla es {tope}: si bajó de 0.30, la dose-response se "
+      f"estimó con muchos menos datos y hay que mirarla antes de creerle")
+check(M.gamma_fondo(1.0) == tf[tope],
+      f"desvío 1,0 debe usar el tramo más alto de la tabla (>={tope})")
 enc_dv = M.encoger_desvio(1.0, 2, 0.04)               # ~0,314: cae al tramo intermedio
 check(0.30 <= enc_dv < 0.40, f"2 de 2 debe caer al tramo intermedio (dio {enc_dv:.3f})")
 check(M.gamma_fondo(enc_dv) == tf[0.30],
-      "el novato encogido usa el gamma del tramo 0.30, no del >=0.40")
+      "el novato encogido usa el gamma del tramo 0.30, no uno más alto")
+# y que la tabla venga del JSON oficial y no del provisional sin que nadie se entere
+check(M.FUENTE_TRAMOS in ("oficial(json)", "provisional"),
+      f"fuente de tramos inesperada: {M.FUENTE_TRAMOS!r}")
+if M.FUENTE_TRAMOS == "oficial(json)":
+    check(0.40 not in tf,
+          "si aparece el tramo >=0.40 en la tabla oficial es porque se re-estimó la "
+          "dose-response con más datos: buena noticia, pero revisá este test y el "
+          "corte de 5.000 votos de estimar_gamma_individual")
 
 # --- 3. Un veterano no se mueve de tramo ----------------------------------
 vet = M.encoger_desvio(0.45, 47, 0.04)

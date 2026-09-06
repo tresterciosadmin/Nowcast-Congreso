@@ -13,10 +13,29 @@
 
 - cuanto acierta la regla de bloque (~0,99 en direccion del voto individual)
 - contra que se compara un modelo nuevo
+- cuanto pierde el record individual en cada era, y cuanto lo arregla el guard
 
 <!-- Las dos cosas de arriba las levanta `.mapa/indexar.py` al MAPA.md de la
      raiz: el `Resumen:` va a la columna "Que es" y las pistas al router
      "Donde buscar que". Si cambia lo que hace el modulo, actualizalas aca. -->
+
+## El guard de era (URGENTE 9 / ADR-0018)
+
+`baseline_voto_individual.py --guard-era {off,corte,shrink}` cambia como se acumula el
+record individual: `off` es toda la historia (lo de siempre), `corte` lo reinicia en cada
+era —que es lo que el motor YA hace, con fecha fija— y `shrink` agrega Empirical-Bayes
+contra el record del linaje en la misma era.
+
+**OJO con lo que este harness es y no es.** `perfil()` se documenta como espejo exacto de
+`perfil_legislador`, y en el reparto de ramas lo es; en el **record** no lo era. El motor
+corta por era y condiciona por origen, este harness acumulaba toda la historia sin
+condicionar. Mediana de la diferencia 0,004, pero 12,2% por encima de 0,10 y peor caso
+0,73. Un espejo que no refleja produce numeros sobre un modelo que no existe.
+
+`src/medir_guard_era.py` es el **proxy** que mide los tres modos en 11 segundos aislando la
+rama del record (el baseline completo son ~1,5 min cada 150 actas). Sirve para la
+DIFERENCIA entre modos, no para el nivel absoluto. Tests en `tests/test_guard_era.py`, que
+verifican ademas los dos atajos de rendimiento contra la version lenta.
 
 ## Contrato
 - **Entradas:** datos/* (detalle)

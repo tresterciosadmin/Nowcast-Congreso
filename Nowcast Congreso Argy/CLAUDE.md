@@ -34,6 +34,29 @@ El hook `pre-commit` reindexa solo y avisa —sin bloquear— si algún README q
 Todo avance relevante (terminar algo, cambiar un contrato, tomar una decisión) **agrega una entrada a `coordinacion/ESTADO-DEL-PROYECTO.md`** en el mismo PR. Un PR que cambia código y no actualiza ESTADO no se mergea. Formato en ese archivo.
 
 
+
+## Regla de las COMISIONES: **siempre matchear contra el catálogo, nunca partir por separadores**
+
+Los nombres de comisión **contienen comas**: `FAMILIA, MUJER, NIÑEZ Y ADOLESCENCIA`,
+`PETICIONES, PODERES Y REGLAMENTO`, `INFRAESTRUCTURA, VIVIENDA Y TRANSPORTE`. Partir un
+campo de comisiones por `,` o `;` los destroza y el resultado no matchea con nada.
+
+**Siempre:** matchear contra el catálogo oficial (57 comisiones de Diputados, CKAN
+`comisiones`), **del nombre más largo al más corto**, consumiendo cada match. Es lo
+que hace `datos/expedientes/src/giros_iniciales.py` → `contar_en_texto()`.
+
+**El catálogo es estable** — las comisiones casi no cambian de nombre, así que se
+puede cachear.
+
+**Este error ya apareció TRES veces**, siempre con el mismo síntoma: un porcentaje
+imposible. (1) Los giros del TP: dio 82% de ampliación donde había 8%. (2) La
+cobertura de dictámenes: dio 61,2% donde era 88,6%, con `FAMILIA, MUJER, NIÑEZ Y
+ADOLESCENCIA` figurando como faltante **242 de 242 veces**. Un 100% no es un fenómeno
+político: es matching roto.
+
+**Y ojo con la otra trampa:** `expedientes_giros` acumula comisiones de las DOS
+cámaras. Filtrar por cámara antes de contar, o la cobertura da 2,1% en vez de 63,6%.
+
 ## Regla del MOTOR: **todo cambio se presenta en la fórmula** (ADR-0015)
 
 Motor = `modelo/ensemble`, `modelo/agregador_institucional`, `modelo/voto_individual`,
@@ -135,3 +158,17 @@ El estado vivo está, y sólo está, acá:
 | `TABLERO-CONTROL.html` + `tablero_datos.js` | mapa ejecutivo, KPIs e hitos |
 
 Lo único que no cambia y conviene tener presente al abrir el repo: **la Fase 0 está cerrada** y su resultado ordena todo lo demás — predecir la *dirección* del voto individual mirando al bloque acierta ≈0,99, así que ahí no hay negocio. La incertidumbre vive en **asistencia/quórum**, **embudo**, **posición de bloque** y las **10-20 bisagras** de las votaciones peleadas. El esquema canónico está en `docs/schemas` (schema_version=1) y la estrategia de datos en ADR-0002.
+
+### Regla del NUMERO DE OD
+
+`od_numero` **se repite entre períodos**: 1.722 números distintos para 2.517 pares
+`(periodo, od)`. Matchear una OD sólo por su número mezcla órdenes del día de años
+distintos. **La clave es siempre `(periodo, od_numero)`**, o directamente `archivo`
+(`126-76.pdf`), que ya la trae.
+
+### Regla del INSUMO FALTANTE
+
+Antes de declarar que falta un dato, **mirar el parquet, no la carpeta de trabajo**.
+Los cachés (`Archivos_Borrar/`, `data/raw/`) son descartables por diseño y estar vacíos
+no significa nada. El 03-09 esta confusión costó 90 minutos de descarga para reproducir
+un archivo idéntico.

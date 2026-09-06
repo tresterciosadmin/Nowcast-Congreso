@@ -59,11 +59,21 @@ def clave(nombre: str) -> str:
 
 
 def _fecha_iso(txt: str) -> str | None:
+    """dd-mm-YYYY -> YYYY-MM-DD. Si no hay fecha o no existe en el calendario, None.
+
+    Valida contra el calendario (URGENTE 7, 04-09-2026): un "31/02/2026" armado
+    a mano sale como "2026-02-31", y despues `pd.to_datetime(errors="coerce")`
+    lo convierte en `NaT` EN SILENCIO. En este repo ese es el modo de fallar mas
+    caro: no da error, da una columna vacia. `giros.py` ya lo hacia asi.
+    """
     m = _DATE.search(txt)
     if not m:
         return None  # "En el cargo" u otro texto
     d, mo, y = m.groups()
-    return f"{y}-{int(mo):02d}-{int(d):02d}"
+    try:
+        return date(int(y), int(mo), int(d)).isoformat()
+    except ValueError:
+        return None
 
 
 def parse_anexo(html: str, periodo: str) -> list[dict]:

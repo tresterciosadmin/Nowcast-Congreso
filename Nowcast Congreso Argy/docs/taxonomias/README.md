@@ -6,8 +6,7 @@
 
 ## Buscar acá si
 
-- que temas existen y como se llaman
-- agregar, renombrar o fusionar una taxonomia
+- que temas existen, como se llaman, y como se agrega, renombra o fusiona uno
 - el prompt con el que se clasifica un proyecto por titulo
 - un id de taxonomia duplicado o mal escrito (`loader.py` lo detecta)
 

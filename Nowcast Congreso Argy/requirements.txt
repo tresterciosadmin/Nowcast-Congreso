@@ -1,0 +1,29 @@
+# Dependencias de terceros del repo. NO habia ninguna lista hasta el 06-09-2026, y eso
+# costo 9,2 minutos de corrida: el PASO 6 de REGENERAR.ps1 murio con
+# `ModuleNotFoundError: No module named 'statsmodels'` DESPUES de procesar 1.556 actas,
+# porque el import esta adentro de `estimar()` y no arriba del archivo.
+#
+#     python -m pip install -r requirements.txt
+#
+# `python -m pip` y no `pip` a secas: en la maquina de Franco (Windows, 06-09-2026)
+# `pip` no esta en el PATH y `python` si, que es el mismo binario que usa REGENERAR.ps1.
+# Si `python -m pip` tampoco anda, falta el modulo:  python -m ensurepip --upgrade
+#
+# Sin version fijada a proposito: no hay entorno reproducible declarado en el repo y
+# fijar versiones acá sin uno seria dar una garantia que no existe. Lo que esta lista
+# resuelve es "que hay que tener instalado", que era lo que faltaba.
+#
+# Como se chequea rapido lo que falta:
+#     python verificar_dependencias.py
+
+pandas          # toda la capa de datos
+numpy           # simulacion y metricas
+pyarrow         # backend de parquet
+requests        # scrapers (CKAN, argentinadatos, senado.gob.ar, HCDN)
+tenacity        # reintentos de esos scrapers
+beautifulsoup4  # parseo del HTML del Senado y de HCDN
+openpyxl        # el Excel curado a mano (datos/manual_2026) y los export
+pypdf           # Ordenes del Dia: lectura primaria
+pdfminer.six    # Ordenes del Dia: respaldo cuando pypdf no saca texto
+statsmodels     # beta del dictamen, psi de arrastre, theta del sobre tablas
+scikit-learn    # SOLO variables/embudo (el test lo saltea si no esta)

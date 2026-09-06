@@ -30,6 +30,7 @@ import json
 import logging
 import os
 import re
+from datetime import date
 import sys
 import time
 from pathlib import Path
@@ -93,10 +94,20 @@ def _pedir(session: requests.Session, url: str) -> str:
 
 # ------------------------------------------------------------------- parsing
 def _fecha_iso(txt: str) -> Optional[str]:
+    """'14 DE MARZO DE 2026' -> '2026-03-14'. Si no parsea o no existe, None.
+
+    Valida contra el calendario (URGENTE 7, 04-09-2026): un "31/02/2026" armado
+    a mano sale como "2026-02-31", y despues `pd.to_datetime(errors="coerce")`
+    lo convierte en `NaT` EN SILENCIO. En este repo ese es el modo de fallar mas
+    caro: no da error, da una columna vacia. `giros.py` ya lo hacia asi.
+    """
     m = re.search(r"(\d{1,2})\s+DE\s+([A-ZÁÉÍÓÚÑ]+)\s+DE\s+(\d{4})", txt.upper())
     if not m or m.group(2) not in MESES:
         return None
-    return f"{m.group(3)}-{MESES[m.group(2)]:02d}-{int(m.group(1)):02d}"
+    try:
+        return date(int(m.group(3)), MESES[m.group(2)], int(m.group(1))).isoformat()
+    except ValueError:
+        return None
 
 
 def _limpiar(s: str) -> str:

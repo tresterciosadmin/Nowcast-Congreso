@@ -19,8 +19,7 @@
 
 - quien se desvia de su bloque, discolos, bisagras o pivotes
 - separar INDISCIPLINA de AUSENTISMO (son dos tasas distintas)
-- el indice de disciplina por legislador y por periodo
-- presidentes de camara excluidos del calculo
+- el indice de disciplina por legislador y por periodo; presidentes de camara excluidos
 - por que el desvio tiene piso (0,02) y no techo: ningun legislador llega a 1,0 (max observado 0,944)
 
 <!-- Las dos cosas de arriba las levanta `.mapa/indexar.py` al MAPA.md de la

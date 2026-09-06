@@ -12,8 +12,7 @@ largo del tiempo — y, sobre esa serie, un **proyector point-in-time** que arma
 
 ## Buscar acá si
 
-- que postura toma un bloque en un tema, o cuan cohesionado esta
-- un bloque que se parte (fractura, indice de Rice)
+- que postura toma un bloque en un tema, cuan cohesionado esta, o si se parte (fractura, indice de Rice)
 - linajes de bloque (peronismo federal, progresismo) y como se agrupan
 - proyectar la alineacion de bloques a una fecha (point-in-time)
 - OJO: su columna `periodo` es un ANIO legislativo, no el periodo de dos anios del resto del repo

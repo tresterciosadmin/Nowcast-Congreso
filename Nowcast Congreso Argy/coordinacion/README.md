@@ -7,14 +7,8 @@
 ## Buscar acá si
 
 - que hay que resolver antes de empezar a trabajar (`URGENTE.md`, siempre primero)
-- que se hizo y cuando (`ESTADO-DEL-PROYECTO.md`, entrada mas reciente arriba)
-- lo mismo contado sin tecnicismos (`EN-HUMANO.md`)
-- que modulo esta tomado y por quien (`TABLERO.md`)
-- por que se decidio algo (`DECISIONES/`, los ADR)
-- como ramificar y mergear sin conflictos (`PROTOCOLO-GIT.md`)
-- que hacer y en que orden, por modulo y fase (`PLAN-DE-TRABAJO.md`)
 - la FORMULA del numero abierta hasta la ultima variable (`FORMULA-COMPLETA.md`; se actualiza al tocar el motor, ADR-0015)
-- que supuestos tiene el motor y cuales estan mal (`REVISION-METODOLOGICA-2026-08-25.md`)
+- por que se decidio algo, y que se hizo cuando (`DECISIONES/` + `ESTADO-DEL-PROYECTO.md`; sin tecnicismos, `EN-HUMANO.md`)
 
 ## Que hay acá
 

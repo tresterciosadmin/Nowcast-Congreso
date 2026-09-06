@@ -11,9 +11,8 @@
 
 ## Buscar acá si
 
-- abrir las votaciones en Excel o consultarlas con SQL
+- abrir las votaciones en Excel o consultarlas con SQL; la columna `periodo`, `gobierno` o `desvio`
 - que significa una votacion 'disputada' (margen +-5% de los emitidos)
-- la columna `periodo`, `gobierno` o `desvio` de la base consultable
 - el export salio sin desvio (falta correr antes `disciplina.py`)
 
 <!-- Las dos cosas de arriba las levanta `.mapa/indexar.py` al MAPA.md de la

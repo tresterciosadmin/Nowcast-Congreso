@@ -51,6 +51,7 @@ import argparse
 import hashlib
 import json
 import logging
+import os
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -63,6 +64,39 @@ _HERE = Path(__file__).resolve()
 DATA = _HERE.parents[1] / "data"
 OUT = _HERE.parents[1] / "outputs"
 ESTADO = DATA / "estado_vigilancia.json"
+
+# ── UN ARCHIVO GENERADO, UN ESCRITOR (URGENTE 8bis, 04-09-2026) ──────────────
+# `data/estado_vigilancia.json` y `outputs/vigilancia_padron.md` estan
+# VERSIONADOS —y tienen que estarlo, porque el workflow necesita el estado para
+# comparar entre corridas—, pero hasta hoy los escribian DOS: el bot en Actions
+# (commits "padrón vivo: ..." los lunes) y cualquier corrida local. Cada lunes el
+# pull encontraba los dos lados modificados y se plantaba.
+#
+# Y ya hizo dano, no es hipotetico: el 25-08 un "Stash changes and continue" dejo
+# los marcadores de conflicto ESCRITOS ADENTRO de los dos archivos y asi se
+# commitearon (5aff5b0). `estado_vigilancia.json` dejo de ser JSON valido, y el
+# `except JSONDecodeError` de mas abajo lo trato como primera corrida: se perdio
+# `hash_visto_desde`, que es el campo que mide hace cuantos dias el raw no cambia
+# y dispara el aviso de dato rancio.
+#
+# Desde hoy: **el unico que escribe la ruta versionada es CI.** Una corrida local
+# escribe a `Archivos_Borrar/vigilancia_padron/` y lo dice. Se puede forzar con
+# `--escribir-versionado`, pero hay que escribirlo.
+SCRATCH = _HERE.parents[3] / "Archivos_Borrar" / "vigilancia_padron"
+
+
+def _en_ci() -> bool:
+    """GitHub Actions setea las dos; cualquiera alcanza."""
+    return any(os.environ.get(v, "").lower() in ("1", "true")
+               for v in ("CI", "GITHUB_ACTIONS"))
+
+
+def destinos(escribir_versionado: bool = False) -> tuple[Path, Path, bool]:
+    """(ruta del estado, ruta del reporte, es_la_versionada)."""
+    if _en_ci() or escribir_versionado:
+        return ESTADO, OUT / "vigilancia_padron.md", True
+    return (SCRATCH / "estado_vigilancia.json",
+            SCRATCH / "vigilancia_padron.md", False)
 
 # Bancas que DEBE tener cada cámara. Es la alarma más barata del proyecto:
 # cualquier desvío significa tramos solapados, un recambio mal cargado o una
@@ -339,9 +373,17 @@ def main(argv=None) -> int:
     ap.add_argument("--fecha", default=pd.Timestamp.today().strftime("%Y-%m-%d"))
     ap.add_argument("--dias-rancio", type=int, default=DIAS_RANCIO)
     ap.add_argument("--dry-run", action="store_true", help="no escribe estado ni reporte")
+    ap.add_argument("--escribir-versionado", action="store_true",
+                    help="escribe las rutas VERSIONADAS (data/estado_vigilancia.json y "
+                         "outputs/vigilancia_padron.md). Fuera de CI hay que pedirlo: "
+                         "esos archivos los escribe el workflow y una corrida local que "
+                         "los pise choca con el pull del lunes. Ver URGENTE 8bis.")
     a = ap.parse_args(argv)
+    ruta_estado, ruta_md, versionada = destinos(a.escribir_versionado)
 
     # el estado se lee ANTES: la antigüedad del raw se mide contra él
+    # SIEMPRE se LEE el estado versionado, escriba donde escriba: es el
+    # autoritativo, el que dice desde cuando no cambia el raw.
     previo = {}
     if ESTADO.exists():
         try:
@@ -359,8 +401,13 @@ def main(argv=None) -> int:
     md = a_markdown(reportes)
     print(md)
     if not a.dry_run:
-        OUT.mkdir(parents=True, exist_ok=True)
-        (OUT / "vigilancia_padron.md").write_text(md, encoding="utf-8")
+        if not versionada:
+            logger.info("corrida LOCAL: escribo a %s y NO toco las rutas versionadas "
+                        "(las escribe el workflow; ver URGENTE 8bis). Si de verdad "
+                        "las querías pisar, repetí con --escribir-versionado.",
+                        ruta_md.parent)
+        ruta_md.parent.mkdir(parents=True, exist_ok=True)
+        ruta_md.write_text(md, encoding="utf-8")
         ahora = datetime.now(timezone.utc).isoformat()
         estado = {}
         for r in reportes:
@@ -374,7 +421,9 @@ def main(argv=None) -> int:
                 "hash_visto_desde": (ant.get("hash_visto_desde")
                                      if h and ant.get("hash_raw") == h else ahora),
             }
-        ESTADO.write_text(json.dumps(estado, ensure_ascii=False, indent=2), encoding="utf-8")
+        ruta_estado.parent.mkdir(parents=True, exist_ok=True)
+        ruta_estado.write_text(json.dumps(estado, ensure_ascii=False, indent=2),
+                               encoding="utf-8")
 
     duras = [a_ for r in reportes for a_ in r["alarmas"] if a_["nivel"] == "DURA"]
     if duras:

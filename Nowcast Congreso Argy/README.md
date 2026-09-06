@@ -9,7 +9,6 @@ Sistema que estima la probabilidad de sanción de proyectos de ley en el Congres
 ## Buscar acá si
 
 - el tablero ejecutivo, los KPIs, los hitos o el estado de una pieza de la plataforma (`TABLERO-CONTROL.html`; se edita SOLO `tablero_datos.js`)
-- los paneles HTML de coyuntura o el informe bicameral (los generadores estan en `casos/`)
 - por donde empezar a leer el repo
 - que significa "periodo parlamentario", que mayoria exige un proyecto o cuantas bancas tiene una camara (`definiciones.py`)
 

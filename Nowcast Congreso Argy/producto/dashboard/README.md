@@ -16,9 +16,7 @@ en la raíz.
 ## Buscar acá si
 
 - los paneles y el tablero ejecutivo que se abren con doble clic (estan en la RAIZ, no aca; se edita solo `tablero_datos.js`)
-- de donde sale el numero: el mapa de la maquinaria del calculo (`MAPA-MODELO.html`)
-- que script transforma que dato, o que archivo implementa una etapa del calculo
-- que piezas del modelo estan parqueadas o son huecos conocidos, y de donde sale el estado de cada nodo
+- de donde sale el numero: el mapa de la maquinaria (`MAPA-MODELO.html`), que script transforma que dato y que piezas estan parqueadas
 - como se dibuja el circuito bicameral, y regenerar los datos de un panel sin tocar su HTML
 
 <!-- Las dos cosas de arriba las levanta `.mapa/indexar.py` al MAPA.md de la

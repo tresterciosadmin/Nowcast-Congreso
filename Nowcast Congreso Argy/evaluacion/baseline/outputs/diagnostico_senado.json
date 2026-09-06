@@ -1,0 +1,257 @@
+{
+ "senado": {
+  "global": {
+   "n": 42596,
+   "tasa_base": 0.8808,
+   "brier": 0.09568,
+   "skill": 0.0886,
+   "accuracy": 0.8801
+  },
+  "H1_calibracion": [
+   {
+    "bin": 0,
+    "n": 53,
+    "pred": 0.0697,
+    "real": 0.2075,
+    "gap": 0.1379
+   },
+   {
+    "bin": 1,
+    "n": 35,
+    "pred": 0.1309,
+    "real": 0.4571,
+    "gap": 0.3262
+   },
+   {
+    "bin": 2,
+    "n": 36,
+    "pred": 0.2465,
+    "real": 0.2222,
+    "gap": -0.0243
+   },
+   {
+    "bin": 3,
+    "n": 49,
+    "pred": 0.3611,
+    "real": 0.6122,
+    "gap": 0.2511
+   },
+   {
+    "bin": 4,
+    "n": 177,
+    "pred": 0.4532,
+    "real": 0.7119,
+    "gap": 0.2586
+   },
+   {
+    "bin": 5,
+    "n": 561,
+    "pred": 0.5604,
+    "real": 0.6524,
+    "gap": 0.0921
+   },
+   {
+    "bin": 6,
+    "n": 1904,
+    "pred": 0.6551,
+    "real": 0.7096,
+    "gap": 0.0545
+   },
+   {
+    "bin": 7,
+    "n": 8171,
+    "pred": 0.7555,
+    "real": 0.7654,
+    "gap": 0.0099
+   },
+   {
+    "bin": 8,
+    "n": 6848,
+    "pred": 0.85,
+    "real": 0.8284,
+    "gap": -0.0215
+   },
+   {
+    "bin": 9,
+    "n": 24762,
+    "pred": 0.9726,
+    "real": 0.9565,
+    "gap": -0.0161
+   }
+  ],
+  "H2_era": {
+   "hasta 2011": {
+    "n": 21465,
+    "tasa_base": 0.904,
+    "brier": 0.08034,
+    "skill": 0.074,
+    "accuracy": 0.9035
+   },
+   "2011-2015": {
+    "n": 6447,
+    "tasa_base": 0.8407,
+    "brier": 0.11342,
+    "skill": 0.1531,
+    "accuracy": 0.8381
+   },
+   "2015-2019": {
+    "n": 6947,
+    "tasa_base": 0.8776,
+    "brier": 0.10312,
+    "skill": 0.0397,
+    "accuracy": 0.8736
+   },
+   "2019-2023": {
+    "n": 4393,
+    "tasa_base": 0.9226,
+    "brier": 0.07631,
+    "skill": -0.0686,
+    "accuracy": 0.9224
+   },
+   "desde 2023": {
+    "n": 3344,
+    "tasa_base": 0.7608,
+    "brier": 0.16995,
+    "skill": 0.0662,
+    "accuracy": 0.7685
+   }
+  },
+  "H3_tamano_linaje": {
+   "1-2": {
+    "n": 1269,
+    "tasa_base": 0.7478,
+    "brier": 0.1757,
+    "skill": 0.0683,
+    "accuracy": 0.7431
+   },
+   "3-4": {
+    "n": 1237,
+    "tasa_base": 0.8432,
+    "brier": 0.1388,
+    "skill": -0.0497,
+    "accuracy": 0.8416
+   },
+   "5-9": {
+    "n": 7475,
+    "tasa_base": 0.8301,
+    "brier": 0.13833,
+    "skill": 0.0192,
+    "accuracy": 0.8254
+   },
+   "10-19": {
+    "n": 9705,
+    "tasa_base": 0.7926,
+    "brier": 0.15767,
+    "skill": 0.0409,
+    "accuracy": 0.7929
+   },
+   "20+": {
+    "n": 22910,
+    "tasa_base": 0.9441,
+    "brier": 0.04875,
+    "skill": 0.0759,
+    "accuracy": 0.9445
+   }
+  },
+  "H3_reparto_emisores": {
+   "media": 21.05,
+   "mediana": 21.0,
+   "pct_en_linaje_de_menos_de_3": 0.0298,
+   "linajes_distintos_por_acta": 4.96
+  },
+  "H4_desvio": {
+   "<=0,02 (piso)": {
+    "n": 29303,
+    "tasa_base": 0.8973,
+    "brier": 0.08276,
+    "skill": 0.1021,
+    "accuracy": 0.898
+   },
+   "0,02-0,05": {
+    "n": 1585,
+    "tasa_base": 0.8221,
+    "brier": 0.1463,
+    "skill": -0.0002,
+    "accuracy": 0.8221
+   },
+   "0,05-0,10": {
+    "n": 7769,
+    "tasa_base": 0.8712,
+    "brier": 0.10763,
+    "skill": 0.0411,
+    "accuracy": 0.867
+   },
+   "0,10-0,20": {
+    "n": 3857,
+    "tasa_base": 0.7991,
+    "brier": 0.14822,
+    "skill": 0.0769,
+    "accuracy": 0.7944
+   },
+   ">0,20": {
+    "n": 82,
+    "tasa_base": 0.8902,
+    "brier": 0.13309,
+    "skill": -0.362,
+    "accuracy": 0.8659
+   }
+  },
+  "H4_reparto_desvio": {
+   "media": 0.0321,
+   "pct_en_el_piso_0_02": 0.6879,
+   "p_extrema_pct": 0.4701,
+   "p_media": 0.8863
+  },
+  "fuente_direccion": {
+   "bloque": {
+    "n": 627,
+    "tasa_base": 0.8628,
+    "brier": 0.14768,
+    "skill": -0.2478,
+    "accuracy": 0.807
+   },
+   "record": {
+    "n": 41969,
+    "tasa_base": 0.8811,
+    "brier": 0.0949,
+    "skill": 0.0942,
+    "accuracy": 0.8812
+   }
+  },
+  "por_linaje": {
+   "FdT-UxP (kirchnerismo)": {
+    "n": 22128,
+    "tasa_base": 0.9395,
+    "brier": 0.05061,
+    "skill": 0.1092,
+    "accuracy": 0.9405
+   },
+   "OTRO / PROVINCIAL": {
+    "n": 7695,
+    "tasa_base": 0.8431,
+    "brier": 0.12347,
+    "skill": 0.0664,
+    "accuracy": 0.8428
+   },
+   "PERONISMO FEDERAL": {
+    "n": 2354,
+    "tasa_base": 0.8178,
+    "brier": 0.146,
+    "skill": 0.0204,
+    "accuracy": 0.8182
+   },
+   "RADICALISMO": {
+    "n": 7376,
+    "tasa_base": 0.7937,
+    "brier": 0.1634,
+    "skill": 0.0022,
+    "accuracy": 0.7919
+   }
+  },
+  "_avisos": {
+   "padron_cae_a_ventana": 289,
+   "sin_actas_condicionadas": 45,
+   "excluyo_aux": 102
+  }
+ }
+}

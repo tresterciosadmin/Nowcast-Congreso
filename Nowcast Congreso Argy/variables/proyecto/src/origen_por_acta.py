@@ -64,8 +64,11 @@ DEFAULT_EXP_CLEAN = _RAIZ / "datos" / "expedientes" / "data" / "clean"
 DEFAULT_LEG_DATA = _RAIZ / "variables" / "legislador" / "data"
 OUT_DEFAULT = _RAIZ / "variables" / "proyecto" / "data" / "origen_por_acta.parquet"
 
-# nombres de los gobiernos, ALINEADOS 1:1 con las ventanas de GOBIERNOS (origen_lider)
-GOBIERNO_NOMBRES = ("KIRCHNER", "MACRI", "AF", "MILEI")
+# Nombres de los gobiernos. SALEN DE `definiciones.py` (ADR-0014); eran la tercera copia
+# de la misma lista, con un comentario pidiendo alinearlos a mano con `origen_lider`.
+sys.path.insert(0, str(next(d for d in Path(__file__).resolve().parents
+                            if (d / "rutas.py").is_file())))
+from definiciones import GOBIERNO_NOMBRES  # noqa: E402,F401
 
 _RE_CODE = re.compile(r"(\d+)-([A-Z]+)-(\d{2,4})")
 # Formato EMBEBIDO en títulos del Senado viejo (semilla decada_votada): "PE-608/03",
@@ -81,14 +84,10 @@ def _ahora() -> str:
 
 
 def gobierno_por_fecha(fecha) -> str | None:
-    """KIRCHNER | MACRI | AF | MILEI según la fecha (ventanas de origen_lider)."""
-    f = pd.to_datetime(fecha, errors="coerce")
-    if pd.isna(f):
-        return None
-    for (desde, hasta, _ofi), nombre in zip(GOBIERNOS, GOBIERNO_NOMBRES):
-        if pd.Timestamp(desde) <= f < pd.Timestamp(hasta):
-            return nombre
-    return None
+    """KIRCHNER | MACRI | AF | MILEI según la fecha. Delega en `definiciones` (ADR-0014):
+    la ventana es la misma que corta `proyectar_postura` y el récord individual."""
+    from definiciones import gobierno_por_fecha as _g  # noqa: E402
+    return _g(fecha)
 
 
 def _norm_code(s) -> str | None:

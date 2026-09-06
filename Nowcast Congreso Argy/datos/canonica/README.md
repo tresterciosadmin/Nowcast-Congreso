@@ -18,10 +18,9 @@ decisión del 10-07).
 
 ## Buscar acá si
 
-- de donde sale un voto, un acta o un legislador (la tabla madre)
-- cuantos votos/actas hay en total, o desde/hasta que fecha llega la base
+- de donde sale un voto, un acta o un legislador (la tabla madre), y hasta que fecha llega
 - reconstruir la base de cero (`run_pipeline.py`, ~20 min con internet)
-- un legislador que aparece dos veces con nombres distintos (resolucion de entidades)
+- un legislador que aparece dos veces con nombres distintos (resolucion de entidades; el censo de duplicados esta en `outputs/`)
 - el hueco de Diputados 2020-23, o que fuente cubre que periodo
 
 <!-- Las dos cosas de arriba las levanta `.mapa/indexar.py` al MAPA.md de la

@@ -28,14 +28,17 @@ red de autorías (Módulos B/C del plan).
 
 ## Buscar acá si
 
-- que se presento en el Congreso y en que quedo
-- el enlace entre un acta de votacion y su expediente
 - giros iniciales a comision, dictamenes, o si un expediente llego a ley
+- el enlace acta -> expediente: la tabla es `acta_expediente_todas.parquet` (las DOS camaras, con `proyecto_id` resuelto); `acta_expediente.parquet` es el volcado crudo de CKAN y solo tiene Diputados
 - el backfill de CKAN, o por que HCDN publica con ~5 semanas de atraso
 - la ingesta trae menos/mas de lo esperado (`REFRESH=1`: por defecto usa CACHE)
 - QUIEN firmo un dictamen, si hubo disidencias y de que bloque es cada firma
 - como se arma la URL del PDF de una Orden del Dia de HCDN
-- los dictamenes del Senado (otra fuente, otro scraper: `ingesta_od_senado.py`)
+- los dictamenes del Senado (otra fuente y otro scraper: `ingesta_od_senado.py`), y por que casi no tiene mayoria/minoria: es real, no es el parser (ADR-0017), su desacuerdo va como DISIDENCIA
+- que significa `dictamen_clase = "desconocido"` (no se encontro el rotulo; NO es "despacho unico")
+- comparar comisiones: SIEMPRE matchear contra el catalogo (los nombres tienen comas; partir por separadores rompe)
+- `expedientes_giros` mezcla las DOS camaras: filtrar por camara antes de contar cobertura
+- cuantas ODs faltan bajar (2.523 de ley identificadas, 1.722 parseadas) y como reanudar `ingesta_od.py`
 
 <!-- Las dos cosas de arriba las levanta `.mapa/indexar.py` al MAPA.md de la
      raiz: el `Resumen:` va a la columna "Que es" y las pistas al router
@@ -115,7 +118,7 @@ sanción · `S-` origen Senado · `PE-` Ejecutivo · `OV-` oficiales varios.
 
 | Archivo (`data/clean/`) | Contenido | Clave |
 |---|---|---|
-| `acta_expediente_senado.parquet` | acta_id, camara, expediente, clave, prefijo, proyecto_id, metodo, es_cruce | acta_id |
+| `acta_expediente_todas.parquet` | acta_id, camara, expediente, clave, prefijo, proyecto_id, metodo, es_cruce, fecha, resultado, tipo_mayoria, titulo | acta_id |
 | `cadena_camaras.parquet` | un proyecto por fila con su votación en cada cámara: acta/fecha/resultado por cámara + `n_camaras` | proyecto_id |
 
 **Cobertura medida (08-08):** 1.337 de 2.241 actas con expediente (59,7%) —
@@ -244,14 +247,33 @@ impares— así que el período se deduce de la FECHA y nunca del número. `www3
 `dictamenes_firmas.parquet` — una fila por **(proyecto, cámara, dictamen, firmante)**:
 
     proyecto_id · camara · od_numero · od_publicacion · comisiones · expedientes_sumario
-    dictamen_orden · dictamen_clase (mayoria|minoria|unico) · fecha_sala
+    dictamen_orden · dictamen_clase (mayoria|minoria|unico|desconocido) · fecha_sala
     firmante_raw · orden_firma · primer_firmante · disidencia (none|parcial|total)
     dos_comisiones (el asterisco del PDF: integra las DOS comisiones que firman)
-    origen_firmas (ancla|sin_ancla)
+    origen_firmas (ancla|sin_ancla) · dictamenes_repetidos
     legislador_id · legislador · bloque · bloque_norm · bloque_linaje · metodo_match
     enlace (expediente|orden_del_dia) · fuente_url · parseo_ok · motivo
 
 `dictamenes_comisiones.parquet` — el índice **(proyecto, cámara, comisión, dictamen)**.
+
+> **Dos cambios de contrato del 04-09-2026 (ADR-0017).**
+>
+> - **`dictamen_clase` puede valer `"desconocido"`.** Antes, cuando el parser no
+>   encontraba la cabecera del dictamen, devolvía `"unico"` — o sea que convertía
+>   "no encontré el rótulo" en una afirmación sobre el documento. **`desconocido` es
+>   SIN DATO: no cuenta como despacho único.** Los consumidores del carácter
+>   (`estimar_beta_dictamen.py`, `baseline_voto_individual.py`) lo descartan antes de
+>   clasificar; `puerta_a.py` lo ignora solo, porque mira `hay_mayoria`/`hay_minoria`.
+> - **Columna nueva `dictamenes_repetidos`**: cuántos bloques de firmas se descartaron
+>   por ser el mismo dictamen impreso dos veces (misma fecha de sala, mismos firmantes).
+>   Viaja al parquet para que la deduplicación se pueda medir en vez de tener que
+>   confiar en ella.
+>
+> **Y una advertencia sobre el Senado, medida sobre 193 Órdenes del Día reales:** el
+> Senado **casi no publica dictámenes de mayoría (1,6%) ni de minoría (0%)**. No es un
+> hueco del parser: su desacuerdo se expresa como **disidencia dentro del dictamen
+> único**. Si vas a medir consenso en el Senado, mirá `disidencia`, no
+> `dictamen_clase`.
 
 **Son dos tablas y no una, a propósito.** Un dictamen conjunto de dos comisiones
 trae **una sola lista de firmas**: el PDF no dice cuál de las dos integra cada

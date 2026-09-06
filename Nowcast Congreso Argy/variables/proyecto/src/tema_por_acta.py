@@ -13,7 +13,9 @@ barato (Haiku, sin descargar PDFs) y directo. La corrida masiva de PDFs sigue su
 curso aparte en el bot; esto es el subconjunto que desbloquea el v2 HOY.
 
 CONSUME (contratos de otros módulos; no edita su código):
-  datos/expedientes/data/clean/acta_expediente.parquet  (acta_id, titulo, expediente, origen, anio)
+  datos/expedientes/data/clean/acta_expediente_todas.parquet  (acta_id, titulo, expediente, origen, anio)
+    ⚠️ la ANCHA (5.036 actas, las dos cámaras). La angosta `acta_expediente.parquet`
+    tiene 892 y sólo de ckan_diputados: leerla dejaba la cobertura en 24,6%.
   variables/proyecto/src/agente_taxonomias.clasificar_texto  (interfaz pública del agente)
 PRODUCE (contrato estable):
   variables/proyecto/data/tema_por_acta.parquet
@@ -41,7 +43,21 @@ import pandas as pd
 logger = logging.getLogger("proyecto.tema_por_acta")
 
 _RAIZ = Path(__file__).resolve().parents[3]
-DEFAULT_ACTA_EXP = _RAIZ / "datos" / "expedientes" / "data" / "clean" / "acta_expediente.parquet"
+# LA TABLA ANCHA, NO LA ANGOSTA (corregido el 2026-09-06).
+#
+# Esto leía `acta_expediente.parquet`, que tiene **892 actas únicas y son todas de
+# `ckan_diputados`**. Es exactamente el mismo cableado que trababa el β del Senado hasta
+# el ADR-0017: hay dos tablas de enlace acta↔expediente y ésta es la angosta.
+#
+#   acta_expediente.parquet          892 actas   sólo ckan_diputados
+#   acta_expediente_todas.parquet  5.036 actas   ckan + argentinadatos + senado + decada
+#
+# Consecuencia medida: la cobertura de tema es 24,6% (1.535 de 6.237 actas) y en URGENTE
+# 8 figuraba como el techo del récord por tema. **No es un techo: es la tabla equivocada.**
+# Con la tabla ancha el potencial es **84,1%** (5.247 actas), y quedan 3.712 títulos por
+# clasificar. Son títulos, no PDFs: es una corrida de Haiku, no un backfill.
+DEFAULT_ACTA_EXP = _RAIZ / "datos" / "expedientes" / "data" / "clean" / "acta_expediente_todas.parquet"
+ACTA_EXP_ANGOSTA = _RAIZ / "datos" / "expedientes" / "data" / "clean" / "acta_expediente.parquet"
 DEFAULT_ACTAS_CANON = _RAIZ / "datos" / "canonica" / "data" / "clean" / "actas_canonico.parquet"
 OUT_DEFAULT = _RAIZ / "variables" / "proyecto" / "data" / "tema_por_acta.parquet"
 

@@ -1,0 +1,87 @@
+{
+ "_que_es": "URGENTE 8 — medicion previa a implementar rec_i^tema (record del legislador CONDICIONADO al tema). No se implemento nada: se midio si el insumo alcanza. Fecha 2026-09-04.",
+ "_como_se_reproduce": "cruce de datos/canonica/data/clean/votos_resuelto.parquet + actas_canonico.parquet con variables/proyecto/data/tema_por_acta.parquet; n_prev con shift(1).expanding().count() por (legislador, tema), o sea walk-forward.",
+ "el_limite_que_manda": {
+  "actas_de_la_canonica": 6237,
+  "actas_con_tema_asignado": 1535,
+  "cobertura_taxonomia_pct": 24.6,
+  "filas_en_proyecto_taxonomias_de_proyectos_db": 0,
+  "lectura": "El cuello de botella NO es n_i^tema >= 8: es que solo el 24,6% de las actas tiene tema. `proyecto_taxonomias` en proyectos.db esta VACIA; el unico tema disponible sale de tema_por_acta.parquet, clasificado por TITULO de acta el 22-jul-2026 sobre 1.537 actas."
+ },
+ "walk_forward_DENTRO_de_las_actas_con_tema": {
+  "AREA (17 categorias)": {
+   "votos_evaluables": 259207,
+   "% de votos con n_tema_prev >= 5 (walk-forward)": 75.8,
+   "% de votos con n_tema_prev >= 8 (walk-forward)": 65.3,
+   "% de votos con n_tema_prev >= 15 (walk-forward)": 47.2,
+   "% de votos con n_GENERAL_prev >= 8 (referencia)": 96.5,
+   "n_tema_prev mediano": 13.0
+  },
+  "TEMA_ID (70 categorias)": {
+   "votos_evaluables": 259207,
+   "% de votos con n_tema_prev >= 5 (walk-forward)": 54.9,
+   "% de votos con n_tema_prev >= 8 (walk-forward)": 43.3,
+   "% de votos con n_tema_prev >= 15 (walk-forward)": 27.3,
+   "% de votos con n_GENERAL_prev >= 8 (referencia)": 96.5,
+   "n_tema_prev mediano": 6.0
+  },
+  "cobertura_taxonomia": {
+   "actas_canonica": 6237,
+   "actas_con_tema": 1535,
+   "%": 24.6,
+   "proyecto_taxonomias_en_proyectos_db": 0
+  }
+ },
+ "conteo_estatico_por_par_legislador_tema": {
+  "AREA (nivel 1)": {
+   "pares con n>=5": 10383,
+   "%% pares n>=5": 66.8,
+   "%% de votos cubiertos n>=5": 95.9,
+   "pares con n>=8": 8544,
+   "%% pares n>=8": 55.0,
+   "%% de votos cubiertos n>=8": 91.7,
+   "pares con n>=15": 5414,
+   "%% pares n>=15": 34.8,
+   "%% de votos cubiertos n>=15": 78.5,
+   "pares con n>=30": 2630,
+   "%% pares n>=30": 16.9,
+   "%% de votos cubiertos n>=30": 57.3,
+   "pares (legislador,tema)": 15546,
+   "categorias": 17,
+   "legisladores": 1180,
+   "mediana n por par": 9.0,
+   "legisladores con >=1 tema n>=8": 941
+  },
+  "TEMA_ID (nivel 2)": {
+   "pares con n>=5": 13554,
+   "%% pares n>=5": 33.7,
+   "%% de votos cubiertos n>=5": 81.0,
+   "pares con n>=8": 8677,
+   "%% pares n>=8": 21.6,
+   "%% de votos cubiertos n>=8": 70.0,
+   "pares con n>=15": 4276,
+   "%% pares n>=15": 10.6,
+   "%% de votos cubiertos n>=15": 52.0,
+   "pares con n>=30": 1829,
+   "%% pares n>=30": 4.6,
+   "%% de votos cubiertos n>=30": 33.1,
+   "pares (legislador,tema)": 40177,
+   "categorias": 70,
+   "legisladores": 1180,
+   "mediana n por par": 3.0,
+   "legisladores con >=1 tema n>=8": 929
+  }
+ },
+ "cobertura_efectiva_sobre_toda_la_base": {
+  "por_AREA_17_categorias_pct": 16.1,
+  "por_TEMA_ID_70_categorias_pct": 10.7,
+  "record_general_de_referencia_pct": 96.5
+ },
+ "conclusion": [
+  "NO ALCANZA. Con n_i^tema >= 8 y corte walk-forward, el record por tema hablaria del 16,1% de los votos por AREA y del 10,6% por TEMA_ID, contra 96,5% del record general.",
+  "El termino tiene que entrar ENCOGIDO contra el record general (Empirical-Bayes, k=5, el mismo esquema del share), no como reemplazo.",
+  "Y antes que el encogimiento hay que resolver la taxonomia: con 24,6% de actas clasificadas, ningun ajuste del umbral arregla el 75,4% que no tiene tema. Ese es el trabajo que desbloquea rho, no el umbral.",
+  "OJO con el precedente: el record general tiene Brier 0,435 en sobre tablas, peor que decir 0,50, porque esta calibrado para otra base. Un record tematico con n chico corre el mismo riesgo. Medir el Brier del termino antes de prenderlo, no despues.",
+  "NO se implemento rho (espera decision de Franco, y ademas el insumo no da)."
+ ]
+}

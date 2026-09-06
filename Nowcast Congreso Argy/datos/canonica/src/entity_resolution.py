@@ -133,6 +133,44 @@ def _name_key(nombre):
 def _leg_id(key):
     return "leg:" + hashlib.md5(key.encode()).hexdigest()[:12] if key else "leg:desconocido"
 
+
+# MERGE DE IDS DUPLICADOS (URGENTE C, aplicado el 06-09-2026 por decision de Franco).
+#
+# `_leg_id` hashea el CONJUNTO de palabras del nombre, asi que "ROSSI Agustin" y
+# "Rossi, Agustin Oscar" son dos personas para el sistema. El censo del 04-09 encontro
+# 153 pares; Franco reviso los 153 uno por uno y aprobo 145.
+#
+# **Por que un alias y NO cambiar `_name_key`:** tocar `_name_key` re-hashea TODOS los
+# ids del repo, incluidos los de quien no tiene ningun problema. El alias es un mapa
+# `id_viejo -> id_canonico` (canonico = el de mas votos, decision de Franco) que se
+# aplica al final y se puede leer, auditar y revertir.
+#
+# **Por que recien ahora.** Medido el 04-09, el merge SOLO EMPEORA: skill 0,1317 ->
+# 0,1301. La fragmentacion de ids venia funcionando como un GUARD DE ERA accidental —
+# la costura entre fuentes cae casi siempre en un recambio, asi que cada mitad de la
+# carrera tenia su propio record. Mergear sin el guard saca la muleta antes que la
+# pierna. Con el guard de era puesto (ADR-0018) el merge sale gratis: 0,1607 con y sin.
+#
+# **El test que decide, y el que NO.** SIRVE: si los dos ids votaron en la MISMA ACTA
+# son dos personas (de 155 candidatos descarto 2, Balestrini y Herrera, que son el
+# control). NO SIRVE: comparar los RANGOS (fecha minima..maxima) de cada id — una
+# carrera con hueco (diputado -> senador -> diputado) inventa un tramo continuo que se
+# traga el del otro id. Asi se excluyo mal a SNOPEK, y lo corrigio Franco.
+MERGE_IDS = os.environ.get("MERGE_IDS", "1") != "0"
+
+
+def _aplicar_alias(ids: pd.Series) -> tuple[pd.Series, int, int]:
+    """Reemplaza cada id por su canonico. Sin tabla, devuelve la serie intacta."""
+    import sys
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    from alias_legislador import cargar_alias  # type: ignore
+    alias = cargar_alias()
+    if not alias:
+        return ids, 0, 0
+    nuevos = ids.map(lambda x: alias.get(x, x))
+    filas = int((nuevos != ids).sum())
+    return nuevos, len(alias), filas
+
 def _bloque_norm(b):
     s = _strip(b)
     if s.startswith("COALICION CIVICA"):
@@ -166,8 +204,35 @@ def _bloque_norm(b):
 # coincidencia es coyuntural, el mismo error que se descarto al no fundir el FIT
 # con UxP. MOVIMIENTO POPULAR NEUQUINO (38,9%) y FRENTE POPULAR BONAERENSE
 # (54,7%) son provinciales y quedan bien donde estan.
+# SACADO el 2026-09-04 (URGENTE 4): `BLOQUE DE LOS TRABAJADORES`. Era una
+# alternativa LITERAL del patron, no un match accidental por la palabra
+# "trabajadores" —eso decia el diagnostico del 22-08 y estaba mal—, asi que la
+# excepcion correcta es sacarla, no agregarle un filtro por delante.
+#
+# En toda la canonica esa etiqueta la usa UNA sola persona: **Hector Ricardo
+# Daer** (CGT, peronista), 237 votos entre 2014-04-24 y 2017-11-23. Sus otros
+# bloques en la misma ventana son FRENTE RENOVADOR y UNIDOS POR UNA NUEVA
+# ARGENTINA, los dos massismo. Ninguna variante del FIT usa esa etiqueta aca.
+#
+# Y la evidencia lo confirma con el MISMO metodo con el que entro
+# AUTODETERMINACION Y LIBERTAD (coincidencia con el nucleo de cada linaje, sobre
+# las 89 actas con voto emitido de Daer bajo esa etiqueta):
+#
+#   PERONISMO FEDERAL             90,0%  (80 actas)
+#   FRENTE RENOVADOR (massismo)   88,9%  (63)
+#   OTRO / PROVINCIAL             86,5%  (89)
+#   PROGRESISMO                   86,1%  (79)
+#   FdT-UxP (kirchnerismo)        80,9%  (89)
+#   RADICALISMO                   78,8%  (85)
+#   IZQUIERDA                     78,6%  (70)   <- septimo de nueve
+#
+# AUTODETERMINACION Y LIBERTAD entro con 100,0%. Daer con 78,6% y por DEBAJO de
+# cinco linajes: no es izquierda. Sin esta alternativa la etiqueta cae al mapa
+# LINAJE, no esta ahi, y termina en OTRO / PROVINCIAL. **Mapearla a massismo es
+# una decision politica que espera a Franco**: 88,9% contra 90,0% de peronismo
+# federal esta demasiado parejo para decidirlo con el dato solo.
 _RE_IZQUIERDA = re.compile(
-    r"IZQUIERD|PARTIDO OBRERO|\bPTS\b|\bMST\b|BLOQUE DE LOS TRABAJADORES"
+    r"IZQUIERD|PARTIDO OBRERO|\bPTS\b|\bMST\b"
     r"|AUTODETERMINACION Y LIBERTAD|PROYECTO SUR", re.I)
 
 # Excepciones: "SOCIALISTA" a secas es el PS (progresismo), no el FIT. Solo entra
@@ -210,6 +275,17 @@ def main():
     v = v.merge(actas, on="acta_id", how="left")
     v["_key"] = v["legislador_nombre"].map(_name_key)
     v["legislador_id"] = v["_key"].map(_leg_id)
+    if MERGE_IDS:
+        antes = v["legislador_id"].nunique()
+        v["legislador_id"], n_alias, n_filas = _aplicar_alias(v["legislador_id"])
+        if n_alias:
+            print(f"merge de ids: {n_alias} alias aplicados -> {n_filas} filas de voto "
+                  f"reasignadas; ids distintos {antes} -> {v['legislador_id'].nunique()}")
+        else:
+            print("merge de ids: NO hay tabla de alias (datos/canonica/data/"
+                  "alias_legislador_id.csv); los ids quedan como estan")
+    else:
+        print("merge de ids: APAGADO (MERGE_IDS=0)")
     v["bloque_norm"] = v["bloque"].map(_bloque_norm)
     v["bloque_linaje"] = _linaje_vec(v["bloque_norm"], v["fecha"])
     # coalicion = linaje, salvo el núcleo JxC dentro de su ventana temporal

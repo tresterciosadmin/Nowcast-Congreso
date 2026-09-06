@@ -36,6 +36,7 @@ Módulo: modelo/ensemble · creado 2026-08-22 (Tarea 1 — una sola formulación
 from __future__ import annotations
 
 import logging
+import os
 import sys
 from pathlib import Path
 
@@ -71,9 +72,61 @@ PRESENCIA_MINIMA = 0.15
 # El desvío es CAMBIO DE DIRECCIÓN, no ausencia. La ausencia va por `p_presente`.
 # Ver a_linea_y_desvio: con el reparto por defecto se inventaban ausencias en masa.
 REPARTO_DESVIO = 1.0
-# Historia mínima para creerle al récord individual (que se muestra como CONTEXTO,
-# no como el cálculo) antes de caer al promedio de su bloque.
-MIN_HIST_INDIVIDUAL = 8
+# Historia mínima para usar el récord individual antes de caer al promedio del bloque.
+#
+# ERA 8 HASTA EL 06-09-2026. Bajó a 1 (decisión de Franco) porque el ENCOGIMIENTO lo dejó
+# sin trabajo. El umbral existía como única protección contra creerle a un récord de tres
+# votos, y era binaria: o le creías entero o lo tirabas. Con Empirical-Bayes esa protección
+# es continua — con n=1 el récord queda en 5/6 del share de su bloque, que es exactamente
+# lo que el umbral quería conseguir, pero sin el escalón.
+#
+# Y medido sobre 741.275 votos, el umbral además COSTABA, de forma monótona:
+#
+#     n>=1   skill 0,1702   rama bloque 0,38%   desde 2023 0,0726
+#     n>=8   skill 0,1665   rama bloque 3,00%   desde 2023 0,0616   <- lo que era
+#     n>=40  skill 0,1502   rama bloque 13,22%  desde 2023 0,0109
+#
+# El baseline COMPLETO explica por qué: la rama de bloque tiene skill NEGATIVO (-0,10 sobre
+# 19.923 votos). Mandar gente ahí no es un refugio conservador, es empeorarla.
+#
+# No se borra la constante: `evaluacion/baseline` y los tests la consumen como contrato, y
+# con 1 sigue haciendo lo único que hay que hacer — sin NINGÚN voto previo en la era no hay
+# récord que encoger, y ése sí cae al bloque.
+MIN_HIST_INDIVIDUAL = 1
+MIN_HIST_ANTERIOR = 8   # para el A/B; ver §II.5 de FORMULA-COMPLETA.md
+# GUARD DE ERA — bandera APAGADA por defecto (URGENTE 9).
+#
+# El récord individual ya se corta por era, pero con una FECHA FIJA: 2023-12-10. Para
+# cualquier nowcast del gobierno vigente eso es exactamente la era correcta, así que
+# la bandera NO mueve el número publicado (medido: idéntico al 06-09-2026). Lo que
+# arregla es lo de atrás: fechado en 2018 o en 2022, el filtro `fecha >= 2023-12-10`
+# combinado con `fecha <= hasta` deja el conjunto VACÍO y los ~478 legisladores caen
+# todos a la rama de bloque. Medido el 06-09:
+#
+#   nowcast al 2026-06-01 (MILEI)     -> 478 legisladores con récord propio
+#   nowcast al 2022-06-01 (AF)        ->   0
+#   nowcast al 2018-06-01 (MACRI)     ->   0
+#   nowcast al 2013-06-01 (KIRCHNER)  ->   0
+#
+# O sea que el motor **no se puede backtestear fuera de la era vigente**: en cualquier
+# fecha anterior mide otra cosa. Avisa por log, que en una corrida de backtest no lo
+# lee nadie. Con la bandera prendida, la era se DEDUCE de la fecha del nowcast.
+# 06-09-2026: PRENDIDO POR DEFECTO (decisión de Franco). Se apaga con GUARD_ERA=0.
+# No mueve el número publicado: para el gobierno vigente la era deducida ES 2023-12-10,
+# verificado sobre los 478 legisladores del nowcast al 2026-06-01.
+GUARD_ERA = os.environ.get("GUARD_ERA", "1") != "0"
+# La fecha fija que se usaba antes (y se sigue usando con la bandera apagada).
+ERA_FIJA = "2023-12-10"
+# ENCOGER, NO CORTAR (URGENTE 9, ADR-0018). Cortar por era deja a mucha gente con poca
+# historia; en vez de tirarla, el récord se encoge hacia el share de su linaje con el
+# MISMO Empirical-Bayes y el MISMO k=5 con que `proyectar_postura` encoge el share:
+#
+#     rec_encogido = (n·rec + k·share_linaje) / (n + k)
+#
+# Con n grande no cambia nada; con n chico se apoya en el bloque. Medido sobre 741.275
+# votos: le gana a cortar en las CINCO eras (skill 0,1680 contra 0,1643).
+K_SHRINK_RECORD = 5.0
+SHRINK_RECORD = os.environ.get("SHRINK_RECORD", "1") != "0"
 
 
 def _bloque():
@@ -85,8 +138,27 @@ def _bloque():
     return cargar, proyectar_postura, cargar_tema_por_acta
 
 
+def era_de(fecha) -> str:
+    """Inicio de la era (gobierno) que contiene `fecha`, como 'AAAA-MM-DD'.
+
+    **No se reimplementa el calendario acá.** Sale de `definiciones.py` (ADR-0014), que
+    es de donde salen también `variables/bloque` —el corte que hace `proyectar_postura`
+    desde el 22-07— y `origen_lider`. Que el récord individual y la postura de bloque
+    usen DOS calendarios distintos sería exactamente el bug que esto viene a cerrar; y
+    ese cuarto consumidor es el que obligó a unificar las tres copias que había.
+
+    OJO: `variables/proyecto/src/icg_contexto.py::GOBIERNOS` se parece y NO es esto —
+    son mandatos presidenciales a resolución mensual (nueve ventanas, arranca en De la
+    Rúa, parte CFK en I y II, cierra con el día anterior al recambio). Ver el comentario
+    en `definiciones.GOBIERNOS`.
+    """
+    from definiciones import era_de as _e  # noqa: E402
+    return _e(fecha)
+
+
 def alineacion_individual(votos, origen_map: dict, origen: str | None,
-                          era_desde: str = "2023-12-10", hasta=None) -> dict:
+                          era_desde: str | None = None, hasta=None,
+                          guard_era: bool | None = None) -> dict:
     """P(afirmativo) de CADA legislador sobre su PROPIO récord.
 
     Condicionada por el ORIGEN del proyecto cuando se pasa `origen` (el motor que
@@ -100,6 +172,13 @@ def alineacion_individual(votos, origen_map: dict, origen: str | None,
 
     Devuelve {(camara, legislador_id): (p_afirmativo, n_votos, presencia)}.
     """
+    # ERA. Con la bandera apagada, la fecha fija de siempre (2023-12-10): el número
+    # publicado no se mueve. Con la bandera prendida, la era se deduce de la fecha del
+    # nowcast, que es lo mismo para el gobierno vigente y lo correcto para atrás.
+    # Un `era_desde` explícito manda sobre las dos cosas (lo usan los tests).
+    if era_desde is None:
+        guard = GUARD_ERA if guard_era is None else guard_era
+        era_desde = era_de(hasta) if (guard and hasta is not None) else ERA_FIJA
     d = votos[votos["fecha"] >= pd.Timestamp(era_desde)].copy()
     # WALK-FORWARD. Sin este corte el récord mira el futuro: medido el 22-08, un
     # nowcast fechado 2024-06-01 usaba el 85% de sus votos de DESPUÉS de esa fecha.
@@ -111,8 +190,11 @@ def alineacion_individual(votos, origen_map: dict, origen: str | None,
         d["_ori"] = d["acta_id"].map(origen_map)
         d = d[d["_ori"] == origen]
     if d.empty:
-        logger.warning("sin votos para el período/origen pedido: todos van al "
-                       "fallback de bloque")
+        logger.warning("sin votos entre %s y %s para origen=%s: los %d legisladores van "
+                       "TODOS al fallback de bloque. Si la fecha del nowcast es anterior "
+                       "a la era fija (%s), es el bug de URGENTE 9: probá GUARD_ERA=1.",
+                       era_desde, hasta, origen,
+                       int(votos["legislador_id"].nunique()), ERA_FIJA)
         return {}
     V = d["conducta"].astype(str).str.upper().str[:2]
     d["_af"] = V.eq("AF")
@@ -135,7 +217,7 @@ def alineacion_individual(votos, origen_map: dict, origen: str | None,
 
 def perfil_legislador(share_linaje: float, desvio: float, record=None,
                       n_emitidos: int = 0, presencia: float = 1.0,
-                      min_hist: int = None) -> dict:
+                      min_hist: int = None, shrink: bool | None = None) -> dict:
     """Cómo se espera que vote esta persona. Devuelve p_afirma_si_vota y p_presente.
 
     DOS ARREGLOS respecto de cómo se calculaba hasta el 22-08-2026:
@@ -161,14 +243,26 @@ def perfil_legislador(share_linaje: float, desvio: float, record=None,
        De la Sota (Defendamos Córdoba, dentro de OTRO/PROVINCIAL) tenía desvío 0,000 y
        línea AFIRMATIVO, o sea **P = 1,00**, con un récord propio de 0,17.
 
+    3. **El récord se ENCOGE hacia el bloque** (06-09-2026, ADR-0018). Al cortar el
+       récord por era queda mucha gente con poca historia, y un récord de 9 votos no
+       vale lo que uno de 900. En vez de elegir entre creerle del todo o tirarlo, se
+       encoge con Empirical-Bayes contra el share de su linaje, con el mismo $k=5$ que
+       usa `proyectar_postura`. Se apaga con `SHRINK_RECORD=0`.
+
     `presencia` sale aparte y va como `p_presente` al agregador: faltar no es votar en
     contra, es no votar.
     """
     min_hist = MIN_HIST_INDIVIDUAL if min_hist is None else min_hist
+    encoger = SHRINK_RECORD if shrink is None else shrink
     d = float(min(max(desvio, 0.0), 1.0))
     share = float(min(max(share_linaje, 0.0), 1.0))
     if record is not None and n_emitidos >= min_hist:
-        p, fuente = float(min(max(record, 0.0), 1.0)), "record_individual"
+        p = float(min(max(record, 0.0), 1.0))
+        fuente = "record_individual"
+        if encoger:
+            n = float(max(n_emitidos, 0))
+            p = (n * p + K_SHRINK_RECORD * share) / (n + K_SHRINK_RECORD)
+            fuente = "record_individual_encogido"
     else:
         p, fuente = share * (1.0 - d) + (1.0 - share) * (d / 2.0), "bloque"
     return {"p_afirma_si_vota": float(p), "p_presente": float(min(max(presencia, 0.0), 1.0)),
@@ -299,7 +393,13 @@ def _tablero_camara(camara: str, fecha, perfiles: list[dict], sim: dict,
     a_negociar = [x for x in orden if x["postura"] == "incognita"] or orden
     return {
         "camara": camara, "fecha": str(pd.to_datetime(fecha).date()),
-        "bancas": n, "umbral_mayoria_simple": n // 2 + 1,
+        # `n // 2 + 1` es la mayoria ABSOLUTA (129 sobre 257), no la simple. Se
+        # llamaba `umbral_mayoria_simple` y por eso el panel calculaba el margen
+        # contra el numero equivocado: la barra se dibujaba contra
+        # `umbral_simulado` (la mitad de los que efectivamente votan) y el margen
+        # contra este. Renombrado el 04-09-2026 — URGENTE 6. El valor NO cambia:
+        # cambia el nombre, que era el que mentia.
+        "bancas": n, "umbral_mayoria_absoluta": n // 2 + 1,
         # Los afirmativos esperados salen de la MISMA simulación que la probabilidad.
         "afirmativos_esperados": round(float(sim["afirm_medio"]), 1),
         "afirmativos_banda_5_95": [round(float(sim["afirm_p5"]), 1),
@@ -433,7 +533,8 @@ def imprimir(nc: dict) -> None:
         c = nc["camaras"][cual]
         k = c["conteo"]
         b95 = c["afirmativos_banda_5_95"]
-        print(f"\n  {cual.upper()} ({c['camara']}): {c['bancas']} bancas, umbral {c['umbral_mayoria_simple']}"
+        print(f"\n  {cual.upper()} ({c['camara']}): {c['bancas']} bancas, umbral "
+              f"{c['umbral_simulado']} (mayoria absoluta {c['umbral_mayoria_absoluta']})"
               f" | afirmativos esperados {c['afirmativos_esperados']} "
               f"(banda {b95[0]}-{b95[1]})")
         print(f"    acompañan {k['acompana']} · no acompañan {k['no_acompana']} · "

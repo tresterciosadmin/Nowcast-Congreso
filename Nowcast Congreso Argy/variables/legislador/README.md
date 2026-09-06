@@ -13,8 +13,7 @@
 
 ## Buscar acá si
 
-- el historial completo de un diputado o senador
-- por que bloques paso un legislador
+- el historial completo de un diputado o senador, y por que bloques paso
 - presentismo o perfil de voto individual
 - armar el Mapa de Influencia o fichas para el producto
 

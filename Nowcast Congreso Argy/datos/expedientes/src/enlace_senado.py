@@ -26,7 +26,7 @@ QUÉ SIGNIFICA CADA PREFIJO (numeración del Senado)
     OV-  oficiales varios / particulares
 
 CONTRATO DE SALIDA  (datos/expedientes/data/clean/)
-    acta_expediente_senado.parquet
+    acta_expediente_todas.parquet
         acta_id       id canónico del acta
         camara        'senado' | 'diputados'
         expediente    lo que traía el acta, tal cual
@@ -68,8 +68,16 @@ from typing import Optional
 
 import pandas as pd
 
+# stream=sys.stdout NO es cosmetico. Era el UNICO script del pipeline que logueaba a
+# stderr, y con eso volteo la corrida del 05-09: REGENERAR.ps1 corre
+# `python ... 2>&1 | Tee-Object` con $ErrorActionPreference="Stop", y PowerShell 5.1
+# convierte cada linea de stderr de un comando nativo en un ErrorRecord terminante. O
+# sea que un INFO ("campo vs titulo: coinciden 246/249") abortaba el paso 5 de 8 con
+# NativeCommandError, sin que nada hubiera fallado. El script tambien se arreglo, pero
+# esto es lo que lo hace consistente con el resto del repo.
 logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s %(levelname)s enlace_senado: %(message)s"
+    level=logging.INFO, stream=sys.stdout,
+    format="%(asctime)s %(levelname)s enlace_senado: %(message)s"
 )
 logger = logging.getLogger(__name__)
 
@@ -562,7 +570,13 @@ def main(argv: Optional[list[str]] = None) -> int:
         return 0
 
     args.out.mkdir(parents=True, exist_ok=True)
-    p1 = args.out / "acta_expediente_senado.parquet"
+    # RENOMBRADA el 04-09-2026 (ADR-0017). Se llamaba `acta_expediente_senado`
+    # y tiene las DOS cámaras: 2.745 actas del Senado y 2.285 de Diputados. El
+    # nombre decía "senado" y por eso nadie del lado del modelo la miraba,
+    # mientras `acta_expediente.parquet` —que es sólo Diputados y sin
+    # `proyecto_id` resuelto— se usaba para las dos. Un nombre que miente sobre
+    # el alcance de una tabla cuesta lo mismo que un bug.
+    p1 = args.out / "acta_expediente_todas.parquet"
     p2 = args.out / "cadena_camaras.parquet"
     enlace.to_parquet(p1, index=False)
     cadena.to_parquet(p2, index=False)

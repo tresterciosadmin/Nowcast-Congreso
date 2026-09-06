@@ -1,35 +1,59 @@
-﻿nombre,camara,bloque,desde,hasta,periodo,confianza,fuente,nota
-BORNORONI GABRIEL,diputados,LA LIBERTAD AVANZA,2026-07-30,,snapshot-2026-07-30,ALTA,hcdn.gob.ar/diputados-por-bloque (oficial),95 bancas al 2026-07-30
-MARTÍNEZ GERMÁN PEDRO,diputados,UNIÓN POR LA PATRIA,2026-07-30,,snapshot-2026-07-30,ALTA,hcdn.gob.ar/diputados-por-bloque (oficial),93 bancas al 2026-07-30
-SCAGLIA GISELA,diputados,PROVINCIAS UNIDAS,2026-07-30,,snapshot-2026-07-30,ALTA,hcdn.gob.ar/diputados-por-bloque (oficial),18 bancas al 2026-07-30
-RITONDO CRISTIAN A.,diputados,PRO,2026-07-30,,snapshot-2026-07-30,ALTA,hcdn.gob.ar/diputados-por-bloque (oficial),12 bancas al 2026-07-30
-ARRÚA ALBERTO,diputados,INNOVACIÓN FEDERAL,2026-07-30,,snapshot-2026-07-30,ALTA,hcdn.gob.ar/diputados-por-bloque (oficial),9 bancas al 2026-07-30
-VERASAY PAMELA FERNANDA,diputados,UCR - UNIÓN CÍVICA RADICAL,2026-07-30,,snapshot-2026-07-30,ALTA,hcdn.gob.ar/diputados-por-bloque (oficial),6 bancas al 2026-07-30
-NÓBLEGA SEBASTIÁN,diputados,ELIJO CATAMARCA,2026-07-30,,snapshot-2026-07-30,ALTA,hcdn.gob.ar/diputados-por-bloque (oficial),3 bancas al 2026-07-30
-MEDINA GLADYS,diputados,INDEPENDENCIA,2026-07-30,,snapshot-2026-07-30,ALTA,hcdn.gob.ar/diputados-por-bloque (oficial),3 bancas al 2026-07-30
-FERRARO MAXIMILIANO,diputados,COALICION CIVICA,2026-07-30,,snapshot-2026-07-30,ALTA,hcdn.gob.ar/diputados-por-bloque (oficial),2 bancas al 2026-07-30
-PICHETTO MIGUEL ÁNGEL,diputados,ENCUENTRO FEDERAL,2026-07-30,,snapshot-2026-07-30,ALTA,hcdn.gob.ar/diputados-por-bloque (oficial),2 bancas al 2026-07-30
-ZAGO OSCAR,diputados,MID - MOVIMIENTO DE INTEGRACIÓN Y DESARROLLO,2026-07-30,,snapshot-2026-07-30,ALTA,hcdn.gob.ar/diputados-por-bloque (oficial),2 bancas al 2026-07-30
-DEL PLÁ ROMINA,diputados,PARTIDO OBRERO EN EL FRENTE DE IZQUIERDA Y DE TRABAJADORES-UNIDAD,2026-07-30,,snapshot-2026-07-30,ALTA,hcdn.gob.ar/diputados-por-bloque (oficial),2 bancas al 2026-07-30
-PICÓN MARTÍNEZ NANCY VIVIANA,diputados,PRODUCCION Y TRABAJO,2026-07-30,,snapshot-2026-07-30,ALTA,hcdn.gob.ar/diputados-por-bloque (oficial),2 bancas al 2026-07-30
-BREGMAN MYRIAM,diputados,PTS-FRENTE DE IZQUIERDA Y DE TRABAJADORES UNIDAD,2026-07-30,,snapshot-2026-07-30,ALTA,hcdn.gob.ar/diputados-por-bloque (oficial),2 bancas al 2026-07-30
-BANFI KARINA,diputados,ADELANTE BUENOS AIRES,2026-07-30,,snapshot-2026-07-30,ALTA,hcdn.gob.ar/diputados-por-bloque (oficial),1 bancas al 2026-07-30
-PAGANO MARCELA MARINA,diputados,COHERENCIA,2026-07-30,,snapshot-2026-07-30,ALTA,hcdn.gob.ar/diputados-por-bloque (oficial),1 bancas al 2026-07-30
-DE LA SOTA NATALIA,diputados,DEFENDAMOS CÓRDOBA,2026-07-30,,snapshot-2026-07-30,ALTA,hcdn.gob.ar/diputados-por-bloque (oficial),1 bancas al 2026-07-30
-MAUREIRA KARINA,diputados,LA NEUQUINIDAD,2026-07-30,,snapshot-2026-07-30,ALTA,hcdn.gob.ar/diputados-por-bloque (oficial),1 bancas al 2026-07-30
-GARRIDO JOSÉ LUIS,diputados,POR SANTA CRUZ,2026-07-30,,snapshot-2026-07-30,ALTA,hcdn.gob.ar/diputados-por-bloque (oficial),1 bancas al 2026-07-30
-FERNÁNDEZ JORGE,diputados,PRIMERO SAN LUIS,2026-07-30,,snapshot-2026-07-30,ALTA,hcdn.gob.ar/diputados-por-bloque (oficial),1 bancas al 2026-07-30
-MARÍA CAROLINA MOISES,senado,CONVICCIÓN FEDERAL,2026-07-30,,snapshot-2026-07-30,ALTA,senado.gob.ar/agrupados-por-bloques (oficial),3 bancas al 2026-07-30
-EDITH ELIZABETH TERENZI,senado,DESPIERTA CHUBUT,2026-07-30,,snapshot-2026-07-30,ALTA,senado.gob.ar/agrupados-por-bloques (oficial),1 bancas al 2026-07-30
-CARLOS OMAR ARCE,senado,ENCUENTRO MISIONERO,2026-07-30,,snapshot-2026-07-30,ALTA,senado.gob.ar/agrupados-por-bloques (oficial),2 bancas al 2026-07-30
-GERARDO ZAMORA,senado,FRENTE CÍVICO POR SANTIAGO,2026-07-30,,snapshot-2026-07-30,ALTA,senado.gob.ar/agrupados-por-bloques (oficial),2 bancas al 2026-07-30
-ENRIQUE MARTÍN GOERLING LARA,senado,FRENTE PRO,2026-07-30,,snapshot-2026-07-30,ALTA,senado.gob.ar/agrupados-por-bloques (oficial),3 bancas al 2026-07-30
-BEATRIZ LUISA AVILA,senado,INDEPENDENCIA,2026-07-30,,snapshot-2026-07-30,ALTA,senado.gob.ar/agrupados-por-bloques (oficial),1 bancas al 2026-07-30
-FERNANDO ALDO SALINO,senado,JUSTICIA SOCIAL FEDERAL,2026-07-30,,snapshot-2026-07-30,ALTA,senado.gob.ar/agrupados-por-bloques (oficial),2 bancas al 2026-07-30
-JOSÉ MIGUEL ÁNGEL MAYANS,senado,JUSTICIALISTA,2026-07-30,,snapshot-2026-07-30,ALTA,senado.gob.ar/agrupados-por-bloques (oficial),21 bancas al 2026-07-30
-PATRICIA BULLRICH,senado,LA LIBERTAD AVANZA,2026-07-30,,snapshot-2026-07-30,ALTA,senado.gob.ar/agrupados-por-bloques (oficial),21 bancas al 2026-07-30
-JULIETA CORROZA,senado,LA NEUQUINIDAD,2026-07-30,,snapshot-2026-07-30,ALTA,senado.gob.ar/agrupados-por-bloques (oficial),1 bancas al 2026-07-30
-JOSÉ MARÍA CARAMBIA,senado,MOVERE SANTA CRUZ,2026-07-30,,snapshot-2026-07-30,ALTA,senado.gob.ar/agrupados-por-bloques (oficial),2 bancas al 2026-07-30
-FLAVIA GABRIELA ROYON,senado,PRIMERO LOS SALTEÑOS,2026-07-30,,snapshot-2026-07-30,ALTA,senado.gob.ar/agrupados-por-bloques (oficial),1 bancas al 2026-07-30
-CARLOS MAURICIO ESPÍNOLA,senado,PROVINCIAS UNIDAS,2026-07-30,,snapshot-2026-07-30,ALTA,senado.gob.ar/agrupados-por-bloques (oficial),2 bancas al 2026-07-30
-EDUARDO ALEJANDRO VISCHI,senado,UCR - UNIÓN CÍVICA RADICAL,2026-07-30,,snapshot-2026-07-30,ALTA,senado.gob.ar/agrupados-por-bloques (oficial),10 bancas al 2026-07-30
+# COLUMNA `legislador_id` (agregada 2026-09-04, URGENTE 10 / ADR-0017)
+#   El cruce por NOMBRE resolvia 50 de 80 jefes, y beta_2 quedaba atenuado por
+#   error de medicion: con 21/80 daba +0,039 (p=0,88); con 50/80, +0,645
+#   (p=0,0002). No cambio el efecto: bajo el ruido. Por eso el id va EXPLICITO y
+#   deja de depender del matcheo laxo APELLIDO|PRIMER-NOMBRE.
+#   Los ids salen de `datos/canonica` (votos_resuelto + actas_canonico), cruzando
+#   apellido + nombres + camara + ventana de mandato.
+#   Quedan 4 filas VACIAS A PROPOSITO. No es que no se encontro a la persona: es
+#   que la canonica tiene DOS legislador_id para ella (duplicado de entity
+#   resolution) y elegir uno le sacaria la mitad de las firmas al otro:
+#     ROSSI, AGUSTIN       leg:3cc84340cad1 ("Rossi, Agustin Oscar", 2005-2026)
+#                          leg:3a122de91183 ("ROSSI Agustin", 2011-2019)
+#     STOLBIZER, MARGARITA leg:b067aa2a9852 ("Margarita Rosa", 2001-2017)
+#                          leg:9c9abb302e88 ("Stolbizer, Margarita", 2001-2025)
+#     ROYON, FLAVIA        leg:97bbbf7cc358 ("Royon, Flavia", n=112)
+#                          leg:c4eabf6d9ca4 ("ROYON, FLAVIA GABRIELA", n=7)
+#   Se completan cuando se resuelvan esos duplicados en datos/canonica (van a
+#   URGENTE). Preferimos perder cobertura antes que asignarle la firma a un id
+#   incompleto.
+# ACTUALIZADO 2026-09-04 (URGENTE C): las filas que estaban vacias por tener DOS
+# legislador_id para la misma persona ya se pueden completar. Franco aprobo 114 de
+# los 153 pares del censo; el canonico es el de MAS votos. La tabla vive en
+# `datos/canonica/data/alias_legislador_id.csv` y NO reescribe la canonica: se aplica
+# solo a los cruces por id (`estimar_beta_dictamen` normaliza los dos lados).
+nombre,camara,bloque,desde,hasta,periodo,confianza,fuente,nota,legislador_id
+BORNORONI GABRIEL,diputados,LA LIBERTAD AVANZA,2026-07-30,,snapshot-2026-07-30,ALTA,hcdn.gob.ar/diputados-por-bloque (oficial),95 bancas al 2026-07-30,leg:10ffeee1d07e
+MARTÍNEZ GERMÁN PEDRO,diputados,UNIÓN POR LA PATRIA,2026-07-30,,snapshot-2026-07-30,ALTA,hcdn.gob.ar/diputados-por-bloque (oficial),93 bancas al 2026-07-30,leg:cf2221c8a98d
+SCAGLIA GISELA,diputados,PROVINCIAS UNIDAS,2026-07-30,,snapshot-2026-07-30,ALTA,hcdn.gob.ar/diputados-por-bloque (oficial),18 bancas al 2026-07-30,leg:041aa4d59e48
+RITONDO CRISTIAN A.,diputados,PRO,2026-07-30,,snapshot-2026-07-30,ALTA,hcdn.gob.ar/diputados-por-bloque (oficial),12 bancas al 2026-07-30,leg:783bd10f67b0
+ARRÚA ALBERTO,diputados,INNOVACIÓN FEDERAL,2026-07-30,,snapshot-2026-07-30,ALTA,hcdn.gob.ar/diputados-por-bloque (oficial),9 bancas al 2026-07-30,leg:15038c1d7d4d
+VERASAY PAMELA FERNANDA,diputados,UCR - UNIÓN CÍVICA RADICAL,2026-07-30,,snapshot-2026-07-30,ALTA,hcdn.gob.ar/diputados-por-bloque (oficial),6 bancas al 2026-07-30,leg:fd82204ddbab
+NÓBLEGA SEBASTIÁN,diputados,ELIJO CATAMARCA,2026-07-30,,snapshot-2026-07-30,ALTA,hcdn.gob.ar/diputados-por-bloque (oficial),3 bancas al 2026-07-30,leg:08731cf1b5a5
+MEDINA GLADYS,diputados,INDEPENDENCIA,2026-07-30,,snapshot-2026-07-30,ALTA,hcdn.gob.ar/diputados-por-bloque (oficial),3 bancas al 2026-07-30,leg:a3840e007215
+FERRARO MAXIMILIANO,diputados,COALICION CIVICA,2026-07-30,,snapshot-2026-07-30,ALTA,hcdn.gob.ar/diputados-por-bloque (oficial),2 bancas al 2026-07-30,leg:1bfdc8cc9376
+PICHETTO MIGUEL ÁNGEL,diputados,ENCUENTRO FEDERAL,2026-07-30,,snapshot-2026-07-30,ALTA,hcdn.gob.ar/diputados-por-bloque (oficial),2 bancas al 2026-07-30,leg:5daaefa4774c
+ZAGO OSCAR,diputados,MID - MOVIMIENTO DE INTEGRACIÓN Y DESARROLLO,2026-07-30,,snapshot-2026-07-30,ALTA,hcdn.gob.ar/diputados-por-bloque (oficial),2 bancas al 2026-07-30,leg:e2b4b98325f5
+DEL PLÁ ROMINA,diputados,PARTIDO OBRERO EN EL FRENTE DE IZQUIERDA Y DE TRABAJADORES-UNIDAD,2026-07-30,,snapshot-2026-07-30,ALTA,hcdn.gob.ar/diputados-por-bloque (oficial),2 bancas al 2026-07-30,leg:5cfb66a4dc46
+PICÓN MARTÍNEZ NANCY VIVIANA,diputados,PRODUCCION Y TRABAJO,2026-07-30,,snapshot-2026-07-30,ALTA,hcdn.gob.ar/diputados-por-bloque (oficial),2 bancas al 2026-07-30,leg:8b160fad64d3
+BREGMAN MYRIAM,diputados,PTS-FRENTE DE IZQUIERDA Y DE TRABAJADORES UNIDAD,2026-07-30,,snapshot-2026-07-30,ALTA,hcdn.gob.ar/diputados-por-bloque (oficial),2 bancas al 2026-07-30,leg:18a1b7b907b2
+BANFI KARINA,diputados,ADELANTE BUENOS AIRES,2026-07-30,,snapshot-2026-07-30,ALTA,hcdn.gob.ar/diputados-por-bloque (oficial),1 bancas al 2026-07-30,leg:f479e489c9d1
+PAGANO MARCELA MARINA,diputados,COHERENCIA,2026-07-30,,snapshot-2026-07-30,ALTA,hcdn.gob.ar/diputados-por-bloque (oficial),1 bancas al 2026-07-30,leg:f6b8056c9a48
+DE LA SOTA NATALIA,diputados,DEFENDAMOS CÓRDOBA,2026-07-30,,snapshot-2026-07-30,ALTA,hcdn.gob.ar/diputados-por-bloque (oficial),1 bancas al 2026-07-30,leg:e0874a2391d1
+MAUREIRA KARINA,diputados,LA NEUQUINIDAD,2026-07-30,,snapshot-2026-07-30,ALTA,hcdn.gob.ar/diputados-por-bloque (oficial),1 bancas al 2026-07-30,leg:8d3d6a481d9d
+GARRIDO JOSÉ LUIS,diputados,POR SANTA CRUZ,2026-07-30,,snapshot-2026-07-30,ALTA,hcdn.gob.ar/diputados-por-bloque (oficial),1 bancas al 2026-07-30,leg:b04725384a84
+FERNÁNDEZ JORGE,diputados,PRIMERO SAN LUIS,2026-07-30,,snapshot-2026-07-30,ALTA,hcdn.gob.ar/diputados-por-bloque (oficial),1 bancas al 2026-07-30,leg:0bd68f4e0cf4
+MARÍA CAROLINA MOISES,senado,CONVICCIÓN FEDERAL,2026-07-30,,snapshot-2026-07-30,ALTA,senado.gob.ar/agrupados-por-bloques (oficial),3 bancas al 2026-07-30,leg:690897355ef6
+EDITH ELIZABETH TERENZI,senado,DESPIERTA CHUBUT,2026-07-30,,snapshot-2026-07-30,ALTA,senado.gob.ar/agrupados-por-bloques (oficial),1 bancas al 2026-07-30,leg:9d0fbaf84ec8
+CARLOS OMAR ARCE,senado,ENCUENTRO MISIONERO,2026-07-30,,snapshot-2026-07-30,ALTA,senado.gob.ar/agrupados-por-bloques (oficial),2 bancas al 2026-07-30,leg:a3741ef50998
+GERARDO ZAMORA,senado,FRENTE CÍVICO POR SANTIAGO,2026-07-30,,snapshot-2026-07-30,ALTA,senado.gob.ar/agrupados-por-bloques (oficial),2 bancas al 2026-07-30,leg:81de01cf201a
+ENRIQUE MARTÍN GOERLING LARA,senado,FRENTE PRO,2026-07-30,,snapshot-2026-07-30,ALTA,senado.gob.ar/agrupados-por-bloques (oficial),3 bancas al 2026-07-30,leg:09d195a72b1d
+BEATRIZ LUISA AVILA,senado,INDEPENDENCIA,2026-07-30,,snapshot-2026-07-30,ALTA,senado.gob.ar/agrupados-por-bloques (oficial),1 bancas al 2026-07-30,leg:a9dca751022a
+FERNANDO ALDO SALINO,senado,JUSTICIA SOCIAL FEDERAL,2026-07-30,,snapshot-2026-07-30,ALTA,senado.gob.ar/agrupados-por-bloques (oficial),2 bancas al 2026-07-30,leg:f789b602c96a
+JOSÉ MIGUEL ÁNGEL MAYANS,senado,JUSTICIALISTA,2026-07-30,,snapshot-2026-07-30,ALTA,senado.gob.ar/agrupados-por-bloques (oficial),21 bancas al 2026-07-30,leg:e6cf1ab5182b
+PATRICIA BULLRICH,senado,LA LIBERTAD AVANZA,2026-07-30,,snapshot-2026-07-30,ALTA,senado.gob.ar/agrupados-por-bloques (oficial),21 bancas al 2026-07-30,leg:9fe263c7921e
+JULIETA CORROZA,senado,LA NEUQUINIDAD,2026-07-30,,snapshot-2026-07-30,ALTA,senado.gob.ar/agrupados-por-bloques (oficial),1 bancas al 2026-07-30,leg:01bf087bd2b8
+JOSÉ MARÍA CARAMBIA,senado,MOVERE SANTA CRUZ,2026-07-30,,snapshot-2026-07-30,ALTA,senado.gob.ar/agrupados-por-bloques (oficial),2 bancas al 2026-07-30,leg:d3ec8dfa762b
+FLAVIA GABRIELA ROYON,senado,PRIMERO LOS SALTEÑOS,2026-07-30,,snapshot-2026-07-30,ALTA,senado.gob.ar/agrupados-por-bloques (oficial),1 bancas al 2026-07-30,leg:97bbbf7cc358
+CARLOS MAURICIO ESPÍNOLA,senado,PROVINCIAS UNIDAS,2026-07-30,,snapshot-2026-07-30,ALTA,senado.gob.ar/agrupados-por-bloques (oficial),2 bancas al 2026-07-30,leg:0373ca050c72
+EDUARDO ALEJANDRO VISCHI,senado,UCR - UNIÓN CÍVICA RADICAL,2026-07-30,,snapshot-2026-07-30,ALTA,senado.gob.ar/agrupados-por-bloques (oficial),10 bancas al 2026-07-30,leg:4e01233d484a

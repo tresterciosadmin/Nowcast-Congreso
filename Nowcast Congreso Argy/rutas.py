@@ -74,6 +74,13 @@ CANONICA_VOTOS_RESUELTO = CANONICA_CLEAN / "votos_resuelto.parquet"
 
 EXPEDIENTES_CLEAN = _env("EXP_CLEAN", RAIZ / "datos" / "expedientes" / "data" / "clean")
 EXPEDIENTES_ACTA_EXP = EXPEDIENTES_CLEAN / "acta_expediente.parquet"
+# El enlace acta -> expediente RESUELTO, de las DOS camaras (lo arma
+# enlace_senado.py). Trae `proyecto_id`, `camara`, `fecha`, `resultado` y
+# `tipo_mayoria` ya cruzados, y cubre 5.030 actas contra las 1.849 del de arriba,
+# que es el volcado crudo de CKAN y solo tiene Diputados. Cuando haya que cruzar
+# un acta con su proyecto, ES ESTA. Se llamaba `acta_expediente_senado.parquet`
+# (ADR-0017, 04-09-2026).
+EXPEDIENTES_ACTA_EXP_TODAS = EXPEDIENTES_CLEAN / "acta_expediente_todas.parquet"
 # Los FIRMANTES del dictamen (leidos de los PDF de la Orden del Dia). Cruzan de
 # datos/expedientes a modelo/ensemble: son el insumo de la Puerta A y de la C.
 EXPEDIENTES_FIRMAS = EXPEDIENTES_CLEAN / "dictamenes_firmas.parquet"

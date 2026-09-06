@@ -13,10 +13,9 @@ y (fase posterior) las votaciones nuevas, con upsert idempotente.
 
 ## Buscar acá si
 
-- el modelo no ve los proyectos de las ultimas semanas
+- el modelo no ve los proyectos de las ultimas semanas, o hasta que fecha llega lo que el bot entrego
 - el bot diario fallo, no commiteo, o abrio un issue
 - scraping de Tramite Parlamentario (Diputados) o DAE (Senado)
-- hasta que fecha llega lo que el bot entrego
 
 <!-- Las dos cosas de arriba las levanta `.mapa/indexar.py` al MAPA.md de la
      raiz: el `Resumen:` va a la columna "Que es" y las pistas al router

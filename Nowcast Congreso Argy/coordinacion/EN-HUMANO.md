@@ -2,6 +2,221 @@
 
 > Documento vivo. Cada cambio importante en el proyecto se explica acá en lenguaje claro, además de registrarse en `ESTADO-DEL-PROYECTO.md`. Si algo del sistema no se entiende leyendo esto, está mal escrito y hay que arreglarlo.
 
+## Sacamos los duplicados y el número EMPEORÓ, que es la buena noticia (06-09-2026)
+
+Franco decidió dos cosas: que cuando dos fuentes traen la misma votación mande la más completa, y que la planilla hecha a mano salga del circuito.
+
+**Sobre cuál es la más completa, él tenía razón y yo estaba equivocado.** Yo había recomendado quedarnos con la fuente automática diciendo que era la que traía fecha, expediente y número de expediente. Lo afirmé sin medirlo. Medido: la fuente oficial de Diputados tiene el **tipo de mayoría en el 100%** de los casos y la otra en **0%**; el número de expediente en el **88%** contra **0%**. Y en 12 de esas votaciones la mayoría exigida **no era la simple** — eran de dos tercios o de mitad más uno. Quedarnos con la copia equivocada habría puesto el umbral equivocado en esas 12.
+
+Lo mejor es que la regla de prioridad ya estaba bien escrita en el sistema. Lo único roto era que el detector de duplicados comparaba identificadores, y las dos ingestas le ponen el mismo número con distinto prefijo, así que nunca los veía.
+
+**Salieron 291 votaciones y 67.570 votos.** Y acá viene lo interesante: **la capacidad predictiva del modelo bajó**, de 0,172 a 0,168.
+
+**Eso es una buena noticia, no una mala.** Los votos duplicados se predecían mucho mejor que el resto —0,203 contra 0,170— y la razón es simple: cuando el modelo predecía la segunda copia, su historial **ya contenía la primera**. Misma persona, mismo voto, mismo día. Estaba prediciendo algo que ya había visto. El número viejo estaba inflado por eso. **0,168 es el número honesto.**
+
+## Y el tema de las taxonomías: no era un techo, era la tabla equivocada
+
+Franco pidió revisar en profundidad el asunto de los temas de cada ley, porque recordaba haberlo trabajado. Tenía razón: el vocabulario está completo desde junio —74 categorías, con sus reglas de frontera, su cargador y su test—.
+
+Lo que estaba mal era otra cosa. Teníamos anotado desde hace semanas que sólo el 24,6% de las votaciones tenía tema asignado, y que eso era el techo que bloqueaba dos líneas de trabajo. **No era un techo.** El clasificador leía una tabla de 892 votaciones que son todas de una sola cámara, cuando existe otra de 5.036 que cubre las dos. Es exactamente el mismo error de cableado que tenía trabado al Senado hace dos días.
+
+Con la tabla correcta, la cobertura posible pasa de **24,6% a 84,1%**. Faltan clasificar 3.712 títulos — títulos, no documentos completos, así que es una corrida barata. Eso destraba dos cosas que estaban esperando desde el 26 de agosto.
+
+## Fuimos a ponerle fecha a 17 votaciones y encontramos que 68.282 votos están contados dos veces (06-09-2026)
+
+Teníamos anotado que 17 votaciones cargadas a mano en una planilla no tenían fecha, y que tres partes del sistema lo compensaban cada una por su lado. Antes de decidir qué fecha ponerles, fuimos a ver qué eran.
+
+**No eran proyectos anunciados: eran votaciones reales que el sistema ya tenía.** Las 17 tienen una gemela que vino por la vía automática, con su fecha, su expediente y su número de Orden del Día. Doce coinciden voto por voto, las cinco restantes tienen exactamente el mismo recuento y difieren sólo en cómo se escribió el nombre de algunas personas. La planilla se armó cuando la fuente automática todavía no cubría 2026; hoy la cubre.
+
+**Y después apareció lo grande.** Al buscar el mismo patrón en toda la base: **274 votaciones están cargadas dos veces**. Casi todas vienen de dos ingestas distintas de Diputados que se pisan — 259 votaciones, de las cuales 249 son idénticas voto por voto. Son **68.282 votos, el 6,7% de la base**.
+
+**Por qué nadie lo vio en meses.** El sistema evita duplicados comparando el identificador de cada votación. Pero las dos ingestas le ponen el mismo número con distinto prefijo: `ckan_diputados:361` y `argentinadatos:diputados:361` son la misma sesión del 23 de mayo de 2012, con 257 votos cada una. Para el programa eran dos votaciones distintas. Nunca dio error.
+
+Lo que las delata es el **recuento**: dos votaciones distintas de la misma cámara **el mismo día** no dan el mismo reparto exacto de afirmativos, negativos, abstenciones y ausentes. Eso quedó como control permanente, y no borra nada: decidir cuál de las dos copias manda es una decisión de criterio, no de un programa.
+
+**Dos errores nuestros en el camino, y el segundo es el que da miedo.** La primera versión del control agrupaba sólo por recuento, sin la fecha, y marcaba 12.469 pares —casi todos casualidad—. Peor: la primera verificación comparaba los votos usando el nombre de cada legislador, que entre fuentes se escribe distinto, y daba **0% de coincidencia en todos los pares**, incluidos los que ya sabíamos que eran idénticos. Un 0% parejo se lee como "acá no hay duplicados" y habría cerrado la investigación con la conclusión exactamente al revés.
+
+## Los "no sé" del parser eran todos legibles (06-09-2026)
+
+Franco preguntó por los dictámenes que quedaban marcados como "no encontré el rótulo" — 95 en total, un 2,5% en cada cámara — y si no convenía catalogarlos.
+
+Lo primero: esa marca estaba haciendo bien su trabajo. Un dictamen sin rótulo **no** se contaba como "despacho único"; quedaba afuera del cálculo. O sea que nunca ensució nada. Lo que hacía era costar cobertura: 97 proyectos de Diputados y 29 del Senado salían del análisis por no tener esa etiqueta.
+
+Fuimos a leer las 95, una por una. **Ninguna era ilegible.** Eran tres cosas distintas:
+
+**El Senado tiene una cuarta manera de rotular que no conocíamos.** Las 39 del Senado la usan, sin una sola excepción: *"Dictamen en el proyecto de ley de la señora senadora Latorre, por el que..."*. Un dictamen a secas, sin la fórmula "de comisión" y sin decir si es de mayoría o de minoría. Nuestro programa buscaba las formas que sí conocía y no encontraba ninguna.
+
+**Un error de un solo carácter que nos costaba mayorías.** El programa busca el rótulo *antes* de las firmas. Cuando el rótulo empieza exactamente donde empieza el bloque de firmas, quedaba justo afuera del rango de búsqueda: por un carácter. En un expediente de 2018 eso hizo desaparecer un dictamen de mayoría entero, sin que nada fallara.
+
+**Y a veces el rótulo está después.** Hay documentos que cierran con la fórmula de firma antes de abrir el cuerpo del dictamen.
+
+Arreglado: ahora, **sólo cuando la respuesta iba a ser "no sé"**, el programa mira también hacia adelante, sin pasarse del dictamen siguiente. Las 39 del Senado quedan como despacho único, y de las 56 de Diputados salen 55 únicos, una mayoría y una minoría — ese expediente pasa a estar en la categoría más informativa que tenemos, la de los dictámenes disputados.
+
+**El control que importa:** sobre 340 expedientes que ya tenían su etiqueta bien puesta, **no cambió ninguna**. Un arreglo que mueve lo que ya estaba bien no es un arreglo.
+
+Y una anotación sobre nosotros mismos: el primer test que escribimos para el error del carácter **pasaba también con el programa viejo**, o sea que no probaba nada. Lo detectamos comparando contra la versión anterior a propósito, y lo reemplazamos. Un test que no falla cuando el bug está presente es peor que no tener test, porque da tranquilidad falsa.
+
+## La corrida larga confirmó la mejora, y encontró un número que parecía un hallazgo (06-09-2026)
+
+Terminó la reconstrucción completa: 579,9 minutos, casi diez horas. Sirvió para tres cosas.
+
+**Uno: la mejora es real, y un poco más chica de lo que decíamos.** Medida sobre las 6.091 votaciones completas en vez del atajo, la capacidad predictiva del modelo pasa de 0,130 a **0,161**. Las dos épocas que estaban rotas se arreglan —2015-2019 pasa de −0,011 a 0,095, o sea de peor-que-nada a útil— y el Senado mejora 67%. El atajo decía 0,167; el número real es 0,161. Que la diferencia vaya en esa dirección es lo esperable, y lo decimos porque el atajo fue nuestro.
+
+**Dos: sacamos un umbral que ya no servía, y la corrida larga explicó por qué mejor que nosotros.** El modelo tenía una regla: "si esta persona votó menos de ocho veces en esta era, no le creas su historial, usá el promedio de su bloque". Franco pidió sacarla. La corrida larga muestra que esa regla no sólo era redundante: mandaba gente a un lugar **peor**. El promedio del bloque, medido solo, predice **peor que no saber nada** (capacidad negativa, sobre 19.923 votos). O sea que el umbral existía para mandar gente a un pozo. Sacado.
+
+**Tres: apareció un número que parecía un descubrimiento y no lo era.** Al reconstruir los dictámenes del Senado, el modelo devolvió que un dictamen de sola minoría empuja fortísimo el voto a favor, con certeza estadística máxima. Ese resultado sale de **un solo expediente**. La forma en que se calcula el margen de error agrupa por votación, y con una sola votación el margen de error no es un margen de error: es un número que la fórmula devuelve porque tiene que devolver algo. Lo dejamos frenado en el código, no sólo anotado: ahora el programa cuenta cuántas votaciones sostienen cada categoría, y si son menos de veinte grita "no leas esto como un hallazgo".
+
+Es la regla de la casa otra vez, y esta vez nos tocó a nosotros: **un número imposible es un bug, no un fenómeno.**
+
+## Prendimos las tres cosas, y el número no se movió (06-09-2026)
+
+Franco dio la orden y quedaron prendidas las tres: el corte del historial por era, el encogimiento hacia el bloque, y la unión de las identidades duplicadas.
+
+**Lo primero que hay que decir es que el número publicado no cambió.** Corrimos el pronóstico completo antes y después: **98,0% en los dos casos.** Lo único que se mueve son los votos afirmativos esperados en Diputados, de 150,5 a 151,2 — siete décimas, dentro de una banda que va de 143 a 158. La razón es simple: hoy sobran unos 28 votos por encima del umbral, así que mover uno no cambia si la ley pasa. Que no se mueva hoy no significa que no haga nada: hace mucho hacia atrás, que es donde se mide si el modelo sirve.
+
+**El encogimiento, en una frase.** Alguien con nueve votos en esta era no tiene por qué elegir entre que le creamos del todo o desaparecer del cálculo: se apoya en su bloque en la proporción que su historia justifica. Con 145 votos el ajuste mueve dos centésimas; con diez, mueve un cuarto. Nunca lo cruza de lado.
+
+**Las identidades duplicadas.** Se unieron 143 casos que Franco revisó uno por uno: 25.030 votos reasignados, de 2.302 personas a 2.159. El control que más convence es negativo: sobre un millón de filas, **ninguna** persona quedó con dos votos en la misma sesión. Si alguno de esos pares fuera en realidad dos personas distintas, en un millón de filas se habrían cruzado.
+
+**Y acá corrijo algo que dije esta mañana.** Dije que unir las identidades, con la defensa puesta, salía gratis. No sale: cuesta siete diezmilésimas de capacidad predictiva. Casi toda la pérdida está en una sola época, 2019-2023, que es la que menos votos tiene (3,5% del total) y por lo tanto la más ruidosa. Las dos épocas que le importan al producto no se mueven. Lo aplicamos igual, y el motivo no es estadístico: **son la misma persona**. Una métrica que mejora manteniendo partida la carrera de alguien está midiendo una ventaja accidental, no la verdad.
+
+**El cuarto arreglo es de orden.** Las fechas de los cambios de gobierno estaban escritas en tres archivos distintos, cada uno con un comentario que decía "mantener sincronizadas" — o sea, que alguien se acuerde. Ahora viven en un solo lugar. Y una lista que se parece **no** se unificó: la que usa el índice de confianza en el gobierno tiene nueve ventanas en vez de cuatro, arranca en De la Rúa y parte a CFK en dos. Se llama parecido y mide otra cosa. Dejamos un test cuyo único trabajo es que la próxima persona que las vea juntas no las "arregle".
+
+## Fuimos a agregar una defensa que ya estaba puesta — y el problema era otro (06-09-2026)
+
+Teníamos anotado desde hace días que el modelo tenía un agujero: para adivinar cómo vota cada legislador mira su historial, y ese historial venía acumulando **toda** la carrera de la persona. El problema es que después de un cambio de gobierno el Congreso es otro: el que era oficialista ahora es opositor y al revés. Un historial que arranca en 2011 describe a alguien que ya no existe.
+
+Fuimos a ponerle la defensa. **Ya estaba puesta.** El modelo sí corta el historial en el cambio de gobierno — pero con la fecha del último recambio **escrita a mano**: 10 de diciembre de 2023.
+
+Para el número que publicamos hoy eso es exactamente lo correcto, así que el término está bien. Lo que rompe es todo lo demás: si uno quiere preguntarle al modelo "¿qué habrías dicho en 2018?" —que es la única forma de saber si el modelo sirve—, esa fecha fija se pelea con la de la pregunta y el resultado es que **ningún legislador tiene historial**. Los 478 pasan al plan B. Medido: 478 con historial si preguntás por hoy, **cero** si preguntás por 2022, por 2018 o por 2013.
+
+**Y apareció algo peor, que es lo que de verdad importa.** El programa con el que medimos si el modelo funciona se presenta a sí mismo como "espejo exacto" del modelo. En esta parte no lo era: el modelo corta el historial por era, y el medidor lo acumulaba entero. O sea que **el número con el que veníamos diciendo "el modelo casi no aporta en la era actual" venía de medir otro modelo.**
+
+La diferencia parece chica y no lo es: en la mitad de los casos es de 4 milésimas, pero en el 12% pasa de 0,10 y el peor caso es de 0,73 — alguien que históricamente acompañó el 93% de las veces y en esta era acompaña el 20%. Son justo los que se dieron vuelta con el recambio, que son los que definen una votación.
+
+Arreglamos las dos cosas y medimos. El resultado, sobre 741.275 votos:
+
+| | hoy | con la defensa bien puesta |
+|---|---:|---:|
+| capacidad general | 0,133 | **0,168** |
+| era 2015-2019 | −0,010 | **0,097** |
+| era actual | 0,024 | **0,064** |
+| Senado | 0,073 | **0,115** |
+
+Los dos huecos se cierran, **ninguna época empeora** y el Senado mejora casi 60%. Queda apagado hasta que la medición se rehaga con el programa completo y Franco decida prenderlo: mover el número publicado no es una decisión técnica.
+
+**La lección, que es del método y no del modelo:** el problema estuvo tres días anotado como "falta poner esta defensa", y se descubrió que ya estaba **al ir a ponerla**, no al leer la nota. Un diagnóstico escrito no es un diagnóstico verificado.
+
+## Sesenta y seis de setenta y dos senadores tenían la provincia de otro (06-09-2026)
+
+En la planilla que llevamos a mano con las votaciones de 2025-2027, la columna PROVINCIA de la hoja del Senado estaba mal en **66 de los 72 senadores**.
+
+Y no estaba corrida un lugar, que sería lo típico. Estaba **permutada**: las 72 provincias correctas estaban todas ahí, repartidas entre las personas equivocadas. Eso es lo que pasa cuando en Excel se ordena una columna sin extender la selección al resto de la fila. El dato entró a nuestra base y se quedó ahí **sin que nada avisara**, que en este proyecto es la forma más cara de fallar.
+
+Lo arreglamos en los dos lados: la planilla, y el programa que la lee. Ahora la provincia se resuelve contra el padrón oficial del Senado —una fuente independiente de la planilla— y cada diferencia se reporta.
+
+Con una asimetría a propósito: **la provincia se corrige sola, el bloque no.** La provincia no cambia mientras dure el mandato. El bloque sí: los bloques se parten, se renombran y la gente se cambia. Si le pusiéramos a un voto de marzo el bloque que esa persona tiene en agosto, estaríamos metiendo información del futuro dentro del pasado — y es otro error que tampoco da error. Así que el bloque se reporta y decide una persona. Las ocho correcciones de bloque del Senado las aprobó Franco una por una.
+
+**Y hubo un error nuestro, que quedó escrito en el test.** La primera versión del cruce comparaba distinguiendo mayúsculas. Como el padrón guarda "Santa Fe" y la planilla "SANTA FE", habría "corregido" las 256 filas de Diputados que estaban perfectas, y de paso habría pisado bloques reales. Se agarró **solo porque se probó en un borrador antes de escribir sobre los datos de verdad**. De ahí sale uno de los chequeos del test nuevo: "Diputados no necesita ninguna corrección".
+
+Un detalle de método que vale para todo el proyecto: para verificar el arreglo no alcanzó con contar cuántas filas cambiaron. Se comprobó que **las 24 provincias tuvieran exactamente 3 senadores cada una**, que es lo que dice la Constitución. Un control que no depende de la fuente que estás arreglando.
+
+## Buscamos quién presidía cada bloque y encontramos dos errores del mismo tipo (04-09-2026)
+
+Teníamos quince filas dudosas en la lista de jefes de bloque: gente anotada como presidente de su bancada "por contexto", sin una fuente que lo dijera con todas las letras. Es una lista delicada — en julio descubrimos que una sola fila mal puesta había metido 610 proyectos falsos en una señal del modelo.
+
+**Antes de buscar nada medimos cuánto pesa cada fila**, porque la prioridad la fija el daño posible, no el orden alfabético. Del Caño aporta 349 proyectos, Ferraro 291, Camaño 225 — y **cinco de las quince aportan cero**, casi todas del Senado, porque nuestra base de proyectos es sobre todo de Diputados.
+
+Confirmamos cuatro con fuente y **eliminamos dos que estaban mal**. Lo interesante es que las dos estaban mal **de la misma manera**:
+
+- **Carolina Losada** figuraba como jefa del bloque radical del Senado entre 2021 y 2023. No lo fue: lo que asumió en diciembre de 2021 fue la **vicepresidencia del Senado**. El jefe del bloque siguió siendo Naidenoff hasta 2023.
+- **Anabel Fernández Sagasti** figuraba presidiendo Unidad Ciudadana. No: ese bloque lo presidió **Juliana Di Tullio**.
+
+En los dos casos alguien confundió **un cargo del cuerpo, o el liderazgo de un espacio político, con la presidencia del bloque**, que es lo único que mide esa tabla. Es exactamente la forma del error que ya nos había costado caro. Quedó escrito como regla: cuando una fuente dice "referente", "conduce" o "lidera" en vez de "preside el bloque", la fila no está validada.
+
+Y esa misma duda ensucia una fila que sí pesa: **Sergio Massa** figura presidiendo el bloque UNA entre 2015 y 2017, pero las fuentes lo muestran como referente del **interbloque**, con el bloque presidido por otra persona. Son 62 proyectos. No la borramos: depende de qué queramos que signifique la columna, y eso lo decide Franco.
+
+**No agregamos nada.** Sacar una fila que está mal es seguro; poner una nueva es afirmar algo. Las cuatro correcciones que *suman* información quedaron anotadas para que Franco las apruebe.
+
+## El mapa del repo volvió a entrar en su presupuesto (04-09-2026)
+
+El índice que Claude lee al abrir el proyecto se había ido a 295 líneas contra un presupuesto de 260, y avisaba en cada corrida. Lo podamos a 257.
+
+No se toca el mapa a mano —se genera solo— sino las pistas que cada carpeta escribe en su propio archivo de presentación. El criterio fue: **se queda toda pista que avise de una trampa** (los nombres de comisión que llevan comas y no se pueden partir, la tabla que mezcla las dos cámaras, la columna "periodo" que en un módulo significa otra cosa), y se va lo que repetía algo que el mapa ya decía dos líneas más abajo. La carpeta de coordinación, por ejemplo, gastaba nueve pistas en listar sus propios archivos, que ya están listados en otros dos lugares.
+
+De paso apareció un detalle chico y molesto: una pista estaba escrita en dos renglones y el generador toma sólo el primero, así que en el mapa se leía cortada a mitad de frase desde vaya a saber cuándo.
+
+## La misma persona, dos veces en la base (04-09-2026, tarde)
+
+Hicimos el censo de un problema que veníamos arrastrando: **la misma persona anotada con dos identidades distintas**. Pasa porque la identidad se arma con el nombre, y una fuente escribe "Rossi, Agustín Oscar" y otra "ROSSI Agustín" — el segundo nombre aparece en una y falta en la otra, y ya son dos personas para el sistema.
+
+Son **153 casos**, y en 99 de ellos estamos bastante seguros. Entre las dos mitades hay **74.626 votos**, el 7,3% de la base, y la mitad más chica de cada par tiene, en el caso típico, 169 votos: no son esquirlas, es media carrera partida al medio.
+
+**Lo lindo es cómo se prueba.** Hay un test que no admite discusión: **si las dos identidades votaron en la misma sesión, son dos personas**, porque nadie vota dos veces. De 155 candidatos, ese test descartó dos —dos Balestrini y dos Herrera que sí son personas distintas— y esos dos casos sirven de control de que el método funciona.
+
+Lo que **no** sirve de prueba es la provincia, aunque parezca. Santilli pasó de la Ciudad a la provincia de Buenos Aires, Massot de Córdoba a Buenos Aires, Scioli lo mismo: cambiar de distrito es normal. Y algunas filas traen la provincia como un número en vez de un nombre.
+
+No fusionamos nada: la lista queda para que Franco apruebe caso por caso, porque unir dos identidades cambia el historial de esa persona y el historial es de donde sale el 98% de las predicciones.
+
+## Un bloque que no era de izquierda (04-09-2026)
+
+Teníamos anotado que Héctor Daer —de la CGT, peronista— figuraba clasificado como izquierda porque su bloque se llamaba "Bloque de los Trabajadores" y el sistema reconocía la palabra *trabajadores*. Fuimos a arreglarlo y **el diagnóstico estaba mal en el mecanismo**: no era la palabra. Alguien había puesto ese nombre de bloque **explícitamente** en la lista de etiquetas de izquierda. Así que el arreglo no fue agregar una excepción: fue sacarlo de la lista.
+
+Y era más grande de lo anotado: no eran siete meses de 2017 sino **237 votos entre 2014 y 2017**.
+
+Para decidir a dónde iba lo miramos como mira este proyecto estas cosas: **con quién vota**. Sobre las 89 sesiones en las que votó bajo esa etiqueta, coincide con el peronismo federal el 90% de las veces, con el massismo el 89%… y con la izquierda el 78,6%, **séptimo lugar entre nueve**. Para comparar: el bloque de Zamora, que sí se clasificó como izquierda por evidencia, coincidía el 100%.
+
+Quedó en el cajón de los bloques provinciales, que es el default cuando no hay una respuesta clara. Mandarlo a massismo es tentador —es donde están sus otros dos bloques de esos años— pero 89% contra 90% del peronismo federal está demasiado parejo para decidirlo con el dato solo. Esa la deja para Franco.
+
+## Arreglamos un error que hoy no cambia nada, y está bien que así sea (04-09-2026)
+
+Desde agosto teníamos anotado un error real: para decidir si una sesión tiene quórum, el modelo contaba sólo a los que votaron sí o no. Pero **el que se abstiene está en el recinto** y hace quórum igual.
+
+Lo arreglamos, lo dejamos apagado por defecto, y después lo medimos. El resultado es el que vale la pena contar: **hoy no cambia absolutamente nada**. En los cuatro escenarios realistas —Diputados normal, Diputados con mucha indisciplina, con asistencia del 85%, el Senado— la diferencia es cero exacto, porque sobran unos 120 votos por encima del mínimo y el quórum nunca es lo que decide.
+
+Sólo aparece cuando la asistencia baja hasta rozar la mitad de la cámara: ahí suma seis centésimas de probabilidad, y al filo mismo suma trece. Que es, justamente, el único escenario donde preguntarse por el quórum tiene sentido. Por eso lo dejamos hecho: el día que tengamos datos reales de asistencia y sean bajos, esto pasa de valer cero a valer algo.
+
+**Y hubo una lección de método, la misma que ya nos pasó otras veces.** La primera medición, hecha rápido y por arriba —suponiendo que *todos* los que no votaron estaban igual en la sala—, daba una diferencia de 57 puntos de probabilidad. Con la cuenta bien hecha, separando al que se abstiene del que faltó, da 13. La versión rápida exageraba por cuatro. Una cota superior no es una medición.
+
+## Fuimos a buscar un error del programa y encontramos una costumbre del Senado (04-09-2026)
+
+Veníamos con una sospecha fuerte: en la Cámara de Diputados, cuando una comisión se pelea por un proyecto, saca **dos despachos** —el de la mayoría y el de la minoría— y eso pasa en casi tres de cada diez casos. En el Senado, según nuestros datos, no pasaba **nunca**. Cero. Un cero exacto donde la otra cámara tiene un tercio no suele ser política: suele ser un programa mal escrito. Así que la tarea del día era arreglar el programa.
+
+Antes de tocar nada fuimos a leer los papeles: **193 Órdenes del Día del Senado, de 2008 a 2026**, elegidas al azar año por año. Y el resultado fue mitad y mitad.
+
+**Sí había un error, y bien concreto.** El Senado anuncia qué clase de dictamen es en el **índice** de la primera página ("Dictamen de mayoría en el proyecto de ley…"), y unas líneas más abajo, cuando arranca el texto en serio, encabeza siempre con la fórmula genérica "DICTAMEN DE COMISIÓN". Nuestro programa se quedaba con **la última** etiqueta que veía, así que la fórmula genérica le borraba el anuncio del índice. Todas las veces. Hay un documento que lo dice con todas las letras —el de la estatización de las AFJP, de 2008— y en nuestra base figuraba como si nadie hubiera discutido nada.
+
+**Pero las mayorías que faltaban son reales.** De las 193 Órdenes del Día, sólo **3** dicen "de mayoría" y **ninguna** dice "de minoría". El Senado, sencillamente, no acostumbra sacar dos despachos: cuando un senador no está de acuerdo, firma igual y **deja constancia de su disidencia** al pie. Es otra manera de hacer lo mismo. Así que el cero no era un error nuestro: era una diferencia entre las dos cámaras que no habíamos entendido.
+
+Esto **le da la razón a algo que ya habíamos anotado el 21 de agosto** y que el diagnóstico del 3 de septiembre había contradicho. Vale la pena decirlo así de claro, porque la tentación era la contraria: teníamos una hipótesis linda —"es un bug"— y los papeles la desmintieron a medias.
+
+**Y de paso apareció el que sí estaba trabando todo.** El Senado no lograba entrar en nuestros cálculos por un motivo mucho más tonto: había **dos tablas** que conectan cada votación con su proyecto, y estábamos usando la peor. Una tiene 1.849 filas y sólo Diputados; la otra tiene 5.030 y las dos cámaras — pero se llamaba "acta_expediente_**senado**", así que nadie del lado del modelo la miraba. Un nombre que miente sobre lo que hay adentro cuesta lo mismo que un error de programación. La renombramos, y el Senado pasó de **cero votaciones utilizables a 474**.
+
+También encontramos, sin buscarlo, un documento del Senado **impreso dos veces dentro del mismo archivo**. El programa creía que el segundo era el despacho de la minoría — y esas 19 firmas eran las únicas "minorías" del Senado en toda la base. Un fenómeno entero que no existía, nacido de una fotocopia.
+
+## Completamos una lista y no pasó lo que esperábamos (04-09-2026)
+
+Teníamos anotado que faltaban identificar 30 de los 80 jefes de bloque de nuestra base, y que por eso uno de los números del modelo —cuánto arrastra la firma del jefe sobre su propia gente— estaba subestimado. Los completamos: quedaron **76 de 80** (los otros 4 no se pueden porque la misma persona figura con dos identidades distintas, y elegir una le sacaría la mitad de las firmas a la otra).
+
+**El número no se movió.** Ni un poco. Lo que sí mejoró fue la **precisión**: la medición del Senado quedó un 12% más ajustada. Y hay una explicación simple que no habíamos visto: **23 de los 30 que faltaban asumieron el 30 de julio de 2026**, y nuestra base de votaciones llega al 25 de junio. Todavía no votaron nada. Estábamos esperando una mejora de gente que aún no tiene historia.
+
+Lo que sí movió el número —y bastante, casi al doble— fue la tabla de conexión del párrafo anterior. La causa no era la que creíamos.
+
+## Cuatro arreglos chicos que evitan cuatro maneras de perder datos en silencio (04-09-2026)
+
+Ninguno de los cuatro daba error. Ese es el punto: en este proyecto los problemas caros no se anuncian.
+
+1. **El padrón ahora se puede negar a escribirse.** Había dos archivos con el mismo nombre en carpetas distintas: uno con la foto de hoy (257 diputados) y otro con dieciocho años de historia (1.454). Correr el programa sin decirle cuál usar se llevaba puesta la historia sin chistar. Ahora, si el archivo nuevo es mucho más chico que el que va a pisar, **no escribe** y explica cuál era el comando correcto.
+2. **Las fechas imposibles ya no pasan.** Tres partes del sistema aceptaban un "31 de febrero" y lo convertían en un dato vacío más adelante, sin avisar. Ahora las cuatro validan contra el calendario, y hay una prueba que verifica que las cuatro digan que no.
+3. **Un archivo, un autor.** Los dos archivos que se peleaban todos los lunes entre el robot de la nube y la computadora de casa ya no se pelean: correr el programa en casa escribe en una carpeta descartable, y los oficiales los toca sólo el robot.
+4. **Un solo umbral en el panel.** El tablero mostraba la barra medida contra un número y el margen en votos calculado contra otro. Se unificaron, y de paso el que estaba mal nombrado —decía "mayoría simple" y era mayoría absoluta— pasó a llamarse por lo que es.
+
+## Un pedido que medimos y no da (04-09-2026)
+
+Queríamos saber si el historial de cada legislador **por tema** —cuánto acompaña en salud, en economía, en justicia— tiene suficiente sustancia como para usarlo. La respuesta corta es que no, y el motivo no es el que esperábamos.
+
+No es que a los legisladores les falten votos por tema. Es que **sólo el 24,6% de las votaciones tiene tema asignado**: la tabla de temas del sistema está vacía y lo único que hay es una clasificación hecha en julio sobre los títulos de 1.535 votaciones. Dentro de ese pedacito el dato alcanza bastante bien; sobre el total de la base, el historial por tema hablaría de **16 de cada 100 votos**, contra 96 de cada 100 del historial general. Ajustar el umbral no arregla eso. Lo que hay que hacer primero es clasificar las votaciones que faltan.
+
 ## Se subieron sin querer las marcas que git deja cuando no sabe unir dos versiones (25-08-2026)
 
 Valle intentó traerse los cambios del repositorio y GitHub Desktop la frenó: dos archivos del padrón estaban modificados en su computadora **y** en el servidor. Eligió la opción de guardar sus cambios y seguir, y ahí pasó lo que no se ve: git no supo unir las dos versiones y **escribió adentro de los archivos sus propias marcas de conflicto** —unas líneas con `<<<<<<<` y `>>>>>>>`—, y eso se subió tal cual.
@@ -964,3 +1179,33 @@ La razón es lo que aprendimos esta semana. Los cuatro problemas que encontramos
 La segunda cosa es la fórmula completa, escrita y abierta hasta la última variable. Arranca en algo simple —la probabilidad de que una ley se apruebe es la de Diputados por la del Senado— y se va desarmando hasta llegar a cómo se calcula la posición de un solo legislador. Cada símbolo tiene su explicación al lado, cada constante su valor, y cada pieza dice de qué archivo sale.
 
 Lo más útil de tenerla escrita es lo que se ve de un vistazo: hoy el número lo mueven apenas cinco cosas. El clima político y el análisis del dictamen están construidos pero desconectados, y la vía del "sobre tablas" —por donde pasa una de cada ocho leyes— no aparece en ninguna parte del cálculo.
+
+
+## Una regla de doctrina: siempre desde el legislador hacia el total
+Franco fijó un principio que ordena todo el modelo: la probabilidad de que una ley se apruebe tiene que construirse desde la decisión de cada legislador hacia arriba, nunca al revés. Todo lo que influye —el clima político, el dictamen de comisión, la cercanía de las elecciones, lo que hizo la otra cámara— es información que una persona lee y procesa según su historia, su lealtad y el tema. El número de la cámara es la consecuencia de sumar esas decisiones, no un lugar donde se hacen correcciones.
+
+Revisé los doce elementos de la fórmula con ese criterio. Cinco lo cumplían desde siempre, dos son excepciones razonables porque son reglas del reglamento y no decisiones de nadie, uno lo habíamos corregido esa misma mañana, y tres estaban mal.
+
+Lo incómodo es cuáles: uno es un parche viejo, pero los otros dos son propuestas que hicimos nosotros esta misma semana. Las habíamos escrito preguntándonos "qué le hago al número" en vez de "qué lee el legislador". Por suerte ninguna estaba programada todavía, así que corregirlas no costó nada.
+
+Y arreglarlas mejoró el modelo, no solo lo ordenó. El caso más claro: cuando un proyecto pasa de Diputados al Senado con muchos votos, eso influye en los senadores. Escrito como corrección al total, todos los senadores se movían igual. Escrito desde el legislador, aparece lo obvio: un senador del mismo espacio que impulsó el proyecto lee esos votos como respaldo, y uno de la oposición los lee como amenaza. Son dos reacciones opuestas que la versión anterior no podía distinguir.
+
+
+## El día que una medición nuestra se cayó sola
+Al modelar los proyectos que se tratan "sobre tablas" —sin dictamen de comisión— Franco planteó algo razonable: si el legislador no tiene el informe de la comisión, le falta información, así que debería decidir mirando su propia historia de votos sobre ese tema, no a su partido.
+
+Fuimos a los datos. El mecanismo era correcto, pero el resultado salió al revés: en esas votaciones la línea del bloque sigue prediciendo el 95% de los votos individuales, mientras que el historial personal cae a menos que una moneda al aire. La lectura que queda es casi más interesante que la hipótesis original: cuando le sacás al legislador la información cara, no se repliega sobre sí mismo, se apoya más fuerte en la barata, que es qué hace su espacio político.
+
+Y en el camino se cayó una medición propia. Yo había reportado que en estas votaciones hay más indisciplina partidaria, con un test estadístico que respaldaba la afirmación. Al rehacerlo comparando a cada legislador consigo mismo en vez de comparar votaciones contra votaciones, el efecto desapareció: la mayoría de los legisladores se desvía menos, no más. Las dos mediciones estaban bien hechas; la diferencia era qué dejaba fijo cada una. Un resultado estadísticamente significativo sobre unidades mal elegidas se parece mucho a un hallazgo.
+
+Franco además marcó algo que corresponde aclarar: lo que medimos fue el historial general del legislador, no el historial por tema, que es lo que él había propuesto y cuya tabla todavía no construimos. Así que su idea quedó sin probar, no descartada, y queda anotado el compromiso de volver sobre ella cuando el dato exista.
+
+
+## El Senado tenía los datos rotos, y lo delató un cero
+Al revisar por qué el modelo rinde la mitad en el Senado que en Diputados, apareció algo que no era un problema de modelo sino de datos. Los dictámenes de comisión del Senado figuran casi todos como "único" y **ninguno** como "de mayoría", cuando en Diputados los de mayoría son casi un tercio. Un cero exacto en una categoría que en la otra cámara es enorme no es un fenómeno político: es el valor por defecto de un programa que nunca encontró lo que buscaba.
+
+La causa concreta: el programa que lee las Órdenes del Día busca la palabra "mayoría" o "minoría" en el encabezado, y si no la encuentra asume "único". El Senado rotula sus dictámenes de otra manera, así que todo cayó en el default. La consecuencia es que toda la maquinaria del dictamen —que es de las señales más fuertes que encontramos— hoy funciona sólo para Diputados.
+
+Es la tercera vez que un número imposible destapa un error de cruce de datos: antes fueron las comas en los nombres de comisiones y los nombres de los jefes de bloque escritos en dos formatos. Ya dejó de ser casualidad y pasó a ser una regla de trabajo: cuando un número da absurdo, o da cero donde debería dar algo, el sospechoso es el cruce y no la hipótesis.
+
+Quedó preparado un instructivo para que mañana una sesión de trabajo pueda arreglar todo esto sola, con una condición de seguridad: puede tocar lo que quiera menos el número que ve el usuario. Las mejoras al modelo se dejan implementadas pero apagadas, para que Franco las encienda cuando las revise.

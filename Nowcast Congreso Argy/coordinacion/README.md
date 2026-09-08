@@ -22,7 +22,7 @@
 | `PROTOCOLO-GIT.md` | ramas, PRs, conflictos | rara vez |
 | `DECISIONES/` | ADR numerados. Las revisiones van como `## Enmienda <fecha>` arriba, el cuerpo queda como registro historico | al elegir entre alternativas con costo real |
 | `CIERRE-SESION-*.md`, `CORRIDA-*.md`, `PUESTA-EN-MARCHA-*.md` | notas de una sesion concreta | son historicos: no se actualizan |
-| `_aplicar_*.py`, `_reparar_tablero.py` | parches de un solo uso **ya ejecutados y NEUTRALIZADOS** | no correrlos: volver a hacerlo duplica entradas de bitacora |
+| ~~`_aplicar_*.py`, `_reparar_tablero.py`~~ | parches de un solo uso de julio, ya ejecutados. **Movidos a `Archivos_Borrar/parches-de-un-solo-uso/` el 2026-09-08** (limpieza fase 2): medido con `git grep`, ningun codigo los importaba ni los corria | ya no estan aca |
 
 ## Trampas
 

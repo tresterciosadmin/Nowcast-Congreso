@@ -2,13 +2,13 @@
 
 <!-- GENERADO por indexar.py. No editar: los cambios se pierden. -->
 <!-- La prosa vive en el README.md de cada modulo (seccion `Buscar aca si`). -->
-<!-- 2026-09-08 12:29 UTC · 162 archivos · 38,865 LOC -->
+<!-- 2026-09-08 13:20 UTC · 153 archivos · 38,075 LOC -->
 
 ## Como usar este archivo
 
 Es el unico archivo del proyecto que hace falta leer para empezar. Para ubicar algo concreto: `python3 .mapa/buscar.py "<termino>"` devuelve archivo y linea sin abrir nada. Recien despues abrir los archivos que salgan, y solo esos.
 
-Rama `main` — ultimo commit: 2026-09-07 b1ccd4d limpieza
+Rama `main` — ultimo commit: 2026-09-08 6596643 export: los xlsx dejan de ser 'transitorios', son el entregable · **hay cambios sin commitear**
 
 ## Donde buscar que
 
@@ -130,15 +130,14 @@ Rama `main` — ultimo commit: 2026-09-07 b1ccd4d limpieza
 | `datos/expedientes/` _(src+tests)_ | Registro de todo lo PRESENTADO (no solo lo votado): titulo, autor, tipo, fecha y cadena de vida del expediente. Denominador del embudo y enlace acta -> expediente. | 15 | 4,499 | **vencida** |
 | `datos/padron/` _(src+tests)_ | Padron OFICIAL de bancas a nivel LEGISLADOR: quien ocupa cada banca y en que ventana de mandato. Es la composicion real de la camara a una fecha (257 / 72). | 11 | 2,645 | **vencida** |
 | `datos/proyectos/` _(src+tests)_ | Base de Proyectos de Ley (`proyectos.db`): una fila por proyecto identificado por denominador NNNN-X-AAAA. Fuente de verdad del universo de proyectos y denominador del embudo (ADR-0009). | 10 | 2,073 | **vencida** |
-| `variables/bloque/` _(src+tests)_ | Cohesion, tamano, postura y fracturas de cada bloque en el tiempo, y el proyector point-in-time que arma el escenario por bloque que consume el ensemble. | 6 | 1,238 | **vencida** |
 | `variables/embudo/` _(src+tests)_ | Supervivencia del proyecto: presentado -> comision -> dictamen -> recinto -> sancion. Estima P(llega al recinto), la mitad de P(aprobacion). Es el diferencial del nowcast. | 5 | 1,222 | **vencida** |
+| `variables/bloque/` _(src+tests)_ | Cohesion, tamano, postura y fracturas de cada bloque en el tiempo, y el proyector point-in-time que arma el escenario por bloque que consume el ensemble. | 5 | 1,128 | **vencida** |
 | `evaluacion/baseline/` _(src+tests)_ | El piso a superar: el baseline de bloque, ya medido. Cualquier modelo nuevo se compara contra esto. | 5 | 1,118 | **vencida** |
 | `datos/canonica/` _(src+tests)_ | La base propia y unica de votaciones nominales: todas las fuentes unificadas, deduplicadas y con entidades resueltas. Fuente de verdad de la que leen `variables/` y `modelo/`. | 7 | 990 | **vencida** |
 | `datos/senado/` _(src+tests)_ | Ingesta de votaciones nominales del Senado desde senado.gob.ar + reconstruccion del bloque historico contemporaneo a cada voto. Tapa el hueco 2015-2023. | 5 | 940 | **vencida** |
 | `datos/bot_recoleccion/` _(src+tests)_ | El bot diario que trae lo nuevo de ambas camaras (proyectos con firmantes y giros, y votaciones) con upsert idempotente. Corre solo en GitHub Actions. | 7 | 880 | **vencida** |
 | `casos/` | Aplicaciones del nowcast a un caso real (una ley concreta): el scoring, el informe en HTML y la proyeccion bicameral. Consumen los contratos de `modelo/` y `variables/`; no definen modelo propio. | 3 | 842 | **vencida** |
 | `tests/` | Tests que cruzan modulos y por eso no pueden vivir dentro de ninguno. Cada modulo tiene sus propios tests en `<modulo>/tests/`; acá van solo los que verifican acuerdos ENTRE modulos. | 4 | 836 | ok |
-| `coordinacion/` | Las bitacoras y el protocolo: que bloquea a otros, que se hizo, quien tomo que modulo y por que se decidio cada cosa. Aca NO hay codigo del producto. | 8 | 680 | **vencida** |
 | `modelo/voto_individual/` _(src+tests)_ | No predice el voto medio (eso lo resuelve la regla de bloque ~0,99): modela el DESVIO del legislador respecto de su bloque y detecta pivotes (ADR-0003). | 2 | 597 | **vencida** |
 | `modelo/agregador_institucional/` _(src+tests)_ | Traduce posturas de bloque + asistencia en un resultado institucional: cuenta bancas, quorum, umbrales de mayoria y bandas. Mide la estructura, no la politica. | 2 | 589 | **vencida** |
 | `producto/dashboard/` _(src)_ | Tablero interno: radar de traccion, mapa de pivotes y escenarios, y el MAPA DEL MODELO: el diagrama de flujo BICAMERAL de como se calcula P(sancion) -dos bloques espejo, origen y revisora, con el condicionamiento entre camaras dibujado-, generado desde el indice del repo. Los entregables se abren con doble clic desde la RAIZ; el codigo del generador vive aca. | 1 | 563 | ok |
@@ -153,6 +152,7 @@ Rama `main` — ultimo commit: 2026-09-07 b1ccd4d limpieza
 | `docs/taxonomias/` | La lista curada de taxonomias (temas/materias) contra la que se clasifican los proyectos, su cargador y el prompt del clasificador. Es un CATALOGO, no un modelo. | 3 | 160 | **vencida** |
 | `variables/asistencia_quorum/` _(src)_ | Modelo de asistencia/ausencia/abstencion por legislador. Es donde vive la incertidumbre que el bloque no explica. | 1 | 102 | **vencida** |
 | `datos/ckan_diputados/` _(src)_ | Ingesta de votaciones nominales de Diputados 2011-2020 desde CKAN HCDN (cabecera + detalle). | 1 | 69 | **vencida** |
+| `coordinacion/` | Las bitacoras y el protocolo: que bloquea a otros, que se hizo, quien tomo que modulo y por que se decidio cada cosa. Aca NO hay codigo del producto. | 0 | 0 | **vencida** |
 | `docs/schemas/` | Los contratos de datos del repo (schema_version). Es lo unico compartido y fragil: cambiarlo exige un ADR. | 0 | 0 | ok |
 | `evaluacion/backtesting/` | Validacion walk-forward (entrenar en t, validar en t+1) con test de no-leakage. PENDIENTE. | 0 | 0 | ok |
 | `evaluacion/metricas/` | Metricas comunes: Brier, calibracion, accuracy en votos cruzados, cobertura de bandas. PENDIENTE. | 0 | 0 | ok |
@@ -161,7 +161,7 @@ Rama `main` — ultimo commit: 2026-09-07 b1ccd4d limpieza
 
 ## Inventario de datos
 
-140 archivos de datos · 195.2 MB · 105 viajan por git, **35 no**.
+140 archivos de datos · 195.2 MB · 106 viajan por git, **34 no**.
 
 Buscar uno sin abrir nada: `python .mapa/buscar.py --dato <termino>`. Columna **git**: `si` = esta versionado, o sea que quien clone lo tiene; `NO` = vive solo en el disco de quien lo genero, que es el modo de falla mas repetido de este repo (seis veces, ver `.gitignore`). **Escribe/Lee**: quien lo produce y quien lo consume, deducido del codigo; sin lector, sobra — sin escritor, no se regenera.
 
@@ -279,7 +279,7 @@ Buscar uno sin abrir nada: `python .mapa/buscar.py --dato <termino>`. Columna **
 | `modelo/voto_individual/outputs/disciplina_individual.csv` _DISCIPLINA_INDIVIDUAL_ | 1,960×23 | 344 KB | si | `test_ensemble.py`, `disciplina.py` | `agregador.py`, `comparar_vias_icg.py`, `estimar_gamma_individual.py` |
 | `modelo/voto_individual/outputs/set_pivote.json` | objeto: definicion, min_votos, legislado | 1 KB | si | `disciplina.py` | — |
 | `producto/dashboard/data/mapa_modelo_semantica.json` | objeto: _comentario, version, meta, etap | 72 KB | si | — | `generar_mapa_modelo.py` |
-| `variables/bloque/outputs/serie_bloque.parquet` | 304×9 | 16 KB | si | `COMMITEAR-2026-09-08.ps1`, `bloque.py` | _(2 lo nombran)_ |
+| `variables/bloque/outputs/serie_bloque.parquet` | 304×9 | 16 KB | si | `COMMITEAR-2026-09-08.ps1`, `bloque.py` | _(1 lo nombran)_ |
 | `variables/embudo/outputs/p_embudo.parquet` | 42,141×5 | 432 KB | si | `embudo.py` | `backtest_cadena.py` |
 | `variables/embudo/outputs/backtest_embudo.json` | objeto: sancionado, sancionado_sin_orige | 151 KB | si | `embudo.py` | _(1 lo nombran)_ |
 | `variables/embudo/outputs/embudo_por_comision.csv` | 65×4 | 3 KB | si | `embudo.py` | — |
@@ -293,7 +293,7 @@ Buscar uno sin abrir nada: `python .mapa/buscar.py --dato <termino>`. Columna **
 | `variables/legislador/data/legisladores.parquet` | 1,972×22 | 168 KB | **NO** | `export_base.py`, `ficha.py` | — |
 | `variables/legislador/data/legislador_periodo.parquet` | 4,795×10 | 133 KB | **NO** | `export_base.py`, `ficha.py` | — |
 | `variables/legislador/data/legislador_anio.parquet` | 9,287×8 | 102 KB | **NO** | `ficha.py` | — |
-| `variables/legislador/data/legislador_bloques.parquet` | 3,232×7 | 52 KB | **NO** | `ficha.py` | `origen_lider.py`, `origen_por_acta.py` |
+| `variables/legislador/data/legislador_bloques.parquet` | 3,232×7 | 52 KB | si | `ficha.py` | `origen_lider.py`, `origen_por_acta.py` |
 | `variables/proyecto/data/features_proyecto.parquet` _PROYECTO_FEATURES_ | 41,470×10 | 327 KB | si | `origen_lider.py` | `backtest_cadena.py` |
 | `variables/proyecto/data/origen_por_acta.parquet` _PROYECTO_ORIGEN_POR_ACTA_ | 6,231×9 | 89 KB | si | `origen_por_acta.py` | `nowcast_puertas.py`, `bloque.py`, `estimar_gamma.py` +2 |
 | `variables/proyecto/data/tema_por_acta.parquet` _PROYECTO_TEMA_POR_ACTA_ | 3,083×8 | 78 KB | si | `tema_por_acta.py` | `registro.py`, `bloque.py` |

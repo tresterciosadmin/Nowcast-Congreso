@@ -103,6 +103,11 @@ Archivos_Borrar/*
 # El que regenere estos archivos debe commitearlos también, para no dejar versiones viejas.
 !modelo/voto_individual/outputs/*.csv
 !variables/legislador/data/legisladores.csv
+
+# Los Excel del export DEJARON de ser transitorios (decision de Franco, 2026-09-08,
+# limpieza fase 1): son el ENTREGABLE del equipo, que los abre sin correr nada. Son
+# 49,6 MB y ese costo esta aceptado. No los busques nombrados en el codigo: los
+# escribe export_base.py:265 con f"votaciones_{g}.xlsx".
 !datos/export/data/*.xlsx
 
 # Bot de recolección: su salida y su memoria SÍ se versionan (es la base viva

@@ -540,8 +540,10 @@ def main(argv: list[str]) -> None:
     raise SystemExit(
         "backtest_cadena esta NEUTRALIZADO (2026-08-22, ADR-0012): media la formulacion "
         "v1, dada de baja. Re-apuntarlo pide decidir contra que se mide; ver el docstring "
-        "de main y el ADR. El codigo entero quedo en "
-        "Archivos_Borrar/BORRAR_modelo-ensemble-src-backtest_cadena-v1.py")
+        "de main y el ADR. El codigo entero NO esta en Archivos_Borrar (esa carpeta no "
+        "viaja por git y se vacio): se recupera del historial, en el ultimo commit "
+        "antes de la baja:\n"
+        '  git show e93cd65:"Nowcast Congreso Argy/modelo/ensemble/src/backtest_cadena.py"')
 
 
 if __name__ == "__main__":

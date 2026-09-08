@@ -100,8 +100,10 @@ _BAJA_V1 = (
     "cajon: agenda politica, y se decidio no modelarla. El punto de entrada vivo es "
     "`modelo/ensemble/src/nowcast_puertas.py` (funcion `nowcast`), que corre la cadena "
     "de puertas y devuelve un numero CONDICIONAL a que las camaras voten, con el "
-    "desagregado por legislador. El codigo viejo quedo entero en "
-    "Archivos_Borrar/BORRAR_modelo-ensemble-src-ensemble-v1.py")
+    "desagregado por legislador. El codigo viejo NO esta en Archivos_Borrar: esa "
+    "carpeta no viaja por git y se vacio. Se recupera del historial, en el ultimo "
+    "commit antes de la baja:\n"
+    '  git show 5044142:"Nowcast Congreso Argy/modelo/ensemble/src/ensemble.py"')
 
 
 def componer(*args, **kwargs):

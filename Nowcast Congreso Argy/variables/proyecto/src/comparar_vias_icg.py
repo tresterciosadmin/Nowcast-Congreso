@@ -5,7 +5,10 @@ MECANISMO 2 (nivel declarado por el analista = capa 2 global). El 2026-08-11
 Valle DECIDIÓ ELIMINAR la capa 2 (doble conteo del mismo clima), así que la
 comparación ya no tiene sentido y `modulador_icg.aplicar_dos_capas` fue removido:
 este script NO corre más (levantaría AttributeError). Se conserva sólo como
-registro histórico; copia en Archivos_Borrar/BORRAR_comparar_vias_icg_capa2_2026-08-11.py.
+registro histórico. La copia con la capa 2 NO está en Archivos_Borrar (esa carpeta
+no viaja por git y se vació): se recupera del historial, en el último commit antes
+de neutralizarlo:
+    git show 0a798bb:"Nowcast Congreso Argy/variables/proyecto/src/comparar_vias_icg.py"
 El `__main__` está neutralizado. Ver ADR-0008 (rev 2026-08-11) y ESTADO 2026-08-11.
 
 --- diseño original (histórico) --------------------------------------------

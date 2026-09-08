@@ -121,8 +121,10 @@ def main():
 
     No se borra porque el slider de ICG legislador-por-legislador no existe en
     `nowcast_puertas` y puede querer rehacerse ahi. Pero no puede seguir corriendo:
-    produce un numero que alguien va a citar. Copia entera en
-    `Archivos_Borrar/BORRAR_casos-proyeccion_hipotetica_bicameral.py`.
+    produce un numero que alguien va a citar. La copia entera NO esta en
+    Archivos_Borrar (esa carpeta no viaja por git y se vacio): se recupera del
+    historial, en el ultimo commit antes de neutralizarlo:
+        git show 47eb783:"Nowcast Congreso Argy/casos/proyeccion_hipotetica_bicameral.py"
     """
     raise SystemExit(
         "proyeccion_hipotetica_bicameral.py esta NEUTRALIZADO (2026-08-25): era una "

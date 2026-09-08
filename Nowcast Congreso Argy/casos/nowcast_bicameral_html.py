@@ -106,8 +106,10 @@ def main():
     ABSOLUTA, no simple.
 
     No se borra para no perder el diseno del HTML, que se reuso. Pero no puede seguir
-    corriendo: produciria numeros que alguien va a citar. Copia entera en
-    Archivos_Borrar/BORRAR_casos-nowcast_bicameral_html.py
+    corriendo: produciria numeros que alguien va a citar. La copia entera NO esta en
+    Archivos_Borrar (esa carpeta no viaja por git y se vacio): se recupera del
+    historial, en el ultimo commit antes de neutralizarlo:
+        git show 47eb783:"Nowcast Congreso Argy/casos/nowcast_bicameral_html.py"
     """
     raise SystemExit(
         "nowcast_bicameral_html.py esta NEUTRALIZADO (2026-08-22): calculaba el "

@@ -300,3 +300,23 @@ datos/padron/data/raw/*
 # ---------------------------------------------------------------------------
 !datos/canonica/data/alias_legislador_id.csv
 !datos/canonica/outputs/legislador_id_merge_aprobado_2026-09-04.csv
+
+# ---------------------------------------------------------------------------
+# OCTAVA vez que el .gitignore esconde un insumo del MOTOR (2026-09-08, limpieza
+# fase 1). `variables/legislador/data/legislador_bloques.parquet` (52 KB) lo leen
+# `variables/proyecto/src/origen_lider.py:184` y `origen_por_acta.py:153`, que son
+# la variable ORIGEN del motor. La linea 105 exceptuo `legisladores.csv` en su
+# momento; este parquet no tiene gemelo en CSV y quedo adentro del `*.parquet`.
+#
+# Como falla, medido y no supuesto: `origen_por_acta.py:154` hace
+# `pd.read_parquet(p) if p.exists() else None` -- sin warning. Con el archivo
+# ausente `_mapa_autor_linaje` devuelve `{}`, `autor_linaje` queda en None,
+# `oficialista` y `clase_ofi` quedan en None (verificado llamando a las dos
+# funciones), y `_origen` cae al ultimo return: DESCONOCIDO. En los datos de hoy
+# eso es 39.249 de 41.470 filas de `features_proyecto.parquet` (94,6%) y
+# `match_autor` de 96,07% a 0%. Nadie recibe un error.
+#
+# Y no lo salva la regeneracion: REGENERAR.ps1 tiene 8 pasos y NINGUNO corre
+# `variables/legislador/src/ficha.py`, que es lo unico que lo escribe.
+# ---------------------------------------------------------------------------
+!variables/legislador/data/legislador_bloques.parquet

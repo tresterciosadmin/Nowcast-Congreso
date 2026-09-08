@@ -72,6 +72,93 @@ python verificar_regeneracion.py
    desde la raíz git. **Lo corre Franco**, y conviene hacerlo recién al cerrar la limpieza:
    con 27 bitácoras vencidas hoy, avisaría en cada commit.
 
-## Veredictos
 
-_(se completa a partir de la fase 1)_
+## Fase 1 — Datos (140 archivos)
+
+Fuente: el inventario del MAPA (`.mapa/mapa.json` → `inventario_datos`). No se rehizo.
+
+### Lo que el inventario mide bien, y lo que no
+
+Antes de usarlo para decidir, dos límites **medidos**, no supuestos. Los dos van en la
+misma dirección peligrosa: el inventario se equivoca en el sentido de "este archivo no
+sirve".
+
+1. **Sub-atribuye cuando la ruta se arma con f-string.** Ya estaba documentado
+   (`nowcast_{pid}.json`) y hay más casos: `embudo_por_origen.csv` y
+   `embudo_por_lider.csv` figuran sin productor y los escribe `embudo.py:647`
+   (`f"embudo_por_{dim}.csv"`); `beta_dictamen_senado.json` figura sin productor y lo
+   escribe `estimar_beta_dictamen.py` vía `--salida`, que es el paso 6 de `REGENERAR.ps1`.
+2. **Sobre-atribuye cuando el nombre de archivo es genérico.** `_decada_csv/diputados.csv`
+   figura escrito por `padron_diputados_historico.py`, `test_ingesta_padron.py` y
+   `test_ensemble.py` y leído por dos módulos más: **es falso**. El único código que nombra
+   esa carpeta es `run_pipeline.py:30`; el resto son coincidencias del basename
+   `diputados.csv`. Vale igual para `senadores.csv` y los `bloques-*.csv`.
+
+### El hallazgo: la OCTAVA vez que el `.gitignore` esconde un insumo del motor
+
+`variables/legislador/data/legislador_bloques.parquet` (52 KB) **no viajaba por git**, y lo
+leen `variables/proyecto/src/origen_lider.py:184` y `origen_por_acta.py:153` — la variable
+**origen** del motor.
+
+Cómo falla, medido y no supuesto:
+
+- `origen_por_acta.py:154` es `pd.read_parquet(p) if p.exists() else None`. Sin warning.
+  (El helper `_pq` de al lado sí loguea; esta línea no.)
+- Con el archivo ausente, `_mapa_autor_linaje` devuelve `{}` → `autor_linaje` None →
+  `oficialista` None y `clase_ofi` None (**verificado llamando a las dos funciones**, no
+  leyendo el código) → `_origen` cae al último `return`: `DESCONOCIDO`.
+- Impacto sobre los datos de hoy: **39.249 de 41.470 filas** de `features_proyecto.parquet`
+  (94,6%) pasarían a DESCONOCIDO, y `match_autor` de **96,07% a 0%**. En
+  `origen_por_acta.parquet`, 1.658 de 6.231 actas (DESCONOCIDO de 45,5% a 72,1%).
+- **Y la regeneración no lo salva:** `REGENERAR.ps1` tiene 8 pasos y ninguno corre
+  `variables/legislador/src/ficha.py`, que es lo único que escribe ese parquet.
+
+Por qué se coló: la línea 105 del `.gitignore` exceptúa `legisladores.csv`; este parquet no
+tiene gemelo en CSV y quedó adentro del `*.parquet`. **Arreglado**: excepción agregada con
+el diagnóstico completo como comentario.
+
+> **Ojo con lo que se versiona:** el parquet es del **02-07**, y la canónica es del
+> **06-09**. Se versiona *tal como está*, porque es el archivo con el que se calculó el
+> número de hoy y el contrato de esta limpieza es que el número no cambie. Regenerarlo con
+> `ficha.py` **sí lo movería**, así que es una decisión aparte, no de la limpieza.
+
+### Una observación de frescura que no es de la limpieza pero conviene anotar
+
+`features_proyecto.parquet` y `origen_por_acta.parquet` son del **20-08**; la canónica se
+dedupliqué el 25-08 y el parser recuperó las Órdenes del Día el 06-09. O sea que las
+features de origen del motor están construidas sobre una canónica anterior a los dos
+cambios. Es la misma forma que los ítems **M** y **H** de URGENTE, sobre otra tabla.
+No se toca acá: mover eso mueve el número.
+
+### Veredictos por grupo
+
+**Grupo A — 30 archivos que ningún código nombra (50,3 MB)**
+
+| archivos | veredicto |
+|---|---|
+| los 8 `datos/export/data/votaciones_*.xlsx` (49,6 MB) | **SIRVEN — decisión de Franco (08-09): son el entregable y quedan versionados.** Falta corregir el README de `datos/export`, que hoy los llama "transitorio" |
+| `embudo_por_origen.csv`, `embudo_por_lider.csv` | **SIRVEN** — trampa del f-string, los escribe `embudo.py:647` |
+| `nowcast_*.json` (5, en `modelo/ensemble/outputs/`) | **SIRVEN** — trampa del f-string (`nowcast_{pid}.json`), son las corridas guardadas |
+| `backtest_cadena.json`, `backtest_cadena_fina.json` | **SIRVEN como registro histórico**: su script está NEUTRALIZADO desde el 22-08 (ADR-0012). No tienen productor vivo y está bien que no lo tengan |
+| `backtest_agregador*.json` (3), `baseline_guard_*.json` (2), `record_por_tema_2026-09-04.json`, `merge_ids_medicion_2026-09-04.json`, `beta_dictamen_ab_2026-09-04.json`, `2026-07-31_ley-de-lobby_scoring.json` | **SIRVEN como registro de medición.** Es la memoria de lo medido; sin consumidor es lo esperable |
+| `_sources/decada_votada_*.parquet`, `_sources/baseline_canonico.json`, `legislador_id_duplicados_2026-09-04.csv` | ver grupo B |
+
+**Grupo B — 35 archivos que no viajan por git (30,8 MB)**
+
+| archivos | veredicto |
+|---|---|
+| `variables/legislador/data/legislador_bloques.parquet` | **FALTABA LA EXCEPCIÓN** → agregada (ver arriba) |
+| `legisladores.parquet`, `legislador_periodo.parquet`, `legislador_anio.parquet` | **OK que no viajen.** El `legisladores.csv` gemelo sí viaja y es el que leen los consumidores; los otros dos los lee sólo el export, que se regenera |
+| `fase0/data/*` (4, 19,2 MB) | **OK que no viajen.** Fase cerrada; su resultado (`baseline_resultados.json`) sí viaja. Candidatos a `Archivos_Borrar/` en fase 3: liberan 19,2 MB de disco y 0 del clone |
+| `_decada_csv/*` (7, 8,4 MB) | **OK.** Intermedios de `export_seed.R` → `run_pipeline.py`. La atribución del inventario para estos es falsa (ver arriba) |
+| `_sources/*` (9) | **OK que no viajen** — los regenera `run_pipeline.py`. **NO TOCAR: están viejos (11-07) y es el ítem H de URGENTE** |
+| `datos/senado/data/clean/*.parquet` (2), `_diag_sin_cobertura.csv` | **OK.** Salida del scraper, regenerable (~20 min, cachea HTML) |
+| `datos/decada_votada/data/clean/*.parquet` (2, 31 KB) | **OK.** Semilla normalizada, sin consumidor hoy |
+| `desvios_por_voto.parquet` (1,3 MB) | **OK.** Intermedio de `disciplina.py` que lee el export. **Pero `disciplina.py` tampoco está en `REGENERAR.ps1`**: mismo hueco que el hallazgo, con mucho menos en juego |
+| `actas_gemelas_2026-09-06.csv` (158 KB), `legislador_id_duplicados_2026-09-04.csv` (43 KB) | **PENDIENTE DE FRANCO.** Son la evidencia de dos revisiones manuales; su gemelo `legislador_id_merge_aprobado_2026-09-04.csv` sí viaja, justamente "para poder auditar". ¿Viajan estos también? |
+| `_sources/baseline_canonico.json` (2 KB) | **RESTO.** Es una copia del que sí viaja en `evaluacion/baseline/outputs/` |
+
+**Grupo C — 42 con productor y sin consumidor**: quedan absorbidos por A y B. Un archivo de
+salida sin consumidor es lo normal en este repo (son entregables y registros de medición);
+el corte útil no es "sin consumidor" sino "sin consumidor **y** sin viajar **y** sin
+regenerador", que es exactamente el caso que se encontró.

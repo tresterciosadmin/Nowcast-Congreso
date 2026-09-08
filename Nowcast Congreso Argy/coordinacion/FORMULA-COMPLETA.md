@@ -1,7 +1,15 @@
 # La fórmula completa del nowcast
 
-**Última actualización:** 2026-09-03 · **Regla:** ADR-0015 — quien toca el motor actualiza
+**Última actualización:** 2026-09-08 · **Regla:** ADR-0015 — quien toca el motor actualiza
 este archivo en el mismo commit.
+
+> **2026-09-08 — la fórmula NO cambia.** El ADR-0021 movió dos cosas del motor a
+> `definiciones.py` y a `rutas.py`: la regla del **carácter del dictamen** —que estaba
+> copiada idéntica en `estimar_beta_dictamen` y en el baseline, y es la partición con la
+> que se **estima** $\beta$ y con la que se lo **evalúa**— y la búsqueda de la raíz del
+> repo. Ningún término se agrega, se saca ni se modifica: cambian imports, no cálculos.
+> Verificado: $\beta_1 = 2{,}1045$, $\beta_2 = 2{,}138$ y **P(aprob) = 0,9801**, idénticos
+> antes y después.
 
 > **Qué es esto.** La fórmula del número publicado, abierta hasta la última variable, con
 > qué significa cada símbolo, de qué archivo sale y **en qué estado está**. Sirve para dos

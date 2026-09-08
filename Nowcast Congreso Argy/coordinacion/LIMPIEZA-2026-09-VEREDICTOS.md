@@ -267,3 +267,48 @@ naturaleza y no se resuelven archivando.
 **Después del lote 1:** 33 passed · 16 OK · P = 0,9801 · índice 154 → 151 archivos.
 
 _(READMEs y sellado de estos cuatro módulos: van en la fase 4, no acá.)_
+
+## Duplicación: medida, no estimada (2026-09-08)
+
+Franco preguntó cuánto código redundante hay. Se instaló `.mapa/duplicados.py`, que compara
+la forma del árbol sintáctico de todas las funciones del repo, y se corrió sobre los 151
+archivos.
+
+**732 funciones · 32.427 LOC de Python · ~201 LOC de duplicación exacta entre archivos =
+0,6%.** La premisa de que hay mucho código redundante, medida, **da que no**. Y de esos 201,
+~150 son un solo patrón: el helper `check`/`chk` copiado en 40 archivos de test, que es lo
+que permite que cada test corra como script suelto.
+
+### Lo que se fusionó (ADR-0021)
+
+| qué | dónde estaba | por qué importaba |
+|---|---|---|
+| `caracter_de_dictamen` | 16 LOC idénticas en `estimar_beta_dictamen.py` y `baseline_voto_individual.py` | es la MISMA partición con la que se **estima** β y con la que se lo **evalúa**. Si divergen, nada da error |
+| la raíz del repo | **9** archivos (no 7: el análisis por AST se perdió 2 que el chequeo por texto sí encontró), 4 en el motor | convivían dos criterios; el viejo se rompe si se mueve `coordinacion/` o `variables/` |
+
+Los dos se verificaron **antes** de unificar, como pide el plan: el carácter, en las 16
+entradas posibles del vocabulario — **cero diferencias**; la raíz, desde la carpeta de cada
+`.py` del repo — **coinciden en todas**. Y después: **39 passed · 16 OK · P = 0,9801**, con
+β₁ = 2,1045 y β₂ = 2,138 idénticos al dígito.
+
+**Un hallazgo de paso:** `modelo/ensemble/validar_condicionamiento_votos.py` tenía un
+fallback que devolvía `/sessions/wizardly-friendly-hamilton/mnt/...`, una ruta de sandbox de
+una sesión vieja. Si la búsqueda de la raíz fallaba, el script **no daba error**: apuntaba a
+un disco que no existe. Se sacó; `NOWCAST_REPO` se conserva.
+
+### Lo que NO se fusionó, y por qué
+
+- **`check`/`chk` en 40 archivos de test (~150 LOC, el 75% de la duplicación).** Fusionarlo
+  obliga a que cada test importe de un lugar común y rompe la convención de que un test
+  corre solo. Es una decisión de diseño de la suite. Queda abierta.
+- **`_eras_de` / `eras_de` (10 LOC ×2).** Parecen duplicación y no lo son: las dos **delegan**
+  en `nowcast_puertas.era_de` y sólo agregan memoización por fecha única, con el motivo
+  escrito (2.800 fechas contra 1.016.058 filas). Y `nowcast_puertas.era_de` a su vez importa
+  de `definiciones.py`. La parte cara ya la resolvió el ADR-0014.
+
+### Sobre reducir la CANTIDAD de archivos
+
+No sale de fusionar, y conviene decirlo con números: el código muerto ya se archivó (3
+archivos) y `--estructura` no encuentra más. Lo que queda es organización —
+`variables/proyecto/src` con 17 archivos se **subdivide** (misma cantidad) y los 10 archivos
+de +500 LOC se **parten** (más cantidad). El repo no está inflado de código repetido.

@@ -30,15 +30,13 @@ import numpy as np
 import pandas as pd
 
 
-def _repo() -> Path:
-    p = Path(__file__).resolve()
-    for c in [p, *p.parents]:
-        if (c / "coordinacion").is_dir() and (c / "variables").is_dir():
-            return c
-    raise FileNotFoundError("no encontre la raiz del repo")
-
-
-REPO = _repo()
+# La raiz del repo sale de `rutas.py`: hay UNA sola copia del criterio
+# (ver tests/test_raiz_del_repo_una_sola_copia.py). Buscar `coordinacion/` +
+# `variables/` daba lo mismo -- esta medido -- pero se apoyaba en que esas dos
+# carpetas no cambiaran de nombre ni de lugar.
+sys.path.insert(0, str(next(d for d in Path(__file__).resolve().parents
+                            if (d / "rutas.py").is_file())))
+from rutas import RAIZ as REPO  # noqa: E402
 sys.path.insert(0, str(REPO / "modelo" / "ensemble" / "src"))
 sys.path.insert(0, str(REPO / "variables" / "bloque" / "src"))
 sys.path.insert(0, str(REPO / "evaluacion" / "baseline" / "src"))

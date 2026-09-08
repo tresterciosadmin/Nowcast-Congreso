@@ -2,13 +2,13 @@
 
 <!-- GENERADO por indexar.py. No editar: los cambios se pierden. -->
 <!-- La prosa vive en el README.md de cada modulo (seccion `Buscar aca si`). -->
-<!-- 2026-09-08 13:54 UTC · 151 archivos · 38,206 LOC -->
+<!-- 2026-09-08 21:39 UTC · 153 archivos · 38,449 LOC -->
 
 ## Como usar este archivo
 
 Es el unico archivo del proyecto que hace falta leer para empezar. Para ubicar algo concreto: `python3 .mapa/buscar.py "<termino>"` devuelve archivo y linea sin abrir nada. Recien despues abrir los archivos que salgan, y solo esos.
 
-Rama `main` — ultimo commit: 2026-09-08 1ae2718 tests: guardia para que los insumos del MOTOR viajen por git · **hay cambios sin commitear**
+Rama `main` — ultimo commit: 2026-09-08 1e65a11 mapa: .mapa/duplicados.py, medir el codigo repetido en vez de estimarlo · **hay cambios sin commitear**
 
 ## Donde buscar que
 
@@ -124,17 +124,17 @@ Rama `main` — ultimo commit: 2026-09-08 1ae2718 tests: guardia para que los in
 
 | Carpeta | Que es | Arch. | LOC | Bitacora |
 |---|---|---:|---:|---|
-| `./` | La raiz del proyecto: los paneles que se abren con doble clic, el tablero ejecutivo y su unica fuente de datos (`tablero_datos.js`). | 6 | 5,878 | **vencida** |
+| `./` | La raiz del proyecto: los paneles que se abren con doble clic, el tablero ejecutivo y su unica fuente de datos (`tablero_datos.js`). | 6 | 5,923 | **vencida** |
 | `variables/proyecto/` _(src+tests)_ | Feature store por proyecto: tema/materia, origen (Ejecutivo/oficialismo/aliados/oposicion), jefe de bloque, mayoria requerida, texto, y el ICG como modulador de coyuntura. | 23 | 4,997 | **vencida** |
-| `modelo/ensemble/` _(src+tests)_ | La composicion final: el nowcast end-to-end de un proyecto. Compone P(llega al recinto) x P(mayoria dado recinto) y corre el backtest de la cadena completa. | 16 | 4,937 | **vencida** |
+| `modelo/ensemble/` _(src+tests)_ | La composicion final: el nowcast end-to-end de un proyecto. Compone P(llega al recinto) x P(mayoria dado recinto) y corre el backtest de la cadena completa. | 16 | 4,920 | **vencida** |
 | `datos/expedientes/` _(src+tests)_ | Registro de todo lo PRESENTADO (no solo lo votado): titulo, autor, tipo, fecha y cadena de vida del expediente. Denominador del embudo y enlace acta -> expediente. | 15 | 4,499 | **vencida** |
 | `datos/padron/` _(src+tests)_ | Padron OFICIAL de bancas a nivel LEGISLADOR: quien ocupa cada banca y en que ventana de mandato. Es la composicion real de la camara a una fecha (257 / 72). | 11 | 2,645 | **vencida** |
 | `datos/proyectos/` _(src+tests)_ | Base de Proyectos de Ley (`proyectos.db`): una fila por proyecto identificado por denominador NNNN-X-AAAA. Fuente de verdad del universo de proyectos y denominador del embudo (ADR-0009). | 10 | 2,073 | **vencida** |
+| `tests/` | Tests que cruzan modulos y por eso no pueden vivir dentro de ninguno. Cada modulo tiene sus propios tests en `<modulo>/tests/`; acá van solo los que verifican acuerdos ENTRE modulos. | 7 | 1,225 | **vencida** |
 | `variables/embudo/` _(src+tests)_ | Supervivencia del proyecto: presentado -> comision -> dictamen -> recinto -> sancion. Estima P(llega al recinto), la mitad de P(aprobacion). Es el diferencial del nowcast. | 5 | 1,222 | **vencida** |
 | `variables/bloque/` _(src+tests)_ | Cohesion, tamano, postura y fracturas de cada bloque en el tiempo, y el proyector point-in-time que arma el escenario por bloque que consume el ensemble. | 5 | 1,128 | **vencida** |
-| `evaluacion/baseline/` _(src+tests)_ | El piso a superar: el baseline de bloque, ya medido. Cualquier modelo nuevo se compara contra esto. | 5 | 1,118 | **vencida** |
+| `evaluacion/baseline/` _(src+tests)_ | El piso a superar: el baseline de bloque, ya medido. Cualquier modelo nuevo se compara contra esto. | 5 | 1,094 | **vencida** |
 | `datos/canonica/` _(src+tests)_ | La base propia y unica de votaciones nominales: todas las fuentes unificadas, deduplicadas y con entidades resueltas. Fuente de verdad de la que leen `variables/` y `modelo/`. | 7 | 990 | **vencida** |
-| `tests/` | Tests que cruzan modulos y por eso no pueden vivir dentro de ninguno. Cada modulo tiene sus propios tests en `<modulo>/tests/`; acá van solo los que verifican acuerdos ENTRE modulos. | 5 | 986 | **vencida** |
 | `datos/senado/` _(src+tests)_ | Ingesta de votaciones nominales del Senado desde senado.gob.ar + reconstruccion del bloque historico contemporaneo a cada voto. Tapa el hueco 2015-2023. | 5 | 940 | **vencida** |
 | `datos/bot_recoleccion/` _(src+tests)_ | El bot diario que trae lo nuevo de ambas camaras (proyectos con firmantes y giros, y votaciones) con upsert idempotente. Corre solo en GitHub Actions. | 7 | 880 | **vencida** |
 | `casos/` | Aplicaciones del nowcast a un caso real (una ley concreta): el scoring, el informe en HTML y la proyeccion bicameral. Consumen los contratos de `modelo/` y `variables/`; no definen modelo propio. | 3 | 846 | **vencida** |
@@ -168,7 +168,7 @@ Buscar uno sin abrir nada: `python .mapa/buscar.py --dato <termino>`. Columna **
 | Archivo | Forma | Peso | git | Escribe | Lee |
 |---|---|---:|:---:|---|---|
 | `casos/2026-07-31_ley-de-lobby_scoring.json` | objeto: scoring, observado | 2 KB | si | — | — |
-| `datos/bot_recoleccion/data/clean/tp_entradas.parquet` _BOT_TP_ENTRADAS_ | 3,426×11 | 460 KB | si | `tp_diputados.py` | `giros_iniciales.py`, `upsert_bot.py`, `verificar.py` |
+| `datos/bot_recoleccion/data/clean/tp_entradas.parquet` _BOT_TP_ENTRADAS_ | 3,464×11 | 466 KB | si | `tp_diputados.py` | `giros_iniciales.py`, `upsert_bot.py`, `verificar.py` |
 | `datos/bot_recoleccion/data/clean/dae_entradas.parquet` | 1,072×8 | 124 KB | si | `dae_senado.py`, `test_verificar.py` | `upsert_bot.py`, `verificar.py` |
 | `datos/bot_recoleccion/data/clean/votaciones_nuevas.parquet` | 542×11 | 37 KB | si | `votaciones.py` | — |
 | `datos/bot_recoleccion/data/estado_bot.json` | objeto: dae_normal, tp_diputados, actas_ | 19 KB | si | `dae_senado.py`, `tp_diputados.py` | — |
@@ -333,13 +333,13 @@ Ordenados por cuantos otros archivos dependen de ellos. Tocar uno de arriba tien
 
 | Archivo | LOC | Lo usan | Simbolos |
 |---|---:|---:|---|
+| `rutas.py` | 209 | 20 | `_env`, `inventario` |
 | `variables/bloque/src/bloque.py` | 633 | 17 | `_canon_linaje`, `_norm_nombre`, `_cargar_padron_linaje_senado`, `_enriquecer_linaje_senado` |
-| `rutas.py` | 209 | 12 | `_env`, `inventario` |
-| `definiciones.py` | 216 | 10 | `periodo_parlamentario`, `gobierno_por_fecha`, `era_de`, `normalizar_mayoria_valor` |
+| `definiciones.py` | 261 | 13 | `periodo_parlamentario`, `gobierno_por_fecha`, `era_de`, `normalizar_mayoria_valor` |
 | `modelo/ensemble/src/ensemble.py` | 398 | 7 | `_cargar_simulador`, `_cargar_proyector`, `componer`, `_root` |
 | `variables/embudo/src/embudo.py` | 730 | 6 | `cargar_icg`, `_mes_rezagado`, `cargar`, `cargar_sqlite` |
 | `modelo/ensemble/src/nowcast_puertas.py` | 580 | 5 | `_bloque`, `era_de`, `alineacion_individual`, `perfil_legislador` |
-| `evaluacion/baseline/src/baseline_voto_individual.py` | 469 | 5 | `_hallar_repo`, `_norm_cond`, `_ContadorAvisos`, `perfil` |
+| `evaluacion/baseline/src/baseline_voto_individual.py` | 451 | 5 | `_norm_cond`, `_ContadorAvisos`, `perfil`, `_metricas` |
 | `modelo/ensemble/src/puerta_d.py` | 236 | 5 | `camara_revisora`, `_padron_de`, `_clip01`, `_logit` |
 | `modelo/agregador_institucional/src/agregador.py` | 418 | 4 | `umbral_aprobacion`, `_prob_conductas`, `simular_votacion`, `_linea_bloque_por_acta` |
 | `datos/canonica/src/entity_resolution.py` | 319 | 4 | `_strip`, `_name_key`, `_leg_id`, `_aplicar_alias` |
@@ -349,17 +349,17 @@ Ordenados por cuantos otros archivos dependen de ellos. Tocar uno de arriba tien
 ## Flujo interno
 
 - `variables/proyecto/tests/` → `variables/proyecto/src/` (10)
+- `modelo/ensemble/src/` → `./` (8)
 - `modelo/ensemble/tests/` → `modelo/ensemble/src/` (7)
 - `modelo/ensemble/src/` → `variables/bloque/src/` (6)
 - `datos/padron/tests/` → `datos/padron/src/` (5)
 - `datos/proyectos/tests/` → `datos/proyectos/src/` (5)
+- `evaluacion/baseline/src/` → `./` (5)
 - `datos/expedientes/src/` → `./` (4)
 - `datos/expedientes/tests/` → `datos/expedientes/src/` (4)
 - `modelo/ensemble/src/` → `evaluacion/baseline/src/` (4)
 - `variables/bloque/tests/` → `variables/bloque/src/` (4)
 - `casos/` → `modelo/ensemble/src/` (3)
-- `datos/bot_recoleccion/tests/` → `datos/bot_recoleccion/src/` (3)
-- `datos/canonica/tests/` → `datos/canonica/src/` (3)
 
 ## Se tocan juntos
 

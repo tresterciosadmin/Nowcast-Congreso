@@ -43,15 +43,13 @@ VENTANA_DIAS = 730
 K_SHRINK = 5.0
 
 
-def _hallar_repo() -> Path:
-    p = Path(__file__).resolve()
-    for cand in [p, *p.parents]:
-        if (cand / "coordinacion").is_dir() and (cand / "variables").is_dir():
-            return cand
-    raise FileNotFoundError("no encontre la raiz del repo")
-
-
-REPO = _hallar_repo()
+# La raiz del repo sale de `rutas.py`: hay UNA sola copia del criterio
+# (ver tests/test_raiz_del_repo_una_sola_copia.py). Buscar `coordinacion/` +
+# `variables/` daba lo mismo -- esta medido -- pero se apoyaba en que esas dos
+# carpetas no cambiaran de nombre ni de lugar.
+sys.path.insert(0, str(next(d for d in Path(__file__).resolve().parents
+                            if (d / "rutas.py").is_file())))
+from rutas import RAIZ as REPO  # noqa: E402
 sys.path.insert(0, str(REPO / "variables" / "bloque" / "src"))
 sys.path.insert(0, str(REPO / "evaluacion" / "baseline" / "src"))
 

@@ -22,17 +22,24 @@ SOLO_CAMARA = os.environ.get("CAMARA", "")           # "" = ambas
 
 # REPO: por defecto se autodetecta subiendo hasta encontrar 'coordinacion/'.
 # En PowerShell podés fijarlo:  $env:NOWCAST_REPO = "C:\ruta\Nowcast Congreso Argy"
-def _hallar_repo():
+def _raiz_del_repo() -> Path:
+    """La raiz del repo. `NOWCAST_REPO` sigue mandando si esta puesta.
+
+    El criterio es el de `rutas.py`, que es el unico del repo desde el 08-09
+    (ver tests/test_raiz_del_repo_una_sola_copia.py). Se saco un fallback que
+    devolvia una ruta de sandbox de una sesion vieja
+    (`/sessions/wizardly-friendly-hamilton/...`): cuando la busqueda fallaba,
+    este script NO daba error, apuntaba a un disco que no existe en ninguna
+    maquina y todo lo de abajo leia archivos ausentes.
+    """
     env = os.environ.get("NOWCAST_REPO")
     if env:
         return Path(env)
-    p = Path(__file__).resolve()
-    for cand in [p, *p.parents]:
-        if (cand / "coordinacion").is_dir() and (cand / "variables").is_dir():
-            return cand
-    # fallback: sandbox
-    return Path("/sessions/wizardly-friendly-hamilton/mnt/Nowcast Congreso Argy")
-REPO = _hallar_repo()
+    return next(d for d in Path(__file__).resolve().parents
+                if (d / "rutas.py").is_file())
+
+
+REPO = _raiz_del_repo()
 print(f"REPO: {REPO}")
 sys.path.insert(0, str(REPO / "variables" / "bloque" / "src"))
 sys.path.insert(0, str(REPO / "variables" / "proyecto" / "src"))

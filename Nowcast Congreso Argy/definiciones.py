@@ -213,3 +213,48 @@ def normalizar_mayoria(tipo: pd.Series) -> pd.Series:
     por fila, para que no puedan divergir aunque quieran."""
     t = pd.Series(tipo).fillna("").astype(str)
     return t.map(normalizar_mayoria_valor).astype("string")
+
+
+# --------------------------------------------------------------------------- #
+# Caracter del dictamen de un proyecto en una camara (ADR-0021)                #
+# --------------------------------------------------------------------------- #
+CARACTERES_DICTAMEN = ("DISPUTADO", "solo_minoria", "mayoria", "UNICO")
+
+
+def caracter_de_dictamen(clases) -> str | None:
+    """Que caracter tiene el dictamen de un proyecto EN UNA CAMARA.
+
+    `clases` es el conjunto de `dictamen_clase` de todas las firmas de ese
+    proyecto en esa camara. Devuelve uno de `CARACTERES_DICTAMEN`, o `None` si no
+    hay caracter identificable -- y entonces el proyecto sale del panel o del
+    corte, segun quien pregunte.
+
+    **`desconocido` NO es "despacho unico".** Es "no se encontro el rotulo"
+    (`parser_od`, 04-09-2026). Se descarta antes de decidir: si es lo unico que
+    hay, el proyecto queda SIN caracter. Tratarlo como unico le pondria caracter a
+    algo que nadie leyo.
+
+    **Por que vive aca.** Es la definicion que parte el panel del beta del
+    dictamen (`modelo/ensemble`) y el corte del baseline
+    (`evaluacion/baseline`). Si las dos divergen, el beta se estima sobre una
+    particion y se lo evalua sobre otra, y nada da error: el numero cambia y el
+    control 5 de `verificar_regeneracion.py` sigue en verde porque mira las
+    categorias, no como se asignan. Estaba copiada en los dos, identica caracter
+    por caracter; se unifico el 2026-09-08 despues de verificar que las dos
+    implementaciones coincidian en las 16 entradas posibles (ADR-0021).
+
+    La tabla completa esta en `tests/test_caracter_dictamen.py`, que es donde se
+    controla que no cambie.
+    """
+    c = frozenset(x for x in clases if x != "desconocido")
+    if not c:
+        return None
+    if "minoria" in c and ("mayoria" in c or "unico" in c):
+        return "DISPUTADO"
+    if "minoria" in c:
+        return "solo_minoria"
+    if "mayoria" in c:
+        return "mayoria"
+    if "unico" in c:
+        return "UNICO"
+    return None

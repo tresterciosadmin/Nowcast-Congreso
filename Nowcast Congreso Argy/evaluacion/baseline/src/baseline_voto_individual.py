@@ -89,15 +89,14 @@ GUARD_ERA_MODOS = ("off", "corte", "shrink")
 GUARD_ERA_DEFAULT = "shrink"
 
 
-def _hallar_repo() -> Path:
-    p = Path(__file__).resolve()
-    for cand in [p, *p.parents]:
-        if (cand / "coordinacion").is_dir() and (cand / "variables").is_dir():
-            return cand
-    raise FileNotFoundError("no encontre la raiz del repo (busco 'coordinacion/' y 'variables/')")
-
-
-REPO = _hallar_repo()
+# La raiz del repo sale de `rutas.py`: hay UNA sola copia del criterio
+# (ver tests/test_raiz_del_repo_una_sola_copia.py). Buscar `coordinacion/` +
+# `variables/` daba lo mismo -- esta medido -- pero se apoyaba en que esas dos
+# carpetas no cambiaran de nombre ni de lugar.
+sys.path.insert(0, str(next(d for d in Path(__file__).resolve().parents
+                            if (d / "rutas.py").is_file())))
+from rutas import RAIZ as REPO  # noqa: E402
+from definiciones import caracter_de_dictamen  # noqa: E402
 sys.path.insert(0, str(REPO / "variables" / "bloque" / "src"))
 
 
@@ -224,24 +223,7 @@ def caracter_dictamen(repo: Path) -> pd.DataFrame:
     g = (f.groupby(["proyecto_id", "camara"])["dictamen_clase"]
            .apply(lambda s: frozenset(x for x in s.dropna() if x)))
 
-    def clasificar(c):
-        # `desconocido` (parser_od, 04-09-2026) = no se encontro el rotulo del
-        # dictamen. NO es "despacho unico": si es lo unico que hay, el proyecto
-        # queda SIN caracter en esa camara y sale del corte.
-        c = frozenset(x for x in c if x != "desconocido")
-        if not c:
-            return None
-        if "minoria" in c and ("mayoria" in c or "unico" in c):
-            return "DISPUTADO"
-        if "minoria" in c:
-            return "solo_minoria"
-        if "mayoria" in c:
-            return "mayoria"
-        if "unico" in c:
-            return "UNICO"
-        return None
-
-    return g.map(clasificar).dropna().rename("caracter").reset_index()
+    return g.map(caracter_de_dictamen).dropna().rename("caracter").reset_index()
 
 
 def mapa_acta_caracter(repo: Path) -> pd.DataFrame:

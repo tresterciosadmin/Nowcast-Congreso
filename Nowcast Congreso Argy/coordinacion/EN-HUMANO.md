@@ -2,6 +2,18 @@
 
 > Documento vivo. Cada cambio importante en el proyecto se explica acá en lenguaje claro, además de registrarse en `ESTADO-DEL-PROYECTO.md`. Si algo del sistema no se entiende leyendo esto, está mal escrito y hay que arreglarlo.
 
+## Las taxonomías ahora viven en un solo lugar (06-09-2026)
+
+Franco pidió juntar las taxonomías en un solo archivo "para que no vuelva a pasar eso". El "eso" fue esto: él preguntó por las clasificaciones históricas y dijo que el equipo las había hecho; yo contesté que la tabla estaba vacía. **Los dos teníamos razón**, y ahí está el problema: había **cuatro lugares** donde podían estar y ninguno era *el* lugar. El trabajo real —3.083 clasificaciones— estaba en un archivo binario; los dos lugares donde yo miré estaban efectivamente vacíos.
+
+Ahora hay una sola tabla: **6.772 asignaciones sobre 3.119 objetos**, en un archivo de texto, con una fila por cada par de objeto y tema, diciendo de dónde salió cada una, con cuánta confianza y cuándo. Se actualiza sola cada vez que corre el clasificador, y volver a consolidar no duplica nada.
+
+**En texto y no en binario, y eso importa.** El formato anterior no se puede leer a ojo, no muestra los cambios cuando se compara con la versión anterior, y está en la lista de archivos que el control de versiones ignora. Clasificar cuesta llamadas pagas a la API: lo que cuesta plata tiene que estar donde no se pueda perder.
+
+**Y ahí apareció el detalle que hacía inútil todo lo anterior:** el archivo nuevo también caía en esa lista de ignorados, por ser un `.csv`. O sea que la consolidación no habría servido de nada. Está arreglado, con una excepción explícita y un test cuyo único trabajo es que nadie la saque por error.
+
+**El registro encontró algo apenas se armó.** Al validar contra el vocabulario oficial aparecieron dos etiquetas que la revisión manual había usado y que no existen en la lista: una es un trámite parlamentario y se mapea sin problema; la otra, `OPACO`, merece existir por derecho propio. Significa *"el título de esta votación no dice de qué trata — hace falta el documento"*, y es exactamente el techo del método que estamos usando. Con nombre propio se podría medir cuánto de lo que falta es eso y cuánto es otra cosa. Queda para que Franco decida.
+
 ## Sacamos los duplicados y el número EMPEORÓ, que es la buena noticia (06-09-2026)
 
 Franco decidió dos cosas: que cuando dos fuentes traen la misma votación mande la más completa, y que la planilla hecha a mano salga del circuito.

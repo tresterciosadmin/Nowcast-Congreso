@@ -84,9 +84,20 @@ if s is not None:
           f"minoria total = {mino} en {len(reales)} Ordenes del Dia: {reales[:4]}. "
           f"De senado-2018-16.pdf quedan {fantasma} (tienen que ser 0: era el mismo "
           f"dictamen impreso dos veces). Las demas son minorias reales del Senado.")
-    check(desc > 0, "aparecio la clase 'desconocido'",
-          f"desconocido = {desc:,} ({pct(desc, tot)}). Es 'no encontre el rotulo', "
-          f"que antes se disfrazaba de 'unico'.")
+    # OJO: el criterio NO es "desconocido > 0". Lo escribi asi el 04-09 —cuando el
+    # objetivo era que la clase EXISTIERA, para dejar de disfrazar "no encontre el
+    # rotulo" de "despacho unico"— y quedo al reves el 06-09: el arreglo del parser
+    # recupero las 39 OD del Senado que quedaban sin rotular, `desconocido` bajo a CERO,
+    # y el control lo marco como problema. Cero es el mejor resultado posible, no un
+    # fallo. Lo que hay que vigilar es lo contrario: que no se dispare.
+    #
+    # Es el segundo control que escribi al reves en dos dias (el otro pedia
+    # `minoria == 0`). Los dos tenian la misma forma: fijar el numero que dio el dia que
+    # se escribio, en vez de la propiedad que tiene que valer siempre.
+    check(desc / tot < 0.10 if tot else False, "'desconocido' no se disparo",
+          f"desconocido = {desc:,} ({pct(desc, tot)}). Es 'no encontre el rotulo'. "
+          f"CERO es el mejor resultado: significa que el parser rotulo todo lo que "
+          f"pudo leer. Si pasa del 10%, algo del parser dejo de reconocer cabeceras.")
     if "dictamenes_repetidos" in s.columns:
         rep = int(s["dictamenes_repetidos"].fillna(0).sum())
         arch = s.loc[s["dictamenes_repetidos"].fillna(0) > 0, "archivo"].nunique()
@@ -114,8 +125,10 @@ if d is not None:
           "mayoria y minoria de Diputados siguen en pie",
           f"mayoria={v.get('mayoria', 0):,} (era 35.191), minoria={v.get('minoria', 0):,} "
           f"(era 12.984)")
-    check(v.get("desconocido", 0) > 0, "aparecio 'desconocido' tambien en Diputados",
-          f"{v.get('desconocido', 0):,} ({pct(v.get('desconocido', 0), tot)})")
+    # mismo criterio que en el Senado: CERO es el mejor resultado, no un fallo.
+    _d = v.get("desconocido", 0)
+    check(_d / tot < 0.10 if tot else False, "'desconocido' no se disparo en Diputados",
+          f"{_d:,} ({pct(_d, tot)}). Bajo de 2.659 a 0 con el arreglo del 06-09.")
 
 # ── 3. el enlace, que es lo que destrabo al Senado ──────────────────────────
 linea("\n3. ENLACE acta -> expediente")

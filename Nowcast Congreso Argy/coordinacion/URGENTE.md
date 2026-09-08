@@ -25,6 +25,25 @@
 > Está desarrollado en `PLAN-DE-TRABAJO.md`. **Precaución vigente mientras tanto: no publicar
 > P(sanción) de proyectos con origen Senado.**
 
+## M. 🔵 β se estimó ANTES de que el parser recuperara los `desconocido`
+**Detectado:** 2026-09-06 · **una corrida de ~10 min**
+
+Orden real de la corrida de Franco: β a las **12:56/12:59**, firmas del Senado a las
+**13:11** y de Diputados a las **13:35**. O sea que β se estimó con el dato viejo y no ve
+las 95 Órdenes del Día que el parser recuperó (`desconocido` pasó de **3.106 a 0** en las
+dos cámaras: Diputados `unico` 73.681 → 76.333 y `mayoria` 36.058 → **36.065**; Senado
+`unico` 17.031 → 17.478).
+
+Además la canónica se dedupliqué a las **13:19**, después de β y antes del baseline: β está
+estimado sobre la base con duplicados y el baseline sobre la limpia.
+
+```powershell
+.\REGENERAR.ps1 -Desde 5
+```
+
+Recupera el carácter de 97 proyectos de Diputados y 29 del Senado que hoy salen del panel,
+y deja β y el baseline sobre la misma base.
+
 ## D. δ en el Senado: ya NO es 100% UNICO — pero sigue sin ser estimable, por otro motivo
 **Detectado:** 2026-09-04 · **Corregido el diagnóstico:** 2026-09-06 · **necesita a Franco**
 
@@ -67,71 +86,70 @@ magnitud y el p no.
    también el diagnóstico de clusters. En mi entorno no entra; en el tuyo son ~9 min:
    `python modelo\ensemble\src\estimar_beta_dictamen.py`.
 
-## K. 🔵 El parser recupera los 95 `desconocido` — falta re-correr las firmas
-**Detectado y arreglado:** 2026-09-06 · Claude · **necesita una corrida de ~60 min**
+## E. Récord por tema: 24,6% → 51,8%. Faltan 2.134 títulos y créditos
+**Trabajado:** 2026-09-06 · **frenado por: créditos de API** · retomar cuando haya
 
-Las 95 Órdenes del Día que quedaban en `desconocido` (39 del Senado, 56 de Diputados)
-**eran todas legibles**. Detalle en el anexo del ADR-0017. Con el arreglo: Senado 39
-`unico`; Diputados 55 `unico` + 1 `mayoria` + 1 `minoria`.
+`tema_por_acta.py` leía `acta_expediente.parquet` — **la tabla angosta: 892 actas únicas,
+todas de `ckan_diputados`**. Es el mismo cableado que trababa el β del Senado hasta el
+ADR-0017. Corregido a `acta_expediente_todas.parquet` (5.036 actas, las cuatro fuentes).
 
-Control sobre 340 OD con clase ya asignada (377 dictámenes): **cero cambios**. El rescate
-sólo corre cuando la respuesta habría sido `desconocido`.
+Franco lo corrió el 06-09 y clasificó **1.550 actas nuevas** antes de quedarse sin
+créditos (última a las 14:52).
 
-**Qué falta:** el código está arreglado y testeado, pero el dato no. Hay que re-correr:
+| | antes | ahora | potencial |
+|---|---:|---:|---:|
+| clasificadas | 1.537 | **3.083** | 5.215 |
+| cobertura de la canónica | 24,6% | **51,8%** | **87,7%** |
+| faltan | — | **2.134** | — |
 
-```powershell
-python datos\expedientes\src\construir_firmas.py --desde-cero            # ~40 min, sin red
-python datos\expedientes\src\construir_firmas.py --senado --desde-cero   # ~20 min, sin red
-.\REGENERAR.ps1 -Desde 5                                                  # el resto, ~25 min
-```
+Y la corrida alcanzó fuentes que la tabla angosta **no podía ver**: `decada_votada` 1.370
+y `senado` 377, que antes eran 0.
 
-Recupera **2,7% de los proyectos de Diputados y 2,3% de los del Senado** que hoy salen del
-panel de β por no tener carácter. Y `131-2469.pdf` pasa a `DISPUTADO`, que es la categoría
-que más informa.
-
-## E. 🔵 El techo del récord por tema no era 24,6%: era la tabla equivocada
-**Detectado:** 2026-09-04 · **Corregido el diagnóstico:** 2026-09-06 · **necesita una corrida con API**
-
-Este ítem y el 8 decían que el récord por tema estaba bloqueado porque *"sólo el 24,6% de
-las actas tiene tema"* y que había que **poblar la taxonomía**. El diagnóstico estaba mal.
-
-`variables/proyecto/src/tema_por_acta.py` leía `acta_expediente.parquet`. **Es la tabla
-angosta: 892 actas únicas, todas de `ckan_diputados`.** Es el MISMO cableado que trababa el
-β del Senado hasta el ADR-0017 — hay dos tablas de enlace y se estaba usando la chica.
-
-| | actas únicas | fuentes |
-|---|---:|---|
-| `acta_expediente.parquet` (la que leía) | 892 | sólo `ckan_diputados` |
-| `acta_expediente_todas.parquet` | **5.036** | ckan + argentinadatos + senado + decada |
-
-| | |
-|---|---|
-| cobertura de tema hoy | 1.535 de 6.237 — **24,6%** |
-| cobertura **potencial** con la tabla ancha | 5.247 — **84,1%** |
-| títulos que faltan clasificar | **3.712** |
-
-**Y son títulos, no PDFs.** El clasificador es por texto con Haiku; el propio docstring del
-módulo dice que por eso se eligió esta vía y no el batch de 112k PDFs.
-
-**Lo hecho:** `DEFAULT_ACTA_EXP` apunta a la tabla ancha. **Lo que falta** (necesita API key):
+**Para retomar** (idempotente: sólo corre sobre lo que falta):
 
 ```powershell
 python variables\proyecto\src\tema_por_acta.py
 ```
 
-Es idempotente: no reclasifica lo ya resuelto, así que corre sólo sobre los 3.712 que
-faltan. **Con eso se destraban el ítem 8 y ρ**, que están esperando esto desde el 26-08.
+### Ya no se pueden perder: hay un registro único (06-09)
 
-### Lo que sigue vacío, y es otra cosa
+`datos/taxonomias/data/asignaciones.csv` — **6.772 asignaciones sobre 3.119 objetos**,
+consolidadas desde las cuatro fuentes que estaban sueltas. CSV, versionado, con
+procedencia por fila. `tema_por_acta.py` lo actualiza solo al terminar de clasificar.
 
-`proyecto_taxonomias` en `proyectos.db` (0 filas) y su respaldo
-`datos/proyectos/data/taxonomias.csv` (sólo la cabecera) son a nivel **proyecto**, no acta.
-`tema_por_acta` es a nivel **acta** y es lo que consumen el v2 de bloque y el récord por
-tema. Son dos tablas distintas y sólo la segunda hacía falta para esto.
+**Y hacía falta una excepción en `.gitignore`:** el registro cae en el `*.csv` de la línea
+5 y **no viajaba a git**. Sin eso, la consolidación no servía de nada. Hay un test cuyo
+único trabajo es que nadie la saque.
 
-**Y el vocabulario nunca fue el problema:** `docs/taxonomias/taxonomias.json` está completo
-(74 ids, áreas + auxiliares + reglas de frontera) desde el 30-06, con su loader y su test.
-Lo que faltaba era correr el clasificador sobre la tabla correcta.
+### 🔵 Una decisión chica que queda abierta: `OPACO` merece su propio id
+
+La revisión manual usó dos etiquetas que el vocabulario no tiene. Se mapean, y una de las
+dos merece existir de verdad:
+
+| etiqueta | mapeada a | por qué |
+|---|---|---|
+| `PROCEDIMENTAL` | `AUX.TRAMITE` | apartamiento de reglamento, cuestión de privilegio. El mapeo es correcto. |
+| **`OPACO`** | `AUX.SINCLASIF` | *"Temas Varios"*, *"Votación en General y Particular"*: **el título no alcanza y hace falta el PDF** |
+
+`AUX.SINCLASIF` dice "no encaja en ninguna, revisar". `OPACO` dice algo más preciso y más
+útil: **el clasificador por título no puede saberlo**. Es exactamente el techo de la vía
+`texto`, y con id propio se podría medir cuánto del 12,3% que falta es eso y cuánto es otra
+cosa. Decide Franco: agregarlo a `docs/taxonomias/taxonomias.json` o dejarlo mapeado.
+
+### Lo que hay que saber antes de retomar
+
+- **El vocabulario nunca fue el problema.** `docs/taxonomias/taxonomias.json` está completo
+  desde el 30-06 (74 ids, áreas + auxiliares + reglas de frontera), con loader y test.
+- **`proyecto_taxonomias` en `proyectos.db` sigue en 0 filas** — verificado en la base, no
+  copiado de este archivo. Es a nivel **proyecto**; `tema_por_acta` es a nivel **acta**, y
+  es la que consumen el v2 de bloque y el récord por tema. Son dos tablas distintas y para
+  esto sólo hacía falta la segunda. El respaldo `datos/proyectos/data/taxonomias.csv`
+  nunca tuvo filas: se creó con la cabecera sola y así quedó (verificado en git).
+- **Al deduplicar las actas gemelas, 21 clasificaciones quedaron apuntando a un acta que
+  ya no existe.** Se remapearon a su gemela viva (4 colisiones resueltas por confianza).
+  **Es un contrato a tener en cuenta:** todo lo que esté indexado por `acta_id` hay que
+  remapearlo cuando el dedup descarta una copia. Quedan 2 sin remapeo (`ckan_diputados:411`
+  y `412`), que nunca estuvieron en la canónica — son anteriores a todo esto.
 
 ## H. `_sources/` está VIEJO: rehacer la canónica desde ahí borra 181.309 votos
 **Detectado:** 2026-09-06 · Claude · **bloquea: correr `build.py` sin el `run_pipeline` completo**
@@ -350,25 +368,6 @@ tener el mismo problema si la muestra por tema es chica. **Medir antes de creerl
 **Dónde:** taxonomías en `datos/proyectos/data/proyectos.db` (`proyecto_taxonomias`),
 enlace acta↔expediente en `datos/expedientes/data/clean/acta_expediente.parquet`,
 votos en `datos/canonica/data/clean/votos_canonico.parquet`.
-
-## J. `MAPA.md` dio 301 líneas en la máquina de Franco y 259 acá — no lo pude reproducir
-**Detectado:** 2026-09-06 · Claude · no bloquea a nadie · **necesita correr una vez**
-
-La verificación del 06-09 marcó `MAPA.md` en **301 líneas** contra un presupuesto de 260.
-En el repo hoy da **259**, y generar dos veces seguidas da lo mismo. Las dos corridas
-indexaron **exactamente** los mismos 158 archivos y 37.669 LOC, así que la diferencia no
-está en el contenido sino en el entorno.
-
-**Dos hipótesis descartadas:** los finales de línea de Windows (`read_text` ya normaliza a
-`\n`, así que la huella de carpeta no depende de CRLF) y que `git` fallara y dejara vacía
-la sección "Se tocan juntos" (acá funciona y está poblada, con 10 filas).
-
-**Qué se hizo para que la próxima vez se vea de una:** `indexar.py` imprime el desglose de
-líneas por sección cuando excede el presupuesto, y siempre con `--verbose`. "Excede el
-presupuesto" sin decir DÓNDE no es un aviso accionable.
-
-**Qué falta:** correr `python .mapa/indexar.py --verbose` en la máquina de Franco. Si vuelve
-a dar 301, la sección que crece sale en la salida y se poda esa.
 
 ## L. `test_ensemble.py` aborta 1 de cada 6 corridas, sin fallar ningún chequeo
 **Detectado:** 2026-09-06 · Claude · no bloquea, pero ensucia la suite

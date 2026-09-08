@@ -6,13 +6,11 @@
 
 **Estado:** HECHO (primera carga). Fuente viva: Franco la sigue completando a mano.
 
-**Resumen:** El Excel curado a mano por Franco (2025-2027) integrado al esquema canonico: aporta los VOTOS de 2026 de ambas camaras; el distrito lo resuelve el padron oficial y el bloque se reporta sin pisarse.
+**Resumen:** El Excel curado a mano por Franco (2025-2027). FUERA DEL PIPELINE desde el 06-09: sus 17 actas eran las mismas votaciones que ya trae argentinadatos, con fecha y expediente.
 
 ## Buscar acá si
 
-- votaciones de 2026 que no vinieron por API
-- el bloque del Senado en el periodo vigente
-- por que el distrito de este modulo sale del padron y no del Excel
+- por que el Excel salio del pipeline (sus 17 actas eran gemelas de argentinadatos)
 
 <!-- Las dos cosas de arriba las levanta `.mapa/indexar.py` al MAPA.md de la
      raiz: el `Resumen:` va a la columna "Que es" y las pistas al router

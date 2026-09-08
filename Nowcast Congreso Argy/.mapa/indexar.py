@@ -333,13 +333,23 @@ def indexar(ruta):
                        and (not d.startswith(".") or d == ".github")]
         for fn in sorted(filenames):
             p = Path(dirpath) / fn
-            rel = str(p.relative_to(raiz))
+            # `.as_posix()` y no `str()`: en Windows `str(Path(...))` devuelve
+            # separadores `\` y el resto del archivo compara contra `/` a mano. La
+            # consecuencia se midió el 06-09-2026: la regla que marca `src/` y `tests/`
+            # como "heredada" —`c.startswith(padre + "/")`— no matcheaba nunca en
+            # Windows, así que cada subcarpeta se llevaba su propia fila y la tabla
+            # `## Carpetas` pasaba de 38 a 79 líneas. MAPA.md daba 259 en Linux y 301 en
+            # Windows con EXACTAMENTE el mismo índice (159 archivos, 38.195 LOC, 74
+            # carpetas), y el aviso de presupuesto saltaba sólo en una de las dos.
+            # MAPA.md está versionado: un generador que depende del sistema operativo
+            # produce un diff en cada corrida.
+            rel = p.relative_to(raiz).as_posix()
             if ignorado(rel, pats):
                 continue
             texto = leer(p)
             if texto is None:
                 continue
-            carpeta = str(Path(rel).parent) if Path(rel).parent != Path(".") else "."
+            carpeta = Path(rel).parent.as_posix() if Path(rel).parent != Path(".") else "."
 
             if fn.upper() == "BITACORA.MD":
                 bitacoras[carpeta] = parsear_bitacora(texto)

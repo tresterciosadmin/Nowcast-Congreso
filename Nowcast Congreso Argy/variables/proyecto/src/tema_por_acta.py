@@ -249,6 +249,23 @@ def correr(acta_exp: Path = DEFAULT_ACTA_EXP, out: Path = OUT_DEFAULT,
     Path(out).parent.mkdir(parents=True, exist_ok=True)
     res.to_parquet(out, index=False)
     logger.info("tema_por_acta: %d filas -> %s", len(res), out)
+    # AL REGISTRO ÚNICO, que es lo que sobrevive. Este parquet es una CACHÉ: está bajo
+    # `*.parquet` del .gitignore, es binario y no diffea. La clasificación cuesta
+    # llamadas de API, y el 06-09-2026 se descubrió que estaba repartida en cuatro
+    # lugares sin que ninguno fuera EL lugar. El registro es un CSV versionado.
+    # Si falla, se avisa y no se corta: el parquet ya quedó escrito.
+    try:
+        sys.path.insert(0, str(_RAIZ / "datos" / "taxonomias" / "src"))
+        from registro import consolidar  # type: ignore
+        r = consolidar()
+        logger.info("registro único de taxonomías: %d filas (%s)",
+                    r.get("despues", 0), r.get("por_fuente", {}).get("tema_por_acta"))
+        if r.get("ids_fuera_del_vocabulario"):
+            logger.error("ids que NO están en docs/taxonomias/taxonomias.json: %s",
+                         r["ids_fuera_del_vocabulario"][:8])
+    except Exception as e:  # noqa: BLE001
+        logger.warning("no pude actualizar el registro único de taxonomías (%s): "
+                       "corré `python datos/taxonomias/src/registro.py consolidar`", e)
     if "tema_area" in res.columns and not res.empty:
         top = res["tema_area"].value_counts().head(10).to_dict()
         logger.info("top áreas: %s", top)

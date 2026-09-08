@@ -1,197 +1,201 @@
 {
  "M0_crudo": {
-  "n": 26513,
+  "n": 26100,
   "coef": {
-   "const": 1.5009,
-   "dict_mayoria": -0.362,
-   "dict_solo_minoria": 1.3125
+   "const": 1.4902,
+   "dict_mayoria": -0.3708,
+   "dict_solo_minoria": 1.3232
   },
   "se_cluster_acta": {
-   "const": 0.0628,
-   "dict_mayoria": 0.169,
-   "dict_solo_minoria": 0.0628
+   "const": 0.0629,
+   "dict_mayoria": 0.1715,
+   "dict_solo_minoria": 0.0629
   },
   "p": {
    "const": 0.0,
-   "dict_mayoria": 0.0322,
+   "dict_mayoria": 0.0306,
    "dict_solo_minoria": 0.0
   },
-  "llf": -12666.1
+  "llf": -12530.8
  },
  "M1_offset": {
-  "n": 26513,
+  "n": 26100,
   "coef": {
-   "const": -0.4326,
-   "dict_mayoria": -0.8735,
-   "dict_solo_minoria": 2.3968
+   "const": -0.4395,
+   "dict_mayoria": -0.8611,
+   "dict_solo_minoria": 2.4045
   },
   "se_cluster_acta": {
-   "const": 0.0711,
-   "dict_mayoria": 0.1837,
-   "dict_solo_minoria": 0.0711
+   "const": 0.0712,
+   "dict_mayoria": 0.1879,
+   "dict_solo_minoria": 0.0712
   },
   "p": {
    "const": 0.0,
    "dict_mayoria": 0.0,
    "dict_solo_minoria": 0.0
   },
-  "llf": -10884.2
+  "llf": -10825.2
  },
  "M2_offset_tema_origen": {
-  "n": 26513,
+  "n": 26100,
   "coef": {
-   "const": 22.5871,
-   "dict_mayoria": -0.6648,
-   "dict_solo_minoria": 2.9364,
-   "t_AUX": 4.413,
-   "t_CULT": 6.0904,
-   "t_CYT": 7.453,
-   "t_DEF": 29.3264,
-   "t_DERSOC": 3.6227,
-   "t_DESREG": 6.7505,
-   "t_ECON": 3.664,
-   "t_EDU": 28.5904,
-   "t_INFRA": 28.6675,
-   "t_JUST": 2.6722,
-   "t_POLINST": 4.2195,
-   "t_PROD": 3.9588,
-   "t_SALUD": 28.5279,
-   "t_SIN_TEMA": 3.4528,
-   "t_TRAB": 27.8102,
-   "o_EJECUTIVO": -27.012,
-   "o_OFICIALISMO": -24.6505,
-   "o_OPOSICION": -26.3417,
-   "o_SIN_ORIGEN": -22.6662
+   "const": 24.5809,
+   "dict_mayoria": -0.5958,
+   "dict_solo_minoria": 3.0219,
+   "t_AUX": 2.3805,
+   "t_CULT": 3.7074,
+   "t_CYT": 5.6298,
+   "t_DEF": 5.5007,
+   "t_DERSOC": 1.5532,
+   "t_DESREG": 2.0779,
+   "t_ECON": 0.9538,
+   "t_EDU": 2.1119,
+   "t_ENER": 2.0219,
+   "t_INFRA": 26.6341,
+   "t_JUST": 1.351,
+   "t_POLINST": 0.5241,
+   "t_PROD": 2.4613,
+   "t_SALUD": 26.4679,
+   "t_SIN_TEMA": 1.4581,
+   "t_TRAB": 1.3041,
+   "o_EJECUTIVO": -26.9888,
+   "o_OFICIALISMO": -24.8452,
+   "o_OPOSICION": -26.3049,
+   "o_SIN_ORIGEN": -22.7428
   },
   "se_cluster_acta": {
-   "const": NaN,
-   "dict_mayoria": 0.2041,
-   "dict_solo_minoria": 0.0701,
-   "t_AUX": 0.7382,
-   "t_CULT": 0.7566,
-   "t_CYT": 0.8322,
-   "t_DEF": 0.7739,
-   "t_DERSOC": 0.8962,
-   "t_DESREG": 0.3098,
-   "t_ECON": 0.651,
-   "t_EDU": 1.0717,
-   "t_INFRA": 1.0717,
-   "t_JUST": 0.7442,
-   "t_POLINST": 0.3817,
-   "t_PROD": 1.3363,
-   "t_SALUD": 0.5605,
-   "t_SIN_TEMA": 0.3054,
-   "t_TRAB": 0.8757,
-   "o_EJECUTIVO": NaN,
-   "o_OFICIALISMO": NaN,
-   "o_OPOSICION": NaN,
-   "o_SIN_ORIGEN": NaN
+   "const": 60584.3383,
+   "dict_mayoria": 0.3122,
+   "dict_solo_minoria": 0.3452,
+   "t_AUX": 1.6157,
+   "t_CULT": 1.605,
+   "t_CYT": 1.6772,
+   "t_DEF": 1.7977,
+   "t_DERSOC": 1.6447,
+   "t_DESREG": 1.9412,
+   "t_ECON": 1.4855,
+   "t_EDU": 1.9564,
+   "t_ENER": 1.5879,
+   "t_INFRA": 1.7807,
+   "t_JUST": 1.5023,
+   "t_POLINST": 1.5467,
+   "t_PROD": 1.8497,
+   "t_SALUD": 1.5209,
+   "t_SIN_TEMA": 1.4836,
+   "t_TRAB": 1.5249,
+   "o_EJECUTIVO": 72582.9517,
+   "o_OFICIALISMO": 60768.286,
+   "o_OPOSICION": 55691.1365,
+   "o_SIN_ORIGEN": 63099.6848
   },
   "p": {
-   "const": NaN,
-   "dict_mayoria": 0.00112,
+   "const": 0.99968,
+   "dict_mayoria": 0.05632,
    "dict_solo_minoria": 0.0,
-   "t_AUX": 0.0,
-   "t_CULT": 0.0,
-   "t_CYT": 0.0,
-   "t_DEF": 0.0,
-   "t_DERSOC": 5e-05,
-   "t_DESREG": 0.0,
-   "t_ECON": 0.0,
-   "t_EDU": 0.0,
+   "t_AUX": 0.14066,
+   "t_CULT": 0.02089,
+   "t_CYT": 0.00079,
+   "t_DEF": 0.00222,
+   "t_DERSOC": 0.34497,
+   "t_DESREG": 0.28443,
+   "t_ECON": 0.52081,
+   "t_EDU": 0.28038,
+   "t_ENER": 0.20291,
    "t_INFRA": 0.0,
-   "t_JUST": 0.00033,
-   "t_POLINST": 0.0,
-   "t_PROD": 0.00305,
+   "t_JUST": 0.36849,
+   "t_POLINST": 0.73472,
+   "t_PROD": 0.18329,
    "t_SALUD": 0.0,
-   "t_SIN_TEMA": 0.0,
-   "t_TRAB": 0.0,
-   "o_EJECUTIVO": NaN,
-   "o_OFICIALISMO": NaN,
-   "o_OPOSICION": NaN,
-   "o_SIN_ORIGEN": NaN
+   "t_SIN_TEMA": 0.32573,
+   "t_TRAB": 0.39244,
+   "o_EJECUTIVO": 0.9997,
+   "o_OFICIALISMO": 0.99967,
+   "o_OPOSICION": 0.99962,
+   "o_SIN_ORIGEN": 0.99971
   },
-  "llf": -9694.0
+  "llf": -9345.7
  },
  "M3_ADR_por_legislador": {
-  "n": 26513,
+  "n": 26100,
   "coef": {
-   "const": -0.5277,
-   "F_i": 1.9468,
-   "lealtad_x_jefe": 1.6846,
-   "W_otros": -0.1727
+   "const": -0.5614,
+   "F_i": 2.0134,
+   "lealtad_x_jefe": 1.6985,
+   "W_otros": -0.1467
   },
   "se_cluster_acta": {
-   "const": 0.1105,
-   "F_i": 0.4475,
-   "lealtad_x_jefe": 0.5506,
-   "W_otros": 0.1256
+   "const": 0.1117,
+   "F_i": 0.4552,
+   "lealtad_x_jefe": 0.5374,
+   "W_otros": 0.1284
   },
   "p": {
    "const": 0.0,
    "F_i": 1e-05,
-   "lealtad_x_jefe": 0.00222,
-   "W_otros": 0.16903
+   "lealtad_x_jefe": 0.00158,
+   "W_otros": 0.2533
   },
-  "llf": -10453.7
+  "llf": -10371.7
  },
  "M4_ADR_mas_caracter": {
-  "n": 26513,
+  "n": 26100,
   "coef": {
-   "const": -0.5143,
-   "F_i": 1.9258,
-   "lealtad_x_jefe": 1.6667,
-   "W_otros": -0.1587,
-   "dict_mayoria": -0.6332,
-   "dict_solo_minoria": 2.6868
+   "const": -0.548,
+   "F_i": 1.9931,
+   "lealtad_x_jefe": 1.681,
+   "W_otros": -0.1339,
+   "dict_mayoria": -0.62,
+   "dict_solo_minoria": 2.6818
   },
   "se_cluster_acta": {
-   "const": 0.1111,
-   "F_i": 0.4457,
-   "lealtad_x_jefe": 0.5505,
-   "W_otros": 0.1265,
-   "dict_mayoria": 0.1953,
-   "dict_solo_minoria": 0.1481
+   "const": 0.1123,
+   "F_i": 0.4536,
+   "lealtad_x_jefe": 0.5374,
+   "W_otros": 0.1293,
+   "dict_mayoria": 0.1989,
+   "dict_solo_minoria": 0.1502
   },
   "p": {
    "const": 0.0,
-   "F_i": 2e-05,
-   "lealtad_x_jefe": 0.00246,
-   "W_otros": 0.20966,
-   "dict_mayoria": 0.00119,
+   "F_i": 1e-05,
+   "lealtad_x_jefe": 0.00176,
+   "W_otros": 0.30027,
+   "dict_mayoria": 0.00183,
    "dict_solo_minoria": 0.0
   },
-  "llf": -10408.5
+  "llf": -10328.2
  },
  "_descriptivos": {
-  "n_votos": 26513,
-  "n_actas": 459,
+  "n_votos": 26100,
+  "n_actas": 449,
   "actas_por_caracter": {
-   "UNICO": 438,
-   "mayoria": 20,
+   "UNICO": 429,
+   "mayoria": 19,
    "solo_minoria": 1
   },
   "caracter_sin_clusters_suficientes": {
+   "mayoria": 19,
    "solo_minoria": 1
   },
   "min_clusters_confiable": 20,
-  "tasa_afirmativa": 0.8154,
+  "tasa_afirmativa": 0.8138,
   "reparto_caracter": {
-   "UNICO": 25322,
-   "mayoria": 1138,
+   "UNICO": 24950,
+   "mayoria": 1097,
    "solo_minoria": 53
   },
-  "firmantes_en_el_recinto": 2033,
-  "share_F_i": 0.0767,
-  "share_J_l": 0.085,
-  "share_mi_linaje_firmo": 0.6361,
-  "W_otros_medio": 0.5877,
-  "d_i_medio": 0.0469
+  "firmantes_en_el_recinto": 2111,
+  "share_F_i": 0.0809,
+  "share_J_l": 0.089,
+  "share_mi_linaje_firmo": 0.6418,
+  "W_otros_medio": 0.586,
+  "d_i_medio": 0.0475
  },
  "_avisos": {
-  "padron_cae_a_ventana": 99,
-  "excluyo_aux": 61,
-  "sin_actas_condicionadas": 15
+  "excluyo_aux": 209,
+  "padron_cae_a_ventana": 171,
+  "sin_actas_condicionadas": 57
  },
  "_args": {
   "muestra": 0,

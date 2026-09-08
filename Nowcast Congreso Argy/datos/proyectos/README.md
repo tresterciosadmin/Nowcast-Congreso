@@ -50,10 +50,10 @@
 
 ## Buscar acá si
 
-- cuantos proyectos de ley hay, si uno existe, y sus autores, cofirmantes, giros o taxonomias
+- cuantos proyectos de ley hay, si uno existe, y sus autores, cofirmantes o giros
+  (las TAXONOMIAS asignadas ya no viven aca: ver datos/taxonomias)
 - la base de proyectos no cuadra / se cargo mal (`verificar.py`, 14 invariantes), o una fila rara que no hay que dejar entrar (cuarentena, base aparte)
 - rehacer `proyectos.db` (no viaja a git: `migrar_ckan.py` + `upsert_bot.py`, ~1 min)
-- el control de cohorte (`verificar.py`): la MIDE `variables/embudo` como proceso y aca se controla el resultado
 
 <!-- Las dos cosas de arriba las levanta `.mapa/indexar.py` al MAPA.md de la
      raiz: el `Resumen:` va a la columna "Que es" y las pistas al router

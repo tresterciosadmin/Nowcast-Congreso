@@ -221,8 +221,30 @@ linea("\n7. MAPA")
 f = RAIZ / "MAPA.md"
 if f.exists():
     n = len(f.read_text(encoding="utf-8").split("\n"))
-    check(n <= 262, "MAPA.md dentro del presupuesto de contexto",
-          f"{n} lineas (presupuesto 260; el 04-09 quedo en 257)")
+    # El presupuesto se LEE de indexar.py y no se copia aca. El 06-09 este control
+    # decia 262 con un texto que citaba "el 04-09 quedo en 257": fijaba el numero
+    # del dia en que se escribio, asi que cuando el presupuesto cambio a proposito
+    # (08-09, al entrar el inventario de datos) el control paso a fallar por estar
+    # desactualizado el, no el mapa. Un control que hay que actualizar a mano cada
+    # vez que cambia lo que controla es un control que se apaga.
+    presupuesto = 260
+    _ix = RAIZ / ".mapa" / "indexar.py"
+    if _ix.exists():
+        import re as _re
+        _m = _re.search(r"^MAX_LINEAS_MAPA\s*=\s*(\d+)", _ix.read_text(encoding="utf-8"),
+                        _re.M)
+        if _m:
+            presupuesto = int(_m.group(1))
+    check(n <= presupuesto, "MAPA.md dentro del presupuesto de contexto",
+          f"{n} lineas (presupuesto {presupuesto}, declarado en .mapa/indexar.py)")
+
+    # El inventario de datos tiene que ESTAR. Es la seccion que el 08-09 evito que
+    # se siguiera preguntando a mano donde vive cada dato; si un dia el indexador
+    # deja de generarla, el mapa vuelve a describir solo el codigo y nadie se entera.
+    texto_mapa = f.read_text(encoding="utf-8")
+    check("## Inventario de datos" in texto_mapa,
+          "el MAPA trae el inventario de datos",
+          "si falta, reindexar: python .mapa/indexar.py")
 
 # ── cierre ─────────────────────────────────────────────────────────────────
 linea("\n" + "=" * 78)

@@ -1,6 +1,6 @@
 # tests/ — los controles que NO son de un modulo
 
-<!-- huella: 7eccfc0dbead -->
+<!-- huella: cefa1e17a57d -->
 
 **Resumen:** Tests que cruzan modulos y por eso no pueden vivir dentro de ninguno. Cada modulo tiene sus propios tests en `<modulo>/tests/`; acá van solo los que verifican acuerdos ENTRE modulos.
 
@@ -15,6 +15,9 @@
 | Archivo | Que verifica |
 |---|---|
 | `test_definiciones_compartidas.py` | que `periodo_parlamentario` y `normalizar_mayoria` sigan viniendo de `definiciones.py` y **no** de una copia repegada adentro de un modulo (ADR-0014), y que las constantes `MIEMBROS` / `MARGEN_DISPUTADA` / `CONDUCTAS` / presentes sigan diciendo lo mismo — sobre fechas borde y los dos backends de dtype. **8 chequeos.** |
+| `test_rutas.py` | que `rutas.py` diga la verdad (lo declarado existe) y este COMPLETO (toda ruta que cruza modulos esta declarada). |
+| `test_fechas_validan.py` | que las fechas de los contratos parseen y esten en rango. |
+| `test_bases_viajan.py` | que las bases SQLite **no** esten ignoradas por git (decision 08-09: viajan, para que el equipo trabaje sobre la misma base) y que ningun archivo versionado se acerque al techo de 100 MB de GitHub. **4 chequeos.** |
 
 ## Como correr
 
@@ -70,3 +73,20 @@ python -m pytest tests/ datos/proyectos/tests -q # + el unico modulo ya migrado
 - **Un test de acá que falla no se arregla tocando el test.** Falla porque dos modulos dejaron de estar de acuerdo: hay que decidir cual tiene razon y corregir el otro.
 - **El `xfail` de `pyarrow` ya no esta: se arreglo el 2026-08-25.** Las cuatro copias de `periodo_parlamentario` reventaban con backend `pyarrow` (`pd.to_numeric` conserva `int64[pyarrow]` y `a % 2` no esta implementado) y no se notaba en produccion porque `read_parquet` devuelve numpy. El arreglo era **una linea por copia** y estuvo trabado un mes porque tocaba cuatro modulos con dueño — ese fue el argumento para unificar en `definiciones.py` (ADR-0014). Hoy ese test pasa de verdad.
 - **`test_ninguna_copia_redefine_las_definiciones` compara IDENTIDAD, no resultados.** Los otros comparan valores y pasan igual con una definicion o con cinco, mientras las cinco coincidan. Ese es el punto: hasta el 25-08 las cuatro copias coincidian y aun asi habia un bug que ninguna podia arreglar sola.
+
+## Trampa nueva (08-09-2026): `git status` deja locks que no se pueden borrar
+
+`git status` refresca el indice y para eso toma `.git/index.lock`. Cuando el
+comando corre desde un entorno que no puede *unlink* (el puente de Claude, y
+tambien GitHub Desktop cuando se cierra a destiempo), el lock queda huerfano y el
+proximo `git commit` de cualquiera falla con "Unable to create index.lock". Es el
+URGENTE B, que ya se cerro dos veces.
+
+En un chequeo de solo lectura la solucion es no tomar el lock:
+
+```
+git --no-optional-locks status --porcelain
+```
+
+`test_bases_viajan.py` usa esa forma en todas sus llamadas. Si escribis un test
+nuevo que consulte git, usala tambien.

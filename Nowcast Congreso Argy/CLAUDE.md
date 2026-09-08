@@ -13,7 +13,7 @@ Nowcast Legislativo Argentino: estima la probabilidad de sanción de proyectos d
 2. `coordinacion/ESTADO-DEL-PROYECTO.md` — qué se hizo hasta ahora (documento vivo).
 3. `coordinacion/TABLERO.md` — qué tareas están libres / tomadas.
 4. `coordinacion/PROTOCOLO-GIT.md` — cómo ramificar y mergear sin conflictos.
-5. **`MAPA.md`** (raíz) — el índice del repo, generado. Dice qué hay en cada módulo, qué archivos son centrales y quién consume a quién. **Leerlo antes de abrir cualquier archivo de código**, y usar `python3 .mapa/buscar.py "<termino>"` para ubicar algo sin escanear el repo.
+5. **`MAPA.md`** (raíz) — el índice del repo, generado. Dice qué hay en cada módulo, qué archivos son centrales y quién consume a quién. **Leerlo antes de abrir cualquier archivo de código**, y usar `python3 .mapa/buscar.py "<termino>"` para ubicar algo sin escanear el repo. Desde el 08-09 el mapa trae además un **inventario de datos**: 140 archivos (parquet, csv, la base, los xlsx) con su forma, su peso, **si viajan por git** y quién los escribe y quién los lee. Antes de reconstruir una tabla, preguntar: `python3 .mapa/buscar.py --dato <termino>`. Ya pasó dos veces que se rehizo trabajo que existía en disco y no estaba indexado en ningún lado.
 6. El `README.md` del módulo que vayas a tocar (contrato de entradas/salidas).
 7. `TABLERO-CONTROL.html` (raíz) — el mapa ejecutivo; se actualiza vía `tablero_datos.js` (regla más abajo).
 

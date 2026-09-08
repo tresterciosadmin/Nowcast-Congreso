@@ -1,0 +1,115 @@
+﻿id_canonico,id_absorbido,nombre_canonico,nombre_absorbido,votos_canonico,votos_absorbido,camaras,distrito,fuentes_canonico,fuentes_absorbido,grupo
+leg:1b570020e4fb,leg:e4bfb26ad93f,"GUINLE, Marcelo Alejandro","GUINLE, MARCELO ALEJANDRO HORACIO",2011,152,senado,CHUBUT,decada_votada,argentinadatos/senado,1-CASI SEGURO (mismo distrito + fuentes disjuntas)
+leg:fe5fa16ea644,leg:7ef648eb9cde,"RAIMUNDI, Carlos Alberto",RAIMUNDI Carlos,948,844,diputados,BUENOS AIRES,decada_votada,argentinadatos/ckan_diputados,1-CASI SEGURO (mismo distrito + fuentes disjuntas)
+leg:b067aa2a9852,leg:9c9abb302e88,STOLBIZER Margarita Rosa,"Stolbizer, Margarita",1054,717,diputados,BUENOS AIRES,ckan_diputados/decada_votada,argentinadatos,1-CASI SEGURO (mismo distrito + fuentes disjuntas)
+leg:3cc84340cad1,leg:3a122de91183,"ROSSI, Agustín Oscar",ROSSI Agustín,1261,418,diputados,SANTA FE,argentinadatos/decada_votada/manual_2026,ckan_diputados,1-CASI SEGURO (mismo distrito + fuentes disjuntas)
+leg:2d9e1f82d33d,leg:fdb426b871a3,GIUDICI Silvana Myriam,"Giudici, Silvana",1076,594,diputados,CABA,ckan_diputados/decada_votada,argentinadatos/manual_2026,1-CASI SEGURO (mismo distrito + fuentes disjuntas)
+leg:cb838b8e4f8d,leg:f01ecc015460,DE MARCHI Omar Bruno,"De Marchi, Omar",1196,305,diputados,MENDOZA,ckan_diputados/decada_votada,argentinadatos,1-CASI SEGURO (mismo distrito + fuentes disjuntas)
+leg:5f32f1bc81b5,leg:5b0b8fd7e6f8,HELLER Carlos Salomón,"HELLER, Carlos",786,669,diputados,CABA,ckan_diputados,argentinadatos/decada_votada,1-CASI SEGURO (mismo distrito + fuentes disjuntas)
+leg:8855b7942ce8,leg:f9d7b40b157b,"BULLRICH, Esteban","BULLRICH, ESTEBAN JOSÉ",887,431,diputados/senado,CABA,decada_votada,argentinadatos/senado,1-CASI SEGURO (mismo distrito + fuentes disjuntas)
+leg:63e2cc41c868,leg:d621960146ec,SOLANAS Julio Rodolfo,"SOLANAS, Julio Rodolfo Francisco",1230,82,diputados,ENTRE RIOS,argentinadatos/ckan_diputados,decada_votada,1-CASI SEGURO (mismo distrito + fuentes disjuntas)
+leg:2e5fa5d9bd9c,leg:4f6f2bb33642,BINNER Hermes Juan,"BINNER, Hermes",727,576,diputados,SANTA FE,argentinadatos/ckan_diputados,decada_votada,1-CASI SEGURO (mismo distrito + fuentes disjuntas)
+leg:be0cb4edbb19,leg:c7b838c4e20d,"BONASSO, Miguel",BONASSO Miguel Luis,1035,256,diputados,CABA,decada_votada,argentinadatos/ckan_diputados,1-CASI SEGURO (mismo distrito + fuentes disjuntas)
+leg:80e2a75366be,leg:2f474538952a,"CANELA, Susana Mercedes",CANELA Susana,842,429,diputados,SALTA,decada_votada,argentinadatos/ckan_diputados,1-CASI SEGURO (mismo distrito + fuentes disjuntas)
+leg:c23c9ec92fd9,leg:54fa232578e8,OCAÑA Maria Graciela,"Ocaña, Graciela",895,341,diputados,BUENOS AIRES,ckan_diputados/decada_votada,argentinadatos,1-CASI SEGURO (mismo distrito + fuentes disjuntas)
+leg:4a5411ff0445,leg:36cdce3e2305,ÁLVAREZ RODRIGUEZ María Cristina,"ALVAREZ RODRIGUEZ, Cristina",653,576,diputados,BUENOS AIRES,argentinadatos/ckan_diputados,decada_votada,1-CASI SEGURO (mismo distrito + fuentes disjuntas)
+leg:38f5bb4b1045,leg:43bd8f277803,"FILMUS, DANIEL FERNANDO",FILMUS Daniel,981,240,diputados/senado,CABA,argentinadatos/decada_votada,ckan_diputados,1-CASI SEGURO (mismo distrito + fuentes disjuntas)
+leg:6de6eac2355b,leg:29d18d137619,COBOS Julio César Cleto,"Cobos, Julio",784,430,diputados/senado,MENDOZA,ckan_diputados/senado,argentinadatos,1-CASI SEGURO (mismo distrito + fuentes disjuntas)
+leg:ad573a2f0414,leg:927ea18db9c3,BALDASSI Héctor Walter,"Baldassi, Hector W.",734,434,diputados,CORDOBA,ckan_diputados,argentinadatos,1-CASI SEGURO (mismo distrito + fuentes disjuntas)
+leg:a4a97a25574c,leg:e947a030abbf,ALFONSÍN Ricardo,"ALFONSIN, Ricardo Luis",1071,58,diputados,BUENOS AIRES,argentinadatos/ckan_diputados,decada_votada,1-CASI SEGURO (mismo distrito + fuentes disjuntas)
+leg:e49955aaeafc,leg:e9d6912905d9,BENEDETTI Atilio Francisco Salvador,"Benedetti, Atilio",567,460,diputados,ENTRE RIOS,ckan_diputados/decada_votada,argentinadatos,1-CASI SEGURO (mismo distrito + fuentes disjuntas)
+leg:2db33d715133,leg:466490719d37,GONZÁLEZ Álvaro Gustavo,"Gonzalez, Alvaro",551,400,diputados,CABA,ckan_diputados,argentinadatos/manual_2026,1-CASI SEGURO (mismo distrito + fuentes disjuntas)
+leg:7ee28ba0f9da,leg:886a575a65ac,NUÑEZ José Carlos,"Nuñez, Jose",551,400,diputados,SANTA FE,ckan_diputados,argentinadatos/manual_2026,1-CASI SEGURO (mismo distrito + fuentes disjuntas)
+leg:cfe8212f1e26,leg:6c869f084909,TAILHADE Luis Rodolfo,"Tailhade, Rodolfo",551,400,diputados,BUENOS AIRES,ckan_diputados,argentinadatos/manual_2026,1-CASI SEGURO (mismo distrito + fuentes disjuntas)
+leg:f479e489c9d1,leg:816e067f49c7,BANFI Karina Verónica,"Banfi, Karina",551,400,diputados,BUENOS AIRES,ckan_diputados,argentinadatos/manual_2026,1-CASI SEGURO (mismo distrito + fuentes disjuntas)
+leg:c492643273a6,leg:bc60913b9f50,"COLLANTES, Genaro","Collantes, Genaro Aurelio",842,107,diputados,CATAMARCA,decada_votada,argentinadatos,1-CASI SEGURO (mismo distrito + fuentes disjuntas)
+leg:d1c8ddc09658,leg:d19e8d9d42ce,BARLETTA Mario Domingo,"Barletta, Mario",490,430,diputados,SANTA FE,ckan_diputados,argentinadatos,1-CASI SEGURO (mismo distrito + fuentes disjuntas)
+leg:d85c03e611ce,leg:b7bd841b734c,LOSPENNATO Silvia Gabriela,"Lospennato, Silvia",551,295,diputados,BUENOS AIRES,ckan_diputados,argentinadatos,1-CASI SEGURO (mismo distrito + fuentes disjuntas)
+leg:3c6edd337462,leg:eb5003785673,BIELLA CALVET Bernardo José,"Biella, Bernardo",407,397,diputados,SALTA,ckan_diputados,argentinadatos/manual_2026,1-CASI SEGURO (mismo distrito + fuentes disjuntas)
+leg:a8416be62df4,leg:7184c6d8405b,"Milman, Gerardo",MILMAN Gerardo Fabián,468,323,diputados,BUENOS AIRES,argentinadatos,ckan_diputados/decada_votada,1-CASI SEGURO (mismo distrito + fuentes disjuntas)
+leg:fededee8ca6a,leg:1e6a9e5ad9c5,"Aguirre, Hilda","AGUIRRE de SORIA, Hilda",433,324,diputados,LA RIOJA,argentinadatos/manual_2026,decada_votada,1-CASI SEGURO (mismo distrito + fuentes disjuntas)
+leg:ba28cc819b8a,leg:62ae92f9bf94,ASSEFF Alberto Emilio,"Asseff, Alberto",438,313,diputados,BUENOS AIRES,ckan_diputados,argentinadatos,1-CASI SEGURO (mismo distrito + fuentes disjuntas)
+leg:61264e68bce3,leg:7334dea32ee7,"CUSINATO, José César Gustavo",CUSINATO Gustavo,541,169,diputados,ENTRE RIOS,decada_votada,argentinadatos/ckan_diputados,1-CASI SEGURO (mismo distrito + fuentes disjuntas)
+leg:6098da00a455,leg:fe7c5c68b124,FEIN Mónica Hayde,"Fein, Monica",365,324,diputados,SANTA FE,ckan_diputados/decada_votada,argentinadatos,1-CASI SEGURO (mismo distrito + fuentes disjuntas)
+leg:0b274795a92c,leg:8058ac44b733,"Neder, Estela Mary",NEDER Estela Mary del Rosario,400,284,diputados,SANTIAGO DEL ESTERO,argentinadatos/manual_2026,ckan_diputados,1-CASI SEGURO (mismo distrito + fuentes disjuntas)
+leg:0ac6f6bd7f2d,leg:3f7dee3ede14,"MEABE de MATHO, Josefina Angélica","MEABE, JOSEFINA ANGELICA",584,89,senado,CORRIENTES,decada_votada,argentinadatos/senado,1-CASI SEGURO (mismo distrito + fuentes disjuntas)
+leg:67bb2f08a755,leg:2f337ebc6870,"FLORES, Héctor",FLORES Héctor Toty,324,322,diputados,BUENOS AIRES,decada_votada,argentinadatos/ckan_diputados,1-CASI SEGURO (mismo distrito + fuentes disjuntas)
+leg:32c9c929053d,leg:3f6c25370e57,"Siley, Vanesa Raquel",SILEY Vanesa,400,244,diputados,BUENOS AIRES,argentinadatos/manual_2026,ckan_diputados,1-CASI SEGURO (mismo distrito + fuentes disjuntas)
+leg:4dadbcaa74b5,leg:2329dd068c91,"Ansaloni, Pablo",ANSALONI Pablo Miguel,383,244,diputados,BUENOS AIRES,argentinadatos/manual_2026,ckan_diputados,1-CASI SEGURO (mismo distrito + fuentes disjuntas)
+leg:fe9da26ab17d,leg:3d39cdacba6b,LITZA Mónica Edith,"Litza, Monica",307,291,diputados,BUENOS AIRES,ckan_diputados,argentinadatos,1-CASI SEGURO (mismo distrito + fuentes disjuntas)
+leg:beeeae672df1,leg:c854e2553b7c,"Montenegro, Guillermo",MONTENEGRO Guillermo Tristán,379,213,diputados,BUENOS AIRES,argentinadatos/manual_2026,ckan_diputados,1-CASI SEGURO (mismo distrito + fuentes disjuntas)
+leg:0fc6daa7fbbe,leg:10610957c7a4,"Fernandez Patri, Ramiro",FERNANDEZ PATRI Gustavo Ramiro,295,244,diputados,FORMOSA,argentinadatos,ckan_diputados,1-CASI SEGURO (mismo distrito + fuentes disjuntas)
+leg:7101dec0f4ec,leg:ea481c48b8d6,"Oliveto Lago, Paula",OLIVETO LAGO Paula Mariana,295,244,diputados,CABA,argentinadatos,ckan_diputados,1-CASI SEGURO (mismo distrito + fuentes disjuntas)
+leg:1f986dee686d,leg:0c48a4f1e2d2,"Allende, Walberto",ALLENDE Walberto Enrique,295,244,diputados,SAN JUAN,argentinadatos,ckan_diputados,1-CASI SEGURO (mismo distrito + fuentes disjuntas)
+leg:f39984289965,leg:d6eeac11b6c7,"Arroyo, Daniel",ARROYO Daniel Fernando,291,213,diputados,BUENOS AIRES,argentinadatos,ckan_diputados,1-CASI SEGURO (mismo distrito + fuentes disjuntas)
+leg:b46ac31ef7bd,leg:d8d4c64f74d8,"Mirabella, Roberto","MIRABELLA, ROBERTO MARIO",291,180,diputados/senado,SANTA FE,argentinadatos,senado,1-CASI SEGURO (mismo distrito + fuentes disjuntas)
+leg:4fe11a7f2f62,leg:ca85a123aa3a,"BORELLO, Marta Teresita","BORELLO, MARTA",368,89,senado,CORDOBA,decada_votada,argentinadatos/senado,1-CASI SEGURO (mismo distrito + fuentes disjuntas)
+leg:457a26c7f3ec,leg:9f512fbbd33b,"LEDESMA ABDALA DE ZAMORA, CLAUDIA",ZAMORA Claudia,244,213,diputados/senado,SANTIAGO DEL ESTERO,senado,ckan_diputados,1-CASI SEGURO (mismo distrito + fuentes disjuntas)
+leg:32e928de2787,leg:8eeac62c43db,"Cisneros, Carlos",CISNEROS Carlos Anibal,400,31,diputados,TUCUMAN,argentinadatos/manual_2026,ckan_diputados,1-CASI SEGURO (mismo distrito + fuentes disjuntas)
+leg:294195a88442,leg:55f24285c804,"Sand, Nancy",SAND GIORASI Nancy Aracely,400,31,diputados,CORRIENTES,argentinadatos/manual_2026,ckan_diputados,1-CASI SEGURO (mismo distrito + fuentes disjuntas)
+leg:1bfdc8cc9376,leg:c8b147a5800c,"Ferraro, Maximiliano",FERRARO Maximiliano Carlos Francisco,400,31,diputados,CABA,argentinadatos/manual_2026,ckan_diputados,1-CASI SEGURO (mismo distrito + fuentes disjuntas)
+leg:96c3d7e97349,leg:f29013e017b9,"Daives, Ricardo",DAIVES Ricardo Daniel,400,31,diputados,SANTIAGO DEL ESTERO,argentinadatos/manual_2026,ckan_diputados,1-CASI SEGURO (mismo distrito + fuentes disjuntas)
+leg:545130287582,leg:9a1a4721831f,"Gutierrez, Carlos",GUTIERREZ Carlos Mario,400,31,diputados,CORDOBA,argentinadatos/manual_2026,ckan_diputados,1-CASI SEGURO (mismo distrito + fuentes disjuntas)
+leg:adb806646c87,leg:2df193e2cfb7,"Gutierrez, Ramiro",GUTIÉRREZ Carlos Ramiro,400,31,diputados,BUENOS AIRES,argentinadatos/manual_2026,ckan_diputados,1-CASI SEGURO (mismo distrito + fuentes disjuntas)
+leg:7b1337a70d73,leg:522718f34b30,"ACOSTA de AHUMADA, María Julia",ACOSTA María Julia,324,74,diputados,CATAMARCA,decada_votada,argentinadatos/ckan_diputados,1-CASI SEGURO (mismo distrito + fuentes disjuntas)
+leg:dd87bdbbfa70,leg:90cc581c8806,"AGOSTO, Walter",AGOSTO Walter Alfredo,324,74,diputados,SANTA FE,decada_votada,argentinadatos/ckan_diputados,1-CASI SEGURO (mismo distrito + fuentes disjuntas)
+leg:24b1b1471c01,leg:4857baad8955,"ZAVALLO, Gustavo",ZAVALLO Gustavo Marcelo,324,74,diputados,ENTRE RIOS,decada_votada,argentinadatos/ckan_diputados,1-CASI SEGURO (mismo distrito + fuentes disjuntas)
+leg:a84fc3e1b3b3,leg:7c9c1075948f,"CORPACCI, LUCÍA BENIGNA",CORPACCI Lucia,309,31,diputados/senado,CATAMARCA,argentinadatos/manual_2026/senado,ckan_diputados,1-CASI SEGURO (mismo distrito + fuentes disjuntas)
+leg:db6564eec766,leg:7df5c54135a6,"Lopez Rodriguez, Dante",LÓPEZ RODRÍGUEZ Dante Edgardo,295,31,diputados,CATAMARCA,argentinadatos,ckan_diputados,1-CASI SEGURO (mismo distrito + fuentes disjuntas)
+leg:9a4d728beab7,leg:320459f28986,"Yutrovic, Carolina",YUTROVIC Ines Carolina,295,31,diputados,TIERRA DEL FUEGO,argentinadatos,ckan_diputados,1-CASI SEGURO (mismo distrito + fuentes disjuntas)
+leg:3ad1f3c963e5,leg:142aee868ad2,"Marziotta, Gisela",MARZIOTTA Maria Gisela,295,4,diputados,CABA,argentinadatos,ckan_diputados,1-CASI SEGURO (mismo distrito + fuentes disjuntas)
+leg:8800aa059a10,leg:90a2c1da63e9,MOREAU Leopoldo Raúl Guido,"MOREAU, Leopoldo Raúl",244,42,diputados,BUENOS AIRES,ckan_diputados,decada_votada,1-CASI SEGURO (mismo distrito + fuentes disjuntas)
+leg:c59cc4e92905,leg:95fe3bbb8634,"TAIANA, JORGE ENRIQUE","Taiana, Jorge",146,105,diputados/senado,BUENOS AIRES,senado,argentinadatos/manual_2026,1-CASI SEGURO (mismo distrito + fuentes disjuntas)
+leg:21e6983f18ce,leg:7c9c1075948f,"CORPACCI de MERCADO, Lucia B .",CORPACCI Lucia,216,31,diputados/senado,CATAMARCA,decada_votada,ckan_diputados,1-CASI SEGURO (mismo distrito + fuentes disjuntas)
+leg:1cc767abd565,leg:ca8e36ee57b4,"Herrera Ahuad, Oscar A.","Herrera, Oscar",95,10,diputados,MISIONES,argentinadatos,manual_2026,1-CASI SEGURO (mismo distrito + fuentes disjuntas)
+leg:61d4858c1a5e,leg:eb499e8d19e7,AMAYA Domingo,"Amaya, Domingo Luis",31,21,diputados,TUCUMAN,ckan_diputados,argentinadatos,1-CASI SEGURO (mismo distrito + fuentes disjuntas)
+leg:256c9687e6e4,leg:4e8146bab086,APARICIO Alicia Noemi,"Aparicio, Alicia N.",31,21,diputados,BUENOS AIRES,ckan_diputados,argentinadatos,1-CASI SEGURO (mismo distrito + fuentes disjuntas)
+leg:488945f5f694,leg:922ca54d2c2c,LENA Gabriela Mabel,"Lena, Gabriela",31,21,diputados,ENTRE RIOS,ckan_diputados,argentinadatos,1-CASI SEGURO (mismo distrito + fuentes disjuntas)
+leg:9af01f0886ff,leg:40316693278c,REZINOVSKY Dina Esther,"Rezinovsky, Dina",31,21,diputados,CABA,ckan_diputados,argentinadatos,1-CASI SEGURO (mismo distrito + fuentes disjuntas)
+leg:97cfe3c6cd18,leg:80f7cbdb6680,MARTÍNEZ Maria Dolores,"Martinez, Dolores",31,21,diputados,CABA,ckan_diputados,argentinadatos,1-CASI SEGURO (mismo distrito + fuentes disjuntas)
+leg:0cfa8901a8f9,leg:e0ec13db40a4,JOURY Mercedes,"Joury, Maria de las Mercedes",31,21,diputados,BUENOS AIRES,ckan_diputados,argentinadatos,1-CASI SEGURO (mismo distrito + fuentes disjuntas)
+leg:7fa0344d8a22,leg:298c0549e724,LATORRE Jimena Hebe,"Latorre, Jimena",31,21,diputados,MENDOZA,ckan_diputados,argentinadatos,1-CASI SEGURO (mismo distrito + fuentes disjuntas)
+leg:16598fe960e1,leg:dee0a5011600,HERNÁNDEZ Estela Beatriz,"Hernandez, Estela",31,21,diputados,CHUBUT,ckan_diputados,argentinadatos,1-CASI SEGURO (mismo distrito + fuentes disjuntas)
+leg:2f4a251ea34c,leg:7af80bdcd0f9,ORMACHEA Claudia,"Ormachea, Claudia Beatriz",31,21,diputados,BUENOS AIRES,ckan_diputados,argentinadatos,1-CASI SEGURO (mismo distrito + fuentes disjuntas)
+leg:4ddf567b1f07,leg:46827946cfad,YAMBRUN Liliana,"Yambrun, Liliana Patricia",31,21,diputados,BUENOS AIRES,ckan_diputados,argentinadatos,1-CASI SEGURO (mismo distrito + fuentes disjuntas)
+leg:8dba8c707e88,leg:25e568b64e13,ESTEVEZ Enrique Eloy,"Estevez, Enrique",31,21,diputados,SANTA FE,ckan_diputados,argentinadatos,1-CASI SEGURO (mismo distrito + fuentes disjuntas)
+leg:9ee22667f2f8,leg:216ad61b75e6,CORNEJO Virginia Maria,"Cornejo, Virginia",31,21,diputados,SALTA,ckan_diputados,argentinadatos,1-CASI SEGURO (mismo distrito + fuentes disjuntas)
+leg:100701856e2c,leg:9b4206ebb54c,VESSVESSIAN Marcela Paola,"Vessvessian, Paola",31,21,diputados,SANTA CRUZ,ckan_diputados,argentinadatos,1-CASI SEGURO (mismo distrito + fuentes disjuntas)
+leg:e4212563a09b,leg:8ac4e8af86f2,ASCARATE Lidia,"Ascarate, Lidia Ines",31,21,diputados,TUCUMAN,ckan_diputados,argentinadatos,1-CASI SEGURO (mismo distrito + fuentes disjuntas)
+leg:6c0f76d4c867,leg:c86e66c7fe50,VARA Jorge Alberto,"Vara, Jorge",31,21,diputados,CORRIENTES,ckan_diputados,argentinadatos,1-CASI SEGURO (mismo distrito + fuentes disjuntas)
+leg:fc68188d51b6,leg:cb2cbcc587c9,FERNANDEZ Eduardo Gabriel,"Fernandez, Eduardo",31,21,diputados,CORDOBA,ckan_diputados,argentinadatos,1-CASI SEGURO (mismo distrito + fuentes disjuntas)
+leg:8a79231478d0,leg:3206e737980b,VILAR Daniela,"Vilar, Daniela Marina",31,4,diputados,BUENOS AIRES,ckan_diputados,argentinadatos,1-CASI SEGURO (mismo distrito + fuentes disjuntas)
+leg:1e5401fb3e8d,leg:f897af3d1b97,"BIANCHI SILVESTRE, Marcela","Bianchi Silvestre, Marcela Alejandra",1059,216,diputados,BUENOS AIRES,decada_votada,argentinadatos,"3-PROBABLE (sin distrito, fuentes disjuntas)"
+leg:e693d138adfe,leg:9dddc1546a55,"CAPOS, Liliana Delia","CAPOS, LILIANA",1005,17,senado,TIERRA DEL FUEGO,decada_votada,argentinadatos,"3-PROBABLE (sin distrito, fuentes disjuntas)"
+leg:677a6e882c56,leg:e74a0d47c255,"MARTINEZ GARBINO, Emilio","Martinez Garbino, Emilio Raúl",842,133,diputados,ENTRE RIOS,decada_votada,argentinadatos,"3-PROBABLE (sin distrito, fuentes disjuntas)"
+leg:a5e09bcfcdfa,leg:83e5d7f70468,"SANTANDER, Mario","Santander, Mario Armando",842,119,diputados,LA RIOJA,decada_votada,argentinadatos,"3-PROBABLE (sin distrito, fuentes disjuntas)"
+leg:9620a2a748c9,leg:b50a357ff51a,"ACUÑA KUNZ, Juan","Acuña Kunz, Juan Erwin",842,107,diputados,SANTA CRUZ,decada_votada,argentinadatos,"3-PROBABLE (sin distrito, fuentes disjuntas)"
+leg:2f97e790d2ef,leg:4bc90a72c08e,"ZANCADA, Pablo","Zancada, Pablo Ventura",842,107,diputados,SANTA FE,decada_votada,argentinadatos,"3-PROBABLE (sin distrito, fuentes disjuntas)"
+leg:d8482c1686f1,leg:72951ac5f284,"FABRIS, Luciano","Fabris, Luciano Rafael",842,107,diputados,CHACO,decada_votada,argentinadatos,"3-PROBABLE (sin distrito, fuentes disjuntas)"
+leg:e8ac4c468eeb,leg:45866604e936,"GINZBURG, Nora","Ginzburg, Nora Raquel",842,107,diputados,CABA,decada_votada,argentinadatos,"3-PROBABLE (sin distrito, fuentes disjuntas)"
+leg:74e5b959406d,leg:122ca1dc302b,"PASTORIZA, Eduardo","Pastoriza, Eduardo Antonio",842,107,diputados,CATAMARCA,decada_votada,argentinadatos,"3-PROBABLE (sin distrito, fuentes disjuntas)"
+leg:c4556e55cff1,leg:49cb59cf440e,"CESAR, Nora","Cesar, Nora Noemí",842,107,diputados,BUENOS AIRES,decada_votada,argentinadatos,"3-PROBABLE (sin distrito, fuentes disjuntas)"
+leg:c9993907cfd4,leg:80d53a9e1998,"GARCIA MENDEZ, Emilio","Garcia Mendez, Emilio Arturo",842,107,diputados,CABA,decada_votada,argentinadatos,"3-PROBABLE (sin distrito, fuentes disjuntas)"
+leg:34e2127f300c,leg:d609957c98c6,"GALANTINI, Eduardo","Galantini, Eduardo Leonel",842,107,diputados,CORRIENTES,decada_votada,argentinadatos,"3-PROBABLE (sin distrito, fuentes disjuntas)"
+leg:10441e96987c,leg:0d815d6a6470,"DELICH, Francisco","Delich, Francisco José",842,107,diputados,CORDOBA,decada_votada,argentinadatos,"3-PROBABLE (sin distrito, fuentes disjuntas)"
+leg:408a1e83ae23,leg:edd1f846d535,"LEMOS, Silvia","Lemos, Silvia Beatriz",842,107,diputados,MENDOZA,decada_votada,argentinadatos,"3-PROBABLE (sin distrito, fuentes disjuntas)"
+leg:86369a4a843d,leg:dc6028edd6f1,"DALLA FONTANA, Ariel","Dalla Fontana, Ariel  Raúl Armando",837,107,diputados,SANTA FE,decada_votada,argentinadatos,"3-PROBABLE (sin distrito, fuentes disjuntas)"
+leg:9010e2995814,leg:be61b5d2cc1e,"FALCO, Luis Alberto","FALCO, LUIS",905,17,senado,RIO NEGRO,decada_votada,argentinadatos,"3-PROBABLE (sin distrito, fuentes disjuntas)"
+leg:556d7f89b12f,leg:e35971918eec,"FERRIGNO OBARRIO, Santiago","Ferrigno, Santiago",711,182,diputados,LA PAMPA,decada_votada,argentinadatos,"3-PROBABLE (sin distrito, fuentes disjuntas)"
+leg:fbdfef09e7c2,leg:4b8dd3d30356,"BOSCH de SARTORI, Irene Miriam","Bosch, Irene Miriam",711,182,diputados,MISIONES,decada_votada,argentinadatos,"3-PROBABLE (sin distrito, fuentes disjuntas)"
+leg:364ceb043c08,leg:59bc4442cca5,"CAMAÑO, Dante","Camaño, Dante Alberto",732,107,diputados,BUENOS AIRES,decada_votada,argentinadatos,"3-PROBABLE (sin distrito, fuentes disjuntas)"
+leg:d0748eae76d1,leg:fbc0ecc747d0,"ARANCIO DE BELLER, Mónica","ARANCIO de BELLER, LYLIA MÓNICA",639,17,senado,JUJUY,decada_votada,argentinadatos,"3-PROBABLE (sin distrito, fuentes disjuntas)"
+leg:b794ed2d3645,leg:8800aa059a10,"Moreau, Leopoldo",MOREAU Leopoldo Raúl Guido,404,244,diputados,BUENOS AIRES,argentinadatos,ckan_diputados,"3-PROBABLE (sin distrito, fuentes disjuntas)"
+leg:8584a77eb06f,leg:9b8601d58cb0,"Reyes, Roxana",REYES Roxana Nahir,295,244,diputados,SANTA CRUZ,argentinadatos,ckan_diputados,"3-PROBABLE (sin distrito, fuentes disjuntas)"
+leg:b794ed2d3645,leg:90a2c1da63e9,"Moreau, Leopoldo","MOREAU, Leopoldo Raúl",404,42,diputados,BUENOS AIRES,argentinadatos,decada_votada,"3-PROBABLE (sin distrito, fuentes disjuntas)"
+leg:aad3d74645f0,leg:7450b3bd5804,"FERNANDEZ, Aníbal Domingo","FERNÁNDEZ, ANIBAL",368,5,senado,BUENOS AIRES,decada_votada,argentinadatos,"3-PROBABLE (sin distrito, fuentes disjuntas)"
+leg:ce68255712d5,leg:1935b1a636bc,"OLALLA, STELLA MARIS","Olalla de Moreira, Stella Maris",244,122,senado,ENTRE RIOS,senado,argentinadatos,"3-PROBABLE (sin distrito, fuentes disjuntas)"
+leg:5954673c399b,leg:b3e568e170ef,"RODAS, ANTONIO JOSÉ","Rodas, Antonio",244,122,senado,CHACO,senado,argentinadatos,"3-PROBABLE (sin distrito, fuentes disjuntas)"
+leg:c103c1e4186f,leg:e87f8d9c1ae6,"ABALOS, Roberto","Abalos, Roberto José",217,95,diputados,SANTIAGO DEL ESTERO,decada_votada,argentinadatos,"3-PROBABLE (sin distrito, fuentes disjuntas)"
+leg:d2a384ebfd8b,leg:0451cfd41d79,"Alvarez Rivero, Carmen Silvia","ALVAREZ RIVERO, CARMEN",234,71,senado,CORDOBA/SANTA FE,argentinadatos,manual_2026/senado,"3-PROBABLE (sin distrito, fuentes disjuntas)"
+leg:4819f762c5e3,leg:fc4e93b057d5,"RUIZ DIAZ, Elsa Beatriz","RUIZ DIAZ, ELSA B.",292,5,senado,ENTRE RIOS,decada_votada,argentinadatos,"3-PROBABLE (sin distrito, fuentes disjuntas)"
+leg:929d25cfb09f,leg:9db028f422d2,"Coto, Agustín","COTO, AGUSTÍN PEDRO",112,7,senado,NEUQUEN,argentinadatos,manual_2026,"3-PROBABLE (sin distrito, fuentes disjuntas)"
+leg:97bbbf7cc358,leg:c4eabf6d9ca4,"Royón, Flavia","ROYÓN, FLAVIA GABRIELA",112,7,senado,LA RIOJA,argentinadatos,manual_2026,"3-PROBABLE (sin distrito, fuentes disjuntas)"
+leg:5bbadda594e8,leg:43475430d69a,"Monte de Oca, Belén","MONTE DE OCA, MARÍA BELÉN",112,7,senado,"TIERRA DEL FUEGO, ANTARTIDA E ISLAS DEL ATLANTICO SUR",argentinadatos,manual_2026,"3-PROBABLE (sin distrito, fuentes disjuntas)"
+leg:c183b6af140a,leg:456c40c2dd0f,RODRIGUEZ Alejandro,"Rodriguez, Alejandro ""Topo""",31,21,diputados,BUENOS AIRES,ckan_diputados,argentinadatos,"3-PROBABLE (sin distrito, fuentes disjuntas)"
+leg:b2b0502b391a,leg:839eeae73918,"Aragones de Juarez, Mercedes","ARAGONES de JUAREZ, Mercedes María",26,5,diputados,SANTIAGO DEL ESTERO,argentinadatos,decada_votada,"3-PROBABLE (sin distrito, fuentes disjuntas)"

@@ -1,0 +1,185 @@
+﻿# ALIAS de legislador_id — la MISMA persona con dos ids en la canonica.
+#
+# 145 de los 153 pares del censo del 2026-09-04. 114 los aprobo Claude con el criterio
+# de 90% (grupos 1 y 3 del censo) y 31 los reviso y aprobo FRANCO uno por uno; 8 los
+# RECHAZO, y estan listados al pie para que nadie los vuelva a proponer.
+#
+# CANONICO = el id con MAS votos (decision de Franco): preserva el historial largo,
+# que es lo que alimenta el record individual.
+#
+# QUE SE APLICA HOY (opcion B): SOLO los cruces por id — el roster de jefes de bloque
+# y la resolucion de firmas del dictamen. NO se toca `datos/canonica`.
+#
+# POR QUE NO se toca la canonica todavia, y esta MEDIDO:
+#   mergear los ids SIN el guard de era EMPEORA el skill (0,1317 -> 0,1301). La
+#   fragmentacion de ids venia funcionando como un guard de era ACCIDENTAL: la costura
+#   entre fuentes cae en un recambio, asi que cada mitad de la carrera tenia su propio
+#   record. Al unir, el record viejo vuelve a contaminar la era nueva.
+#   CON el guard puesto el merge sale gratis (0,1607 con y sin).
+#   Detalle: evaluacion/baseline/outputs/merge_ids_medicion_2026-09-04.json
+#
+# EL TEST QUE DECIDE, y el que NO:
+#   SIRVE: si los dos ids votaron en la MISMA ACTA son dos personas. Nadie vota dos
+#     veces. Descarto a Balestrini y a Herrera, y esos dos son el control.
+#   NO SIRVE: comparar los RANGOS (fecha minima..maxima) de cada id. Una carrera con
+#     hueco —diputado, senador, diputado— inventa un tramo continuo que se traga la
+#     ventana del otro id. Asi se excluyo mal a SNOPEK, que Franco corrigio: sus dos
+#     ids tienen CERO meses en comun. Si hace falta medir coexistencia, es por mes o
+#     por acta, nunca por rango.
+id_absorbido,id_canonico,nombre_absorbido,nombre_canonico,aprobado_por
+leg:0451cfd41d79,leg:d2a384ebfd8b,"ALVAREZ RIVERO, CARMEN","Alvarez Rivero, Carmen Silvia",Claude (grupo 3)
+leg:0c48a4f1e2d2,leg:1f986dee686d,ALLENDE Walberto Enrique,"Allende, Walberto",Claude (grupo 1)
+leg:0d5c197f5c82,leg:8eb0a3fe422f,"Villaverde, María Lorena","Villaverde, Lorena",Franco #34
+leg:0d815d6a6470,leg:10441e96987c,"Delich, Francisco José","DELICH, Francisco",Claude (grupo 3)
+leg:10610957c7a4,leg:0fc6daa7fbbe,FERNANDEZ PATRI Gustavo Ramiro,"Fernandez Patri, Ramiro",Claude (grupo 1)
+leg:122ca1dc302b,leg:74e5b959406d,"Pastoriza, Eduardo Antonio","PASTORIZA, Eduardo",Claude (grupo 3)
+leg:13228d18238d,leg:97518caaac55,"OROZCO, MARÍA EMILIA","Orozco, Emilia",Franco #25
+leg:142aee868ad2,leg:3ad1f3c963e5,MARZIOTTA Maria Gisela,"Marziotta, Gisela",Claude (grupo 1)
+leg:15b66286856b,leg:c7495b04020a,"SUAREZ ALVAREZ DE PALOU, Marta","PALOU, Marta",Franco #19
+leg:1935b1a636bc,leg:ce68255712d5,"Olalla de Moreira, Stella Maris","OLALLA, STELLA MARIS",Claude (grupo 3)
+leg:1a9061a756d0,leg:4e52d037c227,"Bermejo, Adolfo","BERMEJO, ROLANDO ADOLFO",Franco #13
+leg:1e6a9e5ad9c5,leg:38e4f2396b95,"AGUIRRE de SORIA, Hilda",AGUIRRE Hilda Clelia,cadena
+leg:216ad61b75e6,leg:9ee22667f2f8,"Cornejo, Virginia",CORNEJO Virginia Maria,Claude (grupo 1)
+leg:2329dd068c91,leg:4dadbcaa74b5,ANSALONI Pablo Miguel,"Ansaloni, Pablo",Claude (grupo 1)
+leg:25e568b64e13,leg:8dba8c707e88,"Estevez, Enrique",ESTEVEZ Enrique Eloy,Claude (grupo 1)
+leg:298c0549e724,leg:7fa0344d8a22,"Latorre, Jimena",LATORRE Jimena Hebe,Claude (grupo 1)
+leg:29d18d137619,leg:6de6eac2355b,"Cobos, Julio",COBOS Julio César Cleto,Claude (grupo 1)
+leg:2df193e2cfb7,leg:adb806646c87,GUTIÉRREZ Carlos Ramiro,"Gutierrez, Ramiro",Claude (grupo 1)
+leg:2f337ebc6870,leg:67bb2f08a755,FLORES Héctor Toty,"FLORES, Héctor",Claude (grupo 1)
+leg:2f474538952a,leg:80e2a75366be,CANELA Susana,"CANELA, Susana Mercedes",Claude (grupo 1)
+leg:320459f28986,leg:9a4d728beab7,YUTROVIC Ines Carolina,"Yutrovic, Carolina",Claude (grupo 1)
+leg:3206e737980b,leg:8a79231478d0,"Vilar, Daniela Marina",VILAR Daniela,Claude (grupo 1)
+leg:36cdce3e2305,leg:4a5411ff0445,"ALVAREZ RODRIGUEZ, Cristina",ÁLVAREZ RODRIGUEZ María Cristina,Claude (grupo 1)
+leg:37435e282f12,leg:231c9b58f76a,"CERVI, MARIO PABLO","Cervi, Pablo",Franco #23
+leg:38998beef8bf,leg:d661f824690d,"BORTOLOZZI de BOGADO, Adriana Raquel","BORTOLOZZI, ADRIANA RAQUEL",Franco #8
+leg:3a122de91183,leg:3cc84340cad1,ROSSI Agustín,"ROSSI, Agustín Oscar",Claude (grupo 1)
+leg:3cde04402f30,leg:cdb1b7bdc16b,"COLOMBI, Horacio Ricardo","COLOMBI, Ricardo",Franco #14
+leg:3d39cdacba6b,leg:fe9da26ab17d,"Litza, Monica",LITZA Mónica Edith,Claude (grupo 1)
+leg:3ef764ddfc46,leg:9081ecd105c1,"MARTINEZ, Alfredo","MARTINEZ, Alfredo Anselmo",Franco #4
+leg:3f6c25370e57,leg:32c9c929053d,SILEY Vanesa,"Siley, Vanesa Raquel",Claude (grupo 1)
+leg:3f7dee3ede14,leg:0ac6f6bd7f2d,"MEABE, JOSEFINA ANGELICA","MEABE de MATHO, Josefina Angélica",Claude (grupo 1)
+leg:40316693278c,leg:9af01f0886ff,"Rezinovsky, Dina",REZINOVSKY Dina Esther,Claude (grupo 1)
+leg:4034822398b2,leg:e9adacc0d9ce,VAZQUEZ Silvia Beatriz,"VAZQUEZ de TABERNISE, Silvia Beatriz",Franco #17
+leg:43475430d69a,leg:5bbadda594e8,"MONTE DE OCA, MARÍA BELÉN","Monte de Oca, Belén",Claude (grupo 3)
+leg:43bd8f277803,leg:38f5bb4b1045,FILMUS Daniel,"FILMUS, DANIEL FERNANDO",Claude (grupo 1)
+leg:456c40c2dd0f,leg:c183b6af140a,"Rodriguez, Alejandro ""Topo""",RODRIGUEZ Alejandro,Claude (grupo 3)
+leg:45866604e936,leg:e8ac4c468eeb,"Ginzburg, Nora Raquel","GINZBURG, Nora",Claude (grupo 3)
+leg:466490719d37,leg:2db33d715133,"Gonzalez, Alvaro",GONZÁLEZ Álvaro Gustavo,Claude (grupo 1)
+leg:46827946cfad,leg:4ddf567b1f07,"Yambrun, Liliana Patricia",YAMBRUN Liliana,Claude (grupo 1)
+leg:4857baad8955,leg:24b1b1471c01,ZAVALLO Gustavo Marcelo,"ZAVALLO, Gustavo",Claude (grupo 1)
+leg:49cb59cf440e,leg:c4556e55cff1,"Cesar, Nora Noemí","CESAR, Nora",Claude (grupo 3)
+leg:4b8dd3d30356,leg:fbdfef09e7c2,"Bosch, Irene Miriam","BOSCH de SARTORI, Irene Miriam",Claude (grupo 3)
+leg:4bc90a72c08e,leg:2f97e790d2ef,"Zancada, Pablo Ventura","ZANCADA, Pablo",Claude (grupo 3)
+leg:4e8146bab086,leg:256c9687e6e4,"Aparicio, Alicia N.",APARICIO Alicia Noemi,Claude (grupo 1)
+leg:4f6f2bb33642,leg:2e5fa5d9bd9c,"BINNER, Hermes",BINNER Hermes Juan,Claude (grupo 1)
+leg:522718f34b30,leg:7b1337a70d73,ACOSTA María Julia,"ACOSTA de AHUMADA, María Julia",Claude (grupo 1)
+leg:54fa232578e8,leg:c23c9ec92fd9,"Ocaña, Graciela",OCAÑA Maria Graciela,Claude (grupo 1)
+leg:55f24285c804,leg:294195a88442,SAND GIORASI Nancy Aracely,"Sand, Nancy",Claude (grupo 1)
+leg:57254b3ceb59,leg:d40abe5165a1,"Marquez, Nadia Judith","Marquez, Nadia",Franco #24
+leg:59bc4442cca5,leg:364ceb043c08,"Camaño, Dante Alberto","CAMAÑO, Dante",Claude (grupo 3)
+leg:5b0b8fd7e6f8,leg:5f32f1bc81b5,"HELLER, Carlos",HELLER Carlos Salomón,Claude (grupo 1)
+leg:62ae92f9bf94,leg:ba28cc819b8a,"Asseff, Alberto",ASSEFF Alberto Emilio,Claude (grupo 1)
+leg:6c869f084909,leg:cfe8212f1e26,"Tailhade, Rodolfo",TAILHADE Luis Rodolfo,Claude (grupo 1)
+leg:6db8e046a423,leg:2266072f22e6,"Rodriguez Machado, Laura","RODRÍGUEZ MACHADO, LAURA ELENA",Franco #30
+leg:7184c6d8405b,leg:a8416be62df4,MILMAN Gerardo Fabián,"Milman, Gerardo",Claude (grupo 1)
+leg:725afec4d4e7,leg:2569ce855012,"Estevez, Gabriela",ESTEVEZ Gabriela Beatriz,Franco #31
+leg:72951ac5f284,leg:d8482c1686f1,"Fabris, Luciano Rafael","FABRIS, Luciano",Claude (grupo 3)
+leg:7334dea32ee7,leg:61264e68bce3,CUSINATO Gustavo,"CUSINATO, José César Gustavo",Claude (grupo 1)
+leg:7450b3bd5804,leg:aad3d74645f0,"FERNÁNDEZ, ANIBAL","FERNANDEZ, Aníbal Domingo",Claude (grupo 3)
+leg:76f58d6f8316,leg:643a95a681f7,"BASUALDO, Roberto","BASUALDO, ROBERTO GUSTAVO",Franco #3
+leg:7897e177cf19,leg:92e93db3ad23,"GONZALEZ de DUHALDE, Hilda","GONZALEZ DE DUHALDE, Hilda Beatriz",Franco #10
+leg:7af80bdcd0f9,leg:2f4a251ea34c,"Ormachea, Claudia Beatriz",ORMACHEA Claudia,Claude (grupo 1)
+leg:7c9c1075948f,leg:21e6983f18ce,CORPACCI Lucia,"CORPACCI de MERCADO, Lucia B .",Claude (grupo 1)
+leg:7d8a43b3d2e8,leg:17c79731a836,"Massot, Nicolas",MASSOT Nicolás María,Franco #26
+leg:7df5c54135a6,leg:db6564eec766,LÓPEZ RODRÍGUEZ Dante Edgardo,"Lopez Rodriguez, Dante",Claude (grupo 1)
+leg:7ef648eb9cde,leg:fe5fa16ea644,RAIMUNDI Carlos,"RAIMUNDI, Carlos Alberto",Claude (grupo 1)
+leg:7ff7abacfbd6,leg:698f28b68808,"ROJKES de ALPEROVICH, Beatriz L .","ROJKES DE ALPEROVICH, BEATRIZ LILIANA",Franco #6
+leg:8058ac44b733,leg:0b274795a92c,NEDER Estela Mary del Rosario,"Neder, Estela Mary",Claude (grupo 1)
+leg:80d53a9e1998,leg:c9993907cfd4,"Garcia Mendez, Emilio Arturo","GARCIA MENDEZ, Emilio",Claude (grupo 3)
+leg:80f7cbdb6680,leg:97cfe3c6cd18,"Martinez, Dolores",MARTÍNEZ Maria Dolores,Claude (grupo 1)
+leg:816e067f49c7,leg:f479e489c9d1,"Banfi, Karina",BANFI Karina Verónica,Claude (grupo 1)
+leg:839eeae73918,leg:b2b0502b391a,"ARAGONES de JUAREZ, Mercedes María","Aragones de Juarez, Mercedes",Claude (grupo 3)
+leg:83e5d7f70468,leg:a5e09bcfcdfa,"Santander, Mario Armando","SANTANDER, Mario",Claude (grupo 3)
+leg:8800aa059a10,leg:b794ed2d3645,MOREAU Leopoldo Raúl Guido,"Moreau, Leopoldo",Claude (grupo 3)
+leg:886a575a65ac,leg:7ee28ba0f9da,"Nuñez, Jose",NUÑEZ José Carlos,Claude (grupo 1)
+leg:8a991428b54d,leg:d346101f1f8f,"FELLNER, Liliana","FELLNER, LILIANA BEATRIZ",Franco #5
+leg:8ac4e8af86f2,leg:e4212563a09b,"Ascarate, Lidia Ines",ASCARATE Lidia,Claude (grupo 1)
+leg:8eeac62c43db,leg:32e928de2787,CISNEROS Carlos Anibal,"Cisneros, Carlos",Claude (grupo 1)
+leg:90a2c1da63e9,leg:b794ed2d3645,"MOREAU, Leopoldo Raúl","Moreau, Leopoldo",Claude (grupo 3)
+leg:90cc581c8806,leg:dd87bdbbfa70,AGOSTO Walter Alfredo,"AGOSTO, Walter",Claude (grupo 1)
+leg:922ca54d2c2c,leg:488945f5f694,"Lena, Gabriela",LENA Gabriela Mabel,Claude (grupo 1)
+leg:927ea18db9c3,leg:ad573a2f0414,"Baldassi, Hector W.",BALDASSI Héctor Walter,Claude (grupo 1)
+leg:95fe3bbb8634,leg:c59cc4e92905,"Taiana, Jorge","TAIANA, JORGE ENRIQUE",Claude (grupo 1)
+leg:9a1a4721831f,leg:545130287582,GUTIERREZ Carlos Mario,"Gutierrez, Carlos",Claude (grupo 1)
+leg:9b4206ebb54c,leg:100701856e2c,"Vessvessian, Paola",VESSVESSIAN Marcela Paola,Claude (grupo 1)
+leg:9b8601d58cb0,leg:8584a77eb06f,REYES Roxana Nahir,"Reyes, Roxana",Claude (grupo 3)
+leg:9b8a06406975,leg:62cb5934e474,"SNOPEK, GUILLERMO EUGENIO MARIO",SNOPEK Guillermo,Franco #2
+leg:9c5836b6e3c2,leg:4ce94d51b22a,"GONZÁLEZ, PABLO G.","GONZALEZ, Pablo Gerardo",Franco #16
+leg:9c9abb302e88,leg:b067aa2a9852,"Stolbizer, Margarita",STOLBIZER Margarita Rosa,Claude (grupo 1)
+leg:9db028f422d2,leg:929d25cfb09f,"COTO, AGUSTÍN PEDRO","Coto, Agustín",Claude (grupo 3)
+leg:9dddc1546a55,leg:e693d138adfe,"CAPOS, LILIANA","CAPOS, Liliana Delia",Claude (grupo 3)
+leg:9f512fbbd33b,leg:457a26c7f3ec,ZAMORA Claudia,"LEDESMA ABDALA DE ZAMORA, CLAUDIA",Claude (grupo 1)
+leg:a22524ec8f06,leg:b449008ab50b,"SANTILLI, DIEGO CESAR","Santilli, Diego",Franco #22
+leg:a5e200a1ca1d,leg:acd7932a7695,"PILATTI VERGARA, Maria Ines Patricia",PILATTI VERGARA María Inés,Franco #7
+leg:a7db09741630,leg:645e68cd4332,"MARTINEZ CARIGNANO, Ernesto Félix",MARTINEZ Ernesto Félix,Franco #11
+leg:aaf0f4d9b88a,leg:ff3f05c5fbde,"Pitrola, Nestor",PITROLA Néstor Antonio,Franco #15
+leg:b3e568e170ef,leg:5954673c399b,"Rodas, Antonio","RODAS, ANTONIO JOSÉ",Claude (grupo 3)
+leg:b50a357ff51a,leg:9620a2a748c9,"Acuña Kunz, Juan Erwin","ACUÑA KUNZ, Juan",Claude (grupo 3)
+leg:b7bd841b734c,leg:d85c03e611ce,"Lospennato, Silvia",LOSPENNATO Silvia Gabriela,Claude (grupo 1)
+leg:bc60913b9f50,leg:c492643273a6,"Collantes, Genaro Aurelio","COLLANTES, Genaro",Claude (grupo 1)
+leg:be61b5d2cc1e,leg:9010e2995814,"FALCO, LUIS","FALCO, Luis Alberto",Claude (grupo 3)
+leg:c26809cb5a56,leg:0009ced1e733,"Prades, Carlos Facundo","Prades, C. Facundo",Franco #39
+leg:c4eabf6d9ca4,leg:97bbbf7cc358,"ROYÓN, FLAVIA GABRIELA","Royón, Flavia",Claude (grupo 3)
+leg:c7b838c4e20d,leg:be0cb4edbb19,BONASSO Miguel Luis,"BONASSO, Miguel",Claude (grupo 1)
+leg:c854e2553b7c,leg:beeeae672df1,MONTENEGRO Guillermo Tristán,"Montenegro, Guillermo",Claude (grupo 1)
+leg:c86e66c7fe50,leg:6c0f76d4c867,"Vara, Jorge",VARA Jorge Alberto,Claude (grupo 1)
+leg:c8b147a5800c,leg:1bfdc8cc9376,FERRARO Maximiliano Carlos Francisco,"Ferraro, Maximiliano",Claude (grupo 1)
+leg:ca85a123aa3a,leg:4fe11a7f2f62,"BORELLO, MARTA","BORELLO, Marta Teresita",Claude (grupo 1)
+leg:ca8e36ee57b4,leg:1cc767abd565,"Herrera, Oscar","Herrera Ahuad, Oscar A.",Claude (grupo 1)
+leg:cb2cbcc587c9,leg:fc68188d51b6,"Fernandez, Eduardo",FERNANDEZ Eduardo Gabriel,Claude (grupo 1)
+leg:d19e8d9d42ce,leg:d1c8ddc09658,"Barletta, Mario",BARLETTA Mario Domingo,Claude (grupo 1)
+leg:d609957c98c6,leg:34e2127f300c,"Galantini, Eduardo Leonel","GALANTINI, Eduardo",Claude (grupo 3)
+leg:d621960146ec,leg:63e2cc41c868,"SOLANAS, Julio Rodolfo Francisco",SOLANAS Julio Rodolfo,Claude (grupo 1)
+leg:d6eeac11b6c7,leg:f39984289965,ARROYO Daniel Fernando,"Arroyo, Daniel",Claude (grupo 1)
+leg:d8d4c64f74d8,leg:b46ac31ef7bd,"MIRABELLA, ROBERTO MARIO","Mirabella, Roberto",Claude (grupo 1)
+leg:dc6028edd6f1,leg:86369a4a843d,"Dalla Fontana, Ariel  Raúl Armando","DALLA FONTANA, Ariel",Claude (grupo 3)
+leg:dee0a5011600,leg:16598fe960e1,"Hernandez, Estela",HERNÁNDEZ Estela Beatriz,Claude (grupo 1)
+leg:e0ec13db40a4,leg:0cfa8901a8f9,"Joury, Maria de las Mercedes",JOURY Mercedes,Claude (grupo 1)
+leg:e35971918eec,leg:556d7f89b12f,"Ferrigno, Santiago","FERRIGNO OBARRIO, Santiago",Claude (grupo 3)
+leg:e4bfb26ad93f,leg:1b570020e4fb,"GUINLE, MARCELO ALEJANDRO HORACIO","GUINLE, Marcelo Alejandro",Claude (grupo 1)
+leg:e74a0d47c255,leg:677a6e882c56,"Martinez Garbino, Emilio Raúl","MARTINEZ GARBINO, Emilio",Claude (grupo 3)
+leg:e87f8d9c1ae6,leg:c103c1e4186f,"Abalos, Roberto José","ABALOS, Roberto",Claude (grupo 3)
+leg:e947a030abbf,leg:a4a97a25574c,"ALFONSIN, Ricardo Luis",ALFONSÍN Ricardo,Claude (grupo 1)
+leg:e9d6912905d9,leg:e49955aaeafc,"Benedetti, Atilio",BENEDETTI Atilio Francisco Salvador,Claude (grupo 1)
+leg:ea481c48b8d6,leg:7101dec0f4ec,OLIVETO LAGO Paula Mariana,"Oliveto Lago, Paula",Claude (grupo 1)
+leg:eb208baffaf1,leg:85a5313106f4,"Petri, Luis",PETRI Luis Alfonso,Franco #12
+leg:eb499e8d19e7,leg:61d4858c1a5e,"Amaya, Domingo Luis",AMAYA Domingo,Claude (grupo 1)
+leg:eb5003785673,leg:3c6edd337462,"Biella, Bernardo",BIELLA CALVET Bernardo José,Claude (grupo 1)
+leg:edd1f846d535,leg:408a1e83ae23,"Lemos, Silvia Beatriz","LEMOS, Silvia",Claude (grupo 3)
+leg:edddacdc0406,leg:a6f33ebbf3f3,SORIA Martin Ignacio,"Soria, Martin",Franco #18
+leg:eeaf9aeb7bd4,leg:6358adaef5c0,"Gonzalez, María Luisa","Gonzalez Estevarena, Maria Luisa",Franco #35
+leg:f01ecc015460,leg:cb838b8e4f8d,"De Marchi, Omar",DE MARCHI Omar Bruno,Claude (grupo 1)
+leg:f29013e017b9,leg:96c3d7e97349,DAIVES Ricardo Daniel,"Daives, Ricardo",Claude (grupo 1)
+leg:f5cdc25d7918,leg:2cf175464503,"SCIOLI, Daniel Osvaldo",SCIOLI Daniel,Franco #28
+leg:f87922896cc7,leg:6205630ccb27,"Terragno, Rodolfo Héctor","TERRAGNO, RODOLFO",Franco #29
+leg:f897af3d1b97,leg:1e5401fb3e8d,"Bianchi Silvestre, Marcela Alejandra","BIANCHI SILVESTRE, Marcela",Claude (grupo 3)
+leg:f9d7b40b157b,leg:8855b7942ce8,"BULLRICH, ESTEBAN JOSÉ","BULLRICH, Esteban",Claude (grupo 1)
+leg:fbc0ecc747d0,leg:d0748eae76d1,"ARANCIO de BELLER, LYLIA MÓNICA","ARANCIO DE BELLER, Mónica",Claude (grupo 3)
+leg:fc4e93b057d5,leg:4819f762c5e3,"RUIZ DIAZ, ELSA B.","RUIZ DIAZ, Elsa Beatriz",Claude (grupo 3)
+leg:fc9aab5e4c87,leg:28025e077756,"Cornejo, Alfredo",CORNEJO Alfredo Victor,Franco #32
+leg:fdb426b871a3,leg:2d9e1f82d33d,"Giudici, Silvana",GIUDICI Silvana Myriam,Claude (grupo 1)
+leg:fe7c5c68b124,leg:6098da00a455,"Fein, Monica",FEIN Mónica Hayde,Claude (grupo 1)
+leg:fededee8ca6a,leg:38e4f2396b95,"Aguirre, Hilda",AGUIRRE Hilda Clelia,Franco #9
+#
+# RECHAZADOS por Franco el 2026-09-04 — NO son la misma persona:
+#   # 1 MENEM, EDUARDO (leg:45404a432490) + MENEM, Eduardo Adrián (leg:9d2aabfe25d4)
+#   #20 Marino, Juan (leg:24c1d56ef333) + MARINO, JUAN CARLOS (leg:28ecb19ad84d)
+#   #21 ALONSO Laura Valeria (leg:cd393abd7976) + ALONSO Laura (leg:d5481880f8f4)
+#   #27 GUTIÉRREZ Carlos Ramiro (leg:2df193e2cfb7) + Gutierrez, Carlos (leg:545130287582)
+#   #33 Coto, Agustín (leg:929d25cfb09f) + COTO, Alberto Agustín (leg:edbc9113c8ae)
+#   #36 COLOMBO, María Teresita del Valle (leg:cb9b2bbc51d4) + COLOMBO de ACEVEDO, MARÍA TERESITA DEL VALLE (leg:d0e6341bff89)
+#   #37 FERNÁNDEZ, ANIBAL (leg:7450b3bd5804) + FERNANDEZ, Horacio Anibal (leg:b538a076d24d)
+#   #38 Rodriguez, José (leg:a7617b3e9981) + Chica Rodriguez, Juan José (leg:e191a3f4c785)
+#   motivos: Menem padre/hijo · Marino (Mov. Nac. Piquetero vs UCR) ·
+#   Alonso (La Campora vs PRO) · Gutierrez (Carlos Mario vs Carlos Ramiro) ·
+#   Coto, Colombo, Fernandez (el 2do fue intendente) y Rodriguez/Chica: sin relacion.

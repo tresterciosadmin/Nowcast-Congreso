@@ -80,7 +80,12 @@ HOSTS_RUIDO = {
 }
 MAX_BYTES = 1_500_000
 GRANDE = 500          # LOC a partir de las cuales un archivo se marca
-MAX_LINEAS_MAPA = 260  # presupuesto de contexto del MAPA.md
+MAX_LINEAS_MAPA = 460  # presupuesto de contexto del MAPA.md
+# 2026-09-08: sube de 260 a 460 por decision explicita de Franco al agregar el
+# inventario de datos. El argumento no es que el presupuesto no importe, es que
+# importa MENOS que repetir tareas: dos sesiones seguidas reconstruyeron tablas
+# que ya existian porque los datos no estaban indexados en ningun lado. 200
+# lineas de indice cuestan una vez; buscar a mano cuesta cada vez.
 
 RE_URL = re.compile(r"""https?://([A-Za-z0-9._~-]+\.[A-Za-z]{2,})(/[^\s'"`)\]>,;]*)?""")
 RE_ENV = re.compile(
@@ -132,8 +137,14 @@ def leer(p):
 
 
 def git(raiz, *args, timeout=20):
+    # FORK NOWCAST: `--no-optional-locks`. `git status` refresca el indice y para eso
+    # toma `.git/index.lock`. Corrido desde un entorno que no puede borrarlo (el
+    # puente de Claude; GitHub Desktop cerrado a destiempo), el lock queda huerfano y
+    # el proximo `git commit` de cualquiera falla. Es el URGENTE B, cerrado dos veces
+    # y reabierto las dos por esta linea. Indexar es de solo lectura: no toma locks.
     try:
-        r = subprocess.run(["git", "-C", str(raiz), *args], capture_output=True,
+        r = subprocess.run(["git", "-C", str(raiz), "--no-optional-locks", *args],
+                           capture_output=True,
                            text=True, timeout=timeout)
         return r.stdout if r.returncode == 0 else ""
     except (OSError, subprocess.SubprocessError):
@@ -311,6 +322,376 @@ def resolver_imports(archivos, por_modulo):
     return aristas, externos
 
 
+# ---------------------------------------------------------------- FORK NOWCAST: inventario de datos
+#
+# PARCHE 8 (2026-09-08). Por que existe, en una frase: el mapa indexaba el CODIGO
+# y no los DATOS, y en este repo el trabajo caro no es el codigo.
+#
+# El indexador ignora `*.parquet`, `*.csv`, `*.db` y `*.xlsx` dos veces (por
+# IGNORAR_ARCHIVOS y por las reglas del .gitignore), asi que 140 archivos de datos
+# —177 MB, incluida la base que el ADR-0009 declara fuente de verdad— eran
+# invisibles para cualquiera que leyera MAPA.md. La consecuencia medida: en dos
+# sesiones seguidas se busco "donde estan las taxonomias" y se reconstruyo una
+# tabla que ya existia, porque la unica forma de saber que hay era grepear.
+#
+# Lo que responde este inventario, que es lo que se preguntaba a mano:
+#   - QUE datos hay y DONDE (ruta, formato, filas, tamaño);
+#   - si VIAJAN por git o viven en un solo disco (el bug numero uno del repo,
+#     documentado seis veces en el .gitignore);
+#   - QUIEN los escribe y QUIEN los lee -> si nadie los lee, sobran; si nadie los
+#     escribe, no se regeneran.
+#
+# Es caro de calcular (abre cada parquet y cada base), asi que se CACHEA por
+# (tamaño, mtime) contra el mapa.json anterior: una corrida sin cambios en datos
+# no lee ningun archivo de datos.
+
+EXT_DATOS = {
+    ".parquet": "parquet", ".csv": "csv", ".db": "sqlite", ".sqlite": "sqlite",
+    ".sqlite3": "sqlite", ".xlsx": "excel", ".xls": "excel", ".json": "json",
+}
+# JSON que son configuracion o esquema, no datos del proyecto.
+JSON_NO_ES_DATO = {"package.json", "package-lock.json", "tsconfig.json", "mapa.json",
+                   ".eslintrc.json", "settings.json", "composer.json"}
+MAX_BYTES_CONTAR = 40_000_000     # arriba de esto no se cuentan filas (tarda mas de lo que aporta)
+MAX_DATOS_MAPA = 200              # tope de filas del inventario en MAPA.md
+
+_VERBOS_ESCRIBE = (
+    "to_parquet", "to_csv", "to_excel", "to_json", "to_sql", "write_parquet",
+    "write_text", "write_bytes", "write_table", "ExcelWriter", "json.dump",
+    "executemany", "INSERT INTO", "CREATE TABLE", "REPLACE INTO", "savefig",
+)
+_VERBOS_LEE = (
+    "read_parquet", "read_csv", "read_excel", "read_json", "read_sql", "read_table",
+    "json.load", "ParquetFile", "SELECT ", "open(", "load(",
+)
+_VENTANA = 400                    # caracteres alrededor de la mencion
+
+
+def _modulo_de(rel):
+    """El modulo dueño de un archivo de datos: lo que hay antes de data/ u outputs/."""
+    partes = rel.split("/")
+    for corte in ("data", "outputs", "output"):
+        if corte in partes:
+            i = partes.index(corte)
+            if i:
+                return "/".join(partes[:i])
+    return "/".join(partes[:-1]) or "."
+
+
+def _forma_parquet(p):
+    try:
+        import pyarrow.parquet as pq
+        md = pq.ParquetFile(p).metadata
+        return md.num_rows, md.num_columns, ""
+    except Exception:
+        return None, None, ""
+
+
+def _forma_csv(p, n_bytes):
+    if n_bytes > MAX_BYTES_CONTAR:
+        return None, None, "no contado (pesado)"
+    try:
+        with open(p, "r", encoding="utf-8", errors="ignore", newline="") as f:
+            cabecera = f.readline()
+            filas = sum(1 for _ in f)
+        sep = ";" if cabecera.count(";") > cabecera.count(",") else ","
+        return filas, cabecera.count(sep) + 1 if cabecera.strip() else 0, ""
+    except OSError:
+        return None, None, ""
+
+
+def _forma_sqlite(p):
+    try:
+        import sqlite3
+        con = sqlite3.connect(f"file:{p}?mode=ro", uri=True, timeout=5)
+        try:
+            tablas = [r[0] for r in con.execute(
+                "SELECT name FROM sqlite_master WHERE type='table' "
+                "AND name NOT LIKE 'sqlite_%' ORDER BY name")]
+            filas, detalle = 0, []
+            for t in tablas:
+                try:
+                    n = con.execute(f'SELECT count(*) FROM "{t}"').fetchone()[0]
+                except sqlite3.Error:
+                    n = 0
+                filas += n
+                detalle.append((t, n))
+            detalle.sort(key=lambda x: -x[1])
+            txt = ", ".join(f"{t} ({n:,})" for t, n in detalle[:5])
+            if len(detalle) > 5:
+                txt += f" +{len(detalle) - 5}"
+            return filas, len(tablas), txt
+        finally:
+            con.close()
+    except Exception:
+        return None, None, ""
+
+
+def _forma_excel(p, n_bytes):
+    try:
+        import zipfile
+        with zipfile.ZipFile(p) as z:
+            hojas = [n for n in z.namelist() if n.startswith("xl/worksheets/sheet")]
+        return None, len(hojas), f"{len(hojas)} hoja(s)"
+    except Exception:
+        return None, None, ""
+
+
+def _forma_json(p, n_bytes):
+    if n_bytes > 5_000_000:
+        return None, None, "no contado (pesado)"
+    try:
+        d = json.loads(Path(p).read_text(encoding="utf-8", errors="ignore"))
+    except (OSError, ValueError):
+        return None, None, ""
+    if isinstance(d, list):
+        return len(d), None, "lista"
+    if isinstance(d, dict):
+        return None, len(d), "objeto: " + ", ".join(list(d)[:4])
+    return None, None, ""
+
+
+def _forma(p, fmt, n_bytes):
+    if fmt == "parquet":
+        return _forma_parquet(p)
+    if fmt == "csv":
+        return _forma_csv(p, n_bytes)
+    if fmt == "sqlite":
+        return _forma_sqlite(p)
+    if fmt == "excel":
+        return _forma_excel(p, n_bytes)
+    if fmt == "json":
+        return _forma_json(p, n_bytes)
+    return None, None, ""
+
+
+def _constantes_de_rutas(raiz):
+    """`ruta relativa -> [nombres de rutas.py que la apuntan]`.
+
+    En este repo los modulos NO escriben la ruta literal: importan la constante de
+    `rutas.py` (ADR-0010). Buscar solo el nombre del archivo daria CERO consumidores
+    para todos los contratos entre modulos, que son justamente los que importan.
+    """
+    f = raiz / "rutas.py"
+    if not f.is_file():
+        return {}
+    ns = {"__file__": str(f), "__name__": "_rutas_inventario"}
+    try:
+        exec(compile(f.read_text(encoding="utf-8"), str(f), "exec"), ns)
+    except Exception:
+        return {}
+    salida = defaultdict(list)
+    for nombre, valor in ns.items():
+        if nombre.startswith("_") or not isinstance(valor, Path):
+            continue
+        try:
+            rel = valor.resolve().relative_to(raiz).as_posix()
+        except ValueError:
+            continue
+        salida[rel].append(nombre)
+    return dict(salida)
+
+
+def _nombres_relacionados(texto, semilla, profundidad=2, tope=14):
+    """Nombres por los que puede circular una ruta dentro de UN archivo.
+
+    Hace falta porque en este repo la ruta casi nunca se lee ni se escribe donde se
+    nombra. Los tres casos reales, medidos el 08-09:
+
+        CAL_CSV = DATA / "calendario_electoral.csv"      # la mencion
+        def cargar(..., cal_csv: Path = CAL_CSV):        # viaja como default
+            pd.read_csv(cal_csv)                         # se lee ACA
+
+        OUT_DEFAULT = Path(".../serie_bloque.parquet")
+        _cli_serie(canon, OUT_DEFAULT)                   # viaja como argumento
+        def _cli_serie(canon, out): s.to_parquet(out)    # se escribe ACA
+
+    Sin esto, `serie_bloque.parquet` —que el .gitignore declara contrato del
+    ensemble— figuraba como "nadie lo escribe ni lo lee". Un inventario que dice
+    eso de un contrato es peor que no tener inventario: invita a borrarlo.
+    """
+    nombres = set(semilla)
+    frontera = set(semilla)
+    for _ in range(profundidad):
+        nuevos = set()
+        for n in frontera:
+            e = re.escape(n)
+            # x = N   /   x: T = N   (incluye defaults de firma)
+            for mm in re.finditer(r"([A-Za-z_]\w*)\s*(?::[^=\n]{0,60})?=\s*" + e + r"\b", texto):
+                nuevos.add(mm.group(1))
+            # f(..., N, ...) -> los parametros de f
+            for mm in re.finditer(r"([A-Za-z_]\w*)\s*\([^()\n]{0,200}\b" + e + r"\b", texto):
+                d = re.search(r"def\s+" + re.escape(mm.group(1)) + r"\s*\(([^)]{0,400})\)",
+                              texto, re.S)
+                if not d:
+                    continue
+                for par in d.group(1).split(","):
+                    par = par.strip().split(":")[0].split("=")[0].strip().lstrip("*")
+                    if re.fullmatch(r"[A-Za-z_]\w*", par or "") and par not in ("self", "cls"):
+                        nuevos.add(par)
+        nuevos -= nombres
+        nombres |= nuevos
+        frontera = nuevos
+        if not frontera or len(nombres) > tope:
+            break
+    return nombres
+
+
+def _aplica(texto, verbos, nombre):
+    """El verbo se aplica a ESE nombre, en forma de funcion o de metodo."""
+    e = re.escape(nombre)
+    for v in verbos:
+        if not v.replace("_", "").isalnum():
+            continue                       # "SELECT ", "INSERT INTO": no son llamadas
+        ve = re.escape(v)
+        if re.search(ve + r"\s*\(\s*(?:str\()?\s*" + e + r"\b", texto):
+            return True          # pd.read_csv(CAL_CSV)
+        if re.search(e + r"\s*\.\s*" + ve + r"\s*\(", texto):
+            return True          # REGISTRO.write_text(...)  /  df.to_parquet no aplica
+    return False
+
+
+def _modo_open(texto, nombre):
+    """`open(X, "w")` escribe y `open(X)` lee. Es como se escribe medio CSV del repo.
+
+    Sin esto `asignaciones.csv` —el registro unico de taxonomias, que cuesta llamadas
+    de API— figuraba sin escritor: `registro.py` lo abre con `open(REGISTRO, "w")` y
+    ningun verbo de pandas aparece cerca.
+    """
+    e = re.escape(nombre)
+    escribe = lee = False
+    patrones = (
+        r"open\s*\(\s*" + e + r"\s*(?:,\s*[\"\']([rwax][^\"\']*)[\"\'])?",   # open(X, "w")
+        e + r"\s*\.\s*open\s*\(\s*(?:[\"\']([rwax][^\"\']*)[\"\'])?",        # X.open("w")
+    )
+    for pat in patrones:
+        for m in re.finditer(pat, texto):
+            modo = m.group(1) or "r"
+            if modo[0] in "wax":
+                escribe = True
+            else:
+                lee = True
+    return escribe, lee
+
+
+def _clasificar_uso(texto, tokens):
+    """escribe / lee / menciona. Ver `_nombres_relacionados` para el por que."""
+    escribe = lee = False
+    semilla = set()
+    for tok in tokens:
+        if re.fullmatch(r"[A-Za-z_]\w*", tok):
+            semilla.add(tok)
+        for mm in re.finditer(re.escape(tok), texto):
+            i = mm.start()
+            v = texto[max(0, i - _VENTANA):i + _VENTANA]
+            if any(x in v for x in _VERBOS_ESCRIBE):
+                escribe = True
+            if any(x in v for x in _VERBOS_LEE):
+                lee = True
+            fin = texto.find("\n", i)
+            linea = texto[texto.rfind("\n", 0, i) + 1:fin if fin > 0 else len(texto)]
+            m2 = re.match(r"\s*([A-Za-z_]\w*)\s*(?::[^=\n]{0,60})?=", linea)
+            if m2:
+                semilla.add(m2.group(1))
+    if semilla:
+        for n in _nombres_relacionados(texto, semilla):
+            if _aplica(texto, _VERBOS_ESCRIBE, n):
+                escribe = True
+            if _aplica(texto, _VERBOS_LEE, n):
+                lee = True
+            e_open, l_open = _modo_open(texto, n)
+            escribe = escribe or e_open
+            lee = lee or l_open
+    if escribe and lee:
+        return "ambos"
+    if escribe:
+        return "escribe"
+    if lee:
+        return "lee"
+    return "menciona"
+
+
+def escanear_datos(raiz, pats, textos_codigo, cache_previa):
+    """Inventario de los archivos de DATOS del repo. Ver la cabecera de esta seccion."""
+    constantes = _constantes_de_rutas(raiz)
+    items = []
+    for dirpath, dirnames, filenames in os.walk(raiz):
+        dirnames[:] = [d for d in dirnames if d not in IGNORAR_DIRS and not d.startswith(".")]
+        for fn in sorted(filenames):
+            p = Path(dirpath) / fn
+            fmt = EXT_DATOS.get(p.suffix.lower())
+            if not fmt or fn in JSON_NO_ES_DATO or fn == "Thumbs.db":
+                continue
+            rel = p.relative_to(raiz).as_posix()
+            try:
+                st = p.stat()
+            except OSError:
+                continue
+            prev = cache_previa.get(rel)
+            if prev and prev.get("bytes") == st.st_size and prev.get("mtime") == int(st.st_mtime):
+                filas, cols, detalle = prev.get("filas"), prev.get("columnas"), prev.get("detalle", "")
+            else:
+                filas, cols, detalle = _forma(p, fmt, st.st_size)
+            items.append({
+                "ruta": rel, "modulo": _modulo_de(rel), "formato": fmt,
+                "bytes": st.st_size, "mtime": int(st.st_mtime),
+                "filas": filas, "columnas": cols, "detalle": detalle,
+                "constantes": constantes.get(rel, []),
+                "escriben": [], "leen": [], "mencionan": [],
+            })
+
+    # viaja por git?  una sola llamada para los 140.
+    # `--no-optional-locks`: `git` normalmente refresca el indice y toma
+    # `.git/index.lock`. Desde entornos que no pueden borrarlo (el puente de
+    # Claude; GitHub Desktop cerrado a destiempo) el lock queda huerfano y el
+    # commit del otro falla. Un chequeo de lectura no toma un lock de escritura.
+    ignorados = set()
+    if items:
+        try:
+            r = subprocess.run(
+                ["git", "-C", str(raiz), "--no-optional-locks", "check-ignore", "--stdin"],
+                input="\n".join(i["ruta"] for i in items),
+                capture_output=True, text=True, timeout=60)
+            ignorados = {l.strip() for l in r.stdout.splitlines() if l.strip()}
+        except (OSError, subprocess.SubprocessError):
+            ignorados = set()
+    for i in items:
+        i["viaja"] = i["ruta"] not in ignorados
+
+    # quien lo escribe y quien lo lee
+    # Nombres repetidos: `diputados.csv` existe en tres carpetas. Atribuirle a las
+    # tres cada mencion del nombre pelado inventa productores (paso: el inventario
+    # v1 decia que `padron_diputados_historico.py` escribia el `diputados.csv` del
+    # volcado de la decada). Para esos se exige ademas que el codigo nombre la
+    # carpeta; si no la nombra, la mencion no alcanza para atribuir nada.
+    veces = Counter(Path(i["ruta"]).name for i in items)
+    for rel_src, texto in textos_codigo.items():
+        if rel_src == "rutas.py" or rel_src.startswith(".mapa/"):
+            continue                       # rutas.py declara; no produce ni consume
+        ident = set(re.findall(r"[A-Za-z_]\w*", texto))
+        for i in items:
+            toks = []
+            nombre = Path(i["ruta"]).name
+            padre = Path(i["ruta"]).parent.name
+            if nombre in texto and (veces[nombre] == 1 or padre in texto):
+                toks.append(nombre)
+            toks += [c for c in i["constantes"] if c in ident]
+            if not toks:
+                continue
+            clase = _clasificar_uso(texto, toks)
+            if clase in ("escribe", "ambos"):
+                i["escriben"].append(rel_src)
+            if clase in ("lee", "ambos"):
+                i["leen"].append(rel_src)
+            if clase == "menciona":
+                i["mencionan"].append(rel_src)
+    for i in items:
+        i["escriben"] = sorted(set(i["escriben"]))
+        i["leen"] = sorted(set(i["leen"]) - set(i["escriben"]))
+        i["mencionan"] = sorted(set(i["mencionan"]) - set(i["escriben"]) - set(i["leen"]))
+    return sorted(items, key=lambda x: (x["modulo"], x["ruta"]))
+
+
 # ---------------------------------------------------------------- escaneo
 
 def indexar(ruta):
@@ -321,6 +702,7 @@ def indexar(ruta):
 
     archivos = []
     textos_por_carpeta = defaultdict(list)
+    textos_codigo = {}                               # FORK NOWCAST (parche 8)
     bitacoras = {}
     readmes = {}                                     # FORK NOWCAST (ver cabecera)
     hosts = defaultdict(lambda: defaultdict(set))   # host -> archivo -> rutas
@@ -387,6 +769,11 @@ def indexar(ruta):
 
             if lenguaje in CODIGO:
                 textos_por_carpeta[carpeta].append((rel, texto))
+            # FORK NOWCAST (parche 8): el inventario de datos necesita el texto de
+            # TODO lo que puede nombrar un archivo de datos, y eso incluye los .ps1
+            # y los .yml de workflows, no solo el codigo "de verdad".
+            if lenguaje in CODIGO or lenguaje in ("yaml", "toml", "powershell"):
+                textos_codigo[rel] = texto
             if lenguaje in CODIGO or lenguaje in ("yaml", "toml"):
                 archivos.append({
                     "ruta": rel, "carpeta": carpeta, "lenguaje": lenguaje, "loc": loc,
@@ -404,6 +791,20 @@ def indexar(ruta):
             importado_por[d].add(o)
 
     pares, toques = co_cambios(raiz)
+
+    # FORK NOWCAST (parche 8): inventario de datos, con cache por (bytes, mtime)
+    # contra el mapa.json anterior. Sin el cache, cada indexado abre 140 archivos
+    # (incluida una base de 86 MB) y el hook de pre-commit se vuelve inusable.
+    cache_previa = {}
+    _anterior = raiz / ".mapa" / "mapa.json"
+    if _anterior.is_file():
+        try:
+            cache_previa = {d["ruta"]: d for d in
+                            json.loads(_anterior.read_text(encoding="utf-8")).get(
+                                "inventario_datos", [])}
+        except (OSError, ValueError):
+            cache_previa = {}
+    inventario = escanear_datos(raiz, pats, textos_codigo, cache_previa)
 
     # FORK NOWCAST: un README solo cuenta como bitacora si aporta algo (resumen
     # o pistas). Si no, la carpeta sigue figurando como "sin describir" — que es
@@ -486,6 +887,7 @@ def indexar(ruta):
         "entrypoints": sorted(set(entrypoints)),
         "workflows": workflows,
         "carpetas": carpetas,
+        "inventario_datos": inventario,
         "acoplamiento": [{"de": a, "a": b, "peso": n}
                          for (a, b), n in entre_carpetas.most_common()],
         "co_cambio": [{"a": a, "b": b, "veces": n}
@@ -572,6 +974,98 @@ def texto_diagnostico(d):
     return "\n".join(L)
 
 
+# ---------------------------------------------------------------- FORK NOWCAST: inventario en el MAPA
+
+def _humano(n):
+    if n >= 1024 * 1024:
+        return f"{n / 1048576:.1f} MB"
+    if n >= 1024:
+        return f"{n / 1024:.0f} KB"
+    return f"{n} B"
+
+
+def _forma_texto(i):
+    if i["filas"] is not None and i["columnas"]:
+        return f"{i['filas']:,}×{i['columnas']}"
+    if i["filas"] is not None:
+        return f"{i['filas']:,} filas"
+    if i["detalle"]:
+        return i["detalle"][:40]
+    return "—"
+
+
+def seccion_inventario(m):
+    """El inventario de datos del MAPA. Indexado, generado, no editable a mano."""
+    datos = m.get("inventario_datos") or []
+    if not datos:
+        return []
+    L = ["## Inventario de datos", ""]
+    tot = sum(d["bytes"] for d in datos)
+    n_no_viajan = sum(1 for d in datos if not d["viaja"])
+    L.append(f"{len(datos)} archivos de datos · {_humano(tot)} · "
+             f"{len(datos) - n_no_viajan} viajan por git, **{n_no_viajan} no**.")
+    L.append("")
+    L.append("Buscar uno sin abrir nada: `python .mapa/buscar.py --dato <termino>`. "
+             "Columna **git**: `si` = esta versionado, o sea que quien clone lo tiene; "
+             "`NO` = vive solo en el disco de quien lo genero, que es el modo de falla "
+             "mas repetido de este repo (seis veces, ver `.gitignore`). "
+             "**Escribe/Lee**: quien lo produce y quien lo consume, deducido del codigo; "
+             "sin lector, sobra — sin escritor, no se regenera.")
+    L.append("")
+
+    # UNA sola tabla y no una por modulo: el encabezado de cada grupo costaba 5
+    # lineas y con 30 modulos eran 150 lineas de decoracion para 140 filas de dato.
+    # La ruta ya dice de que modulo es.
+    L.append("| Archivo | Forma | Peso | git | Escribe | Lee |")
+    L.append("|---|---|---:|:---:|---|---|")
+    orden = sorted(datos, key=lambda d: (d["modulo"], -d["bytes"]))
+    for n, d in enumerate(orden):
+        if n >= MAX_DATOS_MAPA:
+            L.append(f"| _+{len(orden) - MAX_DATOS_MAPA} mas_ | | | | | |")
+            break
+        esc = ", ".join(f"`{Path(x).name}`" for x in d["escriben"][:2]) or "—"
+        lee = ", ".join(f"`{Path(x).name}`" for x in d["leen"][:3])
+        if len(d["leen"]) > 3:
+            lee += f" +{len(d['leen']) - 3}"
+        if not lee:
+            lee = f"_({len(d['mencionan'])} lo nombran)_" if d["mencionan"] else "—"
+        cte = f" _{d['constantes'][0]}_" if d["constantes"] else ""
+        L.append(f"| `{d['ruta']}`{cte} | {_forma_texto(d)} | {_humano(d['bytes'])} | "
+                 f"{'si' if d['viaja'] else '**NO**'} | {esc} | {lee} |")
+    L.append("")
+
+    huerfanos = [d for d in datos
+                 if not d["escriben"] and not d["leen"] and not d["mencionan"]]
+    sin_lector = [d for d in datos if d["escriben"] and not d["leen"]]
+    no_viajan = [d for d in datos if not d["viaja"] and d["bytes"] > 100_000]
+    if huerfanos or sin_lector or no_viajan:
+        L.append("**Lo que el inventario marca**")
+        L.append("")
+        if no_viajan:
+            L.append(f"- No viajan por git y pesan (>100 KB): "
+                     + ", ".join(f"`{d['ruta']}`" for d in sorted(
+                         no_viajan, key=lambda x: -x["bytes"])[:8])
+                     + (f" _+{len(no_viajan) - 8}_" if len(no_viajan) > 8 else "")
+                     + ". Cada uno vive en un solo disco.")
+        if sin_lector:
+            L.append(f"- Tienen productor y **ningun consumidor** ({len(sin_lector)}): "
+                     + ", ".join(f"`{Path(d['ruta']).name}`" for d in sin_lector[:8])
+                     + (f" _+{len(sin_lector) - 8}_" if len(sin_lector) > 8 else "")
+                     + ". Es lo esperable en un entregable para humanos; en un "
+                       "intermedio significa que sobra.")
+        if huerfanos:
+            peso = sum(d["bytes"] for d in huerfanos)
+            L.append(f"- **Ningun archivo de codigo los nombra** ({len(huerfanos)}, "
+                     f"{_humano(peso)}): "
+                     + ", ".join(f"`{Path(d['ruta']).name}`" for d in sorted(
+                         huerfanos, key=lambda x: -x["bytes"])[:8])
+                     + (f" _+{len(huerfanos) - 8}_" if len(huerfanos) > 8 else "")
+                     + ". Ojo: un output con nombre armado por f-string cae aca y "
+                       "esta vivo. Lo que hay que mirar de verdad son los pesados.")
+        L.append("")
+    return L
+
+
 # ---------------------------------------------------------------- MAPA.md
 
 def generar_mapa(m):
@@ -640,6 +1134,9 @@ def generar_mapa(m):
     for _, fila in sorted(filas_c, key=lambda x: -x[0]):
         L.append(fila)
     L.append("")
+
+    # --- inventario de datos (FORK NOWCAST, parche 8)
+    L += seccion_inventario(m)
 
     # --- entradas
     if m["entrypoints"] or m["workflows"]:

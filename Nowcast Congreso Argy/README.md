@@ -26,6 +26,8 @@ Para ubicar algo concreto sin abrir nada:
 python3 .mapa/buscar.py "gamma"                 # simbolo + archivo:linea
 python3 .mapa/buscar.py --carpeta variables/embudo
 python3 .mapa/buscar.py --archivo modelo/ensemble/src/ensemble.py   # quien lo usa
+python3 .mapa/buscar.py --dato taxonomi        # que DATOS hay, donde, si viajan
+python3 .mapa/buscar.py --dato                 # el inventario de datos completo
 python3 .mapa/indexar.py .                      # reindexar (lo hace solo el hook pre-commit)
 ```
 

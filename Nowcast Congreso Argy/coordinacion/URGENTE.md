@@ -25,6 +25,32 @@
 > Está desarrollado en `PLAN-DE-TRABAJO.md`. **Precaución vigente mientras tanto: no publicar
 > P(sanción) de proyectos con origen Senado.**
 
+## N. 🔵 Dos decisiones de Franco que el inventario de datos dejó a la vista
+**Detectado:** 2026-09-08 · **decide Franco, no requiere corrida**
+
+El inventario de datos que se agregó al MAPA el 08-09 encontró dos cosas el mismo día.
+
+**1. SÉPTIMA vez que el `.gitignore` esconde trabajo pago — ya arreglado, falta commitear.**
+`datos/canonica/data/alias_legislador_id.csv` son los **143 pares de `legislador_id` que
+Franco revisó uno por uno el 04-09**. No se regenera: es criterio humano. `alias_legislador.py`
+lo LEE, o sea que es insumo del pipeline. Estaba cayendo en el `*.csv` de la línea 5.
+
+Lo grave es cómo se escondió: **`COMMITEAR.ps1` lo nombra explícitamente** en las rutas de su
+commit 2, así que el `git add` lo salteó **en silencio** y el commit se hizo igual. Quien
+pullee hoy y corra `entity_resolution.py` obtiene **cero merges** y no se entera: los 2.302
+ids se quedan sin unificar y el modelo mide sobre carreras partidas.
+Ya se agregaron las excepciones (más el CSV de veredictos, para que la próxima persona pueda
+auditar por qué dos ids son la misma persona sin volver a molestar a Franco 153 veces).
+**Falta que Franco commitee.**
+
+**2. Los ocho `datos/export/data/votaciones_*.xlsx`: 49,6 MB versionados que ningún archivo
+de código nombra.** Es, de lejos, el objeto más pesado del repo después de la base, y son más
+de un tercio de los 195 MB de datos. Las dos lecturas posibles son opuestas y no se puede
+elegir sin Franco: o son **el entregable** para que el equipo vea las votaciones sin correr
+nada (y entonces está bien que viajen), o son un **resto** de la etapa de exportación (y
+entonces son 49,6 MB que todos los del equipo se bajan en cada clone para nada).
+**Pregunta concreta: ¿alguien del equipo abre esos xlsx?**
+
 ## M. 🔵 β se estimó ANTES de que el parser recuperara los `desconocido`
 **Detectado:** 2026-09-06 · **una corrida de ~10 min**
 

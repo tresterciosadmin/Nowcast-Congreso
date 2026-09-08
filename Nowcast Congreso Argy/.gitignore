@@ -28,14 +28,44 @@ package-lock.json
 !*.html
 !*.md
 
-# Bases SQLite (binarios; no versionar) — datos/proyectos
-*.db
-*.sqlite
-*.sqlite3
-# ...EXCEPTO la cuarentena: es de kilobytes, la tiene que mirar una PERSONA y si
-# no viaja, los pendientes de revision quedan solo en la maquina de quien cargo.
-# Seria la quinta vez que este archivo esconde trabajo (ver ESTADO 04-08).
-!datos/proyectos/data/cuarentena.db
+# ---------------------------------------------------------------------------
+# 2026-09-08 — LAS BASES SQLITE AHORA VIAJAN. Decision de Franco, explicita.
+#
+# Hasta hoy aca decia `*.db` y `proyectos.db` (85,7 MB) vivia SOLO en la maquina
+# de quien lo hubiera regenerado. El costo de eso no es hipotetico: es el mismo
+# modo de falla que ya provoco los seis incidentes documentados mas abajo en este
+# archivo, pero sobre el objeto mas grande del repo. La consecuencia concreta es
+# que cada integrante termina con SU base, las bases divergen sin dar error, y
+# despues se discute sobre numeros que salieron de datos distintos.
+#
+# La decision: preferimos pushes y pulls mas pesados antes que varias bases.
+#
+# LO QUE HAY QUE SABER ANTES DE COMMITEAR UNA BASE (medido el 08-09):
+#   - `proyectos.db` = 85,7 MB en disco -> 20,7 MB comprimida (24%) por VERSION.
+#   - GitHub RECHAZA cualquier archivo de mas de 100 MB. Estamos al 86% del techo.
+#     No es una advertencia: el push falla entero y no hay forma de arreglarlo sin
+#     reescribir historia, que en este repo esta prohibido.
+#   - Un binario NO diffea: cada commit que toque la base guarda una copia entera.
+#     Diez regeneraciones commiteadas = ~207 MB de `.git` para siempre.
+#
+# DE AHI LAS DOS REGLAS DE USO:
+#   1. **No commitear la base en cada corrida.** Se commitea cuando el contenido
+#      cambio de verdad (ingesta nueva, taxonomias nuevas), no porque SQLite le
+#      movio un byte al abrirla. `git diff --stat` antes de agregar.
+#   2. **El que la regenera la commitea**, igual que la canonica (ver mas abajo).
+#      Una base regenerada que se queda en un disco reabre exactamente el problema
+#      que este bloque viene a cerrar.
+#
+# `tests/test_bases_viajan.py` es el control: verifica que las bases NO esten
+# ignoradas y que ningun archivo versionado se acerque al techo de 100 MB.
+# Si ese test avisa que la base paso los 90 MB, hay que decidir Git LFS ANTES de
+# que el push empiece a fallar, no despues.
+# ---------------------------------------------------------------------------
+# (cuarentena.db ya viajaba por excepcion desde el 04-08; ahora viaja por regla)
+
+# Los journals de SQLite son temporales de UNA corrida: esos no se versionan
+# nunca. Si aparece un `-wal` en `git status`, la base quedo abierta por otro
+# proceso: cerra el visor de SQLite antes de commitear.
 
 # EL REGISTRO UNICO DE TAXONOMIAS ASIGNADAS (datos/taxonomias, 06-09-2026).
 # Es LO MISMO que el respaldo de abajo pero para las dos jerarquias (acta y proyecto), y
@@ -46,11 +76,12 @@ package-lock.json
 !datos/taxonomias/data/asignaciones.csv
 
 # RESPALDO DE TAXONOMIAS — lo unico de proyectos.db que NO se reconstruye (la
-# llena el agente LLM y cuesta llamadas a la API). La base son 90 MB y no viaja;
-# este CSV pesa kilobytes y ES la copia de seguridad. Si queda ignorado, un
-# `migrar_ckan.py` —comando inocente y documentado— borra trabajo pago.
+# llena el agente LLM y cuesta llamadas a la API). Desde el 08-09 la base TAMBIEN
+# viaja, asi que este CSV ya no es la unica copia; sigue estando porque es la
+# unica que DIFFEA: en un binario nadie ve que se perdieron 300 clasificaciones,
+# aca sale en el diff. Si queda ignorado, un `migrar_ckan.py` —comando inocente y
+# documentado— borra trabajo pago y nadie se entera.
 !datos/proyectos/data/taxonomias.csv
-# Los journals de SQLite son temporales de una corrida: nunca se versionan.
 *.db-journal
 *.db-wal
 *.db-shm
@@ -247,3 +278,25 @@ datos/padron/data/raw/*
 # `python datos/padron/src/padron_senado_historico.py`, pero si no viaja a git
 # nadie más lo tiene y el módulo parece no haberse hecho.
 !datos/padron/data/padron_senado_historico.csv
+
+# ---------------------------------------------------------------------------
+# 2026-09-08 — SEPTIMA vez, y la encontro el inventario de datos del MAPA el
+# mismo dia que se escribio (que es exactamente para lo que se escribio).
+#
+# `datos/canonica/data/alias_legislador_id.csv` son los **143 pares de
+# legislador_id que Franco reviso UNO POR UNO** el 04-09 y aprobo. No se
+# regenera: es criterio humano. `alias_legislador.py` lo LEE, o sea que es
+# insumo del pipeline, no un reporte.
+#
+# Estaba cayendo en el `*.csv` de la linea 5. Y lo peor: `COMMITEAR.ps1` lo
+# nombra explicitamente en las rutas de su commit 2, asi que el `git add` lo
+# salteo en silencio y el commit se hizo igual. O sea que quien pullee hoy y
+# corra `entity_resolution.py` obtiene CERO merges y no se entera: los 2.302 ids
+# se quedan sin unificar y el modelo mide sobre carreras partidas.
+#
+# Se agrega tambien el CSV con los veredictos, que es de donde salio la tabla:
+# sin el, la proxima persona no puede auditar por que dos ids son la misma
+# persona, y la unica forma de rehacerlo es volver a molestar a Franco 153 veces.
+# ---------------------------------------------------------------------------
+!datos/canonica/data/alias_legislador_id.csv
+!datos/canonica/outputs/legislador_id_merge_aprobado_2026-09-04.csv

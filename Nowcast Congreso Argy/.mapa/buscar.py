@@ -12,6 +12,8 @@ Uso:
     python3 .mapa/buscar.py --archivo src/x.py    # vecindario de un archivo
     python3 .mapa/buscar.py --carpeta src/datos   # inventario de una carpeta
     python3 .mapa/buscar.py --leer                # que abrir primero (top del mapa)
+    python3 .mapa/buscar.py --dato taxonomi       # que datos hay y donde (inventario)
+    python3 .mapa/buscar.py --dato                # el inventario completo
 """
 
 import argparse
@@ -48,6 +50,48 @@ def puntuar(nombre, q):
     return 0
 
 
+def _humano(n):
+    if n >= 1024 * 1024:
+        return f"{n / 1048576:.1f} MB"
+    if n >= 1024:
+        return f"{n / 1024:.0f} KB"
+    return f"{n} B"
+
+
+def _linea_dato(d):
+    forma = (f'{d["filas"]:,}x{d["columnas"]}' if d.get("filas") is not None and d.get("columnas")
+             else f'{d["filas"]:,} filas' if d.get("filas") is not None
+             else (d.get("detalle") or "").split(",")[0][:28] or "-")
+    git = "git:si" if d.get("viaja") else "git:NO"
+    return f'{d["ruta"]:62} {forma:>14} {_humano(d["bytes"]):>9}  {git}'
+
+
+def datos(m, q=None):
+    """Inventario de datos: que hay, donde, si viaja, quien lo escribe y quien lo lee."""
+    inv = m.get("inventario_datos") or []
+    if not inv:
+        return ("El mapa no tiene inventario de datos. Reindexar: python .mapa/indexar.py")
+    if q:
+        inv = [d for d in inv if q.lower() in d["ruta"].lower()
+               or q.lower() in (d.get("detalle") or "").lower()
+               or any(q.lower() in c.lower() for c in d.get("constantes", []))]
+        if not inv:
+            return f"Ningun archivo de datos matchea '{q}'."
+    L = [f"{len(inv)} archivos - {_humano(sum(d['bytes'] for d in inv))}", ""]
+    for d in sorted(inv, key=lambda x: (x["modulo"], -x["bytes"])):
+        L.append(_linea_dato(d))
+        if d.get("constantes"):
+            L.append(f'    rutas.py: {", ".join(d["constantes"])}')
+        if d.get("escriben"):
+            L.append(f'    lo escribe: {", ".join(d["escriben"][:4])}')
+        if d.get("leen"):
+            L.append(f'    lo lee:     {", ".join(d["leen"][:6])}')
+        if not d.get("escriben") and not d.get("leen"):
+            n = len(d.get("mencionan") or [])
+            L.append(f'    NADIE lo escribe ni lo lee ({n} archivos lo nombran)')
+    return "\n".join(L)
+
+
 def buscar(m, q, todo=False, limite=12):
     L = []
 
@@ -77,6 +121,20 @@ def buscar(m, q, todo=False, limite=12):
         for a in sorted(arch, key=lambda x: -x["loc"])[:limite]:
             L.append(f"  {a['ruta']}  {a['loc']} LOC, {len(a['simbolos'])} simbolos, "
                      f"lo usan {len(a['importado_por'])}")
+        L.append("")
+
+    # FORK NOWCAST (2026-09-08): archivos de DATOS. El indice de codigo no los ve
+    # -- estan ignorados por extension-- y en este repo la pregunta "donde estan
+    # los datos de X" es la que mas veces se rehizo a mano.
+    datos = [d for d in (m.get("inventario_datos") or [])
+             if puntuar(Path(d["ruta"]).name, q) or q.lower() in d["ruta"].lower()
+             or any(q.lower() in c.lower() for c in d.get("constantes", []))]
+    if datos:
+        L.append(f"DATOS ({len(datos)})")
+        for d in sorted(datos, key=lambda x: -x["bytes"])[:limite]:
+            L.append("  " + _linea_dato(d))
+        if len(datos) > limite:
+            L.append(f"  ... {len(datos) - limite} mas")
         L.append("")
 
     # pistas de bitacoras
@@ -206,12 +264,16 @@ def main():
     ap.add_argument("--archivo", "-a", help="vecindario de un archivo")
     ap.add_argument("--carpeta", "-c", help="inventario de una carpeta")
     ap.add_argument("--leer", action="store_true", help="por donde empezar")
+    ap.add_argument("--dato", "-d", nargs="?", const="", metavar="TERMINO",
+                    help="inventario de datos (sin termino: todo)")
     ap.add_argument("--todo", action="store_true", help="incluir fuentes y config")
     ap.add_argument("--mapa", help="ruta a mapa.json")
     args = ap.parse_args()
 
     m = cargar(args.mapa)
-    if args.leer:
+    if args.dato is not None:
+        print(datos(m, args.dato or None))
+    elif args.leer:
         print(por_donde_empezar(m))
     elif args.archivo:
         print(vecindario(m, args.archivo))

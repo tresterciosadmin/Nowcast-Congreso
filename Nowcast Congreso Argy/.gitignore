@@ -325,3 +325,17 @@ datos/padron/data/raw/*
 # `variables/legislador/src/ficha.py`, que es lo unico que lo escribe.
 # ---------------------------------------------------------------------------
 !variables/legislador/data/legislador_bloques.parquet
+
+# ---------------------------------------------------------------------------
+# La EVIDENCIA de las dos revisiones manuales tambien viaja (decision de Franco,
+# 2026-09-08). El criterio con el que se agrego
+# `legislador_id_merge_aprobado_2026-09-04.csv` fue que la proxima persona pudiera
+# auditar los veredictos sin volver a molestar a Franco 153 veces; para auditarlos
+# hace falta la evidencia de la que salieron, no solo la conclusion.
+#   - legislador_id_duplicados_2026-09-04.csv: los 153 pares candidatos con sus 22
+#     columnas de evidencia (el insumo de los veredictos aprobados).
+#   - actas_gemelas_2026-09-06.csv: las 274 actas que entraban dos veces, el
+#     diagnostico del dedup del 06-09 (URGENTE I).
+# ---------------------------------------------------------------------------
+!datos/canonica/outputs/legislador_id_duplicados_2026-09-04.csv
+!datos/canonica/outputs/actas_gemelas_2026-09-06.csv

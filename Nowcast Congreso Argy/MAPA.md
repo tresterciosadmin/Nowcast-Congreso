@@ -2,13 +2,13 @@
 
 <!-- GENERADO por indexar.py. No editar: los cambios se pierden. -->
 <!-- La prosa vive en el README.md de cada modulo (seccion `Buscar aca si`). -->
-<!-- 2026-09-08 13:20 UTC · 153 archivos · 38,075 LOC -->
+<!-- 2026-09-08 13:49 UTC · 154 archivos · 38,225 LOC -->
 
 ## Como usar este archivo
 
 Es el unico archivo del proyecto que hace falta leer para empezar. Para ubicar algo concreto: `python3 .mapa/buscar.py "<termino>"` devuelve archivo y linea sin abrir nada. Recien despues abrir los archivos que salgan, y solo esos.
 
-Rama `main` — ultimo commit: 2026-09-08 6596643 export: los xlsx dejan de ser 'transitorios', son el entregable · **hay cambios sin commitear**
+Rama `main` — ultimo commit: 2026-09-08 723acbc limpieza fase 2: 178 archivos de descarte a Archivos_Borrar · **hay cambios sin commitear**
 
 ## Donde buscar que
 
@@ -134,10 +134,10 @@ Rama `main` — ultimo commit: 2026-09-08 6596643 export: los xlsx dejan de ser 
 | `variables/bloque/` _(src+tests)_ | Cohesion, tamano, postura y fracturas de cada bloque en el tiempo, y el proyector point-in-time que arma el escenario por bloque que consume el ensemble. | 5 | 1,128 | **vencida** |
 | `evaluacion/baseline/` _(src+tests)_ | El piso a superar: el baseline de bloque, ya medido. Cualquier modelo nuevo se compara contra esto. | 5 | 1,118 | **vencida** |
 | `datos/canonica/` _(src+tests)_ | La base propia y unica de votaciones nominales: todas las fuentes unificadas, deduplicadas y con entidades resueltas. Fuente de verdad de la que leen `variables/` y `modelo/`. | 7 | 990 | **vencida** |
+| `tests/` | Tests que cruzan modulos y por eso no pueden vivir dentro de ninguno. Cada modulo tiene sus propios tests en `<modulo>/tests/`; acá van solo los que verifican acuerdos ENTRE modulos. | 5 | 986 | **vencida** |
 | `datos/senado/` _(src+tests)_ | Ingesta de votaciones nominales del Senado desde senado.gob.ar + reconstruccion del bloque historico contemporaneo a cada voto. Tapa el hueco 2015-2023. | 5 | 940 | **vencida** |
 | `datos/bot_recoleccion/` _(src+tests)_ | El bot diario que trae lo nuevo de ambas camaras (proyectos con firmantes y giros, y votaciones) con upsert idempotente. Corre solo en GitHub Actions. | 7 | 880 | **vencida** |
 | `casos/` | Aplicaciones del nowcast a un caso real (una ley concreta): el scoring, el informe en HTML y la proyeccion bicameral. Consumen los contratos de `modelo/` y `variables/`; no definen modelo propio. | 3 | 842 | **vencida** |
-| `tests/` | Tests que cruzan modulos y por eso no pueden vivir dentro de ninguno. Cada modulo tiene sus propios tests en `<modulo>/tests/`; acá van solo los que verifican acuerdos ENTRE modulos. | 4 | 836 | ok |
 | `modelo/voto_individual/` _(src+tests)_ | No predice el voto medio (eso lo resuelve la regla de bloque ~0,99): modela el DESVIO del legislador respecto de su bloque y detecta pivotes (ADR-0003). | 2 | 597 | **vencida** |
 | `modelo/agregador_institucional/` _(src+tests)_ | Traduce posturas de bloque + asistencia en un resultado institucional: cuenta bancas, quorum, umbrales de mayoria y bandas. Mide la estructura, no la politica. | 2 | 589 | **vencida** |
 | `producto/dashboard/` _(src)_ | Tablero interno: radar de traccion, mapa de pivotes y escenarios, y el MAPA DEL MODELO: el diagrama de flujo BICAMERAL de como se calcula P(sancion) -dos bloques espejo, origen y revisora, con el condicionamiento entre camaras dibujado-, generado desde el indice del repo. Los entregables se abren con doble clic desde la RAIZ; el codigo del generador vive aca. | 1 | 563 | ok |
@@ -161,7 +161,7 @@ Rama `main` — ultimo commit: 2026-09-08 6596643 export: los xlsx dejan de ser 
 
 ## Inventario de datos
 
-140 archivos de datos · 195.2 MB · 106 viajan por git, **34 no**.
+140 archivos de datos · 195.2 MB · 108 viajan por git, **32 no**.
 
 Buscar uno sin abrir nada: `python .mapa/buscar.py --dato <termino>`. Columna **git**: `si` = esta versionado, o sea que quien clone lo tiene; `NO` = vive solo en el disco de quien lo genero, que es el modo de falla mas repetido de este repo (seis veces, ver `.gitignore`). **Escribe/Lee**: quien lo produce y quien lo consume, deducido del codigo; sin lector, sobra — sin escritor, no se regenera.
 
@@ -182,11 +182,11 @@ Buscar uno sin abrir nada: `python .mapa/buscar.py --dato <termino>`. Columna **
 | `datos/canonica/data/clean/_sources/decada_votada_actas.parquet` | 3,153×14 | 309 KB | **NO** | — | — |
 | `datos/canonica/data/clean/_sources/decada_votada_votos.parquet` | 437,144×8 | 258 KB | **NO** | — | — |
 | `datos/canonica/data/clean/_sources/ckan_diputados_votos.parquet` | 256,581×8 | 251 KB | **NO** | `to_canonical.py` | — |
-| `datos/canonica/outputs/actas_gemelas_2026-09-06.csv` | 1,076×8 | 158 KB | **NO** | — | _(1 lo nombran)_ |
+| `datos/canonica/outputs/actas_gemelas_2026-09-06.csv` | 1,076×8 | 158 KB | si | — | _(1 lo nombran)_ |
 | `datos/canonica/data/clean/_sources/argentinadatos_votos.parquet` | 84,311×8 | 123 KB | **NO** | `to_canonical.py` | — |
 | `datos/canonica/data/clean/_sources/senado_actas.parquet` | 749×14 | 70 KB | **NO** | — | _(1 lo nombran)_ |
 | `datos/canonica/data/clean/_sources/ckan_diputados_actas.parquet` | 999×14 | 43 KB | **NO** | `to_canonical.py` | — |
-| `datos/canonica/outputs/legislador_id_duplicados_2026-09-04.csv` | 153×22 | 43 KB | **NO** | — | — |
+| `datos/canonica/outputs/legislador_id_duplicados_2026-09-04.csv` | 153×22 | 43 KB | si | — | — |
 | `datos/canonica/data/clean/_decada_csv/diputados.csv` | 1,037×3 | 40 KB | **NO** | `padron_diputados_historico.py`, `test_ingesta_padron.py` | `to_canonical.py`, `comparar_vias_icg.py` |
 | `datos/canonica/data/clean/_sources/senado_votos.parquet` | 53,910×8 | 39 KB | **NO** | — | _(1 lo nombran)_ |
 | `datos/canonica/data/clean/_sources/argentinadatos_actas.parquet` | 415×14 | 29 KB | **NO** | `to_canonical.py` | — |
@@ -310,7 +310,7 @@ Buscar uno sin abrir nada: `python .mapa/buscar.py --dato <termino>`. Columna **
 
 **Lo que el inventario marca**
 
-- No viajan por git y pesan (>100 KB): `fase0/data/raw/detalle_129_137.csv`, `datos/canonica/data/clean/_decada_csv/votaciones-diputados.csv`, `datos/canonica/data/clean/_decada_csv/votaciones-senado.csv`, `fase0/data/clean/detalle.parquet`, `modelo/voto_individual/outputs/desvios_por_voto.parquet`, `datos/canonica/data/clean/_decada_csv/asuntos-senado.csv`, `datos/canonica/data/clean/_decada_csv/asuntos-diputados.csv`, `datos/canonica/data/clean/_sources/decada_votada_actas.parquet` _+8_. Cada uno vive en un solo disco.
+- No viajan por git y pesan (>100 KB): `fase0/data/raw/detalle_129_137.csv`, `datos/canonica/data/clean/_decada_csv/votaciones-diputados.csv`, `datos/canonica/data/clean/_decada_csv/votaciones-senado.csv`, `fase0/data/clean/detalle.parquet`, `modelo/voto_individual/outputs/desvios_por_voto.parquet`, `datos/canonica/data/clean/_decada_csv/asuntos-senado.csv`, `datos/canonica/data/clean/_decada_csv/asuntos-diputados.csv`, `datos/canonica/data/clean/_sources/decada_votada_actas.parquet` _+7_. Cada uno vive en un solo disco.
 - Tienen productor y **ningun consumidor** (42): `votaciones_nuevas.parquet`, `estado_bot.json`, `argentinadatos_actas.parquet`, `argentinadatos_votos.parquet`, `ckan_diputados_actas.parquet`, `ckan_diputados_votos.parquet`, `manual_2026_actas.parquet`, `manual_2026_votos.parquet` _+34_. Es lo esperable en un entregable para humanos; en un intermedio significa que sobra.
 - **Ningun archivo de codigo los nombra** (30, 50.3 MB): `votaciones_2003-2007_Kirchner.xlsx`, `votaciones_2015-2019_Macri.xlsx`, `votaciones_2007-2011_CFK-1.xlsx`, `votaciones_2011-2015_CFK-2.xlsx`, `votaciones_2023-2027_Milei.xlsx`, `votaciones_2019-2023_Fernandez.xlsx`, `votaciones_2002-2003_Duhalde.xlsx`, `votaciones_1999-2001_DeLaRua.xlsx` _+22_. Ojo: un output con nombre armado por f-string cae aca y esta vivo. Lo que hay que mirar de verdad son los pesados.
 
@@ -411,4 +411,4 @@ Segun el historial de git. Si vas a cambiar uno, mira el otro.
 
 ## Frescura
 
-- Bitacoras vencidas: `./`, `casos/`, `coordinacion/`, `datos/argentinadatos/`, `datos/bot_recoleccion/`, `datos/canonica/`, `datos/ckan_diputados/`, `datos/decada_votada/`, `datos/expedientes/`, `datos/export/`, `datos/manual_2026/`, `datos/padron/`, `datos/proyectos/`, `datos/seguimiento/`, `datos/senado/`, `datos/taxonomias/`, `docs/taxonomias/`, `evaluacion/baseline/`, `fase0/`, `modelo/agregador_institucional/`, `modelo/ensemble/`, `modelo/voto_individual/`, `variables/asistencia_quorum/`, `variables/bloque/`, `variables/embudo/`, `variables/legislador/`, `variables/proyecto/`
+- Bitacoras vencidas: `./`, `casos/`, `coordinacion/`, `datos/argentinadatos/`, `datos/bot_recoleccion/`, `datos/canonica/`, `datos/ckan_diputados/`, `datos/decada_votada/`, `datos/expedientes/`, `datos/export/`, `datos/manual_2026/`, `datos/padron/`, `datos/proyectos/`, `datos/seguimiento/`, `datos/senado/`, `datos/taxonomias/`, `docs/taxonomias/`, `evaluacion/baseline/`, `fase0/`, `modelo/agregador_institucional/`, `modelo/ensemble/`, `modelo/voto_individual/`, `tests/`, `variables/asistencia_quorum/`, `variables/bloque/`, `variables/embudo/`, `variables/legislador/`, `variables/proyecto/`

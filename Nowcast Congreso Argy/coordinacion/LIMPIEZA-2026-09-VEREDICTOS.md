@@ -20,7 +20,7 @@ Contra esto se compara el cierre (fase 6). Si algo de acá cambia, la limpieza e
 |---|---|
 | árbol de git | **limpio** (`git status --porcelain` vacío, incluidos untracked) |
 | último commit | `b1ccd4d` "limpieza" (2026-09-07) |
-| `pytest tests/ datos/proyectos/tests -q` | **30 passed** en 30 s |
+| `pytest tests/ datos/proyectos/tests -q` | **30 passed** en 30 s → **33 desde la fase 2**, ver abajo |
 | `verificar_regeneracion.py` | **16 OK · 0 a mirar · 0 sin poder leer** |
 | **P(aprob) del panel de puertas** | **0,9801** (mayoría absoluta 129, simulado 122,5, afirmativos esperados 151,1, margen +28,6) |
 | β ambas cámaras | n_actas 1.549 · n_votos 245.883 · β₁ 2,1045 · β₂ 2,138 (p=0,0) |
@@ -155,10 +155,56 @@ No se toca acá: mover eso mueve el número.
 | `datos/senado/data/clean/*.parquet` (2), `_diag_sin_cobertura.csv` | **OK.** Salida del scraper, regenerable (~20 min, cachea HTML) |
 | `datos/decada_votada/data/clean/*.parquet` (2, 31 KB) | **OK.** Semilla normalizada, sin consumidor hoy |
 | `desvios_por_voto.parquet` (1,3 MB) | **OK.** Intermedio de `disciplina.py` que lee el export. **Pero `disciplina.py` tampoco está en `REGENERAR.ps1`**: mismo hueco que el hallazgo, con mucho menos en juego |
-| `actas_gemelas_2026-09-06.csv` (158 KB), `legislador_id_duplicados_2026-09-04.csv` (43 KB) | **PENDIENTE DE FRANCO.** Son la evidencia de dos revisiones manuales; su gemelo `legislador_id_merge_aprobado_2026-09-04.csv` sí viaja, justamente "para poder auditar". ¿Viajan estos también? |
+| `actas_gemelas_2026-09-06.csv` (158 KB), `legislador_id_duplicados_2026-09-04.csv` (43 KB) | **VIAJAN — decisión de Franco (08-09).** Son la evidencia de dos revisiones manuales suyas; el criterio con el que ya viajaba `legislador_id_merge_aprobado` fue que la próxima persona pudiera auditar, y para auditar hace falta la evidencia, no sólo la conclusión |
 | `_sources/baseline_canonico.json` (2 KB) | **RESTO.** Es una copia del que sí viaja en `evaluacion/baseline/outputs/` |
 
 **Grupo C — 42 con productor y sin consumidor**: quedan absorbidos por A y B. Un archivo de
 salida sin consumidor es lo normal en este repo (son entregables y registros de medición);
 el corte útil no es "sin consumidor" sino "sin consumidor **y** sin viajar **y** sin
 regenerador", que es exactamente el caso que se encontró.
+
+## Fase 2 — Restos (hecha, commit `723acbc`)
+
+178 archivos a `Archivos_Borrar/`, que no viaja por git. Nada se borró.
+
+- `parches-de-un-solo-uso/` (10): los nueve `_aplicar_*.py` / `_reparar_tablero.py` /
+  `_patch_tablero_v2.py` / `_aplicar_bitacoras.py` de julio, más `_prueba.txt`.
+- `Aportes-sobre-dataset-congreso/` (168): `legislAr-main/` entero y `towlandia-master/`
+  menos su ZIP.
+
+**Lo que NO se movió, y era lo que la recomendación original decía mover.** El plan (y yo)
+propusimos archivar `Aportes sobre dataset congreso/` completa. Estaba mal:
+`towlandia-master/public/DecadaVotadaCSV.zip` es **dependencia viva** — la leen
+`run_pipeline.py:29` y `rutas.py:161` por su ruta literal, en el paso 1, para la semilla
+histórica. Y si falta, `run_pipeline.py` **no falla**: imprime
+`[warn] no está DecadaVotadaCSV.zip; salteo la semilla histórica` y sigue, dejando una
+canónica sin historia. El ZIP quedó intacto (verificado después de mover: 1.681.394 bytes).
+
+`Aportes sobre dataset congreso/Decada Votada/` ya estaba vacía: Valle descartó su
+contenido (19 MB) el 06-09 y sólo quedaron las carpetas, que Claude no puede borrar.
+
+**Después de la fase 2:** 30 passed · 16 OK · P = 0,9801 · índice 162 → **153** archivos,
+38.865 → **38.075** LOC · `--estructura` con **un** huérfano, `verificar_regeneracion.py`,
+que es el entrypoint declarado. Criterio de salida cumplido.
+
+## El test guardián (decisión de Franco, 08-09)
+
+`tests/test_insumos_del_motor_viajan.py`. **Es una propiedad, no la lista del día**: deriva
+del inventario del MAPA los datos que lee cualquier archivo del motor (hoy 28) y falla si
+git ignora alguno, así que un insumo nuevo queda cubierto sin que nadie se acuerde de
+agregarlo. Tres controles:
+
+1. los insumos del motor no están ignorados;
+2. el inventario está disponible — sin esto el archivo pasaría en verde sin controlar nada,
+   y un test que no puede fallar entrena a creerle;
+3. no quedan excepciones vencidas — una excepción que ya no aplica es una puerta abierta.
+
+**Verificado que puede fallar**, no sólo que pasa: sacándole la única excepción declarada,
+salta con `_decada_csv/diputados.csv`.
+
+La única excepción es esa ruta, y el motivo está medido: es una atribución **falsa** del
+inventario por colisión de basename (`comparar_vias_icg.py:76` lee
+`datos/padron/data/padron_diputados.csv`).
+
+> **La línea de base de la suite pasa de 30 a 33** por los tres tests nuevos. Es el único
+> cambio esperado en los controles; todo lo demás se compara igual contra la fase 0.

@@ -208,3 +208,62 @@ inventario por colisión de basename (`comparar_vias_icg.py:76` lee
 
 > **La línea de base de la suite pasa de 30 a 33** por los tres tests nuevos. Es el único
 > cambio esperado en los controles; todo lo demás se compara igual contra la fase 0.
+
+## Fase 3 — Lote 1: los cuatro módulos más grandes (68 archivos)
+
+`variables/proyecto` (26), `modelo/ensemble` (16), `datos/expedientes` (15),
+`datos/padron` (11). Método: cruzar `importado_por` y `entrypoints` del índice contra el
+docstring de cada archivo, y verificar en disco y en git todo lo que el docstring afirma.
+
+| veredicto | cuántos | cuáles |
+|---|---:|---|
+| **SIRVE** | 60 | todo lo demás: o es entrypoint declarado, o alguien lo importa, o es un test |
+| **SIRVE PERO MIENTE** | 5 | los cinco punteros a `Archivos_Borrar/BORRAR_*.py` — corregidos |
+| **SE ARCHIVA** | 3 | `variables/proyecto/src/{classify_tema.py, classify_tema_v1.py, oficialismo.py}` |
+| **SE FUSIONA** | 0 | no apareció duplicación en estos cuatro |
+
+### Los cinco que mentían
+
+`ensemble.py`, `backtest_cadena.py`, `nowcast_bicameral_html.py`,
+`proyeccion_hipotetica_bicameral.py` y `comparar_vias_icg.py` decían que el código dado de
+baja "quedó entero" en `Archivos_Borrar/BORRAR_*.py`. **Ninguna de las cinco copias existe**
+— ni en disco ni en git: `Archivos_Borrar` no viaja y se vació. Quien fuera a buscar la
+formulación v1 la buscaba donde no está.
+
+Se corrigió sólo el texto. Cada uno dice ahora el comando que la recupera, verificado
+commit por commit (que la versión anterior no tuviera ya el aviso de baja, y que el código
+viejo estuviera vivo ahí):
+
+| archivo | commit con la versión vieja |
+|---|---|
+| `modelo/ensemble/src/ensemble.py` | `5044142` — verificado: tiene el `componer(p_llega, p_mayoria)` v1 |
+| `modelo/ensemble/src/backtest_cadena.py` | `e93cd65` |
+| `casos/nowcast_bicameral_html.py` | `47eb783` |
+| `casos/proyeccion_hipotetica_bicameral.py` | `47eb783` |
+| `variables/proyecto/src/comparar_vias_icg.py` | `0a798bb` — el que todavía tiene la capa 2 |
+
+**Ojo con el matiz de `ensemble.py`:** el módulo **está vivo** (lo importan 7 archivos). Lo
+que está dado de baja es sólo su función `componer()`. No confundir una cosa con la otra.
+
+### Los tres que se archivan
+
+Los tres se declaran muertos ellos mismos y nadie los importa:
+
+- `classify_tema.py` y `classify_tema_v1.py` — 5 líneas cada uno, todas comentario:
+  *"DEPRECADO (2026-06-27) … (Se puede borrar este archivo.)"*
+- `oficialismo.py` — *"NEUTRALIZADO 2026-08-09 — DUPLICABA `origen_lider.GOBIERNOS`"*, y
+  ya levantaba `ImportError` al importarse. Su docstring dice que está anotado en
+  `Archivos_Borrar/PENDIENTES-DE-BORRAR.md`, archivo que **no existía** hasta esta limpieza.
+  El `data/gobiernos_oficialismo.csv` que menciona tampoco existe.
+
+### Lo que el lote 1 NO encontró
+
+En `modelo/ensemble`, `datos/expedientes` y `datos/padron` **no hay un solo archivo para
+archivar**: los 42 son entrypoint declarado, importados, o tests. El desorden de estos
+módulos no es código muerto — es tamaño (`parser_od.py` 614 LOC, `enlace_senado.py` 590) y
+la carpeta inflada de `variables/proyecto/src` (17 archivos), que son problemas de otra
+naturaleza y no se resuelven archivando.
+
+**Después del lote 1:** 33 passed · 16 OK · P = 0,9801 · índice 154 → 151 archivos.
+
+_(READMEs y sellado de estos cuatro módulos: van en la fase 4, no acá.)_

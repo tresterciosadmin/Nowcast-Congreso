@@ -2,13 +2,13 @@
 
 <!-- GENERADO por indexar.py. No editar: los cambios se pierden. -->
 <!-- La prosa vive en el README.md de cada modulo (seccion `Buscar aca si`). -->
-<!-- 2026-09-08 01:45 UTC · 162 archivos · 38,865 LOC -->
+<!-- 2026-09-08 12:29 UTC · 162 archivos · 38,865 LOC -->
 
 ## Como usar este archivo
 
 Es el unico archivo del proyecto que hace falta leer para empezar. Para ubicar algo concreto: `python3 .mapa/buscar.py "<termino>"` devuelve archivo y linea sin abrir nada. Recien despues abrir los archivos que salgan, y solo esos.
 
-Rama `main` — ultimo commit: 2026-09-07 bc26bf7 aaa · **hay cambios sin commitear**
+Rama `main` — ultimo commit: 2026-09-07 b1ccd4d limpieza
 
 ## Donde buscar que
 

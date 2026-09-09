@@ -25,6 +25,63 @@
 > Está desarrollado en `PLAN-DE-TRABAJO.md`. **Precaución vigente mientras tanto: no publicar
 > P(sanción) de proyectos con origen Senado.**
 
+## O. 🔴 83 actas de Diputados se recuentan con el umbral EQUIVOCADO, y el dato está en la API
+**Detectado:** 2026-09-09 · Claude, durante la limpieza · **no es una corrida: son dos líneas**
+
+`datos/argentinadatos/src/to_canonical.py` escribe **`tipo_mayoria=None` fijo** para
+Diputados (línea 132). La rama del Senado, tres líneas más abajo, **sí** lee
+`a.get("mayoria")` — o sea que no es una limitación de la fuente, es una rama que quedó sin
+completar.
+
+Y `definiciones.normalizar_mayoria_valor` documenta que **sin dato → SIMPLE**. Entonces
+esas actas se recuentan contra la mitad de los emitidos, sin que nada avise.
+
+**Medido el 09-09 contra la API y contra la canónica, enganchando por `acta_id`** (las 760
+enganchan, no es una extrapolación):
+
+| | |
+|---|---:|
+| actas de Diputados/argentinadatos en la canónica | **760** |
+| de ellas, con `tipo_mayoria` nulo | **760 (todas)** |
+| las mismas 760, según la API | 677 SIMPLE · **49 TRES_CUARTOS · 24 DOS_TERCIOS · 10 ABSOLUTA** |
+| **con el umbral equivocado** | **83 (10,9%)** |
+
+De comparación: el Senado, misma fuente, tiene **317 de 317 con el dato**.
+
+La API publica `tipoMayoria` y `baseMayoria` en **las 1.326 actas**, sin faltantes.
+
+Es la misma falla que el ítem **I** ("12 de 250 caían al default SIMPLE y el umbral del
+recuento era el equivocado"), pero sobre el flujo VIVO —Diputados 2020-2026, que es el
+tramo que CKAN ya no cubre— y con 83 actas en vez de 12. Entre ellas, **la Ley de Ficha
+Limpia** (`O.D. 721`, 13-02-2025), que la API marca como mayoría **absoluta**.
+
+**Qué hacer:** leer `mayoria` en la rama de Diputados igual que ya se hace en la del Senado,
+y regenerar. **Mueve números** (cambia qué actas se cuentan como ganadas), así que no se
+tocó en la limpieza: decide Franco.
+
+## P. 🔵 La sonda de argentinadatos ya tiene respuesta: la API NO publica el expediente
+**Detectado:** 2026-08-08 · **Contestado:** 2026-09-09 · **decide Franco, no requiere corrida**
+
+`explorar_campos.py` existía desde el 08-08 para contestar una pregunta que necesitaba
+internet: *¿la API expone el expediente y lo estamos tirando, o no lo publica?* Se corrió el
+09-09. La respuesta es **no lo publica**, y el "arreglo de dos líneas" que la sonda
+hipotetizaba **no existe**:
+
+- **Diputados (1.326 actas):** 22 campos, los 22 presentes en el 100% de las actas.
+  **Ninguno es el expediente.** `numeroActa` es el número de acta dentro de la reunión.
+- **Senado (321 actas):** hay un campo `proyecto`, poblado en el **95,3%** — y **cero** de
+  esas 306 trae un expediente. El **62,0%** trae `O.D. N/AA` y el **33,3%** trae
+  `ORDEN DEL DIA ...` en prosa.
+
+**Lo que sí abre.** En el Senado el enganche por Orden del Día está al alcance en el 95,3%
+de las actas, y este repo ya sabe trabajar con ODs (`datos/expedientes`, y la regla de la
+casa de que la clave es `(periodo, od_numero)`). Es mejor que el rescate por título. Dos
+advertencias antes de intentarlo: el campo viene en **dos formatos** distintos, y a veces es
+un **rango** (`O.D. 41 al 59/24`), o sea varias ODs en un acta.
+
+En Diputados no hay campo, pero el título menciona `O.D.` en el **39,3%** y algo con forma
+de expediente en el **24,1%**.
+
 ## N. 🔵 Dos decisiones de Franco que el inventario de datos dejó a la vista
 **Detectado:** 2026-09-08 · **decide Franco, no requiere corrida**
 

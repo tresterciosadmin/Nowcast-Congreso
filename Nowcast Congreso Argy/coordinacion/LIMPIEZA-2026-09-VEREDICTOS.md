@@ -312,3 +312,60 @@ No sale de fusionar, y conviene decirlo con números: el código muerto ya se ar
 archivos) y `--estructura` no encuentra más. Lo que queda es organización —
 `variables/proyecto/src` con 17 archivos se **subdivide** (misma cantidad) y los 10 archivos
 de +500 LOC se **parten** (más cantidad). El repo no está inflado de código repetido.
+
+## Fase 3 — Lote 2: la ingesta (11 archivos)
+
+`datos/decada_votada` (2), `datos/ckan_diputados` (1), `datos/argentinadatos` (3),
+`datos/senado` (5). Método: cruzar el índice contra quién los invoca de verdad —
+`run_pipeline.py`, `REGENERAR.ps1`, los `COMMITEAR.ps1`, `.github/` y los controles.
+
+| veredicto | cuántos | cuáles |
+|---|---:|---|
+| **SIRVE** | 10 | 7 los corre `run_pipeline.py`, 2 son tests, y `export_seed.R` es registro |
+| **SIRVE PERO MIENTE** | 1 | `argentinadatos/src/explorar_campos.py` — corregido |
+| **SE ARCHIVA** | 0 | |
+| **SE FUSIONA** | 0 | |
+
+**No hay nada para archivar en la ingesta.** Los 7 scripts de `src/` los invoca
+`run_pipeline.py` por nombre; los 2 tests corren en la suite.
+
+### `export_seed.R` (94 LOC, el único código R del repo): SIRVE
+
+Nadie lo invoca, y el README ya dice que quedó **innecesario** —la semilla entra por
+`from_csv.py` desde el ZIP, que es más rápido y trae el Senado—. Pero es la respuesta a
+*"por qué hay código en R en un repo de Python"*, que es una de las dos pistas con las que
+este módulo entra al router del MAPA. Archivarlo saca la respuesta y deja la pregunta.
+
+_(El README sí se contradice: la sección "Cómo trabajar acá" propone `export_seed.R` como
+el camino, y la "ACTUALIZACIÓN" del final dice que no. Se corrige en la fase 4.)_
+
+### La sonda que llevaba un mes sin correr, y lo que apareció al correrla
+
+`explorar_campos.py` existía desde el 08-08 con una pregunta abierta que necesitaba
+internet: *¿la API de argentinadatos expone el expediente y lo estamos tirando?* Se corrió.
+
+**Respuesta: no lo publica.** El "arreglo de dos líneas" que la sonda hipotetizaba no
+existe. Diputados: 22 campos, los 22 en el 100% de las actas, ninguno es el expediente.
+Senado: hay un campo `proyecto` poblado en el 95,3%, y **cero** de esas 306 trae un
+expediente — el 95,3% es la Orden del Día, escrita en dos formatos distintos.
+Queda en URGENTE como ítem **P**, con lo que sí abre (el enganche por OD en el Senado).
+
+**Y apareció otra cosa, peor y más barata de arreglar.** La API publica `tipoMayoria` en
+**las 1.326 actas**, y `to_canonical.py` escribe `tipo_mayoria=None` fijo para Diputados —
+mientras la rama del Senado, tres líneas más abajo, **sí** lo lee. Como
+`definiciones.normalizar_mayoria_valor` manda "sin dato → SIMPLE", esas actas se recuentan
+contra la mitad de los emitidos.
+
+Medido enganchando por `acta_id` (las 760 enganchan, no es extrapolación):
+
+| | |
+|---|---:|
+| actas de Diputados/argentinadatos en la canónica | 760, **las 760 con `tipo_mayoria` nulo** |
+| lo que la API dice de esas mismas 760 | 677 SIMPLE · 49 TRES_CUARTOS · 24 DOS_TERCIOS · 10 ABSOLUTA |
+| **con el umbral equivocado** | **83 (10,9%)** |
+| el Senado, misma fuente | 317 de 317 **con** el dato |
+
+Es la falla del ítem **I** ("12 de 250 caían al default SIMPLE") sobre el flujo VIVO —
+Diputados 2020-2026, el tramo que CKAN ya no cubre — y con 83 actas en vez de 12. Entre
+ellas, la **Ley de Ficha Limpia**, que la API marca como mayoría absoluta. Va a URGENTE
+como ítem **O**: arreglarlo mueve números, así que no se tocó.

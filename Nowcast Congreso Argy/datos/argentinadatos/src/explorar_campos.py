@@ -9,10 +9,30 @@ canónica sin saber qué proyecto se votó, y el enlace entre cámaras —que es
 corazón del nowcast desde el cambio de enfoque— se sostiene sólo con lo que se
 pueda rescatar del título.
 
-La pregunta es simple y no se puede contestar desde el sandbox, que no tiene
-red: **¿la API expone el expediente y lo estamos tirando, o directamente no lo
-publica?** Si lo expone, el arreglo son dos líneas y cubre el flujo vivo. Si no,
-el rescate por título/O.D. es lo mejor disponible y hay que dejarlo dicho.
+La pregunta era: **¿la API expone el expediente y lo estamos tirando, o
+directamente no lo publica?**
+
+CONTESTADA EL 2026-09-09 — NO LO PUBLICA
+----------------------------------------
+Se corrió la sonda contra las dos cámaras. El "arreglo de dos líneas" que esta
+sonda hipotetizaba **no existe**:
+
+  - Diputados (1.326 actas): 22 campos, los 22 presentes en el 100% de las
+    actas, y NINGUNO es el expediente. `numeroActa` es el número de acta dentro
+    de la reunión, no un expediente.
+  - Senado (321 actas): hay un campo `proyecto`, poblado en el 95,3% -- y CERO
+    de esas 306 trae un expediente. El 62,0% trae `O.D. N/AA` y el 33,3% trae
+    `ORDEN DEL DIA ...` en prosa.
+
+Lo que sí abre: en el Senado el enganche por Orden del Día llega al 95,3% de las
+actas, y este repo ya sabe trabajar con ODs. Ojo con dos cosas: el campo viene en
+DOS formatos, y a veces es un RANGO (`O.D. 41 al 59/24`), o sea varias ODs en un
+acta. En Diputados no hay campo: el título menciona `O.D.` en el 39,3% y algo con
+forma de expediente en el 24,1%. Está en URGENTE, ítem P.
+
+Y la corrida encontró OTRA cosa, que es peor y más barata de arreglar: la API
+publica `tipoMayoria` en las 1.326 actas y `to_canonical.py` lo tira. 83 actas de
+Diputados (10,9%) se recuentan hoy con el umbral equivocado. URGENTE, ítem O.
 
 Esta sonda no cambia nada: baja UNA acta de cada cámara e imprime sus campos.
 
@@ -22,7 +42,8 @@ CORRER EN LA PC DE VALLE (necesita internet)
 QUÉ MIRAR EN LA SALIDA
     Cualquier clave que suene a expediente: `expediente`, `expedientes`,
     `numeroExpediente`, `exp`, `proyecto`, `asunto`, `ordenDelDia`, `od`...
-    Si aparece, pegá la salida y se enchufa en `to_canonical.py`.
+    Con la respuesta del 09-09 ya dada, esta sonda queda como el CONTROL de que
+    la API no cambió: si algún día aparece el expediente, acá se ve.
 
 Módulo: datos/argentinadatos · creado 2026-08-08 (línea Revisión de Comisiones)
 """

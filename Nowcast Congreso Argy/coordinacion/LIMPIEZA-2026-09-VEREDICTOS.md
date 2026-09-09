@@ -369,3 +369,64 @@ Es la falla del ítem **I** ("12 de 250 caían al default SIMPLE") sobre el fluj
 Diputados 2020-2026, el tramo que CKAN ya no cubre — y con 83 actas en vez de 12. Entre
 ellas, la **Ley de Ficha Limpia**, que la API marca como mayoría absoluta. Va a URGENTE
 como ítem **O**: arreglarlo mueve números, así que no se tocó.
+
+## Fase 3 — Lote 3: la base (28 archivos)
+
+`datos/manual_2026` (2), `datos/bot_recoleccion` (7), `datos/canonica` (7),
+`datos/proyectos` (10), `datos/taxonomias` (2). `datos/expedientes` ya se vio en el lote 1.
+
+| veredicto | cuántos |
+|---|---:|
+| **SIRVE** | 28 |
+| SIRVE PERO MIENTE · SE FUSIONA · SE ARCHIVA | 0 |
+
+**Segundo módulo seguido sin nada para archivar.** Lo que parecía candidato, no lo era:
+
+- `datos/proyectos/src/{migrar_ckan, upsert_bot, verificar, cuarentena, taxonomias_backup}.py`
+  no los invoca ningún pipeline ni el CI, pero se importan entre sí y el MAPA los documenta
+  como entrypoints manuales (*"rehacer `proyectos.db`: `migrar_ckan.py` + `upsert_bot.py`,
+  ~1 min"*, *"`verificar.py`, 14 invariantes"*).
+- `schema.sql` figura como que "nadie lo importa" porque no es Python: lo lee `store.py`.
+- `manual_2026/src/to_canonical.py` está fuera del pipeline desde el 06-09, pero detrás de
+  su bandera (`MANUAL_2026=1`) y documentado. Es lo que el plan pide para una mejora
+  apagada, aplicado a una fuente.
+- `bot_recoleccion/src/explorar_tp.py` (30 LOC) es la tercera sonda "paso 0" de la misma
+  familia que `explorar_ckan.py` y `explorar_campos.py`. **Las tres quedan**: son el
+  registro de cómo se diseñó cada parser sobre HTML real, y la de argentinadatos acaba de
+  demostrar que sirven.
+
+**El bot está vivo**, verificado en `estado_bot.json` y no en una bitácora: última revisión
+**2026-09-08**, con `tp_diputados` en el TP 127 del período 144 y `dae_normal` en el 69/2026.
+
+### El hallazgo del lote: hay DOS carpetas de descarte, y la grande no estaba contada
+
+El plan de limpieza declara en su tabla de estado *"`Archivos_Borrar/` **vacía**"*. Es
+cierto — de la de la raíz. **Hay una segunda, `datos/Archivos_Borrar/`, con 184 MB**, que es
+el **47% de los 393 MB del proyecto**:
+
+| | |
+|---|---:|
+| `datos/Archivos_Borrar/senado_html` | **115 MB** |
+| `datos/Archivos_Borrar/expedientes_ckan` | **69 MB** |
+| `datos/Archivos_Borrar/tp_diputados` | 256 KB |
+| `datos/Archivos_Borrar/crosswalk_bloques.csv` | 28 KB |
+| `Archivos_Borrar/` (la de la raíz) | 4,7 MB — lo que archivó esta limpieza |
+
+**Todo es caché regenerable y nada viaja por git**, así que no infla el clone: infla el
+disco. Y las dos carpetas están en uso a propósito, no por error: `ingesta_od.py`,
+`ingesta_od_senado.py`, `parser_od.py` y `entity_resolution.py` escriben en la de la raíz;
+`explorar_tp.py`, `explorar_ckan.py`, `ingesta_ckan.py` y el scraper del Senado escriben en
+la de `datos/`. `.mapa/indexar.py:41` ya nombra a las dos.
+
+Lo que sí está mal es que **`CLAUDE.md` describe el régimen de descartables como si hubiera
+una sola**. Quien lea la regla y vaya a `Archivos_Borrar/` a limpiar, limpia 4,7 MB y deja
+184.
+
+`crosswalk_bloques.csv` se revisó por las dudas —un CSV con nombre de curado dentro de una
+carpeta de descarte es el patrón que este repo ya sufrió ocho veces— y **no lo es**: lo
+escribe `entity_resolution.py:302` como diagnóstico y nadie lo lee. Se regenera solo.
+
+**Para Franco, dos cosas y ninguna urgente:** borrar los 184 MB cuesta un re-scrape del
+Senado (~20 min) y ~75 MB de descarga de CKAN; y si se unifican las dos carpetas en una,
+hay que tocar cuatro rutas de caché, que es más riesgo que valor. La recomendación es
+dejarlas y **arreglar el texto de `CLAUDE.md`**, que es donde está el engaño.

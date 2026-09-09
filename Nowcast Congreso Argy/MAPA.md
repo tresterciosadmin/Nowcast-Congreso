@@ -2,13 +2,13 @@
 
 <!-- GENERADO por indexar.py. No editar: los cambios se pierden. -->
 <!-- La prosa vive en el README.md de cada modulo (seccion `Buscar aca si`). -->
-<!-- 2026-09-09 12:09 UTC · 153 archivos · 38,470 LOC -->
+<!-- 2026-09-09 12:42 UTC · 153 archivos · 38,470 LOC -->
 
 ## Como usar este archivo
 
 Es el unico archivo del proyecto que hace falta leer para empezar. Para ubicar algo concreto: `python3 .mapa/buscar.py "<termino>"` devuelve archivo y linea sin abrir nada. Recien despues abrir los archivos que salgan, y solo esos.
 
-Rama `main` — ultimo commit: 2026-09-08 459e15d ADR-0021: el caracter del dictamen y la raiz del repo, una sola copia · **hay cambios sin commitear**
+Rama `main` — ultimo commit: 2026-09-09 4486652 limpieza fase 3 (lote 2): la ingesta, y dos hallazgos al correr una sonda parada · **hay cambios sin commitear**
 
 ## Donde buscar que
 
@@ -373,8 +373,8 @@ Segun el historial de git. Si vas a cambiar uno, mira el otro.
 - `Nowcast Congreso Argy/coordinacion/TABLERO.md` + `Nowcast Congreso Argy/tablero_datos.js` (16 commits)
 - `Nowcast Congreso Argy/coordinacion/EN-HUMANO.md` + `Nowcast Congreso Argy/coordinacion/URGENTE.md` (9 commits)
 - `Nowcast Congreso Argy/coordinacion/ESTADO-DEL-PROYECTO.md` + `Nowcast Congreso Argy/coordinacion/URGENTE.md` (9 commits)
+- `Nowcast Congreso Argy/.mapa/mapa.json` + `Nowcast Congreso Argy/MAPA.md` (8 commits)
 - `Nowcast Congreso Argy/datos/padron/data/estado_vigilancia.json` + `Nowcast Congreso Argy/datos/padron/outputs/vigilancia_padron.md` (8 commits)
-- `Nowcast Congreso Argy/coordinacion/URGENTE.md` + `Nowcast Congreso Argy/tablero_datos.js` (8 commits)
 
 ## Fuentes externas
 

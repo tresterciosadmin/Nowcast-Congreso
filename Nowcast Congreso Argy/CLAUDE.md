@@ -97,6 +97,15 @@ En la raíz vive `TABLERO-CONTROL.html` (se abre con doble click), el tablero ej
 ## Régimen de archivos descartables: **todo lo borrable va a `Archivos_Borrar/`**
 El entorno de Claude **no puede borrar archivos** (en la máquina de Franco, además, la carpeta está en OneDrive). Por eso, todo lo temporal o regenerable (cachés, descargas crudas, logs de validación, salidas intermedias, pruebas) se escribe en `Archivos_Borrar/` para que el dueño humano lo borre a mano. Nada ahí es fuente de verdad.
 
+> ⚠️ **Son DOS carpetas, no una** (medido el 2026-09-09, limpieza fase 3). Además de la de
+> la raíz existe **`datos/Archivos_Borrar/`, y es la grande: 184 MB, el 47% del proyecto**
+> — `senado_html` 115 MB y `expedientes_ckan` 69 MB. Las dos están en uso a propósito:
+> `ingesta_od.py`, `ingesta_od_senado.py`, `parser_od.py` y `entity_resolution.py` escriben
+> en la de la raíz; `explorar_tp.py`, `explorar_ckan.py`, `ingesta_ckan.py` y el scraper del
+> Senado, en la de `datos/`. **Quien vaya a limpiar y mire sólo la raíz, borra 4,7 MB y deja
+> 184.** Nada de las dos viaja por git, así que el clone no las sufre: las sufre el disco.
+> Vaciar la de `datos/` cuesta un re-scrape del Senado (~20 min) y ~75 MB de CKAN.
+
 **Cuando Claude necesita que un archivo DESAPAREZCA** (no que se descarte: que deje de existir, p. ej. un duplicado que si corre hace daño): (1) copia a `Archivos_Borrar/` como `BORRAR_<ruta-con-guiones>`; (2) **neutraliza el original** — a un workflow se le sacan los disparadores automáticos, a un script el `__main__`, a un dato una cabecera que lo invalide; (3) lo anota en `Archivos_Borrar/PENDIENTES-DE-BORRAR.md`. **El paso 2 no es opcional:** un archivo que "hay que borrar" y mientras tanto sigue funcionando no es un pendiente, es un problema activo.
 
 ## ⛔ Límites del entorno de Claude: **lo que no ve NO prueba que no exista**

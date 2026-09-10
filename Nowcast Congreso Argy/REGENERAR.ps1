@@ -9,6 +9,7 @@
      .\REGENERAR.ps1                 # todo
      .\REGENERAR.ps1 -Desde 4        # retomar desde el paso 4
      .\REGENERAR.ps1 -SoloVerificar  # no corre nada: solo mide y reporta
+     .\REGENERAR.ps1 -ConCanonica    # ademas rehace la canonica antes de todo
 
  Tarda 2-3 horas. Se puede dejar sola. Cada paso deja su log en ..\logs-regenerar\.
  Si un paso falla, CORTA: los pasos de mas abajo leen lo que produce el de arriba y
@@ -21,6 +22,13 @@ param(
   [int]$Desde = 1,
   [int]$Hasta = 8,
   [switch]$SoloVerificar,
+  # Reconstruye la CANONICA antes de todo (run_pipeline.py, ~20 min y necesita red).
+  # APAGADO por defecto a proposito: la canonica es la fuente de verdad y rehacerla
+  # no es parte de una regeneracion normal. Se prende cuando hay que aplicar un
+  # cambio en la INGESTA -- por ejemplo el arreglo de `tipo_mayoria` de Diputados
+  # del 2026-09-10, que solo entra re-ingestando argentinadatos (URGENTE O).
+  # De paso deja `_sources/` al dia, que es el item H de URGENTE.
+  [switch]$ConCanonica,
   [string]$Python = "python"
 )
 
@@ -117,6 +125,25 @@ if (-not $SoloVerificar) {
       Write-Host "        python datos\expedientes\src\ingesta_od.py" -ForegroundColor Green
       exit 1
     }
+  }
+}
+
+# ─────────────────────────────────────────────────────────────────────────────
+if ($ConCanonica -and -not $SoloVerificar) {
+  Titulo "C" "CANONICA desde cero (run_pipeline.py) - necesita RED" "20-30"
+  $logC = Join-Path $logs "C-canonica.log"
+  Write-Host "  log: $logC" -ForegroundColor DarkGray
+  $previoC = $ErrorActionPreference
+  $ErrorActionPreference = "Continue"
+  & $Python "datos\canonica\src\run_pipeline.py" 2>&1 | Tee-Object -FilePath $logC
+  $codeC = $LASTEXITCODE
+  $ErrorActionPreference = $previoC
+  if ($codeC -ne 0) {
+    Write-Host ""
+    Write-Host "  X LA CANONICA FALLO (codigo $codeC). Corto aca." -ForegroundColor Red
+    Write-Host "    Mira el final de $logC." -ForegroundColor Red
+    Write-Host "    Para seguir SIN rehacer la canonica:  .\REGENERAR.ps1" -ForegroundColor Yellow
+    exit $codeC
   }
 }
 

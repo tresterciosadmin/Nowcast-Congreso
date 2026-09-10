@@ -39,7 +39,10 @@ POR_PASO = {
     2: ["requests", "bs4", "tenacity"],
     3: ["requests", "bs4", "tenacity"],
     4: ["pandas", "pyarrow", "pypdf", "pdfminer"],
-    5: ["pandas", "pyarrow"],
+    # el paso 5 suma, desde el 2026-09-10, ficha.py + origen_lider + origen_por_acta:
+    # ficha usa numpy y ESCRIBE un .xlsx (openpyxl). Si falta openpyxl el paso muere
+    # despues de calcular todo, que es justo lo que el paso 0 viene a evitar.
+    5: ["pandas", "numpy", "pyarrow", "openpyxl"],
     6: ["pandas", "numpy", "pyarrow", "statsmodels"],
     7: ["pandas", "numpy", "pyarrow"],
     8: ["pandas", "numpy", "pyarrow"],

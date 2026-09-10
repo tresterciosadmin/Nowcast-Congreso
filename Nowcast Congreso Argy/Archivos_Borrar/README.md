@@ -5,6 +5,10 @@ verdad** y nada de acá viaja por git (`.gitignore`, salvo este README). El ento
 Claude no puede borrar archivos, así que el borrado final lo hace Franco a mano —
 **y el 2026-09-10 lo hizo**: lo que había hasta esa fecha ya no está.
 
+> ⚠️ **Al vaciar la carpeta, borrá el CONTENIDO y dejá este archivo.** `README.md` es lo
+> único de acá que viaja por git (hay una excepción para él en el `.gitignore`), así que
+> borrar la carpeta entera lo saca del repositorio. Ya pasó el 2026-09-10.
+
 ## Buscar acá si
 
 - desapareció un archivo que existía y querés ver si se descartó o se movió

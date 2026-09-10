@@ -596,3 +596,31 @@ Y hay dos que **ya están resueltos y todavía figuran** — se borran en la fas
 
 - **N.1** — `alias_legislador_id.csv` ya está versionado (verificado con `git ls-files`).
 - **N.2** — los ocho `votaciones_*.xlsx`: decidido el 08-09, son el entregable y quedan.
+
+---
+
+## Lo decidido y aplicado el 2026-09-10
+
+Franco respondió las 13. Se aplicó **todo lo que NO mueve el número**; lo que sí lo mueve
+quedó listo para una sola corrida de `REGENERAR.ps1`, para que el movimiento tenga una
+explicación medida y no se confunda con la limpieza.
+
+| # | decisión | qué se hizo |
+|---|---|---|
+| **1** | `tipo_mayoria` de Diputados | **código arreglado**: la rama de Diputados lee `a.get("mayoria")` como la del Senado. La corrida queda para `REGENERAR.ps1` |
+| **2, 3, 13** | que corra todo junto | `REGENERAR.ps1` paso 5 suma `ficha.py`, `origen_lider.py` y `origen_por_acta.py` **en ese orden** (los dos últimos leen lo que escribe el primero), y al final corre la suite migrada además de `verificar_regeneracion.py` |
+| **4** | enganche por OD en el Senado | queda como **URGENTE P**, accionable |
+| **5** | `postura_gobierno.py` | **archivado** con su test. Franco tenía razón: si nada lo consume, dejarlo es exactamente lo que la limpieza vino a sacar. Se quitó `PROYECTO_POSTURA_POR_ACTA` de `rutas.py` — una ruta declarada sin productor viola la regla 1 del propio archivo |
+| **6** | los dos generadores de `casos/` | **archivados** (468 LOC). Las tres referencias que quedaban apuntan ahora al archivo y a git |
+| **7** | `AGENTE-CONSOLE-config.yaml` | **archivado** |
+| **8** | `check` / `chk` | no se toca |
+| **9, 10** | las carpetas de descarte | ver abajo |
+| **11, 12** | borrar y el hook | de Franco |
+
+### Un costo de disco que apareció al correr la suite muchas veces
+
+`datos/proyectos/tests/test_verificar.py` **copia `proyectos.db` (85,7 MB) una vez por
+test** para poder romperla. Diez tests son ~850 MB por corrida, y las copias quedan en el
+temporal del sistema: ocho corridas de la suite llenaron 5,2 GB y la novena falló con
+`database or disk is full` — que no es un error del repo, pero se parece a uno. Vale saberlo
+antes de perseguir un fantasma, y vale mirarlo si la suite se corre seguido.

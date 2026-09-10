@@ -167,7 +167,7 @@ def alineacion_individual(votos, origen_map: dict, origen: str | None,
     todo el período. Ausente y abstención cuentan como NO afirmativo, a propósito:
     para juntar una mayoría, el que no está no suma.
 
-    Levantada de `casos/nowcast_bicameral_html.py` y parametrizada, para que no
+    Levantada de `nowcast_bicameral_html.py` (archivado el 10-09) y parametrizada, para que no
     queden dos copias de la misma regla en el repo.
 
     Devuelve {(camara, legislador_id): (p_afirmativo, n_votos, presencia)}.

@@ -143,8 +143,21 @@ if (EnRango 4) {
 }
 
 if (EnRango 5) {
-  Titulo 5 "Enlace acta - expediente (acta_expediente_todas.parquet)" "2-5"
+  Titulo 5 "Enlace acta-expediente + fichas de legislador + features de origen" "10-20"
   Correr 5 "enlace" @("datos\expedientes\src\enlace_senado.py")
+
+  # Agregados el 2026-09-10 (limpieza). Los tres FALTABAN, y por eso sus salidas
+  # quedaban viejas mientras la canonica avanzaba:
+  #   - ficha.py escribe legislador_bloques.parquet, que leen origen_lider.py:184 y
+  #     origen_por_acta.py:153, o sea la variable ORIGEN del motor. Sin el, `origen`
+  #     cae a DESCONOCIDO en el 94,6% de las filas y NADIE recibe un error.
+  #   - origen_lider / origen_por_acta escriben features_proyecto.parquet y
+  #     origen_por_acta.parquet, que el 08-09 eran del 20-08: anteriores al dedup
+  #     del 25-08 y al parser del 06-09.
+  # El orden importa: origen_* leen lo que escribe ficha.
+  Correr 5 "fichas-legislador" @("variables\legislador\src\ficha.py")
+  Correr 5 "origen-lider"      @("variables\proyecto\src\origen_lider.py")
+  Correr 5 "origen-por-acta"   @("variables\proyecto\src\origen_por_acta.py")
 }
 
 if (EnRango 6) {
@@ -170,6 +183,17 @@ if (EnRango 8) {
 Titulo "V" "VERIFICACION — esto es lo que hay que mirar" "1"
 $log = Join-Path $logs "VERIFICACION.txt"
 & $Python "verificar_regeneracion.py" 2>&1 | Tee-Object -FilePath $log
+
+# ─────────────────────────────────────────────────────────────────────────────
+# La suite, al final y en la misma corrida (pedido de Franco, 2026-09-10). Son los
+# dos unicos paths migrados a pytest: el resto de los test_*.py son SCRIPTS que
+# corren al importarse, y pasarle el repo entero a pytest aborta la corrida.
+Titulo "T" "TESTS — la suite migrada" "1-2"
+$logT = Join-Path $logs "TESTS.txt"
+& $Python "-m" "pytest" "tests/" "datos/proyectos/tests" "-q" 2>&1 | Tee-Object -FilePath $logT
+if ($LASTEXITCODE -ne 0) {
+  Write-Host "  La suite NO paso. Mirá $logT antes de creerle a la verificacion." -ForegroundColor Red
+}
 
 $total = [math]::Round(((Get-Date) - $inicio).TotalMinutes, 1)
 Write-Host ""

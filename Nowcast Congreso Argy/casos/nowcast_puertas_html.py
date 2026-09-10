@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 """El nowcast POR PUERTAS de un proyecto, como HTML autocontenido.
 
-Sucesor de `nowcast_bicameral_html.py`, que dibujaba una sola cámara-por-lado sin la
+Sucesor de `nowcast_bicameral_html.py` (neutralizado el 22-08 y ARCHIVADO el 10-09 en
+`Archivos_Borrar/`; se recupera con `git log -- <su ruta vieja>`), que dibujaba una
+sola cámara-por-lado sin la
 cadena. Acá el número es el de `modelo/ensemble/nowcast_puertas` y la cadena está a
 la vista, con lo que se OBSERVA y lo que se CALCULA distinguido:
 

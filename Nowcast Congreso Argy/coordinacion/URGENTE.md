@@ -55,9 +55,23 @@ recuento era el equivocado"), pero sobre el flujo VIVO —Diputados 2020-2026, q
 tramo que CKAN ya no cubre— y con 83 actas en vez de 12. Entre ellas, **la Ley de Ficha
 Limpia** (`O.D. 721`, 13-02-2025), que la API marca como mayoría **absoluta**.
 
-**Qué hacer:** leer `mayoria` en la rama de Diputados igual que ya se hace en la del Senado,
-y regenerar. **Mueve números** (cambia qué actas se cuentan como ganadas), así que no se
-tocó en la limpieza: decide Franco.
+**El código YA ESTÁ ARREGLADO** (2026-09-10, decisión de Franco): la rama de Diputados lee
+`a.get("mayoria")`, igual que la del Senado. `mayoria` trae la fracción y la base
+("Más de la mitad — Votos Emitidos" / "— Miembros del Cuerpo"), que es lo que
+`definiciones.normalizar_mayoria_valor` sabe leer.
+
+**Lo que falta es la corrida, y es la que mueve el número.** La canónica de hoy sigue
+teniendo las 760 actas con `tipo_mayoria` nulo: el arreglo entra recién cuando se
+re-ingesta. Va con el resto de lo pendiente en una sola pasada:
+
+```powershell
+.\REGENERAR.ps1
+```
+
+**Al terminar, comparar contra la línea de base de la limpieza** (`P(aprob) = 0,9801`,
+β₁ = 2,1045, β₂ = 2,138). Si el número se mueve, acá está la explicación: son 83 actas que
+antes se contaban contra el umbral equivocado. Si NO se mueve, hay que entender por qué —
+el panel de puertas es del 2026-06-01 y puede no tocar ninguna de las 83.
 
 ## P. 🔵 La sonda de argentinadatos ya tiene respuesta: la API NO publica el expediente
 **Detectado:** 2026-08-08 · **Contestado:** 2026-09-09 · **decide Franco, no requiere corrida**

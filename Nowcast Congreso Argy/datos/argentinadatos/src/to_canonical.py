@@ -130,7 +130,13 @@ def main():
                 voto=_voto(v.get("tipoVoto")),fuente="argentinadatos"))
         actas_rows.append(dict(schema_version=SV,acta_id=aid,camara="diputados",fecha=fecha or None,
             periodo=a.get("periodo"),titulo=str(a.get("titulo","")).strip() or "(sin titulo)",expediente=None,
-            tipo_mayoria=None,resultado=a.get("resultado"),
+            # `mayoria` trae la fraccion Y la base ("Mas de la mitad - Votos Emitidos" /
+            # "- Miembros del Cuerpo"), que es lo que `definiciones.normalizar_mayoria_valor`
+            # sabe leer. Estuvo en None fijo hasta el 2026-09-10, mientras la rama del Senado
+            # (mas abajo) si lo leia: con None, definiciones cae a SIMPLE, y 83 de 760 actas
+            # de Diputados se recontaban contra el umbral equivocado (49 tres cuartos, 24 dos
+            # tercios, 10 absoluta -- medido contra la API el 09-09). URGENTE O.
+            tipo_mayoria=a.get("mayoria"),resultado=a.get("resultado"),
             n_afirmativos=a.get("votosAfirmativos"),n_negativos=a.get("votosNegativos"),
             n_abstenciones=a.get("abstenciones"),n_ausentes=a.get("ausentes"),fuente="argentinadatos"))
 

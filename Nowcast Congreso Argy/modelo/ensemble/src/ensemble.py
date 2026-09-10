@@ -329,7 +329,7 @@ def simular_con_guardas(lineas, desvios, tipo_mayoria: str, camara: str, *,
     ÚNICO lugar donde viven esas dos guardas (2026-08-22). Antes estaban sólo dentro
     de `nowcast_proyecto` —o sea, sólo en el camino de la formulación v1—, mientras
     que `puerta_d.p_voto_revisora` tomaba `sim["p_aprobacion"]` crudo y
-    `casos/proyeccion_hipotetica_bicameral.py` tenía su PROPIA copia del clamp. Tres
+    `proyeccion_hipotetica_bicameral.py` (archivado el 10-09) tenía su PROPIA copia del clamp. Tres
     lugares, dos definiciones y una ausencia: al dar de baja v1, la producción se
     quedaba sin el techo de confianza justo en la puerta que sobrevive.
 

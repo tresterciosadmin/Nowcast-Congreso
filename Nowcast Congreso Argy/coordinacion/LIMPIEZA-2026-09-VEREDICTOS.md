@@ -505,3 +505,94 @@ El inventario da `asistencia.py` como **escritor** de `votos_resuelto.parquet` y
 `datos/canonica`, que sería una violación de límites entre módulos. **Es falso**: los lee
 (líneas 83-84) y escribe sólo en su propio `outputs/`. Tercera vez que la atribución por
 nombre de archivo engaña, después de `_decada_csv/diputados.csv` y `senadores.csv`.
+
+## Fase 3 — Lote 5: los bordes (33 archivos). Fase 3 completa
+
+`datos/export` (2), `datos/seguimiento` (2), `evaluacion/baseline` (5),
+`producto/dashboard` (1), `casos` (3), `fase0` (3), `docs/taxonomias` (3), `tests` (8),
+raíz (6). `coordinacion/` quedó en **0 archivos de código** — que era el objetivo de la fase 2.
+
+| veredicto | cuántos |
+|---|---:|
+| **SIRVE** | 31 |
+| **SIRVE PERO MIENTE** | 1 — `AGENTE-CONSOLE-config.yaml`, corregido |
+| **decisión de Franco** | 1 — los dos generadores neutralizados de `casos/` |
+| SE FUSIONA | 0 |
+
+### Dos "huérfanos" de la raíz que no lo son
+
+`mapa_modelo_datos.js` (**4.621 LOC, el archivo más grande del repo**) y `tablero_datos.js`
+figuran como que nadie los nombra. **Los cargan los HTML**: `MAPA-MODELO.html` el primero y
+`TABLERO-CONTROL.html` el segundo, y el primero lo genera
+`producto/dashboard/src/generar_mapa_modelo.py`. El índice no parsea etiquetas `<script>`,
+así que todo `.js` va a caer en esa lista: es un cuarto modo de sub-atribución, además del
+f-string y del basename.
+
+### `AGENTE-CONSOLE-config.yaml`: una segunda copia del prompt del clasificador
+
+Tiene forma de configuración —`model:` y `system:`— y **nadie lo lee**. La variante que
+describe (agente de Console referenciado por ID) fue **descartada**, y `ESTADO` es explícito:
+*"si tocás el prompt del clasificador, editá `construir_prompt` en `agente_taxonomias.py` —
+es EL lugar. No hay que sincronizar contra nada en Console"*.
+
+Se comparó con el prompt vivo: dicen **lo mismo** —mismas 7 reglas, mismo formato de salida,
+mismo mapeo `AUX.HOMENAJE` / `AUX.TRAMITE`— pero con otra redacción, y el `model` del yaml
+está sin la fecha de versión que sí usa el código (`claude-haiku-4-5-20251001`). **Ya
+empezaron a separarse.** El riesgo es concreto: alguien edita el yaml creyendo que cambia
+cómo se clasifica. Se le puso una cabecera que lo dice; archivarlo queda como decisión.
+
+### Lo que quedó sin veredicto porque lo decide Franco
+
+`casos/nowcast_bicameral_html.py` (304 LOC) y `casos/proyeccion_hipotetica_bicameral.py`
+(164 LOC) están **neutralizados** (22-08 y 25-08) y nadie los corre. Sus docstrings decían
+que no se borraban *"para no perder el diseño del HTML, que se reusó"* y por *"el slider de
+ICG legislador-por-legislador, que no existe en `nowcast_puertas` y puede querer rehacerse"*.
+Ese argumento **se debilitó el 08-09**: ahora los dos docstrings apuntan al commit de git que
+tiene la versión entera, así que el diseño no se pierde si se archivan. Son 468 LOC de dos
+formulaciones muertas del número, en la carpeta donde vive la formulación viva.
+
+---
+
+# LAS DECISIONES QUE QUEDAN PARA FRANCO
+
+Consolidado al 2026-09-10, con la fase 3 completa (162 archivos revisados, uno por uno).
+Ordenadas por lo que cuesta equivocarse, no por lo que cuesta hacerlas.
+**Ninguna se aplicó**: todas las de la primera tabla mueven el número publicado.
+
+## 1. Las que mueven el número — no se tocan sin decidir
+
+| # | qué | lo medido | qué costaría |
+|---|---|---|---|
+| **1** | **`tipo_mayoria` de Diputados** (URGENTE O) | **83 de 760 actas (10,9%)** se recuentan con el umbral equivocado. La API tiene el dato en las 1.326. La rama del Senado ya lo lee | dos líneas en `argentinadatos/to_canonical.py` + regenerar |
+| **2** | **`legislador_bloques.parquet` está viejo** | es del **02-07**; la canónica es del **06-09**. Hoy viaja por git tal como está, que es lo que reproduce el número de hoy | `python variables/legislador/src/ficha.py` — y `REGENERAR.ps1` no lo corre, hay que agregarlo |
+| **3** | **Las features de origen del motor están viejas** | `features_proyecto.parquet` y `origen_por_acta.parquet` son del **20-08**; el dedup fue el 25-08 y el parser el 06-09. Misma forma que URGENTE M y H, sobre otra tabla | regenerar `origen_lider.py` + `origen_por_acta.py` |
+| **4** | **El enganche por Orden del Día en el Senado** (URGENTE P) | el campo `proyecto` de la API trae la OD en el **95,3%** de las 321 actas. Mejor que rescatar del título. Ojo: viene en **dos formatos** y a veces es un **rango** (`O.D. 41 al 59/24`) | desarrollo nuevo, no un arreglo |
+
+## 2. Las de orden — no mueven el número, pero son criterio
+
+| # | qué | lo medido | recomendación |
+|---|---|---|---|
+| **5** | **`postura_gobierno.py`**: ¿se retira, se deja como utilidad, o se le busca consumidor? | funciona, 20 tests pasan, su parquet **nunca se generó** y **nadie lo lee**; su función principal perdió el consumidor cuando se neutralizó `proyeccion_hipotetica_bicameral` | **dejarlo**: la alineación con el gobierno es la pieza que cerró la Puerta D |
+| **6** | **Los dos generadores neutralizados de `casos/`** | 468 LOC de dos formulaciones muertas, en la carpeta donde vive la viva. El argumento de "no perder el diseño" ya no aplica: los docstrings apuntan al commit que lo tiene | **archivarlos** |
+| **7** | **`docs/taxonomias/AGENTE-CONSOLE-config.yaml`** | segunda copia del prompt del clasificador. Nadie la lee, la variante fue descartada, y **ya divergió** del código en el `model` | dejarlo con la cabecera nueva, o archivarlo |
+| **8** | **El helper `check`/`chk` en 40 archivos de test** | ~150 LOC, el **75% de toda la duplicación del repo**. Fusionarlo rompe la convención de que cada test corre como script suelto | **no fusionar** — es diseño de la suite, no descuido |
+| **9** | **Los 184 MB de `datos/Archivos_Borrar/`** | 47% del proyecto. Todo caché regenerable, nada viaja por git | vaciarla cuesta ~20 min de re-scrape del Senado + 75 MB de CKAN. Tu llamada |
+| **10** | **¿Una carpeta de descarte o dos?** | las dos están en uso a propósito por 8 scripts distintos | **dejar dos**, ya documentadas en CLAUDE.md. Unificar toca 4 rutas de caché: más riesgo que valor |
+
+## 3. Lo que está hecho y espera una acción tuya
+
+| # | qué | cómo |
+|---|---|---|
+| **11** | Borrar el descarte | `Archivos_Borrar/` — 4,7 MB, incluidos los 167 locks de git en `git-locks-huerfanos/` |
+| **12** | Instalar el hook `pre-commit`, **al cerrar la limpieza** (hoy avisaría en cada commit por las bitácoras vencidas) | `powershell -ExecutionPolicy Bypass -File "Nowcast Congreso Argy\.mapa\instalar-hook.ps1"` desde la raíz git |
+| **13** | Confirmar el cierre en tu máquina | `python -m pytest tests/ datos/proyectos/tests -q` y `python verificar_regeneracion.py` |
+
+## 4. Los URGENTE que ya estaban abiertos y la limpieza no tocó
+
+**M, D, E, H, I, 2, F, 5, 8, L** — están descritos uno por uno en `URGENTE.md`. La limpieza
+no pisó ninguno. Se le agregaron dos, **O** y **P**, que salieron de medir.
+
+Y hay dos que **ya están resueltos y todavía figuran** — se borran en la fase 6:
+
+- **N.1** — `alias_legislador_id.csv` ya está versionado (verificado con `git ls-files`).
+- **N.2** — los ocho `votaciones_*.xlsx`: decidido el 08-09, son el entregable y quedan.

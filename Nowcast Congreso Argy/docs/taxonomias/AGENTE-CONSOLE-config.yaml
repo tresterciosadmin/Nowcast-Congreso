@@ -1,3 +1,23 @@
+# ⚠️ REGISTRO, NO CONFIGURACION. Nadie lee este archivo (verificado 2026-09-10).
+#
+# Es el borrador del agente de Console, una variante que se DESCARTO: ver
+# ESTADO-DEL-PROYECTO.md — "se descarto la variante 'agente de Console
+# referenciado por ID / prompt management' para no depender de un recurso externo
+# y mantener el prompt versionado con el codigo".
+#
+# EL PROMPT QUE CORRE es `SYSTEM_PROMPT` en
+# variables/proyecto/src/agente_taxonomias.py. Si tocas el prompt del
+# clasificador, se toca ahi y en ningun otro lado.
+#
+# Medido el 2026-09-10: el `system` de abajo y el del codigo dicen lo MISMO
+# (mismas 7 reglas, mismo formato de salida, mismo mapeo AUX.HOMENAJE /
+# AUX.TRAMITE) pero con otra redaccion, y el `model` de abajo esta sin la fecha
+# de version que si usa el codigo (claude-haiku-4-5-20251001). O sea que ya
+# empezaron a separarse. Editar este archivo NO cambia como se clasifica.
+#
+# Se conserva porque documenta como quedo el prompt cuando se diseño en Console,
+# junto con AGENTE-CONSOLE-descripcion.md. Archivarlo es decision de Franco.
+
 model: claude-haiku-4-5
 system: |
   Sos un clasificador experto en proyectos de ley del Congreso argentino. Tu única tarea es asignar TAXONOMÍAS temáticas a un proyecto, eligiendo EXCLUSIVAMENTE de la LISTA CONTROLADA que se te entrega en el mensaje de usuario.

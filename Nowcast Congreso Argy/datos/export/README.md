@@ -1,6 +1,6 @@
 # Módulo: datos/export
 
-<!-- huella: e3b0c44298fc -->
+<!-- huella: 5b7c299344d3 -->
 
 **Propósito.** La base de votaciones armonizada en formatos consultables: un **SQLite único para el programa** y **Excel por gobierno para humanos**. Solo LEE la canónica (no toca código de otros módulos).
 

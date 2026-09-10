@@ -1,6 +1,6 @@
 # Módulo: datos/padron
 
-<!-- huella: e3b0c44298fc -->
+<!-- huella: bd4932cefa84 -->
 
 **Propósito.** Padrón **oficial** de bancas a nivel **LEGISLADOR** (no bloque): quién
 ocupa cada banca y en qué ventana de mandato. Es la **composición de la cámara a la

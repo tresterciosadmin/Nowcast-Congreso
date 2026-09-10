@@ -98,6 +98,26 @@ if (-not $SoloVerificar) {
     exit 1
   }
   Write-Host "  OK: esta todo lo que estos pasos necesitan" -ForegroundColor Green
+
+  # INSUMO, no dependencia: los pasos 1 y 4 reconstruyen las firmas desde los PDFs
+  # de las Ordenes del Dia, que viven en un CACHE. El 2026-09-10 ese cache se borro
+  # junto con Archivos_Borrar/ y el paso 1 murio en el minuto 2 con un
+  # FileNotFoundError -- justo lo que este paso 0 existe para evitar.
+  # Las salidas de los pasos 1-4 SI viajan por git y suelen estar al dia: si el
+  # cache no esta, casi siempre lo correcto es saltearlos con -Desde 5.
+  if ((EnRango 1) -or (EnRango 4)) {
+    $odTrabajo = Join-Path $PSScriptRoot "Archivos_Borrar\od_pdf\od_trabajo.csv"
+    if (-not (Test-Path $odTrabajo)) {
+      Write-Host ""
+      Write-Host "  X FALTA EL CACHE DE ORDENES DEL DIA (lo piden los pasos 1 y 4)" -ForegroundColor Red
+      Write-Host "    No esta: $odTrabajo" -ForegroundColor Yellow
+      Write-Host "    Opcion A (lo habitual): saltear las firmas, que ya estan versionadas" -ForegroundColor Yellow
+      Write-Host "        .\REGENERAR.ps1 -Desde 5" -ForegroundColor Green
+      Write-Host "    Opcion B: rebajar los PDFs primero (es LARGO, ~1.700 ODs)" -ForegroundColor Yellow
+      Write-Host "        python datos\expedientes\src\ingesta_od.py" -ForegroundColor Green
+      exit 1
+    }
+  }
 }
 
 # ─────────────────────────────────────────────────────────────────────────────

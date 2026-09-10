@@ -1,6 +1,6 @@
 # Módulo: variables/asistencia_quorum
 
-<!-- huella: e3b0c44298fc -->
+<!-- huella: 7d2f5c386426 -->
 
 **Propósito.** Modelo de asistencia/ausencia/abstención por legislador. Es donde vive la incertidumbre (el ~19% que el bloque NO explica).
 

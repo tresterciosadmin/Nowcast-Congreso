@@ -1,6 +1,6 @@
 # Módulo: modelo/ensemble
 
-<!-- huella: 07874c889fca -->
+<!-- huella: 84a13d5fd576 -->
 
 **Propósito.** La composición final del Nowcast — el nowcast **end-to-end de un proyecto**:
 
@@ -11,7 +11,7 @@ Une las dos piezas ya validadas del sistema en un solo número (con su descompos
 **Estado:** EN CURSO (v1: composición + nowcast por proyecto + tests)
 **Owner actual:** Claude+Valle (2026-07-12)
 
-**Resumen:** La composicion final: el nowcast end-to-end de un proyecto. Compone P(llega al recinto) x P(mayoria dado recinto) y corre el backtest de la cadena completa.
+**Resumen:** La composicion final: el nowcast end-to-end de un proyecto. El punto de entrada vivo es `nowcast_puertas.py`, que corre la CADENA DE PUERTAS y devuelve un numero condicional a que las camaras voten. La formulacion v1 -P(llega al recinto) x P(mayoria dado recinto)- se dio de BAJA el 2026-08-22 (ADR-0012), junto con su backtest: `ensemble.componer` y `backtest_cadena.py` siguen ahi pero levantan SystemExit.
 
 ## Buscar acá si
 

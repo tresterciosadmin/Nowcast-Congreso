@@ -1,14 +1,14 @@
 # casos/ — informes de un proyecto concreto
 
-<!-- huella: 0bdd68799ebb -->
+<!-- huella: bfe7ad62580e -->
 
-**Resumen:** Aplicaciones del nowcast a un caso real (una ley concreta): el scoring, el informe en HTML y la proyeccion bicameral. Consumen los contratos de `modelo/` y `variables/`; no definen modelo propio.
+**Resumen:** Aplicaciones del nowcast a un caso real (una ley concreta): el panel de puertas en HTML. Consume los contratos de `modelo/` y `variables/`; no define modelo propio. Quedo UN generador: los otros dos -bicameral y proyeccion hipotetica- estaban neutralizados desde agosto y se archivaron el 2026-09-10.
 
 ## Buscar acá si
 
 - el informe o el HTML de una ley concreta (Ganancias, lobby, ...), y el generador de los paneles que estan en la RAIZ
-- proyectar un proyecto por las DOS camaras (origen + revisora)
-- por que un caso da un numero distinto al del ensemble, o por que un generador de esta carpeta esta neutralizado y cual lo reemplaza
+- proyectar un proyecto por las DOS camaras (origen + revisora): eso lo hace `modelo/ensemble/src/puerta_d.py`, no esta carpeta
+- por que un caso da un numero distinto al del ensemble
 
 ## Que hay acá
 

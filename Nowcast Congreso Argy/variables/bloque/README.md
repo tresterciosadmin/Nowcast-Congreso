@@ -1,6 +1,6 @@
 # Módulo: variables/bloque
 
-<!-- huella: 47fe2273c34b -->
+<!-- huella: bcda0dd4b896 -->
 
 **Propósito.** Cohesión, tamaño, posición (postura) y fracturas de cada bloque a lo
 largo del tiempo — y, sobre esa serie, un **proyector point-in-time** que arma el

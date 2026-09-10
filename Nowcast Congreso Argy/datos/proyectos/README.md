@@ -1,6 +1,6 @@
 # Módulo: datos/proyectos
 
-<!-- huella: e3b0c44298fc -->
+<!-- huella: bb6a7eed550f -->
 
 **Propósito.** La **base de Proyectos de Ley**: fuente de verdad del embudo. Una fila por proyecto, identificado por su **denominador** (`NNNN-X-AAAA`). Guarda metadata, autores, giros a comisiones, trámite, estado y taxonomías. Se actualiza en el tiempo sin duplicar (un mismo proyecto avanza de estado).
 

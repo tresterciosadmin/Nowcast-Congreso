@@ -1,6 +1,6 @@
 # modelo/agregador_institucional
 
-<!-- huella: e3b0c44298fc -->
+<!-- huella: 4fa85a55cbf0 -->
 
 Motor de **agregación institucional**: convierte la postura esperada de cada bloque en una
 **probabilidad de aprobación** de la votación, entregada como **distribución** (rango con

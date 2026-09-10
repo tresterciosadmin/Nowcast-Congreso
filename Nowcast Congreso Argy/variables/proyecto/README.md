@@ -1,20 +1,20 @@
 # Módulo: variables/proyecto
 
-<!-- huella: e3b0c44298fc -->
+<!-- huella: 94562bde35a4 -->
 
 **Propósito.** Features por proyecto: tema/materia, autor, cámara de origen, tipo de mayoría requerida, parsing de texto (NLP).
 
 **Estado:** EN CURSO
 **Owner actual:** Valle (con Claude)
 
-**Resumen:** Feature store por proyecto: tema/materia, origen (Ejecutivo/oficialismo/aliados/oposicion), jefe de bloque, mayoria requerida, texto, y el ICG como modulador de coyuntura.
+**Resumen:** Feature store por proyecto: tema/materia, origen (Ejecutivo/oficialismo/aliados/oposicion), jefe de bloque, mayoria requerida, texto, y el ICG como modulador de coyuntura. La postura del gobierno por acta se midio aca y su modulo se archivo el 2026-09-10 sin consumidor: la medicion quedo en el ADR-0021 y en ESTADO.
 
 ## Buscar acá si
 
-- de que tema es un proyecto, quien lo impulsa (EJECUTIVO / OFICIALISMO / ALIADOS / OPOSICION) y cual es la postura del gobierno
+- de que tema es un proyecto y quien lo impulsa (EJECUTIVO / OFICIALISMO / ALIADOS / OPOSICION)
 - el ICG (indice de confianza en el gobierno) y el gamma que modula el desvio
 - el efecto lider / jefe de bloque (1,25x, no el 7x que se creia)
-- carpeta grande: 17 archivos — buscar por simbolo con `.mapa/buscar.py` antes de abrir
+- carpeta grande: 13 archivos en `src/` — buscar por simbolo con `.mapa/buscar.py` antes de abrir
 - REVISION 25-08: el log del ICG es SIMETRICO y la politica no — la asimetria existia en el mecanismo eliminado el 11-08
 - por que el promedio del gobierno no tiene leakage (`shift(1)` + `expanding`)
 

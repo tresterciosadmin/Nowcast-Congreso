@@ -1,14 +1,15 @@
 # tests/ — los controles que NO son de un modulo
 
-<!-- huella: cefa1e17a57d -->
+<!-- huella: 588070c07795 -->
 
-**Resumen:** Tests que cruzan modulos y por eso no pueden vivir dentro de ninguno. Cada modulo tiene sus propios tests en `<modulo>/tests/`; acá van solo los que verifican acuerdos ENTRE modulos.
+**Resumen:** Tests que no pertenecen a ningun modulo: los que verifican acuerdos ENTRE modulos (definiciones y rutas compartidas) y los que vigilan INVARIANTES del repo — que las bases y los insumos del motor viajen por git, que la regla del caracter del dictamen no se reimplemente, y que las rutas que el codigo nombra en sus docstrings existan. Cada modulo tiene sus propios tests en `<modulo>/tests/`.
 
 ## Buscar acá si
 
 - una definicion compartida (periodo parlamentario, tipo de mayoria, bancas por camara) cambio en un lado, o alguien volvio a pegarla adentro de un modulo en vez de usar `definiciones.py`
 - dos modulos tienen una copia de la misma funcion y hay que ver si siguen de acuerdo
 - un test falla y no pertenece a ningun modulo en particular
+- un archivo que el motor lee dejo de viajar por git, o una ruta citada en un docstring quedo rota
 
 ## Que hay acá
 

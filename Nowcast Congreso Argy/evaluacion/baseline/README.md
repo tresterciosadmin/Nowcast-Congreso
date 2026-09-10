@@ -1,13 +1,13 @@
 # Módulo: evaluacion/baseline
 
-<!-- huella: e3b0c44298fc -->
+<!-- huella: a30b3a0fb48f -->
 
 **Propósito.** Baseline de bloque (HECHO). Documenta el piso a superar por cualquier modelo.
 
 **Estado:** HECHO
 **Owner actual:** _(vacante — reclamalo en coordinacion/TABLERO.md antes de empezar)_
 
-**Resumen:** El piso a superar: el baseline de bloque, ya medido. Cualquier modelo nuevo se compara contra esto.
+**Resumen:** El piso a superar, y el harness que lo mide. Lo que vive aca es el baseline del VOTO INDIVIDUAL (`baseline_voto_individual.py`, con el guard de era del ADR-0018) mas los diagnosticos del Senado. El baseline de BLOQUE -el ~0,99- se midio en `fase0/` y ahi quedo.
 
 ## Buscar acá si
 

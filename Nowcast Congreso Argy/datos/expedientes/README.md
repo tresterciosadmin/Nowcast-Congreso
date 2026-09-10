@@ -1,6 +1,6 @@
 # Módulo: datos/expedientes
 
-<!-- huella: e3b0c44298fc -->
+<!-- huella: e1f9df70cdc2 -->
 
 **Propósito.** El registro de todo lo que se PRESENTÓ en el Congreso (no solo
 lo que se votó): cada proyecto con su título, autor, tipo, fecha y su cadena de

@@ -2,13 +2,13 @@
 
 <!-- GENERADO por indexar.py. No editar: los cambios se pierden. -->
 <!-- La prosa vive en el README.md de cada modulo (seccion `Buscar aca si`). -->
-<!-- 2026-09-10 01:35 UTC · 149 archivos · 37,767 LOC -->
+<!-- 2026-09-10 01:57 UTC · 149 archivos · 37,767 LOC -->
 
 ## Como usar este archivo
 
 Es el unico archivo del proyecto que hace falta leer para empezar. Para ubicar algo concreto: `python3 .mapa/buscar.py "<termino>"` devuelve archivo y linea sin abrir nada. Recien despues abrir los archivos que salgan, y solo esos.
 
-Rama `main` — ultimo commit: 2026-09-09 2387a8a Merge branch 'main' of https://github.com/tresterciosadmin/Nowcast-Congreso · **hay cambios sin commitear**
+Rama `main` — ultimo commit: 2026-09-10 dea42a3 Archivos_Borrar: el README se queda al vaciar la carpeta · **hay cambios sin commitear**
 
 ## Donde buscar que
 
@@ -18,8 +18,8 @@ Rama `main` — ultimo commit: 2026-09-09 2387a8a Merge branch 'main' of https:/
 | por donde empezar a leer el repo | `./` |
 | que significa "periodo parlamentario", que mayoria exige un proyecto o cuantas bancas tiene una camara (`definiciones.py`) | `./` |
 | el informe o el HTML de una ley concreta (Ganancias, lobby, ...), y el generador de los paneles que estan en la RAIZ | `casos/` |
-| proyectar un proyecto por las DOS camaras (origen + revisora) | `casos/` |
-| por que un caso da un numero distinto al del ensemble, o por que un generador de esta carpeta esta neutralizado y cual lo reemplaza | `casos/` |
+| proyectar un proyecto por las DOS camaras (origen + revisora): eso lo hace `modelo/ensemble/src/puerta_d.py`, no esta carpeta | `casos/` |
+| por que un caso da un numero distinto al del ensemble | `casos/` |
 | que hay que resolver antes de empezar a trabajar (`URGENTE.md`, siempre primero) | `coordinacion/` |
 | la FORMULA del numero abierta hasta la ultima variable (`FORMULA-COMPLETA.md`; se actualiza al tocar el motor, ADR-0015) | `coordinacion/` |
 | por que se decidio algo, y que se hizo cuando (`DECISIONES/` + `ESTADO-DEL-PROYECTO.md`; sin tecnicismos, `EN-HUMANO.md`) | `coordinacion/` |
@@ -70,7 +70,7 @@ Rama `main` — ultimo commit: 2026-09-09 2387a8a Merge branch 'main' of https:/
 | que columnas y tipos tiene que tener un parquet de la canonica | `docs/schemas/` |
 | cambiar un contrato de datos (requiere ADR + aviso en TABLERO) | `docs/schemas/` |
 | que temas existen, como se llaman, y como se agrega, renombra o fusiona uno | `docs/taxonomias/` |
-| el prompt con el que se clasifica un proyecto por titulo | `docs/taxonomias/` |
+| el prompt con el que se clasifica un proyecto: esta en `variables/proyecto/src/agente_taxonomias.py`, no aca | `docs/taxonomias/` |
 | un id de taxonomia duplicado o mal escrito (`loader.py` lo detecta) | `docs/taxonomias/` |
 | cuanto acierta la regla de bloque (~0,99 en direccion del voto individual) | `evaluacion/baseline/` |
 | contra que se compara un modelo nuevo | `evaluacion/baseline/` |
@@ -99,6 +99,7 @@ Rama `main` — ultimo commit: 2026-09-09 2387a8a Merge branch 'main' of https:/
 | una definicion compartida (periodo parlamentario, tipo de mayoria, bancas por camara) cambio en un lado, o alguien volvio a pegarla adentro de un modulo en vez de usar `definiciones.py` | `tests/` |
 | dos modulos tienen una copia de la misma funcion y hay que ver si siguen de acuerdo | `tests/` |
 | un test falla y no pertenece a ningun modulo en particular | `tests/` |
+| un archivo que el motor lee dejo de viajar por git, o una ruta citada en un docstring quedo rota | `tests/` |
 | quien falta a las votaciones, presentismo por periodo | `variables/asistencia_quorum/` |
 | quorum, o si una votacion se cae por ausencias | `variables/asistencia_quorum/` |
 | OJO: alimentar el motor con presentismo PROMEDIO lo empeora — se usa la posicion del bloque entre PRESENTES | `variables/asistencia_quorum/` |
@@ -113,10 +114,10 @@ Rama `main` — ultimo commit: 2026-09-09 2387a8a Merge branch 'main' of https:/
 | el historial completo de un diputado o senador, y por que bloques paso | `variables/legislador/` |
 | presentismo o perfil de voto individual | `variables/legislador/` |
 | armar el Mapa de Influencia o fichas para el producto | `variables/legislador/` |
-| de que tema es un proyecto, quien lo impulsa (EJECUTIVO / OFICIALISMO / ALIADOS / OPOSICION) y cual es la postura del gobierno | `variables/proyecto/` |
+| de que tema es un proyecto y quien lo impulsa (EJECUTIVO / OFICIALISMO / ALIADOS / OPOSICION) | `variables/proyecto/` |
 | el ICG (indice de confianza en el gobierno) y el gamma que modula el desvio | `variables/proyecto/` |
 | el efecto lider / jefe de bloque (1,25x, no el 7x que se creia) | `variables/proyecto/` |
-| carpeta grande: 17 archivos — buscar por simbolo con `.mapa/buscar.py` antes de abrir | `variables/proyecto/` |
+| carpeta grande: 13 archivos en `src/` — buscar por simbolo con `.mapa/buscar.py` antes de abrir | `variables/proyecto/` |
 | REVISION 25-08: el log del ICG es SIMETRICO y la politica no — la asimetria existia en el mecanismo eliminado el 11-08 | `variables/proyecto/` |
 | por que el promedio del gobierno no tiene leakage (`shift(1)` + `expanding`) | `variables/proyecto/` |
 
@@ -124,35 +125,35 @@ Rama `main` — ultimo commit: 2026-09-09 2387a8a Merge branch 'main' of https:/
 
 | Carpeta | Que es | Arch. | LOC | Bitacora |
 |---|---|---:|---:|---|
-| `./` | La raiz del proyecto: los paneles que se abren con doble clic, el tablero ejecutivo y su unica fuente de datos (`tablero_datos.js`). | 6 | 5,921 | **vencida** |
-| `modelo/ensemble/` _(src+tests)_ | La composicion final: el nowcast end-to-end de un proyecto. Compone P(llega al recinto) x P(mayoria dado recinto) y corre el backtest de la cadena completa. | 16 | 4,920 | **vencida** |
-| `variables/proyecto/` _(src+tests)_ | Feature store por proyecto: tema/materia, origen (Ejecutivo/oficialismo/aliados/oposicion), jefe de bloque, mayoria requerida, texto, y el ICG como modulador de coyuntura. | 21 | 4,649 | **vencida** |
-| `datos/expedientes/` _(src+tests)_ | Registro de todo lo PRESENTADO (no solo lo votado): titulo, autor, tipo, fecha y cadena de vida del expediente. Denominador del embudo y enlace acta -> expediente. | 15 | 4,499 | **vencida** |
-| `datos/padron/` _(src+tests)_ | Padron OFICIAL de bancas a nivel LEGISLADOR: quien ocupa cada banca y en que ventana de mandato. Es la composicion real de la camara a una fecha (257 / 72). | 11 | 2,645 | **vencida** |
-| `datos/proyectos/` _(src+tests)_ | Base de Proyectos de Ley (`proyectos.db`): una fila por proyecto identificado por denominador NNNN-X-AAAA. Fuente de verdad del universo de proyectos y denominador del embudo (ADR-0009). | 10 | 2,073 | **vencida** |
-| `tests/` | Tests que cruzan modulos y por eso no pueden vivir dentro de ninguno. Cada modulo tiene sus propios tests en `<modulo>/tests/`; acá van solo los que verifican acuerdos ENTRE modulos. | 8 | 1,347 | **vencida** |
-| `variables/embudo/` _(src+tests)_ | Supervivencia del proyecto: presentado -> comision -> dictamen -> recinto -> sancion. Estima P(llega al recinto), la mitad de P(aprobacion). Es el diferencial del nowcast. | 5 | 1,222 | **vencida** |
-| `variables/bloque/` _(src+tests)_ | Cohesion, tamano, postura y fracturas de cada bloque en el tiempo, y el proyector point-in-time que arma el escenario por bloque que consume el ensemble. | 5 | 1,128 | **vencida** |
-| `evaluacion/baseline/` _(src+tests)_ | El piso a superar: el baseline de bloque, ya medido. Cualquier modelo nuevo se compara contra esto. | 5 | 1,094 | **vencida** |
-| `datos/canonica/` _(src+tests)_ | La base propia y unica de votaciones nominales: todas las fuentes unificadas, deduplicadas y con entidades resueltas. Fuente de verdad de la que leen `variables/` y `modelo/`. | 7 | 990 | **vencida** |
-| `datos/senado/` _(src+tests)_ | Ingesta de votaciones nominales del Senado desde senado.gob.ar + reconstruccion del bloque historico contemporaneo a cada voto. Tapa el hueco 2015-2023. | 5 | 940 | **vencida** |
-| `datos/bot_recoleccion/` _(src+tests)_ | El bot diario que trae lo nuevo de ambas camaras (proyectos con firmantes y giros, y votaciones) con upsert idempotente. Corre solo en GitHub Actions. | 7 | 880 | **vencida** |
-| `modelo/voto_individual/` _(src+tests)_ | No predice el voto medio (eso lo resuelve la regla de bloque ~0,99): modela el DESVIO del legislador respecto de su bloque y detecta pivotes (ADR-0003). | 2 | 597 | **vencida** |
-| `modelo/agregador_institucional/` _(src+tests)_ | Traduce posturas de bloque + asistencia en un resultado institucional: cuenta bancas, quorum, umbrales de mayoria y bandas. Mide la estructura, no la politica. | 2 | 589 | **vencida** |
+| `./` | La raiz del proyecto: los paneles que se abren con doble clic, el tablero ejecutivo y su unica fuente de datos (`tablero_datos.js`). | 6 | 5,921 | ok |
+| `modelo/ensemble/` _(src+tests)_ | La composicion final: el nowcast end-to-end de un proyecto. El punto de entrada vivo es `nowcast_puertas.py`, que corre la CADENA DE PUERTAS y devuelve un numero condicional a que las camaras voten. La formulacion v1 -P(llega al recinto) x P(mayoria dado recinto)- se dio de BAJA el 2026-08-22 (ADR-0012), junto con su backtest: `ensemble.componer` y `backtest_cadena.py` siguen ahi pero levantan SystemExit. | 16 | 4,920 | ok |
+| `variables/proyecto/` _(src+tests)_ | Feature store por proyecto: tema/materia, origen (Ejecutivo/oficialismo/aliados/oposicion), jefe de bloque, mayoria requerida, texto, y el ICG como modulador de coyuntura. La postura del gobierno por acta se midio aca y su modulo se archivo el 2026-09-10 sin consumidor: la medicion quedo en el ADR-0021 y en ESTADO. | 21 | 4,649 | ok |
+| `datos/expedientes/` _(src+tests)_ | Registro de todo lo PRESENTADO (no solo lo votado): titulo, autor, tipo, fecha y cadena de vida del expediente. Denominador del embudo y enlace acta -> expediente. | 15 | 4,499 | ok |
+| `datos/padron/` _(src+tests)_ | Padron OFICIAL de bancas a nivel LEGISLADOR: quien ocupa cada banca y en que ventana de mandato. Es la composicion real de la camara a una fecha (257 / 72). | 11 | 2,645 | ok |
+| `datos/proyectos/` _(src+tests)_ | Base de Proyectos de Ley (`proyectos.db`): una fila por proyecto identificado por denominador NNNN-X-AAAA. Fuente de verdad del universo de proyectos y denominador del embudo (ADR-0009). | 10 | 2,073 | ok |
+| `tests/` | Tests que no pertenecen a ningun modulo: los que verifican acuerdos ENTRE modulos (definiciones y rutas compartidas) y los que vigilan INVARIANTES del repo — que las bases y los insumos del motor viajen por git, que la regla del caracter del dictamen no se reimplemente, y que las rutas que el codigo nombra en sus docstrings existan. Cada modulo tiene sus propios tests en `<modulo>/tests/`. | 8 | 1,347 | ok |
+| `variables/embudo/` _(src+tests)_ | Supervivencia del proyecto: presentado -> comision -> dictamen -> recinto -> sancion. Estima P(llega al recinto). OJO: eso era 'la mitad de P(aprobacion)' en la formulacion v1, que se dio de baja el 2026-08-22 (ADR-0012) justamente porque medir la mortandad en el cajon es agenda politica y se decidio no modelarla; hoy el numero publicado NO la multiplica. | 5 | 1,222 | ok |
+| `variables/bloque/` _(src+tests)_ | Cohesion, tamano, postura y fracturas de cada bloque en el tiempo, y el proyector point-in-time que arma el escenario por bloque que consume el ensemble. | 5 | 1,128 | ok |
+| `evaluacion/baseline/` _(src+tests)_ | El piso a superar, y el harness que lo mide. Lo que vive aca es el baseline del VOTO INDIVIDUAL (`baseline_voto_individual.py`, con el guard de era del ADR-0018) mas los diagnosticos del Senado. El baseline de BLOQUE -el ~0,99- se midio en `fase0/` y ahi quedo. | 5 | 1,094 | ok |
+| `datos/canonica/` _(src+tests)_ | La base propia y unica de votaciones nominales: todas las fuentes unificadas, deduplicadas y con entidades resueltas. Fuente de verdad de la que leen `variables/` y `modelo/`. | 7 | 990 | ok |
+| `datos/senado/` _(src+tests)_ | Ingesta de votaciones nominales del Senado desde senado.gob.ar + reconstruccion del bloque historico contemporaneo a cada voto. Tapa el hueco 2015-2023. | 5 | 940 | ok |
+| `datos/bot_recoleccion/` _(src+tests)_ | El bot diario que trae lo nuevo de ambas camaras (proyectos con firmantes y giros, y votaciones) con upsert idempotente. Corre solo en GitHub Actions. | 7 | 880 | ok |
+| `modelo/voto_individual/` _(src+tests)_ | No predice el voto medio (eso lo resuelve la regla de bloque ~0,99): modela el DESVIO del legislador respecto de su bloque y detecta pivotes (ADR-0003). | 2 | 597 | ok |
+| `modelo/agregador_institucional/` _(src+tests)_ | Traduce posturas de bloque + asistencia en un resultado institucional: cuenta bancas, quorum, umbrales de mayoria y bandas. Mide la estructura, no la politica. | 2 | 589 | ok |
 | `producto/dashboard/` _(src)_ | Tablero interno: radar de traccion, mapa de pivotes y escenarios, y el MAPA DEL MODELO: el diagrama de flujo BICAMERAL de como se calcula P(sancion) -dos bloques espejo, origen y revisora, con el condicionamiento entre camaras dibujado-, generado desde el indice del repo. Los entregables se abren con doble clic desde la RAIZ; el codigo del generador vive aca. | 1 | 563 | ok |
-| `datos/seguimiento/` _(src+tests)_ | Dado un expediente ya conocido, baja su ficha oficial y extrae el estado de avance: giros, movimientos, fechas y PDF. Insumo del embudo. NO descubre proyectos nuevos. | 2 | 512 | **vencida** |
-| `datos/argentinadatos/` _(src+tests)_ | Ingesta de Diputados 2020-2025 y Senado 2024-2025 desde la API argentinadatos.com, normalizada al mismo esquema que CKAN. | 3 | 496 | **vencida** |
-| `datos/taxonomias/` _(src+tests)_ | El registro unico de taxonomias asignadas: una fila por (objeto, taxonomia), en CSV versionado, consolidado desde todas las fuentes que existian sueltas. | 2 | 435 | **vencida** |
-| `variables/legislador/` _(src+tests)_ | Una ficha por legislador que voto alguna vez: identidad, camara, distrito, periodos, trayectoria de bloques, presentismo, perfil de voto y tasa de desvio. | 2 | 387 | **vencida** |
-| `datos/export/` _(src+tests)_ | La canonica armonizada en formatos consultables: un SQLite unico para el programa y Excel por gobierno para humanos. Solo LEE la canonica. | 2 | 386 | **vencida** |
-| `casos/` | Aplicaciones del nowcast a un caso real (una ley concreta): el scoring, el informe en HTML y la proyeccion bicameral. Consumen los contratos de `modelo/` y `variables/`; no definen modelo propio. | 1 | 380 | **vencida** |
-| `datos/manual_2026/` _(src+tests)_ | El Excel curado a mano por Franco (2025-2027). FUERA DEL PIPELINE desde el 06-09: sus 17 actas eran las mismas votaciones que ya trae argentinadatos, con fecha y expediente. | 2 | 331 | **vencida** |
-| `fase0/` _(src)_ | La Fase 0, cerrada: medir cuanto acierta predecir el voto individual mirando al bloque. Resultado ~0,99, y ese resultado ordena todo el proyecto. Se conserva como registro; no se desarrolla mas. | 3 | 297 | **vencida** |
-| `datos/decada_votada/` _(src)_ | Semilla historica de un solo uso: el dataset de Andy Tow ('La Decada Votada') exportado una vez y normalizado. No se depende de el en vivo (ADR-0002). | 2 | 170 | **vencida** |
-| `docs/taxonomias/` | La lista curada de taxonomias (temas/materias) contra la que se clasifican los proyectos, su cargador y el prompt del clasificador. Es un CATALOGO, no un modelo. | 2 | 138 | **vencida** |
-| `variables/asistencia_quorum/` _(src)_ | Modelo de asistencia/ausencia/abstencion por legislador. Es donde vive la incertidumbre que el bloque no explica. | 1 | 109 | **vencida** |
-| `datos/ckan_diputados/` _(src)_ | Ingesta de votaciones nominales de Diputados 2011-2020 desde CKAN HCDN (cabecera + detalle). | 1 | 69 | **vencida** |
-| `coordinacion/` | Las bitacoras y el protocolo: que bloquea a otros, que se hizo, quien tomo que modulo y por que se decidio cada cosa. Aca NO hay codigo del producto. | 0 | 0 | **vencida** |
+| `datos/seguimiento/` _(src+tests)_ | Dado un expediente ya conocido, baja su ficha oficial y extrae el estado de avance: giros, movimientos, fechas y PDF. Insumo del embudo. NO descubre proyectos nuevos. | 2 | 512 | ok |
+| `datos/argentinadatos/` _(src+tests)_ | Ingesta de Diputados desde 2020 y Senado desde 2024 (hasta hoy: la API sirve tambien 2026) desde argentinadatos.com, normalizada al mismo esquema que CKAN. OJO: la API NO publica el expediente -- medido el 09-09, URGENTE P. | 3 | 496 | ok |
+| `datos/taxonomias/` _(src+tests)_ | El registro unico de taxonomias asignadas: una fila por (objeto, taxonomia), en CSV versionado, consolidado desde todas las fuentes que existian sueltas. | 2 | 435 | ok |
+| `variables/legislador/` _(src+tests)_ | Una ficha por legislador que voto alguna vez: identidad, camara, distrito, periodos, trayectoria de bloques, presentismo, perfil de voto y tasa de desvio. | 2 | 387 | ok |
+| `datos/export/` _(src+tests)_ | La canonica armonizada en formatos consultables: un SQLite unico para el programa y Excel por gobierno para humanos. Solo LEE la canonica. | 2 | 386 | ok |
+| `casos/` | Aplicaciones del nowcast a un caso real (una ley concreta): el panel de puertas en HTML. Consume los contratos de `modelo/` y `variables/`; no define modelo propio. Quedo UN generador: los otros dos -bicameral y proyeccion hipotetica- estaban neutralizados desde agosto y se archivaron el 2026-09-10. | 1 | 380 | ok |
+| `datos/manual_2026/` _(src+tests)_ | El Excel curado a mano por Franco (2025-2027). FUERA DEL PIPELINE desde el 06-09: sus 17 actas eran las mismas votaciones que ya trae argentinadatos, con fecha y expediente. | 2 | 331 | ok |
+| `fase0/` _(src)_ | La Fase 0, cerrada: medir cuanto acierta predecir el voto individual mirando al bloque. Resultado ~0,99, y ese resultado ordena todo el proyecto. Se conserva como registro; no se desarrolla mas. | 3 | 297 | ok |
+| `datos/decada_votada/` _(src)_ | Semilla historica de un solo uso: el dataset de Andy Tow ('La Decada Votada') exportado una vez y normalizado. No se depende de el en vivo (ADR-0002). | 2 | 170 | ok |
+| `docs/taxonomias/` | La lista curada de taxonomias (temas/materias) contra la que se clasifican los proyectos, y su cargador. Es un CATALOGO, no un modelo. El PROMPT del clasificador NO vive aca: es `SYSTEM_PROMPT` en `variables/proyecto/src/agente_taxonomias.py`, y es el unico lugar donde se toca. | 2 | 138 | ok |
+| `variables/asistencia_quorum/` _(src)_ | Modelo de asistencia/ausencia/abstencion por legislador. Es donde vive la incertidumbre que el bloque no explica. | 1 | 109 | ok |
+| `datos/ckan_diputados/` _(src)_ | Ingesta de votaciones nominales de Diputados 2011-2020 desde CKAN HCDN (cabecera + detalle). | 1 | 69 | ok |
+| `coordinacion/` | Las bitacoras y el protocolo: que bloquea a otros, que se hizo, quien tomo que modulo y por que se decidio cada cosa. Aca NO hay codigo del producto. | 0 | 0 | ok |
 | `docs/schemas/` | Los contratos de datos del repo (schema_version). Es lo unico compartido y fragil: cambiarlo exige un ADR. | 0 | 0 | ok |
 | `evaluacion/backtesting/` | Validacion walk-forward (entrenar en t, validar en t+1) con test de no-leakage. PENDIENTE. | 0 | 0 | ok |
 | `evaluacion/metricas/` | Metricas comunes: Brier, calibracion, accuracy en votos cruzados, cobertura de bandas. PENDIENTE. | 0 | 0 | ok |
@@ -161,7 +162,7 @@ Rama `main` — ultimo commit: 2026-09-09 2387a8a Merge branch 'main' of https:/
 
 ## Inventario de datos
 
-140 archivos de datos · 195.2 MB · 108 viajan por git, **32 no**.
+140 archivos de datos · 195.4 MB · 108 viajan por git, **32 no**.
 
 Buscar uno sin abrir nada: `python .mapa/buscar.py --dato <termino>`. Columna **git**: `si` = esta versionado, o sea que quien clone lo tiene; `NO` = vive solo en el disco de quien lo genero, que es el modo de falla mas repetido de este repo (seis veces, ver `.gitignore`). **Escribe/Lee**: quien lo produce y quien lo consume, deducido del codigo; sin lector, sobra — sin escritor, no se regenera.
 
@@ -288,14 +289,14 @@ Buscar uno sin abrir nada: `python .mapa/buscar.py --dato <termino>`. Columna **
 | `variables/embudo/outputs/embudo_por_origen.csv` | 4×5 | 200 B | si | — | — |
 | `variables/embudo/outputs/embudo_por_camara.csv` | 2×5 | 139 B | si | `embudo.py` | — |
 | `variables/embudo/outputs/embudo_por_lider.csv` | 2×5 | 125 B | si | — | — |
-| `variables/legislador/data/legisladores.xlsx` | 5 hoja(s) | 1.0 MB | si | `ficha.py` | — |
-| `variables/legislador/data/legisladores.csv` | 1,972×22 | 397 KB | si | `ficha.py` | `origen_lider.py`, `origen_por_acta.py` |
-| `variables/legislador/data/legisladores.parquet` | 1,972×22 | 168 KB | **NO** | `export_base.py`, `ficha.py` | — |
-| `variables/legislador/data/legislador_periodo.parquet` | 4,795×10 | 133 KB | **NO** | `export_base.py`, `ficha.py` | — |
-| `variables/legislador/data/legislador_anio.parquet` | 9,287×8 | 102 KB | **NO** | `ficha.py` | — |
-| `variables/legislador/data/legislador_bloques.parquet` | 3,232×7 | 52 KB | si | `ficha.py` | `origen_lider.py`, `origen_por_acta.py` |
-| `variables/proyecto/data/features_proyecto.parquet` _PROYECTO_FEATURES_ | 41,470×10 | 327 KB | si | `origen_lider.py` | `backtest_cadena.py` |
-| `variables/proyecto/data/origen_por_acta.parquet` _PROYECTO_ORIGEN_POR_ACTA_ | 6,231×9 | 89 KB | si | `origen_por_acta.py` | `nowcast_puertas.py`, `bloque.py`, `estimar_gamma.py` +1 |
+| `variables/legislador/data/legisladores.xlsx` | 5 hoja(s) | 1.1 MB | si | `ficha.py` | — |
+| `variables/legislador/data/legisladores.csv` | 2,159×22 | 433 KB | si | `ficha.py` | `origen_lider.py`, `origen_por_acta.py` |
+| `variables/legislador/data/legisladores.parquet` | 2,159×22 | 186 KB | **NO** | `export_base.py`, `ficha.py` | — |
+| `variables/legislador/data/legislador_periodo.parquet` | 5,284×10 | 158 KB | **NO** | `export_base.py`, `ficha.py` | — |
+| `variables/legislador/data/legislador_anio.parquet` | 9,899×8 | 126 KB | **NO** | `ficha.py` | — |
+| `variables/legislador/data/legislador_bloques.parquet` | 4,121×7 | 61 KB | si | `ficha.py` | `origen_lider.py`, `origen_por_acta.py` |
+| `variables/proyecto/data/features_proyecto.parquet` _PROYECTO_FEATURES_ | 41,470×10 | 332 KB | si | `origen_lider.py` | `backtest_cadena.py` |
+| `variables/proyecto/data/origen_por_acta.parquet` _PROYECTO_ORIGEN_POR_ACTA_ | 5,946×9 | 86 KB | si | `origen_por_acta.py` | `nowcast_puertas.py`, `bloque.py`, `estimar_gamma.py` +1 |
 | `variables/proyecto/data/tema_por_acta.parquet` _PROYECTO_TEMA_POR_ACTA_ | 3,083×8 | 78 KB | si | `tema_por_acta.py` | `registro.py`, `bloque.py` |
 | `variables/proyecto/data/icg_contexto.parquet` | 297×18 | 34 KB | si | — | `estimar_gamma.py`, `estimar_gamma_individual.py`, `modulador_icg.py` |
 | `variables/proyecto/outputs/muestra_manual_taxonomias.csv` | 88×6 | 24 KB | si | — | _(2 lo nombran)_ |
@@ -408,7 +409,3 @@ Segun el historial de git. Si vas a cambiar uno, mira el otro.
 - `EXPEDIENTES` — `modelo/ensemble/src/ensemble.py`
 - `EXPORT_CACHE` — `datos/export/src/export_base.py`
 - `EXP_CLEAN` — `datos/expedientes/src/ingesta_od.py`, `variables/embudo/src/embudo.py`, `variables/proyecto/src/origen_lider.py`
-
-## Frescura
-
-- Bitacoras vencidas: `./`, `casos/`, `coordinacion/`, `datos/argentinadatos/`, `datos/bot_recoleccion/`, `datos/canonica/`, `datos/ckan_diputados/`, `datos/decada_votada/`, `datos/expedientes/`, `datos/export/`, `datos/manual_2026/`, `datos/padron/`, `datos/proyectos/`, `datos/seguimiento/`, `datos/senado/`, `datos/taxonomias/`, `docs/taxonomias/`, `evaluacion/baseline/`, `fase0/`, `modelo/agregador_institucional/`, `modelo/ensemble/`, `modelo/voto_individual/`, `tests/`, `variables/asistencia_quorum/`, `variables/bloque/`, `variables/embudo/`, `variables/legislador/`, `variables/proyecto/`

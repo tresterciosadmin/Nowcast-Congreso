@@ -1,6 +1,6 @@
 # Módulo: datos/bot_recoleccion
 
-<!-- huella: e3b0c44298fc -->
+<!-- huella: eacf979ee3ed -->
 
 **Propósito.** El PADRÓN VIVO (idea de Franco, 11-07-2026): un bot diario que
 trae lo nuevo de ambas cámaras — proyectos ingresados con firmantes y giros —

@@ -1,5 +1,7 @@
 # Módulo: datos/taxonomias
 
+<!-- huella: 8c8f0f23c562 -->
+
 **Propósito.** El **registro único** de taxonomías ASIGNADAS: qué tema le corresponde a
 cada acta y a cada proyecto, con su procedencia. Una sola tabla, versionada, en texto.
 

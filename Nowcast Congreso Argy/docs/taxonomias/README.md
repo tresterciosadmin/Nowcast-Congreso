@@ -1,13 +1,13 @@
 # docs/taxonomias/ — el catalogo de temas
 
-<!-- huella: 44eb79257943 -->
+<!-- huella: d4ed62fdd164 -->
 
-**Resumen:** La lista curada de taxonomias (temas/materias) contra la que se clasifican los proyectos, su cargador y el prompt del clasificador. Es un CATALOGO, no un modelo.
+**Resumen:** La lista curada de taxonomias (temas/materias) contra la que se clasifican los proyectos, y su cargador. Es un CATALOGO, no un modelo. El PROMPT del clasificador NO vive aca: es `SYSTEM_PROMPT` en `variables/proyecto/src/agente_taxonomias.py`, y es el unico lugar donde se toca.
 
 ## Buscar acá si
 
 - que temas existen, como se llaman, y como se agrega, renombra o fusiona uno
-- el prompt con el que se clasifica un proyecto por titulo
+- el prompt con el que se clasifica un proyecto: esta en `variables/proyecto/src/agente_taxonomias.py`, no aca
 - un id de taxonomia duplicado o mal escrito (`loader.py` lo detecta)
 
 ## Trampas

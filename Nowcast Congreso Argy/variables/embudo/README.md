@@ -1,6 +1,6 @@
 # Módulo: variables/embudo
 
-<!-- huella: e3b0c44298fc -->
+<!-- huella: 8c35459cd8bb -->
 
 **Propósito.** Supervivencia del proyecto de ley: `presentado → comisión →
 dictamen → recinto → sanción`. La mayoría de los proyectos mueren en un cajón,
@@ -10,7 +10,7 @@ nowcast (la mitad de la ecuación `P(aprobación) = P(llega al recinto) × P(may
 **Estado:** EN CURSO (v1: embudo por etapas + modelo de supervivencia + backtest temporal)
 **Owner actual:** Claude+Valle (2026-07-12)
 
-**Resumen:** Supervivencia del proyecto: presentado -> comision -> dictamen -> recinto -> sancion. Estima P(llega al recinto), la mitad de P(aprobacion). Es el diferencial del nowcast.
+**Resumen:** Supervivencia del proyecto: presentado -> comision -> dictamen -> recinto -> sancion. Estima P(llega al recinto). OJO: eso era 'la mitad de P(aprobacion)' en la formulacion v1, que se dio de baja el 2026-08-22 (ADR-0012) justamente porque medir la mortandad en el cajon es agenda politica y se decidio no modelarla; hoy el numero publicado NO la multiplica.
 
 ## Buscar acá si
 

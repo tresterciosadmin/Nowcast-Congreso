@@ -1,6 +1,6 @@
 # Módulo: datos/senado
 
-<!-- huella: e3b0c44298fc -->
+<!-- huella: 3e113d70dbce -->
 
 **Propósito.** Ingesta de votaciones nominales del Senado desde la fuente
 oficial (senado.gob.ar/votaciones) + reconstrucción del **bloque histórico**

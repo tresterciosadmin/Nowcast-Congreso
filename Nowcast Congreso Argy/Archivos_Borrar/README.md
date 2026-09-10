@@ -14,6 +14,8 @@ Claude no puede borrar archivos, así que el borrado final lo hace Franco a mano
 | carpeta | qué es | por qué se descartó |
 |---|---|---|
 | `parches-de-un-solo-uso/` | 9 scripts `_aplicar_*.py`, `_reparar_tablero.py`, `_patch_tablero_v2.py`, `_aplicar_bitacoras.py`, más `_prueba.txt` | Parches ya ejecutados en julio, con la fecha en el nombre. **Medido con `git grep`: ningún código los importa ni los corre**; las únicas menciones eran documentación. `_patch_tablero_v2.py` decía de sí mismo "OBSOLETO" |
+| `git-locks-huerfanos/` | 167 locks y objetos temporales de git (1,2 MB) | El mount de OneDrive no permite borrar, así que git deja un `HEAD.lock` y algunos `tmp_obj_*` por commit. Uno de esos `index.lock` llegó a bloquear un commit. Nada de acá afecta al repositorio |
+| `muertos-declarados/` | `classify_tema.py`, `classify_tema_v1.py`, `oficialismo.py` | Los tres se declaran muertos en su propio docstring y nadie los importa |
 | `Aportes-sobre-dataset-congreso/` | `legislAr-main/` (75 archivos) y `towlandia-master/` sin su ZIP (93 archivos) | Material de terceros de un solo uso (ADR-0002). La semilla ya está normalizada en `datos/decada_votada/`, y `export_seed.R` instala `legislAr` **desde GitHub**, no desde esta copia |
 
 ## ⚠️ Lo que NO se movió, y por qué

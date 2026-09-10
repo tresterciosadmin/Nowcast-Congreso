@@ -1,4 +1,4 @@
-"""evaluacion/baseline/baseline_canonico.py
+"""evaluacion/baseline/src/baseline_canonico.py
 Baseline 'votá con tu grupo' (leave-one-out) sobre la base canónica resuelta.
 Compara niveles de agrupación (bloque_norm / linaje / coalicion), por cámara y por año.
 Mide solo votos sustantivos (AFIRMATIVO/NEGATIVO). Excluye 'SIN BLOQUE' (Senado reciente sin bloque resuelto).

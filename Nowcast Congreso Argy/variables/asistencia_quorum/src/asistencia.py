@@ -15,6 +15,13 @@ Es el baseline del módulo (gate de pase: superarlo con el escalón 2). Pero ade
 alimenta al agregador con los PRESENTES esperados por bloque en vez de todas las bancas,
 corrigiendo el sesgo pesimista del motor en las votaciones peleadas.
 
+⚠️ Ese "alimenta" está DETRÁS DE UNA BANDERA APAGADA (verificado 2026-09-10). El agregador
+lee este CSV sólo con `ASIST=1` o en `modo=backtest_asistencia`; por defecto no lo toca, así
+que el número publicado NO depende de este archivo. Y cuando la bandera está prendida y el
+CSV no está, `agregador.py:311` levanta `FileNotFoundError` diciendo qué correr — no hay
+fallback silencioso, que es lo correcto. Hoy `outputs/` no existe: el CSV se genera cuando
+alguien corre este script (por eso `ASISTENCIA_OUT` está en `rutas.GENERADOS`).
+
 Uso:
   python variables/asistencia_quorum/src/asistencia.py
   CANON=/ruta/clean OUT=/ruta/salida python .../asistencia.py

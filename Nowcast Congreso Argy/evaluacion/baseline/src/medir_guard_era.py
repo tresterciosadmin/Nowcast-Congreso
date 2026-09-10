@@ -94,7 +94,7 @@ def _walk_forward(d: pd.DataFrame, llave: list[str]):
 
     Idéntico a `shift(1).expanding().mean()` pero con cumsum: sobre 1.016.058 filas y
     ~2.300 grupos el `transform(lambda)` tarda minutos y esto son segundos. Se verifica
-    contra la versión lenta en `tests/test_medir_guard_era.py`, que es la única razón
+    contra la versión lenta en `evaluacion/baseline/tests/test_guard_era.py`, que es la única razón
     por la que se puede confiar en el atajo.
     """
     g = d.groupby(llave, sort=False)["af"]

@@ -51,9 +51,9 @@ def _padron_senado():
     """Lee los CSV versionados del padrón del Senado, en orden de precedencia.
 
     Orden (el primero que matchea la fecha gana, ver `_bloque_sen`):
-      1. datos/senado/padron_manual_2015_2017.csv  — curado a mano
-      2. datos/senado/padron_bloques_senado.csv    — histórico, termina 2025-12-09
-      3. datos/padron/padron_senado.csv            — nómina oficial VIGENTE (2026-08-06)
+      1. datos/senado/data/padron_manual_2015_2017.csv  — curado a mano
+      2. datos/senado/data/padron_bloques_senado.csv   — histórico, termina 2025-12-09
+      3. datos/padron/data/padron_senado.csv           — nómina oficial VIGENTE (2026-08-06)
 
     El (3) se agregó el 2026-08-06: sin él, todo voto del Senado posterior al
     recambio del 10-dic-2025 entraba a la canónica con bloque='SIN BLOQUE'

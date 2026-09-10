@@ -430,3 +430,78 @@ escribe `entity_resolution.py:302` como diagnóstico y nadie lo lee. Se regenera
 Senado (~20 min) y ~75 MB de descarga de CKAN; y si se unifican las dos carpetas en una,
 hay que tocar cuatro rutas de caché, que es más riesgo que valor. La recomendación es
 dejarlas y **arreglar el texto de `CLAUDE.md`**, que es donde está el engaño.
+
+## Fase 3 — Lote 4: variables y los dos módulos chicos de modelo (17 archivos)
+
+`variables/bloque` (5), `variables/legislador` (2), `variables/embudo` (5),
+`variables/asistencia_quorum` (1), `modelo/voto_individual` (2),
+`modelo/agregador_institucional` (2). Todo esto es **motor congelado**: sólo se ordena y se
+corrige texto.
+
+| veredicto | cuántos |
+|---|---:|
+| **SIRVE** | 15 |
+| **SIRVE PERO MIENTE** | 2 — `asistencia.py` y (del lote 1) `postura_gobierno.py` |
+| SE ARCHIVA · SE FUSIONA | 0 |
+
+**Tercer lote seguido sin código muerto.** Los tres que figuraban sin importadores
+—`embudo/src/escenarios.py`, `embudo/src/cohorte_dos_rutas.py`,
+`asistencia_quorum/src/asistencia.py`— están los tres en el router del MAPA como
+entrypoints con su pista propia.
+
+### El chequeo que abrió este lote: rutas citadas que no existen
+
+Se escaneó **todo** el código buscando rutas del repo nombradas en docstrings y comentarios,
+y se verificó si existen. De 338 referencias, **7 estaban rotas** — casi todas por un
+segmento `data/` o `src/` que se cayó al escribirlas:
+
+| ruta citada | quién la nombra | qué es en realidad |
+|---|---|---|
+| `datos/senado/padron_bloques_senado.csv` | `argentinadatos/to_canonical.py` | falta `data/` |
+| `datos/senado/padron_manual_2015_2017.csv` | ídem | falta `data/` |
+| `datos/padron/padron_senado.csv` | ídem | falta `data/` |
+| `evaluacion/baseline/baseline_canonico.py` | `baseline_canonico.py` (su propio encabezado) | falta `src/` |
+| `tests/test_medir_guard_era.py` | `medir_guard_era.py` | es `evaluacion/baseline/tests/test_guard_era.py` |
+| `variables/proyecto/features_proyecto.parquet` | `backtest_cadena.py` | falta `data/` |
+| `variables/proyecto/data/postura_gobierno_por_acta.parquet` | `postura_gobierno.py` | **no existe, y es otra cosa** — ver abajo |
+
+Las seis primeras se corrigieron. Y quedó **`tests/test_rutas_citadas_existen.py`**, que
+deriva la lista de cada corrida y exceptúa lo que `rutas.py` declara en `GENERADOS`.
+Verificado que puede fallar: con un archivo de prueba que citaba una ruta inventada, salta.
+
+### `postura_gobierno.py`: funciona, y nada de lo que produce llega al número
+
+El séptimo caso no era un typo. `postura_gobierno.py` declara como contrato
+`postura_gobierno_por_acta.parquet`, y **el archivo no está en disco ni se generó nunca**.
+Medido:
+
+- `rutas.py:125` lo declara y está en `GENERADOS`, o sea exceptuado del test que exige que
+  lo declarado exista. Por eso la suite nunca lo notó.
+- **Ningún archivo lo lee.**
+- Y `proyectar_lineas_alineacion` perdió a su único consumidor: era
+  `casos/proyeccion_hipotetica_bicameral.py`, neutralizado el 25-08 por ser una tercera
+  formulación del número.
+
+O sea: el módulo funciona, sus 20 tests pasan, y nada de lo que produce llega al número
+publicado. `ESTADO-DEL-PROYECTO.md` ya lo anotaba (*"queda sin consumidores en casos/ —
+evaluar si se retira o se deja como utilidad. Coordinar con Franco"*). **No se archiva**: la
+medición que contiene —la alineación con el gobierno— es la pieza que cerró la Puerta D y
+la que hizo que la dirección dejara de ser degenerada. Se corrigió el docstring para que lo
+diga, y queda como decisión de Franco.
+
+### `asistencia.py`: el "alimenta al agregador" es en presente y está apagado
+
+Su docstring dice que alimenta al agregador con los presentes esperados *"corrigiendo el
+sesgo pesimista del motor"*. Medido: el agregador lee ese CSV **sólo con `ASIST=1`**, y por
+defecto no lo toca — el número publicado no depende de él. Lo bueno: cuando la bandera está
+prendida y el CSV falta, `agregador.py:311` levanta `FileNotFoundError` diciendo qué correr.
+**No hay fallback silencioso**, que en este repo es la excepción y no la regla. Se corrigió
+el texto.
+
+### Y una tercera confirmación de que el inventario sobre-atribuye
+
+El inventario da `asistencia.py` como **escritor** de `votos_resuelto.parquet` y
+`actas_canonico.parquet` — o sea, como si `variables/asistencia_quorum` escribiera dentro de
+`datos/canonica`, que sería una violación de límites entre módulos. **Es falso**: los lee
+(líneas 83-84) y escribe sólo en su propio `outputs/`. Tercera vez que la atribución por
+nombre de archivo engaña, después de `_decada_csv/diputados.csv` y `senadores.csv`.

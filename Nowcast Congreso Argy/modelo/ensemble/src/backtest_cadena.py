@@ -169,7 +169,7 @@ _ORIGEN_FINO = ("EJECUTIVO", "OFICIALISMO", "ALIADOS", "OPOSICION")
 def origen_fino_por_proyecto(cohorte: pd.DataFrame) -> pd.Series:
     """Serie alineada a `cohorte` con el ORIGEN FINO de cada proyecto
     (EJECUTIVO=mensaje del PE/JGM, OFICIALISMO=legislador del gobierno, OPOSICION),
-    leido del contrato `variables/proyecto/features_proyecto.parquet` por proyecto_id.
+    leido del contrato `variables/proyecto/data/features_proyecto.parquet` por proyecto_id.
     Devuelve None donde no hay match o el origen es DESCONOCIDO -> ese proyecto se
     proyecta SIN condicionar (idéntico a v1). Guardas de faltante con pd.isna()."""
     fp_path = _root() / "variables" / "proyecto" / "data" / "features_proyecto.parquet"

@@ -35,6 +35,22 @@ CONSUME (contratos): datos/canonica actas_canonico · variables/proyecto
 PRODUCE (contrato): variables/proyecto/data/postura_gobierno_por_acta.parquet
     acta_id, motion, postura_gobierno  (postura ∈ {AFIRMATIVO, NEGATIVO, None})
 
+⚠️ HOY ESTE MODULO NO TIENE CONSUMIDOR (verificado el 2026-09-10, limpieza fase 3)
+    El parquet **no esta en disco** y nunca se genero: `rutas.py` lo declara como
+    `PROYECTO_POSTURA_POR_ACTA` y esta en `GENERADOS`, o sea exceptuado del test
+    que exige que lo declarado exista. Ningun archivo lo lee.
+
+    Y `proyectar_lineas_alineacion` perdio a su unico consumidor: era
+    `casos/proyeccion_hipotetica_bicameral.py`, NEUTRALIZADO el 2026-08-25 por ser
+    una tercera formulacion del numero. `ESTADO-DEL-PROYECTO.md` ya lo anota:
+    *"queda sin consumidores en casos/ — evaluar si se retira o se deja como
+    utilidad. Coordinar con Franco."*
+
+    O sea que el modulo funciona y sus 20 tests pasan, pero nada de lo que produce
+    llega al numero publicado. No se archiva porque la medicion que contiene (la
+    alineacion con el gobierno, que es lo que hizo que la direccion dejara de ser
+    degenerada) es la pieza que cerro la Puerta D. Queda como decision de Franco.
+
 CLI:  python variables/proyecto/src/postura_gobierno.py
 Módulo: variables/proyecto · creado 2026-08-09 (reconstrucción por puertas).
 Additivo; toca el módulo de Franco a pedido de Valle.

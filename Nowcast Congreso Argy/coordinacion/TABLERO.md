@@ -6,6 +6,31 @@ Cómo reclamar: editá este archivo en tu rama, agregá la fila, y mencioná en 
 
 ---
 
+## Sesion 2026-09-08 al 09-10 — LIMPIEZA DEL REPO COMPLETO (fases 0 a 4)
+
+| Modulo | Quien | Desde | Estado |
+|---|---|---|---|
+| **TODOS** | Claude (decide Franco) | 2026-09-08 | **Fases 0-4 HECHAS, todos los modulos LIBRES.** Se revisaron los 162 archivos de codigo uno por uno. Falta la fase 6 (cierre), que espera la corrida de Franco. |
+
+**El contrato de la limpieza, cumplido:** el numero publicado no podia moverse. Medido antes
+de empezar (30 passed · 16 OK · **P = 0,9801**, confirmado por Franco en su maquina) y despues
+de cada fase. **Nunca se movio.**
+
+**No hubo colision porque la limpieza es transversal por definicion**, pero se respeto lo que
+importa: el motor (`modelo/*`, `variables/{bloque,proyecto,embudo}`) **no cambio de
+comportamiento efectivo**. Lo unico que se toco ahi fue texto, mas dos fusiones verificadas
+como identicas ANTES de aplicarlas (ADR-0021).
+
+**Lo que dejo abierto, y donde esta:** las 13 decisiones al final de
+`LIMPIEZA-2026-09-VEREDICTOS.md`, y dos items nuevos en `URGENTE.md` — **O** (83 actas de
+Diputados con el umbral de mayoria equivocado, codigo ya arreglado, falta la corrida) y **P**
+(la API de argentinadatos no publica el expediente; el enganche por Orden del Dia en el Senado
+llega al 95,3%).
+
+**Cuando se cierre la fase 6, este bloque se borra y queda la entrada en ESTADO.**
+
+---
+
 ## Sesion 2026-08-25 — INCIDENTE: marcadores de conflicto commiteados en los outputs de `vigilar_padron`
 
 | Modulo | Quien | Desde | Estado |

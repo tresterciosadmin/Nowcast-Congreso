@@ -2,6 +2,45 @@
 
 > Documento vivo. Cada cambio importante en el proyecto se explica acá en lenguaje claro, además de registrarse en `ESTADO-DEL-PROYECTO.md`. Si algo del sistema no se entiende leyendo esto, está mal escrito y hay que arreglarlo.
 
+## Revisamos el proyecto entero, archivo por archivo (08 al 10-09-2026)
+
+Franco pidió repasar todo y ordenar: "archivo por archivo, verifiquemos qué sirve y qué no".
+Son 162 archivos de código. Se revisaron los 162.
+
+**La respuesta corta: casi todo sirve.** El proyecto no estaba lleno de basura. Se sacaron
+178 restos —parches de julio que ya se habían ejecutado, y copias de trabajos de terceros
+que ya habíamos aprovechado— y ocho archivos más que no le entregaban nada a nadie. El
+resto se quedó.
+
+**La regla que se respetó todo el tiempo:** el número que publica el sistema —la
+probabilidad de que un proyecto se sancione— tenía que quedar exactamente igual. Se midió
+antes de empezar (0,9801), después de cada etapa, y al final. Nunca se movió. Si se hubiera
+movido, la limpieza estaba mal, no el número.
+
+**Lo más importante que apareció, y no se estaba buscando.** Hay un archivo que el modelo
+necesita para saber de qué bloque venía cada autor de proyecto, y ese archivo **no se estaba
+guardando en el repositorio**: vivía en una sola computadora. Cualquiera que se bajara el
+proyecto y lo hiciera correr obtenía "origen desconocido" en el 95% de los proyectos, y —esto
+es lo grave— **sin ningún mensaje de error**. Todo parecía andar. Es la octava vez que este
+proyecto tropieza con la misma piedra, así que además del arreglo quedó un control que
+avisa si vuelve a pasar.
+
+**Y una segunda, sobre datos que se usan hoy.** Para las votaciones de Diputados desde 2020,
+el sistema no estaba leyendo qué mayoría hacía falta para aprobar cada cosa, aunque la fuente
+la publica. Al no saberlo, asumía "la mitad más uno". En **83 votaciones de 760** eso está
+mal: eran votaciones que pedían dos tercios o tres cuartos —entre ellas la Ley de Ficha
+Limpia—. El arreglo son dos líneas y ya está hecho; falta que Franco corra la actualización.
+
+**Sobre la sospecha de que había mucho código repetido:** se midió, y no. De todo el código
+del proyecto, apenas el 0,6% está duplicado, y tres cuartas partes de ese 0,6% son una
+ayudita de cinco líneas copiada en los archivos de prueba, que está copiada a propósito.
+
+**Lo último fue arreglar los carteles.** Cada carpeta del proyecto tiene un texto que explica
+qué hace, y de esos textos se arma el índice general. Ocho de veintiocho decían cosas que ya
+no eran ciertas. El peor era justamente el del motor que calcula el número: describía la
+fórmula vieja, la que se había dado de baja en agosto. O sea que quien buscaba entender de
+dónde sale el número leía la versión equivocada.
+
 ## Las taxonomías ahora viven en un solo lugar (06-09-2026)
 
 Franco pidió juntar las taxonomías en un solo archivo "para que no vuelva a pasar eso". El "eso" fue esto: él preguntó por las clasificaciones históricas y dijo que el equipo las había hecho; yo contesté que la tabla estaba vacía. **Los dos teníamos razón**, y ahí está el problema: había **cuatro lugares** donde podían estar y ninguno era *el* lugar. El trabajo real —3.083 clasificaciones— estaba en un archivo binario; los dos lugares donde yo miré estaban efectivamente vacíos.

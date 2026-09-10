@@ -678,3 +678,32 @@ Los dos primeros se agregaron al paso 5 de `REGENERAR.ps1`, después de `origen_
 porque `bloque.py` lo lee. **La próxima corrida SÍ va a mover el número**, y esa es la razón.
 No es un problema de la limpieza: es la misma familia del hallazgo de `ficha.py`, encontrada
 al mirar por qué P no se había movido.
+
+## Qué cubre `REGENERAR.ps1` después del 10-09, verificado
+
+Método: del inventario del MAPA se sacaron **todos los archivos de datos que tienen
+productor Y consumidor** (o sea, cadena viva), y se chequeó si su productor aparece en
+`REGENERAR.ps1` o en `run_pipeline.py`. **13 productores cubiertos.** Los que quedan afuera,
+uno por uno y con el motivo:
+
+| productor | por qué queda afuera |
+|---|---|
+| `ingesta_ckan.py` + `giros_iniciales.py` | red, ~75 MB, y HCDN publica con ~5 semanas de atraso. **Ahora tiene switch: `-ConExpedientes`** |
+| `tema_por_acta.py` | **gasta créditos de API** (URGENTE E). Nunca puede ir en una corrida desatendida |
+| `scrape_jefes_bloque.py` | scraping ocasional de una tabla que casi no cambia |
+| `dae_senado.py`, `tp_diputados.py`, `votaciones.py` | son **el bot diario**: corren en GitHub Actions |
+| `padron_diputados_historico.py` | el padrón lo vigila `padron-vivo.yml`, los lunes en CI |
+| `migrar_ckan.py`, `store.py`, `taxonomias_backup.py` | rehacen `proyectos.db`, que **viaja por git** y lo mantiene el bot (ADR-0020) |
+| `fase0/src/ingesta.py` | fase cerrada, se conserva como registro |
+| `embudo.py` | su salida `p_embudo.parquet` sólo la lee `backtest_cadena.py`, que está NEUTRALIZADO |
+| `asistencia.py` | atribución falsa del inventario: **lee** la canónica, no la escribe |
+| los `test_*.py` que figuran como productores | atribución falsa: escriben fixtures, no contratos |
+
+**Lo que esto implica, dicho derecho:** después de la corrida de mañana, todo lo que se
+**deriva** de los datos que ya están en disco queda consistente. Lo que sigue viejo es lo que
+hay que **bajar de la red**, y de eso el que más importa es `expedientes.parquet` (**08-08**),
+porque lo leen `estimar_beta_dictamen`, `origen_lider`, `origen_por_acta` y `embudo`.
+
+Y un detalle de orden que conviene tener presente: `bloque.py` **lee** `tema_por_acta.parquet`
+(del 07-09). Si algún día se retoma la clasificación por tema, `bloque` hay que correrlo
+después, y ya está en el paso 5 en la posición correcta.

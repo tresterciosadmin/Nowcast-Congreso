@@ -10,6 +10,7 @@
      .\REGENERAR.ps1 -Desde 4        # retomar desde el paso 4
      .\REGENERAR.ps1 -SoloVerificar  # no corre nada: solo mide y reporta
      .\REGENERAR.ps1 -ConCanonica    # ademas rehace la canonica antes de todo
+     .\REGENERAR.ps1 -ConExpedientes # ademas rebaja los expedientes de CKAN
 
  Tarda 2-3 horas. Se puede dejar sola. Cada paso deja su log en ..\logs-regenerar\.
  Si un paso falla, CORTA: los pasos de mas abajo leen lo que produce el de arriba y
@@ -29,6 +30,12 @@ param(
   # del 2026-09-10, que solo entra re-ingestando argentinadatos (URGENTE O).
   # De paso deja `_sources/` al dia, que es el item H de URGENTE.
   [switch]$ConCanonica,
+  # Rebaja los EXPEDIENTES de CKAN (ingesta_ckan.py + giros_iniciales.py). Tambien
+  # APAGADO por defecto: son ~75 MB, el cache se borro el 10-09 y HCDN publica con
+  # ~5 semanas de atraso, asi que rebajar todos los dias no aporta. Se prende cuando
+  # expedientes.parquet quedo viejo -- lo leen estimar_beta_dictamen, origen_lider,
+  # origen_por_acta y embudo, o sea el motor.
+  [switch]$ConExpedientes,
   [string]$Python = "python"
 )
 
@@ -144,6 +151,29 @@ if ($ConCanonica -and -not $SoloVerificar) {
     Write-Host "    Mira el final de $logC." -ForegroundColor Red
     Write-Host "    Para seguir SIN rehacer la canonica:  .\REGENERAR.ps1" -ForegroundColor Yellow
     exit $codeC
+  }
+}
+
+# ─────────────────────────────────────────────────────────────────────────────
+if ($ConExpedientes -and -not $SoloVerificar) {
+  Titulo "E" "EXPEDIENTES de CKAN (ingesta_ckan + giros) - necesita RED, ~75 MB" "15-30"
+  $logE = Join-Path $logs "E-expedientes.log"
+  Write-Host "  log: $logE" -ForegroundColor DarkGray
+  $previoE = $ErrorActionPreference
+  $ErrorActionPreference = "Continue"
+  & $Python "datos\expedientes\src\ingesta_ckan.py" 2>&1 | Tee-Object -FilePath $logE
+  $codeE = $LASTEXITCODE
+  if ($codeE -eq 0) {
+    & $Python "datos\expedientes\src\giros_iniciales.py" 2>&1 | Tee-Object -FilePath $logE -Append
+    $codeE = $LASTEXITCODE
+  }
+  $ErrorActionPreference = $previoE
+  if ($codeE -ne 0) {
+    Write-Host ""
+    Write-Host "  X LOS EXPEDIENTES FALLARON (codigo $codeE). Corto aca." -ForegroundColor Red
+    Write-Host "    Mira el final de $logE." -ForegroundColor Red
+    Write-Host "    Para seguir SIN rebajarlos:  .\REGENERAR.ps1 -Desde 5" -ForegroundColor Yellow
+    exit $codeE
   }
 }
 

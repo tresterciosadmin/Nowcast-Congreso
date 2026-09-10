@@ -205,6 +205,16 @@ if (EnRango 5) {
   Correr 5 "fichas-legislador" @("variables\legislador\src\ficha.py")
   Correr 5 "origen-lider"      @("variables\proyecto\src\origen_lider.py")
   Correr 5 "origen-por-acta"   @("variables\proyecto\src\origen_por_acta.py")
+
+  # Agregados el 2026-09-10, DESPUES de la primera corrida: los dos leen la canonica
+  # y tampoco estaban. Se vio en el cierre de la limpieza -- la canonica quedo del
+  # 10-09 y estas dos salidas eran del 20-08 y del 08-08:
+  #   - disciplina_individual.csv lo leen agregador.py, estimar_gamma_individual.py
+  #     y comparar_vias_icg.py. Es un insumo del panel de puertas.
+  #   - serie_bloque.parquet es la serie de cohesion y postura por bloque.
+  # Van DESPUES de origen_por_acta porque bloque.py lo lee.
+  Correr 5 "disciplina"        @("modelo\voto_individual\src\disciplina.py")
+  Correr 5 "serie-bloque"      @("variables\bloque\src\bloque.py")
 }
 
 if (EnRango 6) {

@@ -25,54 +25,6 @@
 > Está desarrollado en `PLAN-DE-TRABAJO.md`. **Precaución vigente mientras tanto: no publicar
 > P(sanción) de proyectos con origen Senado.**
 
-## O. 🔴 83 actas de Diputados se recuentan con el umbral EQUIVOCADO, y el dato está en la API
-**Detectado:** 2026-09-09 · Claude, durante la limpieza · **no es una corrida: son dos líneas**
-
-`datos/argentinadatos/src/to_canonical.py` escribe **`tipo_mayoria=None` fijo** para
-Diputados (línea 132). La rama del Senado, tres líneas más abajo, **sí** lee
-`a.get("mayoria")` — o sea que no es una limitación de la fuente, es una rama que quedó sin
-completar.
-
-Y `definiciones.normalizar_mayoria_valor` documenta que **sin dato → SIMPLE**. Entonces
-esas actas se recuentan contra la mitad de los emitidos, sin que nada avise.
-
-**Medido el 09-09 contra la API y contra la canónica, enganchando por `acta_id`** (las 760
-enganchan, no es una extrapolación):
-
-| | |
-|---|---:|
-| actas de Diputados/argentinadatos en la canónica | **760** |
-| de ellas, con `tipo_mayoria` nulo | **760 (todas)** |
-| las mismas 760, según la API | 677 SIMPLE · **49 TRES_CUARTOS · 24 DOS_TERCIOS · 10 ABSOLUTA** |
-| **con el umbral equivocado** | **83 (10,9%)** |
-
-De comparación: el Senado, misma fuente, tiene **317 de 317 con el dato**.
-
-La API publica `tipoMayoria` y `baseMayoria` en **las 1.326 actas**, sin faltantes.
-
-Es la misma falla que el ítem **I** ("12 de 250 caían al default SIMPLE y el umbral del
-recuento era el equivocado"), pero sobre el flujo VIVO —Diputados 2020-2026, que es el
-tramo que CKAN ya no cubre— y con 83 actas en vez de 12. Entre ellas, **la Ley de Ficha
-Limpia** (`O.D. 721`, 13-02-2025), que la API marca como mayoría **absoluta**.
-
-**El código YA ESTÁ ARREGLADO** (2026-09-10, decisión de Franco): la rama de Diputados lee
-`a.get("mayoria")`, igual que la del Senado. `mayoria` trae la fracción y la base
-("Más de la mitad — Votos Emitidos" / "— Miembros del Cuerpo"), que es lo que
-`definiciones.normalizar_mayoria_valor` sabe leer.
-
-**Lo que falta es la corrida, y es la que mueve el número.** La canónica de hoy sigue
-teniendo las 760 actas con `tipo_mayoria` nulo: el arreglo entra recién cuando se
-re-ingesta. Va con el resto de lo pendiente en una sola pasada:
-
-```powershell
-.\REGENERAR.ps1
-```
-
-**Al terminar, comparar contra la línea de base de la limpieza** (`P(aprob) = 0,9801`,
-β₁ = 2,1045, β₂ = 2,138). Si el número se mueve, acá está la explicación: son 83 actas que
-antes se contaban contra el umbral equivocado. Si NO se mueve, hay que entender por qué —
-el panel de puertas es del 2026-06-01 y puede no tocar ninguna de las 83.
-
 ## P. 🔵 La sonda de argentinadatos ya tiene respuesta: la API NO publica el expediente
 **Detectado:** 2026-08-08 · **Contestado:** 2026-09-09 · **decide Franco, no requiere corrida**
 
@@ -221,33 +173,6 @@ cosa. Decide Franco: agregarlo a `docs/taxonomias/taxonomias.json` o dejarlo map
   **Es un contrato a tener en cuenta:** todo lo que esté indexado por `acta_id` hay que
   remapearlo cuando el dedup descarta una copia. Quedan 2 sin remapeo (`ckan_diputados:411`
   y `412`), que nunca estuvieron en la canónica — son anteriores a todo esto.
-
-## H. `_sources/` está VIEJO: rehacer la canónica desde ahí borra 181.309 votos
-**Detectado:** 2026-09-06 · Claude · **bloquea: correr `build.py` sin el `run_pipeline` completo**
-
-`datos/canonica/data/clean/_sources/` es la carpeta de insumos de la que sale
-`votos_canonico.parquet`. Sus archivos son del **11-07**; la canónica publicada es del
-**25-08**. La diferencia está toda en una fuente:
-
-| fuente | en `_sources` (11-07) | en la canónica (25-08) |
-|---|---:|---:|
-| **argentinadatos** | **84.311** | **265.620** |
-| decada_votada | 436.875 | 436.875 |
-| ckan_diputados | 256.581 | 256.581 |
-| senado | 53.910 | 53.910 |
-
-O sea: `SOURCES=_sources python datos/canonica/src/build.py` reconstruye una canónica de
-**834.749 votos en vez de 1.016.058**, sin avisar. Lo encontré el 06-09 queriendo pasar
-el arreglo del distrito por el pipeline en vez de a mano: el rebuild dio 834.749 y por eso
-el arreglo se aplicó **quirúrgicamente** sobre `votos_canonico.parquet` (ver la bitácora).
-
-`run_pipeline.py` completo **no** tiene el problema: baja argentinadatos de nuevo antes de
-buildear. El problema es el atajo — correr sólo los pasos 5 y 6.
-
-**Qué hacer:** correr `python datos/canonica/src/run_pipeline.py` entero una vez, que deja
-`_sources` al día. Hasta entonces, **no correr `build.py` suelto**. Lo ideal sería que
-`build.py` avise cuando una fuente encoge, como ya hace `ingesta_padron.py` (URGENTE 3):
-es el mismo control de encogimiento.
 
 ## I. Actas gemelas: aplicado. Queda decidir si el skill publicado se corrige
 **Detectado y aplicado:** 2026-09-06 · **necesita a Franco: una lectura, no una tarea**

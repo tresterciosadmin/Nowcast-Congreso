@@ -2,13 +2,13 @@
 
 <!-- GENERADO por indexar.py. No editar: los cambios se pierden. -->
 <!-- La prosa vive en el README.md de cada modulo (seccion `Buscar aca si`). -->
-<!-- 2026-09-10 01:57 UTC · 149 archivos · 37,767 LOC -->
+<!-- 2026-09-10 02:51 UTC · 149 archivos · 37,775 LOC -->
 
 ## Como usar este archivo
 
 Es el unico archivo del proyecto que hace falta leer para empezar. Para ubicar algo concreto: `python3 .mapa/buscar.py "<termino>"` devuelve archivo y linea sin abrir nada. Recien despues abrir los archivos que salgan, y solo esos.
 
-Rama `main` — ultimo commit: 2026-09-10 dea42a3 Archivos_Borrar: el README se queda al vaciar la carpeta · **hay cambios sin commitear**
+Rama `main` — ultimo commit: 2026-09-10 d06bb1b REGENERAR: -ConCanonica, y el paso 0 chequeaba de menos · **hay cambios sin commitear**
 
 ## Donde buscar que
 
@@ -125,7 +125,7 @@ Rama `main` — ultimo commit: 2026-09-10 dea42a3 Archivos_Borrar: el README se 
 
 | Carpeta | Que es | Arch. | LOC | Bitacora |
 |---|---|---:|---:|---|
-| `./` | La raiz del proyecto: los paneles que se abren con doble clic, el tablero ejecutivo y su unica fuente de datos (`tablero_datos.js`). | 6 | 5,921 | ok |
+| `./` | La raiz del proyecto: los paneles que se abren con doble clic, el tablero ejecutivo y su unica fuente de datos (`tablero_datos.js`). | 6 | 5,929 | **vencida** |
 | `modelo/ensemble/` _(src+tests)_ | La composicion final: el nowcast end-to-end de un proyecto. El punto de entrada vivo es `nowcast_puertas.py`, que corre la CADENA DE PUERTAS y devuelve un numero condicional a que las camaras voten. La formulacion v1 -P(llega al recinto) x P(mayoria dado recinto)- se dio de BAJA el 2026-08-22 (ADR-0012), junto con su backtest: `ensemble.componer` y `backtest_cadena.py` siguen ahi pero levantan SystemExit. | 16 | 4,920 | ok |
 | `variables/proyecto/` _(src+tests)_ | Feature store por proyecto: tema/materia, origen (Ejecutivo/oficialismo/aliados/oposicion), jefe de bloque, mayoria requerida, texto, y el ICG como modulador de coyuntura. La postura del gobierno por acta se midio aca y su modulo se archivo el 2026-09-10 sin consumidor: la medicion quedo en el ADR-0021 y en ESTADO. | 21 | 4,649 | ok |
 | `datos/expedientes/` _(src+tests)_ | Registro de todo lo PRESENTADO (no solo lo votado): titulo, autor, tipo, fecha y cadena de vida del expediente. Denominador del embudo y enlace acta -> expediente. | 15 | 4,499 | ok |
@@ -162,7 +162,7 @@ Rama `main` — ultimo commit: 2026-09-10 dea42a3 Archivos_Borrar: el README se 
 
 ## Inventario de datos
 
-140 archivos de datos · 195.4 MB · 108 viajan por git, **32 no**.
+140 archivos de datos · 195.9 MB · 108 viajan por git, **32 no**.
 
 Buscar uno sin abrir nada: `python .mapa/buscar.py --dato <termino>`. Columna **git**: `si` = esta versionado, o sea que quien clone lo tiene; `NO` = vive solo en el disco de quien lo genero, que es el modo de falla mas repetido de este repo (seis veces, ver `.gitignore`). **Escribe/Lee**: quien lo produce y quien lo consume, deducido del codigo; sin lector, sobra — sin escritor, no se regenera.
 
@@ -174,23 +174,23 @@ Buscar uno sin abrir nada: `python .mapa/buscar.py --dato <termino>`. Columna **
 | `datos/bot_recoleccion/data/clean/votaciones_nuevas.parquet` | 542×11 | 37 KB | si | `votaciones.py` | — |
 | `datos/bot_recoleccion/data/estado_bot.json` | objeto: dae_normal, tp_diputados, actas_ | 19 KB | si | `dae_senado.py`, `tp_diputados.py` | — |
 | `datos/canonica/data/clean/_decada_csv/votaciones-diputados.csv` | 383,744×4 | 4.9 MB | **NO** | — | _(1 lo nombran)_ |
-| `datos/canonica/data/clean/votos_resuelto.parquet` _CANONICA_VOTOS_RESUELTO_ | 948,488×12 | 2.0 MB | si | `entity_resolution.py`, `asistencia.py` | `export_base.py`, `padron_diputados_historico.py`, `baseline_canonico.py` +5 |
+| `datos/canonica/data/clean/votos_resuelto.parquet` _CANONICA_VOTOS_RESUELTO_ | 959,815×12 | 2.1 MB | si | `entity_resolution.py`, `asistencia.py` | `export_base.py`, `padron_diputados_historico.py`, `baseline_canonico.py` +5 |
 | `datos/canonica/data/clean/_decada_csv/votaciones-senado.csv` | 144,792×4 | 1.8 MB | **NO** | — | _(1 lo nombran)_ |
-| `datos/canonica/data/clean/votos_canonico.parquet` _CANONICA_VOTOS_ | 948,488×8 | 1.2 MB | si | `build.py`, `entity_resolution.py` | _(2 lo nombran)_ |
+| `datos/canonica/data/clean/votos_canonico.parquet` _CANONICA_VOTOS_ | 959,815×8 | 1.2 MB | si | `build.py`, `entity_resolution.py` | _(2 lo nombran)_ |
 | `datos/canonica/data/clean/_decada_csv/asuntos-senado.csv` | 2,011×19 | 1.0 MB | **NO** | — | _(1 lo nombran)_ |
 | `datos/canonica/data/clean/_decada_csv/asuntos-diputados.csv` | 1,499×18 | 651 KB | **NO** | — | _(1 lo nombran)_ |
-| `datos/canonica/data/clean/actas_canonico.parquet` _CANONICA_ACTAS_ | 5,946×14 | 475 KB | si | `build.py`, `asistencia.py` | `entity_resolution.py`, `enlace_senado.py`, `export_base.py` +10 |
+| `datos/canonica/data/clean/_sources/argentinadatos_votos.parquet` | 349,690×8 | 489 KB | **NO** | `to_canonical.py` | — |
+| `datos/canonica/data/clean/actas_canonico.parquet` _CANONICA_ACTAS_ | 5,998×14 | 479 KB | si | `build.py`, `asistencia.py` | `entity_resolution.py`, `enlace_senado.py`, `export_base.py` +10 |
 | `datos/canonica/data/clean/_sources/decada_votada_actas.parquet` | 3,153×14 | 309 KB | **NO** | — | — |
 | `datos/canonica/data/clean/_sources/decada_votada_votos.parquet` | 437,144×8 | 258 KB | **NO** | — | — |
 | `datos/canonica/data/clean/_sources/ckan_diputados_votos.parquet` | 256,581×8 | 251 KB | **NO** | `to_canonical.py` | — |
 | `datos/canonica/outputs/actas_gemelas_2026-09-06.csv` | 1,076×8 | 158 KB | si | — | _(1 lo nombran)_ |
-| `datos/canonica/data/clean/_sources/argentinadatos_votos.parquet` | 84,311×8 | 123 KB | **NO** | `to_canonical.py` | — |
+| `datos/canonica/data/clean/_sources/argentinadatos_actas.parquet` | 1,649×14 | 93 KB | **NO** | `to_canonical.py` | — |
 | `datos/canonica/data/clean/_sources/senado_actas.parquet` | 749×14 | 70 KB | **NO** | — | _(1 lo nombran)_ |
 | `datos/canonica/data/clean/_sources/ckan_diputados_actas.parquet` | 999×14 | 43 KB | **NO** | `to_canonical.py` | — |
 | `datos/canonica/outputs/legislador_id_duplicados_2026-09-04.csv` | 153×22 | 43 KB | si | — | — |
 | `datos/canonica/data/clean/_decada_csv/diputados.csv` | 1,037×3 | 40 KB | **NO** | `padron_diputados_historico.py`, `test_ingesta_padron.py` | `to_canonical.py`, `comparar_vias_icg.py` |
 | `datos/canonica/data/clean/_sources/senado_votos.parquet` | 53,910×8 | 39 KB | **NO** | — | _(1 lo nombran)_ |
-| `datos/canonica/data/clean/_sources/argentinadatos_actas.parquet` | 415×14 | 29 KB | **NO** | `to_canonical.py` | — |
 | `datos/canonica/outputs/legislador_id_merge_aprobado_2026-09-04.csv` | 114×11 | 22 KB | si | — | _(1 lo nombran)_ |
 | `datos/canonica/data/clean/_sources/manual_2026_votos.parquet` | 3,072×8 | 18 KB | **NO** | `to_canonical.py` | _(1 lo nombran)_ |
 | `datos/canonica/data/alias_legislador_id.csv` | 184×1 | 16 KB | si | — | `alias_legislador.py` |
@@ -280,7 +280,7 @@ Buscar uno sin abrir nada: `python .mapa/buscar.py --dato <termino>`. Columna **
 | `modelo/voto_individual/outputs/disciplina_individual.csv` _DISCIPLINA_INDIVIDUAL_ | 1,960×23 | 344 KB | si | `test_ensemble.py`, `disciplina.py` | `agregador.py`, `comparar_vias_icg.py`, `estimar_gamma_individual.py` |
 | `modelo/voto_individual/outputs/set_pivote.json` | objeto: definicion, min_votos, legislado | 1 KB | si | `disciplina.py` | — |
 | `producto/dashboard/data/mapa_modelo_semantica.json` | objeto: _comentario, version, meta, etap | 72 KB | si | — | `generar_mapa_modelo.py` |
-| `variables/bloque/outputs/serie_bloque.parquet` | 304×9 | 16 KB | si | `COMMITEAR-2026-09-08.ps1`, `bloque.py` | _(1 lo nombran)_ |
+| `variables/bloque/outputs/serie_bloque.parquet` | 304×9 | 16 KB | si | `COMMITEAR-2026-09-08.ps1`, `bloque.py` | _(2 lo nombran)_ |
 | `variables/embudo/outputs/p_embudo.parquet` | 42,141×5 | 432 KB | si | `embudo.py` | `backtest_cadena.py` |
 | `variables/embudo/outputs/backtest_embudo.json` | objeto: sancionado, sancionado_sin_orige | 151 KB | si | `embudo.py` | _(1 lo nombran)_ |
 | `variables/embudo/outputs/embudo_por_comision.csv` | 65×4 | 3 KB | si | `embudo.py` | — |
@@ -311,7 +311,7 @@ Buscar uno sin abrir nada: `python .mapa/buscar.py --dato <termino>`. Columna **
 
 **Lo que el inventario marca**
 
-- No viajan por git y pesan (>100 KB): `fase0/data/raw/detalle_129_137.csv`, `datos/canonica/data/clean/_decada_csv/votaciones-diputados.csv`, `datos/canonica/data/clean/_decada_csv/votaciones-senado.csv`, `fase0/data/clean/detalle.parquet`, `modelo/voto_individual/outputs/desvios_por_voto.parquet`, `datos/canonica/data/clean/_decada_csv/asuntos-senado.csv`, `datos/canonica/data/clean/_decada_csv/asuntos-diputados.csv`, `datos/canonica/data/clean/_sources/decada_votada_actas.parquet` _+7_. Cada uno vive en un solo disco.
+- No viajan por git y pesan (>100 KB): `fase0/data/raw/detalle_129_137.csv`, `datos/canonica/data/clean/_decada_csv/votaciones-diputados.csv`, `datos/canonica/data/clean/_decada_csv/votaciones-senado.csv`, `fase0/data/clean/detalle.parquet`, `modelo/voto_individual/outputs/desvios_por_voto.parquet`, `datos/canonica/data/clean/_decada_csv/asuntos-senado.csv`, `datos/canonica/data/clean/_decada_csv/asuntos-diputados.csv`, `datos/canonica/data/clean/_sources/argentinadatos_votos.parquet` _+7_. Cada uno vive en un solo disco.
 - Tienen productor y **ningun consumidor** (42): `votaciones_nuevas.parquet`, `estado_bot.json`, `argentinadatos_actas.parquet`, `argentinadatos_votos.parquet`, `ckan_diputados_actas.parquet`, `ckan_diputados_votos.parquet`, `manual_2026_actas.parquet`, `manual_2026_votos.parquet` _+34_. Es lo esperable en un entregable para humanos; en un intermedio significa que sobra.
 - **Ningun archivo de codigo los nombra** (30, 50.3 MB): `votaciones_2003-2007_Kirchner.xlsx`, `votaciones_2015-2019_Macri.xlsx`, `votaciones_2007-2011_CFK-1.xlsx`, `votaciones_2011-2015_CFK-2.xlsx`, `votaciones_2023-2027_Milei.xlsx`, `votaciones_2019-2023_Fernandez.xlsx`, `votaciones_2002-2003_Duhalde.xlsx`, `votaciones_1999-2001_DeLaRua.xlsx` _+22_. Ojo: un output con nombre armado por f-string cae aca y esta vivo. Lo que hay que mirar de verdad son los pesados.
 
@@ -366,16 +366,16 @@ Ordenados por cuantos otros archivos dependen de ellos. Tocar uno de arriba tien
 
 Segun el historial de git. Si vas a cambiar uno, mira el otro.
 
-- `Nowcast Congreso Argy/coordinacion/EN-HUMANO.md` + `Nowcast Congreso Argy/coordinacion/ESTADO-DEL-PROYECTO.md` (34 commits)
-- `Nowcast Congreso Argy/coordinacion/ESTADO-DEL-PROYECTO.md` + `Nowcast Congreso Argy/tablero_datos.js` (28 commits)
-- `Nowcast Congreso Argy/coordinacion/EN-HUMANO.md` + `Nowcast Congreso Argy/tablero_datos.js` (26 commits)
-- `Nowcast Congreso Argy/coordinacion/ESTADO-DEL-PROYECTO.md` + `Nowcast Congreso Argy/coordinacion/TABLERO.md` (22 commits)
-- `Nowcast Congreso Argy/coordinacion/EN-HUMANO.md` + `Nowcast Congreso Argy/coordinacion/TABLERO.md` (20 commits)
-- `Nowcast Congreso Argy/coordinacion/TABLERO.md` + `Nowcast Congreso Argy/tablero_datos.js` (16 commits)
+- `Nowcast Congreso Argy/coordinacion/EN-HUMANO.md` + `Nowcast Congreso Argy/coordinacion/ESTADO-DEL-PROYECTO.md` (35 commits)
+- `Nowcast Congreso Argy/coordinacion/ESTADO-DEL-PROYECTO.md` + `Nowcast Congreso Argy/tablero_datos.js` (29 commits)
+- `Nowcast Congreso Argy/coordinacion/EN-HUMANO.md` + `Nowcast Congreso Argy/tablero_datos.js` (27 commits)
+- `Nowcast Congreso Argy/coordinacion/ESTADO-DEL-PROYECTO.md` + `Nowcast Congreso Argy/coordinacion/TABLERO.md` (23 commits)
+- `Nowcast Congreso Argy/coordinacion/EN-HUMANO.md` + `Nowcast Congreso Argy/coordinacion/TABLERO.md` (21 commits)
+- `Nowcast Congreso Argy/coordinacion/TABLERO.md` + `Nowcast Congreso Argy/tablero_datos.js` (17 commits)
 - `Nowcast Congreso Argy/.mapa/mapa.json` + `Nowcast Congreso Argy/MAPA.md` (11 commits)
-- `Nowcast Congreso Argy/coordinacion/EN-HUMANO.md` + `Nowcast Congreso Argy/coordinacion/URGENTE.md` (9 commits)
-- `Nowcast Congreso Argy/coordinacion/ESTADO-DEL-PROYECTO.md` + `Nowcast Congreso Argy/coordinacion/URGENTE.md` (9 commits)
-- `Nowcast Congreso Argy/datos/padron/data/estado_vigilancia.json` + `Nowcast Congreso Argy/datos/padron/outputs/vigilancia_padron.md` (8 commits)
+- `Nowcast Congreso Argy/coordinacion/EN-HUMANO.md` + `Nowcast Congreso Argy/coordinacion/URGENTE.md` (10 commits)
+- `Nowcast Congreso Argy/coordinacion/ESTADO-DEL-PROYECTO.md` + `Nowcast Congreso Argy/coordinacion/URGENTE.md` (10 commits)
+- `Nowcast Congreso Argy/coordinacion/URGENTE.md` + `Nowcast Congreso Argy/tablero_datos.js` (9 commits)
 
 ## Fuentes externas
 
@@ -409,3 +409,7 @@ Segun el historial de git. Si vas a cambiar uno, mira el otro.
 - `EXPEDIENTES` — `modelo/ensemble/src/ensemble.py`
 - `EXPORT_CACHE` — `datos/export/src/export_base.py`
 - `EXP_CLEAN` — `datos/expedientes/src/ingesta_od.py`, `variables/embudo/src/embudo.py`, `variables/proyecto/src/origen_lider.py`
+
+## Frescura
+
+- Bitacoras vencidas: `./`

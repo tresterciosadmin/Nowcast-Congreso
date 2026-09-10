@@ -624,3 +624,57 @@ test** para poder romperla. Diez tests son ~850 MB por corrida, y las copias que
 temporal del sistema: ocho corridas de la suite llenaron 5,2 GB y la novena falló con
 `database or disk is full` — que no es un error del repo, pero se parece a uno. Vale saberlo
 antes de perseguir un fantasma, y vale mirarlo si la suite se corre seguido.
+
+---
+
+## Fase 6 — Cierre (2026-09-10)
+
+### El contrato se cumplió
+
+| control | línea de base (08-09) | cierre (10-09) |
+|---|---|---|
+| suite | 30 passed | **41 passed** (los 11 tests nuevos) |
+| `verificar_regeneracion.py` | 16 OK · 0 a mirar | **16 OK · 0 a mirar** |
+| **P(aprob)** | **0,9801** | **0,9801** |
+| β ambas cámaras | β₁ 2,1045 · β₂ 2,138 | β₁ 2,1045 · β₂ 2,1377 |
+| MAPA.md | 414 líneas / 460 | dentro del presupuesto · **0 bitácoras vencidas** |
+| `--estructura` | 9 huérfanos | **1**, `verificar_regeneracion.py`, que es el entrypoint |
+
+### El arreglo de las 83 actas ESTÁ en los datos, medido
+
+Después de que Franco corriera `run_pipeline.py`:
+
+| | antes | después |
+|---|---:|---:|
+| actas de Diputados/argentinadatos | 760 | **791** |
+| de ellas, con `tipo_mayoria` nulo | **760 (todas)** | **0** |
+| con umbral distinto de SIMPLE | 0 (caían al default) | **88** — 54 tres cuartos, 24 dos tercios, 10 absoluta |
+
+El ítem **O** de URGENTE queda resuelto y borrado. También el **H**: `run_pipeline.py`
+entero dejó `_sources/` del 10-09 (era del 11-07), que es exactamente lo que ese ítem pedía.
+La canónica pasó de 948.488 a **959.815 votos** sin perder nada — el rebuild que H temía
+(834.749) no ocurrió, porque el pipeline completo vuelve a bajar argentinadatos.
+
+### ⚠️ La verificación de la corrida midió el estado ANTERIOR
+
+Las dos corridas se solaparon: `VERIFICACION.txt` se escribió a las **02:39** y la canónica
+terminó de reescribirse a las **02:46**, siete minutos después. O sea que el log que produjo
+`REGENERAR.ps1` midió la base de antes del rebuild. **Se volvió a medir con todo asentado**, y
+dio lo mismo: 41 passed · 16 OK · P = 0,9801. Los números de arriba son los de la segunda
+medición, no los del log.
+
+### Y por qué el número no se movió: sus insumos tampoco se regeneraron
+
+Al cerrar apareció que **`ficha.py` no era el único que faltaba en `REGENERAR.ps1`**. Otros
+dos leen la canónica y tampoco estaban, y hoy quedaron viejos contra una canónica del 10-09:
+
+| archivo | fecha | quién lo lee |
+|---|---|---|
+| `modelo/voto_individual/outputs/disciplina_individual.csv` | **20-08** | `agregador.py`, `estimar_gamma_individual.py`, `comparar_vias_icg.py` |
+| `variables/bloque/outputs/serie_bloque.parquet` | **08-08** | la postura por bloque |
+| `variables/embudo/outputs/p_embudo.parquet` | 08-08 | sólo `backtest_cadena.py`, que está neutralizado |
+
+Los dos primeros se agregaron al paso 5 de `REGENERAR.ps1`, después de `origen_por_acta`
+porque `bloque.py` lo lee. **La próxima corrida SÍ va a mover el número**, y esa es la razón.
+No es un problema de la limpieza: es la misma familia del hallazgo de `ficha.py`, encontrada
+al mirar por qué P no se había movido.

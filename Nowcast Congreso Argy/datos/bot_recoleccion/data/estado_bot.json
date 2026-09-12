@@ -1,11 +1,11 @@
 {
  "dae_normal": {
   "anio": 2026,
-  "numero": 70
+  "numero": 71
  },
  "tp_diputados": {
   "periodo": 144,
-  "numero": 130
+  "numero": 131
  },
  "actas_diputados_2025": {
   "ids": [
@@ -240,7 +240,7 @@
    "argentinadatos:diputados:6000"
   ],
   "n": 107,
-  "ultima_revision": "2026-09-11"
+  "ultima_revision": "2026-09-12"
  },
  "actas_senado_2025": {
   "ids": [
@@ -583,6 +583,6 @@
    "argentinadatos:senado:2804"
   ],
   "n": 184,
-  "ultima_revision": "2026-09-11"
+  "ultima_revision": "2026-09-12"
  }
 }

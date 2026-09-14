@@ -19,15 +19,12 @@ const MAPA_MODELO = {
     "para_que": "Uso interno del equipo. Cuando alguien pregunte «de dónde sale este número», la respuesta es señalar un nodo, no abrir quince archivos.",
     "no_es": "No es un tablero. TABLERO-CONTROL.html muestra plan y avance; esto muestra la maquinaria.",
     "verificado": "2026-08-20",
-    "generado": "2026-08-26 15:03 UTC",
-    "indice_archivos": 142,
+    "generado": "2026-09-14 19:42 UTC",
+    "indice_archivos": 149,
     "rutas_declaradas": 58,
     "nodos": 101,
     "aristas": 144,
-    "problemas": [
-      "casos/README.md no tiene la linea `**Estado:**` (la usa este mapa y la usa el router de MAPA.md)",
-      "docs/taxonomias/README.md no tiene la linea `**Estado:**` (la usa este mapa y la usa el router de MAPA.md)"
-    ]
+    "problemas": []
   },
   "etapas": [
     {
@@ -584,42 +581,42 @@ const MAPA_MODELO = {
       "modulo": "datos/bot_recoleccion",
       "que_es": "Scrapea el Trámite Parlamentario de Diputados: proyectos nuevos con firmantes y giros a comisión.",
       "existe": true,
-      "loc": 244,
+      "loc": 255,
       "simbolos": [
         {
           "nombre": "_pedir",
           "tipo": "funcion",
-          "linea": 75,
+          "linea": 76,
           "doc": null
         },
         {
           "nombre": "_fecha_iso",
           "tipo": "funcion",
-          "linea": 95,
-          "doc": null
+          "linea": 96,
+          "doc": "'14 DE MARZO DE 2026' -> '2026-03-14'. Si no parsea o no existe, None."
         },
         {
           "nombre": "_limpiar",
           "tipo": "funcion",
-          "linea": 102,
+          "linea": 113,
           "doc": null
         },
         {
           "nombre": "_firmantes",
           "tipo": "funcion",
-          "linea": 106,
+          "linea": 117,
           "doc": "'RUIZ, YAMILA; VANCSIK, DANIEL Y HERRERA AHUAD, OSCAR A.:' -> lista."
         },
         {
           "nombre": "parse_tp",
           "tipo": "funcion",
-          "linea": 119,
+          "linea": 130,
           "doc": "Devuelve (identidad, filas). Identidad={numero, fecha}. Cada <p> con un"
         },
         {
           "nombre": "_antes_de",
           "tipo": "funcion",
-          "linea": 177,
+          "linea": 188,
           "doc": "True si el1 aparece antes que el2 en el orden del documento."
         }
       ],
@@ -752,7 +749,7 @@ const MAPA_MODELO = {
       "modulo": "datos/argentinadatos",
       "que_es": "Normaliza Diputados 2020-2025 y Senado 2024-2025 al mismo esquema que CKAN.",
       "existe": true,
-      "loc": 169,
+      "loc": 175,
       "simbolos": [
         {
           "nombre": "_get",
@@ -937,30 +934,42 @@ const MAPA_MODELO = {
       "modulo": "datos/manual_2026",
       "que_es": "Integra el Excel curado por Franco al esquema canónico, con máxima precedencia sobre las otras fuentes.",
       "existe": true,
-      "loc": 72,
+      "loc": 180,
       "simbolos": [
+        {
+          "nombre": "_norm",
+          "tipo": "funcion",
+          "linea": 46,
+          "doc": "Para COMPARAR, no para guardar: sin acentos, en mayuscula, sin espacios de mas."
+        },
+        {
+          "nombre": "_clave",
+          "tipo": "funcion",
+          "linea": 57,
+          "doc": "Clave invariante al orden Apellido/Nombre, como en datos/canonica."
+        },
+        {
+          "nombre": "cargar_padron",
+          "tipo": "funcion",
+          "linea": 63,
+          "doc": "{clave: (distrito, bloque)} del padron oficial. Vacio si no esta el archivo."
+        },
         {
           "nombre": "_slug",
           "tipo": "funcion",
-          "linea": 12,
+          "linea": 77,
           "doc": null
         },
         {
           "nombre": "_voto",
           "tipo": "funcion",
-          "linea": 15,
+          "linea": 80,
           "doc": null
         },
         {
           "nombre": "parse_hoja",
           "tipo": "funcion",
-          "linea": 26,
-          "doc": null
-        },
-        {
-          "nombre": "main",
-          "tipo": "funcion",
-          "linea": 56,
+          "linea": 91,
           "doc": null
         }
       ],
@@ -1094,43 +1103,43 @@ const MAPA_MODELO = {
       "que_es": "Control semanal: detecta si cambió la composición de las cámaras (recambio del 10-dic, reemplazos, renuncias, vacantes) y avisa.",
       "es_control": true,
       "existe": true,
-      "loc": 392,
+      "loc": 441,
       "simbolos": [
+        {
+          "nombre": "_en_ci",
+          "tipo": "funcion",
+          "linea": 88,
+          "doc": "GitHub Actions setea las dos; cualquiera alcanza."
+        },
+        {
+          "nombre": "destinos",
+          "tipo": "funcion",
+          "linea": 94,
+          "doc": "(ruta del estado, ruta del reporte, es_la_versionada)."
+        },
         {
           "nombre": "_vigentes",
           "tipo": "funcion",
-          "linea": 80,
+          "linea": 114,
           "doc": "Filas con desde <= F <= hasta. Parsing defensivo: las fechas ilegibles"
         },
         {
           "nombre": "padron_versionado",
           "tipo": "funcion",
-          "linea": 89,
+          "linea": 123,
           "doc": "El contrato que hoy consume el modelo: data/padron_<camara>.csv."
         },
         {
           "nombre": "nomina_fresca",
           "tipo": "funcion",
-          "linea": 102,
+          "linea": 136,
           "doc": "Snapshot ACTUAL de la cámara, normalizado igual que el padrón."
         },
         {
           "nombre": "comparar",
           "tipo": "funcion",
-          "linea": 137,
+          "linea": 171,
           "doc": "Altas, bajas y pases entre el padrón versionado y el snapshot fresco."
-        },
-        {
-          "nombre": "huella",
-          "tipo": "funcion",
-          "linea": 180,
-          "doc": "Hash estable del diff: si no cambió, no se vuelve a avisar."
-        },
-        {
-          "nombre": "_hash_archivo",
-          "tipo": "funcion",
-          "linea": 187,
-          "doc": null
         }
       ],
       "lenguaje": "python",
@@ -1206,7 +1215,7 @@ const MAPA_MODELO = {
       "modulo": "datos/canonica",
       "que_es": "Unifica TODAS las fuentes de votaciones en una sola base, deduplica y aplica precedencia. El corazón de la capa de datos.",
       "existe": true,
-      "loc": 87,
+      "loc": 212,
       "simbolos": [
         {
           "nombre": "_load",
@@ -1227,9 +1236,21 @@ const MAPA_MODELO = {
           "doc": null
         },
         {
+          "nombre": "_cruzar",
+          "tipo": "funcion",
+          "linea": 55,
+          "doc": "Todos los pares de FUENTES DISTINTAS dentro de un grupo ya agrupado."
+        },
+        {
+          "nombre": "actas_gemelas",
+          "tipo": "funcion",
+          "linea": 73,
+          "doc": "Actas de FUENTES DISTINTAS que son la misma votación con otro `acta_id`."
+        },
+        {
           "nombre": "main",
           "tipo": "funcion",
-          "linea": 50,
+          "linea": 136,
           "doc": null
         }
       ],
@@ -1250,42 +1271,42 @@ const MAPA_MODELO = {
       "modulo": "datos/canonica",
       "que_es": "Resuelve identidades: el mismo legislador escrito de cinco maneras distintas pasa a ser una sola persona con un id estable.",
       "existe": true,
-      "loc": 243,
+      "loc": 327,
       "simbolos": [
         {
           "nombre": "_strip",
           "tipo": "funcion",
-          "linea": 124,
+          "linea": 131,
           "doc": null
         },
         {
           "nombre": "_name_key",
           "tipo": "funcion",
-          "linea": 128,
+          "linea": 135,
           "doc": null
         },
         {
           "nombre": "_leg_id",
           "tipo": "funcion",
-          "linea": 133,
+          "linea": 140,
           "doc": null
+        },
+        {
+          "nombre": "_aplicar_alias",
+          "tipo": "funcion",
+          "linea": 169,
+          "doc": "Reemplaza cada id por su canonico. Sin tabla, devuelve la serie intacta."
         },
         {
           "nombre": "_bloque_norm",
           "tipo": "funcion",
-          "linea": 136,
+          "linea": 181,
           "doc": null
         },
         {
           "nombre": "_linaje_vec",
           "tipo": "funcion",
-          "linea": 178,
-          "doc": null
-        },
-        {
-          "nombre": "main",
-          "tipo": "funcion",
-          "linea": 200,
+          "linea": 251,
           "doc": null
         }
       ],
@@ -1582,42 +1603,42 @@ const MAPA_MODELO = {
         "Hallazgo del 08-08: el expediente estaba escrito DENTRO del título del acta en 2.229 casos. El Senado pasó de 8,1% a 72,4% de actas identificadas sin scrapear nada."
       ],
       "existe": true,
-      "loc": 576,
+      "loc": 590,
       "simbolos": [
         {
           "nombre": "_vacio",
           "tipo": "funcion",
-          "linea": 111,
+          "linea": 119,
           "doc": "¿Es un faltante, en cualquiera de sus disfraces?"
         },
         {
           "nombre": "normalizar_expediente",
           "tipo": "funcion",
-          "linea": 132,
+          "linea": 140,
           "doc": "Lleva cualquiera de los dos formatos al denominador canónico NNNN-XX-AAAA."
         },
         {
           "nombre": "expediente_en_titulo",
           "tipo": "funcion",
-          "linea": 170,
+          "linea": 178,
           "doc": "Rescata el expediente escrito dentro del título del acta."
         },
         {
           "nombre": "od_en_titulo",
           "tipo": "funcion",
-          "linea": 193,
+          "linea": 201,
           "doc": "Número de Orden del Día escrito en el título, sin ceros a la izquierda."
         },
         {
           "nombre": "mapa_od",
           "tipo": "funcion",
-          "linea": 207,
+          "linea": 215,
           "doc": "(año de publicación, nº de O.D.) -> proyecto_id, **sólo claves unívocas**."
         },
         {
           "nombre": "prefijo",
           "tipo": "funcion",
-          "linea": 235,
+          "linea": 243,
           "doc": "Letra del denominador ya normalizado ('0038-CD-2022' -> 'CD')."
         }
       ],
@@ -1974,9 +1995,10 @@ const MAPA_MODELO = {
       "que_es": "El vocabulario controlado de temas: 74 ids estables, multi-etiqueta. Es un CATÁLOGO, no un modelo.",
       "existe": true,
       "entrypoint": false,
-      "estado": "",
-      "owner": "—",
-      "estado_texto": "su README no declara `**Estado:**`"
+      "estado": "HECHO",
+      "estado_texto": "HECHO (vocabulario v1 completo desde el 30-06-2026: 74 ids, areas + auxiliares + reglas de frontera, con loader y test). El vocabulario nunca fue el cuello de botella de la clasificacion — lo que falta es poblar `tema_por_acta` y `proyecto_taxonomias` (ver `datos/taxonomias/`), frenado por creditos de API.",
+      "estado_fuente": "docs/taxonomias/README.md",
+      "owner": "— (sin reclamar; el catalogo no necesita mantenimiento activo salvo que se agregue/renombre un id)"
     },
     {
       "id": "d_export",
@@ -2245,18 +2267,18 @@ const MAPA_MODELO = {
         "⚠ Alimentar el motor con presentismo PROMEDIO lo EMPEORA. Lo que se usa es la posición del bloque entre los PRESENTES. La asistencia condicional es el escalón 2, pendiente."
       ],
       "existe": true,
-      "loc": 102,
+      "loc": 109,
       "simbolos": [
         {
           "nombre": "calcular_presentismo",
           "tipo": "funcion",
-          "linea": 47,
+          "linea": 54,
           "doc": "Devuelve (presentismo_global, presentismo_por_periodo). p_present en [0,1]."
         },
         {
           "nombre": "main",
           "tipo": "funcion",
-          "linea": 75,
+          "linea": 82,
           "doc": null
         }
       ],
@@ -2281,42 +2303,42 @@ const MAPA_MODELO = {
         "El efecto jefe de bloque es 1,25x, no el 7x que se creía: es aceite del motor, no propositor."
       ],
       "existe": true,
-      "loc": 395,
+      "loc": 459,
       "simbolos": [
         {
           "nombre": "_norm",
           "tipo": "funcion",
-          "linea": 81,
+          "linea": 91,
           "doc": "Normaliza un nombre: sin acentos, mayúsculas, sin puntuación, 'APELLIDO NOMBRE'."
         },
         {
           "nombre": "_linaje_code",
           "tipo": "funcion",
-          "linea": 95,
+          "linea": 105,
           "doc": "Mapea el linaje del padrón (con nombres largos y sufijos, ej."
         },
         {
           "nombre": "oficialista_por_fecha",
           "tipo": "funcion",
-          "linea": 123,
+          "linea": 133,
           "doc": "True si el linaje gobernaba (núcleo O aliado) en esa fecha; False si no;"
         },
         {
           "nombre": "clase_oficialismo",
           "tipo": "funcion",
-          "linea": 135,
+          "linea": 145,
           "doc": "Distingue el partido de gobierno de sus aliados en esa fecha:"
         },
         {
           "nombre": "cargar",
           "tipo": "funcion",
-          "linea": 155,
+          "linea": 165,
           "doc": null
         },
         {
           "nombre": "_mapa_autor_linaje",
           "tipo": "funcion",
-          "linea": 178,
+          "linea": 188,
           "doc": "(nombre_norm) -> lista de (anio_desde, anio_hasta, linaje) del legislador."
         }
       ],
@@ -2337,42 +2359,42 @@ const MAPA_MODELO = {
       "modulo": "variables/proyecto",
       "que_es": "Asigna el tema de cada acta contra el catálogo de taxonomías.",
       "existe": true,
-      "loc": 265,
+      "loc": 298,
       "simbolos": [
         {
           "nombre": "_ahora",
           "tipo": "funcion",
-          "linea": 53,
+          "linea": 69,
           "doc": null
         },
         {
           "nombre": "_clasificador_agente",
           "tipo": "funcion",
-          "linea": 60,
+          "linea": 76,
           "doc": "Devuelve fn(titulo) -> [(tema_id, confianza), ...] usando el agente real."
         },
         {
           "nombre": "_elegir_primaria",
           "tipo": "funcion",
-          "linea": 73,
+          "linea": 89,
           "doc": "De las asignaciones, elige el TEMA primario: mayor confianza NO auxiliar."
         },
         {
           "nombre": "cargar_actas",
           "tipo": "funcion",
-          "linea": 89,
+          "linea": 105,
           "doc": "Lee acta_expediente y devuelve las actas votadas con título utilizable."
         },
         {
           "nombre": "cargar_actas_canonica",
           "tipo": "funcion",
-          "linea": 112,
+          "linea": 128,
           "doc": "Fuente para actas RECIENTES: el título DESCRIPTIVO ya vive en la canónica"
         },
         {
           "nombre": "clasificar_actas",
           "tipo": "funcion",
-          "linea": 146,
+          "linea": 162,
           "doc": "Clasifica cada acta por su título. Idempotente contra `previas` (no reclasifica"
         }
       ],
@@ -2752,7 +2774,7 @@ const MAPA_MODELO = {
       "modulo": "modelo/ensemble",
       "bloque": "origen",
       "existe": true,
-      "loc": 396,
+      "loc": 398,
       "simbolos": [
         {
           "nombre": "_cargar_simulador",
@@ -2769,25 +2791,25 @@ const MAPA_MODELO = {
         {
           "nombre": "componer",
           "tipo": "funcion",
-          "linea": 107,
+          "linea": 109,
           "doc": "DADA DE BAJA (2026-08-22) - era el corazon de la v1. Ver `_BAJA_V1`."
         },
         {
           "nombre": "_root",
           "tipo": "funcion",
-          "linea": 115,
+          "linea": 117,
           "doc": null
         },
         {
           "nombre": "_padron_csv",
           "tipo": "funcion",
-          "linea": 119,
+          "linea": 121,
           "doc": null
         },
         {
           "nombre": "_disciplina_csv",
           "tipo": "funcion",
-          "linea": 126,
+          "linea": 128,
           "doc": null
         }
       ],
@@ -2815,42 +2837,42 @@ const MAPA_MODELO = {
       ],
       "bloque": "origen",
       "existe": true,
-      "loc": 347,
+      "loc": 418,
       "simbolos": [
         {
           "nombre": "umbral_aprobacion",
           "tipo": "funcion",
-          "linea": 70,
+          "linea": 106,
           "doc": "Umbral de afirmativos para aprobar, según el tipo de mayoría."
         },
         {
           "nombre": "_prob_conductas",
           "tipo": "funcion",
-          "linea": 90,
+          "linea": 126,
           "doc": "Vector [p(AFIRM), p(NEG), p(NO_ACOMPANA)] para un legislador dada su línea y"
         },
         {
           "nombre": "simular_votacion",
           "tipo": "funcion",
-          "linea": 106,
+          "linea": 142,
           "doc": "Simula la votación n_sims veces a partir del roster (una línea y un desvío por"
         },
         {
           "nombre": "_linea_bloque_por_acta",
           "tipo": "funcion",
-          "linea": 180,
+          "linea": 251,
           "doc": "Línea observada de cada bloque en cada acta = conducta con mayoría simple sobre"
         },
         {
           "nombre": "_direccion_bloque_por_acta",
           "tipo": "funcion",
-          "linea": 198,
+          "linea": 269,
           "doc": "DIRECCIÓN del bloque = mayoría AFIRMATIVO vs NEGATIVO SOLO entre los que emitieron"
         },
         {
           "nombre": "backtest",
           "tipo": "funcion",
-          "linea": 211,
+          "linea": 282,
           "doc": "Corre el agregador sobre las actas históricas (alimentándolo con la línea de"
         }
       ],
@@ -3183,43 +3205,43 @@ const MAPA_MODELO = {
       "estado_declarado": "EN CURSO",
       "estado_motivo": "EN CURSO y ya no PARCIAL: desde el 2026-08-22 (ADR-0012) es la UNICA formulacion y corre de punta a punta. A y C estan implementadas como señal observada (`puerta_a.py`), B y D calculan. Lo que falta no es la cadena sino su CALIBRACION: el condicionante del caracter vale 0 porque no hay contra que ajustarlo.",
       "existe": true,
-      "loc": 479,
+      "loc": 580,
       "simbolos": [
         {
           "nombre": "_bloque",
           "tipo": "funcion",
-          "linea": 79,
+          "linea": 132,
           "doc": null
+        },
+        {
+          "nombre": "era_de",
+          "tipo": "funcion",
+          "linea": 141,
+          "doc": "Inicio de la era (gobierno) que contiene `fecha`, como 'AAAA-MM-DD'."
         },
         {
           "nombre": "alineacion_individual",
           "tipo": "funcion",
-          "linea": 88,
+          "linea": 159,
           "doc": "P(afirmativo) de CADA legislador sobre su PROPIO récord."
         },
         {
           "nombre": "perfil_legislador",
           "tipo": "funcion",
-          "linea": 136,
+          "linea": 218,
           "doc": "Cómo se espera que vote esta persona. Devuelve p_afirma_si_vota y p_presente."
         },
         {
           "nombre": "a_linea_y_desvio",
           "tipo": "funcion",
-          "linea": 178,
+          "linea": 272,
           "doc": "Traduce una P(afirmativo) al par (línea, desvío) que el agregador reproduce."
         },
         {
           "nombre": "_p_afirmativo_del_simulador",
           "tipo": "funcion",
-          "linea": 199,
+          "linea": 293,
           "doc": "P(este legislador vote AFIRMATIVO) según el MISMO modelo que simula la votación."
-        },
-        {
-          "nombre": "armar_roster",
-          "tipo": "funcion",
-          "linea": 215,
-          "doc": "Perfil de cada legislador -> los arrays que entran al agregador."
         }
       ],
       "lenguaje": "python",
@@ -3304,7 +3326,7 @@ const MAPA_MODELO = {
       "estado_declarado": "REPLANTEADO",
       "estado_motivo": "NEUTRALIZADO el 2026-08-22 (ADR-0012): medía la v1. Su `main` levanta SystemExit. Re-apuntarlo pide decidir antes contra que se mide.",
       "existe": true,
-      "loc": 549,
+      "loc": 551,
       "simbolos": [
         {
           "nombre": "_root",
@@ -3489,42 +3511,42 @@ const MAPA_MODELO = {
       ],
       "bloque": "origen",
       "existe": true,
-      "loc": 487,
+      "loc": 623,
       "simbolos": [
         {
           "nombre": "Dictamen",
           "tipo": "clase",
-          "linea": 117,
+          "linea": 153,
           "doc": null
         },
         {
           "nombre": "OrdenDelDia",
           "tipo": "clase",
-          "linea": 125,
+          "linea": 161,
           "doc": null
         },
         {
           "nombre": "_normalizar",
           "tipo": "funcion",
-          "linea": 143,
+          "linea": 184,
           "doc": "Colapsa los espacios que mete la extracción de PDF, sin tocar los saltos."
         },
         {
           "nombre": "_sin_acentos_mayus",
           "tipo": "funcion",
-          "linea": 149,
+          "linea": 190,
           "doc": null
         },
         {
           "nombre": "_parece_nombre",
           "tipo": "funcion",
-          "linea": 154,
+          "linea": 195,
           "doc": "Filtro conservador: preferimos perder un nombre raro a inventar uno."
         },
         {
           "nombre": "_firmantes_de",
           "tipo": "funcion",
-          "linea": 176,
+          "linea": 217,
           "doc": null
         }
       ],
@@ -3682,43 +3704,43 @@ const MAPA_MODELO = {
       ],
       "bloque": "origen",
       "existe": true,
-      "loc": 479,
+      "loc": 580,
       "simbolos": [
         {
           "nombre": "_bloque",
           "tipo": "funcion",
-          "linea": 79,
+          "linea": 132,
           "doc": null
+        },
+        {
+          "nombre": "era_de",
+          "tipo": "funcion",
+          "linea": 141,
+          "doc": "Inicio de la era (gobierno) que contiene `fecha`, como 'AAAA-MM-DD'."
         },
         {
           "nombre": "alineacion_individual",
           "tipo": "funcion",
-          "linea": 88,
+          "linea": 159,
           "doc": "P(afirmativo) de CADA legislador sobre su PROPIO récord."
         },
         {
           "nombre": "perfil_legislador",
           "tipo": "funcion",
-          "linea": 136,
+          "linea": 218,
           "doc": "Cómo se espera que vote esta persona. Devuelve p_afirma_si_vota y p_presente."
         },
         {
           "nombre": "a_linea_y_desvio",
           "tipo": "funcion",
-          "linea": 178,
+          "linea": 272,
           "doc": "Traduce una P(afirmativo) al par (línea, desvío) que el agregador reproduce."
         },
         {
           "nombre": "_p_afirmativo_del_simulador",
           "tipo": "funcion",
-          "linea": 199,
+          "linea": 293,
           "doc": "P(este legislador vote AFIRMATIVO) según el MISMO modelo que simula la votación."
-        },
-        {
-          "nombre": "armar_roster",
-          "tipo": "funcion",
-          "linea": 215,
-          "doc": "Perfil de cada legislador -> los arrays que entran al agregador."
         }
       ],
       "lenguaje": "python",
@@ -3743,7 +3765,7 @@ const MAPA_MODELO = {
       ],
       "bloque": "origen",
       "existe": true,
-      "loc": 396,
+      "loc": 398,
       "simbolos": [
         {
           "nombre": "_cargar_simulador",
@@ -3760,25 +3782,25 @@ const MAPA_MODELO = {
         {
           "nombre": "componer",
           "tipo": "funcion",
-          "linea": 107,
+          "linea": 109,
           "doc": "DADA DE BAJA (2026-08-22) - era el corazon de la v1. Ver `_BAJA_V1`."
         },
         {
           "nombre": "_root",
           "tipo": "funcion",
-          "linea": 115,
+          "linea": 117,
           "doc": null
         },
         {
           "nombre": "_padron_csv",
           "tipo": "funcion",
-          "linea": 119,
+          "linea": 121,
           "doc": null
         },
         {
           "nombre": "_disciplina_csv",
           "tipo": "funcion",
-          "linea": 126,
+          "linea": 128,
           "doc": null
         }
       ],
@@ -3802,38 +3824,39 @@ const MAPA_MODELO = {
       ],
       "bloque": "origen",
       "existe": true,
-      "loc": 373,
+      "loc": 380,
       "simbolos": [
         {
           "nombre": "icg_del_mes",
           "tipo": "funcion",
-          "linea": 45,
+          "linea": 47,
           "doc": "El ICG del mes de la fecha; si no está, el más nuevo que haya."
         },
         {
           "nombre": "construir",
           "tipo": "funcion",
-          "linea": 62,
+          "linea": 64,
           "doc": null
         },
         {
           "nombre": "escribir",
           "tipo": "funcion",
-          "linea": 75,
+          "linea": 77,
           "doc": null
         },
         {
           "nombre": "main",
           "tipo": "funcion",
-          "linea": 81,
+          "linea": 83,
           "doc": null
         }
       ],
       "lenguaje": "python",
       "entrypoint": true,
-      "estado": "",
-      "owner": "—",
-      "estado_texto": "su README no declara `**Estado:**`"
+      "estado": "EN CURSO",
+      "estado_texto": "EN CURSO (el generador vivo, `nowcast_puertas_html.py`, se corre en cada regeneracion completa — ver `REGENERAR.ps1` paso 8). Los dos generadores neutralizados quedan documentados, no se tocan mas.",
+      "estado_fuente": "casos/README.md",
+      "owner": "— (sin reclamar)"
     }
   ],
   "links": [

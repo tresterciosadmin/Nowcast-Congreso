@@ -4,6 +4,9 @@
 
 **Resumen:** Aplicaciones del nowcast a un caso real (una ley concreta): el panel de puertas en HTML. Consume los contratos de `modelo/` y `variables/`; no define modelo propio. Quedo UN generador: los otros dos -bicameral y proyeccion hipotetica- estaban neutralizados desde agosto y se archivaron el 2026-09-10.
 
+**Estado:** EN CURSO (el generador vivo, `nowcast_puertas_html.py`, se corre en cada regeneracion completa — ver `REGENERAR.ps1` paso 8). Los dos generadores neutralizados quedan documentados, no se tocan mas.
+**Owner actual:** — (sin reclamar)
+
 ## Buscar acá si
 
 - el informe o el HTML de una ley concreta (Ganancias, lobby, ...), y el generador de los paneles que estan en la RAIZ

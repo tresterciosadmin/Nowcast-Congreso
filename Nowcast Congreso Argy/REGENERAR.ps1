@@ -10,7 +10,7 @@
      .\REGENERAR.ps1 -Desde 4        # retomar desde el paso 4
      .\REGENERAR.ps1 -SoloVerificar  # no corre nada: solo mide y reporta
      .\REGENERAR.ps1 -ConCanonica    # ademas rehace la canonica antes de todo
-     .\REGENERAR.ps1 -ConExpedientes # ademas rebaja los expedientes de CKAN
+     .\REGENERAR.ps1 -ConExpedientes # ademas rebaja los expedientes de CKAN y actualiza proyectos.db
 
  Tarda 2-3 horas. Se puede dejar sola. Cada paso deja su log en ..\logs-regenerar\.
  Si un paso falla, CORTA: los pasos de mas abajo leen lo que produce el de arriba y
@@ -172,6 +172,23 @@ if ($ConExpedientes -and -not $SoloVerificar) {
   $codeE = $LASTEXITCODE
   if ($codeE -eq 0) {
     & $Python "datos\expedientes\src\giros_iniciales.py" 2>&1 | ForEach-Object { "$_" } | Tee-Object -FilePath $logE -Append
+    $codeE = $LASTEXITCODE
+  }
+  # Agregados el 2026-09-14: faltaban en la corrida. ingesta_ckan.py deja los
+  # parquet al dia pero nadie los subia a proyectos.db, asi que la base
+  # (proyecto_tramite en particular) quedaba atras del parquet y
+  # test_agarra_el_tramite_borrado fallaba en la PRECONDICION, no en el daño
+  # que el test simula. migrar_ckan.py NO acepta subcomando (a diferencia de
+  # bloque.py); upsert_bot.py tampoco. Verificado 2026-09-14: rehacer la base
+  # con 2.127 tramites nuevos NO mueve P (nowcast_puertas.py no lee
+  # proyectos.db; solo variables/embudo lo hace, y hoy no alimenta el numero
+  # publicado, ADR-0012).
+  if ($codeE -eq 0) {
+    & $Python "datos\proyectos\src\migrar_ckan.py" 2>&1 | ForEach-Object { "$_" } | Tee-Object -FilePath $logE -Append
+    $codeE = $LASTEXITCODE
+  }
+  if ($codeE -eq 0) {
+    & $Python "datos\proyectos\src\upsert_bot.py" 2>&1 | ForEach-Object { "$_" } | Tee-Object -FilePath $logE -Append
     $codeE = $LASTEXITCODE
   }
   $ErrorActionPreference = $previoE

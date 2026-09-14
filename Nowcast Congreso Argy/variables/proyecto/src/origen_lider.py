@@ -208,12 +208,13 @@ def _mapa_autor_linaje(legis: pd.DataFrame | None, leg_bloques: pd.DataFrame | N
 # trae nombre completo ("PITROLA Néstor Antonio") y el autor del expediente
 # viene abreviado ("PITROLA, NESTOR"). Medido el 14-09: 4.263 de 41.871
 # proyectos sin match (89,8%), con casos así de legisladores sin ambigüedad.
-# `MATCH_AUTOR_FUZZY=1` prueba un fallback conservador (ver `_match_prefijo`)
-# SOLO cuando el exacto falla. Toca `origen_por_acta.parquet`, que
-# `nowcast_puertas.py` lee para condicionar la postura -> puede mover P. NO
-# se prende por defecto sin medir el efecto en el número publicado (regla de
-# la casa, coordinacion/PARA-FRANCO-2026-09-14.md).
-MATCH_AUTOR_FUZZY = os.environ.get("MATCH_AUTOR_FUZZY", "0") == "1"
+# `_match_prefijo` prueba un fallback conservador SOLO cuando el exacto
+# falla. Toca `origen_por_acta.parquet`, que `nowcast_puertas.py` lee para
+# condicionar la postura. PRENDIDO POR DEFECTO desde el 14-09 (decisión de
+# Franco) tras medir el efecto: match_autor 89,8% -> 97,4%, P(aprobación)
+# recalculado con el panel completo IDÉNTICO (0,9801 -> 0,9801), 41/41
+# tests OK. `MATCH_AUTOR_FUZZY=0` lo apaga si hace falta volver atrás.
+MATCH_AUTOR_FUZZY = os.environ.get("MATCH_AUTOR_FUZZY", "1") == "1"
 
 _IDX_PREFIJO_CACHE: dict[int, dict[str, list[str]]] = {}
 

@@ -85,21 +85,26 @@ def main():
     chk(O.clase_oficialismo("PRO", pd.Timestamp("2013-06-01")) is None,
         "PRO opositor en 2013 -> clase None")
 
-    # --- fallback por prefijo de tokens (MATCH_AUTOR_FUZZY, apagado por defecto) ---
-    # Caso real que lo motivó (14-09): el autor viene "PITROLA, NESTOR" pero
+    # --- fallback por prefijo de tokens (MATCH_AUTOR_FUZZY, prendido por
+    # defecto desde el 14-09 -- decisión de Franco tras medir P idéntico) ---
+    # Caso real que lo motivó: el autor viene "PITROLA, NESTOR" pero
     # legisladores.csv trae el nombre completo "PITROLA Néstor Antonio" -> el
-    # exact-match falla aunque la persona sea inequívoca.
+    # exact-match falla aunque la persona sea inequívoca. Los dos estados del
+    # flag se fijan EXPLÍCITAMENTE acá (no se asume el default del módulo),
+    # así el test no se rompe si el default vuelve a cambiar.
+    _flag_original = O.MATCH_AUTOR_FUZZY
     mapa_pitrola = {"PITROLA NESTOR ANTONIO": [(2015, 2025, "IZQUIERDA")]}
-    chk(O._linaje_autor("PITROLA NESTOR", 2020, mapa_pitrola) is None,
-        "sin el flag, el nombre incompleto NO matchea (comportamiento actual, intacto)")
     chk(O._match_prefijo("PITROLA NESTOR", mapa_pitrola) == "PITROLA NESTOR ANTONIO",
         "_match_prefijo encuentra el único candidato con ese apellido+nombre como prefijo")
-    O.MATCH_AUTOR_FUZZY = True
     try:
+        O.MATCH_AUTOR_FUZZY = False
+        chk(O._linaje_autor("PITROLA NESTOR", 2020, mapa_pitrola) is None,
+            "con el flag apagado, el nombre incompleto NO matchea (exact-match puro)")
+        O.MATCH_AUTOR_FUZZY = True
         chk(O._linaje_autor("PITROLA NESTOR", 2020, mapa_pitrola) == "IZQUIERDA",
             "con el flag prendido, el fallback por prefijo resuelve el linaje")
     finally:
-        O.MATCH_AUTOR_FUZZY = False
+        O.MATCH_AUTOR_FUZZY = _flag_original
     # Ambigüedad: DOS legisladores con el mismo apellido y el mismo nombre como
     # prefijo -> el fallback NO adivina, se queda sin match.
     mapa_ambiguo = {

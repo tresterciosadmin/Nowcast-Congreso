@@ -215,8 +215,8 @@ leakage.
 
 ---
 
-## 5. Roster de jefes: queda DEL CAÑO / Frente de Izquierda (todo lo demás, RESUELTO 14-09)
-**Detectado:** 2026-07-30 · **Trabajado:** 2026-09-04 · **Resuelto (salvo Del Caño):** 2026-09-14
+## 5. Roster de jefes: RESUELTO por completo (Del Caño acotado, 14-09)
+**Detectado:** 2026-07-30 · **Trabajado:** 2026-09-04 · **Resuelto:** 2026-09-14
 
 **El detalle completo, con fuentes y con cuánto aporta cada fila, está en
 `variables/proyecto/data/VALIDACION-JEFES-2026-09-04.md`.** Decisiones de Franco del
@@ -232,18 +232,28 @@ interbloque, mantenelo así"** resuelve el punto 3 de abajo):
 
 Medido: P(aprobación) sin cambios en ninguno de los cuatro. 41/41 tests, 16 controles OK.
 
-### La de más volumen, y la única que sigue abierta
+### La de más volumen — investigada y acotada, no cerrada del todo
 
-**DEL CAÑO / Frente de Izquierda aporta 349 proyectos** y es la única cuya duda es
-*estructural*: si el FIT rota la jefatura entre PTS y PO —como rota las bancas—, una fila
-única desde 2014 **no es imprecisa, es incorrecta**. No encontré fuente que nombre al
-presidente del bloque del FIT por tramos.
+**DEL CAÑO / Frente de Izquierda aporta 349 proyectos.** La duda era *estructural*: si el
+FIT rota la jefatura entre PTS y PO —como rota las bancas—, una fila única desde 2014 no
+es imprecisa, es incorrecta. **Confirmado (14-09): el FIT en Diputados NO es un bloque, es
+un INTERBLOQUE de DOS bancadas propias** — Partido Obrero (preside Romina Del Plá) y PTS
+(preside, con rotación, Myriam Bregman desde el recambio del 10-dic-2025). Dos fuentes
+independientes: La Nueva 03-12-2025 ("el nuevo mapa del poder legislativo") y
+`jefes_bloque_oficial.csv` (scraper oficial, snapshot 2026-07-30, ALTA), que ya marca a
+Del Plá y Bregman como presidentas — no a Del Caño.
 
-> **La regla que deja el trabajo:** las dos filas que estaban mal tenían la misma forma —
-> confundir un cargo del cuerpo (vicepresidencia del Senado) o el liderazgo de un espacio
-> (referente del interbloque) con la **presidencia del bloque parlamentario**, que es lo
-> único que mide esta tabla. Cuando una fuente dice "referente", "conduce" o "lidera" en
-> vez de "preside el bloque", la fila NO está validada.
+Se acotó el `hasta` de DEL CAÑO a `2025-12-09`: hay evidencia POSITIVA de que desde el
+recambio no preside. **Para 2014-2025 sigue una sola fila** (confianza MEDIA, sin
+cambios): la rotación parece haber sido práctica constante también en ese período, pero
+no encontré fuente con fechas de esos tramos. Si aparece una, es una línea en el CSV.
+
+> **La regla que deja el trabajo:** las dos filas que estaban mal (Losada, Fernández
+> Sagasti) tenían la misma forma — confundir un cargo del cuerpo o el liderazgo de un
+> espacio con la **presidencia del bloque parlamentario**, que es lo único que mide esta
+> tabla. Cuando una fuente dice "referente", "conduce" o "lidera" en vez de "preside el
+> bloque", la fila NO está validada. Del Caño agrega una tercera forma: un bloque que en
+> realidad son dos, con presidencias separadas y rotativas.
 
 ## 8. Récord por TEMA — DESTRABADO el 06-09: era la tabla de enlace equivocada
 

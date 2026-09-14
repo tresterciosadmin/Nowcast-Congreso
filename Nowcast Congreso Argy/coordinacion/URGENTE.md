@@ -48,25 +48,6 @@ un **rango** (`O.D. 41 al 59/24`), o sea varias ODs en un acta.
 En Diputados no hay campo, pero el título menciona `O.D.` en el **39,3%** y algo con forma
 de expediente en el **24,1%**.
 
-## M. 🔵 β se estimó ANTES de que el parser recuperara los `desconocido`
-**Detectado:** 2026-09-06 · **una corrida de ~10 min**
-
-Orden real de la corrida de Franco: β a las **12:56/12:59**, firmas del Senado a las
-**13:11** y de Diputados a las **13:35**. O sea que β se estimó con el dato viejo y no ve
-las 95 Órdenes del Día que el parser recuperó (`desconocido` pasó de **3.106 a 0** en las
-dos cámaras: Diputados `unico` 73.681 → 76.333 y `mayoria` 36.058 → **36.065**; Senado
-`unico` 17.031 → 17.478).
-
-Además la canónica se dedupliqué a las **13:19**, después de β y antes del baseline: β está
-estimado sobre la base con duplicados y el baseline sobre la limpia.
-
-```powershell
-.\REGENERAR.ps1 -Desde 5
-```
-
-Recupera el carácter de 97 proyectos de Diputados y 29 del Senado que hoy salen del panel,
-y deja β y el baseline sobre la misma base.
-
 ## D. δ en el Senado: ya NO es 100% UNICO — pero sigue sin ser estimable, por otro motivo
 **Detectado:** 2026-09-04 · **Corregido el diagnóstico:** 2026-09-06 · **necesita a Franco**
 

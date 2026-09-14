@@ -56,6 +56,38 @@ Mantené esta tabla sincronizada con la bitácora.
 
 ## Bitácora (más reciente arriba)
 
+### [2026-09-14] datos/proyectos + REGENERAR.ps1 — proyectos.db quedaba atrás del parquet; test fallaba en la precondición
+- **Quién:** Claude, solo (sesión autónoma de 1h, Franco no disponible).
+- **Qué:** `test_agarra_el_tramite_borrado` fallaba porque `proyecto_tramite` en
+  `proyectos.db` (141.550 filas, del 07-09) estaba atrás de
+  `expedientes_movimientos.parquet` (143.677, regenerado el 14-09). Causa:
+  `REGENERAR.ps1 -ConExpedientes` corría `ingesta_ckan.py` + `giros_iniciales.py`
+  pero nunca `migrar_ckan.py` ni `upsert_bot.py`. Se agregaron los dos pasos.
+  También se commiteó la corrida completa del 13/14-09 que había quedado sin
+  commitear (canónica sin cambios, expedientes + modelo + variables
+  regenerados) y las dos correcciones de `REGENERAR.ps1` del 11-09
+  (`ForEach-Object { "$_" }` contra `NativeCommandError`, y el subcomando
+  `serie` de `bloque.py`).
+- **Cómo:** medido ANTES de tocar nada (P=0,9801, 16 OK, 1 failed/40 passed) →
+  backup de `proyectos.db` a `Archivos_Borrar/` → `migrar_ckan.py` +
+  `upsert_bot.py` → suite completa (41 passed) → medido de nuevo
+  (P=0,9801, IDÉNTICO — `nowcast_puertas.py` no lee `proyectos.db`, solo
+  `variables/embudo` lo hace y no alimenta el número publicado desde
+  ADR-0012) → commit.
+- **Archivos:** `REGENERAR.ps1`, `datos/proyectos/data/proyectos.db`,
+  `CLAUDE.md` (tabla "dónde estoy corriendo"), datos regenerados de
+  `datos/expedientes/`, `evaluacion/baseline/`, `modelo/ensemble/`,
+  `modelo/voto_individual/`, `variables/bloque/`, `variables/legislador/`,
+  `variables/proyecto/`, `Nowcast-Puertas.html`, `.mapa/mapa.json`, `MAPA.md`.
+- **Estado del módulo:** datos/proyectos EN CURSO, sin cambios de contrato.
+- **Próximo paso:** ver `coordinacion/PARA-FRANCO-2026-09-14.md` — match
+  autor→bloque cayó a 89,8% (diagnosticado, no arreglado: exact-match de
+  nombres rompe con segundos nombres, ej. "PITROLA NESTOR" vs "PITROLA
+  NESTOR ANTONIO"), y 35 actas gemelas "sin fecha" caracterizadas (33 de 35
+  ya no tienen impacto: son contra `manual_2026`, fuera del pipeline).
+  Además se cerró el ítem M de `URGENTE.md` (β ya no está estimado sobre
+  datos viejos, verificado `desconocido=0%` en las dos cámaras).
+
 ### [2026-09-08 a 09-10] repo completo — La limpieza: 162 archivos revisados uno por uno, y el número no se movió
 - **Quién:** Claude, con Franco decidiendo. Plan en `coordinacion/PLAN-LIMPIEZA-2026-09.md`; el detalle archivo por archivo, en `coordinacion/LIMPIEZA-2026-09-VEREDICTOS.md` (temporal: se borra al cerrar).
 - **Qué:** las fases 0 a 4 del plan. Se revisaron **los 162 archivos de código**, con cuatro veredictos posibles y nada más. Resultado: **la enorme mayoría SIRVE**. Se archivaron 178 restos en la fase 2 (parches de julio y material de terceros) y 8 archivos más en la fase 3; se corrigieron 21 textos que mentían; y se fusionaron las dos únicas duplicaciones que valían.

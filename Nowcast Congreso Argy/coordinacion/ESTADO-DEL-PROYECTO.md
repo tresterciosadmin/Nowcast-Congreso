@@ -56,6 +56,41 @@ Mantené esta tabla sincronizada con la bitácora.
 
 ## Bitácora (más reciente arriba)
 
+### [2026-09-14] variables/proyecto + datos/canonica + datos/expedientes — tres decisiones de Franco aplicadas (ADR-0022)
+- **Quién:** Claude, con Franco (ya de vuelta, dando el criterio en cada punto).
+- **Qué:** (1) `MATCH_AUTOR_FUZZY` prendido por defecto — match autor→bloque
+  89,8% → 97,4%, medido sin mover P (0,9801 → 0,9801, panel recalculado
+  completo). (2) ADR-0022: en el Senado la disidencia se trata como dictamen
+  de MINORÍA — código y tests listos (`parser_od.py`, 61/61 OK), datos NO
+  regenerados (falta descargar ~1.761 OD del Senado, sin caché en esta
+  máquina). (3) ADR-0022: el bloque personal de Daer (`BLOQUE DE LOS
+  TRABAJADORES`) va a FRENTE RENOVADOR (massismo). (4) Roster de jefes de
+  bloque: Naidenoff extendido a 2023, Di Tullio reemplaza a Fernández
+  Sagasti en el Senado; Ciciliani quedó sin aplicar (solapa con Binner,
+  estacionado). (5) URGENTE E remedido offline sin API: faltan 1.960/2.915
+  actas por tema según la fuente; verificado que el guardado a
+  `asignaciones.csv` está sano.
+- **Cómo:** cada cambio, medido antes y después contra el disco (regla de la
+  casa). Dos hallazgos quedaron estacionados sin resolver, en
+  `coordinacion/PARA-FRANCO-2026-09-14.md`: Ciciliani/Binner (solapamiento
+  de fechas) y un resultado inexplicado de `padron_diputados_historico.py`
+  (revertido, no aplicado).
+- **Archivos:** `variables/proyecto/{src/origen_lider.py, data/features_proyecto.parquet,
+  data/origen_por_acta.parquet, data/jefes_bloque.csv, tests/test_origen_lider.py}`,
+  `datos/canonica/{src/entity_resolution.py, data/clean/votos_resuelto.parquet,
+  tests/test_entity_resolution.py}`, `datos/expedientes/{src/parser_od.py,
+  tests/test_parser_od.py}`, `datos/padron/data/padron_diputados*.csv`,
+  `variables/legislador/data/legislador_bloques.parquet`,
+  `variables/bloque/outputs/serie_bloque.parquet`,
+  `coordinacion/{URGENTE.md, FORMULA-COMPLETA.md, DECISIONES/0022-*.md,
+  PARA-FRANCO-2026-09-14.md}`.
+- **Estado del módulo:** todos EN CURSO, sin cambio de contrato. P(aprobación)
+  = 0,9801, sin moverse en toda la sesión.
+- **Próximo paso:** decidir Ciciliani/Binner; correr `construir_firmas.py`
+  (dos cámaras) para que ADR-0022 parte 1 llegue a los datos; diagnosticar
+  por qué `padron_diputados_historico.py` da ~1.200 filas menos que el
+  archivo commiteado.
+
 ### [2026-09-14] datos/proyectos + REGENERAR.ps1 — proyectos.db quedaba atrás del parquet; test fallaba en la precondición
 - **Quién:** Claude, solo (sesión autónoma de 1h, Franco no disponible).
 - **Qué:** `test_agarra_el_tramite_borrado` fallaba porque `proyecto_tramite` en

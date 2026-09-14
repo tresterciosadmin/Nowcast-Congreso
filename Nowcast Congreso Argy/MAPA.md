@@ -2,13 +2,13 @@
 
 <!-- GENERADO por indexar.py. No editar: los cambios se pierden. -->
 <!-- La prosa vive en el README.md de cada modulo (seccion `Buscar aca si`). -->
-<!-- 2026-09-14 16:30 UTC · 149 archivos · 37,857 LOC -->
+<!-- 2026-09-14 17:01 UTC · 149 archivos · 37,892 LOC -->
 
 ## Como usar este archivo
 
 Es el unico archivo del proyecto que hace falta leer para empezar. Para ubicar algo concreto: `python3 .mapa/buscar.py "<termino>"` devuelve archivo y linea sin abrir nada. Recien despues abrir los archivos que salgan, y solo esos.
 
-Rama `main` — ultimo commit: 2026-09-14 edfedc9 mejora(variables/proyecto): fallback de match autor->bloque por prefijo, detras de flag · **hay cambios sin commitear**
+Rama `main` — ultimo commit: 2026-09-14 2341422 coordinacion: URGENTE.md y PARA-FRANCO al dia con las decisiones de hoy · **hay cambios sin commitear**
 
 ## Donde buscar que
 
@@ -127,15 +127,15 @@ Rama `main` — ultimo commit: 2026-09-14 edfedc9 mejora(variables/proyecto): fa
 |---|---|---:|---:|---|
 | `./` | La raiz del proyecto: los paneles que se abren con doble clic, el tablero ejecutivo y su unica fuente de datos (`tablero_datos.js`). | 6 | 5,929 | ok |
 | `modelo/ensemble/` _(src+tests)_ | La composicion final: el nowcast end-to-end de un proyecto. El punto de entrada vivo es `nowcast_puertas.py`, que corre la CADENA DE PUERTAS y devuelve un numero condicional a que las camaras voten. La formulacion v1 -P(llega al recinto) x P(mayoria dado recinto)- se dio de BAJA el 2026-08-22 (ADR-0012), junto con su backtest: `ensemble.componer` y `backtest_cadena.py` siguen ahi pero levantan SystemExit. | 16 | 4,920 | ok |
-| `variables/proyecto/` _(src+tests)_ | Feature store por proyecto: tema/materia, origen (Ejecutivo/oficialismo/aliados/oposicion), jefe de bloque, mayoria requerida, texto, y el ICG como modulador de coyuntura. La postura del gobierno por acta se midio aca y su modulo se archivo el 2026-09-10 sin consumidor: la medicion quedo en el ADR-0021 y en ESTADO. | 21 | 4,731 | **vencida** |
-| `datos/expedientes/` _(src+tests)_ | Registro de todo lo PRESENTADO (no solo lo votado): titulo, autor, tipo, fecha y cadena de vida del expediente. Denominador del embudo y enlace acta -> expediente. | 15 | 4,499 | ok |
+| `variables/proyecto/` _(src+tests)_ | Feature store por proyecto: tema/materia, origen (Ejecutivo/oficialismo/aliados/oposicion), jefe de bloque, mayoria requerida, texto, y el ICG como modulador de coyuntura. La postura del gobierno por acta se midio aca y su modulo se archivo el 2026-09-10 sin consumidor: la medicion quedo en el ADR-0021 y en ESTADO. | 21 | 4,737 | **vencida** |
+| `datos/expedientes/` _(src+tests)_ | Registro de todo lo PRESENTADO (no solo lo votado): titulo, autor, tipo, fecha y cadena de vida del expediente. Denominador del embudo y enlace acta -> expediente. | 15 | 4,519 | **vencida** |
 | `datos/padron/` _(src+tests)_ | Padron OFICIAL de bancas a nivel LEGISLADOR: quien ocupa cada banca y en que ventana de mandato. Es la composicion real de la camara a una fecha (257 / 72). | 11 | 2,645 | ok |
 | `datos/proyectos/` _(src+tests)_ | Base de Proyectos de Ley (`proyectos.db`): una fila por proyecto identificado por denominador NNNN-X-AAAA. Fuente de verdad del universo de proyectos y denominador del embudo (ADR-0009). | 10 | 2,073 | ok |
 | `tests/` | Tests que no pertenecen a ningun modulo: los que verifican acuerdos ENTRE modulos (definiciones y rutas compartidas) y los que vigilan INVARIANTES del repo — que las bases y los insumos del motor viajen por git, que la regla del caracter del dictamen no se reimplemente, y que las rutas que el codigo nombra en sus docstrings existan. Cada modulo tiene sus propios tests en `<modulo>/tests/`. | 8 | 1,347 | ok |
 | `variables/embudo/` _(src+tests)_ | Supervivencia del proyecto: presentado -> comision -> dictamen -> recinto -> sancion. Estima P(llega al recinto). OJO: eso era 'la mitad de P(aprobacion)' en la formulacion v1, que se dio de baja el 2026-08-22 (ADR-0012) justamente porque medir la mortandad en el cajon es agenda politica y se decidio no modelarla; hoy el numero publicado NO la multiplica. | 5 | 1,222 | ok |
 | `variables/bloque/` _(src+tests)_ | Cohesion, tamano, postura y fracturas de cada bloque en el tiempo, y el proyector point-in-time que arma el escenario por bloque que consume el ensemble. | 5 | 1,128 | ok |
 | `evaluacion/baseline/` _(src+tests)_ | El piso a superar, y el harness que lo mide. Lo que vive aca es el baseline del VOTO INDIVIDUAL (`baseline_voto_individual.py`, con el guard de era del ADR-0018) mas los diagnosticos del Senado. El baseline de BLOQUE -el ~0,99- se midio en `fase0/` y ahi quedo. | 5 | 1,094 | ok |
-| `datos/canonica/` _(src+tests)_ | La base propia y unica de votaciones nominales: todas las fuentes unificadas, deduplicadas y con entidades resueltas. Fuente de verdad de la que leen `variables/` y `modelo/`. | 7 | 990 | ok |
+| `datos/canonica/` _(src+tests)_ | La base propia y unica de votaciones nominales: todas las fuentes unificadas, deduplicadas y con entidades resueltas. Fuente de verdad de la que leen `variables/` y `modelo/`. | 7 | 999 | **vencida** |
 | `datos/senado/` _(src+tests)_ | Ingesta de votaciones nominales del Senado desde senado.gob.ar + reconstruccion del bloque historico contemporaneo a cada voto. Tapa el hueco 2015-2023. | 5 | 940 | ok |
 | `datos/bot_recoleccion/` _(src+tests)_ | El bot diario que trae lo nuevo de ambas camaras (proyectos con firmantes y giros, y votaciones) con upsert idempotente. Corre solo en GitHub Actions. | 7 | 880 | ok |
 | `modelo/voto_individual/` _(src+tests)_ | No predice el voto medio (eso lo resuelve la regla de bloque ~0,99): modela el DESVIO del legislador respecto de su bloque y detecta pivotes (ADR-0003). | 2 | 597 | ok |
@@ -295,12 +295,12 @@ Buscar uno sin abrir nada: `python .mapa/buscar.py --dato <termino>`. Columna **
 | `variables/legislador/data/legislador_periodo.parquet` | 5,285×10 | 157 KB | si | `export_base.py`, `ficha.py` | — |
 | `variables/legislador/data/legislador_anio.parquet` | 9,900×8 | 126 KB | si | `ficha.py` | — |
 | `variables/legislador/data/legislador_bloques.parquet` | 4,127×7 | 61 KB | si | `ficha.py` | `origen_lider.py`, `origen_por_acta.py` |
-| `variables/proyecto/data/features_proyecto.parquet` _PROYECTO_FEATURES_ | 41,871×10 | 335 KB | si | `origen_lider.py` | `backtest_cadena.py` |
+| `variables/proyecto/data/features_proyecto.parquet` _PROYECTO_FEATURES_ | 41,871×10 | 328 KB | si | `origen_lider.py` | `backtest_cadena.py` |
 | `variables/proyecto/data/origen_por_acta.parquet` _PROYECTO_ORIGEN_POR_ACTA_ | 5,998×9 | 87 KB | si | `origen_por_acta.py` | `nowcast_puertas.py`, `bloque.py`, `estimar_gamma.py` +1 |
 | `variables/proyecto/data/tema_por_acta.parquet` _PROYECTO_TEMA_POR_ACTA_ | 3,083×8 | 78 KB | si | `tema_por_acta.py` | `registro.py`, `bloque.py` |
 | `variables/proyecto/data/icg_contexto.parquet` | 297×18 | 34 KB | si | — | `estimar_gamma.py`, `estimar_gamma_individual.py`, `modulador_icg.py` |
 | `variables/proyecto/outputs/muestra_manual_taxonomias.csv` | 88×6 | 24 KB | si | — | _(2 lo nombran)_ |
-| `variables/proyecto/data/jefes_bloque.csv` _PROYECTO_JEFES_BLOQUE_ | 108×2 | 14 KB | si | `origen_lider.py` | `estimar_beta_dictamen.py` |
+| `variables/proyecto/data/jefes_bloque.csv` _PROYECTO_JEFES_BLOQUE_ | 109×2 | 15 KB | si | `origen_lider.py` | `estimar_beta_dictamen.py` |
 | `variables/proyecto/data/icg_mensual.csv` _PROYECTO_ICG_MENSUAL_ | 297×5 | 11 KB | si | `embudo.py`, `test_ingesta_icg.py` | `nowcast_puertas_html.py`, `icg_contexto.py` |
 | `variables/proyecto/data/jefes_bloque_oficial.csv` | 58×2 | 7 KB | si | `scrape_jefes_bloque.py` | `estimar_beta_dictamen.py`, `origen_lider.py` |
 | `variables/proyecto/outputs/gamma_icg_dos_capas.json` | objeto: modelo, ma_fondo, ma_corto, nota | 2 KB | si | `estimar_gamma_individual.py` | _(1 lo nombran)_ |
@@ -342,7 +342,7 @@ Ordenados por cuantos otros archivos dependen de ellos. Tocar uno de arriba tien
 | `modelo/ensemble/src/ensemble.py` | 398 | 5 | `_cargar_simulador`, `_cargar_proyector`, `componer`, `_root` |
 | `modelo/ensemble/src/puerta_d.py` | 236 | 5 | `camara_revisora`, `_padron_de`, `_clip01`, `_logit` |
 | `modelo/agregador_institucional/src/agregador.py` | 418 | 4 | `umbral_aprobacion`, `_prob_conductas`, `simular_votacion`, `_linea_bloque_por_acta` |
-| `datos/canonica/src/entity_resolution.py` | 319 | 4 | `_strip`, `_name_key`, `_leg_id`, `_aplicar_alias` |
+| `datos/canonica/src/entity_resolution.py` | 327 | 4 | `_strip`, `_name_key`, `_leg_id`, `_aplicar_alias` |
 | `datos/padron/src/ingesta_padron.py` | 239 | 3 | `_norm_col`, `_fecha_iso`, `_limpiar_nombre`, `cargar_nomina` |
 | `datos/proyectos/src/verificar.py` | 237 | 3 | `Control`, `_abrir`, `controles_base`, `control_cohorte` |
 
@@ -371,7 +371,7 @@ Segun el historial de git. Si vas a cambiar uno, mira el otro.
 - `Nowcast Congreso Argy/coordinacion/ESTADO-DEL-PROYECTO.md` + `Nowcast Congreso Argy/coordinacion/TABLERO.md` (23 commits)
 - `Nowcast Congreso Argy/coordinacion/EN-HUMANO.md` + `Nowcast Congreso Argy/coordinacion/TABLERO.md` (21 commits)
 - `Nowcast Congreso Argy/coordinacion/TABLERO.md` + `Nowcast Congreso Argy/tablero_datos.js` (17 commits)
-- `Nowcast Congreso Argy/.mapa/mapa.json` + `Nowcast Congreso Argy/MAPA.md` (14 commits)
+- `Nowcast Congreso Argy/.mapa/mapa.json` + `Nowcast Congreso Argy/MAPA.md` (15 commits)
 - `Nowcast Congreso Argy/coordinacion/ESTADO-DEL-PROYECTO.md` + `Nowcast Congreso Argy/coordinacion/URGENTE.md` (11 commits)
 - `Nowcast Congreso Argy/coordinacion/EN-HUMANO.md` + `Nowcast Congreso Argy/coordinacion/URGENTE.md` (10 commits)
 - `Nowcast Congreso Argy/coordinacion/URGENTE.md` + `Nowcast Congreso Argy/tablero_datos.js` (9 commits)
@@ -411,4 +411,4 @@ Segun el historial de git. Si vas a cambiar uno, mira el otro.
 
 ## Frescura
 
-- Bitacoras vencidas: `variables/proyecto/`
+- Bitacoras vencidas: `datos/canonica/`, `datos/expedientes/`, `variables/proyecto/`

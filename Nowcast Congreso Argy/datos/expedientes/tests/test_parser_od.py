@@ -570,6 +570,17 @@ Artículo 1° - Lo que sea.
     check(all(f["od_numero"] == "346" for f in filas), "todas las filas llevan el número de OD")
     check({f["disidencia"] for f in filas} == {"none", "parcial"}, "los dos estados de disidencia")
 
+    # ─── decisión de Franco 2026-09-14 (URGENTE.md D): disidencia -> minoria ───
+    print("disidencia se reclasifica como dictamen_clase='minoria'")
+    plenas_od = [f for f in filas if f["disidencia"] == "none"]
+    disidentes_od = [f for f in filas if f["disidencia"] != "none"]
+    check(len(disidentes_od) == 5, f"5 filas en disidencia, dio {len(disidentes_od)}")
+    check(all(f["dictamen_clase"] == "minoria" for f in disidentes_od),
+          "toda firma en disidencia queda con dictamen_clase='minoria', sea cual sea "
+          "el rotulo del bloque que la aloja")
+    check(all(f["dictamen_clase"] == d.clase for f in plenas_od),
+          "las firmas PLENAS conservan el rotulo del bloque, sin cambios")
+
     print(f"\n{corridos - len(fallos)}/{corridos} OK")
     if fallos:
         print(f"\n{len(fallos)} FALLAS:")

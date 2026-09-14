@@ -704,6 +704,13 @@ $\delta(\text{mayoría sin minoría}) = -2{,}36$, $\delta(\text{sólo minoría})
 > da `reparto_caracter = {"UNICO": 23047}`, 100% único, sin varianza. **No lo arregla ningún
 > parser.** Si el Senado va a tener término de dictamen, tiene que salir de la
 > **disidencia**. → URGENTE D.
+>
+> **DECIDIDO el 14-09 (ADR-0022): sí, la disidencia entra como dictamen de MINORÍA.**
+> Código y tests listos (`parser_od.py::a_filas`, 61/61 OK) — **la fórmula NO cambió
+> todavía**: falta re-correr `construir_firmas.py` en las dos cámaras (~1.761 OD del
+> Senado a descargar) para que `reparto_caracter` dependa de la disidencia y δ deje de
+> estar en 100% único. Hasta esa corrida, este párrafo sigue describiendo el estado
+> real de los datos.
 
 > ⚠️ **PENDIENTE DE FRANCO — tres cosas.**
 > 1. **Sacar $\beta_3$ y poner el carácter en su lugar** modifica el §III.A.2 del ADR-0016.

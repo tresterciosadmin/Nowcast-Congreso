@@ -492,7 +492,16 @@ def a_filas(od: OrdenDelDia) -> list[dict]:
         return [vacia]
     for d in od.dictamenes:
         for f in d.firmantes:
-            filas.append(dict(base, dictamen_orden=d.orden, dictamen_clase=d.clase,
+            # Decisión de Franco (2026-09-14, URGENTE.md item D): quien firma EN
+            # DISIDENCIA es, a todo efecto, una firma de MINORÍA — aunque el
+            # dictamen que la aloja se haya rotulado "único" o "mayoría" (el caso
+            # típico del Senado, que rara vez abre un dictamen de minoría propio
+            # y en cambio anexa la disidencia al de mayoría). Mismo criterio que
+            # ya vale en Diputados: una disidencia no es una firma plena del
+            # dictamen que encabeza. `d.clase` (el rótulo del BLOQUE) no cambia;
+            # lo que cambia es el `dictamen_clase` de ESTA fila.
+            clase = "minoria" if f["disidencia"] != "none" else d.clase
+            filas.append(dict(base, dictamen_orden=d.orden, dictamen_clase=clase,
                               fecha_sala=d.fecha_sala, **f))
     if not filas:
         return [dict(vacia, parseo_ok=False,

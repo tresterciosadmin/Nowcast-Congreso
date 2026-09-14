@@ -1,42 +1,42 @@
 {
   "definicion": "desvío v2 (ADR-0004): conducta vs línea del bloque (mayoría de TODOS los escaños); estricta con abstenciones/ausencias; desempate por linaje; parcial en OTRO/PROVINCIAL; excluidos presidentes de Diputados y suspendidos",
   "min_votos": 50,
-  "legisladores_medibles": 1750,
+  "legisladores_medibles": 1691,
   "tasa_desvio_mediana": 0.1477,
-  "tasa_desvio_p90": 0.3453,
+  "tasa_desvio_p90": 0.3429,
   "por_umbral": {
     ">=2%": {
-      "n_legisladores": 1500,
-      "pct_de_medibles": 85.7
+      "n_legisladores": 1463,
+      "pct_de_medibles": 86.5
     },
     ">=5%": {
-      "n_legisladores": 1357,
-      "pct_de_medibles": 77.5
+      "n_legisladores": 1323,
+      "pct_de_medibles": 78.2
     },
     ">=10%": {
-      "n_legisladores": 1130,
-      "pct_de_medibles": 64.6
+      "n_legisladores": 1096,
+      "pct_de_medibles": 64.8
     },
     ">=15%": {
-      "n_legisladores": 865,
-      "pct_de_medibles": 49.4
+      "n_legisladores": 838,
+      "pct_de_medibles": 49.6
     }
   },
   "disputadas": {
-    ">=2%": 1235,
-    ">=5%": 1078,
-    ">=10%": 816,
-    ">=15%": 626
+    ">=2%": 1179,
+    ">=5%": 1036,
+    ">=10%": 788,
+    ">=15%": 585
   },
   "ausentismo_outlier": {
-    "umbral_mu_2sigma": 0.587,
-    "media": 0.2199,
-    "sigma": 0.1836,
-    "n_outliers_medibles": 83
+    "umbral_mu_2sigma": 0.5771,
+    "media": 0.2178,
+    "sigma": 0.1797,
+    "n_outliers_medibles": 76
   },
   "cobertura": {
-    "n_votos_medidos": 954002,
-    "n_actas": 6094,
+    "n_votos_medidos": 900572,
+    "n_actas": 5861,
     "anios": "1994-2026",
     "fuentes": [
       "argentinadatos",
@@ -46,9 +46,9 @@
       "senado"
     ],
     "metodo": {
-      "bloque": 911804,
-      "parcial": 35344,
-      "linaje": 6854
+      "bloque": 860334,
+      "parcial": 34029,
+      "linaje": 6209
     }
   }
 }

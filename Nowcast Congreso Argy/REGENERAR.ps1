@@ -65,7 +65,10 @@ function Correr($n, $nombre, $argumentos) {
   # en stderr.
   $previo = $ErrorActionPreference
   $ErrorActionPreference = "Continue"
-  & $Python @argumentos 2>&1 | Tee-Object -FilePath $log
+  # Ver el comentario de arriba: ademas de no abortar, se convierte a texto para que el
+  # log no se llene de NativeCommandError por cada linea de stderr (paso el 11-09 con
+  # run_pipeline.py, que loguea INFO por stderr).
+  & $Python @argumentos 2>&1 | ForEach-Object { "$_" } | Tee-Object -FilePath $log
   $code = $LASTEXITCODE
   $ErrorActionPreference = $previo
   $mins = [math]::Round(((Get-Date) - $t0).TotalMinutes, 1)
@@ -142,7 +145,11 @@ if ($ConCanonica -and -not $SoloVerificar) {
   Write-Host "  log: $logC" -ForegroundColor DarkGray
   $previoC = $ErrorActionPreference
   $ErrorActionPreference = "Continue"
-  & $Python "datos\canonica\src\run_pipeline.py" 2>&1 | Tee-Object -FilePath $logC
+  # ForEach-Object { "$_" }: convierte a texto los registros de error que PowerShell 5.1
+  # fabrica con CADA linea de stderr de un comando nativo. Sin esto el log se llena de
+  # NativeCommandError por cada INFO de logging, que asusta y no significa nada. El exito
+  # lo sigue decidiendo $LASTEXITCODE, que lo fija el comando nativo igual.
+  & $Python "datos\canonica\src\run_pipeline.py" 2>&1 | ForEach-Object { "$_" } | Tee-Object -FilePath $logC
   $codeC = $LASTEXITCODE
   $ErrorActionPreference = $previoC
   if ($codeC -ne 0) {
@@ -161,10 +168,10 @@ if ($ConExpedientes -and -not $SoloVerificar) {
   Write-Host "  log: $logE" -ForegroundColor DarkGray
   $previoE = $ErrorActionPreference
   $ErrorActionPreference = "Continue"
-  & $Python "datos\expedientes\src\ingesta_ckan.py" 2>&1 | Tee-Object -FilePath $logE
+  & $Python "datos\expedientes\src\ingesta_ckan.py" 2>&1 | ForEach-Object { "$_" } | Tee-Object -FilePath $logE
   $codeE = $LASTEXITCODE
   if ($codeE -eq 0) {
-    & $Python "datos\expedientes\src\giros_iniciales.py" 2>&1 | Tee-Object -FilePath $logE -Append
+    & $Python "datos\expedientes\src\giros_iniciales.py" 2>&1 | ForEach-Object { "$_" } | Tee-Object -FilePath $logE -Append
     $codeE = $LASTEXITCODE
   }
   $ErrorActionPreference = $previoE
@@ -244,7 +251,10 @@ if (EnRango 5) {
   #   - serie_bloque.parquet es la serie de cohesion y postura por bloque.
   # Van DESPUES de origen_por_acta porque bloque.py lo lee.
   Correr 5 "disciplina"        @("modelo\voto_individual\src\disciplina.py")
-  Correr 5 "serie-bloque"      @("variables\bloque\src\bloque.py")
+  # OJO: bloque.py EXIGE subcomando. Sin el imprime el uso y sale con codigo 2.
+  # Paso el 11-09: se agrego sin argumento y corto la corrida entera en el ultimo
+  # paso nuevo, despues de 40 min de canonica y expedientes.
+  Correr 5 "serie-bloque"      @("variables\bloque\src\bloque.py", "serie")
 }
 
 if (EnRango 6) {
@@ -269,7 +279,7 @@ if (EnRango 8) {
 # ─────────────────────────────────────────────────────────────────────────────
 Titulo "V" "VERIFICACION — esto es lo que hay que mirar" "1"
 $log = Join-Path $logs "VERIFICACION.txt"
-& $Python "verificar_regeneracion.py" 2>&1 | Tee-Object -FilePath $log
+& $Python "verificar_regeneracion.py" 2>&1 | ForEach-Object { "$_" } | Tee-Object -FilePath $log
 
 # ─────────────────────────────────────────────────────────────────────────────
 # La suite, al final y en la misma corrida (pedido de Franco, 2026-09-10). Son los
@@ -277,7 +287,7 @@ $log = Join-Path $logs "VERIFICACION.txt"
 # corren al importarse, y pasarle el repo entero a pytest aborta la corrida.
 Titulo "T" "TESTS — la suite migrada" "1-2"
 $logT = Join-Path $logs "TESTS.txt"
-& $Python "-m" "pytest" "tests/" "datos/proyectos/tests" "-q" 2>&1 | Tee-Object -FilePath $logT
+& $Python "-m" "pytest" "tests/" "datos/proyectos/tests" "-q" 2>&1 | ForEach-Object { "$_" } | Tee-Object -FilePath $logT
 if ($LASTEXITCODE -ne 0) {
   Write-Host "  La suite NO paso. Mirá $logT antes de creerle a la verificacion." -ForegroundColor Red
 }

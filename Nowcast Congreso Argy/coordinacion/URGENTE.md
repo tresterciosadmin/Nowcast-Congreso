@@ -48,31 +48,6 @@ un **rango** (`O.D. 41 al 59/24`), o sea varias ODs en un acta.
 En Diputados no hay campo, pero el título menciona `O.D.` en el **39,3%** y algo con forma
 de expediente en el **24,1%**.
 
-## D. δ en el Senado: DECIDIDO (ADR-0022) — falta la corrida grande
-**Detectado:** 2026-09-04 · **Diagnóstico corregido:** 2026-09-06 · **Decidido:** 2026-09-14 · **falta: correr**
-
-**Decisión de Franco (14-09, ADR-0022):** las actas de minoría del Senado están anexas
-al dictamen de mayoría en formato de disidencia. Se tratan como dictámenes de MINORÍA,
-igual que en Diputados.
-
-**Implementado y testeado** (`datos/expedientes/src/parser_od.py::a_filas`, 61/61 OK):
-una firma en disidencia recibe `dictamen_clase = "minoria"` sin importar el rótulo del
-bloque que la aloja. **No aplicado a los datos todavía**: hace falta re-correr
-`construir_firmas.py` en las dos cámaras, y en esta máquina eso significa descargar de
-cero ~1.761 Órdenes del Día del Senado (el caché `Archivos_Borrar/od_pdf/` es local, no
-viaja por git). En una máquina con el caché puesto son ~60-90 min sin red.
-
-```powershell
-python datos\expedientes\src\construir_firmas.py --desde-cero
-python datos\expedientes\src\construir_firmas.py --senado --desde-cero
-python modelo\ensemble\src\estimar_beta_dictamen.py
-python modelo\ensemble\src\estimar_beta_dictamen.py --camara senado
-```
-
-Después de esa corrida, medir de nuevo `reparto_caracter` del Senado (hoy
-`{UNICO: 438, mayoria: 20, solo_minoria: 1}` en actas) y `verificar_regeneracion.py`
-para confirmar qué pasó con P.
-
 ## E. Récord por tema: frenado por créditos de API — DEJADA FRENADA (decisión de Franco 14-09)
 **Trabajado:** 2026-09-06 · **frenado por: créditos de API** · **medido de nuevo el 2026-09-14, sin gastar API**
 

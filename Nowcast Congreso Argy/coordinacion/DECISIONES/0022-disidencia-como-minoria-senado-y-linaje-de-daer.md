@@ -30,14 +30,49 @@ bloques propios con cabecera calificada.
 nuevo (`disidencia se reclasifica como dictamen_clase='minoria'`) verificando las
 dos cosas: la disidencia se reclasifica, y las firmas plenas NO cambian.
 
-**Pendiente (no aplicado todavía, por volumen):** para que esto llegue a
-`dictamenes_firmas.parquet` / `dictamenes_firmas_senado.parquet` hace falta
-re-correr `construir_firmas.py` en las dos cámaras, que en esta máquina implica
-descargar ~1.761 Órdenes del Día del Senado desde cero (el caché
-`Archivos_Borrar/od_pdf/` es local y no viaja por git). Con el caché puesto —como
-en la PC de Franco— son ~60-90 min sin red. Hasta que se corra, `beta_dictamen.json`
-del Senado sigue con `reparto_caracter` sin varianza y el número publicado no se
-mueve por este cambio.
+**APLICADO A LOS DATOS el 14-09.** Descargadas 1.902 Órdenes del Día del Senado
+(1.778 nuevas + 123 en caché, 1 falla) y reconstruidas las firmas
+(`construir_firmas.py --senado --desde-cero`). Resultado, medido sobre el
+parquet:
+
+| | antes (carácter puro) | después (+ disidencia) |
+|---|---:|---:|
+| `dictamen_clase` mayoría (Senado) | 20 actas | 16 actas (¹) |
+| `dictamen_clase` minoría (Senado) | 1 acta | **205 actas** |
+| firmas en disidencia reclasificadas | — | 194 (135 parcial + 56 sin especificar + 3 total) |
+
+(¹) la cifra de "mayoría" baja levemente porque `_sin_repetidos` y el rescate
+hacia adelante del parser cambiaron de base (más Órdenes del Día leídas), no
+por el cambio de disidencia en sí.
+
+**δ pasa a ser estimable de verdad, pero recién agrupando las dos cámaras.**
+Re-corrido `estimar_beta_dictamen.py` (ambas cámaras y sólo Senado):
+
+| | ambas cámaras (n=1.555 actas) | sólo Senado (n=455 actas) |
+|---|---:|---:|
+| actas con `mayoria` | **157** (¹) | 16 |
+| actas con `solo_minoria` | **30** (¹) | 1 |
+| `dict_mayoria` | −1,79 (p=0,0) | −1,34 (p=0,0) |
+| `dict_solo_minoria` | −0,84 (p=0,0025) | +2,10 (p=0,0) — **1 solo cluster, no creer** |
+
+(¹) `MIN_CLUSTERS_CONFIABLE = 20`: con las dos cámaras juntas, `mayoria` (157) y
+`solo_minoria` (30) **cruzan el piso por primera vez** — antes el Senado solo
+llegaba a 20/1. El propio `estimar_beta_dictamen.py` sigue marcando
+`solo_minoria` del Senado en soledad como no confiable (`caracter_sin_clusters_suficientes`).
+
+**El número publicado no se movió** (P = 0,9801, panel recalculado completo):
+δ sigue **implementado en 0** en el camino que corre `nowcast_puertas.py`
+(FORMULA-COMPLETA.md §III.A.2/§II.3) — esta corrida deja el término ESTIMADO
+y con varianza real por primera vez, no lo PRENDE. Prenderlo es una decisión
+de motor aparte, con su propio backtest.
+
+**Control corregido de paso:** `verificar_regeneracion.py` tenía un chequeo
+que asumía "minoria en senado-2018-16.pdf siempre tiene que ser 0" (el caso de
+la reimpresión de ADR-0017). Ese archivo tiene una disidencia real (Beatriz
+Mirkin, "EN DISIDENCIA PARCIAL") que con esta decisión pasa a `minoria` a
+propósito. El control ahora verifica lo que de verdad importa — que la
+reimpresión no duplique firmas (19, ni 38 ni 0) — en vez de un número que
+esta misma decisión volvía falso.
 
 ## Decisión 2 — el bloque personal de Daer va a FRENTE RENOVADOR (massismo)
 

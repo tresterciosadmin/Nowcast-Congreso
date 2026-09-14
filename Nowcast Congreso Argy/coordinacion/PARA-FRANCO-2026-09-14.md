@@ -56,16 +56,10 @@ en on):
   nuevo con el origen nuevo y comparé el JSON completo)
 - Suite completa: 41/41 passed
 
-**Por qué no lo prendí yo:** aunque midió limpio, es un cambio de
-comportamiento por defecto en un módulo del motor (`variables/proyecto`), y
-la regla de la casa lo deja para vos aunque la medición dé bien — la decisión
-de FLIPEAR el default no es lo mismo que la de construir y medir el fallback.
-
-**Mi recomendación: prendelo.** Es conservador (nunca adivina en ambiguo), la
-mejora es grande (8 puntos de match), y P no se movió ni con recálculo
-completo. Si decís que sí, es cambiar `"0"` por `"1"` en el default de
-`MATCH_AUTOR_FUZZY` (una línea) + regenerar `features_proyecto.parquet` y
-`origen_por_acta.parquet` + commit.
+**RESUELTO — dijiste "dale, prendelo".** Flag prendido por defecto,
+`features_proyecto.parquet` y `origen_por_acta.parquet` regenerados, panel
+recalculado: P sigue en 0,9801 (41/41 tests). Ver el commit de esta sesión con
+mensaje que empieza "flip".
 
 ---
 
@@ -103,21 +97,61 @@ acta candidata con el mismo recuento en la ventana de fechas plausible.
 
 ---
 
-## 3. Urgentes que dejé en `URGENTE.md`, sin tocar (necesitan tu decisión)
+## 3. Lo que decidiste hoy y ya está aplicado — con dos cosas que quedaron abiertas
 
-- **D.** δ en el Senado: si conviene redefinir el carácter del dictamen desde
-  la disidencia en vez del carácter (213 firmas "EN DISIDENCIA" de 18.105).
-  Es cambio de definición de una variable del motor → ADR. No lo toqué.
-- **F.** A qué linaje va el bloque personal de Daer (88,9% massismo vs 90,0%
-  peronismo federal, demasiado parejo). Una línea en `LINAJE_VENTANAS`
-  (`variables/bloque/`, motor) — la dejo para vos.
-- **5.** Roster de jefes de bloque: 4 filas para agregar/corregir (Naidenoff,
-  Di Tullio, Cicoliani) y una decisión de fondo (¿la columna `bloque` mide el
-  bloque o el interbloque? — afecta a Massa/UNA y a Camaño/Federal-UNA). Todo
-  el detalle ya estaba en `URGENTE.md`, no lo dupliqué acá.
-- **E** (URGENTE, distinto de la tarea E que me diste): clasificación de tema
-  por acta frenada por créditos de API — no corrí nada que consuma la API
-  paga, como me pediste. Sigue frenado.
+- **D (disidencia = minoría en el Senado): código y tests listos (ADR-0022),
+  datos NO regenerados todavía.** `parser_od.py::a_filas` ya reclasifica; 61/61
+  OK. Para que llegue a `beta_dictamen.json` del Senado hace falta re-correr
+  `construir_firmas.py` en las dos cámaras, y esta máquina no tiene el caché
+  de PDFs (`Archivos_Borrar/od_pdf/`, local, no viaja por git): sería una
+  descarga de ~1.761 Órdenes del Día desde cero. **No la lancé** — comando
+  listo en `URGENTE.md` D. Si querés que la corra igual (puede tardar bastante
+  más que los 60-90 min que tardaría con el caché puesto), decímelo. Si preferís
+  correrla vos con el caché que ya tenés, también sirve.
+
+- **F (Daer → massismo): aplicado y medido.** `entity_resolution.py` (mapa
+  `LINAJE`), más un parche quirúrgico a mano en las 4 filas que ya existían
+  (`padron_diputados.csv`, `padron_diputados_historico.csv` ×2,
+  `legislador_bloques.parquet`) porque **correr el reconstructor completo del
+  padrón dio un resultado raro que no tiene que ver con este cambio** — ver el
+  punto siguiente. P recalculado: 0,9801, sin cambios.
+
+- **5 (roster de jefes, con "medimos bloque, no interbloque" ya confirmado):
+  aplicado Naidenoff (hasta 2021→2023) y reemplazada la fila de Fernández
+  Sagasti por Di Tullio en el Senado (Unidad Ciudadana). Ciciliani QUEDÓ SIN
+  APLICAR:** extender su `desde` a 2015-12-10 (como pedía la fuente) solapa
+  dos años con la fila de **Binner** en el mismo bloque (Partido Socialista,
+  2013-12-10 a 2017-12-09) — quedarían dos jefes en ALTA compitiendo por el
+  mismo período. Probablemente el `hasta` de Binner también tenga que
+  acortarse a 2015-12-09, pero eso no lo pediste y no lo decidí solo.
+  ¿Confirmás que el corte es 2015-12-09 para Binner / 2015-12-10 para
+  Ciciliani?
+
+- **E (créditos de API): la dejé frenada, como pediste.** Medido offline (sin
+  tocar la API), en `URGENTE.md` E: **faltan 1.960 actas** por la ruta
+  `expedientes` (CKAN, la que usa `tema_por_acta.py` por defecto) o **2.915**
+  por la ruta `canonica` (universo más amplio, incluye 2020+). El pipeline de
+  guardado está sano: las 3.083 actas ya clasificadas están **las 3.083** en
+  `datos/taxonomias/data/asignaciones.csv`, sin ninguna perdida.
+
+## 4. Hallazgo colateral sin resolver: `padron_diputados_historico.py` da un número raro
+
+Al correr `python datos/padron/src/padron_diputados_historico.py` de punta a
+punta (para aplicar el cambio de Daer de la forma "correcta", regenerando en
+vez de parchear a mano) el resultado fue **6.124 filas / 1.952 legisladores**
+contra las **7.323 filas / 2.443 legisladores** del archivo commiteado — una
+diferencia de ~1.200 filas y ~490 legisladores que **un solo cambio de linaje
+de una persona no puede explicar**. Revertí esa regeneración completa y usé el
+parche quirúrgico en su lugar (ver punto F arriba), así que el archivo
+commiteado sigue siendo el de 7.323 filas, sólo con las 3 filas de Daer
+corregidas.
+
+**No investigué la causa** — no tengo con qué comparar en esta sesión (no sé
+si tu máquina, corriendo el mismo script sobre los mismos insumos, da 7.323 o
+6.124). Podría ser una consolidación de duplicados que ahora funciona mejor
+(algo BUENO), o podría ser una pérdida real de cobertura (algo MALO). Antes de
+confiar en una corrida nueva de este script, valdría la pena correrlo en tu
+PC y comparar.
 
 ## 4. Lo que SÍ resolví y ya está commiteado (no necesita tu decisión)
 

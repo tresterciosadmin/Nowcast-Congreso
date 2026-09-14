@@ -48,78 +48,70 @@ un **rango** (`O.D. 41 al 59/24`), o sea varias ODs en un acta.
 En Diputados no hay campo, pero el título menciona `O.D.` en el **39,3%** y algo con forma
 de expediente en el **24,1%**.
 
-## D. δ en el Senado: ya NO es 100% UNICO — pero sigue sin ser estimable, por otro motivo
-**Detectado:** 2026-09-04 · **Corregido el diagnóstico:** 2026-09-06 · **necesita a Franco**
+## D. δ en el Senado: DECIDIDO (ADR-0022) — falta la corrida grande
+**Detectado:** 2026-09-04 · **Diagnóstico corregido:** 2026-09-06 · **Decidido:** 2026-09-14 · **falta: correr**
 
-**Lo que decía este ítem, y ya no es cierto:** que el `reparto_caracter` del Senado era
-**100% UNICO** y por lo tanto δ no tenía varianza. Eso salía del A/B del 04-09, sobre una
-muestra de 400 actas y con el dato viejo. Con la regeneración completa:
+**Decisión de Franco (14-09, ADR-0022):** las actas de minoría del Senado están anexas
+al dictamen de mayoría en formato de disidencia. Se tratan como dictámenes de MINORÍA,
+igual que en Diputados.
 
-| carácter | votos | **actas** |
-|---|---:|---:|
-| UNICO | 25.322 | 438 |
-| mayoría | 1.138 | **20** |
-| sólo minoría | 53 | **1** |
-
-O sea que **hay varianza**, y el modelo la estima: `dict_mayoria = −0,6261` (p = 0,0014) y
-`dict_solo_minoria = +2,5026` (p = 0,0).
-
-### Y ese +2,50 con p = 0,0 es un artefacto, no un hallazgo
-
-**Sale de UN acta.** El error estándar es cluster-robusto **por acta**; con un solo cluster
-no es un error estándar, es un número que el estimador devuelve porque tiene que devolver
-algo. Se nota en que su SE (0,157) es del mismo orden que el de la constante, con n = 53.
-
-La regla de la casa lo agarra: *un número imposible es un bug, no un fenómeno.* Quedó
-puesto en el código — `MIN_CLUSTERS_CONFIABLE = 20` en `estimar_beta_dictamen.py`, el
-reparto se publica ahora **en actas además de en votos**, y por debajo del piso sale un
-`logger.error` que dice explícitamente "NO leas dict_X como un hallazgo".
-
-**`dict_mayoria` (20 actas) es el que se puede mirar**, y aun así 20 clusters está por
-debajo de lo que la inferencia cluster-robusta pide (30-50): el signo se puede creer, la
-magnitud y el p no.
-
-### Lo que queda para Franco
-
-1. **La propuesta original sigue en pie y ahora es más fuerte:** en el Senado el término
-   del dictamen debería salir de la **disidencia** (213 firmas de 18.105 dicen "EN
-   DISIDENCIA"), no del carácter — porque el carácter, aunque ya no sea degenerado, se
-   apoya en 21 actas de 459. Es un cambio de definición de una variable de la fórmula, así
-   que va con ADR.
-2. **Re-correr el paso 6 completo** para que `beta_dictamen.json` (ambas cámaras) traiga
-   también el diagnóstico de clusters. En mi entorno no entra; en el tuyo son ~9 min:
-   `python modelo\ensemble\src\estimar_beta_dictamen.py`.
-
-## E. Récord por tema: 24,6% → 51,8%. Faltan 2.134 títulos y créditos
-**Trabajado:** 2026-09-06 · **frenado por: créditos de API** · retomar cuando haya
-
-`tema_por_acta.py` leía `acta_expediente.parquet` — **la tabla angosta: 892 actas únicas,
-todas de `ckan_diputados`**. Es el mismo cableado que trababa el β del Senado hasta el
-ADR-0017. Corregido a `acta_expediente_todas.parquet` (5.036 actas, las cuatro fuentes).
-
-Franco lo corrió el 06-09 y clasificó **1.550 actas nuevas** antes de quedarse sin
-créditos (última a las 14:52).
-
-| | antes | ahora | potencial |
-|---|---:|---:|---:|
-| clasificadas | 1.537 | **3.083** | 5.215 |
-| cobertura de la canónica | 24,6% | **51,8%** | **87,7%** |
-| faltan | — | **2.134** | — |
-
-Y la corrida alcanzó fuentes que la tabla angosta **no podía ver**: `decada_votada` 1.370
-y `senado` 377, que antes eran 0.
-
-**Para retomar** (idempotente: sólo corre sobre lo que falta):
+**Implementado y testeado** (`datos/expedientes/src/parser_od.py::a_filas`, 61/61 OK):
+una firma en disidencia recibe `dictamen_clase = "minoria"` sin importar el rótulo del
+bloque que la aloja. **No aplicado a los datos todavía**: hace falta re-correr
+`construir_firmas.py` en las dos cámaras, y en esta máquina eso significa descargar de
+cero ~1.761 Órdenes del Día del Senado (el caché `Archivos_Borrar/od_pdf/` es local, no
+viaja por git). En una máquina con el caché puesto son ~60-90 min sin red.
 
 ```powershell
-python variables\proyecto\src\tema_por_acta.py
+python datos\expedientes\src\construir_firmas.py --desde-cero
+python datos\expedientes\src\construir_firmas.py --senado --desde-cero
+python modelo\ensemble\src\estimar_beta_dictamen.py
+python modelo\ensemble\src\estimar_beta_dictamen.py --camara senado
+```
+
+Después de esa corrida, medir de nuevo `reparto_caracter` del Senado (hoy
+`{UNICO: 438, mayoria: 20, solo_minoria: 1}` en actas) y `verificar_regeneracion.py`
+para confirmar qué pasó con P.
+
+## E. Récord por tema: frenado por créditos de API — DEJADA FRENADA (decisión de Franco 14-09)
+**Trabajado:** 2026-09-06 · **frenado por: créditos de API** · **medido de nuevo el 2026-09-14, sin gastar API**
+
+`tema_por_acta.py` leía `acta_expediente.parquet` — la tabla angosta, sólo `ckan_diputados`.
+Corregido a `acta_expediente_todas.parquet` (las cuatro fuentes) desde el 06-09.
+
+**Medido el 14-09 (offline: `cargar_actas`/`cargar_actas_canonica` + `_leer_previas`, sin
+llamar al clasificador):**
+
+| fuente (`--fuente`) | universo | ya clasificadas | **faltan** |
+|---|---:|---:|---:|
+| `expedientes` (default; CKAN, 2011-19) | 5.043 | 3.083 | **1.960** |
+| `canonica` (título del acta, incluye 2020+) | 5.998 | 3.083 | **2.915** |
+
+El universo `expedientes` creció de 5.036 a 5.043 desde la última medición (regeneración
+del 13/14-09); `canonica` es el potencial más amplio (incluye lo que `expedientes` no
+puede ver: `decada_votada`, `senado`, actas 2020+). Las 3.083 clasificadas no cambiaron
+— nadie corrió el clasificador desde el 06-09.
+
+**Verificado que la escritura al CSV es sana (lo que pedía Franco):** las **3.083** filas
+de `variables/proyecto/data/tema_por_acta.parquet` (la caché del clasificador, no viaja
+por git) están **las 3.083, sin faltar ninguna**, en
+`datos/taxonomias/data/asignaciones.csv` (el registro único y versionado). Las 36
+asignaciones de más en el registro (6.772 filas sobre 3.119 objetos vs. 3.083 actas de
+`tema_por_acta`) vienen de las otras fuentes que `registro.py` consolida (revisión manual,
+etc.), no de una pérdida. **El pipeline de guardado funciona.**
+
+**Para retomar cuando haya créditos** (idempotente: sólo corre sobre lo que falta):
+
+```powershell
+python variables\proyecto\src\tema_por_acta.py                        # fuente expedientes, 1.960 actas
+python variables\proyecto\src\tema_por_acta.py --fuente canonica      # universo mas amplio, 2.915 actas
 ```
 
 ### Ya no se pueden perder: hay un registro único (06-09)
 
-`datos/taxonomias/data/asignaciones.csv` — **6.772 asignaciones sobre 3.119 objetos**,
-consolidadas desde las cuatro fuentes que estaban sueltas. CSV, versionado, con
-procedencia por fila. `tema_por_acta.py` lo actualiza solo al terminar de clasificar.
+`datos/taxonomias/data/asignaciones.csv` — consolidado desde las cuatro fuentes que
+estaban sueltas. CSV, versionado, con procedencia por fila. `tema_por_acta.py` lo
+actualiza solo al terminar de clasificar.
 
 **Y hacía falta una excepción en `.gitignore`:** el registro cae en el `*.csv` de la línea
 5 y **no viajaba a git**. Sin eso, la consolidación no servía de nada. Hay un test cuyo
@@ -222,42 +214,6 @@ leakage.
 (desbloquea el backtest) → sobre tablas (necesita ADR).
 
 ---
-
-## F. ¿A qué linaje va el bloque personal de Daer? (queda de URGENTE 4)
-**Detectado:** 2026-09-04 · Claude · **necesita a Franco** · no bloquea a nadie
-
-URGENTE 4 se resolvió el 04-09: `BLOQUE DE LOS TRABAJADORES` salió del patrón de
-IZQUIERDA y hoy cae en **OTRO / PROVINCIAL**. Lo que queda abierto es si ahí se queda.
-
-**Ojo con el diagnóstico viejo, que estaba mal en el mecanismo:** no era un match
-accidental por la palabra *trabajadores*. `BLOQUE DE LOS TRABAJADORES` era una
-**alternativa literal** del regex, puesta a mano. Por eso el arreglo no fue una excepción
-por delante del patrón: fue sacar la alternativa.
-
-**Y era más grande de lo que decía:** no son 7 meses de 2017 sino **237 votos entre
-2014-04-24 y 2017-11-23**, más 3 filas de padrón. Una sola persona en toda la canónica usa
-esa etiqueta.
-
-**La evidencia, con el mismo método con el que entró AUTODETERMINACION Y LIBERTAD**
-(coincidencia con el núcleo de cada linaje, 89 actas con voto emitido):
-
-| linaje | coincidencia | actas |
-|---|---:|---:|
-| PERONISMO FEDERAL | **90,0%** | 80 |
-| FRENTE RENOVADOR (massismo) | **88,9%** | 63 |
-| OTRO / PROVINCIAL | 86,5% | 89 |
-| PROGRESISMO | 86,1% | 79 |
-| FdT-UxP | 80,9% | 89 |
-| RADICALISMO | 78,8% | 85 |
-| **IZQUIERDA** | **78,6%** | 70 |
-
-AUTODETERMINACION Y LIBERTAD entró con 100,0%. Daer con 78,6% y **séptimo de nueve**: no
-es izquierda, y de eso no hay duda.
-
-**La pregunta que queda:** 88,9% (massismo, que es donde están sus otros dos bloques en la
-misma ventana) contra 90,0% (peronismo federal) está **demasiado parejo para decidirlo con
-el dato solo**. Se dejó en OTRO / PROVINCIAL, que es el default conservador del mapa. Si
-Franco quiere mandarlo a massismo, es una línea en `LINAJE_VENTANAS`.
 
 ## 5. Roster de jefes: quedan 9 filas MEDIA (eran 15) — y dos estaban MAL
 **Detectado:** 2026-07-30 · **Trabajado:** 2026-09-04 · **bloquea: confiar en `lider_jefe_bloque`**

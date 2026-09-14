@@ -2,13 +2,13 @@
 
 <!-- GENERADO por indexar.py. No editar: los cambios se pierden. -->
 <!-- La prosa vive en el README.md de cada modulo (seccion `Buscar aca si`). -->
-<!-- 2026-09-10 02:51 UTC · 149 archivos · 37,775 LOC -->
+<!-- 2026-09-14 15:47 UTC · 149 archivos · 37,775 LOC -->
 
 ## Como usar este archivo
 
 Es el unico archivo del proyecto que hace falta leer para empezar. Para ubicar algo concreto: `python3 .mapa/buscar.py "<termino>"` devuelve archivo y linea sin abrir nada. Recien despues abrir los archivos que salgan, y solo esos.
 
-Rama `main` — ultimo commit: 2026-09-10 d06bb1b REGENERAR: -ConCanonica, y el paso 0 chequeaba de menos · **hay cambios sin commitear**
+Rama `main` — ultimo commit: 2026-09-14 27a5707 logs: corrida de regeneracion 2026-09-14 · **hay cambios sin commitear**
 
 ## Donde buscar que
 
@@ -162,58 +162,58 @@ Rama `main` — ultimo commit: 2026-09-10 d06bb1b REGENERAR: -ConCanonica, y el 
 
 ## Inventario de datos
 
-140 archivos de datos · 195.9 MB · 108 viajan por git, **32 no**.
+140 archivos de datos · 196.0 MB · 140 viajan por git, **0 no**.
 
 Buscar uno sin abrir nada: `python .mapa/buscar.py --dato <termino>`. Columna **git**: `si` = esta versionado, o sea que quien clone lo tiene; `NO` = vive solo en el disco de quien lo genero, que es el modo de falla mas repetido de este repo (seis veces, ver `.gitignore`). **Escribe/Lee**: quien lo produce y quien lo consume, deducido del codigo; sin lector, sobra — sin escritor, no se regenera.
 
 | Archivo | Forma | Peso | git | Escribe | Lee |
 |---|---|---:|:---:|---|---|
 | `casos/2026-07-31_ley-de-lobby_scoring.json` | objeto: scoring, observado | 2 KB | si | — | — |
-| `datos/bot_recoleccion/data/clean/tp_entradas.parquet` _BOT_TP_ENTRADAS_ | 3,492×11 | 470 KB | si | `tp_diputados.py` | `giros_iniciales.py`, `upsert_bot.py`, `verificar.py` |
-| `datos/bot_recoleccion/data/clean/dae_entradas.parquet` | 1,072×8 | 124 KB | si | `dae_senado.py`, `test_verificar.py` | `upsert_bot.py`, `verificar.py` |
-| `datos/bot_recoleccion/data/clean/votaciones_nuevas.parquet` | 542×11 | 37 KB | si | `votaciones.py` | — |
-| `datos/bot_recoleccion/data/estado_bot.json` | objeto: dae_normal, tp_diputados, actas_ | 19 KB | si | `dae_senado.py`, `tp_diputados.py` | — |
-| `datos/canonica/data/clean/_decada_csv/votaciones-diputados.csv` | 383,744×4 | 4.9 MB | **NO** | — | _(1 lo nombran)_ |
+| `datos/bot_recoleccion/data/clean/tp_entradas.parquet` _BOT_TP_ENTRADAS_ | 3,542×11 | 477 KB | si | `tp_diputados.py` | `giros_iniciales.py`, `upsert_bot.py`, `verificar.py` |
+| `datos/bot_recoleccion/data/clean/dae_entradas.parquet` | 1,073×8 | 124 KB | si | `dae_senado.py`, `test_verificar.py` | `upsert_bot.py`, `verificar.py` |
+| `datos/bot_recoleccion/data/clean/votaciones_nuevas.parquet` | 544×11 | 37 KB | si | `votaciones.py` | — |
+| `datos/bot_recoleccion/data/estado_bot.json` | objeto: dae_normal, tp_diputados, actas_ | 20 KB | si | `dae_senado.py`, `tp_diputados.py` | — |
+| `datos/canonica/data/clean/_decada_csv/votaciones-diputados.csv` | 383,744×4 | 4.9 MB | si | — | _(1 lo nombran)_ |
 | `datos/canonica/data/clean/votos_resuelto.parquet` _CANONICA_VOTOS_RESUELTO_ | 959,815×12 | 2.1 MB | si | `entity_resolution.py`, `asistencia.py` | `export_base.py`, `padron_diputados_historico.py`, `baseline_canonico.py` +5 |
-| `datos/canonica/data/clean/_decada_csv/votaciones-senado.csv` | 144,792×4 | 1.8 MB | **NO** | — | _(1 lo nombran)_ |
+| `datos/canonica/data/clean/_decada_csv/votaciones-senado.csv` | 144,792×4 | 1.8 MB | si | — | _(1 lo nombran)_ |
 | `datos/canonica/data/clean/votos_canonico.parquet` _CANONICA_VOTOS_ | 959,815×8 | 1.2 MB | si | `build.py`, `entity_resolution.py` | _(2 lo nombran)_ |
-| `datos/canonica/data/clean/_decada_csv/asuntos-senado.csv` | 2,011×19 | 1.0 MB | **NO** | — | _(1 lo nombran)_ |
-| `datos/canonica/data/clean/_decada_csv/asuntos-diputados.csv` | 1,499×18 | 651 KB | **NO** | — | _(1 lo nombran)_ |
-| `datos/canonica/data/clean/_sources/argentinadatos_votos.parquet` | 349,690×8 | 489 KB | **NO** | `to_canonical.py` | — |
+| `datos/canonica/data/clean/_decada_csv/asuntos-senado.csv` | 2,011×19 | 1.0 MB | si | — | _(1 lo nombran)_ |
+| `datos/canonica/data/clean/_decada_csv/asuntos-diputados.csv` | 1,499×18 | 651 KB | si | — | _(1 lo nombran)_ |
+| `datos/canonica/data/clean/_sources/argentinadatos_votos.parquet` | 349,690×8 | 489 KB | si | `to_canonical.py` | — |
 | `datos/canonica/data/clean/actas_canonico.parquet` _CANONICA_ACTAS_ | 5,998×14 | 479 KB | si | `build.py`, `asistencia.py` | `entity_resolution.py`, `enlace_senado.py`, `export_base.py` +10 |
-| `datos/canonica/data/clean/_sources/decada_votada_actas.parquet` | 3,153×14 | 309 KB | **NO** | — | — |
-| `datos/canonica/data/clean/_sources/decada_votada_votos.parquet` | 437,144×8 | 258 KB | **NO** | — | — |
-| `datos/canonica/data/clean/_sources/ckan_diputados_votos.parquet` | 256,581×8 | 251 KB | **NO** | `to_canonical.py` | — |
+| `datos/canonica/data/clean/_sources/decada_votada_actas.parquet` | 3,153×14 | 309 KB | si | — | — |
+| `datos/canonica/data/clean/_sources/decada_votada_votos.parquet` | 437,144×8 | 258 KB | si | — | — |
+| `datos/canonica/data/clean/_sources/ckan_diputados_votos.parquet` | 256,581×8 | 251 KB | si | `to_canonical.py` | — |
 | `datos/canonica/outputs/actas_gemelas_2026-09-06.csv` | 1,076×8 | 158 KB | si | — | _(1 lo nombran)_ |
-| `datos/canonica/data/clean/_sources/argentinadatos_actas.parquet` | 1,649×14 | 93 KB | **NO** | `to_canonical.py` | — |
-| `datos/canonica/data/clean/_sources/senado_actas.parquet` | 749×14 | 70 KB | **NO** | — | _(1 lo nombran)_ |
-| `datos/canonica/data/clean/_sources/ckan_diputados_actas.parquet` | 999×14 | 43 KB | **NO** | `to_canonical.py` | — |
+| `datos/canonica/data/clean/_sources/argentinadatos_actas.parquet` | 1,649×14 | 93 KB | si | `to_canonical.py` | — |
+| `datos/canonica/data/clean/_sources/senado_actas.parquet` | 749×14 | 70 KB | si | — | _(1 lo nombran)_ |
+| `datos/canonica/data/clean/_sources/ckan_diputados_actas.parquet` | 999×14 | 43 KB | si | `to_canonical.py` | — |
 | `datos/canonica/outputs/legislador_id_duplicados_2026-09-04.csv` | 153×22 | 43 KB | si | — | — |
-| `datos/canonica/data/clean/_decada_csv/diputados.csv` | 1,037×3 | 40 KB | **NO** | `padron_diputados_historico.py`, `test_ingesta_padron.py` | `to_canonical.py`, `comparar_vias_icg.py` |
-| `datos/canonica/data/clean/_sources/senado_votos.parquet` | 53,910×8 | 39 KB | **NO** | — | _(1 lo nombran)_ |
+| `datos/canonica/data/clean/_decada_csv/diputados.csv` | 1,037×3 | 40 KB | si | `padron_diputados_historico.py`, `test_ingesta_padron.py` | `to_canonical.py`, `comparar_vias_icg.py` |
+| `datos/canonica/data/clean/_sources/senado_votos.parquet` | 53,910×8 | 39 KB | si | — | _(1 lo nombran)_ |
 | `datos/canonica/outputs/legislador_id_merge_aprobado_2026-09-04.csv` | 114×11 | 22 KB | si | — | _(1 lo nombran)_ |
-| `datos/canonica/data/clean/_sources/manual_2026_votos.parquet` | 3,072×8 | 18 KB | **NO** | `to_canonical.py` | _(1 lo nombran)_ |
+| `datos/canonica/data/clean/_sources/manual_2026_votos.parquet` | 3,072×8 | 18 KB | si | `to_canonical.py` | _(1 lo nombran)_ |
 | `datos/canonica/data/alias_legislador_id.csv` | 184×1 | 16 KB | si | — | `alias_legislador.py` |
-| `datos/canonica/data/clean/_sources/manual_2026_actas.parquet` | 17×14 | 9 KB | **NO** | `to_canonical.py` | _(1 lo nombran)_ |
-| `datos/canonica/data/clean/_decada_csv/senadores.csv` | 176×3 | 7 KB | **NO** | — | _(1 lo nombran)_ |
-| `datos/canonica/data/clean/_decada_csv/bloques-diputados.csv` | 183×3 | 5 KB | **NO** | — | _(1 lo nombran)_ |
-| `datos/canonica/data/clean/_sources/baseline_canonico.json` | objeto: n_votos_sustantivos, por_nivel,  | 2 KB | **NO** | — | — |
-| `datos/canonica/data/clean/_decada_csv/bloques-senado.csv` | 52×3 | 1 KB | **NO** | — | _(1 lo nombran)_ |
-| `datos/decada_votada/data/clean/decada_votada_votos.parquet` | 6,425×8 | 23 KB | **NO** | `export_seed.R`, `from_csv.py` | — |
-| `datos/decada_votada/data/clean/decada_votada_actas.parquet` | 25×14 | 8 KB | **NO** | `export_seed.R`, `from_csv.py` | — |
-| `datos/expedientes/data/clean/expedientes.parquet` | 113,177×9 | 10.5 MB | si | `enlace_senado.py`, `ingesta_ckan.py` | `actas_ley.py`, `construir_firmas.py`, `giros_iniciales.py` +6 |
-| `datos/expedientes/data/clean/expedientes_giros.parquet` | 422,939×3 | 2.1 MB | si | `ingesta_ckan.py`, `migrar_ckan.py` | `giros_iniciales.py`, `upsert_bot.py`, `verificar.py` +1 |
-| `datos/expedientes/data/clean/expedientes_movimientos.parquet` | 141,550×4 | 1.6 MB | si | `ingesta_ckan.py`, `migrar_ckan.py` | `giros_iniciales.py`, `verificar.py` |
-| `datos/expedientes/data/clean/expedientes_resultados.parquet` _EXPEDIENTES_RESULTADOS_ | 117,412×7 | 946 KB | si | `enlace_senado.py`, `ingesta_ckan.py` | `ingesta_od.py`, `origen_por_acta.py` |
+| `datos/canonica/data/clean/_sources/manual_2026_actas.parquet` | 17×14 | 9 KB | si | `to_canonical.py` | _(1 lo nombran)_ |
+| `datos/canonica/data/clean/_decada_csv/senadores.csv` | 176×3 | 7 KB | si | — | _(1 lo nombran)_ |
+| `datos/canonica/data/clean/_decada_csv/bloques-diputados.csv` | 183×3 | 5 KB | si | — | _(1 lo nombran)_ |
+| `datos/canonica/data/clean/_sources/baseline_canonico.json` | objeto: n_votos_sustantivos, por_nivel,  | 2 KB | si | — | — |
+| `datos/canonica/data/clean/_decada_csv/bloques-senado.csv` | 52×3 | 1 KB | si | — | _(1 lo nombran)_ |
+| `datos/decada_votada/data/clean/decada_votada_votos.parquet` | 6,425×8 | 23 KB | si | `export_seed.R`, `from_csv.py` | — |
+| `datos/decada_votada/data/clean/decada_votada_actas.parquet` | 25×14 | 8 KB | si | `export_seed.R`, `from_csv.py` | — |
+| `datos/expedientes/data/clean/expedientes.parquet` | 114,365×9 | 10.6 MB | si | `enlace_senado.py`, `ingesta_ckan.py` | `actas_ley.py`, `construir_firmas.py`, `giros_iniciales.py` +6 |
+| `datos/expedientes/data/clean/expedientes_giros.parquet` | 425,411×3 | 2.1 MB | si | `ingesta_ckan.py`, `migrar_ckan.py` | `giros_iniciales.py`, `upsert_bot.py`, `verificar.py` +1 |
+| `datos/expedientes/data/clean/expedientes_movimientos.parquet` | 143,677×4 | 1.7 MB | si | `ingesta_ckan.py`, `migrar_ckan.py` | `giros_iniciales.py`, `verificar.py` |
+| `datos/expedientes/data/clean/expedientes_resultados.parquet` _EXPEDIENTES_RESULTADOS_ | 118,623×7 | 953 KB | si | `enlace_senado.py`, `ingesta_ckan.py` | `ingesta_od.py`, `origen_por_acta.py` |
 | `datos/expedientes/data/clean/dictamenes_firmas.parquet` _EXPEDIENTES_FIRMAS_ | 125,561×28 | 921 KB | si | `construir_firmas.py` | `verificar_regeneracion.py` |
-| `datos/expedientes/data/clean/acta_expediente_todas.parquet` _EXPEDIENTES_ACTA_EXP_TODAS_ | 5,004×13 | 421 KB | si | `enlace_senado.py`, `tema_por_acta.py` | `actas_ley.py`, `verificar_regeneracion.py` |
-| `datos/expedientes/data/clean/expedientes_dictamenes.parquet` | 23,891×8 | 372 KB | si | `ingesta_ckan.py`, `migrar_ckan.py` | _(2 lo nombran)_ |
+| `datos/expedientes/data/clean/acta_expediente_todas.parquet` _EXPEDIENTES_ACTA_EXP_TODAS_ | 5,043×13 | 424 KB | si | `enlace_senado.py`, `tema_por_acta.py` | `actas_ley.py`, `verificar_regeneracion.py` |
+| `datos/expedientes/data/clean/expedientes_dictamenes.parquet` | 24,053×8 | 373 KB | si | `ingesta_ckan.py`, `migrar_ckan.py` | _(2 lo nombran)_ |
 | `datos/expedientes/data/clean/dictamenes_firmas_senado.parquet` _EXPEDIENTES_FIRMAS_SENADO_ | 18,163×30 | 207 KB | si | `construir_firmas.py` | _(4 lo nombran)_ |
 | `datos/expedientes/data/clean/acta_expediente.parquet` _EXPEDIENTES_ACTA_EXP_ | 1,849×7 | 164 KB | si | `enlace_senado.py`, `ingesta_ckan.py` | `baseline_voto_individual.py`, `estimar_beta_dictamen.py`, `origen_por_acta.py` |
-| `datos/expedientes/data/clean/cadena_camaras.parquet` | 1,166×17 | 150 KB | si | `enlace_senado.py` | `estimar_psi_arrastre.py` |
+| `datos/expedientes/data/clean/cadena_camaras.parquet` | 1,182×17 | 151 KB | si | `enlace_senado.py` | `estimar_psi_arrastre.py` |
 | `datos/expedientes/data/clean/dictamenes_comisiones.parquet` _EXPEDIENTES_DICTAMENES_COMISIONES_ | 10,031×8 | 88 KB | si | `construir_firmas.py` | — |
-| `datos/expedientes/data/clean/expedientes_leyes.parquet` | 1,340×7 | 38 KB | si | — | `origen_lider.py` |
-| `datos/expedientes/data/clean/giros_iniciales.parquet` | 2,927×4 | 23 KB | si | `giros_iniciales.py` | `embudo.py` |
+| `datos/expedientes/data/clean/expedientes_leyes.parquet` | 1,347×7 | 38 KB | si | — | `origen_lider.py` |
+| `datos/expedientes/data/clean/giros_iniciales.parquet` | 4,070×4 | 31 KB | si | `giros_iniciales.py` | `embudo.py` |
 | `datos/expedientes/data/clean/comisiones_integrantes.parquet` | 1,477×3 | 9 KB | si | — | `origen_lider.py` |
 | `datos/expedientes/data/clean/comisiones_autoridades.parquet` | 141×5 | 7 KB | si | — | `origen_lider.py` |
 | `datos/export/data/votaciones_2003-2007_Kirchner.xlsx` | 3 hoja(s) | 15.8 MB | si | — | — |
@@ -236,11 +236,11 @@ Buscar uno sin abrir nada: `python .mapa/buscar.py --dato <termino>`. Columna **
 | `datos/proyectos/data/proyectos.db` _PROYECTOS_DB_ | — | 85.7 MB | si | `schema.sql`, `store.py` | `verificar.py`, `test_store.py` |
 | `datos/proyectos/data/cuarentena.db` _PROYECTOS_CUARENTENA_DB_ | 0×1 | 20 KB | si | — | `cuarentena.py` |
 | `datos/proyectos/data/taxonomias.csv` | 0×6 | 65 B | si | `taxonomias_backup.py` | `test_store.py` |
-| `datos/senado/data/clean/senado_actas.parquet` | 749×14 | 70 KB | **NO** | `scrape_votaciones.py` | `aplicar_bloques.py`, `padron_bloques.py` |
+| `datos/senado/data/clean/senado_actas.parquet` | 749×14 | 70 KB | si | `scrape_votaciones.py` | `aplicar_bloques.py`, `padron_bloques.py` |
 | `datos/senado/data/padron_bloques_senado.csv` _SENADO_PADRON_BLOQUES_ | 291×8 | 39 KB | si | `padron_bloques.py` | `to_canonical.py`, `padron_senado_historico.py`, `aplicar_bloques.py` |
-| `datos/senado/data/clean/senado_votos.parquet` | 53,910×8 | 39 KB | **NO** | `aplicar_bloques.py`, `scrape_votaciones.py` | `padron_bloques.py` |
+| `datos/senado/data/clean/senado_votos.parquet` | 53,910×8 | 39 KB | si | `aplicar_bloques.py`, `scrape_votaciones.py` | `padron_bloques.py` |
 | `datos/senado/data/padron_manual_2015_2017.csv` | 131×8 | 23 KB | si | `padron_bloques.py` | `to_canonical.py`, `aplicar_bloques.py` |
-| `datos/senado/data/_diag_sin_cobertura.csv` | 7×3 | 266 B | **NO** | `aplicar_bloques.py` | — |
+| `datos/senado/data/_diag_sin_cobertura.csv` | 7×3 | 266 B | si | `aplicar_bloques.py` | — |
 | `datos/taxonomias/data/asignaciones.csv` | 6,772×8 | 563 KB | si | `registro.py` | _(2 lo nombran)_ |
 | `docs/schemas/acta.schema.json` | objeto: $schema, $id, title, description | 2 KB | si | `build.py` | — |
 | `docs/schemas/voto.schema.json` | objeto: $schema, $id, title, description | 1 KB | si | `build.py` | — |
@@ -253,10 +253,10 @@ Buscar uno sin abrir nada: `python .mapa/buscar.py --dato <termino>`. Columna **
 | `evaluacion/baseline/outputs/record_por_tema_2026-09-04.json` | objeto: _que_es, _como_se_reproduce, el_ | 4 KB | si | — | — |
 | `evaluacion/baseline/outputs/merge_ids_medicion_2026-09-04.json` | objeto: _que_es, _como_se_midio, _alias, | 4 KB | si | — | — |
 | `evaluacion/baseline/outputs/baseline_canonico.json` | objeto: n_votos_sustantivos, por_nivel,  | 2 KB | si | `baseline_canonico.py` | — |
-| `fase0/data/raw/detalle_129_137.csv` | 231,043×7 | 17.6 MB | **NO** | — | `ingesta.py` |
-| `fase0/data/clean/detalle.parquet` | 231,043×7 | 1.4 MB | **NO** | `ingesta.py` | `baseline_bloque.py` |
-| `fase0/data/raw/cabecera_129_137.csv` | 899×20 | 183 KB | **NO** | — | `ingesta.py` |
-| `fase0/data/clean/cabecera.parquet` | 899×20 | 45 KB | **NO** | `ingesta.py` | `baseline_bloque.py` |
+| `fase0/data/raw/detalle_129_137.csv` | 231,043×7 | 17.6 MB | si | — | `ingesta.py` |
+| `fase0/data/clean/detalle.parquet` | 231,043×7 | 1.4 MB | si | `ingesta.py` | `baseline_bloque.py` |
+| `fase0/data/raw/cabecera_129_137.csv` | 899×20 | 183 KB | si | — | `ingesta.py` |
+| `fase0/data/clean/cabecera.parquet` | 899×20 | 45 KB | si | `ingesta.py` | `baseline_bloque.py` |
 | `fase0/outputs/baseline_resultados.json` | objeto: fuente, n_actas_total, n_votos_s | 701 B | si | `baseline_bloque.py` | — |
 | `modelo/agregador_institucional/outputs/backtest_agregador_asistencia.json` | objeto: n_actas, brier, brier_baseline_t | 1 KB | si | — | — |
 | `modelo/agregador_institucional/outputs/backtest_agregador.json` | objeto: n_actas, brier, brier_baseline_t | 1 KB | si | — | — |
@@ -274,10 +274,10 @@ Buscar uno sin abrir nada: `python .mapa/buscar.py --dato <termino>`. Columna **
 | `modelo/ensemble/outputs/backtest_cadena.json` | objeto: n_evaluados, tasa_base_sancion,  | 2 KB | si | — | — |
 | `modelo/ensemble/outputs/backtest_cadena_fina.json` | objeto: n_evaluados, version, tasa_base_ | 2 KB | si | — | — |
 | `modelo/ensemble/outputs/theta_sobre_tablas.json` | objeto: A_theta_vs_resto, B_solo_sobre_t | 1 KB | si | `estimar_theta_sobre_tablas.py` | — |
-| `modelo/voto_individual/outputs/desvios_por_voto.parquet` _DESVIOS_POR_VOTO_ | 955,025×6 | 1.3 MB | **NO** | `disciplina.py` | `export_base.py` |
-| `modelo/voto_individual/outputs/disciplina_por_anio.csv` | 9,474×7 | 647 KB | si | `disciplina.py`, `ficha.py` | — |
-| `modelo/voto_individual/outputs/disciplina_por_periodo.csv` | 4,847×10 | 474 KB | si | `disciplina.py`, `ficha.py` | — |
-| `modelo/voto_individual/outputs/disciplina_individual.csv` _DISCIPLINA_INDIVIDUAL_ | 1,960×23 | 344 KB | si | `test_ensemble.py`, `disciplina.py` | `agregador.py`, `comparar_vias_icg.py`, `estimar_gamma_individual.py` |
+| `modelo/voto_individual/outputs/desvios_por_voto.parquet` _DESVIOS_POR_VOTO_ | 900,572×6 | 1.2 MB | si | `disciplina.py` | `export_base.py` |
+| `modelo/voto_individual/outputs/disciplina_por_anio.csv` | 9,302×7 | 636 KB | si | `disciplina.py`, `ficha.py` | — |
+| `modelo/voto_individual/outputs/disciplina_por_periodo.csv` | 4,718×10 | 462 KB | si | `disciplina.py`, `ficha.py` | — |
+| `modelo/voto_individual/outputs/disciplina_individual.csv` _DISCIPLINA_INDIVIDUAL_ | 1,851×23 | 328 KB | si | `test_ensemble.py`, `disciplina.py` | `agregador.py`, `comparar_vias_icg.py`, `estimar_gamma_individual.py` |
 | `modelo/voto_individual/outputs/set_pivote.json` | objeto: definicion, min_votos, legislado | 1 KB | si | `disciplina.py` | — |
 | `producto/dashboard/data/mapa_modelo_semantica.json` | objeto: _comentario, version, meta, etap | 72 KB | si | — | `generar_mapa_modelo.py` |
 | `variables/bloque/outputs/serie_bloque.parquet` | 304×9 | 16 KB | si | `COMMITEAR-2026-09-08.ps1`, `bloque.py` | _(2 lo nombran)_ |
@@ -290,13 +290,13 @@ Buscar uno sin abrir nada: `python .mapa/buscar.py --dato <termino>`. Columna **
 | `variables/embudo/outputs/embudo_por_camara.csv` | 2×5 | 139 B | si | `embudo.py` | — |
 | `variables/embudo/outputs/embudo_por_lider.csv` | 2×5 | 125 B | si | — | — |
 | `variables/legislador/data/legisladores.xlsx` | 5 hoja(s) | 1.1 MB | si | `ficha.py` | — |
-| `variables/legislador/data/legisladores.csv` | 2,159×22 | 433 KB | si | `ficha.py` | `origen_lider.py`, `origen_por_acta.py` |
-| `variables/legislador/data/legisladores.parquet` | 2,159×22 | 186 KB | **NO** | `export_base.py`, `ficha.py` | — |
-| `variables/legislador/data/legislador_periodo.parquet` | 5,284×10 | 158 KB | **NO** | `export_base.py`, `ficha.py` | — |
-| `variables/legislador/data/legislador_anio.parquet` | 9,899×8 | 126 KB | **NO** | `ficha.py` | — |
-| `variables/legislador/data/legislador_bloques.parquet` | 4,121×7 | 61 KB | si | `ficha.py` | `origen_lider.py`, `origen_por_acta.py` |
-| `variables/proyecto/data/features_proyecto.parquet` _PROYECTO_FEATURES_ | 41,470×10 | 332 KB | si | `origen_lider.py` | `backtest_cadena.py` |
-| `variables/proyecto/data/origen_por_acta.parquet` _PROYECTO_ORIGEN_POR_ACTA_ | 5,946×9 | 86 KB | si | `origen_por_acta.py` | `nowcast_puertas.py`, `bloque.py`, `estimar_gamma.py` +1 |
+| `variables/legislador/data/legisladores.csv` | 2,159×22 | 434 KB | si | `ficha.py` | `origen_lider.py`, `origen_por_acta.py` |
+| `variables/legislador/data/legisladores.parquet` | 2,159×22 | 187 KB | si | `export_base.py`, `ficha.py` | — |
+| `variables/legislador/data/legislador_periodo.parquet` | 5,285×10 | 157 KB | si | `export_base.py`, `ficha.py` | — |
+| `variables/legislador/data/legislador_anio.parquet` | 9,900×8 | 126 KB | si | `ficha.py` | — |
+| `variables/legislador/data/legislador_bloques.parquet` | 4,127×7 | 61 KB | si | `ficha.py` | `origen_lider.py`, `origen_por_acta.py` |
+| `variables/proyecto/data/features_proyecto.parquet` _PROYECTO_FEATURES_ | 41,871×10 | 335 KB | si | `origen_lider.py` | `backtest_cadena.py` |
+| `variables/proyecto/data/origen_por_acta.parquet` _PROYECTO_ORIGEN_POR_ACTA_ | 5,998×9 | 87 KB | si | `origen_por_acta.py` | `nowcast_puertas.py`, `bloque.py`, `estimar_gamma.py` +1 |
 | `variables/proyecto/data/tema_por_acta.parquet` _PROYECTO_TEMA_POR_ACTA_ | 3,083×8 | 78 KB | si | `tema_por_acta.py` | `registro.py`, `bloque.py` |
 | `variables/proyecto/data/icg_contexto.parquet` | 297×18 | 34 KB | si | — | `estimar_gamma.py`, `estimar_gamma_individual.py`, `modulador_icg.py` |
 | `variables/proyecto/outputs/muestra_manual_taxonomias.csv` | 88×6 | 24 KB | si | — | _(2 lo nombran)_ |
@@ -311,7 +311,6 @@ Buscar uno sin abrir nada: `python .mapa/buscar.py --dato <termino>`. Columna **
 
 **Lo que el inventario marca**
 
-- No viajan por git y pesan (>100 KB): `fase0/data/raw/detalle_129_137.csv`, `datos/canonica/data/clean/_decada_csv/votaciones-diputados.csv`, `datos/canonica/data/clean/_decada_csv/votaciones-senado.csv`, `fase0/data/clean/detalle.parquet`, `modelo/voto_individual/outputs/desvios_por_voto.parquet`, `datos/canonica/data/clean/_decada_csv/asuntos-senado.csv`, `datos/canonica/data/clean/_decada_csv/asuntos-diputados.csv`, `datos/canonica/data/clean/_sources/argentinadatos_votos.parquet` _+7_. Cada uno vive en un solo disco.
 - Tienen productor y **ningun consumidor** (42): `votaciones_nuevas.parquet`, `estado_bot.json`, `argentinadatos_actas.parquet`, `argentinadatos_votos.parquet`, `ckan_diputados_actas.parquet`, `ckan_diputados_votos.parquet`, `manual_2026_actas.parquet`, `manual_2026_votos.parquet` _+34_. Es lo esperable en un entregable para humanos; en un intermedio significa que sobra.
 - **Ningun archivo de codigo los nombra** (30, 50.3 MB): `votaciones_2003-2007_Kirchner.xlsx`, `votaciones_2015-2019_Macri.xlsx`, `votaciones_2007-2011_CFK-1.xlsx`, `votaciones_2011-2015_CFK-2.xlsx`, `votaciones_2023-2027_Milei.xlsx`, `votaciones_2019-2023_Fernandez.xlsx`, `votaciones_2002-2003_Duhalde.xlsx`, `votaciones_1999-2001_DeLaRua.xlsx` _+22_. Ojo: un output con nombre armado por f-string cae aca y esta vivo. Lo que hay que mirar de verdad son los pesados.
 
@@ -372,7 +371,7 @@ Segun el historial de git. Si vas a cambiar uno, mira el otro.
 - `Nowcast Congreso Argy/coordinacion/ESTADO-DEL-PROYECTO.md` + `Nowcast Congreso Argy/coordinacion/TABLERO.md` (23 commits)
 - `Nowcast Congreso Argy/coordinacion/EN-HUMANO.md` + `Nowcast Congreso Argy/coordinacion/TABLERO.md` (21 commits)
 - `Nowcast Congreso Argy/coordinacion/TABLERO.md` + `Nowcast Congreso Argy/tablero_datos.js` (17 commits)
-- `Nowcast Congreso Argy/.mapa/mapa.json` + `Nowcast Congreso Argy/MAPA.md` (11 commits)
+- `Nowcast Congreso Argy/.mapa/mapa.json` + `Nowcast Congreso Argy/MAPA.md` (12 commits)
 - `Nowcast Congreso Argy/coordinacion/EN-HUMANO.md` + `Nowcast Congreso Argy/coordinacion/URGENTE.md` (10 commits)
 - `Nowcast Congreso Argy/coordinacion/ESTADO-DEL-PROYECTO.md` + `Nowcast Congreso Argy/coordinacion/URGENTE.md` (10 commits)
 - `Nowcast Congreso Argy/coordinacion/URGENTE.md` + `Nowcast Congreso Argy/tablero_datos.js` (9 commits)

@@ -57,6 +57,17 @@ político: es matching roto.
 **Y ojo con la otra trampa:** `expedientes_giros` acumula comisiones de las DOS
 cámaras. Filtrar por cámara antes de contar, o la cobertura da 2,1% en vez de 63,6%.
 
+## Precaución vigente: NO publicar P(sanción) de proyectos con origen Senado
+
+El modelo tiene sesgo de supervivencia del Senado: da ~48% a proyectos originados ahí
+contra ~1,7% de Diputados, porque la base sólo tiene los proyectos del Senado que **ya
+cruzaron** a Diputados (los que se cayeron en el Senado no dejan rastro en la cámara
+revisora). Decisión de Valle (07-08): no se parchea síntoma por síntoma — queda como
+insumo de la línea **Revisión de las Comisiones**, que revisa el circuito completo
+comisión → cámara. Hasta que esa línea cierre, cualquier número de un proyecto con
+`camara_origen=senado` que salga del panel es sospechoso por diseño: no lo publiques
+ni lo cites como si fuera comparable a uno de origen Diputados.
+
 ## Regla del MOTOR: **todo cambio se presenta en la fórmula** (ADR-0015)
 
 Motor = `modelo/ensemble`, `modelo/agregador_institucional`, `modelo/voto_individual`,

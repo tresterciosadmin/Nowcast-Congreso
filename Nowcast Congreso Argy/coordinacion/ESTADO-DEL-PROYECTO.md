@@ -56,6 +56,55 @@ Mantené esta tabla sincronizada con la bitácora.
 
 ## Bitácora (más reciente arriba)
 
+### [2026-09-14] coordinacion — URGENTE.md vaciado: disposición de cada ítem que quedaba
+- **Quién:** Claude, con Franco ("borrá URGENTE.md, sigamos con más elementos").
+- **Qué:** URGENTE.md quedó con 6 ítems tras cerrar D/F/5 (M ya se había cerrado
+  antes). Ninguno bloqueaba a nadie hoy, así que cada uno se resolvió, se migró
+  a un lugar permanente, o se dejó anotado acá — nunca se borró sin destino:
+  - **Precaución Senado (sesgo de supervivencia)**: era una regla operativa
+    viva, no una tarea — se movió a `CLAUDE.md` como regla de la casa ("NO
+    publicar P(sanción) de proyectos con origen Senado"), donde se lee todas
+    las sesiones en vez de en un archivo que se vacía.
+  - **P (sonda argentinadatos, expediente no publicado)**: ya estaba
+    contestada (09-09) y no requería corrida. La única acción pendiente —
+    construir el enganche por Orden del Día en el Senado (95,3% de cobertura
+    potencial) — es trabajo nuevo, no un pendiente urgente; queda como
+    candidato de tarea normal si alguien la reclama, no se inventó una
+    decisión que Franco no pidió.
+  - **E (récord por tema)**: sigue frenada por créditos de API, tal como
+    Franco decidió esta misma sesión. Medida offline (faltan 1.960/2.915
+    según la fuente), guardado verificado sano. Nada que resolver hasta que
+    haya créditos.
+  - **I (actas gemelas, skill publicado inflado)**: lo único que faltaba —
+    "re-correr el baseline sobre la base limpia" — **ya se hizo**, varias
+    veces, como parte de las corridas de hoy (ADR-0022 y el fix de padrón).
+    El skill actual es **0,1583** (Brier 0,13509, n=691.893), que ya
+    incorpora la deduplicación de actas gemelas del 06-09 más todo lo
+    corregido hoy — no hay comparación pendiente contra 0,1720/0,1682, esos
+    números quedaron superados por corridas posteriores legítimas.
+  - **2 (revisión metodológica del 25-08, 4 objeciones al motor)**: sigue
+    siendo trabajo de fondo real — quórum sin abstenciones, sobre tablas sin
+    modelar, independencia entre cámaras falsa, ε como clip en vez de modelo.
+    Ninguno se tocó: son cambios de motor que necesitan backtest propio y
+    decisión de Franco método por método, no algo para resolver de paso.
+    El detalle completo sigue en `coordinacion/REVISION-METODOLOGICA-2026-08-25.md`,
+    que no se tocó — es la referencia, no hacía falta URGENTE.md para no
+    perderla.
+  - **8 (récord por tema, el término ρ del sobre tablas)**: mismo destino que
+    E — depende de que se pueble la taxonomía (créditos de API). El
+    compromiso con Franco sobre ρ queda anotado acá, no en un archivo que se
+    vacía.
+  - **L (`test_ensemble.py` aborta al azar, SIGABRT en el cierre del
+    intérprete)**: intenté reproducirlo — 8/8 corridas limpias en esta sesión
+    (Python 3.14.3, pandas 3.0.2). No lo pude reproducir para diagnosticarlo
+    más. Sigue siendo un problema real pero de baja prioridad (no bloquea,
+    los 33 chequeos pasan siempre); si vuelve a aparecer, anotar la versión
+    exacta de las librerías en el momento del abort.
+- **Archivos:** `CLAUDE.md` (regla nueva), `coordinacion/URGENTE.md` (vaciado).
+- **Próximo paso:** ninguno urgente. Los dos pendientes de fondo (revisión
+  metodológica del motor, y el término ρ del sobre tablas) esperan,
+  respectivamente, una decisión de Franco método por método y créditos de API.
+
 ### [2026-09-14] datos/expedientes + modelo/ensemble — ADR-0022 cerrado del todo: δ del Senado estimado con varianza real; Del Caño acotado
 - **Quién:** Claude, con Franco (autorizó la descarga grande y pidió investigar Del Caño).
 - **Qué:** (1) Descargadas 1.902 Órdenes del Día del Senado (1.778 nuevas,

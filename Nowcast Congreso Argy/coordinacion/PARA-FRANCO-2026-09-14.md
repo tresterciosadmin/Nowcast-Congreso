@@ -31,22 +31,41 @@ años). Puede ser la misma causa (nombres con formato distinto según la
 fuente) o una segunda causa independiente. **No lo separé por falta de
 tiempo.**
 
-**Por qué no lo arreglé yo:** `variables/proyecto/` (origen_lider.py) es
-módulo del motor — está en la lista de restricción dura. Cambiar la lógica de
-match cambia `origen` para las filas que hoy caen en DESCONOCIDO, lo que
-puede mover el downstream (aunque medí que `nowcast_puertas.py` no lee
-`origen_por_acta.parquet` de forma directa para el número publicado — sí lo
-hace `puerta_a`/`puerta_d`, no llegué a confirmar eso al 100%). Necesita flag
-+ test + medición, no una sesión de una hora sin vos.
+**ACTUALIZACIÓN 2026-09-14 (vos ya de vuelta): implementado, testeado y medido — falta tu OK para prenderlo por defecto.**
 
-**Lo que yo haría:** en vez de exact-match, agregar un fallback por
-`apellido + primera inicial del nombre` (o similar) cuando el exacto falla,
-SOLO si es no ambiguo (un único legislador con ese apellido+inicial en la
-ventana de años). Medirlo contra los ~4.263 casos actuales antes de
-integrarlo, detrás de un flag.
+`nowcast_puertas.py` SÍ lee `origen_por_acta.parquet` (confirmado: lo usa para
+condicionar `proyectar_postura` y `alineacion_individual` por el `origen` del
+proyecto). Así que esto sí podía mover P.
 
-**Estado en que dejé el repo:** nada tocado en `variables/proyecto/`. Solo
-diagnóstico.
+Se implementó `_match_prefijo` en `origen_lider.py`: cuando el nombre exacto
+no está en el padrón, matchea por PREFIJO DE TOKENS ("PITROLA NESTOR" calza
+con "PITROLA NESTOR ANTONIO") **solo si es el único candidato** con ese
+primer token en todo el padrón — ambiguo (dos legisladores, mismo apellido,
+mismo prefijo de nombre) no matchea nunca, se queda DESCONOCIDO. Detrás de
+`MATCH_AUTOR_FUZZY=1`, apagado por defecto. 5 tests nuevos (35/35 OK).
+Commit `edfedc9`.
+
+**Medido con el flag prendido** (backup de los outputs, regenerados, medidos,
+restaurados al estado flag-off — nada de esto quedó commiteado con el flag
+en on):
+- `match_autor`: 89,8% → **97,4%** (4.263 → 1.065 sin match)
+- `origen_por_acta.parquet`: 82 de 5.998 actas pasan de DESCONOCIDO a un
+  origen resuelto (2.664 → 2.582 DESCONOCIDO)
+- **P(aprobación) recalculado con el panel completo: 0,9801 → 0,9801, IDÉNTICO**
+  (no solo `verificar_regeneracion.py` — corrí `nowcast_puertas_html.py` de
+  nuevo con el origen nuevo y comparé el JSON completo)
+- Suite completa: 41/41 passed
+
+**Por qué no lo prendí yo:** aunque midió limpio, es un cambio de
+comportamiento por defecto en un módulo del motor (`variables/proyecto`), y
+la regla de la casa lo deja para vos aunque la medición dé bien — la decisión
+de FLIPEAR el default no es lo mismo que la de construir y medir el fallback.
+
+**Mi recomendación: prendelo.** Es conservador (nunca adivina en ambiguo), la
+mejora es grande (8 puntos de match), y P no se movió ni con recálculo
+completo. Si decís que sí, es cambiar `"0"` por `"1"` en el default de
+`MATCH_AUTOR_FUZZY` (una línea) + regenerar `features_proyecto.parquet` y
+`origen_por_acta.parquet` + commit.
 
 ---
 

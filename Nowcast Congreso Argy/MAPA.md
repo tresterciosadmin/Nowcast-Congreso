@@ -2,13 +2,13 @@
 
 <!-- GENERADO por indexar.py. No editar: los cambios se pierden. -->
 <!-- La prosa vive en el README.md de cada modulo (seccion `Buscar aca si`). -->
-<!-- 2026-09-14 17:59 UTC · 149 archivos · 37,892 LOC -->
+<!-- 2026-09-14 19:25 UTC · 149 archivos · 37,898 LOC -->
 
 ## Como usar este archivo
 
 Es el unico archivo del proyecto que hace falta leer para empezar. Para ubicar algo concreto: `python3 .mapa/buscar.py "<termino>"` devuelve archivo y linea sin abrir nada. Recien despues abrir los archivos que salgan, y solo esos.
 
-Rama `main` — ultimo commit: 2026-09-14 79155e2 coordinacion: URGENTE 5 cerrado del todo (Del Cano investigado y acotado) · **hay cambios sin commitear**
+Rama `main` — ultimo commit: 2026-09-14 799974c coordinacion: ADR-0022, FORMULA-COMPLETA y URGENTE.md al dia -- D cerrado · **hay cambios sin commitear**
 
 ## Donde buscar que
 
@@ -125,7 +125,7 @@ Rama `main` — ultimo commit: 2026-09-14 79155e2 coordinacion: URGENTE 5 cerrad
 
 | Carpeta | Que es | Arch. | LOC | Bitacora |
 |---|---|---:|---:|---|
-| `./` | La raiz del proyecto: los paneles que se abren con doble clic, el tablero ejecutivo y su unica fuente de datos (`tablero_datos.js`). | 6 | 5,929 | ok |
+| `./` | La raiz del proyecto: los paneles que se abren con doble clic, el tablero ejecutivo y su unica fuente de datos (`tablero_datos.js`). | 6 | 5,935 | **vencida** |
 | `modelo/ensemble/` _(src+tests)_ | La composicion final: el nowcast end-to-end de un proyecto. El punto de entrada vivo es `nowcast_puertas.py`, que corre la CADENA DE PUERTAS y devuelve un numero condicional a que las camaras voten. La formulacion v1 -P(llega al recinto) x P(mayoria dado recinto)- se dio de BAJA el 2026-08-22 (ADR-0012), junto con su backtest: `ensemble.componer` y `backtest_cadena.py` siguen ahi pero levantan SystemExit. | 16 | 4,920 | ok |
 | `variables/proyecto/` _(src+tests)_ | Feature store por proyecto: tema/materia, origen (Ejecutivo/oficialismo/aliados/oposicion), jefe de bloque, mayoria requerida, texto, y el ICG como modulador de coyuntura. La postura del gobierno por acta se midio aca y su modulo se archivo el 2026-09-10 sin consumidor: la medicion quedo en el ADR-0021 y en ESTADO. | 21 | 4,737 | **vencida** |
 | `datos/expedientes/` _(src+tests)_ | Registro de todo lo PRESENTADO (no solo lo votado): titulo, autor, tipo, fecha y cadena de vida del expediente. Denominador del embudo y enlace acta -> expediente. | 15 | 4,519 | **vencida** |
@@ -208,7 +208,7 @@ Buscar uno sin abrir nada: `python .mapa/buscar.py --dato <termino>`. Columna **
 | `datos/expedientes/data/clean/dictamenes_firmas.parquet` _EXPEDIENTES_FIRMAS_ | 125,561×28 | 921 KB | si | `construir_firmas.py` | `verificar_regeneracion.py` |
 | `datos/expedientes/data/clean/acta_expediente_todas.parquet` _EXPEDIENTES_ACTA_EXP_TODAS_ | 5,043×13 | 424 KB | si | `enlace_senado.py`, `tema_por_acta.py` | `actas_ley.py`, `verificar_regeneracion.py` |
 | `datos/expedientes/data/clean/expedientes_dictamenes.parquet` | 24,053×8 | 373 KB | si | `ingesta_ckan.py`, `migrar_ckan.py` | _(2 lo nombran)_ |
-| `datos/expedientes/data/clean/dictamenes_firmas_senado.parquet` _EXPEDIENTES_FIRMAS_SENADO_ | 18,163×30 | 207 KB | si | `construir_firmas.py` | _(4 lo nombran)_ |
+| `datos/expedientes/data/clean/dictamenes_firmas_senado.parquet` _EXPEDIENTES_FIRMAS_SENADO_ | 18,256×30 | 208 KB | si | `construir_firmas.py` | _(4 lo nombran)_ |
 | `datos/expedientes/data/clean/acta_expediente.parquet` _EXPEDIENTES_ACTA_EXP_ | 1,849×7 | 164 KB | si | `enlace_senado.py`, `ingesta_ckan.py` | `baseline_voto_individual.py`, `estimar_beta_dictamen.py`, `origen_por_acta.py` |
 | `datos/expedientes/data/clean/cadena_camaras.parquet` | 1,182×17 | 151 KB | si | `enlace_senado.py` | `estimar_psi_arrastre.py` |
 | `datos/expedientes/data/clean/dictamenes_comisiones.parquet` _EXPEDIENTES_DICTAMENES_COMISIONES_ | 10,031×8 | 88 KB | si | `construir_firmas.py` | — |
@@ -247,8 +247,8 @@ Buscar uno sin abrir nada: `python .mapa/buscar.py --dato <termino>`. Columna **
 | `docs/taxonomias/taxonomias.json` | objeto: schema_version, actualizado, not | 7 KB | si | — | `registro.py`, `loader.py` |
 | `evaluacion/baseline/outputs/guard_era_medicion.json` | objeto: _que_es, _n_votos, resultados, m | 4 KB | si | `medir_guard_era.py` | — |
 | `evaluacion/baseline/outputs/diagnostico_senado.json` | objeto: senado | 4 KB | si | `diagnostico_senado.py` | — |
-| `evaluacion/baseline/outputs/baseline_voto_individual.json` | objeto: n_actas_evaluadas, n_actas_salta | 4 KB | si | `baseline_voto_individual.py` | `verificar_regeneracion.py` |
 | `evaluacion/baseline/outputs/baseline_guard_shrink.json` | objeto: n_actas_evaluadas, n_actas_salta | 4 KB | si | — | — |
+| `evaluacion/baseline/outputs/baseline_voto_individual.json` | objeto: n_actas_evaluadas, n_actas_salta | 4 KB | si | `baseline_voto_individual.py` | `verificar_regeneracion.py` |
 | `evaluacion/baseline/outputs/baseline_guard_off.json` | objeto: n_actas_evaluadas, n_actas_salta | 4 KB | si | — | — |
 | `evaluacion/baseline/outputs/record_por_tema_2026-09-04.json` | objeto: _que_es, _como_se_reproduce, el_ | 4 KB | si | — | — |
 | `evaluacion/baseline/outputs/merge_ids_medicion_2026-09-04.json` | objeto: _que_es, _como_se_midio, _alias, | 4 KB | si | — | — |
@@ -262,8 +262,8 @@ Buscar uno sin abrir nada: `python .mapa/buscar.py --dato <termino>`. Columna **
 | `modelo/agregador_institucional/outputs/backtest_agregador.json` | objeto: n_actas, brier, brier_baseline_t | 1 KB | si | — | — |
 | `modelo/agregador_institucional/outputs/backtest_agregador_dir_presentes.json` | objeto: n_actas, brier, brier_baseline_t | 1 KB | si | — | — |
 | `modelo/ensemble/outputs/beta_dictamen.json` | objeto: M0_crudo, M1_offset, M2_offset_t | 5 KB | si | `estimar_beta_dictamen.py` | `verificar_regeneracion.py` |
+| `modelo/ensemble/outputs/beta_dictamen_senado.json` | objeto: M0_crudo, M1_offset, M2_offset_t | 5 KB | si | — | `verificar_regeneracion.py` |
 | `modelo/ensemble/outputs/epsilon_tau.json` | objeto: n_votos, n_actas, epsilon, tau_s | 4 KB | si | `estimar_epsilon_tau.py` | — |
-| `modelo/ensemble/outputs/beta_dictamen_senado.json` | objeto: M0_crudo, M1_offset, M2_offset_t | 4 KB | si | — | `verificar_regeneracion.py` |
 | `modelo/ensemble/outputs/beta_dictamen_ab_2026-09-04.json` | objeto: _que_es, _como_se_reproduce, cor | 3 KB | si | — | — |
 | `modelo/ensemble/outputs/psi_arrastre.json` | objeto: P1_psi_unico, P1b_psi_con_tema_o | 3 KB | si | `estimar_psi_arrastre.py` | — |
 | `modelo/ensemble/outputs/nowcast_HIP-SALUD-OPO.json` | objeto: proyecto_id, proyecto_id_interno | 3 KB | si | — | — |
@@ -370,7 +370,7 @@ Segun el historial de git. Si vas a cambiar uno, mira el otro.
 - `Nowcast Congreso Argy/coordinacion/EN-HUMANO.md` + `Nowcast Congreso Argy/tablero_datos.js` (27 commits)
 - `Nowcast Congreso Argy/coordinacion/ESTADO-DEL-PROYECTO.md` + `Nowcast Congreso Argy/coordinacion/TABLERO.md` (23 commits)
 - `Nowcast Congreso Argy/coordinacion/EN-HUMANO.md` + `Nowcast Congreso Argy/coordinacion/TABLERO.md` (21 commits)
-- `Nowcast Congreso Argy/.mapa/mapa.json` + `Nowcast Congreso Argy/MAPA.md` (17 commits)
+- `Nowcast Congreso Argy/.mapa/mapa.json` + `Nowcast Congreso Argy/MAPA.md` (18 commits)
 - `Nowcast Congreso Argy/coordinacion/TABLERO.md` + `Nowcast Congreso Argy/tablero_datos.js` (17 commits)
 - `Nowcast Congreso Argy/coordinacion/ESTADO-DEL-PROYECTO.md` + `Nowcast Congreso Argy/coordinacion/URGENTE.md` (11 commits)
 - `Nowcast Congreso Argy/coordinacion/EN-HUMANO.md` + `Nowcast Congreso Argy/coordinacion/URGENTE.md` (10 commits)
@@ -411,4 +411,4 @@ Segun el historial de git. Si vas a cambiar uno, mira el otro.
 
 ## Frescura
 
-- Bitacoras vencidas: `datos/canonica/`, `datos/expedientes/`, `variables/proyecto/`
+- Bitacoras vencidas: `./`, `datos/canonica/`, `datos/expedientes/`, `variables/proyecto/`

@@ -56,6 +56,40 @@ Mantené esta tabla sincronizada con la bitácora.
 
 ## Bitácora (más reciente arriba)
 
+### [2026-09-14] datos/expedientes + modelo/ensemble — ADR-0022 cerrado del todo: δ del Senado estimado con varianza real; Del Caño acotado
+- **Quién:** Claude, con Franco (autorizó la descarga grande y pidió investigar Del Caño).
+- **Qué:** (1) Descargadas 1.902 Órdenes del Día del Senado (1.778 nuevas,
+  1 falla) y reconstruidas sus firmas con la regla "disidencia = minoría"
+  (ADR-0022, decidida antes con Franco). `dictamen_clase` minoría pasa de 1 a
+  **205 actas** en el Senado. (2) Re-estimado `estimar_beta_dictamen.py`
+  (ambas cámaras y sólo Senado): agrupando las dos cámaras, `mayoria` (157) y
+  `solo_minoria` (30) cruzan por primera vez `MIN_CLUSTERS_CONFIABLE=20` — el
+  Senado aislado sigue sin cruzarlo. δ pasa de "artefacto de un cluster" a
+  "estimado con varianza real", pero sigue **apagado** en el camino que
+  corre — no se prendió nada del motor. (3) Corregido un control de
+  `verificar_regeneracion.py` que la propia decisión de hoy había vuelto
+  falso (asumía cero minorías en un archivo que tiene una disidencia real).
+  (4) Investigado Del Caño (URGENTE 5, la fila de más volumen): el FIT en
+  Diputados es un interbloque de dos bancadas con presidencias separadas y
+  rotativas — se acotó su `hasta` a 2025-12-09 con evidencia positiva
+  (fuente de prensa + el scraper oficial, que ya marca a Del Plá y Bregman
+  como presidentas). El tramo 2014-2025 queda sin fuente de fechas finas.
+- **Cómo:** medido en cada paso. P(aprobación) recalculado con el panel
+  completo: **sin cambios en toda la sesión (0,9801)**. 41/41 tests, 16
+  controles OK.
+- **Archivos:** `datos/expedientes/data/clean/dictamenes_firmas_senado.parquet`,
+  `modelo/ensemble/outputs/beta_dictamen*.json`,
+  `evaluacion/baseline/outputs/baseline_voto_individual.json`,
+  `verificar_regeneracion.py`, `variables/proyecto/data/jefes_bloque.csv`,
+  `variables/proyecto/data/features_proyecto.parquet`,
+  `coordinacion/{URGENTE.md, FORMULA-COMPLETA.md, DECISIONES/0022-*.md}`.
+- **Estado del módulo:** datos/expedientes y modelo/ensemble EN CURSO, sin
+  cambio de contrato ni de comportamiento efectivo (δ sigue en 0).
+- **Próximo paso:** ninguno urgente. Si en algún momento se decide PRENDER δ,
+  es un cambio de motor aparte con su propio backtest (§III.A.2 de
+  FORMULA-COMPLETA.md ya lo deja anotado). Si aparece una fuente con los
+  tramos de rotación del FIT 2014-2025, es una línea en `jefes_bloque.csv`.
+
 ### [2026-09-14] datos/padron — padron_diputados_historico.csv, desactualizado desde antes del merge de ids
 - **Quién:** Claude, con Franco.
 - **Qué:** cerrado el punto 4 de `PARA-FRANCO-2026-09-14.md`. El archivo no se

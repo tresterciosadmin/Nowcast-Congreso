@@ -6,28 +6,31 @@ Cómo reclamar: editá este archivo en tu rama, agregá la fila, y mencioná en 
 
 ---
 
-## Sesion 2026-09-08 al 09-10 — LIMPIEZA DEL REPO COMPLETO (fases 0 a 4)
+## Sesion 2026-09-14 — proyectos.db al dia, MATCH_AUTOR_FUZZY, ADR-0022 (Senado + Daer + jefes de bloque), URGENTE.md vaciado
 
 | Modulo | Quien | Desde | Estado |
 |---|---|---|---|
-| **TODOS** | Claude (decide Franco) | 2026-09-08 | **Fases 0-4 HECHAS, todos los modulos LIBRES.** Se revisaron los 162 archivos de codigo uno por uno. Falta la fase 6 (cierre), que espera la corrida de Franco. |
+| **datos/proyectos** | Claude (con Franco) | 2026-09-14 | **HECHO, LIBRE.** `REGENERAR.ps1` no actualizaba `proyectos.db` tras `ingesta_ckan.py`; agregados `migrar_ckan.py` + `upsert_bot.py` al paso E. |
+| **variables/proyecto** | Claude (con Franco) | 2026-09-14 | **HECHO, LIBRE.** `MATCH_AUTOR_FUZZY` prendido por defecto (match autor->bloque 89,8%->97,4%); roster de jefes de bloque cerrado (Naidenoff, Di Tullio, Ciciliani/Binner, Del Caño acotado). |
+| **datos/canonica** | Claude (con Franco) | 2026-09-14 | **HECHO, LIBRE.** El bloque personal de Daer (`BLOQUE DE LOS TRABAJADORES`) va a FRENTE RENOVADOR (massismo), ADR-0022. |
+| **datos/expedientes** | Claude (con Franco) | 2026-09-14 | **HECHO, LIBRE.** ADR-0022: en el Senado, disidencia = dictamen de MINORIA. Descargadas 1.902 OD del Senado y reconstruidas sus firmas. |
+| **datos/padron** | Claude (con Franco) | 2026-09-14 | **HECHO, LIBRE.** `padron_diputados_historico.csv` regenerado (estaba desactualizado desde antes del merge de 143 ids duplicados). |
+| **modelo/ensemble** | Claude (con Franco) | 2026-09-14 | **HECHO, LIBRE.** `estimar_beta_dictamen.py` re-corrido con el Senado al dia: δ pasa a tener varianza real agrupando las dos camaras. Sigue APAGADO en el camino que corre. |
 
-**El contrato de la limpieza, cumplido:** el numero publicado no podia moverse. Medido antes
-de empezar (30 passed · 16 OK · **P = 0,9801**, confirmado por Franco en su maquina) y despues
-de cada fase. **Nunca se movio.**
+**P(aprobacion) = 0,9801 en toda la sesion, nunca se movio.** Detalle completo
+de cada cambio en `ESTADO-DEL-PROYECTO.md` (entradas del 2026-09-14) y en
+ADR-0022.
 
-**No hubo colision porque la limpieza es transversal por definicion**, pero se respeto lo que
-importa: el motor (`modelo/*`, `variables/{bloque,proyecto,embudo}`) **no cambio de
-comportamiento efectivo**. Lo unico que se toco ahi fue texto, mas dos fusiones verificadas
-como identicas ANTES de aplicarlas (ADR-0021).
+## Todos los modulos LIBRES (fase 6 de la limpieza cerrada el 2026-09-14)
 
-**Lo que dejo abierto, y donde esta:** las 13 decisiones al final de
-`LIMPIEZA-2026-09-VEREDICTOS.md`, y dos items nuevos en `URGENTE.md` — **O** (83 actas de
-Diputados con el umbral de mayoria equivocado, codigo ya arreglado, falta la corrida) y **P**
-(la API de argentinadatos no publica el expediente; el enganche por Orden del Dia en el Senado
-llega al 95,3%).
-
-**Cuando se cierre la fase 6, este bloque se borra y queda la entrada en ESTADO.**
+La limpieza del 08 al 10-09 (fases 0-4) y su fase 6 de cierre quedaron completas:
+la corrida de Franco confirmo **P = 0,9801, 16 controles OK**, y sesiones
+posteriores (13/14-09) volvieron a correr el pipeline completo varias veces sin
+que el numero se moviera ni una vez. El detalle de la limpieza queda en
+`ESTADO-DEL-PROYECTO.md` ("[2026-09-08 a 09-10] repo completo — La limpieza").
+Los items que quedaron abiertos (O, P y los que se sumaron despues) tienen su
+disposicion en `ESTADO-DEL-PROYECTO.md`, entrada "[2026-09-14] coordinacion —
+URGENTE.md vaciado".
 
 ---
 

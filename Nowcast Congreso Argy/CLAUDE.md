@@ -108,6 +108,26 @@ El entorno de Claude **no puede borrar archivos** (en la máquina de Franco, ade
 
 **Cuando Claude necesita que un archivo DESAPAREZCA** (no que se descarte: que deje de existir, p. ej. un duplicado que si corre hace daño): (1) copia a `Archivos_Borrar/` como `BORRAR_<ruta-con-guiones>`; (2) **neutraliza el original** — a un workflow se le sacan los disparadores automáticos, a un script el `__main__`, a un dato una cabecera que lo invalide; (3) lo anota en `Archivos_Borrar/PENDIENTES-DE-BORRAR.md`. **El paso 2 no es opcional:** un archivo que "hay que borrar" y mientras tanto sigue funcionando no es un pendiente, es un problema activo.
 
+## 🚦 PRIMERO: ¿dónde estoy corriendo? (agregado 2026-09-14)
+> Este repo se trabaja desde **dos entornos distintos** y las reglas de abajo **no son las mismas**. Identificalo antes de leer nada más.
+
+| | **Claude Code** (nativo en la PC) | **Sandbox / puente de archivos** (Cowork, claude.ai) |
+|---|---|---|
+| Cómo lo reconocés | Corrés en PowerShell/cmd, ves `.git`, `python` es el de la PC | Los archivos llegan por un *mount* o hay que "stagear" para leerlos |
+| Raíz del repo | **Visible**. `git` anda desde acá sin trucos | Un nivel arriba, invisible (ver §Límites) |
+| Truncado de archivos grandes | **No pasa** | Sí, y ya dañó dos archivos |
+| Límite de tiempo por comando | **No hay**: las corridas largas se corren acá mismo | ~45 s, background no sobrevive |
+| Versión de pandas | **La de la PC — la que vale** | Otra, y ya escondió un bug |
+| OneDrive pisando escrituras | **No pasa**: se escribe directo | Sí: el 2026-09-11 una corrección "escrita" fue revertida por OneDrive y la corrida volvió a fallar igual |
+
+**La sección §Límites del entorno de Claude es del SANDBOX.** Si estás en Claude Code, leéla como historia (explica por qué hay código defensivo raro) y **no la apliques**: acá no hace falta pedirle listados a nadie ni pasarle corridas al humano. Lo único que **sigue valiendo igual en los dos entornos** es el corolario del final: *antes de repetir un número o un estado que leíste en una bitácora, verificalo contra el archivo*.
+
+**Lo que Claude Code sí tiene que respetar, y el sandbox no tenía cómo violar:**
+- **Nada de `git push`.** Commits locales sí, mensajes claros, en castellano, uno por tarea.
+- **Nada se borra: se mueve a `Archivos_Borrar/`.** Acá `rm` funciona de verdad — en el sandbox no — y eso lo hace más peligroso, no menos.
+- **Nada de reescribir historia** (`rebase`, `commit --amend` sobre algo ya compartido, `reset --hard`).
+- Las corridas largas (`REGENERAR.ps1`, `run_pipeline.py`) **se corren y se esperan**, no se simulan.
+
 ## ⛔ Límites del entorno de Claude: **lo que no ve NO prueba que no exista**
 > Agregado 2026-08-04 después de tres errores en una misma sesión. Vale para cualquier Claude que abra este repo.
 

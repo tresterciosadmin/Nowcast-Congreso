@@ -70,20 +70,26 @@ if s is not None:
     check(bool(may) and may / tot < 0.06, "y no se paso de rosca",
           f"si 'mayoria' se va muy por encima del ~2% el regex agarra de mas. "
           f"Ahora: {pct(may, tot)}")
-    # OJO: el criterio NO es "minoria == 0". Lo escribi asi el 04-09 y dio falso
-    # positivo en la corrida del 06-09. Las 19 fantasma eran de senado-2018-16.pdf
-    # impreso dos veces, y esas SI tienen que desaparecer; pero el Senado tiene
-    # minorias REALES y una es senado-2010-54.pdf (11 firmas, 6-abr-2010). Un
-    # control que exige cero declara roto un dato que esta bien.
-    fantasma = int(s[s["dictamen_clase"].eq("minoria")
-                     & s["archivo"].astype(str).str.contains("2018-16")].shape[0]) \
-        if "archivo" in s.columns else -1
+    # OJO: el criterio NO es "minoria == 0" en senado-2018-16.pdf. Lo escribi asi
+    # el 04-09 y dio falso positivo el 06-09 (la reimpresion inflaba TODAS sus
+    # firmas a minoria). Y desde ADR-0022 (14-09) da falso positivo DE NUEVO al
+    # reves: ese archivo tiene un disidente real (Beatriz Mirkin, "EN DISIDENCIA
+    # PARCIAL"), y ahora una disidencia real se rotula minoria a proposito. La
+    # propiedad que hay que cuidar no es "cuantas minorias tiene ESTE archivo":
+    # es que la REIMPRESION no se cuente dos veces. `_sin_repetidos` la colapsa
+    # en UN dictamen (dictamenes_repetidos=1) con sus 19 firmantes reales, ni
+    # 38 (duplicada) ni 0 (borrada).
+    filas_2018_16 = s[s["archivo"].astype(str).str.contains("2018-16")] \
+        if "archivo" in s.columns else s.iloc[0:0]
+    n_2018_16 = len(filas_2018_16)
     reales = sorted(set(s.loc[s["dictamen_clase"].eq("minoria"), "archivo"].astype(str))) \
         if "archivo" in s.columns else []
-    check(fantasma == 0, "desaparecieron las 'minorias' fantasma de senado-2018-16",
+    check(n_2018_16 == 19, "la reimpresion de senado-2018-16 no se cuenta dos veces",
           f"minoria total = {mino} en {len(reales)} Ordenes del Dia: {reales[:4]}. "
-          f"De senado-2018-16.pdf quedan {fantasma} (tienen que ser 0: era el mismo "
-          f"dictamen impreso dos veces). Las demas son minorias reales del Senado.")
+          f"senado-2018-16.pdf tiene {n_2018_16} firmas (tienen que ser 19, el "
+          f"dictamen real: ni 38 -reimpreso- ni 0 -borrado-). De esas, 1 es "
+          f"'EN DISIDENCIA PARCIAL' (Beatriz Mirkin) y desde ADR-0022 se rotula "
+          f"minoria a proposito -- ya no es un fantasma, es una disidencia real.")
     # OJO: el criterio NO es "desconocido > 0". Lo escribi asi el 04-09 —cuando el
     # objetivo era que la clase EXISTIERA, para dejar de disfrazar "no encontre el
     # rotulo" de "despacho unico"— y quedo al reves el 06-09: el arreglo del parser

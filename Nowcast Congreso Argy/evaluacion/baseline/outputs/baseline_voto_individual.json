@@ -2,9 +2,9 @@
  "n_actas_evaluadas": 5855,
  "n_actas_saltadas": 38,
  "avisos_agregados": {
-  "sin_actas_condicionadas": 652,
-  "padron_cae_a_ventana": 1228,
-  "excluyo_aux": 2077
+  "sin_actas_condicionadas": 653,
+  "padron_cae_a_ventana": 1225,
+  "excluyo_aux": 2070
  },
  "rango_fechas": [
   "1997-03-20",
@@ -16,10 +16,10 @@
  "global": {
   "n": 691893,
   "tasa_base": 0.7992,
-  "brier": 0.1351,
+  "brier": 0.13509,
   "brier_climatologia": 0.16049,
-  "skill": 0.1582,
-  "logloss": 0.42725,
+  "skill": 0.1583,
+  "logloss": 0.42723,
   "accuracy": 0.8049
  },
  "calibracion": [
@@ -31,55 +31,55 @@
   },
   {
    "bin": 1,
-   "n": 8558,
+   "n": 8556,
    "pred": 0.1534,
-   "real": 0.2539
+   "real": 0.254
   },
   {
    "bin": 2,
-   "n": 12152,
-   "pred": 0.2522,
-   "real": 0.3954
+   "n": 12150,
+   "pred": 0.2521,
+   "real": 0.3951
   },
   {
    "bin": 3,
-   "n": 20528,
+   "n": 20530,
    "pred": 0.3551,
    "real": 0.4951
   },
   {
    "bin": 4,
-   "n": 29936,
+   "n": 29938,
    "pred": 0.4537,
-   "real": 0.5906
+   "real": 0.5904
   },
   {
    "bin": 5,
-   "n": 64490,
-   "pred": 0.5548,
+   "n": 64480,
+   "pred": 0.5547,
    "real": 0.6348
   },
   {
    "bin": 6,
-   "n": 68837,
+   "n": 68832,
    "pred": 0.6481,
-   "real": 0.6666
+   "real": 0.6664
   },
   {
    "bin": 7,
-   "n": 79986,
-   "pred": 0.7542,
-   "real": 0.7479
+   "n": 79964,
+   "pred": 0.7541,
+   "real": 0.748
   },
   {
    "bin": 8,
-   "n": 105383,
+   "n": 105357,
    "pred": 0.8542,
-   "real": 0.8375
+   "real": 0.8374
   },
   {
    "bin": 9,
-   "n": 298377,
+   "n": 298440,
    "pred": 0.9561,
    "real": 0.9472
   }
@@ -88,19 +88,19 @@
   "diputados": {
    "n": 531958,
    "tasa_base": 0.7756,
-   "brier": 0.14727,
+   "brier": 0.14726,
    "brier_climatologia": 0.17407,
-   "skill": 0.1539,
-   "logloss": 0.45988,
+   "skill": 0.154,
+   "logloss": 0.45986,
    "accuracy": 0.783
   },
   "senado": {
    "n": 159935,
    "tasa_base": 0.8778,
-   "brier": 0.09462,
+   "brier": 0.0946,
    "brier_climatologia": 0.1073,
-   "skill": 0.1182,
-   "logloss": 0.31875,
+   "skill": 0.1184,
+   "logloss": 0.31869,
    "accuracy": 0.8776
   }
  },
@@ -108,49 +108,49 @@
   "bloque": {
    "n": 2292,
    "tasa_base": 0.678,
-   "brier": 0.22717,
+   "brier": 0.22716,
    "brier_climatologia": 0.21831,
-   "skill": -0.0406,
-   "logloss": 0.70214,
+   "skill": -0.0405,
+   "logloss": 0.70211,
    "accuracy": 0.6545
   },
   "record": {
    "n": 689601,
    "tasa_base": 0.7996,
-   "brier": 0.13479,
+   "brier": 0.13478,
    "brier_climatologia": 0.16025,
-   "skill": 0.1588,
-   "logloss": 0.42634,
+   "skill": 0.1589,
+   "logloss": 0.42631,
    "accuracy": 0.8054
   }
  },
  "por_caracter_dictamen": {
   "DISPUTADO": {
-   "n": 108602,
-   "tasa_base": 0.7147,
-   "brier": 0.13556,
-   "brier_climatologia": 0.20389,
-   "skill": 0.3351,
-   "logloss": 0.41432,
-   "accuracy": 0.7819
+   "n": 117288,
+   "tasa_base": 0.7121,
+   "brier": 0.1398,
+   "brier_climatologia": 0.20501,
+   "skill": 0.3181,
+   "logloss": 0.42722,
+   "accuracy": 0.7761
   },
   "UNICO": {
-   "n": 99079,
-   "tasa_base": 0.8696,
-   "brier": 0.09803,
-   "brier_climatologia": 0.11337,
-   "skill": 0.1353,
-   "logloss": 0.33443,
-   "accuracy": 0.8815
+   "n": 90906,
+   "tasa_base": 0.8866,
+   "brier": 0.08955,
+   "brier_climatologia": 0.10058,
+   "skill": 0.1096,
+   "logloss": 0.31163,
+   "accuracy": 0.8973
   },
   "mayoria": {
-   "n": 32279,
-   "tasa_base": 0.6612,
-   "brier": 0.15271,
-   "brier_climatologia": 0.22401,
-   "skill": 0.3183,
-   "logloss": 0.46899,
-   "accuracy": 0.762
+   "n": 32140,
+   "tasa_base": 0.6602,
+   "brier": 0.15297,
+   "brier_climatologia": 0.22434,
+   "skill": 0.3181,
+   "logloss": 0.46968,
+   "accuracy": 0.7614
   },
   "solo_minoria": {
    "n": 5972,
@@ -162,23 +162,23 @@
    "accuracy": 0.8367
   },
   "nan": {
-   "n": 445961,
-   "tasa_base": 0.8136,
-   "brier": 0.14221,
-   "brier_climatologia": 0.15165,
-   "skill": 0.0623,
-   "logloss": 0.44878,
-   "accuracy": 0.7961
+   "n": 445587,
+   "tasa_base": 0.8138,
+   "brier": 0.14211,
+   "brier_climatologia": 0.15151,
+   "skill": 0.062,
+   "logloss": 0.44853,
+   "accuracy": 0.7964
   }
  },
  "por_era": {
   "hasta 2011": {
    "n": 318384,
    "tasa_base": 0.8363,
-   "brier": 0.11528,
+   "brier": 0.11527,
    "brier_climatologia": 0.13688,
    "skill": 0.1578,
-   "logloss": 0.37842,
+   "logloss": 0.37839,
    "accuracy": 0.8428
   },
   "2011-2015": {
@@ -193,28 +193,28 @@
   "2015-2019": {
    "n": 126454,
    "tasa_base": 0.7826,
-   "brier": 0.15382,
+   "brier": 0.15381,
    "brier_climatologia": 0.17011,
    "skill": 0.0958,
-   "logloss": 0.4782,
+   "logloss": 0.47818,
    "accuracy": 0.7838
   },
   "2019-2023": {
    "n": 25755,
    "tasa_base": 0.8155,
-   "brier": 0.09943,
+   "brier": 0.09931,
    "brier_climatologia": 0.15044,
-   "skill": 0.3391,
-   "logloss": 0.37085,
-   "accuracy": 0.8684
+   "skill": 0.3399,
+   "logloss": 0.3705,
+   "accuracy": 0.8686
   },
   "desde 2023": {
    "n": 105334,
    "tasa_base": 0.6639,
-   "brier": 0.21059,
+   "brier": 0.2106,
    "brier_climatologia": 0.22315,
    "skill": 0.0563,
-   "logloss": 0.62488,
+   "logloss": 0.62489,
    "accuracy": 0.6692
   }
  },

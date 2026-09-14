@@ -1,6 +1,6 @@
 # Nowcast Legislativo Argentino
 
-<!-- huella: 888505ebb2e9 -->
+<!-- huella: 22a34df0c65f -->
 
 Sistema que estima la probabilidad de sanción de proyectos de ley en el Congreso argentino.
 
@@ -71,7 +71,16 @@ En `docs/contexto/`: `INSTRUCTIVO-MAESTRO.md`, `Nowcast-Congreso_viabilidad_y_pl
 | Archivo | Para qué |
 |---|---|
 | `TABLERO-CONTROL.html` | mapa ejecutivo del proyecto — se alimenta de `tablero_datos.js` |
+| `Nowcast-Puertas.html` | el nowcast vivo de un proyecto (P(sanción) condicional, cadena de puertas A-B-C-D con desagregado por legislador) — lo genera `casos/nowcast_puertas_html.py`, ver su README |
+| `MAPA-MODELO.html` | el mapa navegable de la maquinaria del cálculo: qué script produce qué dato hasta llegar a P(sanción) — lo genera `producto/dashboard/src/generar_mapa_modelo.py` |
 
 Los paneles de coyuntura (`PANEL-NOWCAST/MOVIL/COYUNTURA.html`) y el
 `COMPARADOR-ICG.html` salieron de la sesión del 04-08-2026 y **se dieron de baja el
 11-08-2026** al eliminar la capa 2 global del ICG (ver ADR-0008, enmienda 2026-08-11).
+Sus generadores están neutralizados; los HTML viejos se movieron a `Archivos_Borrar/`
+el 2026-09-14 (los de PANEL-NOWCAST ya se habían borrado el 09-10).
+
+`Nowcast-Ganancias-bicameral.html` también sigue en la raíz con cifras viejas: lo
+producía un generador de `casos/` neutralizado el 22-08 (mecanismo propio, desfasado
+del modelo). **No lo uses** — el vivo es `Nowcast-Puertas.html`. Detalle en
+`casos/README.md`.

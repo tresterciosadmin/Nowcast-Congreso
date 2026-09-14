@@ -31,6 +31,7 @@ paso que los produce** (ver `datos/Archivos_Borrar/`, abajo).
 | carpeta | qué es | por qué se descartó |
 |---|---|---|
 | `sin-consumidor-2026-09-10/` | `postura_gobierno.py` + su test, los dos generadores neutralizados de `casos/`, y `AGENTE-CONSOLE-config.yaml` | Decisión de Franco en la limpieza. Ninguno tenía consumidor: el primero producía un contrato que nadie lee, los dos de `casos/` estaban neutralizados desde agosto, y el yaml era una segunda copia del prompt del clasificador que ya había divergido |
+| `BORRAR_COMPARADOR-ICG.html` | último HTML generado por `comparar_vias_icg.py` (07-08) | Su generador está **neutralizado desde el 11-08** (`SystemExit`, ADR-0008 enmienda: la capa 2 global del ICG que comparaba se eliminó). El README de la raíz ya decía que el panel "se dio de baja", pero el archivo seguía en la raíz invitando al doble clic — paso 2 del régimen de descarte (neutralizar) estaba hecho, faltaba el paso 1 (mover el archivo). 2026-09-14 |
 
 Lo anterior —los nueve parches de julio, `legislAr-main`, `towlandia-master` sin su ZIP y
 los 167 locks de git— se borró el 2026-09-10.

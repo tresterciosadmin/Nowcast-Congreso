@@ -203,9 +203,62 @@ def _mapa_autor_linaje(legis: pd.DataFrame | None, leg_bloques: pd.DataFrame | N
     return mapa
 
 
+# Flag apagado por defecto (2026-09-14): el match de autor->bloque es por
+# IGUALDAD EXACTA de nombre normalizado, y eso falla cuando `legisladores.csv`
+# trae nombre completo ("PITROLA Néstor Antonio") y el autor del expediente
+# viene abreviado ("PITROLA, NESTOR"). Medido el 14-09: 4.263 de 41.871
+# proyectos sin match (89,8%), con casos así de legisladores sin ambigüedad.
+# `MATCH_AUTOR_FUZZY=1` prueba un fallback conservador (ver `_match_prefijo`)
+# SOLO cuando el exacto falla. Toca `origen_por_acta.parquet`, que
+# `nowcast_puertas.py` lee para condicionar la postura -> puede mover P. NO
+# se prende por defecto sin medir el efecto en el número publicado (regla de
+# la casa, coordinacion/PARA-FRANCO-2026-09-14.md).
+MATCH_AUTOR_FUZZY = os.environ.get("MATCH_AUTOR_FUZZY", "0") == "1"
+
+_IDX_PREFIJO_CACHE: dict[int, dict[str, list[str]]] = {}
+
+
+def _idx_prefijo(mapa: dict) -> dict[str, list[str]]:
+    """(primer token del nombre) -> lista de nombres completos del padrón que
+    empiezan así. Cacheado por identidad de `mapa` (se construye una vez por
+    corrida y se reusa para las ~42k filas)."""
+    clave = id(mapa)
+    idx = _IDX_PREFIJO_CACHE.get(clave)
+    if idx is None:
+        idx = {}
+        for nn in mapa:
+            tok = nn.split()
+            if tok:
+                idx.setdefault(tok[0], []).append(nn)
+        _IDX_PREFIJO_CACHE[clave] = idx
+    return idx
+
+
+def _match_prefijo(nombre_norm: str, mapa: dict) -> str | None:
+    """Fallback cuando el nombre exacto no está en el padrón: matchea por
+    PREFIJO DE TOKENS ('PITROLA NESTOR' calza con 'PITROLA NESTOR ANTONIO')
+    pero SOLO si es el ÚNICO candidato con ese primer token en todo el
+    padrón. Ambiguo (dos legisladores con el mismo apellido y mismo prefijo
+    de nombre) -> no matchea, se queda DESCONOCIDO. Nunca se adivina."""
+    tok_autor = nombre_norm.split()
+    if not tok_autor:
+        return None
+    matches = []
+    for nn in _idx_prefijo(mapa).get(tok_autor[0], []):
+        tok_leg = nn.split()
+        corto, largo = (tok_autor, tok_leg) if len(tok_autor) <= len(tok_leg) else (tok_leg, tok_autor)
+        if largo[:len(corto)] == corto:
+            matches.append(nn)
+    return matches[0] if len(matches) == 1 else None
+
+
 def _linaje_autor(nombre_norm: str, anio: float, mapa: dict):
     """Linaje del bloque del autor en el año del proyecto (ventana [desde,hasta])."""
     tramos = mapa.get(nombre_norm)
+    if tramos is None and MATCH_AUTOR_FUZZY:
+        alt = _match_prefijo(nombre_norm, mapa)
+        if alt is not None:
+            tramos = mapa.get(alt)
     if not tramos or pd.isna(anio):
         return None
     # preferimos el tramo que contiene el año; si ninguno, el más cercano

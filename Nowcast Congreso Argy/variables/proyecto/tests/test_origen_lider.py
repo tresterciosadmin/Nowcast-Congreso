@@ -85,6 +85,35 @@ def main():
     chk(O.clase_oficialismo("PRO", pd.Timestamp("2013-06-01")) is None,
         "PRO opositor en 2013 -> clase None")
 
+    # --- fallback por prefijo de tokens (MATCH_AUTOR_FUZZY, apagado por defecto) ---
+    # Caso real que lo motivó (14-09): el autor viene "PITROLA, NESTOR" pero
+    # legisladores.csv trae el nombre completo "PITROLA Néstor Antonio" -> el
+    # exact-match falla aunque la persona sea inequívoca.
+    mapa_pitrola = {"PITROLA NESTOR ANTONIO": [(2015, 2025, "IZQUIERDA")]}
+    chk(O._linaje_autor("PITROLA NESTOR", 2020, mapa_pitrola) is None,
+        "sin el flag, el nombre incompleto NO matchea (comportamiento actual, intacto)")
+    chk(O._match_prefijo("PITROLA NESTOR", mapa_pitrola) == "PITROLA NESTOR ANTONIO",
+        "_match_prefijo encuentra el único candidato con ese apellido+nombre como prefijo")
+    O.MATCH_AUTOR_FUZZY = True
+    try:
+        chk(O._linaje_autor("PITROLA NESTOR", 2020, mapa_pitrola) == "IZQUIERDA",
+            "con el flag prendido, el fallback por prefijo resuelve el linaje")
+    finally:
+        O.MATCH_AUTOR_FUZZY = False
+    # Ambigüedad: DOS legisladores con el mismo apellido y el mismo nombre como
+    # prefijo -> el fallback NO adivina, se queda sin match.
+    mapa_ambiguo = {
+        "PEREZ JUAN CARLOS": [(2015, 2025, "PRO")],
+        "PEREZ JUAN MANUEL": [(2015, 2025, "RADICALISMO")],
+    }
+    chk(O._match_prefijo("PEREZ JUAN", mapa_ambiguo) is None,
+        "dos candidatos con el mismo prefijo -> no matchea (nunca se adivina)")
+    # Nombre COMPLETO más largo que el del padrón (padrón abreviado, autor completo):
+    # el prefijo funciona en cualquier dirección mientras sea único.
+    mapa_corto = {"BANFI KARINA": [(2019, 2025, "COALICION CIVICA")]}
+    chk(O._match_prefijo("BANFI KARINA VERONICA", mapa_corto) == "BANFI KARINA",
+        "el prefijo matchea también cuando el nombre del padrón es el más corto")
+
     # --- construir features ---
     dfs = fixture()
     with tempfile.TemporaryDirectory() as d:

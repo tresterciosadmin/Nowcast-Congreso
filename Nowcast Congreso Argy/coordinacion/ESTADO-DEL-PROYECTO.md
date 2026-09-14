@@ -56,6 +56,24 @@ Mantené esta tabla sincronizada con la bitácora.
 
 ## Bitácora (más reciente arriba)
 
+### [2026-09-14] datos/padron — padron_diputados_historico.csv, desactualizado desde antes del merge de ids
+- **Quién:** Claude, con Franco.
+- **Qué:** cerrado el punto 4 de `PARA-FRANCO-2026-09-14.md`. El archivo no se
+  regeneraba desde el 09-06, un día antes de que existiera
+  `alias_legislador_id.csv` (09-07, merge de 143 pares de `legislador_id`
+  duplicados). 108 de esos 143 pares tenían los dos ids como legisladores
+  separados en el padrón viejo. Regenerado: 7.323 → **6.124 filas**, 2.443 →
+  **1.952 legisladores** — deduplicación, no pérdida de cobertura.
+  `--verificar`: 0 controles fallidos.
+- **Cómo:** reemplaza el parche quirúrgico de 3 filas que se había aplicado
+  para Daer. Medido: P(aprobación) recalculado con el panel completo, sin
+  cambios (0,9801). 41/41 tests del repo + 46/46 de `datos/padron/tests`.
+- **Archivos:** `datos/padron/data/padron_diputados_historico.csv`.
+- **Estado del módulo:** datos/padron EN CURSO, sin cambio de contrato.
+- **Próximo paso:** ninguno para este archivo. `resolver_firmantes.py` (que
+  también lo consume) se beneficia solo cuando se corra `construir_firmas.py`
+  de nuevo — ver ADR-0022 parte 1, pendiente de la descarga grande del Senado.
+
 ### [2026-09-14] variables/proyecto + datos/canonica + datos/expedientes — tres decisiones de Franco aplicadas (ADR-0022)
 - **Quién:** Claude, con Franco (ya de vuelta, dando el criterio en cada punto).
 - **Qué:** (1) `MATCH_AUTOR_FUZZY` prendido por defecto — match autor→bloque

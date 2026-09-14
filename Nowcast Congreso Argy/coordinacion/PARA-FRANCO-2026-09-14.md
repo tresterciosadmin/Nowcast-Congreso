@@ -129,24 +129,14 @@ acta candidata con el mismo recuento en la ventana de fechas plausible.
   guardado está sano: las 3.083 actas ya clasificadas están **las 3.083** en
   `datos/taxonomias/data/asignaciones.csv`, sin ninguna perdida.
 
-## 4. Hallazgo colateral sin resolver: `padron_diputados_historico.py` da un número raro
+## 4bis. RESUELTO — el "número raro" de `padron_diputados_historico.py`
 
-Al correr `python datos/padron/src/padron_diputados_historico.py` de punta a
-punta (para aplicar el cambio de Daer de la forma "correcta", regenerando en
-vez de parchear a mano) el resultado fue **6.124 filas / 1.952 legisladores**
-contra las **7.323 filas / 2.443 legisladores** del archivo commiteado — una
-diferencia de ~1.200 filas y ~490 legisladores que **un solo cambio de linaje
-de una persona no puede explicar**. Revertí esa regeneración completa y usé el
-parche quirúrgico en su lugar (ver punto F arriba), así que el archivo
-commiteado sigue siendo el de 7.323 filas, sólo con las 3 filas de Daer
-corregidas.
-
-**No investigué la causa** — no tengo con qué comparar en esta sesión (no sé
-si tu máquina, corriendo el mismo script sobre los mismos insumos, da 7.323 o
-6.124). Podría ser una consolidación de duplicados que ahora funciona mejor
-(algo BUENO), o podría ser una pérdida real de cobertura (algo MALO). Antes de
-confiar en una corrida nueva de este script, valdría la pena correrlo en tu
-PC y comparar.
+Causa: el archivo se regeneró por última vez el 09-06; `alias_legislador_id.csv`
+(el merge de 143 pares de `legislador_id` duplicados) se creó el 09-07, un día
+después. Verificado: **108 de esos 143 pares tenían los DOS ids presentes como
+legisladores separados** en el archivo viejo. Es deduplicación, no pérdida.
+Regenerado de punta a punta (commit `25591ed`): 6.124 filas / 1.952
+legisladores, `--verificar` en 0 controles fallidos, P sin cambios.
 
 ## 4. Lo que SÍ resolví y ya está commiteado (no necesita tu decisión)
 

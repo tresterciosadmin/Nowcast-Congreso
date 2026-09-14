@@ -2,13 +2,13 @@
 
 <!-- GENERADO por indexar.py. No editar: los cambios se pierden. -->
 <!-- La prosa vive en el README.md de cada modulo (seccion `Buscar aca si`). -->
-<!-- 2026-09-14 17:01 UTC · 149 archivos · 37,892 LOC -->
+<!-- 2026-09-14 17:47 UTC · 149 archivos · 37,892 LOC -->
 
 ## Como usar este archivo
 
 Es el unico archivo del proyecto que hace falta leer para empezar. Para ubicar algo concreto: `python3 .mapa/buscar.py "<termino>"` devuelve archivo y linea sin abrir nada. Recien despues abrir los archivos que salgan, y solo esos.
 
-Rama `main` — ultimo commit: 2026-09-14 2341422 coordinacion: URGENTE.md y PARA-FRANCO al dia con las decisiones de hoy · **hay cambios sin commitear**
+Rama `main` — ultimo commit: 2026-09-14 25591ed fix(datos/padron): padron_diputados_historico.csv estaba desactualizado desde antes del merge de ids duplicados · **hay cambios sin commitear**
 
 ## Donde buscar que
 
@@ -162,7 +162,7 @@ Rama `main` — ultimo commit: 2026-09-14 2341422 coordinacion: URGENTE.md y PAR
 
 ## Inventario de datos
 
-140 archivos de datos · 197.1 MB · 140 viajan por git, **0 no**.
+140 archivos de datos · 196.8 MB · 140 viajan por git, **0 no**.
 
 Buscar uno sin abrir nada: `python .mapa/buscar.py --dato <termino>`. Columna **git**: `si` = esta versionado, o sea que quien clone lo tiene; `NO` = vive solo en el disco de quien lo genero, que es el modo de falla mas repetido de este repo (seis veces, ver `.gitignore`). **Escribe/Lee**: quien lo produce y quien lo consume, deducido del codigo; sin lector, sobra — sin escritor, no se regenera.
 
@@ -225,7 +225,7 @@ Buscar uno sin abrir nada: `python .mapa/buscar.py --dato <termino>`. Columna **
 | `datos/export/data/votaciones_2002-2003_Duhalde.xlsx` | 3 hoja(s) | 766 KB | si | — | — |
 | `datos/export/data/votaciones_1999-2001_DeLaRua.xlsx` | 3 hoja(s) | 377 KB | si | — | — |
 | `datos/manual_2026/Congreso_25-27.xlsx` _MANUAL_2026_XLSX_ | 4 hoja(s) | 52 KB | si | — | _(3 lo nombran)_ |
-| `datos/padron/data/padron_diputados_historico.csv` _PADRON_DIPUTADOS_HISTORICO_ | 7,323×12 | 2.0 MB | si | `padron_diputados_historico.py` | `resolver_firmantes.py` |
+| `datos/padron/data/padron_diputados_historico.csv` _PADRON_DIPUTADOS_HISTORICO_ | 6,124×12 | 1.6 MB | si | `padron_diputados_historico.py` | `resolver_firmantes.py` |
 | `datos/padron/data/padron_diputados.csv` _PADRON_DIPUTADOS_ | 1,454×12 | 260 KB | si | `test_ingesta_padron.py`, `test_ensemble.py` | `resolver_firmantes.py`, `to_canonical.py`, `comparar_vias_icg.py` |
 | `datos/padron/data/nomina_diputados.csv` | 1,454×6 | 103 KB | si | `test_ingesta_padron.py` | _(3 lo nombran)_ |
 | `datos/padron/data/padron_senado_historico.csv` _PADRON_SENADO_HISTORICO_ | 243×12 | 45 KB | si | `test_guardas_confianza.py`, `test_puerta_d.py` | `resolver_firmantes.py` |
@@ -371,7 +371,7 @@ Segun el historial de git. Si vas a cambiar uno, mira el otro.
 - `Nowcast Congreso Argy/coordinacion/ESTADO-DEL-PROYECTO.md` + `Nowcast Congreso Argy/coordinacion/TABLERO.md` (23 commits)
 - `Nowcast Congreso Argy/coordinacion/EN-HUMANO.md` + `Nowcast Congreso Argy/coordinacion/TABLERO.md` (21 commits)
 - `Nowcast Congreso Argy/coordinacion/TABLERO.md` + `Nowcast Congreso Argy/tablero_datos.js` (17 commits)
-- `Nowcast Congreso Argy/.mapa/mapa.json` + `Nowcast Congreso Argy/MAPA.md` (15 commits)
+- `Nowcast Congreso Argy/.mapa/mapa.json` + `Nowcast Congreso Argy/MAPA.md` (16 commits)
 - `Nowcast Congreso Argy/coordinacion/ESTADO-DEL-PROYECTO.md` + `Nowcast Congreso Argy/coordinacion/URGENTE.md` (11 commits)
 - `Nowcast Congreso Argy/coordinacion/EN-HUMANO.md` + `Nowcast Congreso Argy/coordinacion/URGENTE.md` (10 commits)
 - `Nowcast Congreso Argy/coordinacion/URGENTE.md` + `Nowcast Congreso Argy/tablero_datos.js` (9 commits)

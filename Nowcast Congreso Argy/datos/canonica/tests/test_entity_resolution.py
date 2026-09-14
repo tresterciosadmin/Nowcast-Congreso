@@ -76,8 +76,9 @@ check(got != "IZQUIERDA",
       "es el bloque personal de Héctor Daer (CGT, peronista), 237 votos "
       "2014-2017. Su coincidencia con el núcleo de izquierda es 78,6% y queda "
       f"SÉPTIMA de nueve, debajo de peronismo federal (90,0%) y massismo (88,9%). Dio {got!r}")
-check(got == "OTRO / PROVINCIAL",
-      f"sin la alternativa del patrón cae al mapa LINAJE, que no la tiene: {got!r}")
+check(got == "FRENTE RENOVADOR (massismo)",
+      "decisión de Franco el 2026-09-14 (URGENTE.md F): sus otros dos bloques "
+      f"en la misma ventana ya son massismo. Dio {got!r}")
 
 print("y las etiquetas con 'trabajadores' que SÍ son del FIT no se rompen")
 for e in ("PTS-FRENTE DE IZQUIERDA Y DE TRABAJADORES UNIDAD",

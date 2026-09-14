@@ -99,6 +99,13 @@ LINAJE = {
     "PROYECTO SUR - UNEN": "IZQUIERDA",                 # Solanas
     "PROYECTO SUR-UNEN": "IZQUIERDA",
     "PROYECTO SUR": "IZQUIERDA",
+    # BLOQUE DE LOS TRABAJADORES -> FRENTE RENOVADOR (massismo), decisión de
+    # Franco (2026-09-14, URGENTE.md F). Ver el comentario largo más arriba
+    # (línea ~207): es el bloque personal de Daer, 88,9% de coincidencia con
+    # massismo contra 90,0% con peronismo federal (demasiado parejo para
+    # decidirlo solo con el dato); sus otros dos bloques en la misma ventana
+    # ya son massismo (FRENTE RENOVADOR, UNIDOS POR UNA NUEVA ARGENTINA).
+    "BLOQUE DE LOS TRABAJADORES": "FRENTE RENOVADOR (massismo)",
 }
 
 # JUSTICIALISTA a secas: tres animales con el mismo nombre -> ventanas por fecha
@@ -228,9 +235,10 @@ def _bloque_norm(b):
 #
 # AUTODETERMINACION Y LIBERTAD entro con 100,0%. Daer con 78,6% y por DEBAJO de
 # cinco linajes: no es izquierda. Sin esta alternativa la etiqueta cae al mapa
-# LINAJE, no esta ahi, y termina en OTRO / PROVINCIAL. **Mapearla a massismo es
-# una decision politica que espera a Franco**: 88,9% contra 90,0% de peronismo
-# federal esta demasiado parejo para decidirlo con el dato solo.
+# LINAJE. **Decidido por Franco el 2026-09-14 (URGENTE.md F): va a massismo**
+# -- mapeada en el diccionario LINAJE de arriba, no como alternativa de este
+# patron (mismo criterio que se aplico al sacarla de aca el 2026-09-04: una
+# unica persona, mejor en el mapa exacto que en un regex).
 _RE_IZQUIERDA = re.compile(
     r"IZQUIERD|PARTIDO OBRERO|\bPTS\b|\bMST\b"
     r"|AUTODETERMINACION Y LIBERTAD|PROYECTO SUR", re.I)

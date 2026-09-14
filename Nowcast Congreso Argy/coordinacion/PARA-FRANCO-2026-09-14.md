@@ -116,16 +116,11 @@ acta candidata con el mismo recuento en la ventana de fechas plausible.
   padrón dio un resultado raro que no tiene que ver con este cambio** — ver el
   punto siguiente. P recalculado: 0,9801, sin cambios.
 
-- **5 (roster de jefes, con "medimos bloque, no interbloque" ya confirmado):
-  aplicado Naidenoff (hasta 2021→2023) y reemplazada la fila de Fernández
-  Sagasti por Di Tullio en el Senado (Unidad Ciudadana). Ciciliani QUEDÓ SIN
-  APLICAR:** extender su `desde` a 2015-12-10 (como pedía la fuente) solapa
-  dos años con la fila de **Binner** en el mismo bloque (Partido Socialista,
-  2013-12-10 a 2017-12-09) — quedarían dos jefes en ALTA compitiendo por el
-  mismo período. Probablemente el `hasta` de Binner también tenga que
-  acortarse a 2015-12-09, pero eso no lo pediste y no lo decidí solo.
-  ¿Confirmás que el corte es 2015-12-09 para Binner / 2015-12-10 para
-  Ciciliani?
+- **5 (roster de jefes): RESUELTO por completo.** Naidenoff (hasta 2021→2023),
+  Di Tullio reemplaza a Fernández Sagasti (Senado), "medimos bloque, no
+  interbloque" confirmado, y Ciciliani/Binner con el corte 2015-12-09/10 que
+  confirmaste. Único punto vivo del roster: DEL CAÑO (Frente de Izquierda),
+  sin fuente que dé sus tramos — queda en `URGENTE.md` 5, no es urgente.
 
 - **E (créditos de API): la dejé frenada, como pediste.** Medido offline (sin
   tocar la API), en `URGENTE.md` E: **faltan 1.960 actas** por la ruta

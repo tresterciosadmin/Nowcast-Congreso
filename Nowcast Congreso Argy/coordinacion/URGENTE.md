@@ -215,37 +215,24 @@ leakage.
 
 ---
 
-## 5. Roster de jefes: quedan 9 filas MEDIA (eran 15) — y dos estaban MAL
-**Detectado:** 2026-07-30 · **Trabajado:** 2026-09-04 · **bloquea: confiar en `lider_jefe_bloque`**
+## 5. Roster de jefes: queda DEL CAÑO / Frente de Izquierda (todo lo demás, RESUELTO 14-09)
+**Detectado:** 2026-07-30 · **Trabajado:** 2026-09-04 · **Resuelto (salvo Del Caño):** 2026-09-14
 
 **El detalle completo, con fuentes y con cuánto aporta cada fila, está en
-`variables/proyecto/data/VALIDACION-JEFES-2026-09-04.md`.** Resumen:
+`variables/proyecto/data/VALIDACION-JEFES-2026-09-04.md`.** Decisiones de Franco del
+14-09, ya aplicadas en `variables/proyecto/data/jefes_bloque.csv` (**"medimos bloque, no
+interbloque, mantenelo así"** resuelve el punto 3 de abajo):
 
-- **4 confirmadas → ALTA:** PINEDO/PRO Diputados (La Nación 01-12-2015, y se corrigió el
-  `hasta` de 2015-12-01 a 2015-12-09), ATAUCHE/LLA Senado (El Tribuno de Jujuy 03-12-2023),
-  MAYANS/FNyP (Río Negro 20-04-2022), CAMAÑO/Frente Renovador (Wikipedia + Chequeado 2018).
-- **2 ELIMINADAS por estar mal**, con el motivo como comentario en el CSV (precedente Bianchi):
-  - **LOSADA/UCR Senado**: no presidió el bloque. Naidenoff siguió hasta dic-2023 (letrap
-    06-12-2023). Lo de Losada fue la **vicepresidencia del Senado** (Infobae 08-12-2021).
-  - **FERNÁNDEZ SAGASTI/Unidad Ciudadana**: lo presidía **Juliana Di Tullio** (Río Negro,
-    20-04-2022, con los dos bloques y su número de bancas).
-- **9 siguen MEDIA**, cada una con qué le falta exactamente.
+1. `PETCOFF NAIDENOFF` extendido a `2023-12-09` (UCR Senado).
+2. `DI TULLIO, JULIANA` reemplaza a Fernández Sagasti (Unidad Ciudadana, Senado).
+3. La columna `bloque` mide el bloque, no el interbloque — las filas de MASSA/UNA y
+   CAMAÑO/Federal-UNA quedan como estaban.
+4. `CICILIANI` extendida a `2015-12-10`; `BINNER` acortado a `2015-12-09` (mismo corte,
+   confirmado por Franco) para no solapar en el mismo bloque.
 
-### Lo que necesita a Franco
+Medido: P(aprobación) sin cambios en ninguno de los cuatro. 41/41 tests, 16 controles OK.
 
-1. **Extender el `hasta` de `PETCOFF NAIDENOFF`** de `2021-12-09` a `2023-12-09`. La fuente
-   es explícita, pero **agrega** cobertura en vez de sacarla, así que no se tocó.
-2. **Reemplazar la fila borrada por `DI TULLIO, JULIANA`** (Unidad Ciudadana, 2022-04 a
-   2025-12). Mismo motivo: es agregar.
-3. **Decidir qué mide la columna `bloque`: el bloque o el interbloque.** De eso dependen
-   dos filas: Chequeado atribuye la presidencia del bloque UNA 2015-2017 a **Claudia
-   Rucci**, no a Massa —que era el referente del **interbloque**—, y la de Federal-UNA a
-   Camaño. **La fila de Massa aporta 62 proyectos y tiene la forma exacta del caso
-   Bianchi.**
-4. **Extender el `desde` de CICILIANI** de 2017-12 a 2015-12 (Chequeado 08-03-2018 la da
-   asumiendo la jefatura socialista en 2015). Agrega cobertura.
-
-### La de más volumen, y la que más conviene resolver
+### La de más volumen, y la única que sigue abierta
 
 **DEL CAÑO / Frente de Izquierda aporta 349 proyectos** y es la única cuya duda es
 *estructural*: si el FIT rota la jefatura entre PTS y PO —como rota las bancas—, una fila

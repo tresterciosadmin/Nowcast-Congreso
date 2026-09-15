@@ -56,6 +56,29 @@ Mantené esta tabla sincronizada con la bitácora.
 
 ## Bitácora (más reciente arriba)
 
+### [2026-09-14] evaluacion/baseline — se elimina el ciclo de imports con modelo/ensemble
+- **Quién:** Claude, con Franco ("seguí revisando el repo... si podés simplificar mejor").
+- **Qué:** `baseline_voto_individual.py` y `medir_guard_era.py` importaban
+  `era_de` haciendo `sys.path.insert` hacia `modelo/ensemble/src` y usando
+  `nowcast_puertas.era_de` — que ahí adentro es un passthrough de dos líneas
+  al mismo `definiciones.era_de` (ADR-0014). Los dos pasan a importarlo
+  directo de `definiciones.py`, de donde sale igual. `.mapa/indexar.py
+  --estructura` marcaba el ciclo entre las dos carpetas (2 imports en un
+  sentido, 4 en el otro); tras el cambio la sección "Ciclos entre carpetas"
+  desaparece del MAPA.md.
+- **Cómo:** cambio puramente estructural, sin tocar el motor. Medido antes y
+  después: regen completa de `baseline_voto_individual.py` (~6.000 actas) da
+  skill 0,1583 / Brier 0,13509 / n=691.893, idéntico — el JSON de salida no
+  cambió un byte. `test_guard_era.py` 28/28 OK (incluye el chequeo cruzado
+  que verifica que `nowcast_puertas.era_de` no diverge de `definiciones.era_de`,
+  que sigue vivo a propósito). Suite completa 41/41. `verificar_regeneracion.py`
+  16/16 OK, P(aprobación) = 0,9801 sin moverse.
+- **Archivos:** `evaluacion/baseline/src/{baseline_voto_individual.py,
+  medir_guard_era.py}`, `evaluacion/baseline/outputs/guard_era_medicion.json`,
+  `evaluacion/baseline/README.md`.
+- **Estado del módulo:** evaluacion/baseline HECHO, sin cambio de contrato.
+- **Próximo paso:** ninguno.
+
 ### [2026-09-14] coordinacion — URGENTE.md vaciado: disposición de cada ítem que quedaba
 - **Quién:** Claude, con Franco ("borrá URGENTE.md, sigamos con más elementos").
 - **Qué:** URGENTE.md quedó con 6 ítems tras cerrar D/F/5 (M ya se había cerrado

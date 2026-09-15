@@ -56,6 +56,135 @@ Mantené esta tabla sincronizada con la bitácora.
 
 ## Bitácora (más reciente arriba)
 
+### [2026-09-15] datos/expedientes — B1: contrato `votacion_por_articulo` (agrega, no reemplaza `elegir_votacion`)
+- **Quién:** Claude, ejecución autónoma ("seguí el camino que consideres mejor" — Franco).
+- **Qué:** Implementado `datos/expedientes/src/votacion_por_articulo.py`, que produce `data/clean/votacion_por_articulo.parquet`: una fila por ACTA (no por proyecto), con `es_decisiva` calculada por la MISMA `elegir_votacion` que ya usa `cadena_camaras.parquet` (importada, no reimplementada) y `es_particular` por el mismo regex. No toca `elegir_votacion` ni `construir_cadena`: el motor que corre hoy no lee este contrato nuevo, cero impacto en el número publicado.
+- **Cómo:** ver ADR-0023 para el detalle de diseño y lo que deliberadamente NO se decidió todavía (la composición de P(proyecto) a partir de los tramos — depende de $\eta_j$, §III.A.3, no implementado; el agrupamiento en capítulos, B2, que depende de tener texto del articulado). Corrida real sobre `acta_expediente_todas.parquet`: 2.361 filas, 179 proyectos con más de una acta. Reconstruye la secuencia completa de Ley Bases sin diferencias con la crónica pública.
+- **Archivos:** `datos/expedientes/src/votacion_por_articulo.py` (nuevo), `datos/expedientes/tests/test_votacion_por_articulo.py` (nuevo, 29 checks OK), `datos/expedientes/data/clean/votacion_por_articulo.parquet` (nuevo, viaja por git), `datos/expedientes/README.md`, `coordinacion/DECISIONES/0023-votacion-por-articulo-contrato-nuevo.md` (nuevo), `tablero_datos.js`, `coordinacion/EN-HUMANO.md`, `.mapa/mapa.json` + `MAPA.md` (reindexados).
+- **La fórmula no cambia:** ningún término de `FORMULA-COMPLETA.md` se toca — este commit es sólo un contrato de datos nuevo, sin consumidor en el motor todavía.
+- **Estado del módulo:** HECHO (el contrato; el consumidor que compone P(algo)/P(sobrevive) queda pendiente, depende de $\eta_j$ y de decisión de Franco sobre qué números publicar).
+- **Próximo paso:** ninguno inmediato en Parte B — queda a la espera de que $\eta_j$ se implemente (dependencia externa a este trabajo) o de que Franco pida adelantar la composición sin él (lo cual el prompt original pide explícitamente NO hacer, para no reintroducir el supuesto de independencia). Sigo con Parte A.
+
+### [2026-09-15] variables/proyecto + variables/bloque + datos/expedientes — PASO 0 (multietiqueta) y B0 (disgregación por artículo): medición, sin tocar código todavía
+- **Quién:** Claude, a pedido de Franco (`coordinacion/PROMPT-MULTIETIQUETA.md`).
+- **Qué:** Sólo medición — ningún archivo de motor tocado. Se verificó el diagnóstico del prompt (multietiqueta ya generada y ya guardada, colapsada en dos lugares aguas abajo) y se cuantificó la superficie de las dos partes ANTES de escribir código, como pide el prompt. Resultado: **las dos partes valen la pena, pero por razones distintas a las anticipadas**, y hay una corrección importante al diagnóstico original.
+- **Cómo — PASO 0 (Parte A, multietiqueta):**
+  1. **Cuánta multietiqueta hay:** sobre `variables/proyecto/data/tema_por_acta.parquet` (3.083 actas votadas clasificadas), **61,2% del total tiene ≥2 etiquetas sustantivas** (no-AUX), y **76,1% de las que tienen al menos una sustantiva tienen ≥2**. No es un fenómeno raro de ómnibus: es la norma. Mismo patrón en el registro único (`datos/taxonomias/data/asignaciones.csv`, 3.119 objetos): 75,2%.
+  2. **Ley Bases (HCDN272347) y Presupuesto 2026 (HCDN287440) como casos testigo:** el agente YA le puso 4 etiquetas sustantivas a las actas descriptivas de Ley Bases (`POLINST.CONST` primaria + `DESREG.DESECO` + `DESREG.MODEST` + `ECON.PRESU`/`ECON.EMERG`) — el problema es 100% aguas abajo, confirmado. **Pero hay un hallazgo nuevo:** el acta que `elegir_votacion` elige como decisiva para Ley Bases (02-02-2024, "VOT. EN GRAL.") tiene un título genérico y el agente la clasificó `AUX.TRAMITE` — la señal temática real vive en las actas "en particular" (títulos descriptivos) que hoy se descartan. Es decir: el colapso no es sólo multietiqueta→unietiqueta, es también "la fuente del título puede ser el acta equivocada".
+  3. **Dónde se consume `tema_area` — corrección al diagnóstico del prompt:** el único punto real de colapso/consumo político es `variables/bloque/src/bloque.py::proyectar_postura._match()`. Los otros 6 archivos que mencionan `tema_area` (`estimar_theta_sobre_tablas.py`, `estimar_beta_dictamen.py`, `baseline_voto_individual.py`, `estimar_psi_arrastre.py`, `estimar_epsilon_tau.py`, `diagnostico_senado.py`) sólo lo usan como clave de caché/estratificación para estimaciones no relacionadas — no son consumidores de la multietiqueta. **Y el hallazgo más importante: `tema` en `nowcast_puertas.nowcast()` es un parámetro CLI manual (`--tema`), nunca se deriva automáticamente del `proyecto_id`.** No existe ningún `proyecto_id → tema` en la ruta de producción. `REGENERAR.ps1` paso 8 (el panel real) **no pasa `--tema`**. Conclusión: la rama de condicionamiento por tema no es "2% de las predicciones" (esa cifra es el tamaño de la rama de bloque en general) — es **0% de las corridas automatizadas de hoy**; sólo se activa cuando un humano lo tipea a mano en `casos/`. Esto reduce el urgente de "conectar multietiqueta" pero sube el urgente de "conectar tema al proyecto_id, punto" — sin eso, ninguna regla de combinación (Parte A, PASO 1) mueve el número publicado nunca.
+  4. **Actas condicionadas por tema, antes/después de unión:** comparando conteo por área bajo la regla actual (sólo la primaria) vs. unión (OR, cuenta el acta en cada área de `todas_ids`) sobre las 2.480 actas con tema sustantivo: el total de pares acta-tema pasa de 2.480 a 4.939 (**+99%**), con áreas como DESSOC (+1.386%), DESREG (+356%), PROD (+282%), CYT (+260%), INFRA (+261%) muy por encima del promedio. La unión sí resolvería buena parte del `0 actas en ventana → cae a incondicional`.
+- **Cómo — B0 (Parte B, disgregación por artículo):**
+  1. **Cuántos proyectos tuvieron votación en particular:** 206 de 1.428 pares (proyecto, cámara) con acta resuelta (**14,4%**) tienen más de una votación — consistente con el 15,2% que documenta `elegir_votacion`. Por cámara: Diputados 105/815 (12,9%), Senado 101/613 (16,5%).
+  2. **Ley Bases reconstruida completa, sin parsear articulado:** la secuencia sale entera de `acta_expediente_todas.parquet` + `resultado`: 02-02-2024 vot. en general AFIRMATIVO → 06-02-2024 **6 incisos/artículos NEGATIVOS** del Título I/II (la noche que el oficialismo retiró el proyecto) → vacío hasta 30-04-2024, segunda ronda (O.D. 7) con nuevo vot. en general y **47 tramos particulares, todos AFIRMATIVO** (versión recortada, ya negociada) → 28-06-2024 aceptación de modificaciones del Senado. El método SÍ reproduce lo que pasó.
+  3. **Cuántos artículos se caen mientras la ley pasa (global):** sobre 153 proyectos con votación decisiva aprobada y al menos un tramo particular identificable, **15 (9,8%) tuvieron ≥1 tramo particular NEGATIVO** pese a la aprobación general; sobre 838 tramos particulares evaluados, **24 (2,86%) fueron NEGATIVOS**. Es la primera medición de esta brecha que existe en el proyecto. "Tramo" acá es la unidad de voto real (a veces un artículo, a veces un bloque "ARTS. 24 AL 51"), no artículo individual — la granularidad exacta depende de cómo la cámara agrupó la votación ese día, no de una elección nuestra.
+- **Qué NO se hizo (a propósito):** no se implementó la regla de combinación de temas (PASO 1), no se armó la tabla `votacion_por_articulo` (B1), no se tocó ningún archivo de motor ni de contrato. Es sólo el paso 0/B0 que el prompt pide como checkpoint antes de construir.
+- **La fórmula no cambia** (nada de motor se tocó): `FORMULA-COMPLETA.md` no requiere edición en este commit.
+- **Archivos:** ninguno de motor. Sólo esta entrada en `ESTADO-DEL-PROYECTO.md`.
+- **Estado del módulo:** EN CURSO — checkpoint de medición completo, pendiente decisión de Franco sobre prioridad antes de PASO 1 / B1.
+- **Próximo paso:** ver "Qué necesita decisión de Franco" en la respuesta a Franco de esta misma sesión (no repetido acá para no duplicar-desincronizar). Resumen: (a) confirmar si además de la regla de combinación de temas (Parte A) hay que resolver primero el enganche `proyecto_id → tema` que hoy no existe, sin el cual PASO 1 no mueve nada publicado; (b) confirmar si arrancar B1 (tabla `votacion_por_articulo`) ahora, dado que B0 midió una brecha real (9,8% de proyectos) y el insumo ya está en la canónica sin parsear texto.
+
+### [2026-09-15 · noche] modelo/ensemble — sobre tablas: opción A (atenuar θ) probada y descartada — el problema no es la magnitud
+- **Quién:** Claude, con Franco ("vamos con A y luego decidimos").
+- **Qué:** `_calibrar_factor` (nuevo, en `validar_sobre_tablas_walkforward.py`) busca por
+  grilla, sólo con datos de TRAIN, el factor de atenuación de θ que minimiza el Brier
+  MACRO (promedio entre "cruzó"/"no cruzó" — corregido a propósito para no repetir el
+  mismo espejismo de clase dominante que ya mordió la primera lectura del backtest).
+- **Resultado: θ crudo (factor=1,0) sigue ganando la grilla, pero porque NINGÚN punto
+  discrimina.** Brier macro entre 0,49 y 0,74 en toda la grilla, en las dos cámaras —
+  peor que 0,25 (tirar una moneda) en TODO punto, con o sin corrimiento. Ni la simulación
+  SIN θ (sólo consenso de bloque + umbral de dos tercios) separa actas que cruzan de las
+  que no. **No es la magnitud de θ: es que el mecanismo (roster real + Monte Carlo a dos
+  tercios) no tiene poder de discriminación con esta muestra.** Atenuar no puede arreglar
+  un término base que ya no discrimina.
+- **Decisión:** se descarta la opción A. Sigue apagado `SOBRE_TABLAS`. Suite completa 41/41,
+  16/16 `verificar_regeneracion.py`, sin cambio de comportamiento.
+- **Archivos:** `modelo/ensemble/src/validar_sobre_tablas_walkforward.py`,
+  `modelo/ensemble/outputs/validacion_sobre_tablas_walkforward.json`,
+  `coordinacion/FORMULA-COMPLETA.md`.
+- **Próximo paso:** opción B (modelar a nivel de acta, no por legislador vía Monte Carlo a
+  un umbral tan exigente) es el candidato que queda — decisión de Franco si se retoma.
+
+### [2026-09-15 · tarde] modelo/ensemble — sobre tablas: dos hallazgos en el backtest — un bug de matching que escondía a Diputados, y un mecanismo que SATURA (no se prende)
+- **Quién:** Claude, con Franco ("backtest mecanístico ahora", después "todavía no, quiero
+  ver el JSON completo primero" — la pregunta correcta —, y después "re-estimá theta solo
+  en era vigente", que llevó al primer hallazgo).
+- **Qué:** `modelo/ensemble/src/validar_sobre_tablas_walkforward.py` (nuevo, permanente):
+  re-estima θ (GLM offset) SOLO sobre el tramo más viejo de actas y corre el MECANISMO DE
+  PRODUCCIÓN (roster real de la acta, P_i^bloque desplazada por θ, `simular_con_guardas`
+  al umbral de dos tercios) sobre las actas de sobre tablas held-out, comparando contra si
+  esa acta realmente cruzó los dos tercios. Corrido con DOS cortes (70/30 y 50/50).
+- **🔴 Primer resultado, agregado: parecía una victoria y era un espejismo** (Brier global
+  mejor con θ, pero la mayoría de las actas no cruza los dos tercios — "predecir bajo
+  siempre" ya gana el agregado). Al intentar re-estimar θ SOLO en era vigente (pedido de
+  Franco) apareció algo más grave: **CERO actas de Diputados en la era vigente, y casi
+  ninguna desde 2020** — parecía que el mecanismo había desaparecido de esa cámara.
+  Verificado contra la canónica directa (regla de la casa: no confiar en el número sin
+  mirar el archivo): Diputados **dejó de escribir "sobre tablas" en el título en 2020** y
+  desde 2024 usa `HABILITACIÓN DEL TRATAMIENTO EXPTE. ...` — el MISMO mecanismo con otro
+  nombre (confirmado con Franco). Era matching roto, no un hecho — el mismo patrón que ya
+  avisa CLAUDE.md con las comisiones. **Corregido** en
+  `estimar_theta_sobre_tablas.py::panel()` (regex ampliada).
+- **🔴 Con la muestra corregida (20-26 actas de Diputados, 35% cruza), theta no "falla en
+  un sesgo": SATURA.** `p_sim_con_theta` da exactamente 0,01 —el piso de la guarda contra
+  sobreconfianza— en las 46 actas de Diputados de los dos cortes, SIN UNA SOLA EXCEPCIÓN,
+  pasen o no los dos tercios. θ_D≈−2,05 a −2,13 (estable en tres estimaciones distintas) es
+  tan grande que, aplicado por legislador y llevado a un umbral de dos tercios vía Monte
+  Carlo, ningún roster real sobrevive — ni los de 85% de consenso. El mecanismo da CERO
+  información. No es un problema de datos (ya corregido): es que la magnitud de θ,
+  estimada como corrimiento promedio voto por voto, es incompatible con aplicarse como
+  desplazamiento individual frente a un umbral tan exigente. En Senado el problema es más
+  leve (no satura, hay variación real) pero el sesgo persiste.
+- **Decisión: NO se prende `SOBRE_TABLAS`.** A diferencia de `beta_dictamen` (sacar un
+  término y quedarse con el resto), acá θ es el ÚNICO término para Diputados y produce una
+  constante sin información.
+- **Archivos:** `modelo/ensemble/src/{validar_sobre_tablas_walkforward.py (nuevo),
+  estimar_theta_sobre_tablas.py (regex corregida)}`,
+  `modelo/ensemble/outputs/{theta_sobre_tablas.json (re-estimado),
+  validacion_sobre_tablas_walkforward{,_corte50}.json}`, `coordinacion/FORMULA-COMPLETA.md`.
+- **Estado del módulo:** modelo/ensemble EN CURSO. Término 15 de la fórmula: 🔴
+  IMPLEMENTADO, backtest FALLÓ (satura en Diputados) — sigue apagado.
+- **Próximo paso:** si se retoma, el problema es de FORMA FUNCIONAL, no de datos — un
+  corrimiento único en logit no puede sobrevivir un umbral de dos tercios vía Monte Carlo
+  sin saturar. Ver el detalle en FORMULA-COMPLETA.md §III.A.5.
+
+### [2026-09-15] modelo/ensemble — sobre tablas (§III.A.1 + §III.A.5): implementado detrás de bandera, MEDIDO, falta backtest para decidir si prende
+- **Quién:** Claude, con Franco ("arrancamos por C — sobre tablas", enfoque ya decidido:
+  condicionante dentro de una puerta existente, no puerta nueva).
+- **Qué:** 24,4% de los proyectos de ley votados en recinto no tienen dictamen en ningún
+  lado (medido 03-09) — sin la vía sobre tablas, el modelo no puede decir nada de ellos.
+  `modelo/ensemble/src/sobre_tablas.py` (nuevo) implementa la fórmula ya acordada con
+  Franco (§III.A.1/§III.A.5 de FORMULA-COMPLETA.md): el gate $\mathcal{C}_c$ (admisibilidad
+  de la vía normal, aproximado por el estado `sin_dictamen` confirmado de
+  `puerta_a.caracter_de` — la regla reglamentaria completa necesitaría un cruce de datos
+  que no está armado) y $P^{\text{tablas}}_c$ (la votación sobre tablas en sí, umbral de
+  dos tercios, cada $P_i^{\text{bloque}}$ corrida por $\theta_{\text{cámara}}$ ya estimado
+  el 03-09: $\theta_D=-2{,}047$, $\theta_S=0$ — no significativo en el Senado). Detrás de
+  `SOBRE_TABLAS=1`, **apagada por defecto**.
+- **Cómo:** reusa el mismo simulador que B/D (`ensemble.simular_con_guardas`, que ya
+  soportaba `tipo_mayoria="DOS_TERCIOS"`) sobre el roster que ya arma `armar_roster` —
+  no reimplementa el recuento ni el condicionante del dictamen. Con la bandera apagada:
+  49/49 `test_nowcast_puertas.py`, 31/31 `test_puerta_a.py`, 17/17 `test_beta_dictamen.py`,
+  17/17 `test_sobre_tablas.py` (nuevo), suite completa 41/41,
+  `verificar_regeneracion.py` 16/16, **P(aprobación) = 0,9801 sin moverse**. Con la bandera
+  prendida, sobre un roster sintético (no hay proyecto real reciente con dictamen ausente
+  y `proyecto_id` mapeado — sólo 6 actas históricas 2008-2014, y el padrón del Senado no
+  alcanza para correr `nowcast` completo en esas fechas), el mecanismo se comporta como
+  predice la fórmula: el umbral de dos tercios es mucho más exigente que mayoría simple, y
+  la P cae fuerte para un roster sin la polarización real de un caso sobre-tablas genuino.
+  Es la dirección esperada, pero **no es la misma prueba que el backtest walk-forward que
+  salvó a `beta_dictamen`** de un término que no generalizaba — acá todavía no hay un
+  roster REAL sin-dictamen reciente contra el cual medir.
+- **Archivos:** `modelo/ensemble/src/{sobre_tablas.py (nuevo), nowcast_puertas.py}`,
+  `modelo/ensemble/tests/test_sobre_tablas.py` (nuevo, 17 checks),
+  `coordinacion/{FORMULA-COMPLETA.md, TABLERO.md}`, `modelo/ensemble/README.md`.
+- **Estado del módulo:** modelo/ensemble EN CURSO, sin cambio de contrato ni de
+  comportamiento efectivo (bandera apagada por defecto). Términos 11 y 15 de la fórmula:
+  🔬 IMPLEMENTADOS y MEDIDOS, no PRENDIDOS.
+- **Próximo paso:** correr `armar_roster` + `simular_con_guardas` walk-forward sobre las
+  186 actas reales de sobre tablas (point-in-time) y comparar contra lo observado —
+  análogo a `validar_beta_dictamen_walkforward.py` pero mecanístico — antes de recomendar
+  prender `SOBRE_TABLAS=1`.
+
 ### [2026-09-14] modelo/ensemble — BETA_DICTAMEN prendido por defecto; panel completo regenerado
 - **Quién:** Claude, con Franco ("dale, prendelo y corré el panel completo").
 - **Qué:** `beta_dictamen.py` pasa de apagada por defecto a **prendida por

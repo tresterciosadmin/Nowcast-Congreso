@@ -2,6 +2,39 @@
 
 > Documento vivo. Cada cambio importante en el proyecto se explica acá en lenguaje claro, además de registrarse en `ESTADO-DEL-PROYECTO.md`. Si algo del sistema no se entiende leyendo esto, está mal escrito y hay que arreglarlo.
 
+## Una ley no sale como entró, y ahora tenemos el número (15-09-2026)
+
+Franco pidió mirar dos cosas que sonaban parecidas: los proyectos que tocan varios temas a
+la vez (Ley Bases es el ejemplo clásico: trabajo, energía, impuestos, privatizaciones, todo
+junto) y las leyes que se votan en general y después, artículo por artículo, en particular
+—y que a veces salen del Congreso distintas de como entraron.
+
+**Antes de tocar el código de producción, se midió.** Es la instrucción explícita de Franco
+y la que este proyecto ya viene respetando: medir primero, construir después.
+
+**Del lado de los temas:** el sistema que clasifica cada proyecto YA le pone varias
+etiquetas a casi todo —6 de cada 10 votaciones tienen dos o más temas, no es raro, es la
+norma—. El problema no era la clasificación: era que en dos lugares del código se quedaban
+con una sola etiqueta y tiraban el resto. Pero apareció algo que no se esperaba: la etiqueta
+de tema de un proyecto en producción hoy se escribe **a mano**, con un parámetro que ninguna
+corrida automática pasa. Antes de decidir cómo combinar varios temas hay que conectar ese
+cable, que hoy directamente no está conectado.
+
+**Del lado de las leyes que cambian en el recinto:** se reconstruyó la secuencia completa de
+Ley Bases sin leer una sola palabra del articulado —sólo con los votos que ya teníamos—. La
+aprobación en general del 2 de febrero de 2024, después **seis artículos rechazados esa
+misma noche** (la sesión que terminó con el proyecto retirado del recinto), y la vuelta
+recortada de fin de abril, que esa vez pasó entera. Aplicado a todos los proyectos con esa
+información: casi **1 de cada 10** proyectos que se aprueban en general igual pierden algún
+artículo en el camino, un número que hasta hoy nadie tenía. Se armó una tabla nueva que
+guarda **todos** esos votos —hoy se tiraban los que no eran la votación decisiva— sin tocar
+en nada el cálculo que ya existe.
+
+**El número que se publica no se movió.** Todo lo de arriba es medición y una tabla de datos
+nueva; el motor no se tocó. Lo que sigue —cómo se combinan varios temas, y cómo se traduce
+"perdió 6 artículos" en una probabilidad publicable— necesita más trabajo y, en el segundo
+caso, una decisión de Franco sobre qué número mostrar.
+
 ## Revisamos el proyecto entero, archivo por archivo (08 al 10-09-2026)
 
 Franco pidió repasar todo y ordenar: "archivo por archivo, verifiquemos qué sirve y qué no".

@@ -37,6 +37,7 @@ red de autorías (Módulos B/C del plan).
 - los dictamenes del Senado (otra fuente y otro scraper: `ingesta_od_senado.py`), y por que casi no tiene mayoria/minoria: es real, no es el parser (ADR-0017), su desacuerdo va como DISIDENCIA
 - que significa `dictamen_clase = "desconocido"` (no se encontro el rotulo; NO es "despacho unico")
 - comparar comisiones: SIEMPRE matchear contra el catalogo (los nombres tienen comas; partir por separadores rompe)
+- que se cae de una ley entre la votacion en general y la votacion en particular, articulo por articulo (`votacion_por_articulo.py`, B0/B1 del prompt multietiqueta): NO reemplaza `elegir_votacion`, agrega el resto de las actas que esa funcion descarta
 - `expedientes_giros` mezcla las DOS camaras: filtrar por camara antes de contar cobertura
 - cuantas ODs faltan bajar (2.523 de ley identificadas, 1.722 parseadas) y como reanudar `ingesta_od.py`
 
@@ -336,6 +337,43 @@ con exactamente 72 senadores por año no electoral), así que la reconstrucción
 viable — pero **no se copia la de Diputados**: el Senado se renueva por tercios cada
 dos años con mandatos de seis, y la regla de "el período va del 10-dic de año impar"
 no aplica.
+
+## Votación por artículo (2026-09-15) — contrato NUEVO, no reemplaza nada
+
+**El problema.** `elegir_votacion` reduce todas las votaciones de un proyecto en
+una cámara a UNA — la decisiva (la general). Correcto para lo que alimenta
+(`cadena_camaras.parquet`), pero el resto —la votación **en particular**,
+artículo por artículo, que sigue a la general— se descartaba entero. Es
+exactamente el insumo para medir qué sobrevive de una ley y qué se cae en el
+recinto, **sin parsear una palabra de articulado**: ya está en la canónica.
+
+**Medido el 15-09 (PASO B0 del prompt multietiqueta):** 206 de 1.428 pares
+(proyecto, cámara) con acta resuelta (14,4%) tuvieron votación en particular.
+De los proyectos con decisiva aprobada y al menos un tramo particular
+identificable, **9,8% tuvo ≥1 tramo NEGATIVO** pese a la aprobación general
+(2,86% de los tramos individuales). Ley Bases (`HCDN272347`) se reconstruye
+entera: general OK 02-02-2024 → **6 artículos/incisos caídos** el 06-02-2024
+(la noche que se retiró) → segunda ronda recortada 30-04-2024, 47 tramos,
+todos OK → aceptación de cambios del Senado 28-06-2024.
+
+`src/votacion_por_articulo.py` agrega el contrato
+`data/clean/votacion_por_articulo.parquet` — **una fila por acta** (no por
+proyecto): `proyecto_id, camara, acta_id, fecha, titulo, resultado,
+resultado_clase, es_decisiva, tipo_votacion, es_particular, n_actas_grupo`.
+`es_decisiva` sale de la MISMA `elegir_votacion` (importada, no reimplementada)
+— no hay dos criterios de "cuál es la general" en el repo.
+
+**Granularidad:** cada fila es un voto registrado, que a veces cubre un
+artículo y a veces un bloque ("ARTS. 24 AL 51") según cómo la cámara agrupó
+la votación ese día — no es una elección nuestra. Agrupar en CAPÍTULOS
+(B2) depende de tener el TEXTO del articulado, que hoy no está: queda
+pendiente y requiere decisión de Franco antes de arrancar una adquisición de
+datos grande.
+
+```bash
+python datos/expedientes/src/votacion_por_articulo.py
+python datos/expedientes/tests/test_votacion_por_articulo.py   # 29 checks, sin red
+```
 
 `src/ingesta_od_senado.py`. Las Órdenes del Día de arriba son de **Diputados**;
 el CKAN publica los dictámenes de las comisiones **de Diputados**, sea origen o

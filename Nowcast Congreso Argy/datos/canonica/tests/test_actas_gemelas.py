@@ -20,6 +20,11 @@ Lo que fija:
    `manual_2026`). ⚠️ La primera version del control agrupaba SOLO por recuento y devolvia
    12.469 pares, casi todos ruido: sin el dia, el recuento coincide por casualidad seguido.
 6. **Un acta chica no se marca**: con 20 votos el recuento colisiona facil. `MIN_VOTOS_GEMELA`.
+7. **Sin fecha y con MAS DE UN candidato posible, no se marca nada** (14-09-2026,
+   PARA-FRANCO item 2). Medido: 33 de 35 indicios previos eran una sola acta de
+   `manual_2026` matcheando contra 8 actas de `argentinadatos` de la MISMA sesion
+   (varias votaciones casi unanimes de una sesion comparten reparto). Reportar los
+   8 como "gemela posible" daba certeza donde solo hay ambiguedad.
 
     python datos/canonica/tests/test_actas_gemelas.py
 """
@@ -105,8 +110,25 @@ check(len(g) == 1, f"tendria que salir 1 par, salieron {len(g)}")
 check(len(g) and "INDICIO" in g.iloc[0]["evidencia"],
       f"sin fecha tiene que decir INDICIO: dijo {g.iloc[0]['evidencia'] if len(g) else None!r}")
 
+print("sin fecha y con MAS DE UN candidato: ambiguo, no se marca ninguno")
+g = actas_gemelas(
+    _actas([("A", "senado", "argentinadatos", "2026-03-01"),
+            ("B", "senado", "argentinadatos", "2026-03-08"),
+            ("C", "senado", "argentinadatos", "2026-03-15"),
+            ("M", "senado", "manual_2026", None)]),
+    pd.DataFrame(_votos("A", 40, 20) + _votos("B", 40, 20)
+                + _votos("C", 40, 20) + _votos("M", 40, 20)))
+check(len(g) == 0,
+      f"con 3 candidatos para M (mismo recuento, distintas actas) no hay forma de "
+      f"saber cual es la gemela: no se tendria que marcar ninguno, salieron {len(g)}")
+
 print("el control NO borra nada: devuelve un reporte")
-check(isinstance(g, pd.DataFrame) and {"acta_a", "acta_b", "fuente_a", "fuente_b"} <= set(g.columns),
+g_no_vacio = actas_gemelas(
+    _actas([("A", "diputados", "argentinadatos", "2020-01-01"),
+            ("B", "diputados", "ckan_diputados", "2020-01-01")]),
+    pd.DataFrame(_votos("A", 30, 20) + _votos("B", 30, 20)))
+check(isinstance(g_no_vacio, pd.DataFrame)
+     and {"acta_a", "acta_b", "fuente_a", "fuente_b"} <= set(g_no_vacio.columns),
       "tiene que devolver los dos lados del par para que decida una persona")
 
 print(f"\n{corridos - len(fallos)}/{corridos} OK")

@@ -95,6 +95,15 @@ acta candidata con el mismo recuento en la ventana de fechas plausible.
 
 **Estado:** caracterizado, nada descartado ni fusionado.
 
+**ACTUALIZACIÓN 2026-09-14 (más tarde, aprobaste la segunda opción): RESUELTO.**
+`datos/canonica/src/build.py::actas_gemelas()` — cuando el par sin fecha tiene
+MÁS de un candidato posible (misma huella, más de dos actas en el grupo), ya no
+se reporta ninguno: es exactamente el mecanismo de los 33 falsos positivos (una
+acta de `manual_2026` contra 8 de `argentinadatos` de la misma sesión). No toca
+la vía "misma fecha" (evidencia fuerte) ni el descarte real de actas — sólo
+`sobran` sigue viniendo de `fuerte`, así que **no mueve la canónica ni P**. Test
+nuevo que reproduce el patrón exacto y falla con el código viejo (11/11 OK).
+
 ---
 
 ## 3. Lo que decidiste hoy y ya está aplicado — con dos cosas que quedaron abiertas

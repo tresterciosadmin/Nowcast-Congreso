@@ -56,6 +56,28 @@ Mantené esta tabla sincronizada con la bitácora.
 
 ## Bitácora (más reciente arriba)
 
+### [2026-09-14] datos/canonica — actas gemelas "sin fecha": los pares ambiguos ya no se reportan
+- **Quién:** Claude, con Franco (aprobó "sacar el fallback sin-fecha para pares
+  con más de un candidato", `PARA-FRANCO-2026-09-14.md` ítem 2).
+- **Qué:** `actas_gemelas()` en `build.py` — cuando un par SIN FECHA (la huella
+  completa, no sólo el total, ya coincidía) tiene más de dos actas en el grupo,
+  ya no se reporta ninguna como INDICIO: es ambiguo, no hay forma de saber cuál
+  es la gemela. Medido: 33 de los 35 indicios previos eran justo esto — una acta
+  de `manual_2026` matcheando contra 8 de `argentinadatos` de la misma sesión
+  (varias votaciones casi unánimes comparten reparto). Quedan los pares 1:1
+  genuinos (como `argentinadatos:senado:2770` / `decada_votada:sen:1805`).
+- **Cómo:** NO toca la vía "misma fecha" (evidencia fuerte, la única que
+  descarta actas de la canónica) ni cambia qué actas sobran — sólo el reporte
+  diagnóstico. P no se mueve porque nada de la canónica cambia. Test nuevo que
+  reproduce el patrón de los 8 candidatos y falla con el código viejo; suite de
+  `datos/canonica` completa: 11+14+21 OK.
+- **Archivos:** `datos/canonica/src/build.py`,
+  `datos/canonica/tests/test_actas_gemelas.py`,
+  `coordinacion/PARA-FRANCO-2026-09-14.md`.
+- **Estado del módulo:** datos/canonica EN CURSO, sin cambio de contrato.
+- **Próximo paso:** ninguno para este ítem. Si alguna vez se corre
+  `-ConCanonica` de nuevo con `MANUAL_2026=1`, el reporte va a salir limpio.
+
 ### [2026-09-14] coordinacion + variables/proyecto — CI: workflow que corre la suite, y un test que dependía de una versión de pandas
 - **Quién:** Claude, con Franco (housekeeping aprobado en la misma tanda que A/B).
 - **Qué:** (1) Nuevo `.github/workflows/tests.yml` (en la raíz git, junto a

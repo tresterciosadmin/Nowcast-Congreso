@@ -129,6 +129,17 @@ def actas_gemelas(actas: pd.DataFrame, votos: pd.DataFrame) -> pd.DataFrame:
         for _, g in todos.groupby(["camara", "_huella"]):
             if not g["acta_id"].isin(sin["acta_id"]).any():
                 continue
+            # AMBIGUO = más de un candidato posible para la(s) acta(s) sin fecha de
+            # este grupo. Sin el día, la huella completa (afirm/neg/abst/ausente) es
+            # la única pista — y si más de dos actas la comparten, no hay forma de
+            # saber CUÁL es la gemela. Medido el 14-09 (PARA-FRANCO 2026-09-14 ítem
+            # 2): 33 de 35 pares "indicio" eran justo esto — UNA acta de
+            # `manual_2026` matcheando contra 8 actas de `argentinadatos` de la
+            # MISMA sesión, porque varias votaciones casi unánimes de una sesión
+            # comparten reparto. Reportarlas como INDICIO daba certeza donde no la
+            # hay. Se descartan sin reportar, no se listan "a mano" como antes.
+            if len(g.drop_duplicates("acta_id")) > 2:
+                continue
             pares += _cruzar(g, "sin fecha: solo mismo recuento (INDICIO)")
     return pd.DataFrame(pares)
 

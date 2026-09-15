@@ -96,7 +96,7 @@ GUARD_ERA_DEFAULT = "shrink"
 sys.path.insert(0, str(next(d for d in Path(__file__).resolve().parents
                             if (d / "rutas.py").is_file())))
 from rutas import RAIZ as REPO  # noqa: E402
-from definiciones import caracter_de_dictamen  # noqa: E402
+from definiciones import caracter_de_dictamen, era_de  # noqa: E402
 sys.path.insert(0, str(REPO / "variables" / "bloque" / "src"))
 
 
@@ -261,13 +261,11 @@ def mapa_acta_caracter(repo: Path) -> pd.DataFrame:
 
 
 def _eras_de(fechas: pd.Series) -> pd.Series:
-    """Era de cada fecha. Delega en el motor —si el harness usara otro calendario que
-    `nowcast_puertas`, volveria a medir un modelo distinto— pero resuelve UNA VEZ POR
-    FECHA DISTINTA: hay ~2.800 fechas de sesion contra 1.016.058 filas, y el `.map` fila
-    por fila tarda minutos.
+    """Era de cada fecha. `era_de` sale de `definiciones.py` (ADR-0014) —si el
+    calendario cambiara, se cambia UNA vez y lo ven todos los consumidores, incluido
+    `nowcast_puertas`— pero acá se resuelve UNA VEZ POR FECHA DISTINTA: hay ~2.800
+    fechas de sesion contra 1.016.058 filas, y el `.map` fila por fila tarda minutos.
     """
-    sys.path.insert(0, str(REPO / "modelo" / "ensemble" / "src"))
-    from nowcast_puertas import era_de  # type: ignore
     mapa = {f: era_de(f) for f in pd.unique(fechas)}
     return fechas.map(mapa)
 

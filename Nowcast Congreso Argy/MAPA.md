@@ -2,13 +2,13 @@
 
 <!-- GENERADO por indexar.py. No editar: los cambios se pierden. -->
 <!-- La prosa vive en el README.md de cada modulo (seccion `Buscar aca si`). -->
-<!-- 2026-09-14 19:48 UTC · 149 archivos · 37,931 LOC -->
+<!-- 2026-09-15 00:33 UTC · 149 archivos · 37,930 LOC -->
 
 ## Como usar este archivo
 
 Es el unico archivo del proyecto que hace falta leer para empezar. Para ubicar algo concreto: `python3 .mapa/buscar.py "<termino>"` devuelve archivo y linea sin abrir nada. Recien despues abrir los archivos que salgan, y solo esos.
 
-Rama `main` — ultimo commit: 2026-09-14 70a69c0 tablero: dos hitos de la sesion del 14-09 + TABLERO.md al dia · **hay cambios sin commitear**
+Rama `main` — ultimo commit: 2026-09-14 1d74d17 limpieza: dos avisos viejos de MAPA-MODELO.html, cerrados · **hay cambios sin commitear**
 
 ## Donde buscar que
 
@@ -134,7 +134,7 @@ Rama `main` — ultimo commit: 2026-09-14 70a69c0 tablero: dos hitos de la sesio
 | `tests/` | Tests que no pertenecen a ningun modulo: los que verifican acuerdos ENTRE modulos (definiciones y rutas compartidas) y los que vigilan INVARIANTES del repo — que las bases y los insumos del motor viajen por git, que la regla del caracter del dictamen no se reimplemente, y que las rutas que el codigo nombra en sus docstrings existan. Cada modulo tiene sus propios tests en `<modulo>/tests/`. | 8 | 1,347 | ok |
 | `variables/embudo/` _(src+tests)_ | Supervivencia del proyecto: presentado -> comision -> dictamen -> recinto -> sancion. Estima P(llega al recinto). OJO: eso era 'la mitad de P(aprobacion)' en la formulacion v1, que se dio de baja el 2026-08-22 (ADR-0012) justamente porque medir la mortandad en el cajon es agenda politica y se decidio no modelarla; hoy el numero publicado NO la multiplica. | 5 | 1,222 | ok |
 | `variables/bloque/` _(src+tests)_ | Cohesion, tamano, postura y fracturas de cada bloque en el tiempo, y el proyector point-in-time que arma el escenario por bloque que consume el ensemble. | 5 | 1,128 | ok |
-| `evaluacion/baseline/` _(src+tests)_ | El piso a superar, y el harness que lo mide. Lo que vive aca es el baseline del VOTO INDIVIDUAL (`baseline_voto_individual.py`, con el guard de era del ADR-0018) mas los diagnosticos del Senado. El baseline de BLOQUE -el ~0,99- se midio en `fase0/` y ahi quedo. | 5 | 1,094 | ok |
+| `evaluacion/baseline/` _(src+tests)_ | El piso a superar, y el harness que lo mide. Lo que vive aca es el baseline del VOTO INDIVIDUAL (`baseline_voto_individual.py`, con el guard de era del ADR-0018) mas los diagnosticos del Senado. El baseline de BLOQUE -el ~0,99- se midio en `fase0/` y ahi quedo. | 5 | 1,093 | **vencida** |
 | `datos/canonica/` _(src+tests)_ | La base propia y unica de votaciones nominales: todas las fuentes unificadas, deduplicadas y con entidades resueltas. Fuente de verdad de la que leen `variables/` y `modelo/`. | 7 | 999 | **vencida** |
 | `datos/senado/` _(src+tests)_ | Ingesta de votaciones nominales del Senado desde senado.gob.ar + reconstruccion del bloque historico contemporaneo a cada voto. Tapa el hueco 2015-2023. | 5 | 940 | ok |
 | `datos/bot_recoleccion/` _(src+tests)_ | El bot diario que trae lo nuevo de ambas camaras (proyectos con firmantes y giros, y votaciones) con upsert idempotente. Corre solo en GitHub Actions. | 7 | 880 | ok |
@@ -245,7 +245,7 @@ Buscar uno sin abrir nada: `python .mapa/buscar.py --dato <termino>`. Columna **
 | `docs/schemas/acta.schema.json` | objeto: $schema, $id, title, description | 2 KB | si | `build.py` | — |
 | `docs/schemas/voto.schema.json` | objeto: $schema, $id, title, description | 1 KB | si | `build.py` | — |
 | `docs/taxonomias/taxonomias.json` | objeto: schema_version, actualizado, not | 7 KB | si | — | `registro.py`, `loader.py` |
-| `evaluacion/baseline/outputs/guard_era_medicion.json` | objeto: _que_es, _n_votos, resultados, m | 4 KB | si | `medir_guard_era.py` | — |
+| `evaluacion/baseline/outputs/guard_era_medicion.json` | objeto: _que_es, _n_votos, resultados, m | 5 KB | si | `medir_guard_era.py` | — |
 | `evaluacion/baseline/outputs/diagnostico_senado.json` | objeto: senado | 4 KB | si | `diagnostico_senado.py` | — |
 | `evaluacion/baseline/outputs/baseline_guard_shrink.json` | objeto: n_actas_evaluadas, n_actas_salta | 4 KB | si | — | — |
 | `evaluacion/baseline/outputs/baseline_voto_individual.json` | objeto: n_actas_evaluadas, n_actas_salta | 4 KB | si | `baseline_voto_individual.py` | `verificar_regeneracion.py` |
@@ -335,14 +335,14 @@ Ordenados por cuantos otros archivos dependen de ellos. Tocar uno de arriba tien
 |---|---:|---:|---|
 | `rutas.py` | 207 | 21 | `_env`, `inventario` |
 | `variables/bloque/src/bloque.py` | 633 | 15 | `_canon_linaje`, `_norm_nombre`, `_cargar_padron_linaje_senado`, `_enriquecer_linaje_senado` |
-| `definiciones.py` | 261 | 13 | `periodo_parlamentario`, `gobierno_por_fecha`, `era_de`, `normalizar_mayoria_valor` |
+| `definiciones.py` | 261 | 14 | `periodo_parlamentario`, `gobierno_por_fecha`, `era_de`, `normalizar_mayoria_valor` |
 | `variables/embudo/src/embudo.py` | 730 | 6 | `cargar_icg`, `_mes_rezagado`, `cargar`, `cargar_sqlite` |
-| `modelo/ensemble/src/nowcast_puertas.py` | 580 | 5 | `_bloque`, `era_de`, `alineacion_individual`, `perfil_legislador` |
-| `evaluacion/baseline/src/baseline_voto_individual.py` | 451 | 5 | `_norm_cond`, `_ContadorAvisos`, `perfil`, `_metricas` |
+| `evaluacion/baseline/src/baseline_voto_individual.py` | 449 | 5 | `_norm_cond`, `_ContadorAvisos`, `perfil`, `_metricas` |
 | `modelo/ensemble/src/ensemble.py` | 398 | 5 | `_cargar_simulador`, `_cargar_proyector`, `componer`, `_root` |
 | `modelo/ensemble/src/puerta_d.py` | 236 | 5 | `camara_revisora`, `_padron_de`, `_clip01`, `_logit` |
 | `modelo/agregador_institucional/src/agregador.py` | 418 | 4 | `umbral_aprobacion`, `_prob_conductas`, `simular_votacion`, `_linea_bloque_por_acta` |
 | `datos/canonica/src/entity_resolution.py` | 327 | 4 | `_strip`, `_name_key`, `_leg_id`, `_aplicar_alias` |
+| `modelo/ensemble/src/nowcast_puertas.py` | 580 | 3 | `_bloque`, `era_de`, `alineacion_individual`, `perfil_legislador` |
 | `datos/padron/src/ingesta_padron.py` | 239 | 3 | `_norm_col`, `_fecha_iso`, `_limpiar_nombre`, `cargar_nomina` |
 | `datos/proyectos/src/verificar.py` | 237 | 3 | `Control`, `_abrir`, `controles_base`, `control_cohorte` |
 
@@ -351,10 +351,10 @@ Ordenados por cuantos otros archivos dependen de ellos. Tocar uno de arriba tien
 - `variables/proyecto/tests/` → `variables/proyecto/src/` (9)
 - `modelo/ensemble/src/` → `./` (8)
 - `modelo/ensemble/tests/` → `modelo/ensemble/src/` (7)
+- `evaluacion/baseline/src/` → `./` (6)
 - `modelo/ensemble/src/` → `variables/bloque/src/` (6)
 - `datos/padron/tests/` → `datos/padron/src/` (5)
 - `datos/proyectos/tests/` → `datos/proyectos/src/` (5)
-- `evaluacion/baseline/src/` → `./` (5)
 - `datos/expedientes/src/` → `./` (4)
 - `datos/expedientes/tests/` → `datos/expedientes/src/` (4)
 - `modelo/ensemble/src/` → `evaluacion/baseline/src/` (4)
@@ -369,8 +369,8 @@ Segun el historial de git. Si vas a cambiar uno, mira el otro.
 - `Nowcast Congreso Argy/coordinacion/ESTADO-DEL-PROYECTO.md` + `Nowcast Congreso Argy/tablero_datos.js` (29 commits)
 - `Nowcast Congreso Argy/coordinacion/EN-HUMANO.md` + `Nowcast Congreso Argy/tablero_datos.js` (27 commits)
 - `Nowcast Congreso Argy/coordinacion/ESTADO-DEL-PROYECTO.md` + `Nowcast Congreso Argy/coordinacion/TABLERO.md` (23 commits)
+- `Nowcast Congreso Argy/.mapa/mapa.json` + `Nowcast Congreso Argy/MAPA.md` (21 commits)
 - `Nowcast Congreso Argy/coordinacion/EN-HUMANO.md` + `Nowcast Congreso Argy/coordinacion/TABLERO.md` (21 commits)
-- `Nowcast Congreso Argy/.mapa/mapa.json` + `Nowcast Congreso Argy/MAPA.md` (20 commits)
 - `Nowcast Congreso Argy/coordinacion/TABLERO.md` + `Nowcast Congreso Argy/tablero_datos.js` (18 commits)
 - `Nowcast Congreso Argy/coordinacion/ESTADO-DEL-PROYECTO.md` + `Nowcast Congreso Argy/coordinacion/URGENTE.md` (12 commits)
 - `Nowcast Congreso Argy/coordinacion/EN-HUMANO.md` + `Nowcast Congreso Argy/coordinacion/URGENTE.md` (10 commits)
@@ -411,4 +411,4 @@ Segun el historial de git. Si vas a cambiar uno, mira el otro.
 
 ## Frescura
 
-- Bitacoras vencidas: `datos/canonica/`, `datos/expedientes/`, `variables/proyecto/`
+- Bitacoras vencidas: `datos/canonica/`, `datos/expedientes/`, `evaluacion/baseline/`, `variables/proyecto/`

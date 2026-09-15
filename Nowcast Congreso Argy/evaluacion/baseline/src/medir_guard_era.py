@@ -52,6 +52,7 @@ ETIQ = ["hasta 2011", "2011-2015", "2015-2019", "2019-2023", "desde 2023"]
 sys.path.insert(0, str(next(d for d in Path(__file__).resolve().parents
                             if (d / "rutas.py").is_file())))
 from rutas import RAIZ as REPO  # noqa: E402
+from definiciones import era_de  # noqa: E402
 
 
 def _metricas(p: np.ndarray, y: np.ndarray) -> dict:
@@ -77,14 +78,14 @@ def cargar() -> pd.DataFrame:
 
 
 def eras_de(fechas: pd.Series) -> pd.Series:
-    """Era de cada fecha, delegando en el motor pero UNA VEZ POR FECHA DISTINTA.
+    """Era de cada fecha, con `era_de` de `definiciones.py` (ADR-0014) pero UNA VEZ
+    POR FECHA DISTINTA.
 
     `fechas.map(era_de)` sobre 1.016.058 filas tarda minutos; hay ~2.800 fechas
     distintas (una por sesion), asi que el mapa se arma sobre las unicas. El calendario
-    sigue siendo el del motor: no se copia aca.
+    es el mismo que usa el motor (`nowcast_puertas.era_de` es un re-export de este
+    mismo `era_de`): no se copia aca.
     """
-    sys.path.insert(0, str(REPO / "modelo" / "ensemble" / "src"))
-    from nowcast_puertas import era_de  # type: ignore
     mapa = {f: era_de(f) for f in pd.unique(fechas)}
     return fechas.map(mapa)
 

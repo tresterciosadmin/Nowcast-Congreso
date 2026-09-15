@@ -2,13 +2,13 @@
 
 <!-- GENERADO por indexar.py. No editar: los cambios se pierden. -->
 <!-- La prosa vive en el README.md de cada modulo (seccion `Buscar aca si`). -->
-<!-- 2026-09-15 19:31 UTC · 161 archivos · 40,290 LOC -->
+<!-- 2026-09-15 23:24 UTC · 161 archivos · 40,357 LOC -->
 
 ## Como usar este archivo
 
 Es el unico archivo del proyecto que hace falta leer para empezar. Para ubicar algo concreto: `python3 .mapa/buscar.py "<termino>"` devuelve archivo y linea sin abrir nada. Recien despues abrir los archivos que salgan, y solo esos.
 
-Rama `main` — ultimo commit: 2026-09-15 9003262 datos/taxonomias: registro unico tambien lee proyecto_taxonomias (ADR-0024) · **hay cambios sin commitear**
+Rama `main` — ultimo commit: 2026-09-15 fa9a20c modelo/ensemble: cierra sobre tablas (S:III.A.5) -- probado y descartado por ahora · **hay cambios sin commitear**
 
 ## Donde buscar que
 
@@ -132,7 +132,7 @@ Rama `main` — ultimo commit: 2026-09-15 9003262 datos/taxonomias: registro uni
 
 | Carpeta | Que es | Arch. | LOC | Bitacora |
 |---|---|---:|---:|---|
-| `modelo/ensemble/` _(src+tests)_ | La composicion final: el nowcast end-to-end de un proyecto. El punto de entrada vivo es `nowcast_puertas.py`, que corre la CADENA DE PUERTAS y devuelve un numero condicional a que las camaras voten. La formulacion v1 -P(llega al recinto) x P(mayoria dado recinto)- se dio de BAJA el 2026-08-22 (ADR-0012), junto con su backtest: `ensemble.componer` y `backtest_cadena.py` siguen ahi pero levantan SystemExit. | 23 | 6,139 | **vencida** |
+| `modelo/ensemble/` _(src+tests)_ | La composicion final: el nowcast end-to-end de un proyecto. El punto de entrada vivo es `nowcast_puertas.py`, que corre la CADENA DE PUERTAS y devuelve un numero condicional a que las camaras voten. La formulacion v1 -P(llega al recinto) x P(mayoria dado recinto)- se dio de BAJA el 2026-08-22 (ADR-0012), junto con su backtest: `ensemble.componer` y `backtest_cadena.py` siguen ahi pero levantan SystemExit. | 23 | 6,162 | **vencida** |
 | `./` | La raiz del proyecto: los paneles que se abren con doble clic, el tablero ejecutivo y su unica fuente de datos (`tablero_datos.js`). | 6 | 5,988 | **vencida** |
 | `variables/proyecto/` _(src+tests)_ | Feature store por proyecto: tema/materia, origen (Ejecutivo/oficialismo/aliados/oposicion), jefe de bloque, mayoria requerida, texto, y el ICG como modulador de coyuntura. La postura del gobierno por acta se midio aca y su modulo se archivo el 2026-09-10 sin consumidor: la medicion quedo en el ADR-0021 y en ESTADO. | 23 | 5,046 | **vencida** |
 | `datos/expedientes/` _(src+tests)_ | Registro de todo lo PRESENTADO (no solo lo votado): titulo, autor, tipo, fecha y cadena de vida del expediente. Denominador del embudo y enlace acta -> expediente. | 17 | 4,832 | **vencida** |
@@ -145,8 +145,8 @@ Rama `main` — ultimo commit: 2026-09-15 9003262 datos/taxonomias: registro uni
 | `datos/canonica/` _(src+tests)_ | La base propia y unica de votaciones nominales: todas las fuentes unificadas, deduplicadas y con entidades resueltas. Fuente de verdad de la que leen `variables/` y `modelo/`. | 7 | 1,032 | **vencida** |
 | `datos/senado/` _(src+tests)_ | Ingesta de votaciones nominales del Senado desde senado.gob.ar + reconstruccion del bloque historico contemporaneo a cada voto. Tapa el hueco 2015-2023. | 5 | 940 | ok |
 | `datos/bot_recoleccion/` _(src+tests)_ | El bot diario que trae lo nuevo de ambas camaras (proyectos con firmantes y giros, y votaciones) con upsert idempotente. Corre solo en GitHub Actions. | 7 | 880 | ok |
+| `modelo/agregador_institucional/` _(src+tests)_ | Traduce posturas de bloque + asistencia en un resultado institucional: cuenta bancas, quorum, umbrales de mayoria y bandas. Mide la estructura, no la politica. | 2 | 633 | **vencida** |
 | `modelo/voto_individual/` _(src+tests)_ | No predice el voto medio (eso lo resuelve la regla de bloque ~0,99): modela el DESVIO del legislador respecto de su bloque y detecta pivotes (ADR-0003). | 2 | 597 | ok |
-| `modelo/agregador_institucional/` _(src+tests)_ | Traduce posturas de bloque + asistencia en un resultado institucional: cuenta bancas, quorum, umbrales de mayoria y bandas. Mide la estructura, no la politica. | 2 | 589 | ok |
 | `producto/dashboard/` _(src)_ | Tablero interno: radar de traccion, mapa de pivotes y escenarios, y el MAPA DEL MODELO: el diagrama de flujo BICAMERAL de como se calcula P(sancion) -dos bloques espejo, origen y revisora, con el condicionamiento entre camaras dibujado-, generado desde el indice del repo. Los entregables se abren con doble clic desde la RAIZ; el codigo del generador vive aca. | 1 | 563 | ok |
 | `datos/seguimiento/` _(src+tests)_ | Dado un expediente ya conocido, baja su ficha oficial y extrae el estado de avance: giros, movimientos, fechas y PDF. Insumo del embudo. NO descubre proyectos nuevos. | 2 | 512 | ok |
 | `datos/taxonomias/` _(src+tests)_ | El registro unico de taxonomias asignadas: una fila por (objeto, taxonomia), en CSV versionado, consolidado desde todas las fuentes que existian sueltas. | 2 | 501 | **vencida** |
@@ -351,10 +351,10 @@ Ordenados por cuantos otros archivos dependen de ellos. Tocar uno de arriba tien
 | `definiciones.py` | 261 | 14 | `periodo_parlamentario`, `gobierno_por_fecha`, `era_de`, `normalizar_mayoria_valor` |
 | `variables/embudo/src/embudo.py` | 730 | 6 | `cargar_icg`, `_mes_rezagado`, `cargar`, `cargar_sqlite` |
 | `modelo/ensemble/src/nowcast_puertas.py` | 708 | 6 | `_tema_auto`, `_bloque`, `era_de`, `alineacion_individual` |
-| `modelo/ensemble/src/ensemble.py` | 398 | 6 | `_cargar_simulador`, `_cargar_proyector`, `componer`, `_root` |
-| `modelo/ensemble/src/puerta_d.py` | 236 | 6 | `camara_revisora`, `_padron_de`, `_clip01`, `_logit` |
+| `modelo/ensemble/src/ensemble.py` | 413 | 6 | `_cargar_simulador`, `_cargar_proyector`, `componer`, `_root` |
+| `modelo/ensemble/src/puerta_d.py` | 244 | 6 | `camara_revisora`, `_padron_de`, `_clip01`, `_logit` |
 | `evaluacion/baseline/src/baseline_voto_individual.py` | 501 | 5 | `_norm_cond`, `_ContadorAvisos`, `perfil`, `_metricas` |
-| `modelo/agregador_institucional/src/agregador.py` | 418 | 4 | `umbral_aprobacion`, `_prob_conductas`, `simular_votacion`, `_linea_bloque_por_acta` |
+| `modelo/agregador_institucional/src/agregador.py` | 462 | 4 | `umbral_aprobacion`, `_prob_conductas`, `simular_votacion`, `_linea_bloque_por_acta` |
 | `datos/canonica/src/entity_resolution.py` | 327 | 4 | `_strip`, `_name_key`, `_leg_id`, `_aplicar_alias` |
 | `datos/padron/src/ingesta_padron.py` | 239 | 3 | `_norm_col`, `_fecha_iso`, `_limpiar_nombre`, `cargar_nomina` |
 | `datos/proyectos/src/verificar.py` | 237 | 3 | `Control`, `_abrir`, `controles_base`, `control_cohorte` |
@@ -378,15 +378,15 @@ Ordenados por cuantos otros archivos dependen de ellos. Tocar uno de arriba tien
 
 Segun el historial de git. Si vas a cambiar uno, mira el otro.
 
-- `Nowcast Congreso Argy/coordinacion/EN-HUMANO.md` + `Nowcast Congreso Argy/coordinacion/ESTADO-DEL-PROYECTO.md` (36 commits)
-- `Nowcast Congreso Argy/coordinacion/ESTADO-DEL-PROYECTO.md` + `Nowcast Congreso Argy/tablero_datos.js` (31 commits)
-- `Nowcast Congreso Argy/.mapa/mapa.json` + `Nowcast Congreso Argy/MAPA.md` (28 commits)
-- `Nowcast Congreso Argy/coordinacion/EN-HUMANO.md` + `Nowcast Congreso Argy/tablero_datos.js` (28 commits)
+- `Nowcast Congreso Argy/coordinacion/EN-HUMANO.md` + `Nowcast Congreso Argy/coordinacion/ESTADO-DEL-PROYECTO.md` (37 commits)
+- `Nowcast Congreso Argy/coordinacion/ESTADO-DEL-PROYECTO.md` + `Nowcast Congreso Argy/tablero_datos.js` (32 commits)
+- `Nowcast Congreso Argy/.mapa/mapa.json` + `Nowcast Congreso Argy/MAPA.md` (29 commits)
+- `Nowcast Congreso Argy/coordinacion/EN-HUMANO.md` + `Nowcast Congreso Argy/tablero_datos.js` (29 commits)
 - `Nowcast Congreso Argy/coordinacion/ESTADO-DEL-PROYECTO.md` + `Nowcast Congreso Argy/coordinacion/TABLERO.md` (24 commits)
 - `Nowcast Congreso Argy/coordinacion/EN-HUMANO.md` + `Nowcast Congreso Argy/coordinacion/TABLERO.md` (21 commits)
 - `Nowcast Congreso Argy/coordinacion/TABLERO.md` + `Nowcast Congreso Argy/tablero_datos.js` (19 commits)
-- `Nowcast Congreso Argy/.mapa/mapa.json` + `Nowcast Congreso Argy/coordinacion/ESTADO-DEL-PROYECTO.md` (13 commits)
-- `Nowcast Congreso Argy/MAPA.md` + `Nowcast Congreso Argy/coordinacion/ESTADO-DEL-PROYECTO.md` (13 commits)
+- `Nowcast Congreso Argy/.mapa/mapa.json` + `Nowcast Congreso Argy/coordinacion/ESTADO-DEL-PROYECTO.md` (14 commits)
+- `Nowcast Congreso Argy/MAPA.md` + `Nowcast Congreso Argy/coordinacion/ESTADO-DEL-PROYECTO.md` (14 commits)
 - `Nowcast Congreso Argy/coordinacion/ESTADO-DEL-PROYECTO.md` + `Nowcast Congreso Argy/coordinacion/URGENTE.md` (12 commits)
 
 ## Fuentes externas
@@ -424,4 +424,4 @@ Segun el historial de git. Si vas a cambiar uno, mira el otro.
 
 ## Frescura
 
-- Bitacoras vencidas: `./`, `datos/canonica/`, `datos/expedientes/`, `datos/taxonomias/`, `evaluacion/baseline/`, `modelo/ensemble/`, `variables/bloque/`, `variables/proyecto/`
+- Bitacoras vencidas: `./`, `datos/canonica/`, `datos/expedientes/`, `datos/taxonomias/`, `evaluacion/baseline/`, `modelo/agregador_institucional/`, `modelo/ensemble/`, `variables/bloque/`, `variables/proyecto/`

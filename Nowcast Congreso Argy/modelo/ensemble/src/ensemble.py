@@ -323,7 +323,8 @@ def simular_con_guardas(lineas, desvios, tipo_mayoria: str, camara: str, *,
                         n_sims: int = 2000, seed: int | None = 0,
                         desvio_min: float = DESVIO_MIN_INDIVIDUAL,
                         p_incertidumbre: float = P_INCERTIDUMBRE,
-                        p_presente=None, reparto_desvio: float = 0.5) -> dict:
+                        p_presente=None, reparto_desvio: float = 0.5,
+                        epsilon0: float = 0.0, tau: float = 0.0) -> dict:
     """Corre el agregador CON las dos guardas contra la sobreconfianza.
 
     ÚNICO lugar donde viven esas dos guardas (2026-08-22). Antes estaban sólo dentro
@@ -338,12 +339,23 @@ def simular_con_guardas(lineas, desvios, tipo_mayoria: str, camara: str, *,
         finita no es un 0 real: siempre hay ausencia, enfermedad o sorpresa.
       - `p_incertidumbre`: ε de riesgo SISTÉMICO que el supuesto de votos
         independientes no capta. P(mayoría) se reporta en [ε, 1-ε], nunca 0%/100%.
+        Es el clip AGREGADO que §III.A.3/ADR-0025 reemplaza — sigue siendo el
+        default porque `epsilon0`/`tau` están apagados (0.0) por defecto.
 
     Poner las dos en 0 devuelve el comportamiento crudo del agregador.
 
+    `epsilon0`, `tau` (ADR-0025, apagados por defecto): las DOS piezas de
+    §III.A.3, a nivel LEGISLADOR — ver el docstring de
+    `agregador.simular_votacion`. Cuando cualquiera de las dos es > 0, **el
+    clip agregado (`p_incertidumbre`) se desactiva solo**: son dos formas de
+    resolver el mismo problema (que P(mayoría) no sea 0%/100%) y no se apilan
+    — apilarlas doble-contaría la misma incertidumbre en dos niveles distintos,
+    exactamente el error que el ADR-0016 existe para evitar.
+
     Devuelve el dict de `simular_votacion` con `p_aprobacion` YA acotada, más la
     trazabilidad de lo que se aplicó (`p_aprobacion_cruda`, `desvio_min_aplicado`,
-    `p_incertidumbre_aplicada`) para que el clamp nunca sea invisible.
+    `p_incertidumbre_aplicada`, `epsilon0_aplicado`, `tau_aplicado`) para que el
+    clamp nunca sea invisible.
     """
     simular = _cargar_simulador()
     desv = np.maximum(np.asarray(desvios, dtype=float), float(max(desvio_min, 0.0)))
@@ -352,11 +364,14 @@ def simular_con_guardas(lineas, desvios, tipo_mayoria: str, camara: str, *,
     # nunca vota entra igual como un voto entero — que es lo que pasaba con el
     # presidente de la Cámara, contado como afirmativo casi seguro.
     extra = {} if p_presente is None else {"p_presente": np.asarray(p_presente, dtype=float)}
+    usar_incertidumbre_legislador = (epsilon0 > 0.0) or (tau > 0.0)
     sim = simular(np.asarray(lineas), desv, tipo_mayoria=tipo_mayoria,
                   camara=str(camara).strip().lower(), n_sims=n_sims, seed=seed,
-                  reparto_desvio=float(reparto_desvio), **extra)
+                  reparto_desvio=float(reparto_desvio),
+                  epsilon0=float(epsilon0), tau=float(tau), **extra)
     cruda = float(sim["p_aprobacion"])
-    eps = float(np.clip(p_incertidumbre, 0.0, 0.5))
+    # el clip agregado se apaga solo cuando la incertidumbre ya bajó al legislador
+    eps = 0.0 if usar_incertidumbre_legislador else float(np.clip(p_incertidumbre, 0.0, 0.5))
     sim = dict(sim)
     sim["p_aprobacion"] = float(np.clip(cruda, eps, 1.0 - eps))
     sim["p_aprobacion_cruda"] = cruda

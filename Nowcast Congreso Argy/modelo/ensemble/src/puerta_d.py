@@ -132,6 +132,8 @@ def p_voto_revisora(
     seed: Optional[int] = 0,
     padron_file: Optional[str] = None,
     disciplina_path: Optional[str] = None,
+    epsilon0: float = 0.0,
+    tau: float = 0.0,
 ) -> dict:
     """P(mayoría en la cámara revisora) para un proyecto con media sanción.
 
@@ -145,6 +147,11 @@ def p_voto_revisora(
                     impulsa). Sólo se usan cuando `bloques` es None.
     delta, factor_encogimiento : ajuste 'pasó por origen'. Por defecto (0,0) =
                     Manera 1 pura. Cuando se ajuste Manera 2, se pasan acá.
+
+    epsilon0, tau  : ADR-0025, apagados (0.0) por defecto. Pasan derecho a
+                    `simular_con_guardas` — la revisora recibe la MISMA
+                    incertidumbre a nivel legislador que la cámara de origen,
+                    nunca un tratamiento aparte.
 
     Devuelve dict con p_aprobacion (ya ajustada), p0 (base), camara_revisora,
     manera ('1' | '2'), n_roster y el detalle del roster.
@@ -182,7 +189,8 @@ def p_voto_revisora(
 
     sim = simular_con_guardas(lineas, desvios, tipo_mayoria, revisora,
                               n_sims=n_sims, seed=seed, p_presente=p_presente,
-                              reparto_desvio=reparto_desvio)
+                              reparto_desvio=reparto_desvio,
+                              epsilon0=epsilon0, tau=tau)
     p0 = float(sim["p_aprobacion"])
     p_aj = ajuste_paso_origen(p0, delta, factor_encogimiento)
 

@@ -20,6 +20,7 @@ Une las dos piezas ya validadas del sistema en un solo número (con su descompos
 - la Puerta D / camara revisora en el circuito bicameral
 - P(mayoria) que da 0% o 100% (hay piso y techo por pedido de Valle)
 - REVISION 25-08: multiplicar P_B x P_D supone INDEPENDENCIA entre camaras y es falsa; y `P(B|A)` es notacion enganosa (A y C son un corrimiento en logit, no un condicional bayesiano)
+- la incertidumbre a nivel legislador que reemplaza al clip agregado (ADR-0025, 16-09): `INCERTIDUMBRE_LEGISLADOR=1` en `nowcast_puertas.py` -- implementado y medido, evidencia favorable, apagado por defecto a la espera de que Franco decida activarlo
 - el sobre tablas: 24,4% de los proyectos votados en recinto no tienen dictamen; `sobre_tablas.py` implementa el gate + la votación de dos tercios, pero θ SATURA en Diputados (predice 0,01 siempre) y atenuarlo por grilla (opción A) no lo arregla — el mecanismo no discrimina ni sin θ — APAGADA, no se recomienda prender
 - Diputados dejó de titular "sobre tablas" en 2020 y desde 2024 usa "HABILITACIÓN DEL TRATAMIENTO..." (mismo mecanismo, otro nombre) — matching corregido en `estimar_theta_sobre_tablas.py`
 - diferencia entre la BANDA (p5-p95, agregada) y los PIVOTES (P individual en [0,35;0,65])

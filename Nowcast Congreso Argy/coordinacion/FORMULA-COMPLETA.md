@@ -45,7 +45,7 @@ este archivo en el mismo commit.
 | 10 | ICG — clima político | modula según el humor social | 🔴 **medido y desconectado** (§II.4) |
 | 11 | $\mathcal{C}_c$ — gate del dictamen | admisibilidad reglamentaria | 🔬 **IMPLEMENTADO 15-09 (aproximación), tras bandera apagada** (§III.A.1) |
 | 12 | $\beta$ — dictamen por legislador | reemplaza a $\delta$ | ✅ **PRENDIDO 14-09-2026** (§III.A.2) |
-| 13 | $\varepsilon_0 + \eta_j$ — incertidumbre | reemplaza al clip | 🔲 **decidido y ESTIMADO 03-09** (§III.A.3) |
+| 13 | $\varepsilon_0 + \eta_j$ — incertidumbre | reemplaza al clip | 🔬 **IMPLEMENTADO y MEDIDO 16-09, tras bandera apagada (`INCERTIDUMBRE_LEGISLADOR`) — evidencia favorable, activación pendiente de Franco** (§III.A.3, ADR-0025) |
 | 14 | $\psi$ — arrastre entre cámaras | la revisora lee a la de origen | 🔲 **ESTIMADO y controlado 03-09** (§III.A.4) |
 | 15 | sobre tablas | el 24,4% que hoy es invisible | 🔴 **PROBADO y DESCARTADO POR AHORA, 15-09** (§III.A.5) — implementado, backtest walk-forward mecanístico: el mecanismo no discrimina, con o sin θ. No es un "no" definitivo — "no todavía"; decisión de Franco |
 | 16 | proximidad electoral | el calendario cambia incentivos | 🔲 **propuesto** (§III.B.1) |
@@ -53,11 +53,12 @@ este archivo en el mismo commit.
 | 18 | $\rho$ — récord por tema | falta la tabla | 🔲 **bloqueado** (§III.B.3) |
 | 19 | multietiqueta en $s_\ell$ (`combinar_temas`) + `TEMA_AUTO` | un proyecto real casi siempre tiene VARIOS temas (61,2% medido) | 🔴 **PROBADO y DESCARTADO POR AHORA, 15-09** (§I.4a, ADR-0024) — implementado, backtest real (2.984 actas): `union` y `ponderada` EMPEORAN el Brier en la rama de bloque (−0,056 → −0,076 / −0,066 de skill) respecto de la `primaria` de siempre. No es un "no" definitivo — "no todavía"; decisión de Franco |
 
-**Resumen honesto: 7 términos corren, 6 están rotos, apagados o reprobaron su backtest
-(el sobre tablas y la multietiqueta se suman a esta lista el 15-09: ninguno de los dos
-generaliza fuera de la muestra con la que se construyó), 1 está implementado detrás de
-bandera y medido a la espera de la decisión de Franco, 2 están decididos sin implementar
-y 3 son propuestas.** El motor que corre hoy es más chico que esta fórmula.
+**Resumen honesto: 7 términos corren, 5 están rotos, apagados o reprobaron su backtest
+(el sobre tablas y la multietiqueta no generalizan fuera de la muestra con la que se
+construyeron), 2 están implementados detrás de bandera con evidencia FAVORABLE a la
+espera de que Franco decida activarlos ($\mathcal{C}_c$ y, desde el 16-09,
+$\varepsilon_0+\tau\eta_j$ — ADR-0025), 1 está decidido sin implementar ($\psi$) y 3 son
+propuestas.** El motor que corre hoy es más chico que esta fórmula.
 
 ---
 ---
@@ -277,7 +278,9 @@ Cuatro cosas construidas que **no aportan**: dos están apagadas, dos están mal
 **Efecto colateral:** un clip aplasta a todos los extremos al **mismo** valor, o sea que
 **destruye el ranking de pivotes** — que es la mitad del producto (ADR-0007).
 
-**Corrección decidida:** §III.A.3.
+**Corrección decidida:** §III.A.3. **IMPLEMENTADA el 16-09 (ADR-0025), tras bandera
+apagada** (`INCERTIDUMBRE_LEGISLADOR`) — cuando se prende, este clip se desactiva
+solo (no se apilan las dos correcciones).
 
 ## II.2 🔴 El quórum ignora las abstenciones — bug confirmado
 
@@ -1020,10 +1023,39 @@ manda todo al término lineal y $b$ sale con signo arbitrario (daba negativo en 
 2,62 en Senado). El despeje directo por acta, $\tau^2 = (\text{res}^2 - S)/S^2$, con
 **mediana** en vez de media, es robusto a las actas donde el motor erró de lado.
 
-> ⚠️ **PENDIENTE DE FRANCO.** $\tau \approx 1{,}2$ está estimado sobre el error del motor
-> ACTUAL. Si δ (§III.A.2) mejora las predicciones, parte de esa dispersión debería
-> desaparecer y $\tau$ hay que **re-estimarlo después**, no antes. El orden importa: si se
-> fija $\tau$ ahora y después entra δ, las bandas quedan infladas.
+> ⚠️ **PENDIENTE DE FRANCO — actualizado 16-09.** El orden se respetó: antes de
+> implementar se re-estimó, para no fijar $\tau$ sobre un motor que iba a cambiar. Ver
+> el bloque de implementación abajo.
+
+### 🔬 IMPLEMENTADO 16-09-2026, tras bandera apagada — ADR-0025
+
+**Re-estimado antes de implementar** (2.485 actas, 293.655 votos — 5× la muestra del
+03-09, ahora con `beta_dictamen` prendido desde el 14-09): $\varepsilon_0=0{,}035$,
+$\tau=1{,}190$ — **casi idéntico** al 1,197 original. La estabilidad tiene una
+explicación, no es casualidad: ni este script ni `baseline_voto_individual.py`
+incluyen $\beta$ en su `p_motor`, así que el harness que mide la dispersión no cambió
+y la dispersión que mide, tampoco. Queda anotado como límite de esta medición.
+
+`agregador.simular_votacion` gana `epsilon0`/`tau` (0.0 por defecto, byte a byte igual
+que antes). $P_i$ es la probabilidad de AFIRMATIVO que ya calculaba el módulo (antes de
+escalar por presencia); NEGATIVO y NO_ACOMPAÑA se reparten lo que queda **en la misma
+proporción que tenían entre sí**, para no confundir "menos acompañamiento" con "más
+ausencia". El clip agregado de §II.1 se apaga solo cuando esto se prende — nunca las
+dos correcciones juntas, sería doble contar.
+
+**Verificado contra el escenario de referencia de esta misma sección:** con
+$\varepsilon_0=0{,}02,\ \tau=1{,}0$ el $P_c$ del escenario (140 a favor / 117 en contra)
+da 0,7664 — cae exactamente entre el 0,8771 (sin $\varepsilon_0$) y el 0,7758 (con
+$\varepsilon_0=0{,}05$) que ya estaban en la tabla de arriba. El mecanismo se comporta
+como la fórmula predecía antes de escribirse.
+
+**Bandera única:** `INCERTIDUMBRE_LEGISLADOR` (`nowcast_puertas.py`), apagada por
+defecto. Simétrica en las dos cámaras (origen y revisora). Detalle completo, tests y
+la comparación con el resultado negativo de la multietiqueta (ADR-0024) en ADR-0025.
+
+**Por qué no se prendió igual, con evidencia toda favorable:** activar esto CAMBIA el
+número publicado (las bandas se ensanchan, $P_c$ deja de pegarse a 0%/100%) — decisión
+de producto, no sólo de modelo. Queda para Franco.
 
 ### III.A.4 — El arrastre entre cámaras lo lee el senador, no el Senado
 

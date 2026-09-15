@@ -2,6 +2,31 @@
 
 > Documento vivo. Cada cambio importante en el proyecto se explica acá en lenguaje claro, además de registrarse en `ESTADO-DEL-PROYECTO.md`. Si algo del sistema no se entiende leyendo esto, está mal escrito y hay que arreglarlo.
 
+## Le devolvimos al modelo la incertidumbre que le faltaba, y la probamos antes de prenderla (16-09-2026)
+
+Franco pidió que esto fuera lo primero: resolver un pendiente que llevaba desde principios
+de septiembre escrito pero sin construir. El problema, dicho simple: hoy el modelo simula
+cada legislador como si votara solo, sin que le importe lo que hacen los demás. Eso hace
+que el número final sea demasiado extremo — casi siempre 99% o 1%, casi nunca algo
+intermedio como 70% u 80%, que es lo que en realidad pasa muchas veces en el Congreso. El
+parche que había hasta ahora era forzar el número final a quedar entre 1% y 99%, a mano,
+después de calcular todo — un remiendo, no una explicación de por qué pasaba.
+
+Se construyó la explicación real: cada legislador vota con un poco más de incertidumbre
+individual (nadie es una certeza absoluta, ni para bien ni para mal), y además, en cada
+simulación, se agrega un "clima del día" que afecta a TODOS los legisladores juntos —
+algunas simulaciones el humor general empuja para un lado, otras para el otro. Esto último
+es lo que realmente le faltaba al modelo: medido con los datos reales, la variación de
+verdad en los resultados es entre 37 y 41 veces mayor que la que sale de asumir que cada
+persona vota por su cuenta. No es una sospecha: se midió dos veces, con años de diferencia
+en la cantidad de datos, y dio prácticamente el mismo número las dos veces.
+
+Antes de prenderlo, se probó contra el caso de referencia que ya estaba escrito en la
+documentación desde hace semanas, y el comportamiento coincidió exactamente con lo
+esperado. Se dejó **apagado por default**: prenderlo cambia el número que se publica (las
+probabilidades van a dejar de pegarse tanto a 0% o 100%), así que aunque toda la evidencia
+apunta a que es lo correcto, es una decisión que le toca a Franco, no al modelo.
+
 ## Probamos las dos formas de combinar varios temas, y las dos salieron peor (15-09-2026)
 
 Siguiendo con el hito de abajo: se probaron con datos reales las dos formas de combinar

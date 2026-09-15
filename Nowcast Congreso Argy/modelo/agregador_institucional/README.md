@@ -19,6 +19,7 @@ contra resultados históricos reales (backtest, en curso).
 - por que sin condicionar por tema y origen todos los bloques quedan 'a favor'
 - el quorum y las abstenciones: `presentes = afirm + neg` por defecto; el arreglo esta implementado detras de `QUORUM_ABSTENCIONES=1` y medido (hoy mueve 0,0000)
 - por que la ausencia NO sale del desvio sino de `p_presente`, y por que el epsilon es un CLIP y no un modelo de riesgo sistemico
+- la alternativa al clip (ADR-0025, 16-09): `simular_votacion(..., epsilon0=.035, tau=1.19)` mueve la incertidumbre al LEGISLADOR (encogimiento afin + shock comun por simulacion). Apagado por defecto (`epsilon0=0, tau=0`), se prende con `INCERTIDUMBRE_LEGISLADOR=1` en `nowcast_puertas.py`
 
 <!-- Las dos cosas de arriba las levanta `.mapa/indexar.py` al MAPA.md de la
      raiz: el `Resumen:` va a la columna "Que es" y las pistas al router

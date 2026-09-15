@@ -157,6 +157,35 @@ TEMA_AUTO = os.environ.get("TEMA_AUTO", "0") != "0"
 # validación empírica antes de ser el default.
 COMBINAR_TEMAS = os.environ.get("COMBINAR_TEMAS", "primaria")
 
+# INCERTIDUMBRE A NIVEL LEGISLADOR (§III.A.3, ADR-0025). APAGADA POR DEFECTO.
+#
+# Reemplaza el clip AGREGADO (`ensemble.P_INCERTIDUMBRE`, que recorta P_c a
+# [0,01; 0,99] DESPUÉS de simular — viola la doctrina, ADR-0016 §II.1) por dos
+# piezas a nivel LEGISLADOR, ANTES de simular:
+#   1. epsilon0: encogimiento AFÍN de cada P_i hacia [epsilon0, 1-epsilon0] —
+#      preserva el orden entre legisladores, un clip no.
+#   2. tau * eta_j: un shock COMPARTIDO por todos los legisladores de cada
+#      simulación (eta_j ~ N(0,1) uno por corrida) — es la EXCEPCIÓN 2 del
+#      ADR-0016 (shock correlacionado, no corrección al agregado) y es lo único
+#      que arregla la sobreconcentración: 257 votos independientes concentran
+#      pase lo que pase con los P_i, medido en 38,9x de sobredispersión real
+#      contra la que predice independencia (`estimar_epsilon_tau.py`, 03-09).
+#
+# Los valores por defecto salen de la RE-ESTIMACIÓN del 16-09 (ver ADR-0025):
+# no se reusa ciegamente la del 03-09 porque desde el 14-09 beta_dictamen está
+# prendido y podría haber reducido la dispersión que tau mide — se re-midió
+# ANTES de fijar el valor, no después (el orden que la propia FORMULA-COMPLETA
+# pedía respetar). Re-estimado sobre 2.485 actas / 293.655 votos (5x la muestra
+# del 03-09): epsilon0_logloss=0,035, tau_mediana=1,190 — CASI IDÉNTICO al
+# 1,197 del 03-09 pese al cambio de motor: beta_dictamen no absorbió la
+# dispersión que tau mide (esperable: el harness de este script, igual que
+# baseline_voto_individual.py, no incluye beta_dictamen en su p_motor).
+EPSILON0_DEFAULT = 0.035
+TAU_DEFAULT = 1.19
+INCERTIDUMBRE_LEGISLADOR = os.environ.get("INCERTIDUMBRE_LEGISLADOR", "0") != "0"
+EPSILON0 = float(os.environ.get("EPSILON0", EPSILON0_DEFAULT))
+TAU = float(os.environ.get("TAU", TAU_DEFAULT))
+
 
 def _tema_auto(proyecto_id: Optional[str], db_path=None, expedientes=None):
     """Si TEMA_AUTO está prendida y hay proyecto_id, resuelve su multietiqueta
@@ -582,8 +611,11 @@ def nowcast(camara_origen: str, fecha=None, *, proyecto_id: str | None = None,
                                   combinar_temas=combinar_temas_activo)
     _, _, det_o = roster_nominal(cam_o, F, bloques_o)
     lin_o, des_o, pre_o, perf_o = armar_roster(cam_o, bloques_o, ind, det_o, ctx_o)
+    eps0_activo = EPSILON0 if INCERTIDUMBRE_LEGISLADOR else 0.0
+    tau_activo = TAU if INCERTIDUMBRE_LEGISLADOR else 0.0
     sim_o = simular_con_guardas(lin_o, des_o, tipo_mayoria, cam_o, n_sims=n_sims,
-                                seed=seed, p_presente=pre_o, reparto_desvio=REPARTO_DESVIO)
+                                seed=seed, p_presente=pre_o, reparto_desvio=REPARTO_DESVIO,
+                                epsilon0=eps0_activo, tau=tau_activo)
     b = condicionar(sim_o["p_aprobacion"], car_o)
     b = _via_sobre_tablas(b, car_o, cam_o, perf_o, pre_o, n_sims=n_sims, seed=seed)
 
@@ -596,7 +628,8 @@ def nowcast(camara_origen: str, fecha=None, *, proyecto_id: str | None = None,
     d_raw = p_voto_revisora(cam_o, F, bloques_r, tipo_mayoria=tipo_mayoria,
                             n_sims=n_sims, seed=seed,
                             roster=(lin_r, des_r, pre_r, det_r),
-                            reparto_desvio=REPARTO_DESVIO)
+                            reparto_desvio=REPARTO_DESVIO,
+                            epsilon0=eps0_activo, tau=tau_activo)
     d = condicionar(d_raw["p_aprobacion"], car_r)
     d = _via_sobre_tablas(d, car_r, cam_r, perf_r, pre_r, n_sims=n_sims, seed=seed)
     # Sin fallback: si a `p_voto_revisora` le faltara un percentil, tiene que romper

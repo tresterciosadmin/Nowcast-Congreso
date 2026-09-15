@@ -149,6 +149,8 @@ def simular_votacion(
     seed: int | None = 0,
     p_presente=None,
     quorum_cuenta_abstenciones: bool | None = None,
+    epsilon0: float = 0.0,
+    tau: float = 0.0,
 ) -> dict:
     """Simula la votación n_sims veces a partir del roster (una línea y un desvío por
     legislador) y devuelve la distribución del resultado.
@@ -161,6 +163,22 @@ def simular_votacion(
       NO_ACOMPANA (ausencia). Corrige el sesgo pesimista de contar ausentes como línea.
     quorum_cuenta_abstenciones: BANDERA, APAGADA POR DEFECTO (revisión 25-08). Ver
       `QUORUM_CUENTA_ABSTENCIONES` arriba. `None` = usar el default del módulo.
+    epsilon0, tau: LAS DOS PIEZAS DE §III.A.3 (ADR-0025), APAGADAS POR DEFECTO
+      (0.0 = comportamiento EXACTO de siempre, ni un draw de más al rng). Reemplazan
+      el clip agregado de `ensemble.simular_con_guardas` por dos correcciones A NIVEL
+      LEGISLADOR (ADR-0016 — ninguna toca P_c):
+        P_i~ = epsilon0 + (1-2*epsilon0)*P_i        (encogimiento AFÍN, no recorte:
+                                                       preserva el orden de pivotes)
+        P_i^(j) = sigma(logit(P_i~) + tau*eta_j)     (eta_j ~ N(0,1), UN shock por
+                                                       simulación, compartido por TODOS
+                                                       los legisladores de esa corrida —
+                                                       es la excepción 2 del ADR-0016,
+                                                       lo único que produce colas gordas)
+      `P_i` acá es `probs[:,0]` (P(AFIRMATIVO) que ya calculó `_prob_conductas`, antes
+      de escalar por presencia). NEGATIVO y NO_ACOMPANA se reparten lo que le queda a
+      P_i^(j) EN LA MISMA PROPORCIÓN que tenían entre sí antes del shock — el shock
+      mueve "¿cuánta gente lo acompaña hoy?", no "¿quién se ausenta en vez de votar en
+      contra?", que es una pregunta distinta.
     Devuelve dict con p_aprobacion, afirm_medio, afirm_std, banda (p5,p50,p95), etc.
     """
     n = len(lineas)
@@ -173,6 +191,30 @@ def simular_votacion(
 
     # matriz de probabilidades por legislador (n x 3), muestreo categórico vectorizado
     probs = np.vstack([_prob_conductas(l, dv, reparto_desvio) for l, dv in zip(lineas, desvios)])
+
+    usar_incertidumbre = (epsilon0 > 0.0) or (tau > 0.0)
+    if usar_incertidumbre:
+        # §III.A.3: el shock es POR SIMULACIÓN, así que la matriz de probabilidades
+        # deja de ser (n x 3) y pasa a (n_sims x n x 3). Memoria: 2.000 x 257 x 3
+        # floats ~ 12 MB, no es un problema.
+        p_afirm = np.clip(probs[:, 0], 1e-9, 1.0 - 1e-9)
+        e0 = float(np.clip(epsilon0, 0.0, 0.5))
+        p_tilde = e0 + (1.0 - 2.0 * e0) * p_afirm
+        logit_tilde = np.log(p_tilde / (1.0 - p_tilde))
+        eta = rng.standard_normal(n_sims)                        # UN shock por sim
+        logit_j = logit_tilde[None, :] + float(tau) * eta[:, None]   # sims x n
+        p_afirm_j = 1.0 / (1.0 + np.exp(-logit_j))                   # sims x n
+        resto = np.clip(1.0 - p_afirm, 1e-12, None)               # p_neg+p_noac original
+        frac_neg = probs[:, 1] / resto
+        frac_noac = probs[:, 2] / resto
+        resto_j = 1.0 - p_afirm_j                                  # sims x n
+        probs3 = np.empty((n_sims, n, 3))
+        probs3[:, :, 0] = p_afirm_j
+        probs3[:, :, 1] = resto_j * frac_neg[None, :]
+        probs3[:, :, 2] = resto_j * frac_noac[None, :]
+    else:
+        probs3 = np.broadcast_to(probs, (n_sims, n, 3)).copy()
+
     # p(abstención ESTANDO en el recinto). Sólo se puede separar en modo asistencia.
     p_abst_presente = None
     if p_presente is not None:
@@ -182,15 +224,15 @@ def simular_votacion(
         # El NO_ACOMPANA de `_prob_conductas` es "no sigue la línea y tampoco vota
         # en contra": ESTANDO en el recinto, eso es una ABSTENCIÓN. Se guarda ANTES
         # de escalar, porque después queda mezclado con la ausencia y ya no se separan.
-        p_abst_presente = pp * probs[:, 2]
+        p_abst_presente = pp[None, :] * probs3[:, :, 2]
         # solo emite si está presente: afirm/neg se escalan por pp; el resto = ausencia
-        probs[:, 0] *= pp
-        probs[:, 1] *= pp
-        probs[:, 2] = 1.0 - probs[:, 0] - probs[:, 1]
-    cum = np.cumsum(probs, axis=1)                       # n x 3
-    u = rng.random((n_sims, n))                          # sims x n
+        probs3[:, :, 0] *= pp[None, :]
+        probs3[:, :, 1] *= pp[None, :]
+        probs3[:, :, 2] = 1.0 - probs3[:, :, 0] - probs3[:, :, 1]
+    cum = np.cumsum(probs3, axis=2)                       # sims x n x 3
+    u = rng.random((n_sims, n))                           # sims x n
     # conducta elegida por (sim, legislador): primer umbral acumulado superado
-    elec = (u[:, :, None] < cum[None, :, :]).argmax(axis=2)  # sims x n -> {0,1,2}
+    elec = (u[:, :, None] < cum).argmax(axis=2)            # sims x n -> {0,1,2}
 
     afirm = (elec == 0).sum(axis=1).astype(float)        # sims
     neg = (elec == 1).sum(axis=1).astype(float)          # sims
@@ -214,10 +256,10 @@ def simular_votacion(
         # el rng de la elección: con la bandera apagada la corrida tiene que salir
         # bit a bit igual que antes, y sale.
         with np.errstate(divide="ignore", invalid="ignore"):
-            p_abst_dado_no_emite = np.where(probs[:, 2] > 0,
-                                            p_abst_presente / probs[:, 2], 0.0)
+            p_abst_dado_no_emite = np.where(probs3[:, :, 2] > 0,
+                                            p_abst_presente / probs3[:, :, 2], 0.0)
         v = rng.random((n_sims, n))
-        abstenciones = ((elec == 2) & (v < p_abst_dado_no_emite[None, :])).sum(axis=1).astype(float)
+        abstenciones = ((elec == 2) & (v < p_abst_dado_no_emite)).sum(axis=1).astype(float)
         presentes = emitidos + abstenciones
 
     # umbral por simulación (depende de emitidos para SIMPLE/DOS_TERCIOS/TRES_CUARTOS)
@@ -244,6 +286,8 @@ def simular_votacion(
         "abstenciones_medio": float(abstenciones.mean()),
         "sims_sin_quorum": float((~con_quorum).mean()),
         "quorum_cuenta_abstenciones": bool(cuenta_abst),
+        "epsilon0_aplicado": float(epsilon0) if usar_incertidumbre else 0.0,
+        "tau_aplicado": float(tau) if usar_incertidumbre else 0.0,
     }
 
 

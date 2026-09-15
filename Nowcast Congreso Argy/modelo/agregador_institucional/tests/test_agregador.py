@@ -167,4 +167,61 @@ check(_b_off["p_aprobacion"] == _b_on["p_aprobacion"],
       "con presentismo realista (0,85) el quórum no muerde y prender la bandera no "
       "mueve NADA. Es el motivo por el que el bug es real y hoy es inerte")
 
+
+# ─────────────────────────────────────────────────────────────────────────────
+# epsilon0 + tau (§III.A.3, ADR-0025): incertidumbre a nivel LEGISLADOR,
+# reemplaza el clip agregado. Apagado por defecto (epsilon0=0, tau=0).
+# ─────────────────────────────────────────────────────────────────────────────
+_lin_e = np.array(["AFIRMATIVO"] * 140 + ["NEGATIVO"] * 117)
+_dv_e = np.array([0.03] * 140 + [0.04] * 117)
+
+_e_default = ag.simular_votacion(_lin_e, _dv_e, "ABSOLUTA", "diputados", n_sims=3000, seed=0)
+_e_off_explicito = ag.simular_votacion(_lin_e, _dv_e, "ABSOLUTA", "diputados", n_sims=3000,
+                                       seed=0, epsilon0=0.0, tau=0.0)
+check(_e_default == _e_off_explicito,
+      "epsilon0=0,tau=0 explícito tiene que dar EXACTAMENTE lo mismo que omitirlos "
+      "(mismo rng, ni un draw de más)")
+check(_e_default["epsilon0_aplicado"] == 0.0 and _e_default["tau_aplicado"] == 0.0,
+      "trazabilidad: apagado se reporta como 0.0, no se esconde")
+
+_e_solo_eps = ag.simular_votacion(_lin_e, _dv_e, "ABSOLUTA", "diputados", n_sims=20000,
+                                  seed=0, epsilon0=0.02, tau=0.0)
+check(_e_solo_eps["p_aprobacion"] <= _e_default["p_aprobacion"],
+      "epsilon0 solo (sin shock) no puede EMPEORAR la sobreconfianza, sólo achicarla "
+      f"({_e_solo_eps['p_aprobacion']} vs {_e_default['p_aprobacion']})")
+
+_e_shock = ag.simular_votacion(_lin_e, _dv_e, "ABSOLUTA", "diputados", n_sims=20000,
+                               seed=0, epsilon0=0.02, tau=1.2)
+check(_e_shock["afirm_std"] > _e_solo_eps["afirm_std"] * 3,
+      "el shock compartido (tau) es lo que realmente dispersa la banda — epsilon0 solo "
+      f"no alcanza ({_e_solo_eps['afirm_std']:.2f} vs {_e_shock['afirm_std']:.2f})")
+check(_e_shock["p_aprobacion"] < 0.9,
+      "con tau real (1.2) una mayoría holgada dos-tercios-de-confianza deja de ser "
+      f"99%+: {_e_shock['p_aprobacion']}")
+check(_e_shock["epsilon0_aplicado"] == 0.02 and _e_shock["tau_aplicado"] == 1.2,
+      "trazabilidad: prendido se reporta con los valores reales aplicados")
+
+_e_shock2 = ag.simular_votacion(_lin_e, _dv_e, "ABSOLUTA", "diputados", n_sims=20000,
+                                seed=0, epsilon0=0.02, tau=1.2)
+check(_e_shock["p_aprobacion"] == _e_shock2["p_aprobacion"],
+      "mismo seed + mismos epsilon0/tau -> mismo resultado (determinismo)")
+
+# el shock no puede escapar el mecanismo de presencia: se sigue pudiendo separar
+# abstención de ausencia con la bandera de quórum, ahora con la matriz por-simulación
+_e_asist = ag.simular_votacion(_lin_e, _dv_e, "ABSOLUTA", "diputados", n_sims=3000, seed=0,
+                               p_presente=np.full(257, 0.8), epsilon0=0.02, tau=1.0,
+                               quorum_cuenta_abstenciones=True)
+check(0.0 <= _e_asist["p_aprobacion"] <= 1.0 and _e_asist["presentes_medio"] > 0,
+      "shock + modo asistencia + abstenciones no rompe y da un resultado sensato")
+
+# un roster con P_i pegado a 0 o 1 exactos no puede romper el logit (clip interno)
+_lin_ext = np.array(["AFIRMATIVO"] * 257)
+_dv_ext = np.zeros(257)  # desvio 0 -> P(afirm) = 1.0 exacto antes del clip interno
+try:
+    _e_ext = ag.simular_votacion(_lin_ext, _dv_ext, "ABSOLUTA", "diputados", n_sims=500,
+                                 seed=0, epsilon0=0.0, tau=1.0)
+    check(0.0 <= _e_ext["p_aprobacion"] <= 1.0, "P_i=1.0 exacto con tau>0 no rompe el logit")
+except (ZeroDivisionError, FloatingPointError, ValueError) as e:
+    check(False, f"P_i=1.0 exacto con tau>0 rompió: {type(e).__name__}: {e}")
+
 print(f"OK — {ok} chequeos pasaron")

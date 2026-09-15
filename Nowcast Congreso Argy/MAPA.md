@@ -2,13 +2,13 @@
 
 <!-- GENERADO por indexar.py. No editar: los cambios se pierden. -->
 <!-- La prosa vive en el README.md de cada modulo (seccion `Buscar aca si`). -->
-<!-- 2026-09-15 00:33 UTC · 149 archivos · 37,930 LOC -->
+<!-- 2026-09-15 01:12 UTC · 151 archivos · 38,257 LOC -->
 
 ## Como usar este archivo
 
 Es el unico archivo del proyecto que hace falta leer para empezar. Para ubicar algo concreto: `python3 .mapa/buscar.py "<termino>"` devuelve archivo y linea sin abrir nada. Recien despues abrir los archivos que salgan, y solo esos.
 
-Rama `main` — ultimo commit: 2026-09-14 1d74d17 limpieza: dos avisos viejos de MAPA-MODELO.html, cerrados · **hay cambios sin commitear**
+Rama `main` — ultimo commit: 2026-09-14 5086f6f coordinacion: entrada en ESTADO para la simplificacion de evaluacion/baseline · **hay cambios sin commitear**
 
 ## Donde buscar que
 
@@ -89,6 +89,7 @@ Rama `main` — ultimo commit: 2026-09-14 1d74d17 limpieza: dos avisos viejos de
 | REVISION 25-08: multiplicar P_B x P_D supone INDEPENDENCIA entre camaras y es falsa; y `P(B|A)` es notacion enganosa (A y C son un corrimiento en logit, no un condicional bayesiano) | `modelo/ensemble/` |
 | el sobre tablas: 12,5% de las leyes se sancionan SIN dictamen y el modelo no lo contempla | `modelo/ensemble/` |
 | diferencia entre la BANDA (p5-p95, agregada) y los PIVOTES (P individual en [0,35;0,65]) | `modelo/ensemble/` |
+| el dictamen POR LEGISLADOR (quién firmó, si firmó su jefe): `beta_dictamen.py`, detrás de `BETA_DICTAMEN=1` (apagada por defecto; medido el 14-09, mueve P fuerte, no se prendió) | `modelo/ensemble/` |
 | quien se desvia de su bloque, discolos, bisagras o pivotes | `modelo/voto_individual/` |
 | separar INDISCIPLINA de AUSENTISMO (son dos tasas distintas) | `modelo/voto_individual/` |
 | el indice de disciplina por legislador y por periodo; presidentes de camara excluidos | `modelo/voto_individual/` |
@@ -126,7 +127,7 @@ Rama `main` — ultimo commit: 2026-09-14 1d74d17 limpieza: dos avisos viejos de
 | Carpeta | Que es | Arch. | LOC | Bitacora |
 |---|---|---:|---:|---|
 | `./` | La raiz del proyecto: los paneles que se abren con doble clic, el tablero ejecutivo y su unica fuente de datos (`tablero_datos.js`). | 6 | 5,968 | ok |
-| `modelo/ensemble/` _(src+tests)_ | La composicion final: el nowcast end-to-end de un proyecto. El punto de entrada vivo es `nowcast_puertas.py`, que corre la CADENA DE PUERTAS y devuelve un numero condicional a que las camaras voten. La formulacion v1 -P(llega al recinto) x P(mayoria dado recinto)- se dio de BAJA el 2026-08-22 (ADR-0012), junto con su backtest: `ensemble.componer` y `backtest_cadena.py` siguen ahi pero levantan SystemExit. | 16 | 4,920 | ok |
+| `modelo/ensemble/` _(src+tests)_ | La composicion final: el nowcast end-to-end de un proyecto. El punto de entrada vivo es `nowcast_puertas.py`, que corre la CADENA DE PUERTAS y devuelve un numero condicional a que las camaras voten. La formulacion v1 -P(llega al recinto) x P(mayoria dado recinto)- se dio de BAJA el 2026-08-22 (ADR-0012), junto con su backtest: `ensemble.componer` y `backtest_cadena.py` siguen ahi pero levantan SystemExit. | 18 | 5,247 | ok |
 | `variables/proyecto/` _(src+tests)_ | Feature store por proyecto: tema/materia, origen (Ejecutivo/oficialismo/aliados/oposicion), jefe de bloque, mayoria requerida, texto, y el ICG como modulador de coyuntura. La postura del gobierno por acta se midio aca y su modulo se archivo el 2026-09-10 sin consumidor: la medicion quedo en el ADR-0021 y en ESTADO. | 21 | 4,737 | **vencida** |
 | `datos/expedientes/` _(src+tests)_ | Registro de todo lo PRESENTADO (no solo lo votado): titulo, autor, tipo, fecha y cadena de vida del expediente. Denominador del embudo y enlace acta -> expediente. | 15 | 4,519 | **vencida** |
 | `datos/padron/` _(src+tests)_ | Padron OFICIAL de bancas a nivel LEGISLADOR: quien ocupa cada banca y en que ventana de mandato. Es la composicion real de la camara a una fecha (257 / 72). | 11 | 2,645 | ok |
@@ -134,7 +135,7 @@ Rama `main` — ultimo commit: 2026-09-14 1d74d17 limpieza: dos avisos viejos de
 | `tests/` | Tests que no pertenecen a ningun modulo: los que verifican acuerdos ENTRE modulos (definiciones y rutas compartidas) y los que vigilan INVARIANTES del repo — que las bases y los insumos del motor viajen por git, que la regla del caracter del dictamen no se reimplemente, y que las rutas que el codigo nombra en sus docstrings existan. Cada modulo tiene sus propios tests en `<modulo>/tests/`. | 8 | 1,347 | ok |
 | `variables/embudo/` _(src+tests)_ | Supervivencia del proyecto: presentado -> comision -> dictamen -> recinto -> sancion. Estima P(llega al recinto). OJO: eso era 'la mitad de P(aprobacion)' en la formulacion v1, que se dio de baja el 2026-08-22 (ADR-0012) justamente porque medir la mortandad en el cajon es agenda politica y se decidio no modelarla; hoy el numero publicado NO la multiplica. | 5 | 1,222 | ok |
 | `variables/bloque/` _(src+tests)_ | Cohesion, tamano, postura y fracturas de cada bloque en el tiempo, y el proyector point-in-time que arma el escenario por bloque que consume el ensemble. | 5 | 1,128 | ok |
-| `evaluacion/baseline/` _(src+tests)_ | El piso a superar, y el harness que lo mide. Lo que vive aca es el baseline del VOTO INDIVIDUAL (`baseline_voto_individual.py`, con el guard de era del ADR-0018) mas los diagnosticos del Senado. El baseline de BLOQUE -el ~0,99- se midio en `fase0/` y ahi quedo. | 5 | 1,093 | **vencida** |
+| `evaluacion/baseline/` _(src+tests)_ | El piso a superar, y el harness que lo mide. Lo que vive aca es el baseline del VOTO INDIVIDUAL (`baseline_voto_individual.py`, con el guard de era del ADR-0018) mas los diagnosticos del Senado. El baseline de BLOQUE -el ~0,99- se midio en `fase0/` y ahi quedo. | 5 | 1,093 | ok |
 | `datos/canonica/` _(src+tests)_ | La base propia y unica de votaciones nominales: todas las fuentes unificadas, deduplicadas y con entidades resueltas. Fuente de verdad de la que leen `variables/` y `modelo/`. | 7 | 999 | **vencida** |
 | `datos/senado/` _(src+tests)_ | Ingesta de votaciones nominales del Senado desde senado.gob.ar + reconstruccion del bloque historico contemporaneo a cada voto. Tapa el hueco 2015-2023. | 5 | 940 | ok |
 | `datos/bot_recoleccion/` _(src+tests)_ | El bot diario que trae lo nuevo de ambas camaras (proyectos con firmantes y giros, y votaciones) con upsert idempotente. Corre solo en GitHub Actions. | 7 | 880 | ok |
@@ -205,10 +206,10 @@ Buscar uno sin abrir nada: `python .mapa/buscar.py --dato <termino>`. Columna **
 | `datos/expedientes/data/clean/expedientes_giros.parquet` | 425,411×3 | 2.1 MB | si | `ingesta_ckan.py`, `migrar_ckan.py` | `giros_iniciales.py`, `upsert_bot.py`, `verificar.py` +1 |
 | `datos/expedientes/data/clean/expedientes_movimientos.parquet` | 143,677×4 | 1.7 MB | si | `ingesta_ckan.py`, `migrar_ckan.py` | `giros_iniciales.py`, `verificar.py` |
 | `datos/expedientes/data/clean/expedientes_resultados.parquet` _EXPEDIENTES_RESULTADOS_ | 118,623×7 | 953 KB | si | `enlace_senado.py`, `ingesta_ckan.py` | `ingesta_od.py`, `origen_por_acta.py` |
-| `datos/expedientes/data/clean/dictamenes_firmas.parquet` _EXPEDIENTES_FIRMAS_ | 125,561×28 | 921 KB | si | `construir_firmas.py` | `verificar_regeneracion.py` |
+| `datos/expedientes/data/clean/dictamenes_firmas.parquet` _EXPEDIENTES_FIRMAS_ | 125,561×28 | 921 KB | si | `construir_firmas.py` | `beta_dictamen.py`, `verificar_regeneracion.py` |
 | `datos/expedientes/data/clean/acta_expediente_todas.parquet` _EXPEDIENTES_ACTA_EXP_TODAS_ | 5,043×13 | 424 KB | si | `enlace_senado.py`, `tema_por_acta.py` | `actas_ley.py`, `verificar_regeneracion.py` |
 | `datos/expedientes/data/clean/expedientes_dictamenes.parquet` | 24,053×8 | 373 KB | si | `ingesta_ckan.py`, `migrar_ckan.py` | _(2 lo nombran)_ |
-| `datos/expedientes/data/clean/dictamenes_firmas_senado.parquet` _EXPEDIENTES_FIRMAS_SENADO_ | 18,256×30 | 208 KB | si | `construir_firmas.py` | _(4 lo nombran)_ |
+| `datos/expedientes/data/clean/dictamenes_firmas_senado.parquet` _EXPEDIENTES_FIRMAS_SENADO_ | 18,256×30 | 208 KB | si | `construir_firmas.py` | `beta_dictamen.py` |
 | `datos/expedientes/data/clean/acta_expediente.parquet` _EXPEDIENTES_ACTA_EXP_ | 1,849×7 | 164 KB | si | `enlace_senado.py`, `ingesta_ckan.py` | `baseline_voto_individual.py`, `estimar_beta_dictamen.py`, `origen_por_acta.py` |
 | `datos/expedientes/data/clean/cadena_camaras.parquet` | 1,182×17 | 151 KB | si | `enlace_senado.py` | `estimar_psi_arrastre.py` |
 | `datos/expedientes/data/clean/dictamenes_comisiones.parquet` _EXPEDIENTES_DICTAMENES_COMISIONES_ | 10,031×8 | 88 KB | si | `construir_firmas.py` | — |
@@ -311,7 +312,7 @@ Buscar uno sin abrir nada: `python .mapa/buscar.py --dato <termino>`. Columna **
 
 **Lo que el inventario marca**
 
-- Tienen productor y **ningun consumidor** (42): `votaciones_nuevas.parquet`, `estado_bot.json`, `argentinadatos_actas.parquet`, `argentinadatos_votos.parquet`, `ckan_diputados_actas.parquet`, `ckan_diputados_votos.parquet`, `manual_2026_actas.parquet`, `manual_2026_votos.parquet` _+34_. Es lo esperable en un entregable para humanos; en un intermedio significa que sobra.
+- Tienen productor y **ningun consumidor** (41): `votaciones_nuevas.parquet`, `estado_bot.json`, `argentinadatos_actas.parquet`, `argentinadatos_votos.parquet`, `ckan_diputados_actas.parquet`, `ckan_diputados_votos.parquet`, `manual_2026_actas.parquet`, `manual_2026_votos.parquet` _+33_. Es lo esperable en un entregable para humanos; en un intermedio significa que sobra.
 - **Ningun archivo de codigo los nombra** (30, 50.3 MB): `votaciones_2003-2007_Kirchner.xlsx`, `votaciones_2015-2019_Macri.xlsx`, `votaciones_2007-2011_CFK-1.xlsx`, `votaciones_2011-2015_CFK-2.xlsx`, `votaciones_2023-2027_Milei.xlsx`, `votaciones_2019-2023_Fernandez.xlsx`, `votaciones_2002-2003_Duhalde.xlsx`, `votaciones_1999-2001_DeLaRua.xlsx` _+22_. Ojo: un output con nombre armado por f-string cae aca y esta vivo. Lo que hay que mirar de verdad son los pesados.
 
 ## Puntos de entrada
@@ -333,24 +334,24 @@ Ordenados por cuantos otros archivos dependen de ellos. Tocar uno de arriba tien
 
 | Archivo | LOC | Lo usan | Simbolos |
 |---|---:|---:|---|
-| `rutas.py` | 207 | 21 | `_env`, `inventario` |
+| `rutas.py` | 207 | 22 | `_env`, `inventario` |
 | `variables/bloque/src/bloque.py` | 633 | 15 | `_canon_linaje`, `_norm_nombre`, `_cargar_padron_linaje_senado`, `_enriquecer_linaje_senado` |
 | `definiciones.py` | 261 | 14 | `periodo_parlamentario`, `gobierno_por_fecha`, `era_de`, `normalizar_mayoria_valor` |
 | `variables/embudo/src/embudo.py` | 730 | 6 | `cargar_icg`, `_mes_rezagado`, `cargar`, `cargar_sqlite` |
+| `modelo/ensemble/src/puerta_d.py` | 236 | 6 | `camara_revisora`, `_padron_de`, `_clip01`, `_logit` |
 | `evaluacion/baseline/src/baseline_voto_individual.py` | 449 | 5 | `_norm_cond`, `_ContadorAvisos`, `perfil`, `_metricas` |
 | `modelo/ensemble/src/ensemble.py` | 398 | 5 | `_cargar_simulador`, `_cargar_proyector`, `componer`, `_root` |
-| `modelo/ensemble/src/puerta_d.py` | 236 | 5 | `camara_revisora`, `_padron_de`, `_clip01`, `_logit` |
+| `modelo/ensemble/src/nowcast_puertas.py` | 605 | 4 | `_bloque`, `era_de`, `alineacion_individual`, `perfil_legislador` |
 | `modelo/agregador_institucional/src/agregador.py` | 418 | 4 | `umbral_aprobacion`, `_prob_conductas`, `simular_votacion`, `_linea_bloque_por_acta` |
 | `datos/canonica/src/entity_resolution.py` | 327 | 4 | `_strip`, `_name_key`, `_leg_id`, `_aplicar_alias` |
-| `modelo/ensemble/src/nowcast_puertas.py` | 580 | 3 | `_bloque`, `era_de`, `alineacion_individual`, `perfil_legislador` |
 | `datos/padron/src/ingesta_padron.py` | 239 | 3 | `_norm_col`, `_fecha_iso`, `_limpiar_nombre`, `cargar_nomina` |
 | `datos/proyectos/src/verificar.py` | 237 | 3 | `Control`, `_abrir`, `controles_base`, `control_cohorte` |
 
 ## Flujo interno
 
+- `modelo/ensemble/src/` → `./` (9)
+- `modelo/ensemble/tests/` → `modelo/ensemble/src/` (9)
 - `variables/proyecto/tests/` → `variables/proyecto/src/` (9)
-- `modelo/ensemble/src/` → `./` (8)
-- `modelo/ensemble/tests/` → `modelo/ensemble/src/` (7)
 - `evaluacion/baseline/src/` → `./` (6)
 - `modelo/ensemble/src/` → `variables/bloque/src/` (6)
 - `datos/padron/tests/` → `datos/padron/src/` (5)
@@ -369,7 +370,7 @@ Segun el historial de git. Si vas a cambiar uno, mira el otro.
 - `Nowcast Congreso Argy/coordinacion/ESTADO-DEL-PROYECTO.md` + `Nowcast Congreso Argy/tablero_datos.js` (29 commits)
 - `Nowcast Congreso Argy/coordinacion/EN-HUMANO.md` + `Nowcast Congreso Argy/tablero_datos.js` (27 commits)
 - `Nowcast Congreso Argy/coordinacion/ESTADO-DEL-PROYECTO.md` + `Nowcast Congreso Argy/coordinacion/TABLERO.md` (23 commits)
-- `Nowcast Congreso Argy/.mapa/mapa.json` + `Nowcast Congreso Argy/MAPA.md` (21 commits)
+- `Nowcast Congreso Argy/.mapa/mapa.json` + `Nowcast Congreso Argy/MAPA.md` (22 commits)
 - `Nowcast Congreso Argy/coordinacion/EN-HUMANO.md` + `Nowcast Congreso Argy/coordinacion/TABLERO.md` (21 commits)
 - `Nowcast Congreso Argy/coordinacion/TABLERO.md` + `Nowcast Congreso Argy/tablero_datos.js` (18 commits)
 - `Nowcast Congreso Argy/coordinacion/ESTADO-DEL-PROYECTO.md` + `Nowcast Congreso Argy/coordinacion/URGENTE.md` (12 commits)
@@ -395,6 +396,7 @@ Segun el historial de git. Si vas a cambiar uno, mira el otro.
 
 - `ANTHROPIC_API_KEY` — `variables/proyecto/src/agente_taxonomias.py`
 - `ASIST` — `modelo/agregador_institucional/src/agregador.py`
+- `BETA_DICTAMEN` — `modelo/ensemble/src/beta_dictamen.py`, `modelo/ensemble/tests/test_beta_dictamen.py`
 - `BORRAR` — `datos/canonica/src/entity_resolution.py`
 - `CACHE` — `datos/expedientes/src/ingesta_ckan.py`, `datos/senado/src/scrape_votaciones.py`
 - `CAMARA` — `modelo/ensemble/validar_condicionamiento_votos.py`
@@ -407,8 +409,7 @@ Segun el historial de git. Si vas a cambiar uno, mira el otro.
 - `EMBUDO_FUENTE` — `variables/embudo/src/embudo.py`
 - `EXPEDIENTES` — `modelo/ensemble/src/ensemble.py`
 - `EXPORT_CACHE` — `datos/export/src/export_base.py`
-- `EXP_CLEAN` — `datos/expedientes/src/ingesta_od.py`, `variables/embudo/src/embudo.py`, `variables/proyecto/src/origen_lider.py`
 
 ## Frescura
 
-- Bitacoras vencidas: `datos/canonica/`, `datos/expedientes/`, `evaluacion/baseline/`, `variables/proyecto/`
+- Bitacoras vencidas: `datos/canonica/`, `datos/expedientes/`, `variables/proyecto/`

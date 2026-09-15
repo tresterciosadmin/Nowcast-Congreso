@@ -306,15 +306,26 @@ def _p_afirmativo_del_simulador(linea: str, desvio: float) -> float:
     return float(_prob_conductas(linea, desvio)[list(CONDUCTAS).index("AFIRMATIVO")])
 
 
-def armar_roster(camara: str, bloques: list[dict], ind: dict, detalle_roster: dict):
+def armar_roster(camara: str, bloques: list[dict], ind: dict, detalle_roster: dict,
+                 contexto_dictamen: dict | None = None):
     """Perfil de cada legislador -> los arrays que entran al agregador.
 
     Devuelve (lineas, desvios, p_presente, perfiles). Es el ÚNICO lugar donde se
     decide cómo vota cada uno: el tablero y la probabilidad salen los dos de acá, así
     que no se pueden contradecir.
+
+    `contexto_dictamen`: BANDERA APAGADA POR DEFECTO (BETA_DICTAMEN, ver
+    `beta_dictamen.py` / ADR-0016 / §III.A.2 de FORMULA-COMPLETA.md). `None` (el
+    default) no importa el módulo ni toca nada — mismo comportamiento que antes de
+    que existiera. Con contexto y la bandera prendida, el dictamen entra POR
+    LEGISLADOR: quien firmó, si firmó su jefe (filtrado por lealtad) y el carácter
+    del despacho corren la P ANTES de traducirla a (línea, desvío).
     """
     import numpy as np
     share = {b["bloque"]: float(b.get("_share_afirm", 0.5)) for b in bloques}
+    ajustar_dictamen = None
+    if contexto_dictamen is not None:
+        from beta_dictamen import ajuste as ajustar_dictamen  # noqa: E402
     lineas, desvios, presentes, perfiles = [], [], [], []
     for f in detalle_roster["filas"]:
         lid = f["legislador_id"]
@@ -322,12 +333,16 @@ def armar_roster(camara: str, bloques: list[dict], ind: dict, detalle_roster: di
         p_rec, n_tot, presencia, n_emit = rec if rec else (None, 0, 1.0, 0)
         pf = perfil_legislador(share.get(f["bloque_linaje"], 0.5), float(f["desvio"]),
                                record=p_rec, n_emitidos=n_emit, presencia=presencia)
-        linea, desv = a_linea_y_desvio(pf["p_afirma_si_vota"])
+        p_afirma = pf["p_afirma_si_vota"]
+        if ajustar_dictamen is not None:
+            p_afirma = ajustar_dictamen(p_afirma, f["bloque_linaje"], lid,
+                                        float(f["desvio"]), contexto_dictamen)
+        linea, desv = a_linea_y_desvio(p_afirma)
         lineas.append(linea)
         desvios.append(desv)
         presentes.append(pf["p_presente"])
-        perfiles.append({**f, **pf, "linea_efectiva": linea, "n_votos": int(n_tot),
-                         "n_emitidos": int(n_emit),
+        perfiles.append({**f, **pf, "p_afirma_si_vota": p_afirma, "linea_efectiva": linea,
+                         "n_votos": int(n_tot), "n_emitidos": int(n_emit),
                          "record_afirmativo": (round(float(p_rec), 4)
                                                if p_rec is not None else None)})
     return (np.array(lineas), np.array(desvios, dtype=float),
@@ -455,11 +470,21 @@ def nowcast(camara_origen: str, fecha=None, *, proyecto_id: str | None = None,
     car_o = caracter_de(proyecto_id or "", cam_o, tabla, fecha_corte=F)
     car_r = caracter_de(proyecto_id or "", cam_r, tabla, fecha_corte=F)
 
+    # ── B bis: el dictamen POR LEGISLADOR (ADR-0016). BANDERA APAGADA POR
+    # DEFECTO: sin BETA_DICTAMEN=1 no se importa `beta_dictamen` y esto queda en
+    # None, así que `armar_roster` no toca nada (ver su docstring).
+    ctx_o = ctx_r = None
+    if proyecto_id:
+        from beta_dictamen import BETA_DICTAMEN, contexto_de
+        if BETA_DICTAMEN:
+            ctx_o = contexto_de(proyecto_id, cam_o, F)
+            ctx_r = contexto_de(proyecto_id, cam_r, F)
+
     # ── B: la votación en la cámara de ORIGEN ──────────────────────────────────
     bloques_o = proyectar_postura(votos, F, cam_o, tema=tema, origen=origen,
                                   cond_por_acta=cond)
     _, _, det_o = roster_nominal(cam_o, F, bloques_o)
-    lin_o, des_o, pre_o, perf_o = armar_roster(cam_o, bloques_o, ind, det_o)
+    lin_o, des_o, pre_o, perf_o = armar_roster(cam_o, bloques_o, ind, det_o, ctx_o)
     sim_o = simular_con_guardas(lin_o, des_o, tipo_mayoria, cam_o, n_sims=n_sims,
                                 seed=seed, p_presente=pre_o, reparto_desvio=REPARTO_DESVIO)
     b = condicionar(sim_o["p_aprobacion"], car_o)
@@ -468,7 +493,7 @@ def nowcast(camara_origen: str, fecha=None, *, proyecto_id: str | None = None,
     bloques_r = proyectar_postura(votos, F, cam_r, tema=tema, origen=origen,
                                   cond_por_acta=cond)
     _, _, det_r = roster_nominal(cam_r, F, bloques_r)
-    lin_r, des_r, pre_r, perf_r = armar_roster(cam_r, bloques_r, ind, det_r)
+    lin_r, des_r, pre_r, perf_r = armar_roster(cam_r, bloques_r, ind, det_r, ctx_r)
     d_raw = p_voto_revisora(cam_o, F, bloques_r, tipo_mayoria=tipo_mayoria,
                             n_sims=n_sims, seed=seed,
                             roster=(lin_r, des_r, pre_r, det_r),

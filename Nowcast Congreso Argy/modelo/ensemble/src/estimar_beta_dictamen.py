@@ -448,6 +448,13 @@ def estimar(d: pd.DataFrame) -> dict:
     # M4: la del ADR + caracter, para ver si sobra alguno
     res["M4_ADR_mas_caracter"] = ajustar(pd.concat([adr, dummies], axis=1),
                                          offset=d["offset"])
+    # M5: LA FORMULACION DE PRODUCCION (Formulacion resultante, FORMULA-COMPLETA
+    # S:III.A.2). M4 mostro que W_otros cambia de signo al agregar el caracter
+    # (colinealidad, no efecto) y "APROBADO 03-09 (Franco): beta_3 W_-l SALE y lo
+    # reemplaza el caracter". Este modelo es el que efectivamente se usa para el
+    # logit(P_i^dict): solo F_i, lealtad_x_jefe y el caracter, SIN W_otros.
+    prod = pd.concat([d[["F_i", "lealtad_x_jefe"]], dummies], axis=1)
+    res["M5_produccion"] = ajustar(prod, offset=d["offset"])
 
     # CUANTOS CLUSTERS SOSTIENE CADA DUMMY. El error estandar es cluster-robusto POR
     # ACTA, y eso significa que el numero de ACTAS —no de votos— es lo que le da sentido.

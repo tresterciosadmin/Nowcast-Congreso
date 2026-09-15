@@ -44,7 +44,7 @@ este archivo en el mismo commit.
 | 9 | $\delta$ — dictamen | condicionar por carácter del dictamen | 🔴 **implementado en 0** (§II.3) |
 | 10 | ICG — clima político | modula según el humor social | 🔴 **medido y desconectado** (§II.4) |
 | 11 | $\mathcal{C}_c$ — gate del dictamen | admisibilidad reglamentaria | 🔲 **decidido** (§III.A.1) |
-| 12 | $\beta$ — dictamen por legislador | reemplaza a $\delta$ | 🔲 **decidido y ESTIMADO 03-09** (§III.A.2) |
+| 12 | $\beta$ — dictamen por legislador | reemplaza a $\delta$ | 🔴 **implementado detrás de bandera, MEDIDO 14-09 — mueve P fuerte, sin prender** (§III.A.2) |
 | 13 | $\varepsilon_0 + \eta_j$ — incertidumbre | reemplaza al clip | 🔲 **decidido y ESTIMADO 03-09** (§III.A.3) |
 | 14 | $\psi$ — arrastre entre cámaras | la revisora lee a la de origen | 🔲 **ESTIMADO y controlado 03-09** (§III.A.4) |
 | 15 | sobre tablas | el 24,4% que hoy es invisible | 🔲 **decidido y $\theta$ ESTIMADO 03-09** (§III.A.5) |
@@ -735,6 +735,81 @@ $\delta(\text{mayoría sin minoría}) = -2{,}36$, $\delta(\text{sólo minoría})
 >    tienen actas que tocar. Los niveles de esa tabla son de `--muestra 400` y **no** son
 >    comparables con el +0,645 de arriba, que sale de la corrida completa; lo comparable es
 >    la diferencia entre filas.
+
+### 🔴 IMPLEMENTADO el 14-09 detrás de bandera, MEDIDO — mueve P fuerte y NO se prendió
+
+**1. La función.** Nuevo módulo `modelo/ensemble/src/beta_dictamen.py`. Aplica
+$\text{logit}(P_i^{\text{dict}}) = \text{logit}(P_i) + \beta_1 F_i + \beta_2(1-d_i)J_{\ell(i)} + \delta(\text{carácter})$
+POR LEGISLADOR, antes de traducir la P a (línea, desvío) — reusa
+`estimar_beta_dictamen.firmas_por_acta`/`jefes`/`_caracter_por_proyecto_camara`
+(las mismas funciones con las que se estiman los coeficientes: calcular el cruce
+firmante↔jefe↔carácter distinto en la inferencia que en la estimación sería el
+mismo bug que `caracter_de_dictamen` existe para evitar) y
+`puerta_d.ajuste_paso_origen` (mismo logit que el resto del motor). Bandera
+`BETA_DICTAMEN=1`, **apagada por defecto**; con `None`/apagada, `armar_roster` no
+importa el módulo y el comportamiento es bit a bit el de antes (49/49 OK en
+`test_nowcast_puertas.py`, sin tocar ninguno de los siete).
+
+Se agregó **M5_produccion** a `estimar_beta_dictamen.py` (`F_i` + `lealtad_x_jefe`
++ carácter, **sin** $W_{-\ell}$ — el término que el 03-09 se decidió sacar) y se
+reestimó con los datos de hoy (Senado incluido, ADR-0022):
+
+| término | coef | se (cluster) | p |
+|---|---:|---:|---:|
+| $\beta_1$ — $F_i$ | **+2,152** | 0,098 | <0,0001 |
+| $\beta_2$ — $(1-d_i)J_\ell$ | **+2,145** | 0,167 | <0,0001 |
+| $\delta$(DISPUTADO) | **−1,663** | 0,100 | <0,0001 |
+| $\delta$(mayoría sin minoría) | **−1,692** | 0,109 | <0,0001 |
+| $\delta$(sólo minoría) | −0,391 | 0,260 | 0,132 (⚠️ no distinguible de 0; 30 actas, justo en el piso) |
+
+(Reemplaza los números del 03-09 de arriba, que eran sin Senado y con $W_{-\ell}$
+todavía adentro del M4 que se comparaba.)
+
+**2. El motor en su conjunto — y esto es lo que hay que decidir.** Medido sobre un
+proyecto real con dictamen DISPUTADO (`HCDN291414`, `nowcast diputados
+--proyecto HCDN291414 --fecha 2026-08-01`, panel completo, 500-2000 sims):
+
+| | apagado (hoy) | prendido |
+|---|---:|---:|
+| P(aprobación) | **0,9801** | **0,0099** |
+| acompañan / no acompañan / incógnita | ~230 / pocos / pocos | **31 / 166 / 60** |
+| afirmativos esperados | ~150 | **81,4** |
+
+**No es un caso aislado.** Se repitió con `HCDN292180` (carácter `mayoria`): mismo
+colapso, `0,9801 → 0,0099`. Con `HCDN289908` (carácter `UNICO`, la referencia) **no
+pasa nada** — se mantiene en 0,9801, como corresponde. El patrón: $\delta$(DISPUTADO)
+y $\delta$(mayoría) son grandes y MUY significativos, y se aplican a **todo el
+legislador que no firmó ni tiene a su jefe firmante** — el 85-90% de cada cámara
+(`share_F_i`=14,8%, `share_J_l`=9,1%). Como DISPUTADO + mayoría son el 61% de los
+votos de entrenamiento (117.288 + 32.140 de 246.306), el efecto no es un caso de
+borde: **para la mayoría de los proyectos con dictamen leído, prender esto hoy
+haría colapsar P**, no ajustarlo.
+
+**Por qué no lo prendí y por qué esto no se descarta solo.** El coeficiente está
+bien estimado (n grande, p<0,0001, sobrevive el control por tema/origen del M2) y
+el mecanismo replica exactamente cómo se entrenó — no encontré un bug de signo ni
+de cruce. Pero un dictamen DISPUTADO en la realidad no suele voltear un proyecto
+con apoyo aplastante a un rechazo casi unánime, y la magnitud agregada depende de
+una decisión de diseño que sí es discutible: **el carácter penaliza por igual a
+CUALQUIER legislador que no firmó**, esté o no cerca de la comisión que se dividió,
+en vez de pesar más a quien tiene algo que ver con esa comisión. Puede ser una
+señal real (el carácter del despacho correlaciona con qué tan reñida es la
+votación) capturando además otra cosa (qué tan atenta estuvo la comisión, que no
+es lo mismo que cómo va a votar el resto de la cámara). Necesita mirarse con más
+casos antes de siquiera plantear un backtest — no es una decisión de "prender o
+no", es una de "esta forma funcional es la correcta, o hay que pesar por
+proximidad a la comisión".
+
+**3. La fórmula.** $\delta_c$ (término 9, aggregate) sigue en 0 e intacto —esto es
+una vía DISTINTA, no lo reemplaza en el código, aunque conceptualmente lo
+reemplaza según ADR-0016—. El término 12 de la tabla de arriba pasa de "decidido y
+estimado" a "implementado detrás de bandera, medido, con hallazgo que necesita
+revisión antes de considerar prenderlo".
+
+**Archivos:** `modelo/ensemble/src/beta_dictamen.py` (nuevo),
+`modelo/ensemble/src/{estimar_beta_dictamen.py, nowcast_puertas.py}`,
+`modelo/ensemble/outputs/beta_dictamen.json`,
+`modelo/ensemble/tests/test_beta_dictamen.py` (nuevo, 14 checks).
 
 ### III.A.3 — El $\varepsilon$ baja al legislador, y hacen falta DOS piezas
 

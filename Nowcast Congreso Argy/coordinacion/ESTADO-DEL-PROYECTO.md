@@ -56,6 +56,42 @@ Mantené esta tabla sincronizada con la bitácora.
 
 ## Bitácora (más reciente arriba)
 
+### [2026-09-14] modelo/ensemble — el dictamen por legislador (item B de la revisión metodológica): implementado detrás de bandera, MEDIDO, y el hallazgo pide revisión antes de prender
+- **Quién:** Claude, con Franco ("arrancá por A y B, medí antes de prender cualquier cosa").
+- **Qué:** A (quórum con abstenciones) ya estaba hecho de una sesión anterior —
+  verificado, no hacía falta tocar nada. B (δ del dictamen) se implementó nuevo:
+  `modelo/ensemble/src/beta_dictamen.py` aplica el dictamen POR LEGISLADOR
+  (ADR-0016, §III.A.2 de FORMULA-COMPLETA.md) —
+  `logit(P_i^dict) = logit(P_i) + β1·F_i + β2·(1-d_i)·J_ℓ + δ(carácter)` — detrás
+  de `BETA_DICTAMEN=1`, apagada por defecto. Se agregó `M5_produccion` a
+  `estimar_beta_dictamen.py` (F_i + lealtad_x_jefe + carácter, sin W_otros —el
+  término que se decidió sacar el 03-09—) y se reestimó con los datos de hoy
+  (Senado incluido, ADR-0022): F_i=+2,15, lealtad_x_jefe=+2,15, δ(DISPUTADO)=−1,66,
+  δ(mayoría)=−1,69 (todos p<0,0001), δ(solo_minoria)=−0,39 (p=0,13, no
+  distinguible de 0).
+- **Cómo:** con la bandera apagada (default), comportamiento bit a bit idéntico —
+  verificado: 49/49 `test_nowcast_puertas.py`, suite completa 41/41,
+  `verificar_regeneracion.py` 16/16, **P(aprobación) = 0,9801 sin moverse**.
+  Con la bandera PRENDIDA, medido sobre proyectos reales: en dos de tres casos
+  (dictamen DISPUTADO o mayoría) P colapsa de 0,9801 a 0,0099 — porque el δ del
+  carácter penaliza por igual a cualquier legislador que no firmó ni tiene a su
+  jefe firmante (85-90% de cada cámara), y DISPUTADO+mayoría son el 61% de los
+  votos con los que se estimó. **No se prendió.** El coeficiente está bien
+  estimado y el mecanismo replica fielmente cómo se entrenó, pero la magnitud
+  agregada es sospechosa por diseño (pesa igual a quien no tiene nada que ver con
+  la comisión dividida que a quien sí) y necesita mirarse con más casos antes de
+  plantear siquiera un backtest.
+- **Archivos:** `modelo/ensemble/src/beta_dictamen.py` (nuevo),
+  `modelo/ensemble/src/{estimar_beta_dictamen.py, nowcast_puertas.py}`,
+  `modelo/ensemble/outputs/beta_dictamen.json`,
+  `modelo/ensemble/tests/test_beta_dictamen.py` (nuevo, 14 checks),
+  `coordinacion/{FORMULA-COMPLETA.md, REVISION-METODOLOGICA-2026-08-25.md}`.
+- **Estado del módulo:** modelo/ensemble EN CURSO, sin cambio de contrato ni de
+  comportamiento efectivo (bandera apagada por defecto).
+- **Próximo paso:** decisión de Franco — revisar el diseño de δ(carácter) (¿pesa
+  igual a todo el mundo, o sólo a quien tiene relación con la comisión que se
+  dividió?) antes de plantear un backtest o considerar prenderlo.
+
 ### [2026-09-14] evaluacion/baseline — se elimina el ciclo de imports con modelo/ensemble
 - **Quién:** Claude, con Franco ("seguí revisando el repo... si podés simplificar mejor").
 - **Qué:** `baseline_voto_individual.py` y `medir_guard_era.py` importaban

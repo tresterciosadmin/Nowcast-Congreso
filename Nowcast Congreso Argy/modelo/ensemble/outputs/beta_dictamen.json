@@ -181,6 +181,34 @@
   },
   "llf": -95476.2
  },
+ "M5_produccion": {
+  "n": 246306,
+  "coef": {
+   "const": 0.7554,
+   "F_i": 2.1522,
+   "lealtad_x_jefe": 2.145,
+   "dict_DISPUTADO": -1.6632,
+   "dict_mayoria": -1.6915,
+   "dict_solo_minoria": -0.3912
+  },
+  "se_cluster_acta": {
+   "const": 0.0895,
+   "F_i": 0.0982,
+   "lealtad_x_jefe": 0.1666,
+   "dict_DISPUTADO": 0.1003,
+   "dict_mayoria": 0.1089,
+   "dict_solo_minoria": 0.2597
+  },
+  "p": {
+   "const": 0.0,
+   "F_i": 0.0,
+   "lealtad_x_jefe": 0.0,
+   "dict_DISPUTADO": 0.0,
+   "dict_mayoria": 0.0,
+   "dict_solo_minoria": 0.13196
+  },
+  "llf": -96166.1
+ },
  "_descriptivos": {
   "n_votos": 246306,
   "n_actas": 1555,

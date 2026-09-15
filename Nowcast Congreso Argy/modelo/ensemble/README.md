@@ -1,6 +1,6 @@
 # Módulo: modelo/ensemble
 
-<!-- huella: 84a13d5fd576 -->
+<!-- huella: c64f709bf66d -->
 
 **Propósito.** La composición final del Nowcast — el nowcast **end-to-end de un proyecto**:
 
@@ -22,6 +22,7 @@ Une las dos piezas ya validadas del sistema en un solo número (con su descompos
 - REVISION 25-08: multiplicar P_B x P_D supone INDEPENDENCIA entre camaras y es falsa; y `P(B|A)` es notacion enganosa (A y C son un corrimiento en logit, no un condicional bayesiano)
 - el sobre tablas: 12,5% de las leyes se sancionan SIN dictamen y el modelo no lo contempla
 - diferencia entre la BANDA (p5-p95, agregada) y los PIVOTES (P individual en [0,35;0,65])
+- el dictamen POR LEGISLADOR (quién firmó, si firmó su jefe): `beta_dictamen.py`, detrás de `BETA_DICTAMEN=1` (apagada por defecto; medido el 14-09, mueve P fuerte, no se prendió)
 
 <!-- Las dos cosas de arriba las levanta `.mapa/indexar.py` al MAPA.md de la
      raiz: el `Resumen:` va a la columna "Que es" y las pistas al router
@@ -160,6 +161,36 @@ igual y no es cierto — un jefe de bloque o un presidente de comisión carga m�
 fuentes ya existen: `variables/proyecto/src/scrape_jefes_bloque.py` y
 `comisiones_autoridades.parquet` (46 presidentes con su cargo).
 
+## El dictamen POR LEGISLADOR (`src/beta_dictamen.py`, 2026-09-14, ADR-0016)
+
+**Reemplaza conceptualmente al δ agregado de la Puerta A** (que sigue en el código,
+intacto, en 0): en vez de correr la P AGREGADA de la cámara por el carácter del
+dictamen, corre la P de CADA legislador:
+
+```
+logit(P_i^dict) = logit(P_i) + β1·F_i + β2·(1-d_i)·J_ℓ(i) + δ(carácter)
+```
+
+`F_i` = firmó él el dictamen; `J_ℓ(i)` = firmó el jefe de SU bloque, filtrado por
+`(1-d_i)` (su lealtad); `δ(carácter)` = UNICO (referencia) / DISPUTADO / mayoría /
+solo_minoria. Coeficientes en `outputs/beta_dictamen.json` → `M5_produccion`
+(`estimar_beta_dictamen.py`, reestimado el 14-09 con el Senado incluido).
+
+**No reimplementa el cruce firmante↔jefe↔carácter**: reusa `firmas_por_acta` /
+`jefes` / `_caracter_por_proyecto_camara` de `estimar_beta_dictamen.py` — las
+mismas funciones con las que se estiman los coeficientes.
+
+**BANDERA APAGADA POR DEFECTO** (`BETA_DICTAMEN=1` para prender). Apagada,
+`armar_roster` ni siquiera importa el módulo. **Medido el 14-09 sobre proyectos
+reales: mueve P con mucha fuerza** — dos de tres casos de prueba (dictamen
+DISPUTADO o mayoría) van de 0,9801 a 0,0099, porque `δ(carácter)` penaliza por
+igual a CUALQUIER legislador sin firma propia ni de su jefe (85-90% de la cámara),
+y esos dos caracteres son el 61% de los votos de entrenamiento. **No se prendió**:
+el coeficiente está bien estimado, pero la forma funcional (penalizar parejo, sin
+pesar por cercanía a la comisión dividida) necesita revisión de Franco antes de
+plantear siquiera un backtest. Detalle completo en `coordinacion/FORMULA-COMPLETA.md`
+§III.A.2.
+
 ## Las guardas contra la sobreconfianza (2026-08-22)
 
 `simular_con_guardas` (en `src/ensemble.py`) es el **único** lugar donde viven las dos
@@ -193,6 +224,7 @@ python modelo/ensemble/tests/test_puerta_d.py            # 24 chequeos offline
 python modelo/ensemble/tests/test_guardas_confianza.py   # 14 chequeos; falla con el codigo viejo
 python modelo/ensemble/tests/test_puerta_a.py            # 31 chequeos; incluye la guarda point-in-time
 python modelo/ensemble/tests/test_backtest_cadena.py     # 53 chequeos offline, dos backends de dtype
+python modelo/ensemble/tests/test_beta_dictamen.py       # 14 chequeos; el dictamen por legislador, bandera apagada por defecto
 ```
 
 ## Pendientes / v2

@@ -469,7 +469,26 @@ las votaciones de septiembre-octubre de años impares.
 
 # Modificaciones propuestas
 
-Ordenadas por relación valor/costo. **Ninguna está implementada.**
+Ordenadas por relación valor/costo.
+
+> **ACTUALIZACIÓN 2026-09-14.** Este documento es de hace tres semanas y dos de las
+> filas ya no reflejan el estado real:
+> - **A (quórum) está HECHO.** Implementada detrás de `QUORUM_ABSTENCIONES=1`
+>   (apagada por defecto) y medida el 04-09: con presentismo realista el bug es
+>   INERTE (Δ=0,0000 en cinco escenarios); sólo pesa con asistencia por debajo de
+>   la mitad del cuerpo. Ver `modelo/agregador_institucional/src/agregador.py` y
+>   `coordinacion/FORMULA-COMPLETA.md` §II.2/término 8.
+> - **B (δ del dictamen) está implementada y medida, NO en la forma de esta
+>   tabla.** La solución real terminó siendo `beta_dictamen.py` (§III.A.2 de
+>   FORMULA-COMPLETA.md, ADR-0016): el dictamen entra POR LEGISLADOR
+>   ($\beta_1 F_i + \beta_2(1-d_i)J_\ell + \delta(\text{carácter})$), no como el
+>   $\delta = \beta_1\rho + \beta_2 W$ agregado que describe la fila de abajo.
+>   Medido el 14-09 sobre proyectos reales: mueve P con mucha fuerza (0,98 → 0,01
+>   en dos de tres casos de prueba) y el hallazgo necesita revisión antes de
+>   considerar prenderlo — no es un "sí" ni un "no" todavía. Detalle completo en
+>   FORMULA-COMPLETA.md.
+>
+> El resto de la tabla (C-H) sigue sin tocar.
 
 | # | Cambio | Por qué | Qué hay que hacer | Bloquea a |
 |---|---|---|---|---|

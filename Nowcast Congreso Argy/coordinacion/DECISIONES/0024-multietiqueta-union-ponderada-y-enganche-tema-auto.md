@@ -1,7 +1,8 @@
 # ADR-0024 — Multietiqueta: `union`/`ponderada` en `proyectar_postura`, y el enganche `TEMA_AUTO`
 
-**Fecha:** 2026-09-15 · **Estado:** IMPLEMENTADO, detrás de banderas APAGADAS
-por defecto (`TEMA_AUTO=0`, `combinar_temas='primaria'`) · **Decide:** Claude,
+**Fecha:** 2026-09-15 · **Estado:** IMPLEMENTADO y **PROBADO — NO SE RECOMIENDA
+ACTIVAR** (PASO 2 dio negativo: ver abajo). Banderas APAGADAS por defecto
+(`TEMA_AUTO=0`, `combinar_temas='primaria'`) y se quedan así. · **Decide:** Claude,
 con el mandato de `coordinacion/PROMPT-MULTIETIQUETA.md` (Franco: "seguí el
 camino que consideres mejor... resolvé todo lo que puedas") · **Toca:**
 `variables/bloque/src/bloque.py`, `variables/proyecto/src/tema_por_proyecto.py`
@@ -106,11 +107,56 @@ prueba, se confirmó que el enganche efectivamente llega hasta
 > de `proyecto_taxonomias` (que sí trae confianza por taxonomía), la
 > `ponderada` en producción sí pesará de verdad.
 
-**Estado de esta validación al cerrar este ADR: ver la entrada de
-`ESTADO-DEL-PROYECTO.md` con fecha y hora de esta misma sesión** — la corrida
-sobre una muestra de 3.000 actas para los tres modos se lanzó en background;
-sus números se agregan ahí apenas terminan, no acá, para no tener dos lugares
-con el mismo dato y el riesgo de que uno quede desactualizado.
+### 🔴 Resultado: NEGATIVO. `union` y `ponderada` empeoran justo donde tenían que ayudar
+
+**Corrida real, 2.984 actas evaluadas (16 saltadas), seed=7, 353.133 votos
+totales por modo** (`evaluacion/baseline/outputs`, reproducible con
+`--muestra 3000 --seed 7 --combinar-temas {primaria,union,ponderada}`):
+
+| | `primaria` (hoy) | `union` | `ponderada` |
+|---|---:|---:|---:|
+| Brier global | 0,13634 | 0,13657 | 0,13668 |
+| skill global | 0,1527 | 0,1512 | 0,1506 |
+| **Brier rama de bloque** (n=1.263 votos) | **0,20380** | **0,20771** | **0,20569** |
+| **skill rama de bloque** | **−0,0559** | **−0,0762** | **−0,0657** |
+| MAE del margen | 0,1382 | 0,1380 | 0,1380 |
+
+**Global: prácticamente plano**, exactamente lo que el PASO 0 anticipaba — la
+rama de bloque es ~0,36% de los votos, así que cualquier cambio ahí se diluye
+a nada en el agregado. **Pero en el subconjunto que el cambio REALMENTE
+toca —la rama de bloque, que es donde había que mirar— los dos modos nuevos
+EMPEORAN el Brier respecto de `primaria`, no lo mejoran.** `union` es el
+peor (+0,0039, skill cae de −0,056 a −0,076); `ponderada` empeora menos
+(+0,0019) pero sigue sin ganarle a `primaria`.
+
+**Por qué, la hipótesis más plausible:** la rama de bloque ya es la parte más
+débil del motor (skill NEGATIVO incluso con `primaria`, consistente con lo
+medido en §II.5 de `FORMULA-COMPLETA.md` — "mandar gente ahí no es un refugio
+conservador: es empeorarla"). Sobre una muestra ya chica (1.263 votos),
+`union` suma actas de OTROS temas relacionados que diluyen la señal
+específica; `ponderada` promedia con PESO IGUAL entre temas (limitación de
+`todas_ids`, ver más arriba) cuando en la realidad un proyecto casi siempre
+tiene un tema que manda y otros que son ruido de fondo — promediarlos parejo
+es, en la práctica, agregar ruido a una estimación que ya tenía poca base.
+
+**Esto es la doctrina de este proyecto funcionando, no un fracaso de la
+tarea:** la misma familia de resultado que el sobre tablas (§III.A.5) y el
+carácter del dictamen en el ADR-0016 — una hipótesis razonable que el
+backtest walk-forward rechaza. **Se reporta como corresponde: no se fuerza.**
+
+**Recomendación: NO activar `TEMA_AUTO` con `COMBINAR_TEMAS != "primaria"`
+en base a esta medición.** Si algún día `proyecto_taxonomias` tiene datos
+reales (con confianza por etiqueta, no la aproximación de peso igual que usa
+esta validación), vale la pena remedir — pero con la evidencia de hoy, la
+regla ganadora sigue siendo no tocar nada.
+
+**Limitación de esta medición, honesta:** muestra de 3.000 de ~6.091 actas
+totales (seed único), no el censo completo. La dirección del resultado
+(ambos modos peores que primaria, en el mismo sentido) es consistente entre
+`union` y `ponderada`, lo que pesa a favor de que sea señal real y no ruido
+de una sola corrida — pero un censo completo (como el que se hizo para el
+guard de era, ADR-0018) sería la confirmación definitiva si esto se
+retoma.
 
 ## Verificación
 
@@ -151,10 +197,12 @@ registro único sin ningún código nuevo. Tests: 3 checks nuevos en
    `ANTHROPIC_API_KEY` + red, tarea operativa de Franco (o de una sesión con
    esas credenciales). Sin esto, `TEMA_AUTO=1` sigue siendo un no-op sin
    importar qué tan bien esté escrito el resto.
-2. **Decidir la regla de combinación con los números de PASO 2** (ver la
-   entrada de ESTADO con la corrida de 3.000 actas): si `union`/`ponderada`
-   superan a `primaria` en el subconjunto de la rama de bloque, decisión de
-   Franco antes de tocar `COMBINAR_TEMAS` default o `TEMA_AUTO` default.
+2. ~~Decidir la regla de combinación con los números de PASO 2~~ **RESUELTO
+   por la medición de arriba: ninguna de las dos gana.** El código queda
+   (tested, documentado, reusable si cambian las condiciones — por ejemplo con
+   confianza real por etiqueta), pero no hay recomendación de activar nada.
+   Sigue siendo decisión de Franco si quiere confirmar con el censo completo
+   antes de cerrar el tema del todo.
 3. **No se prende nada en publicación sin aprobación de Franco** — las tres
    banderas (`TEMA_AUTO`, `COMBINAR_TEMAS`, y el default de
    `combinar_temas` en `proyectar_postura`) quedan como están hasta entonces.

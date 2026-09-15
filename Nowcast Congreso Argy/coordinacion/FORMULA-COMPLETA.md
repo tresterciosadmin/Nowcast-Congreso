@@ -51,14 +51,13 @@ este archivo en el mismo commit.
 | 16 | proximidad electoral | el calendario cambia incentivos | 🔲 **propuesto** (§III.B.1) |
 | 17 | asimetría del ICG | las caídas pesan más que las subas | 🔲 **propuesto** (§III.B.2) |
 | 18 | $\rho$ — récord por tema | falta la tabla | 🔲 **bloqueado** (§III.B.3) |
-| 19 | multietiqueta en $s_\ell$ (`combinar_temas`) + `TEMA_AUTO` | un proyecto real casi siempre tiene VARIOS temas (61,2% medido) | 🔬 **IMPLEMENTADO 15-09, tras bandera apagada — no-op verificado** (§I.4a, ADR-0024). PASO 2 (validación contra el baseline) corriendo al cerrar esta sesión |
+| 19 | multietiqueta en $s_\ell$ (`combinar_temas`) + `TEMA_AUTO` | un proyecto real casi siempre tiene VARIOS temas (61,2% medido) | 🔴 **PROBADO y DESCARTADO POR AHORA, 15-09** (§I.4a, ADR-0024) — implementado, backtest real (2.984 actas): `union` y `ponderada` EMPEORAN el Brier en la rama de bloque (−0,056 → −0,076 / −0,066 de skill) respecto de la `primaria` de siempre. No es un "no" definitivo — "no todavía"; decisión de Franco |
 
-**Resumen honesto: 7 términos corren, 5 están rotos, apagados o reprobaron su backtest
-(el sobre tablas se suma a esta lista el 15-09: theta no generaliza en las actas que
-efectivamente pasan), 2 están implementados detrás de bandera y medidos/en medición a la
-espera de la decisión de Franco (dictamen por legislador y multietiqueta), 2 están
-decididos sin implementar y 3 son propuestas.** El motor que corre hoy es más chico que
-esta fórmula.
+**Resumen honesto: 7 términos corren, 6 están rotos, apagados o reprobaron su backtest
+(el sobre tablas y la multietiqueta se suman a esta lista el 15-09: ninguno de los dos
+generaliza fuera de la muestra con la que se construyó), 1 está implementado detrás de
+bandera y medido a la espera de la decisión de Franco, 2 están decididos sin implementar
+y 3 son propuestas.** El motor que corre hoy es más chico que esta fórmula.
 
 ---
 ---
@@ -193,8 +192,9 @@ Con pocas actas condicionadas manda el incondicional; con muchas, el condicionad
 Las actas `AUX` (homenajes, trámite, consenso) se **excluyen**: todos votan que sí e
 inflarían el share.
 
-> 🔬 **IMPLEMENTADO 15-09-2026, detrás de bandera apagada — la multietiqueta ya no se
-> aplasta a una sola $t$.** Medido el mismo día: 61,2% de las actas votadas
+> 🔴 **IMPLEMENTADO y PROBADO 15-09-2026 — backtest walk-forward real: EMPEORA la rama
+> de bloque, no se recomienda activar.** Sigue detrás de bandera apagada. Medido el
+> mismo día: 61,2% de las actas votadas
 > clasificadas tienen ≥2 etiquetas sustantivas — no es un caso raro de ómnibus, es la
 > norma. `proyectar_postura` gana `combinar_temas ∈ {primaria, union, ponderada}`
 > (default `primaria` = exactamente esta fórmula, sin cambios). Con `union`, $n^c_\ell$
@@ -214,8 +214,18 @@ inflarían el share.
 > `variables/proyecto/src/tema_por_proyecto.py`. **Hoy es un no-op verificado**
 > ($P=0{,}9801$ igual con la bandera prendida o apagada): esa tabla tiene 0 filas
 > porque nadie corrió `agente_taxonomias.clasificar_lote` (necesita
-> `ANTHROPIC_API_KEY` + red). Detalle completo, incluida la validación PASO 2 contra
-> el baseline, en ADR-0024.
+> `ANTHROPIC_API_KEY` + red).
+>
+> **PASO 2 — backtest sobre 2.984 actas reales (seed=7): `union` y `ponderada`
+> EMPEORAN el Brier de la rama de bloque** (0,2038 → 0,2077 / 0,2057; skill
+> −0,056 → −0,076 / −0,066) **contra la `primaria` de siempre**, que ya era el
+> término más débil del motor. Global: plano (0,13634 → 0,1366/0,1367), como
+> anticipaba el PASO 0 — la rama de bloque es ~0,36% de los votos. Hipótesis de
+> por qué: sobre una muestra ya chica, `union` diluye con actas de temas
+> relacionados pero distintos, y `ponderada` promedia con PESO IGUAL entre
+> temas (la confianza por etiqueta no sobrevive en `todas_ids`) cuando en la
+> realidad casi siempre hay un tema que manda y otros que son ruido. **No se
+> recomienda activar.** Detalle completo en ADR-0024.
 
 **Archivo:** `variables/bloque/src/bloque.py` → `proyectar_postura`
 

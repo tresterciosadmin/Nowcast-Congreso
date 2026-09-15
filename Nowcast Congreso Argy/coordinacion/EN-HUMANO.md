@@ -2,6 +2,23 @@
 
 > Documento vivo. Cada cambio importante en el proyecto se explica acá en lenguaje claro, además de registrarse en `ESTADO-DEL-PROYECTO.md`. Si algo del sistema no se entiende leyendo esto, está mal escrito y hay que arreglarlo.
 
+## Probamos las dos formas de combinar varios temas, y las dos salieron peor (15-09-2026)
+
+Siguiendo con el hito de abajo: se probaron con datos reales las dos formas de combinar
+varios temas que se habían armado. **El resultado fue negativo, y se reporta tal cual
+salió:** las dos formas nuevas predicen PEOR, justo en la parte del modelo que estaban
+tratando de mejorar. En el conjunto grande de datos casi no se nota (esa parte del modelo
+es una porción muy chica de todas las predicciones), pero mirando específicamente los
+casos que sí la usan, las dos opciones nuevas se equivocan más que la forma de siempre —
+que, dicho sea de paso, ya era la parte más floja del modelo de antes. La explicación más
+probable: cuando se junta la historia de varios temas relacionados a la vez, o se promedia
+entre ellos por igual, se termina metiendo más ruido que señal, sobre todo con pocos datos.
+Es el mismo tipo de resultado que ya pasó otras veces en este proyecto con ideas que sonaban
+bien y no se sostuvieron con los datos: se prueba, y si no funciona, se dice con la misma
+claridad que si hubiera funcionado. El código queda guardado y documentado por si en el
+futuro hay mejores datos para probarlo de nuevo, pero **no se recomienda prender nada de
+esto.**
+
 ## El sistema ya sabía que un proyecto toca varios temas, pero el dato no llegaba a ningún lado (15-09-2026)
 
 Siguiendo con lo de arriba: la mitad del trabajo (los temas de un proyecto) ya estaba

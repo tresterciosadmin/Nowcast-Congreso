@@ -56,6 +56,22 @@ Mantené esta tabla sincronizada con la bitácora.
 
 ## Bitácora (más reciente arriba)
 
+### [2026-09-15] evaluacion/baseline — PASO 2 cerrado: `union`/`ponderada` EMPEORAN la rama de bloque, no se recomienda activar
+- **Quién:** Claude, ejecución autónoma.
+- **Qué:** Cierra el pendiente que dejó la entrada anterior. Corrida real de `baseline_voto_individual.py --muestra 3000 --seed 7` en los tres modos (`primaria`/`union`/`ponderada`), 2.984 actas evaluadas (16 saltadas), 353.133 votos por corrida. **Resultado negativo, honesto y reportado como tal (no se fuerza):**
+
+  | | `primaria` (hoy) | `union` | `ponderada` |
+  |---|---:|---:|---:|
+  | Brier global | 0,13634 | 0,13657 | 0,13668 |
+  | **Brier rama de bloque** (n=1.263 votos) | **0,20380** | **0,20771** | **0,20569** |
+  | **skill rama de bloque** | **−0,0559** | **−0,0762** | **−0,0657** |
+
+  Global prácticamente plano (esperado: la rama de bloque es ~0,36% de los votos). **En el subconjunto que el cambio realmente toca, los dos modos nuevos empeoran** respecto de la `primaria` de siempre, que YA era el término más débil del motor (skill negativo, consistente con §II.5 de FORMULA-COMPLETA.md). Hipótesis: sobre una muestra ya chica, `union` diluye con actas de temas relacionados-pero-distintos; `ponderada` promedia con peso IGUAL entre temas (limitación de `todas_ids`: no preserva confianza por etiqueta) cuando en la realidad un tema suele mandar y los demás son ruido de fondo.
+- **Es la misma familia de resultado que el sobre tablas (§III.A.5) y el carácter del dictamen (ADR-0016):** una hipótesis razonable que el backtest walk-forward rechaza. El código queda implementado, testeado y documentado — reusable si algún día `proyecto_taxonomias` trae confianza real por etiqueta — pero **la recomendación es no activar ninguna de las dos reglas.**
+- **Archivos:** `coordinacion/DECISIONES/0024-...md` (cerrado con el resultado), `coordinacion/FORMULA-COMPLETA.md` (término 19 pasa a 🔴 probado y descartado), `evaluacion/baseline/outputs/baseline_combinar_temas_{primaria,union,ponderada}_2026-09-15.json` (salida cruda, reproducible).
+- **Estado del módulo:** Parte A (multietiqueta) CERRADA por ahora. `TEMA_AUTO`/`COMBINAR_TEMAS` quedan en el repo, apagados, documentados, sin recomendación de uso.
+- **Próximo paso:** ninguno de mi parte — si Franco quiere confirmar con el censo completo (6.091 actas, como se hizo para el guard de era) antes de cerrar el tema del todo, es la única razón para volver a esto. Si no, el pendiente que sigue abierto es Parte B (B2: agrupar en capítulos, necesita texto del articulado — decisión de Franco antes de arrancar esa adquisición de datos).
+
 ### [2026-09-15] variables/bloque + variables/proyecto + modelo/ensemble + evaluacion/baseline — Parte A: `combinar_temas` (union/ponderada) y el enganche `TEMA_AUTO`
 - **Quién:** Claude, ejecución autónoma ("seguí el camino que consideres mejor, resolvé todo lo que puedas resolver" — Franco).
 - **Qué:** Implementadas las dos piezas que el PASO 0 identificó como necesarias, juntas (una sin la otra no mueve nada): (1) `variables/bloque/src/bloque.py::proyectar_postura` gana `combinar_temas ∈ {primaria, union, ponderada}` — `primaria` es el comportamiento de siempre (default, retrocompatible byte a byte); `union` condiciona con la multietiqueta COMPLETA de cada acta de la ventana (`todas_ids`), no sólo su primaria; `ponderada` arma un share por cada tema objetivo y los combina por confianza (con 1 tema de peso 1.0 da EXACTAMENTE `primaria` — es la generalización, no una rama aparte). (2) `variables/proyecto/src/tema_por_proyecto.py` (nuevo, sólo LECTURA) resuelve `proyecto_id → tema` vía `proyecto_taxonomias` (que YA existe, YA es multietiqueta, y hoy tiene 0 filas porque nadie corrió `agente_taxonomias.clasificar_lote` — falta ANTHROPIC_API_KEY + red, no disponibles en esta sesión) cruzando `proyecto_id` (HCDN, el que usa el motor) contra `denominador` (NNNN-X-AAAA, el de `proyectos.db`) vía `expedientes.parquet` (100% de match para proyectos con huella en Diputados). `nowcast_puertas.nowcast()` llama a esto sólo si `TEMA_AUTO=1` (apagada por defecto) y el llamador no pasó `tema` a mano.

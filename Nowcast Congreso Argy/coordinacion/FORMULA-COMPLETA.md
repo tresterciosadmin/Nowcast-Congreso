@@ -44,7 +44,7 @@ este archivo en el mismo commit.
 | 9 | $\delta$ — dictamen | condicionar por carácter del dictamen | 🔴 **implementado en 0** (§II.3) |
 | 10 | ICG — clima político | modula según el humor social | 🔴 **medido y desconectado** (§II.4) |
 | 11 | $\mathcal{C}_c$ — gate del dictamen | admisibilidad reglamentaria | 🔲 **decidido** (§III.A.1) |
-| 12 | $\beta$ — dictamen por legislador | reemplaza a $\delta$ | 🔴 **implementado detrás de bandera, MEDIDO 14-09 — mueve P fuerte, sin prender** (§III.A.2) |
+| 12 | $\beta$ — dictamen por legislador | reemplaza a $\delta$ | 🔲 **implementado detrás de bandera, validado walk-forward y en 3 casos reales — recomendado prender, decisión pendiente de Franco** (§III.A.2) |
 | 13 | $\varepsilon_0 + \eta_j$ — incertidumbre | reemplaza al clip | 🔲 **decidido y ESTIMADO 03-09** (§III.A.3) |
 | 14 | $\psi$ — arrastre entre cámaras | la revisora lee a la de origen | 🔲 **ESTIMADO y controlado 03-09** (§III.A.4) |
 | 15 | sobre tablas | el 24,4% que hoy es invisible | 🔲 **decidido y $\theta$ ESTIMADO 03-09** (§III.A.5) |
@@ -810,6 +810,77 @@ revisión antes de considerar prenderlo".
 `modelo/ensemble/src/{estimar_beta_dictamen.py, nowcast_puertas.py}`,
 `modelo/ensemble/outputs/beta_dictamen.json`,
 `modelo/ensemble/tests/test_beta_dictamen.py` (nuevo, 14 checks).
+
+### 🔬 ACTUALIZACIÓN 14-09, más tarde el mismo día — backtest walk-forward: el CARÁCTER no generaliza, F_i/lealtad SÍ
+
+**Franco: "miralo con más casos antes de decidir si lo prendemos".** En vez de más
+proyectos sueltos, la pregunta correcta es si el término predice votos que
+**nunca vio al ajustarse** — eso es lo que un p-valor sobre la muestra completa NO
+contesta. Nuevo script permanente,
+`modelo/ensemble/src/validar_beta_dictamen_walkforward.py`: entrena con el 70% de
+actas MÁS VIEJO (hasta 2017-12-22, 1.079 actas) y mide Brier/skill/accuracy sobre
+el 30% MÁS NUEVO (476 actas, 81.450 votos), que el ajuste nunca tocó.
+
+| | Brier (↓ mejor) | skill vs. tasa base | accuracy |
+|---|---:|---:|---:|
+| sólo el motor (offset, sin dictamen) | 0,1725 | 0,1929 | 0,7549 |
+| **+ $F_i$ + $\beta_2(1-d_i)J_\ell$, SIN carácter** | **0,1591** | **0,2672** | **0,7617** |
+| + carácter también (M5, la de arriba) | 0,1793 | 0,1611 | 0,7418 |
+
+**El carácter EMPEORA la predicción sobre actas que nunca vio; $F_i$ y la lealtad
+por el jefe la MEJORAN.** Por carácter, con el término de carácter incluido:
+DISPUTADO 0,1997→0,2081 (peor), mayoría 0,1934→0,2533 (mucho peor), solo_minoria
+0,2067→0,2059 (≈igual), UNICO 0,1382→0,1275 (mejor — pero ahí sólo actúan
+$F_i$/lealtad, UNICO es la referencia sin delta de carácter). **Es sobreajuste,
+no señal:** el M5 de más arriba encontraba un patrón fuerte y significativo en la
+muestra de entrenamiento que no sostiene fuera de ella — exactamente lo que
+"un hallazgo que sobrevive los controles" (como se leyó el 03-09/14-09 más arriba)
+no alcanza a garantizar cuando el objetivo es predecir, no explicar.
+
+**Se saca el carácter de producción.** `beta_dictamen.py` pasa a usar
+**M6_sin_caracter** (agregado a `estimar_beta_dictamen.py`, sólo $F_i$ +
+$\beta_2(1-d_i)J_\ell$, reestimado sobre toda la muestra):
+
+| término | coef (toda la muestra) |
+|---|---:|
+| $\beta_1$ — $F_i$ | **+2,088** (p<0,0001) |
+| $\beta_2$ — $(1-d_i)J_\ell$ | **+1,750** (p<0,0001) |
+
+(`const`=−0,341, no se usa — ver "por qué sin el const" en `beta_dictamen.py`.)
+
+La fórmula que corre detrás de la bandera queda
+$\text{logit}(P_i^{\text{dict}}) = \text{logit}(P_i) + \beta_1 F_i + \beta_2(1-d_i)J_{\ell(i)}$,
+sin $\delta(\text{carácter})$. Los dos coeficientes son POSITIVOS: a diferencia de
+M5, nadie recibe una penalización sólo por no haber firmado — quien no tiene
+firma propia ni jefe firmante queda en delta 0.
+
+**Remedido sobre los mismos tres proyectos reales de la sección de arriba:**
+
+| | apagado | M5 (con carácter, descartado) | M6 (sin carácter) |
+|---|---:|---:|---:|
+| `HCDN291414` (DISPUTADO) | 0,9801 | 0,0099 | **0,9801** |
+| `HCDN292180` (mayoría) | 0,9801 | 0,0099 | **0,9801** |
+| `HCDN289908` (UNICO) | 0,9801 | 0,9801 | **0,9801** |
+
+**El colapso desapareció, como predecía el diseño.** El agregado P(aprobación) no
+se mueve en ninguno de los tres — con un roster ya mayoritariamente favorable, un
+corrimiento que sólo empuja hacia arriba no tiene margen para bajar el número. Lo
+que SÍ cambia es el desagregado (el tablero, no el número publicado): en
+`HCDN291414`, "acompaña" sube de 78 a 97 y "incógnita" baja de 163 a 144 —
+quienes firmaron el dictamen o tienen a su jefe entre los firmantes se corren de
+"incógnita" a "acompaña", nadie se corre hacia "no acompaña". Mismo patrón en los
+otros dos (`HCDN292180`: 78→115 acompaña; `HCDN289908`: 78→121 acompaña). Es el
+comportamiento esperable de un término que sólo aporta información a favor de
+quien mostró señal (firma propia o de su jefe), no un empeoramiento.
+
+**Con la evidencia completa (walk-forward + estos tres casos), mi recomendación
+es prender `BETA_DICTAMEN=1`** — el término generaliza, mejora el Brier held-out,
+y no reproduce el colapso de M5. La decisión de prenderlo es de Franco (regla del
+motor, ADR-0015): falta el visto bueno.
+
+**`puerta_a.delta_caracter`** (el condicionante AGREGADO del carácter, término 9)
+**sigue sin tocar**: este hallazgo es sobre el mecanismo POR LEGISLADOR, no dice
+nada sobre si el carácter serviría agregado a nivel cámara.
 
 ### III.A.3 — El $\varepsilon$ baja al legislador, y hacen falta DOS piezas
 

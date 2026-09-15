@@ -448,13 +448,23 @@ def estimar(d: pd.DataFrame) -> dict:
     # M4: la del ADR + caracter, para ver si sobra alguno
     res["M4_ADR_mas_caracter"] = ajustar(pd.concat([adr, dummies], axis=1),
                                          offset=d["offset"])
-    # M5: LA FORMULACION DE PRODUCCION (Formulacion resultante, FORMULA-COMPLETA
-    # S:III.A.2). M4 mostro que W_otros cambia de signo al agregar el caracter
-    # (colinealidad, no efecto) y "APROBADO 03-09 (Franco): beta_3 W_-l SALE y lo
-    # reemplaza el caracter". Este modelo es el que efectivamente se usa para el
-    # logit(P_i^dict): solo F_i, lealtad_x_jefe y el caracter, SIN W_otros.
+    # M5: la formulacion que aprobo el 03-09 (Formulacion resultante, FORMULA-COMPLETA
+    # S:III.A.2): F_i, lealtad_x_jefe y el caracter, SIN W_otros (M4 mostro que
+    # W_otros cambia de signo al agregar el caracter -- colinealidad, no efecto).
+    # DEJA DE SER LA DE PRODUCCION el 14-09: ver M6 abajo.
     prod = pd.concat([d[["F_i", "lealtad_x_jefe"]], dummies], axis=1)
-    res["M5_produccion"] = ajustar(prod, offset=d["offset"])
+    res["M5_con_caracter"] = ajustar(prod, offset=d["offset"])
+    # M6: LA FORMULACION DE PRODUCCION desde el 14-09-2026. Un backtest walk-forward
+    # (entrenar con el 70% de actas mas viejo, medir Brier en el 30% mas nuevo, nunca
+    # visto al ajustar -- Archivos_Borrar/backtest_beta_dictamen_walkforward.py, pedido
+    # de Franco tras ver que M5 colapsaba P en casos reales) encontro que EL CARACTER
+    # NO GENERALIZA: empeora el Brier held-out (0,1725 -> 0,1793 en total; DISPUTADO
+    # 0,1997->0,2081, mayoria 0,1934->0,2533). F_i y lealtad_x_jefe SOLOS, sin
+    # caracter, SI generalizan y mejoran (0,1725 -> 0,1591-0,1566 segun se incluya la
+    # constante). El caracter agregado en M5 estaba sobreajustando una particularidad
+    # de la muestra de entrenamiento, no midiendo una relacion real. M6 es la
+    # formulacion que efectivamente se usa: F_i + lealtad_x_jefe, sin caracter.
+    res["M6_sin_caracter"] = ajustar(d[["F_i", "lealtad_x_jefe"]], offset=d["offset"])
 
     # CUANTOS CLUSTERS SOSTIENE CADA DUMMY. El error estandar es cluster-robusto POR
     # ACTA, y eso significa que el numero de ACTAS —no de votos— es lo que le da sentido.

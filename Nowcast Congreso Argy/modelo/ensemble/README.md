@@ -1,6 +1,6 @@
 # Módulo: modelo/ensemble
 
-<!-- huella: c64f709bf66d -->
+<!-- huella: 0d934643a411 -->
 
 **Propósito.** La composición final del Nowcast — el nowcast **end-to-end de un proyecto**:
 
@@ -22,7 +22,7 @@ Une las dos piezas ya validadas del sistema en un solo número (con su descompos
 - REVISION 25-08: multiplicar P_B x P_D supone INDEPENDENCIA entre camaras y es falsa; y `P(B|A)` es notacion enganosa (A y C son un corrimiento en logit, no un condicional bayesiano)
 - el sobre tablas: 12,5% de las leyes se sancionan SIN dictamen y el modelo no lo contempla
 - diferencia entre la BANDA (p5-p95, agregada) y los PIVOTES (P individual en [0,35;0,65])
-- el dictamen POR LEGISLADOR (quién firmó, si firmó su jefe): `beta_dictamen.py`, detrás de `BETA_DICTAMEN=1` (apagada por defecto; medido el 14-09, mueve P fuerte, no se prendió)
+- el dictamen POR LEGISLADOR (quién firmó, si firmó su jefe): `beta_dictamen.py`, detrás de `BETA_DICTAMEN=1` (apagada por defecto; validado walk-forward el 14-09, recomendado prender, decisión pendiente de Franco)
 
 <!-- Las dos cosas de arriba las levanta `.mapa/indexar.py` al MAPA.md de la
      raiz: el `Resumen:` va a la columna "Que es" y las pistas al router
@@ -168,28 +168,36 @@ intacto, en 0): en vez de correr la P AGREGADA de la cámara por el carácter de
 dictamen, corre la P de CADA legislador:
 
 ```
-logit(P_i^dict) = logit(P_i) + β1·F_i + β2·(1-d_i)·J_ℓ(i) + δ(carácter)
+logit(P_i^dict) = logit(P_i) + β1·F_i + β2·(1-d_i)·J_ℓ(i)
 ```
 
 `F_i` = firmó él el dictamen; `J_ℓ(i)` = firmó el jefe de SU bloque, filtrado por
-`(1-d_i)` (su lealtad); `δ(carácter)` = UNICO (referencia) / DISPUTADO / mayoría /
-solo_minoria. Coeficientes en `outputs/beta_dictamen.json` → `M5_produccion`
-(`estimar_beta_dictamen.py`, reestimado el 14-09 con el Senado incluido).
+`(1-d_i)` (su lealtad). Coeficientes en `outputs/beta_dictamen.json` →
+`M6_sin_caracter` (`estimar_beta_dictamen.py`): β1=+2,088, β2=+1,750 (p<0,0001).
 
-**No reimplementa el cruce firmante↔jefe↔carácter**: reusa `firmas_por_acta` /
-`jefes` / `_caracter_por_proyecto_camara` de `estimar_beta_dictamen.py` — las
-mismas funciones con las que se estiman los coeficientes.
+**No reimplementa el cruce firmante↔jefe**: reusa `firmas_por_acta` / `jefes` de
+`estimar_beta_dictamen.py` — las mismas funciones con las que se estiman los
+coeficientes.
+
+⚠️ **La primera versión (M5, 14-09) traía además `+ δ(carácter)`** —UNICO
+(referencia) / DISPUTADO / mayoría / solo_minoria— y prendida sobre proyectos
+reales colapsaba P (0,9801 → 0,0099 en 2 de 3 casos), porque δ(carácter)
+penalizaba por igual a CUALQUIER legislador sin firma propia ni de su jefe
+(85-90% de la cámara). Un backtest walk-forward (entrenar con actas viejas, medir
+sobre actas nuevas nunca vistas — `src/validar_beta_dictamen_walkforward.py`)
+confirmó que **el carácter NO generaliza** (empeora el Brier held-out: 0,1725 →
+0,1793) mientras que **F_i y lealtad_x_jefe SOLOS SÍ generalizan** (0,1725 →
+0,1591). Se sacó el carácter de producción (M6). Remedido sobre los mismos tres
+proyectos: **el colapso desapareció** (0,9801 en los tres, como corresponde a un
+término que sólo empuja hacia arriba); lo que cambia es el desagregado —en
+`HCDN291414`, "acompaña" pasa de 78 a 97 y "incógnita" de 163 a 144, nadie se
+mueve hacia "no acompaña".
 
 **BANDERA APAGADA POR DEFECTO** (`BETA_DICTAMEN=1` para prender). Apagada,
-`armar_roster` ni siquiera importa el módulo. **Medido el 14-09 sobre proyectos
-reales: mueve P con mucha fuerza** — dos de tres casos de prueba (dictamen
-DISPUTADO o mayoría) van de 0,9801 a 0,0099, porque `δ(carácter)` penaliza por
-igual a CUALQUIER legislador sin firma propia ni de su jefe (85-90% de la cámara),
-y esos dos caracteres son el 61% de los votos de entrenamiento. **No se prendió**:
-el coeficiente está bien estimado, pero la forma funcional (penalizar parejo, sin
-pesar por cercanía a la comisión dividida) necesita revisión de Franco antes de
-plantear siquiera un backtest. Detalle completo en `coordinacion/FORMULA-COMPLETA.md`
-§III.A.2.
+`armar_roster` ni siquiera importa el módulo. Con la evidencia de arriba
+(walk-forward + los tres casos), la recomendación es prenderla — la decisión es
+de Franco (regla del motor, ADR-0015). Detalle completo en
+`coordinacion/FORMULA-COMPLETA.md` §III.A.2.
 
 ## Las guardas contra la sobreconfianza (2026-08-22)
 
@@ -224,7 +232,8 @@ python modelo/ensemble/tests/test_puerta_d.py            # 24 chequeos offline
 python modelo/ensemble/tests/test_guardas_confianza.py   # 14 chequeos; falla con el codigo viejo
 python modelo/ensemble/tests/test_puerta_a.py            # 31 chequeos; incluye la guarda point-in-time
 python modelo/ensemble/tests/test_backtest_cadena.py     # 53 chequeos offline, dos backends de dtype
-python modelo/ensemble/tests/test_beta_dictamen.py       # 14 chequeos; el dictamen por legislador, bandera apagada por defecto
+python modelo/ensemble/tests/test_beta_dictamen.py       # 16 chequeos; el dictamen por legislador, bandera apagada por defecto
+python modelo/ensemble/src/validar_beta_dictamen_walkforward.py  # backtest: entrena viejo, mide sobre lo nuevo nunca visto
 ```
 
 ## Pendientes / v2

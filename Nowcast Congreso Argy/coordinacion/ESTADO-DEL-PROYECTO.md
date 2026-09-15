@@ -56,6 +56,37 @@ Mantené esta tabla sincronizada con la bitácora.
 
 ## Bitácora (más reciente arriba)
 
+### [2026-09-14] modelo/ensemble — beta_dictamen: backtest walk-forward saca el carácter, deja F_i+lealtad (M6) — recomendado prender
+- **Quién:** Claude, con Franco ("miralo con más casos antes de decidir si lo prendemos").
+- **Qué:** la versión M5 (con `δ(carácter)`) que colapsaba P en proyectos reales
+  se reemplaza por **M6_sin_caracter**: `logit(P_i) + β1·F_i + β2·(1-d_i)·J_ℓ`,
+  sin el término de carácter. Motivo, medido con un backtest walk-forward nuevo
+  y permanente (`modelo/ensemble/src/validar_beta_dictamen_walkforward.py`,
+  entrena con el 70% de actas más viejo — hasta 2017-12-22 — y mide Brier sobre
+  el 30% más nuevo, 81.450 votos nunca vistos al ajustar): el carácter EMPEORA
+  el Brier held-out (0,1725→0,1793 total; mayoría 0,1934→0,2533); F_i+lealtad
+  SOLOS lo MEJORAN (0,1725→0,1591, skill 0,1929→0,2672). El carácter estaba
+  sobreajustando la muestra de entrenamiento, no prediciendo.
+- **Cómo:** M6 reestimado sobre toda la muestra (β1=+2,088, β2=+1,750, ambos
+  p<0,0001) y remedido sobre los mismos tres proyectos reales que colapsaban con
+  M5: **el colapso desapareció** (0,9801 en los tres — un término que sólo
+  empuja hacia arriba no puede bajar un agregado ya alto). El desagregado sí
+  cambia sanamente: en `HCDN291414` "acompaña" sube de 78 a 97 legisladores y
+  "incógnita" baja de 163 a 144, nadie se corre a "no acompaña". Con la bandera
+  apagada (default): 16/16 `test_beta_dictamen.py`, 49/49 `test_nowcast_puertas.py`,
+  suite completa 41/41, `verificar_regeneracion.py` 16/16, P(aprobación) =
+  0,9801 sin moverse. **Recomendación: prender `BETA_DICTAMEN=1`** — el término
+  generaliza y no reproduce el colapso. Sigue apagado: la decisión es de Franco
+  (ADR-0015).
+- **Archivos:** `modelo/ensemble/src/{beta_dictamen.py, estimar_beta_dictamen.py,
+  nowcast_puertas.py, validar_beta_dictamen_walkforward.py (nuevo)}`,
+  `modelo/ensemble/outputs/beta_dictamen.json`,
+  `modelo/ensemble/tests/test_beta_dictamen.py`,
+  `modelo/ensemble/README.md`, `coordinacion/FORMULA-COMPLETA.md`.
+- **Estado del módulo:** modelo/ensemble EN CURSO, sin cambio de contrato ni de
+  comportamiento efectivo (bandera apagada por defecto).
+- **Próximo paso:** decisión de Franco — prender `BETA_DICTAMEN=1` o no.
+
 ### [2026-09-14] datos/canonica — actas gemelas "sin fecha": los pares ambiguos ya no se reportan
 - **Quién:** Claude, con Franco (aprobó "sacar el fallback sin-fecha para pares
   con más de un candidato", `PARA-FRANCO-2026-09-14.md` ítem 2).

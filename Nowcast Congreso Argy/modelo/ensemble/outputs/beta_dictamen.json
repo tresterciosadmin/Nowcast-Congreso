@@ -181,7 +181,7 @@
   },
   "llf": -95476.2
  },
- "M5_produccion": {
+ "M5_con_caracter": {
   "n": 246306,
   "coef": {
    "const": 0.7554,
@@ -208,6 +208,25 @@
    "dict_solo_minoria": 0.13196
   },
   "llf": -96166.1
+ },
+ "M6_sin_caracter": {
+  "n": 246306,
+  "coef": {
+   "const": -0.3413,
+   "F_i": 2.0877,
+   "lealtad_x_jefe": 1.75
+  },
+  "se_cluster_acta": {
+   "const": 0.0394,
+   "F_i": 0.0951,
+   "lealtad_x_jefe": 0.1648
+  },
+  "p": {
+   "const": 0.0,
+   "F_i": 0.0,
+   "lealtad_x_jefe": 0.0
+  },
+  "llf": -104611.3
  },
  "_descriptivos": {
   "n_votos": 246306,

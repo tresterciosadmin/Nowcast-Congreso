@@ -1,13 +1,13 @@
 {
  "A_theta_vs_resto": {
-  "n": 162325,
+  "n": 185307,
   "coef": {
-   "const": 0.4153,
-   "tab": -1.4932
+   "const": 0.4262,
+   "tab": -1.2301
   },
   "se_cluster_acta": {
-   "const": 0.053,
-   "tab": 0.1535
+   "const": 0.0468,
+   "tab": 0.145
   },
   "p": {
    "const": 0.0,
@@ -15,12 +15,12 @@
   }
  },
  "B_solo_sobre_tablas": {
-  "n": 17357,
+  "n": 19642,
   "coef": {
-   "const": -1.0779
+   "const": -0.8039
   },
   "se_cluster_acta": {
-   "const": 0.1444
+   "const": 0.1376
   },
   "p": {
    "const": 0.0
@@ -28,14 +28,14 @@
  },
  "C_por_camara": {
   "diputados": {
-   "n": 114632,
+   "n": 137964,
    "coef": {
-    "const": 0.4827,
-    "tab": -2.0472
+    "const": 0.4798,
+    "tab": -1.5123
    },
    "se_cluster_acta": {
-    "const": 0.0645,
-    "tab": 0.2167
+    "const": 0.0546,
+    "tab": 0.1966
    },
    "p": {
     "const": 0.0,
@@ -43,34 +43,34 @@
    }
   },
   "senado": {
-   "n": 47693,
+   "n": 47343,
    "coef": {
-    "const": 0.1698,
-    "tab": -0.2616
+    "const": 0.1801,
+    "tab": -0.3538
    },
    "se_cluster_acta": {
-    "const": 0.0756,
-    "tab": 0.185
+    "const": 0.0752,
+    "tab": 0.1849
    },
    "p": {
-    "const": 0.02476,
-    "tab": 0.1574
+    "const": 0.0166,
+    "tab": 0.05562
    }
   }
  },
  "_descriptivos": {
-  "n_votos": 162325,
-  "n_actas": 1606,
-  "n_actas_sobre_tablas": 186,
-  "n_votos_sobre_tablas": 17357,
-  "tasa_afirm_sobre_tablas": 0.6448,
-  "tasa_afirm_resto": 0.8606,
-  "p_bloque_medio_sobre_tablas": 0.8019,
-  "p_bloque_medio_resto": 0.8164
+  "n_votos": 185307,
+  "n_actas": 1715,
+  "n_actas_sobre_tablas": 195,
+  "n_votos_sobre_tablas": 19642,
+  "tasa_afirm_sobre_tablas": 0.6548,
+  "tasa_afirm_resto": 0.8476,
+  "p_bloque_medio_sobre_tablas": 0.7767,
+  "p_bloque_medio_resto": 0.8005
  },
  "_avisos": {
-  "padron_cae_a_ventana": 152,
-  "sin_actas_condicionadas": 51,
-  "excluyo_aux": 106
+  "padron_cae_a_ventana": 440,
+  "sin_actas_condicionadas": 192,
+  "excluyo_aux": 615
  }
 }

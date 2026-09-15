@@ -6,6 +6,14 @@ Cómo reclamar: editá este archivo en tu rama, agregá la fila, y mencioná en 
 
 ---
 
+## Sesion 2026-09-15 — sobre tablas (§III.A.5 de FORMULA-COMPLETA.md, item C de la revision metodologica)
+
+| Modulo | Quien | Desde | Estado |
+|---|---|---|---|
+| **modelo/ensemble** | Claude (con Franco, "arrancamos por C — sobre tablas") | 2026-09-15 | **HECHO, LIBRE.** Gate de admisibilidad (C_c) + via sobre tablas como votacion (umbral de dos tercios) implementados detras de `SOBRE_TABLAS=1`, apagada por defecto. Sin regresion (P=0,9801, 16 controles OK). Backtest walk-forward: (1) bug de matching que escondia a Diputados desde 2020, corregido; (2) theta SATURA en Diputados; (3) opcion A (atenuar theta por grilla) probada y descartada — el mecanismo no discrimina ni con ni sin theta. NO se prende. Ver ESTADO 2026-09-15. |
+
+---
+
 ## Sesion 2026-09-14 — proyectos.db al dia, MATCH_AUTOR_FUZZY, ADR-0022 (Senado + Daer + jefes de bloque), URGENTE.md vaciado
 
 | Modulo | Quien | Desde | Estado |

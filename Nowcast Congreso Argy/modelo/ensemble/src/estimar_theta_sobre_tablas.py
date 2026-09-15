@@ -73,9 +73,19 @@ def panel(camara: str = "") -> pd.DataFrame:
     cond_map = (cond.set_index(cond.columns[0]).to_dict("index")
                 if cond is not None and len(cond) else {})
 
-    # marcar las actas de tratamiento sobre tablas por el titulo del acta
+    # marcar las actas de tratamiento sobre tablas por el titulo del acta.
+    #
+    # REGEX AMPLIADA EL 15-09-2026 (hallazgo del backtest walk-forward, ver
+    # FORMULA-COMPLETA.md S:III.A.5). "sobre tablas" a secas dejaba a DIPUTADOS con
+    # CERO actas desde el 2020-01-29 -- parecia que el mecanismo habia desaparecido
+    # de esa camara, y era matching roto: desde 2024 Diputados titula estas actas
+    # "HABILITACION DEL TRATAMIENTO EXPTE. ..." (con o sin tilde), el MISMO
+    # mecanismo con otro nombre -- confirmado con Franco. Senado conservo la frase
+    # "sobre tablas" en su propio fraseo ("Habilitacion de tratamiento sobre
+    # tablas..."), por eso el hueco era invisible mirando solo el agregado.
     ac = pd.read_parquet(REPO / "datos/canonica/data/clean/actas_canonico.parquet")
-    ac["tab"] = ac["titulo"].fillna("").str.lower().str.contains("sobre tablas")
+    ac["tab"] = ac["titulo"].fillna("").str.lower().str.contains(
+        r"sobre tablas|habilitaci[oó]n del?\s*tratamiento", regex=True)
     tab = dict(zip(ac["acta_id"], ac["tab"]))
 
     v = votos[votos["conducta"].isin(["AFIRMATIVO", "NEGATIVO"])].copy()

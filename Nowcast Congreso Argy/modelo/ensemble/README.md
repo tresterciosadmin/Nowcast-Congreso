@@ -1,6 +1,6 @@
 # Módulo: modelo/ensemble
 
-<!-- huella: c22d20097cc8 -->
+<!-- huella: f7a1c00a407b -->
 
 **Propósito.** La composición final del Nowcast — el nowcast **end-to-end de un proyecto**:
 
@@ -20,7 +20,8 @@ Une las dos piezas ya validadas del sistema en un solo número (con su descompos
 - la Puerta D / camara revisora en el circuito bicameral
 - P(mayoria) que da 0% o 100% (hay piso y techo por pedido de Valle)
 - REVISION 25-08: multiplicar P_B x P_D supone INDEPENDENCIA entre camaras y es falsa; y `P(B|A)` es notacion enganosa (A y C son un corrimiento en logit, no un condicional bayesiano)
-- el sobre tablas: 12,5% de las leyes se sancionan SIN dictamen y el modelo no lo contempla
+- el sobre tablas: 24,4% de los proyectos votados en recinto no tienen dictamen; `sobre_tablas.py` implementa el gate + la votación de dos tercios, pero θ SATURA en Diputados (predice 0,01 siempre) y atenuarlo por grilla (opción A) no lo arregla — el mecanismo no discrimina ni sin θ — APAGADA, no se recomienda prender
+- Diputados dejó de titular "sobre tablas" en 2020 y desde 2024 usa "HABILITACIÓN DEL TRATAMIENTO..." (mismo mecanismo, otro nombre) — matching corregido en `estimar_theta_sobre_tablas.py`
 - diferencia entre la BANDA (p5-p95, agregada) y los PIVOTES (P individual en [0,35;0,65])
 - el dictamen POR LEGISLADOR (quién firmó, si firmó su jefe): `beta_dictamen.py`, PRENDIDA por defecto desde el 14-09 (`BETA_DICTAMEN=0` apaga; validada walk-forward)
 
@@ -199,6 +200,64 @@ Franco: "dale, prendelo"). Corrido el panel publicado
 salió byte a byte idéntico — es un proyecto hipotético, sin `proyecto_id` no hay
 dictamen que leer. P(aprobación) = 0,9801 sin moverse. Detalle completo en
 `coordinacion/FORMULA-COMPLETA.md` §III.A.2 y ADR-0016 (enmienda 14-09).
+
+## El sobre tablas, como VOTACIÓN (`src/sobre_tablas.py`, 2026-09-15, S:III.A.1/III.A.5)
+
+**24,4% de los proyectos de ley votados en recinto no tienen dictamen en ningún lado**
+(medido 03-09). Sin esta vía, el modelo no puede decir nada de ellos. El reglamento les da
+una salida: el tratamiento **sobre tablas**, que exige el voto AFIRMATIVO de **dos
+tercios** de los presentes — una votación más, con su propio umbral, no un descuento
+gradual.
+
+```
+C_c = 0 solo si puerta_a.caracter_de dio "sin_dictamen" confirmado (sin_dato sigue admisible)
+logit(P_i^tablas) = logit(P_i^bloque) + θ_cámara         (θ_D=-2,047 · θ_S=0, no significativo)
+P_c^total = C_c·P_c + (1-C_c)·P^tablas_c·P_c              P^tablas_c vía DOS_TERCIOS
+```
+
+**No reimplementa nada**: `P^tablas_c` corre el MISMO `ensemble.simular_con_guardas` (que
+ya soportaba `tipo_mayoria="DOS_TERCIOS"`) sobre el roster que ya arma `armar_roster`, sólo
+con cada P_i desplazada por θ. El gate $\mathcal{C}_c$ es una APROXIMACIÓN: la regla
+reglamentaria completa (dictamen de mayoría en TODAS las comisiones giradas, o un
+plenario) necesita un cruce de datos que no está armado; lo que sí hay es el estado de
+`puerta_a.caracter_de`.
+
+**θ ya estaba estimado desde el 03-09** (`estimar_theta_sobre_tablas.py`) y desmiente la
+hipótesis original: acompañar sobre tablas es MÁS caro, no más barato, y es un fenómeno
+casi exclusivo de Diputados (en el Senado θ no se distingue de cero). También desmiente —
+en su forma testeada — la propuesta de Franco de que el legislador caiga en su récord
+propio: con el único récord que existe hoy (el general, no el temático), el bloque acierta
+95,4% contra 45,0% del récord (Brier peor que decir 0,50 y listo).
+
+**🔴 BACKTEST el 15-09-2026, FALLÓ — dos hallazgos** (`src/validar_sobre_tablas_walkforward.py`,
+nuevo, permanente): re-estima θ SOLO sobre el tramo más viejo de actas y corre el mecanismo
+COMPLETO (roster real de la acta, `simular_con_guardas` a dos tercios) sobre actas held-out
+nunca vistas al estimar. **(1) Bug de matching corregido:** el flag `tab` buscaba
+literalmente "sobre tablas" en el título, y Diputados dejó de escribir esa frase en 2020
+(desde 2024 usa "HABILITACIÓN DEL TRATAMIENTO EXPTE..." — el mismo mecanismo con otro
+nombre). Parecía que Diputados no tenía casos en la era vigente; era matching roto, mismo
+patrón que las comisiones en CLAUDE.md. Corregido en `estimar_theta_sobre_tablas.py`.
+**(2) Con la muestra corregida (20-26 actas, 35% cruza), θ no falla con un sesgo: SATURA.**
+`p_sim_con_theta` da exactamente 0,01 en las 46 actas de Diputados de los dos cortes, SIN
+UNA SOLA EXCEPCIÓN, pase o no pase — θ_D≈−2,05/−2,13 es tan grande que, llevado a un umbral
+de dos tercios vía Monte Carlo, ningún roster sobrevive. El mecanismo da cero información.
+No es falta de datos: es que un corrimiento promedio (voto por voto) no es compatible con
+aplicarse individualmente frente a un umbral tan exigente. En Senado el problema es más
+leve (no satura, hay variación real) pero el sesgo persiste.
+
+**🔴 Opción A (atenuar θ por grilla) probada y descartada.** `_calibrar_factor` busca por
+grilla, sólo con TRAIN, el factor (0,0-1,0) que minimiza el Brier MACRO (ponderado por
+clase, no el agregado plano, para no repetir el mismo espejismo). θ crudo sigue ganando —
+pero porque NINGÚN factor discrimina: Brier macro entre 0,49 y 0,74 en las dos cámaras,
+**peor que 0,25 (tirar una moneda) en todo punto de la grilla, con o sin corrimiento**. No
+es la magnitud de θ: el mecanismo (roster real + Monte Carlo a dos tercios) no tiene poder
+de discriminación con esta muestra, ni siquiera sin θ.
+
+**⛔ SIGUE APAGADA** (`SOBRE_TABLAS=1` prende, pero NO se recomienda). Con la bandera
+apagada: sin cambio de comportamiento (P(aprobación) = 0,9801, 16 controles OK). Si se
+retoma, el candidato que queda es modelar a nivel de ACTA en vez de por legislador vía
+Monte Carlo a un umbral tan exigente (opción B). Detalle completo en
+`coordinacion/FORMULA-COMPLETA.md` §III.A.1/§III.A.5.
 
 ## Las guardas contra la sobreconfianza (2026-08-22)
 

@@ -490,6 +490,26 @@ Ordenadas por relación valor/costo.
 >
 > El resto de la tabla (C-H) sigue sin tocar.
 
+> **ACTUALIZACIÓN 2026-09-15.**
+> - **B, cierre final:** el 14-09 se prendió por defecto (`BETA_DICTAMEN=1`) tras un
+>   backtest walk-forward que mostró que el carácter del dictamen (lo que colapsaba P)
+>   no generalizaba y F_i + lealtad_x_jefe solos sí. Detalle: FORMULA-COMPLETA.md §III.A.2,
+>   ADR-0016 (enmienda 14-09).
+> - **C (sobre tablas): PROBADO el 15-09, DESCARTADO POR AHORA — no es un "no" definitivo,
+>   es "no todavía".** Se implementó el gate + la votación de dos tercios detrás de bandera
+>   (`sobre_tablas.py`, `SOBRE_TABLAS=1`), y un backtest walk-forward mecanístico —con la
+>   misma disciplina que salvó a B— encontró que el término θ **SATURA** en Diputados (la P
+>   simulada da 0,01 para cualquier roster, cruce o no cruce la acta los dos tercios) y que
+>   **atenuar su magnitud no lo arregla**: ni siquiera la simulación SIN θ discrimina mejor
+>   que tirar una moneda con esta muestra. El problema no es de datos (se corrigió además un
+>   bug de matching real: Diputados dejó de titular "sobre tablas" en 2020 y desde 2024 usa
+>   "HABILITACIÓN DEL TRATAMIENTO...") ni de la magnitud del corrimiento — es que modelar la
+>   vía por legislador vía Monte Carlo a un umbral tan exigente (dos tercios) no tiene
+>   poder de discriminación con la cantidad de actas de sobre tablas que hay. **Queda
+>   apagado.** Si se retoma más adelante, el candidato es modelar a nivel de ACTA en vez de
+>   por legislador — ver FORMULA-COMPLETA.md §III.A.5 para el detalle completo, incluida la
+>   opción B sin probar todavía.
+
 | # | Cambio | Por qué | Qué hay que hacer | Bloquea a |
 |---|---|---|---|---|
 | **A** | **Quórum: sumar abstenciones a presentes** | Bug confirmado. Quien se abstiene está en el recinto | Separar abstención de ausencia en el vector de conductas (hoy `NO_ACOMPANA` las mezcla) y usar `A+N+Abs` para el quórum | — |

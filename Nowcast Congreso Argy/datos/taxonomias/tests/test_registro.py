@@ -138,7 +138,33 @@ try:
 except (OSError, subprocess.SubprocessError, ValueError) as e:
     print(f"  (salteo el chequeo de git: {e})")
 
-print("y el registro real tiene contenido")
+print("_de_proyecto_taxonomias_db (ADR-0024): lee la tabla viva, no el CSV legacy")
+import sqlite3
+with tempfile.TemporaryDirectory() as d:
+    db = Path(d) / "proyectos_test.db"
+    con = sqlite3.connect(str(db))
+    con.execute("""
+        CREATE TABLE proyecto_taxonomias (
+            denominador TEXT NOT NULL, taxonomia_id TEXT, taxonomia TEXT,
+            fuente TEXT, confianza REAL, asignada_en TEXT,
+            PRIMARY KEY (denominador, taxonomia_id)
+        )
+    """)
+    con.executemany("INSERT INTO proyecto_taxonomias VALUES (?,?,?,?,?,?)", [
+        ("100-D-2024", "POLINST.CONST", "Const.", "agente", 0.85, "2026-01-01T00:00:00Z"),
+        ("100-D-2024", "AUX.TRAMITE", "Trámite", "agente", 0.95, "2026-01-01T00:00:00Z"),
+        ("100-D-2024", "ECON.PRESU", "Presu.", "agente", 0.60, "2026-01-01T00:00:00Z"),
+    ])
+    con.commit()
+    con.close()
+    out = R._de_proyecto_taxonomias_db(db)
+check(len(out) == 3, f"3 filas, ninguna se pierde: {len(out)}")
+check(all(r["nivel"] == "proyecto" for r in out), "nivel=proyecto")
+principales = [r for r in out if r["principal"] == 1]
+check(len(principales) == 1 and principales[0]["taxonomia_id"] == "POLINST.CONST",
+      f"principal = mayor confianza SUSTANTIVA (0.85), no AUX pese a tener 0.95: {principales}")
+
+print("\ny el registro real tiene contenido")
 reales = R.cargar()
 check(len(reales) > 1000, f"el registro tendría que tener las clasificaciones: {len(reales)}")
 check({r["nivel"] for r in reales} <= set(R.NIVELES), "nivel fuera del enum")

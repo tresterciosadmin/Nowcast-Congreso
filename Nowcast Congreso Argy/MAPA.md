@@ -2,13 +2,13 @@
 
 <!-- GENERADO por indexar.py. No editar: los cambios se pierden. -->
 <!-- La prosa vive en el README.md de cada modulo (seccion `Buscar aca si`). -->
-<!-- 2026-09-15 19:21 UTC · 161 archivos · 40,219 LOC -->
+<!-- 2026-09-15 19:24 UTC · 161 archivos · 40,285 LOC -->
 
 ## Como usar este archivo
 
 Es el unico archivo del proyecto que hace falta leer para empezar. Para ubicar algo concreto: `python3 .mapa/buscar.py "<termino>"` devuelve archivo y linea sin abrir nada. Recien despues abrir los archivos que salgan, y solo esos.
 
-Rama `main` — ultimo commit: 2026-09-15 1fa224f datos/expedientes: PASO 0 + B0 (medicion) y B1 (contrato votacion_por_articulo) · **hay cambios sin commitear**
+Rama `main` — ultimo commit: 2026-09-15 fa4c572 variables/bloque + variables/proyecto + modelo/ensemble: multietiqueta (union/ponderada) y enganche TEMA_AUTO · **hay cambios sin commitear**
 
 ## Donde buscar que
 
@@ -68,6 +68,7 @@ Rama `main` — ultimo commit: 2026-09-15 1fa224f datos/expedientes: PASO 0 + B0
 | scraping del Senado (cachea HTML; la primera corrida tarda ~20 min) | `datos/senado/` |
 | que tema tiene un acta o un proyecto, y de donde salio esa asignacion | `datos/taxonomias/` |
 | por que las taxonomias no aparecian: estaban repartidas en cuatro lugares | `datos/taxonomias/` |
+| nivel=proyecto en el registro sale vacio (ADR-0024): la fuente viva es `proyecto_taxonomias` en `datos/proyectos/data/proyectos.db`, hoy sin filas porque nadie corrio `agente_taxonomias.clasificar_lote` (necesita red + API key) | `datos/taxonomias/` |
 | que columnas y tipos tiene que tener un parquet de la canonica | `docs/schemas/` |
 | cambiar un contrato de datos (requiere ADR + aviso en TABLERO) | `docs/schemas/` |
 | que temas existen, como se llaman, y como se agrega, renombra o fusiona uno | `docs/taxonomias/` |
@@ -148,8 +149,8 @@ Rama `main` — ultimo commit: 2026-09-15 1fa224f datos/expedientes: PASO 0 + B0
 | `modelo/agregador_institucional/` _(src+tests)_ | Traduce posturas de bloque + asistencia en un resultado institucional: cuenta bancas, quorum, umbrales de mayoria y bandas. Mide la estructura, no la politica. | 2 | 589 | ok |
 | `producto/dashboard/` _(src)_ | Tablero interno: radar de traccion, mapa de pivotes y escenarios, y el MAPA DEL MODELO: el diagrama de flujo BICAMERAL de como se calcula P(sancion) -dos bloques espejo, origen y revisora, con el condicionamiento entre camaras dibujado-, generado desde el indice del repo. Los entregables se abren con doble clic desde la RAIZ; el codigo del generador vive aca. | 1 | 563 | ok |
 | `datos/seguimiento/` _(src+tests)_ | Dado un expediente ya conocido, baja su ficha oficial y extrae el estado de avance: giros, movimientos, fechas y PDF. Insumo del embudo. NO descubre proyectos nuevos. | 2 | 512 | ok |
+| `datos/taxonomias/` _(src+tests)_ | El registro unico de taxonomias asignadas: una fila por (objeto, taxonomia), en CSV versionado, consolidado desde todas las fuentes que existian sueltas. | 2 | 501 | **vencida** |
 | `datos/argentinadatos/` _(src+tests)_ | Ingesta de Diputados desde 2020 y Senado desde 2024 (hasta hoy: la API sirve tambien 2026) desde argentinadatos.com, normalizada al mismo esquema que CKAN. OJO: la API NO publica el expediente -- medido el 09-09, URGENTE P. | 3 | 496 | ok |
-| `datos/taxonomias/` _(src+tests)_ | El registro unico de taxonomias asignadas: una fila por (objeto, taxonomia), en CSV versionado, consolidado desde todas las fuentes que existian sueltas. | 2 | 435 | ok |
 | `variables/legislador/` _(src+tests)_ | Una ficha por legislador que voto alguna vez: identidad, camara, distrito, periodos, trayectoria de bloques, presentismo, perfil de voto y tasa de desvio. | 2 | 387 | ok |
 | `datos/export/` _(src+tests)_ | La canonica armonizada en formatos consultables: un SQLite unico para el programa y Excel por gobierno para humanos. Solo LEE la canonica. | 2 | 386 | ok |
 | `casos/` | Aplicaciones del nowcast a un caso real (una ley concreta): el panel de puertas en HTML. Consume los contratos de `modelo/` y `variables/`; no define modelo propio. Quedo UN generador: los otros dos -bicameral y proyeccion hipotetica- estaban neutralizados desde agosto y se archivaron el 2026-09-10. | 1 | 380 | ok |
@@ -420,4 +421,4 @@ Segun el historial de git. Si vas a cambiar uno, mira el otro.
 
 ## Frescura
 
-- Bitacoras vencidas: `./`, `datos/canonica/`, `datos/expedientes/`, `evaluacion/baseline/`, `modelo/ensemble/`, `variables/bloque/`, `variables/proyecto/`
+- Bitacoras vencidas: `./`, `datos/canonica/`, `datos/expedientes/`, `datos/taxonomias/`, `evaluacion/baseline/`, `modelo/ensemble/`, `variables/bloque/`, `variables/proyecto/`

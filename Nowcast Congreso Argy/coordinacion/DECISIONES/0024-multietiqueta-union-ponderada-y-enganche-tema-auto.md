@@ -132,6 +132,19 @@ con el mismo dato y el riesgo de que uno quede desactualizado.
 - Corrida real: `P(aprobación) = 0,9801` con `TEMA_AUTO=0` y con `TEMA_AUTO=1`
   sobre la base vacía — el número publicado no se movió.
 
+## Addendum — `proyecto_taxonomias` también se suma al registro único
+
+`datos/taxonomias/src/registro.py` (el registro único, ver su propio docstring
+sobre por qué existe) tenía `NIVELES = ("acta", "proyecto")` desde el principio,
+pero su única fuente de nivel `proyecto` era `datos/proyectos/data/taxonomias.csv`
+— un respaldo legacy que nunca se llenó (0 filas). Se agregó
+`proyecto_taxonomias_db` como fuente nueva, leyendo la tabla VIVA
+`proyecto_taxonomias` directamente. Hoy es un no-op (la tabla está vacía, mismo
+motivo que el resto de este ADR): el día que `clasificar_lote` corra, `python
+datos/taxonomias/src/registro.py consolidar` empieza a traer proyectos al
+registro único sin ningún código nuevo. Tests: 3 checks nuevos en
+`datos/taxonomias/tests/test_registro.py` (27/27 en total).
+
 ## Lo que queda pendiente, y de quién es cada pendiente
 
 1. **Correr `agente_taxonomias.clasificar_lote`** — necesita

@@ -74,6 +74,14 @@ FUENTES = {
     "tema_por_acta": _RAIZ / "variables" / "proyecto" / "data" / "tema_por_acta.parquet",
     "muestra_manual": _RAIZ / "variables" / "proyecto" / "outputs" / "muestra_manual_taxonomias.csv",
     "respaldo_proyectos": _RAIZ / "datos" / "proyectos" / "data" / "taxonomias.csv",
+    # 2026-09-15 (ADR-0024): la tabla proyecto_taxonomias (datos/proyectos/data/
+    # proyectos.db) es la fuente VIVA de nivel='proyecto' — la escribe
+    # agente_taxonomias.persistir() (clasificar_lote). "respaldo_proyectos" de
+    # arriba es un CSV legacy que nunca se llenó (0 filas); esto es la tabla real.
+    # Hoy también está vacía (nadie corrió clasificar_lote: falta red + API key),
+    # así que sumar esta fuente es hoy un no-op — el día que se corra, consolidar
+    # empieza a traer proyectos al registro único sin código nuevo.
+    "proyecto_taxonomias_db": _RAIZ / "datos" / "proyectos" / "data" / "proyectos.db",
 }
 
 
@@ -222,9 +230,41 @@ def _de_respaldo_proyectos(p: Path) -> list[dict]:
     return out
 
 
+def _de_proyecto_taxonomias_db(p: Path) -> list[dict]:
+    """La tabla VIVA `proyecto_taxonomias` (nivel PROYECTO). Sin `principal`
+    propio en el schema: la primera por (denominador) en confianza descendente
+    se marca principal=1, igual criterio que `_elegir_primaria` de
+    `tema_por_acta.py` — el más confiado, no-AUX si hay alguna sustantiva."""
+    import sqlite3
+    con = sqlite3.connect(str(p))
+    try:
+        filas = con.execute(
+            "SELECT denominador, taxonomia_id, fuente, confianza, asignada_en "
+            "FROM proyecto_taxonomias"
+        ).fetchall()
+    finally:
+        con.close()
+    por_denom: dict[str, list[tuple]] = {}
+    for denom, t, fuente, conf, asignada in filas:
+        por_denom.setdefault(denom, []).append((t, fuente, conf, asignada))
+    out = []
+    for denom, tax in por_denom.items():
+        sustantivas = [t for t in tax if not str(t[0]).upper().startswith("AUX")]
+        pool = sustantivas or tax
+        principal_id = max(pool, key=lambda t: (t[2] if t[2] is not None else 0.0))[0]
+        for t, fuente, conf, asignada in tax:
+            out.append({"nivel": "proyecto", "objeto": denom, "taxonomia_id": t,
+                        "area": area_de(t), "principal": int(t == principal_id),
+                        "confianza": round(float(conf or 0), 3),
+                        "fuente": fuente or "agente",
+                        "asignada_en": asignada or ""})
+    return out
+
+
 LECTORES = {"tema_por_acta": _de_tema_por_acta,
             "muestra_manual": _de_muestra_manual,
-            "respaldo_proyectos": _de_respaldo_proyectos}
+            "respaldo_proyectos": _de_respaldo_proyectos,
+            "proyecto_taxonomias_db": _de_proyecto_taxonomias_db}
 
 
 def consolidar(ruta: Path = REGISTRO) -> dict:

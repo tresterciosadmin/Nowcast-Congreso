@@ -13,6 +13,7 @@ cada acta y a cada proyecto, con su procedencia. Una sola tabla, versionada, en 
 
 - que tema tiene un acta o un proyecto, y de donde salio esa asignacion
 - por que las taxonomias no aparecian: estaban repartidas en cuatro lugares
+- nivel=proyecto en el registro sale vacio (ADR-0024): la fuente viva es `proyecto_taxonomias` en `datos/proyectos/data/proyectos.db`, hoy sin filas porque nadie corrio `agente_taxonomias.clasificar_lote` (necesita red + API key)
 
 <!-- Las dos cosas de arriba las levanta `.mapa/indexar.py` al MAPA.md de la
      raiz: el `Resumen:` va a la columna "Que es" y las pistas al router

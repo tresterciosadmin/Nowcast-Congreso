@@ -17,6 +17,7 @@
 - carpeta grande: 13 archivos en `src/` — buscar por simbolo con `.mapa/buscar.py` antes de abrir
 - REVISION 25-08: el log del ICG es SIMETRICO y la politica no — la asimetria existia en el mecanismo eliminado el 11-08
 - por que el promedio del gobierno no tiene leakage (`shift(1)` + `expanding`)
+- el tema de un proyecto REAL (no de un acta ya votada), para que el motor lo use solo (`tema_por_proyecto.py`, ADR-0024): lee `proyecto_taxonomias`, hoy vacia porque nadie corrio `agente_taxonomias.clasificar_lote` (necesita red + API key)
 
 <!-- Las dos cosas de arriba las levanta `.mapa/indexar.py` al MAPA.md de la
      raiz: el `Resumen:` va a la columna "Que es" y las pistas al router

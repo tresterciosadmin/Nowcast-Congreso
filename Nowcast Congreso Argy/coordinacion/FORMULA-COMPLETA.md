@@ -43,17 +43,22 @@ este archivo en el mismo commit.
 | 8 | $\text{Pres}_j$ — quórum | ignora las abstenciones | 🔲 **arreglado 04-09, tras bandera apagada** (§II.2); hoy Δ=0,0000 |
 | 9 | $\delta$ — dictamen | condicionar por carácter del dictamen | 🔴 **implementado en 0** (§II.3) |
 | 10 | ICG — clima político | modula según el humor social | 🔴 **medido y desconectado** (§II.4) |
-| 11 | $\mathcal{C}_c$ — gate del dictamen | admisibilidad reglamentaria | 🔲 **decidido** (§III.A.1) |
+| 11 | $\mathcal{C}_c$ — gate del dictamen | admisibilidad reglamentaria | 🔬 **IMPLEMENTADO 15-09 (aproximación), tras bandera apagada** (§III.A.1) |
 | 12 | $\beta$ — dictamen por legislador | reemplaza a $\delta$ | ✅ **PRENDIDO 14-09-2026** (§III.A.2) |
 | 13 | $\varepsilon_0 + \eta_j$ — incertidumbre | reemplaza al clip | 🔲 **decidido y ESTIMADO 03-09** (§III.A.3) |
 | 14 | $\psi$ — arrastre entre cámaras | la revisora lee a la de origen | 🔲 **ESTIMADO y controlado 03-09** (§III.A.4) |
-| 15 | sobre tablas | el 24,4% que hoy es invisible | 🔲 **decidido y $\theta$ ESTIMADO 03-09** (§III.A.5) |
+| 15 | sobre tablas | el 24,4% que hoy es invisible | 🔴 **PROBADO y DESCARTADO POR AHORA, 15-09** (§III.A.5) — implementado, backtest walk-forward mecanístico: el mecanismo no discrimina, con o sin θ. No es un "no" definitivo — "no todavía"; decisión de Franco |
 | 16 | proximidad electoral | el calendario cambia incentivos | 🔲 **propuesto** (§III.B.1) |
 | 17 | asimetría del ICG | las caídas pesan más que las subas | 🔲 **propuesto** (§III.B.2) |
 | 18 | $\rho$ — récord por tema | falta la tabla | 🔲 **bloqueado** (§III.B.3) |
+| 19 | multietiqueta en $s_\ell$ (`combinar_temas`) + `TEMA_AUTO` | un proyecto real casi siempre tiene VARIOS temas (61,2% medido) | 🔬 **IMPLEMENTADO 15-09, tras bandera apagada — no-op verificado** (§I.4a, ADR-0024). PASO 2 (validación contra el baseline) corriendo al cerrar esta sesión |
 
-**Resumen honesto: 7 términos corren, 4 están rotos o apagados, 4 están decididos sin
-implementar y 3 son propuestas.** El motor que corre hoy es más chico que esta fórmula.
+**Resumen honesto: 7 términos corren, 5 están rotos, apagados o reprobaron su backtest
+(el sobre tablas se suma a esta lista el 15-09: theta no generaliza en las actas que
+efectivamente pasan), 2 están implementados detrás de bandera y medidos/en medición a la
+espera de la decisión de Franco (dictamen por legislador y multietiqueta), 2 están
+decididos sin implementar y 3 son propuestas.** El motor que corre hoy es más chico que
+esta fórmula.
 
 ---
 ---
@@ -187,6 +192,30 @@ Con pocas actas condicionadas manda el incondicional; con muchas, el condicionad
 
 Las actas `AUX` (homenajes, trámite, consenso) se **excluyen**: todos votan que sí e
 inflarían el share.
+
+> 🔬 **IMPLEMENTADO 15-09-2026, detrás de bandera apagada — la multietiqueta ya no se
+> aplasta a una sola $t$.** Medido el mismo día: 61,2% de las actas votadas
+> clasificadas tienen ≥2 etiquetas sustantivas — no es un caso raro de ómnibus, es la
+> norma. `proyectar_postura` gana `combinar_temas ∈ {primaria, union, ponderada}`
+> (default `primaria` = exactamente esta fórmula, sin cambios). Con `union`, $n^c_\ell$
+> se cuenta sobre las actas que comparten CUALQUIERA de los temas objetivo (multietiqueta
+> completa de cada acta de la ventana, no sólo su primaria). Con `ponderada`,
+> $s^c_\ell = \sum_t w_t\, s^c_{\ell,t} / \sum_t w_t$ — cada tema $t$ del proyecto
+> objetivo arma SU PROPIA $s^c_{\ell,t}$ (esta misma fórmula, una vez por tema) y se
+> combinan por su confianza $w_t$. Con un solo tema de peso 1, `ponderada` da
+> EXACTAMENTE `primaria` — no es un término nuevo, es la generalización.
+>
+> **El problema real no era esta fórmula: era que nada la alimentaba.** `tema` acá
+> siempre fue un parámetro `--tema` MANUAL — nunca se derivaba de `proyecto_id`, y
+> `REGENERAR.ps1` no lo pasa. Sin eso, cualquier regla de combinación queda huérfana.
+> Se agregó el enganche `TEMA_AUTO` (`modelo/ensemble/src/nowcast_puertas.py`): con
+> `proyecto_id` y la bandera prendida, lee la multietiqueta del proyecto desde
+> `proyecto_taxonomias` (`datos/proyectos/data/proyectos.db`) vía
+> `variables/proyecto/src/tema_por_proyecto.py`. **Hoy es un no-op verificado**
+> ($P=0{,}9801$ igual con la bandera prendida o apagada): esa tabla tiene 0 filas
+> porque nadie corrió `agente_taxonomias.clasificar_lote` (necesita
+> `ANTHROPIC_API_KEY` + red). Detalle completo, incluida la validación PASO 2 contra
+> el baseline, en ADR-0024.
 
 **Archivo:** `variables/bloque/src/bloque.py` → `proyectar_postura`
 
@@ -570,6 +599,12 @@ no la decisión de nadie.
 
 **Conclusión operativa:** parsear al 100% lleva la cobertura de 71,5% a 75,6%. **La vía
 sobre tablas es seis veces más grande que todo lo que compra parsear.**
+
+> 🔬 **IMPLEMENTADO el 15-09-2026, como APROXIMACIÓN, junto con §III.A.5** (misma bandera
+> `SOBRE_TABLAS`, ver ese bloque para el detalle completo). $\mathcal{C}_c$ no sale de
+> $K_c \supseteq G_c$ literal — ese cruce (giros por proyecto × comisiones que
+> dictaminaron) no está armado — sino del estado de `puerta_a.caracter_de`:
+> $\mathcal{C}_c=0$ sólo con `sin_dictamen` confirmado.
 
 ### III.A.2 — El dictamen entra POR LEGISLADOR (reemplaza a $\delta$)
 
@@ -1166,6 +1201,159 @@ puntos.** Ese hueco es exactamente lo que $\theta$ tiene que llenar.
 > alcanza, porque se aplica en el mismo escenario en que se midió. Como parámetro causal,
 > no.
 
+### 🔬 IMPLEMENTADO el 15-09-2026 detrás de bandera, MEDIDO — falta el backtest antes de prender
+
+**Quién:** Claude, con Franco ("arrancamos por C — sobre tablas", condicionante dentro de
+una puerta existente, no puerta nueva).
+
+**Qué:** `modelo/ensemble/src/sobre_tablas.py` (nuevo) implementa exactamente la fórmula de
+arriba, detrás de `SOBRE_TABLAS=1` (**apagada por defecto**): $\mathcal{C}_c$ (el gate,
+§III.A.1) y $P^{\text{tablas}}_c$ (esta sección) juntos, porque comparten el mismo estado de
+`puerta_a.caracter_de`.
+
+- **$\mathcal{C}_c$, la aproximación que SÍ hay datos para construir.** La regla
+  reglamentaria completa ($K_c \supseteq G_c$ o plenario) exige cruzar los giros por
+  proyecto contra qué comisiones dictaminaron, y ese cruce no está armado. Lo que hay es
+  el estado de tres valores de `caracter_de` (`con_caracter` / `sin_dictamen` /
+  `sin_dato`): $\mathcal{C}_c = 0$ **sólo** con `sin_dictamen` CONFIRMADO. `sin_dato` sigue
+  admisible — la vía normal, sin tocar — porque bajo incertidumbre esa es la respuesta
+  conservadora, igual que en el resto de `puerta_a`.
+- **$P^{\text{tablas}}_c$ reusa el simulador, no lo reimplementa.** `ensemble.
+  simular_con_guardas` ya soporta `tipo_mayoria="DOS_TERCIOS"` (`⌈2/3 · \text{emitidos}⌉`,
+  agregador_institucional/src/agregador.py). El roster ya calculado por `armar_roster`
+  (con `beta_dictamen` aplicado si esa bandera también está prendida) se corre otra vez
+  con cada $P_i^{\text{bloque}}$ desplazada por $\theta_{\text{cámara}}$ en logit, y ESE
+  roster alimenta el mismo `simular_con_guardas` con el umbral de dos tercios.
+- **Se aplica en `nowcast_puertas.nowcast`, en los dos pasos (B y D), simétricamente**: cada
+  cámara mira su propio $\mathcal{C}_c$ — el origen puede tener dictamen y la revisora no,
+  o viceversa.
+
+**Cómo se validó que NO ROMPE nada (bandera apagada, comportamiento de hoy):** 49/49
+`test_nowcast_puertas.py`, 31/31 `test_puerta_a.py`, 17/17 `test_beta_dictamen.py`, 17/17
+`test_sobre_tablas.py` (nuevo), suite completa 41/41, `verificar_regeneracion.py` 16/16,
+**P(aprobación) = 0,9801 sin moverse**.
+
+**Con la bandera prendida, sobre un roster sintético (no hay proyecto real reciente con
+`proyecto_id` mapeado Y sin dictamen — sólo 6 actas históricas de sobre tablas, 2008-2014,
+tienen `proyecto_id`, y el padrón histórico del Senado no alcanza para correr `nowcast`
+completo en esas fechas — ver §🚦 del `CLAUDE.md`):** el mecanismo hace lo que la fórmula
+dice — en Diputados ($\theta=-2{,}05$) más el umbral de dos tercios, un roster con
+$P_i^{\text{bloque}}$ parejo (~0,3–0,95, sin la polarización real de un caso sobre-tablas
+genuino) cae de 0,95 a ~0,01; en Senado ($\theta=0$, sólo pesa el umbral de dos tercios) cae
+a ~0,16. **Es la dirección esperada** (el umbral de dos tercios es mucho más exigente que
+mayoría simple, y el 53% observado en la fórmula es sobre actas que YA llegaron a
+votarse sobre tablas — sesgo de selección explícito arriba), pero **no es la misma
+prueba que el backtest walk-forward que salvó a `beta_dictamen`** de un término que no
+generalizaba: acá no hay todavía un roster REAL de un caso sin-dictamen reciente contra el
+cual medir.
+
+**Por eso sigue apagada.** Antes de recomendar prenderla hace falta lo mismo que le hizo
+falta a `beta_dictamen`: correr `armar_roster` + `simular_con_guardas` sobre las actas
+reales de sobre tablas (point-in-time, walk-forward) y comparar contra el resultado
+observado — análogo a `validar_beta_dictamen_walkforward.py` pero mecanístico en vez de
+un offset-regression.
+
+### 🔴 BACKTEST 15-09-2026 — dos hallazgos: un bug de matching que escondía a Diputados, y un mecanismo que SATURA (no sólo "no generaliza")
+
+**Script:** `modelo/ensemble/src/validar_sobre_tablas_walkforward.py` (nuevo, permanente).
+**Diseño:** re-estima theta (GLM offset, igual método que §III.A.5 arriba) **SOLO sobre el
+tramo más viejo de actas**; corre el MECANISMO COMPLETO DE PRODUCCIÓN — $P_i^{\text{bloque}}$
+desplazada por theta, `ensemble.simular_con_guardas` al umbral de DOS TERCIOS, el mismo que
+corre `sobre_tablas.py` — sobre el roster real de las actas de sobre tablas NUNCA VISTAS al
+estimar theta, y compara la P agregada simulada contra si esa acta realmente cruzó los dos
+tercios. Corrido con dos cortes (70/30 y 50/50) contra una simulación SIN theta.
+
+**Primer hallazgo: "cero actas de Diputados desde 2020" era matching roto, no un hecho.**
+La primera corrida mostró Diputados prácticamente vacío desde 2020, y peor aún desde el
+2023-12-10 (era vigente): CERO actas. Antes de aceptarlo, se verificó contra la canónica
+directa (regla de la casa: "antes de repetir un número, verificalo contra el archivo") —
+Diputados sí tiene actividad hasta 2026-09. El flag `tab` se armaba buscando literalmente
+"sobre tablas" en el título, y **Diputados dejó de escribir esa frase en 2020**: desde 2024
+titula estas actas `HABILITACIÓN DEL TRATAMIENTO EXPTE. ...` (con o sin tilde) — el MISMO
+mecanismo reglamentario con otro nombre (confirmado con Franco), exactamente el patrón que
+ya avisa CLAUDE.md tres veces con las comisiones: "un porcentaje imposible es un bug, no un
+fenómeno". **Corregido** en `estimar_theta_sobre_tablas.py::panel()`: el regex ahora capta
+las dos formas (`sobre tablas|habilitaci[oó]n del?\s*tratamiento`). Con el fix, Diputados
+pasa de 8-20 actas held-out (casi todas con el mismo resultado, 0% o cerca) a **20-26 actas
+con una mezcla real de resultados (35% cruza los dos tercios)** — la muestra que hacía
+falta para medir de verdad.
+
+**Segundo hallazgo, y más grave: con la muestra corregida, theta no "falla en un sesgo" —
+SATURA.** `p_sim_con_theta` da **exactamente 0,01 en las 46 actas de Diputados de los dos
+cortes, sin una sola excepción**, sin importar si la acta cruzó los dos tercios o no:
+
+| corte | cámara | resultado | n | P media CON θ | P media SIN θ | Brier CON θ | Brier SIN θ |
+|---|---|---|---:|---:|---:|---:|---:|
+| 70/30 | Diputados | no cruzó | 13 | **0,010** | 0,634 | 0,0001 | 0,589 |
+| 70/30 | Diputados | **SÍ cruzó** | 7 | **0,010** | 0,338 | **0,980** | 0,513 |
+| 50/50 | Diputados | no cruzó | 17 | **0,010** | 0,718 | 0,0001 | 0,681 |
+| 50/50 | Diputados | **SÍ cruzó** | 9 | **0,010** | 0,479 | **0,980** | 0,399 |
+
+0,01 es el piso de `p_incertidumbre` (la guarda contra la sobreconfianza de
+`simular_con_guardas`) — el simulador no está "prediciendo bajo": está TOCANDO EL PISO
+siempre, para cualquier roster. $\theta_D\approx-2{,}05$ a $-2{,}13$ (estable en las tres
+estimaciones) es tan grande que, aplicado por legislador y llevado al umbral de dos
+tercios vía Monte Carlo, **ningún roster real sobrevive** — ni los que tienen 85% de
+consenso real. El mecanismo da CERO información: predice exactamente lo mismo pase lo que
+pase. No es un sesgo que un dato mejor pudiera corregir — es que la magnitud de theta,
+estimada como corrimiento PROMEDIO voto por voto, es incompatible con aplicarse como
+desplazamiento individual y pasar por un umbral tan exigente (dos tercios) en una
+simulación que ya castiga la sobreconfianza. Es el mismo tipo de error de fondo que el
+ADR-0013 (agregar sin mirar qué le hace el umbral al número), sólo que acá el umbral es el
+protagonista, no un actor secundario.
+
+**En Senado el problema es más leve pero real.** θ_Senado quedó en $-0{,}35$ a $-1{,}05$
+según el corte (estimación completa: $p=0{,}056$, apenas arriba del corte de
+significancia — sigue en 0 por diseño en `sobre_tablas.py`). Ahí NO satura: hay variación
+real en las predicciones, y el Brier con θ es mejor cuando la acta NO cruza pero peor
+cuando SÍ cruza — el mismo patrón de sesgo (no saturación) que documentaba la versión
+anterior de esta sección.
+
+**Decisión: NO se prende `SOBRE_TABLAS`.** A diferencia del carácter del dictamen en
+`beta_dictamen` —donde bastaba con sacar un término y quedarse con el resto—, acá theta es
+el ÚNICO término del mecanismo para Diputados y, tal como está compuesto (corrimiento
+individual + Monte Carlo a dos tercios + guardas de confianza), produce una constante sin
+información. El backtest hizo su trabajo: evitó activar un término que predice "improbable"
+para CUALQUIER proyecto que se trate sobre tablas en Diputados, acierte o no.
+
+### 🔴 INTENTO 15-09-2026 (opción A, atenuar θ) — no arregla nada; el problema es más de fondo
+
+**Qué se probó.** `_calibrar_factor` en `validar_sobre_tablas_walkforward.py`: por cámara,
+busca en una grilla (θ×0,0 a θ×1,0) el factor que minimiza el Brier **MACRO** —promedio
+simple entre "cruzó" y "no cruzó", NO el agregado plano— del mecanismo real, SOLO sobre las
+actas de sobre tablas de train (test nunca se toca en la calibración). Macro y no plano
+a propósito: minimizar el Brier plano repite el mismo espejismo que ya mordió a la primera
+lectura del backtest (la clase mayoritaria domina y empuja al factor más agresivo, que es
+literalmente la saturación que se quiere evitar).
+
+**Resultado: con el objetivo corregido, θ crudo (factor=1,0) SIGUE siendo el mejor de la
+grilla** — pero el motivo no es que θ esté bien: es que **NINGÚN punto de la grilla
+discrimina de verdad**. El Brier macro en Diputados va de 0,536 (sin θ) a 0,49 (θ completo),
+con una joroba peor en el medio (0,73 en factor=0,3-0,4); en Senado va de 0,49 a 0,47. **Los
+dos peores que 0,25 — el Brier de "siempre digo 50%" — en TODO punto de la grilla, con o
+sin θ.** Ni siquiera la simulación SIN corrimiento (sólo `P_i^{\text{bloque}}$ + umbral de
+dos tercios) discrimina mejor que tirar una moneda entre las actas de train.
+
+**Conclusión: no es un problema de calibrar la magnitud de θ — es que el mecanismo entero
+(roster de votantes reales + Monte Carlo a dos tercios) no tiene poder de discriminación
+suficiente con esta muestra**, con o sin corrimiento. Atenuar θ no puede arreglar algo que
+ya está roto en el término base. Esto descarta la opción A tal como estaba planteada.
+
+**Próximo paso, si se retoma:** el problema no es de datos (el fix de matching ya lo
+resolvió) ni de la magnitud de θ (la calibración por atenuación no encontró un punto mejor
+que el crudo). Es de DISEÑO DEL MECANISMO: modelar $P^{\text{tablas}}_c$ a nivel de ACTA en
+vez de por legislador vía Monte Carlo a un umbral tan exigente (opción B, discutida con
+Franco el 15-09) es el candidato más prometedor — evita depender de que 150+ tiradas
+casi-independientes crucen un umbral duro para que el número tenga sentido.
+
+**Archivos:** `modelo/ensemble/src/{sobre_tablas.py (nuevo, queda apagado),
+estimar_theta_sobre_tablas.py (regex de matching corregida),
+validar_sobre_tablas_walkforward.py (nuevo), nowcast_puertas.py}`,
+`modelo/ensemble/tests/test_sobre_tablas.py` (nuevo, 17 checks),
+`modelo/ensemble/outputs/{theta_sobre_tablas.json (re-estimado),
+validacion_sobre_tablas_walkforward{,_corte50}.json} (nuevos)`,
+`coordinacion/TABLERO.md`.
+
 ## III.B — Propuesto, sin decidir
 
 ### III.B.1 — Proximidad electoral
@@ -1336,6 +1524,24 @@ $p=2\cdot10^{-4}$. Comparando **legisladores consigo mismos**, el efecto desapar
 Corolario: **un porcentaje imposible es un bug, no un fenómeno.** 100% de una comisión
 faltante, 82% de ampliación de giro donde había 8%, 2,1% de cobertura — los tres eran
 errores de parseo o de filtrado.
+
+**Segundo caso (15-09), en DOS actos: un agregado bueno escondía un matching roto, y ese
+matching roto escondía una saturación.** El backtest de `sobre_tablas.py` (§III.A.5) dio
+Brier agregado mejor con θ que sin θ en dos cortes walk-forward, y parecía el pase. Al
+intentar re-estimar θ restringido a la era vigente (pedido de Franco) apareció que
+Diputados tenía CERO actas ahí — y era matching roto (Diputados cambió de "sobre tablas" a
+"habilitación del tratamiento" en 2020, sin avisar en ningún lado más que en el propio
+título del acta). Corregido el matching, la muestra de Diputados pasó de 8-20 actas casi
+todas con el MISMO resultado a 20-26 con una mezcla real — y ahí, recién ahí, se vio que θ
+no "fallaba con un sesgo": **saturaba exactamente en 0,01 en el 100% de los casos**, sin
+importar el resultado real. El agregado bueno de la primera corrida no era casualidad
+benigna: era el síntoma compuesto de los dos problemas juntos, cada uno tapando al otro.
+
+> **Un agregado que mejora no es evidencia si una clase domina la muestra — y una muestra
+> chica y desbalanceada puede ser, ella misma, el síntoma de un matching roto.** Antes de
+> creer un Brier/skill agregado: partirlo por el resultado observado, y si una categoría
+> queda sospechosamente vacía o uniforme, verificar el criterio de inclusión contra la
+> fuente antes de aceptar que "así es el dato".
 
 ## IV.7 — Trampas conocidas de estos datos
 

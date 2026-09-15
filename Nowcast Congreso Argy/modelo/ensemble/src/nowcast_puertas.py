@@ -28,6 +28,7 @@ QUÉ REUSA (no reimplementa nada)
     simulación con las guardas de confianza    -> ensemble.simular_con_guardas
     postura de bloque por tema/origen          -> bloque.proyectar_postura
     carácter del dictamen y su condicionante   -> puerta_a
+    vía sobre tablas si no hay dictamen        -> sobre_tablas (bandera apagada, S:III.A.5)
     cámara revisora y su votación              -> puerta_d
     foto completa de la cámara a una fecha     -> datos/padron/padron_vigente
 
@@ -127,6 +128,65 @@ ERA_FIJA = "2023-12-10"
 # votos: le gana a cortar en las CINCO eras (skill 0,1680 contra 0,1643).
 K_SHRINK_RECORD = 5.0
 SHRINK_RECORD = os.environ.get("SHRINK_RECORD", "1") != "0"
+
+# TEMA AUTOMÁTICO (2026-09-15, Parte A de coordinacion/PROMPT-MULTIETIQUETA.md).
+#
+# Medido el 15-09: `tema` acá abajo es un parámetro CLI MANUAL — nunca se deriva
+# de `proyecto_id`. No hay ningún enganche proyecto_id -> tema en la ruta de
+# producción, así que la rama de condicionamiento por tema no dispara en NINGUNA
+# corrida automatizada de hoy (`REGENERAR.ps1` paso 8 no pasa `--tema`). Sin este
+# enganche, cualquier regla de combinación de temas construida en
+# `variables/bloque` (union/ponderada) queda huérfana: nadie la llama en vivo.
+#
+# APAGADA POR DEFECTO, y con motivo DISTINTO al resto de las banderas de acá
+# arriba: no es que el término esté mal medido, es que el DATO no existe
+# todavía. `variables/proyecto/src/tema_por_proyecto.temas_de_proyecto()` lee
+# `proyecto_taxonomias` (datos/proyectos/data/proyectos.db), que hoy tiene 0
+# filas — nadie corrió `agente_taxonomias.clasificar_lote` (necesita
+# ANTHROPIC_API_KEY + red, no disponibles en la sesión que escribió esto).
+# Prender la bandera hoy es un no-op seguro: `temas_de_proyecto` devuelve lista
+# vacía y `nowcast()` sigue exactamente como sin la bandera. El día que la base
+# tenga taxonomías, la bandera empieza a tener efecto — momento en el que hace
+# falta el backtest de PASO 2 (ver evaluacion/baseline/src/baseline_voto_individual.py
+# --combinar-temas) ANTES de recomendar prenderla en publicación.
+TEMA_AUTO = os.environ.get("TEMA_AUTO", "0") != "0"
+# Con qué regla se combinan los temas cuando TEMA_AUTO encuentra multietiqueta.
+# 'primaria' (default) usa sólo el área de mayor confianza -> single `tema=`,
+# el camino MÁS PARECIDO al comportamiento manual de siempre. 'union'/'ponderada'
+# (ver variables/bloque/src/bloque.py::proyectar_postura) necesitan su propia
+# validación empírica antes de ser el default.
+COMBINAR_TEMAS = os.environ.get("COMBINAR_TEMAS", "primaria")
+
+
+def _tema_auto(proyecto_id: Optional[str], db_path=None, expedientes=None):
+    """Si TEMA_AUTO está prendida y hay proyecto_id, resuelve su multietiqueta
+    vía `tema_por_proyecto`. Devuelve (tema, temas, combinar_temas) listo para
+    pasarle a `proyectar_postura`. Degrada limpio (None, None, 'primaria') si
+    la bandera está apagada, no hay proyecto_id, o el proyecto no tiene
+    taxonomías cargadas todavía (el caso normal hoy). `db_path`/`expedientes`
+    son sólo para tests: sin pasarlos usa los contratos reales del repo."""
+    if not TEMA_AUTO or not proyecto_id:
+        return None, None, "primaria"
+    src = RAIZ / "variables" / "proyecto" / "src"
+    if str(src) not in sys.path:
+        sys.path.insert(0, str(src))
+    from tema_por_proyecto import temas_de_proyecto  # type: ignore
+    kwargs = {}
+    if db_path is not None:
+        kwargs["db_path"] = db_path
+    if expedientes is not None:
+        kwargs["expedientes"] = expedientes
+    try:
+        asigs = temas_de_proyecto(proyecto_id=proyecto_id, **kwargs)
+    except (FileNotFoundError, ValueError) as e:
+        logger.warning("TEMA_AUTO: no pude resolver temas de %s (%s): sigo sin tema",
+                       proyecto_id, e)
+        return None, None, "primaria"
+    if not asigs:
+        return None, None, "primaria"
+    if COMBINAR_TEMAS == "primaria":
+        return asigs[0][0], None, "primaria"  # área de mayor confianza, como tema= manual
+    return None, asigs, COMBINAR_TEMAS
 
 
 def _bloque():
@@ -288,6 +348,35 @@ def a_linea_y_desvio(p_afirma: float) -> tuple[str, float]:
     if p >= 0.5:
         return "AFIRMATIVO", 1.0 - p
     return "NEGATIVO", p
+
+
+def _via_sobre_tablas(cond: dict, caracter: dict, camara: str, perfiles: list[dict],
+                      presentes, *, n_sims: int, seed: int) -> dict:
+    """Aplica la vía sobre tablas (S:III.A.5 de FORMULA-COMPLETA.md) sobre el
+    resultado de `condicionar`, cuando la vía normal no está disponible.
+
+    BANDERA APAGADA POR DEFECTO (`SOBRE_TABLAS`, ver `sobre_tablas.py`). Sin
+    prender, o con la vía normal disponible (`es_admisible`), devuelve `cond` SIN
+    TOCAR — mismo comportamiento que antes de que este módulo existiera.
+
+    Reusa la MISMA simulación que B/D (`ensemble.simular_con_guardas`), sólo con
+    el umbral de DOS TERCIOS y cada P_i^bloque corrida por θ_cámara — no
+    reimplementa el recuento.
+    """
+    from ensemble import simular_con_guardas
+    from sobre_tablas import SOBRE_TABLAS, es_admisible, p_afirma_tablas
+
+    if not SOBRE_TABLAS or es_admisible(caracter):
+        return cond
+    import numpy as np
+    p_tab = [p_afirma_tablas(f["p_afirma_si_vota"], camara) for f in perfiles]
+    lin_tab, des_tab = zip(*(a_linea_y_desvio(p) for p in p_tab))
+    sim_tab = simular_con_guardas(np.array(lin_tab), np.array(des_tab, dtype=float),
+                                  "DOS_TERCIOS", camara, n_sims=n_sims, seed=seed,
+                                  p_presente=presentes, reparto_desvio=REPARTO_DESVIO)
+    p_tablas = float(sim_tab["p_aprobacion"])
+    return {**cond, "p": float(p_tablas * cond["p"]), "p_tablas": p_tablas,
+           "via": "sobre_tablas"}
 
 
 def _p_afirmativo_del_simulador(linea: str, desvio: float) -> float:
@@ -453,9 +542,16 @@ def nowcast(camara_origen: str, fecha=None, *, proyecto_id: str | None = None,
     cam_o = str(camara_origen).strip().lower()
     cam_r = camara_revisora(cam_o)
 
+    # TEMA AUTOMÁTICO (TEMA_AUTO=1, apagado por defecto — ver el bloque de arriba).
+    # Sólo actúa si el llamador NO pasó `tema` a mano: lo manual siempre gana.
+    temas_multi, combinar_temas_activo = None, "primaria"
+    if tema is None:
+        tema_auto, temas_multi, combinar_temas_activo = _tema_auto(proyecto_id)
+        tema = tema_auto
+
     cargar, proyectar_postura, cargar_tema_por_acta = _bloque()
     votos = cargar(CANONICA_CLEAN)
-    cond = cargar_tema_por_acta() if (tema or origen) else None
+    cond = cargar_tema_por_acta() if (tema or origen or temas_multi) else None
     origen_map = {}
     if origen and Path(PROYECTO_ORIGEN_POR_ACTA).exists():
         opa = pd.read_parquet(PROYECTO_ORIGEN_POR_ACTA)
@@ -482,16 +578,19 @@ def nowcast(camara_origen: str, fecha=None, *, proyecto_id: str | None = None,
 
     # ── B: la votación en la cámara de ORIGEN ──────────────────────────────────
     bloques_o = proyectar_postura(votos, F, cam_o, tema=tema, origen=origen,
-                                  cond_por_acta=cond)
+                                  cond_por_acta=cond, temas=temas_multi,
+                                  combinar_temas=combinar_temas_activo)
     _, _, det_o = roster_nominal(cam_o, F, bloques_o)
     lin_o, des_o, pre_o, perf_o = armar_roster(cam_o, bloques_o, ind, det_o, ctx_o)
     sim_o = simular_con_guardas(lin_o, des_o, tipo_mayoria, cam_o, n_sims=n_sims,
                                 seed=seed, p_presente=pre_o, reparto_desvio=REPARTO_DESVIO)
     b = condicionar(sim_o["p_aprobacion"], car_o)
+    b = _via_sobre_tablas(b, car_o, cam_o, perf_o, pre_o, n_sims=n_sims, seed=seed)
 
     # ── D: la votación en la cámara REVISORA ───────────────────────────────────
     bloques_r = proyectar_postura(votos, F, cam_r, tema=tema, origen=origen,
-                                  cond_por_acta=cond)
+                                  cond_por_acta=cond, temas=temas_multi,
+                                  combinar_temas=combinar_temas_activo)
     _, _, det_r = roster_nominal(cam_r, F, bloques_r)
     lin_r, des_r, pre_r, perf_r = armar_roster(cam_r, bloques_r, ind, det_r, ctx_r)
     d_raw = p_voto_revisora(cam_o, F, bloques_r, tipo_mayoria=tipo_mayoria,
@@ -499,6 +598,7 @@ def nowcast(camara_origen: str, fecha=None, *, proyecto_id: str | None = None,
                             roster=(lin_r, des_r, pre_r, det_r),
                             reparto_desvio=REPARTO_DESVIO)
     d = condicionar(d_raw["p_aprobacion"], car_r)
+    d = _via_sobre_tablas(d, car_r, cam_r, perf_r, pre_r, n_sims=n_sims, seed=seed)
     # Sin fallback: si a `p_voto_revisora` le faltara un percentil, tiene que romper
     # acá y no rellenarse con la media — una banda inventada se lee igual que una real.
     sim_r = {k: d_raw[k] for k in ("afirm_medio", "afirm_p5", "afirm_p95", "umbral_medio")}
@@ -516,7 +616,10 @@ def nowcast(camara_origen: str, fecha=None, *, proyecto_id: str | None = None,
                       "acumulado": car.get("acumulado", False)})
         if prob is not None:
             p.update({"p": round(prob["p"], 4), "p_sin_condicionar": round(prob["p0"], 4),
-                      "condicionado_por_el_dictamen": prob["condicionado"]})
+                      "condicionado_por_el_dictamen": prob["condicionado"],
+                      "via": prob.get("via", "normal")})
+            if "p_tablas" in prob:
+                p["p_sobre_tablas"] = round(prob["p_tablas"], 4)
         return p
 
     return {

@@ -372,9 +372,15 @@ def _gobierno_por_fecha(fecha):
 
 def _cond_map(cond_por_acta) -> dict:
     """Normaliza el insumo tema/origen por acta a dict acta_id ->
-    {'tema_area','origen','origen_lado','gobierno'}. Acepta un dict ya armado o un
-    DataFrame con acta_id + esas columnas (contratos tema_por_acta y origen_por_acta
-    de variables/proyecto, ya fusionados por cargar_tema_por_acta)."""
+    {'tema_area','origen','origen_lado','gobierno','todas_ids'}. Acepta un dict ya
+    armado o un DataFrame con acta_id + esas columnas (contratos tema_por_acta y
+    origen_por_acta de variables/proyecto, ya fusionados por cargar_tema_por_acta).
+
+    `todas_ids` (agregada 2026-09-15, PARTE A del prompt multietiqueta) es la lista
+    ';'-separada de TODAS las taxonomías sustantivas que el agente le asignó a esa
+    acta — no sólo la primaria. Sin ella, `combinar_temas='union'/'ponderada'`
+    matchea la ventana histórica sólo por la etiqueta primaria de cada acta, que es
+    exactamente el colapso que ese modo existe para evitar."""
     if cond_por_acta is None:
         return {}
     if isinstance(cond_por_acta, dict):
@@ -383,13 +389,60 @@ def _cond_map(cond_por_acta) -> dict:
     if "acta_id" not in getattr(df, "columns", []):
         logger.warning("cond_por_acta sin columna acta_id; ignoro condicionamiento")
         return {}
-    campos = [c for c in ("tema_area", "origen", "origen_lado", "gobierno") if c in df.columns]
+    campos = [c for c in ("tema_area", "origen", "origen_lado", "gobierno", "todas_ids")
+              if c in df.columns]
     m = {}
     for _, r in df.iterrows():
         info = {c: r[c] for c in campos if pd.notna(r.get(c))}
         if info:
             m[str(r["acta_id"])] = info
     return m
+
+
+_AUX_PREFIX = "AUX"
+
+
+def _areas_de_info(info: dict) -> set[str]:
+    """Áreas SUSTANTIVAS (no AUX) de una acta de la ventana, a partir de su
+    `todas_ids` (multietiqueta completa) si está; si no, cae a su `tema_area`
+    primaria (retrocompatible con actas clasificadas antes de que `todas_ids`
+    existiera, o con un `cond_por_acta` armado a mano sin esa columna)."""
+    crudo = info.get("todas_ids")
+    if crudo:
+        ids = [i.strip() for i in str(crudo).split(";") if i.strip()]
+        areas = {i.split(".")[0].upper() for i in ids if not i.upper().startswith(_AUX_PREFIX)}
+        if areas:
+            return areas
+    area = info.get("tema_area")
+    if area and str(area).upper() != _AUX_PREFIX:
+        return {str(area).upper()}
+    return set()
+
+
+def _normalizar_temas_objetivo(temas) -> list[tuple[str, float]]:
+    """Normaliza el parámetro `temas` (Parte A, combinar_temas != 'primaria') a
+    [(area, peso), ...] con pesos > 0. Acepta una lista de áreas (peso 1.0 cada
+    una), de (área, confianza) o un dict área->confianza. Parsing defensivo: una
+    entrada sin peso positivo se descarta con aviso, no rompe la corrida."""
+    if temas is None:
+        return []
+    if isinstance(temas, dict):
+        items = list(temas.items())
+    elif isinstance(temas, str):
+        items = [(temas, 1.0)]
+    else:
+        items = [(t, 1.0) if not isinstance(t, (tuple, list)) else tuple(t) for t in temas]
+    out = []
+    for it in items:
+        area = str(it[0]).upper().strip()
+        peso = float(it[1]) if len(it) > 1 and it[1] is not None else 1.0
+        if not area or area == _AUX_PREFIX:
+            continue
+        if peso <= 0:
+            logger.warning("tema objetivo %s con peso no positivo (%s); lo descarto", area, peso)
+            continue
+        out.append((area, peso))
+    return out
 
 
 def cargar_tema_por_acta(path=None):
@@ -428,7 +481,8 @@ def proyectar_postura(votos: pd.DataFrame, fecha, camara: str,
                       ventana_dias: int = 730, min_actas: int = 3,
                       padron_path=None, tema=None, origen=None,
                       cond_por_acta=None, k_shrink: float = 5.0,
-                      excluir_aux: bool = True) -> list[dict]:
+                      excluir_aux: bool = True, temas=None,
+                      combinar_temas: str = "primaria") -> list[dict]:
     """Escenario por bloque para una votacion en `fecha`/`camara`.
 
     COMPOSICION (bancas) = padron OFICIAL vigente a la fecha (datos/padron): la camara
@@ -446,6 +500,30 @@ def proyectar_postura(votos: pd.DataFrame, fecha, camara: str,
     ENCOGIMIENTO (shrinkage empirico-bayesiano, pseudo-conteo k_shrink) para no dar
     vuelta la direccion con 2-3 actas. Sin `tema`/`origen` (o sin mapa), el resultado
     es IDENTICO al v1 incondicional -> no rompe el contrato ni el ensemble.
+
+    v3 — MULTIETIQUETA (2026-09-15, Parte A de coordinacion/PROMPT-MULTIETIQUETA.md):
+    un proyecto real casi siempre tiene VARIOS temas sustantivos (61,2% de las actas
+    clasificadas, medido). `tema`/`_match` de arriba usa sólo la etiqueta PRIMARIA de
+    cada acta de la ventana — sigue siendo el comportamiento por DEFECTO
+    (`combinar_temas='primaria'`, retrocompatible byte a byte). Dos modos nuevos,
+    detrás de `combinar_temas`, activos sólo si se pasan explícitamente:
+
+      'union'     — la ventana condicionada son las actas de la ventana que comparten
+                    CUALQUIERA de los temas objetivo (intersección no vacía contra la
+                    multietiqueta COMPLETA de cada acta, vía `todas_ids`, no sólo su
+                    primaria). Más muestra; mezcla temas que pueden tirar para lados
+                    opuestos.
+      'ponderada' — cada tema objetivo arma SU PROPIO share condicionado (encogido
+                    hacia la incondicional, mismo k_shrink) y el resultado final es el
+                    promedio ponderado por `confianza` de esos shares ya encogidos. Con
+                    un solo tema de peso 1.0 da EXACTAMENTE lo mismo que 'primaria' —
+                    es la generalización, no una rama aparte.
+
+    `temas` es la multietiqueta del proyecto OBJETIVO (no de la ventana): una lista de
+    áreas, de `(área, confianza)`, o un dict área->confianza — típicamente `todas_ids`
+    del proyecto que se está por votar. Con `combinar_temas != 'primaria'` hace falta
+    `tema` o `temas`; si ningún tema objetivo tiene ni una acta que lo comparta en la
+    ventana, cae a incondicional igual que 'primaria' (mismo aviso por log).
 
     Devuelve [{bloque, bancas, linea, desvio, ...}], listo para el ensemble.
     """
@@ -481,46 +559,116 @@ def proyectar_postura(votos: pd.DataFrame, fecha, camara: str,
         n_actas=("acta_id", "nunique"),
     )
 
-    # v2: subconjunto de la ventana que comparte tema/origen con el proyecto objetivo
-    condicionar = (tema is not None or origen is not None) and len(cond_map) > 0
-    cond_share: dict = {}
+    combinar_temas = (combinar_temas or "primaria").lower()
+    if combinar_temas not in ("primaria", "union", "ponderada"):
+        raise ValueError(f"combinar_temas debe ser 'primaria'|'union'|'ponderada'; "
+                         f"vino {combinar_temas!r}")
+    temas_norm = _normalizar_temas_objetivo(temas)
+    if combinar_temas != "primaria" and tema is None and not temas_norm:
+        raise ValueError(f"combinar_temas={combinar_temas!r} necesita `tema` o `temas` "
+                         f"(la multietiqueta del proyecto objetivo)")
+    if not temas_norm and tema is not None:
+        temas_norm = [(str(tema).upper(), 1.0)]
+
+    # v2/v3: subconjunto de la ventana que comparte tema/origen con el proyecto objetivo
+    condicionar = (tema is not None or temas_norm or origen is not None) and len(cond_map) > 0
+    cond_share: dict = {}    # primaria / union: {linaje: {n_cond, share_cond}}
+    area_shares: dict = {}   # ponderada: {area: {linaje: {n_cond, share_cond}}}
+    modo_efectivo = None
     if condicionar:
-        tgt_t = str(tema).upper() if tema is not None else None
         tgt_o = str(origen).upper() if origen is not None else None
         # al condicionar por ORIGEN, solo actas del MISMO gobierno que la fecha
         # objetivo (un bloque cambia de lado con el recambio del 10-dic; decision
         # de Valle 2026-07-22: no mezclar eras dentro de la ventana)
         gob_objetivo = _gobierno_por_fecha(fecha) if tgt_o is not None else None
 
-        def _match(aid) -> bool:
-            info = cond_map.get(str(aid))
-            if not info:
+        def _match_origen(info: dict) -> bool:
+            if tgt_o is None:
+                return True
+            fino = str(info.get("origen", "")).upper()
+            lado = str(info.get("origen_lado", "")).upper()
+            if tgt_o not in (fino, lado):
                 return False
-            if tgt_t is not None and str(info.get("tema_area", "")).upper() != tgt_t:
+            if gob_objetivo is not None and info.get("gobierno") is not None \
+                    and str(info.get("gobierno")).upper() != gob_objetivo:
                 return False
-            if tgt_o is not None:
-                fino = str(info.get("origen", "")).upper()
-                lado = str(info.get("origen_lado", "")).upper()
-                if tgt_o not in (fino, lado):
-                    return False
-                if gob_objetivo is not None and info.get("gobierno") is not None \
-                        and str(info.get("gobierno")).upper() != gob_objetivo:
-                    return False
             return True
 
-        sel = mab[mab["acta_id"].map(_match)]
-        if sel.empty:
-            logger.warning("condicionamiento tema=%s origen=%s: 0 actas en ventana; "
-                           "caigo a incondicional", tema, origen)
-            condicionar = False
-        else:
-            cg = sel.groupby("bloque_linaje", observed=True).agg(
-                share_cond=("dir_afirm", "mean"),
-                n_cond=("acta_id", "nunique"),
-            )
-            cond_share = cg.to_dict("index")
-            logger.info("v2: %d actas condicionadas (tema=%s origen=%s) sobre %d de la ventana",
-                        sel["acta_id"].nunique(), tema, origen, mab["acta_id"].nunique())
+        def _share_por_linaje(sub: pd.DataFrame) -> dict:
+            cg = sub.groupby("bloque_linaje", observed=True).agg(
+                share_cond=("dir_afirm", "mean"), n_cond=("acta_id", "nunique"))
+            return cg.to_dict("index")
+
+        if combinar_temas == "primaria":
+            tgt_t = str(tema).upper() if tema is not None else None
+
+            def _match(aid) -> bool:
+                info = cond_map.get(str(aid))
+                if not info:
+                    return False
+                if tgt_t is not None and str(info.get("tema_area", "")).upper() != tgt_t:
+                    return False
+                return _match_origen(info)
+
+            sel = mab[mab["acta_id"].map(_match)]
+            if sel.empty:
+                logger.warning("condicionamiento tema=%s origen=%s: 0 actas en ventana; "
+                               "caigo a incondicional", tema, origen)
+                condicionar = False
+            else:
+                cond_share = _share_por_linaje(sel)
+                modo_efectivo = "primaria"
+                logger.info("v2: %d actas condicionadas (tema=%s origen=%s) sobre %d de la ventana",
+                            sel["acta_id"].nunique(), tema, origen, mab["acta_id"].nunique())
+
+        elif combinar_temas == "union":
+            tgt_areas = {a for a, _ in temas_norm}
+
+            def _match(aid) -> bool:
+                info = cond_map.get(str(aid))
+                if not info:
+                    return False
+                if not (_areas_de_info(info) & tgt_areas):
+                    return False
+                return _match_origen(info)
+
+            sel = mab[mab["acta_id"].map(_match)]
+            if sel.empty:
+                logger.warning("combinar_temas=union temas=%s origen=%s: 0 actas en ventana; "
+                               "caigo a incondicional", sorted(tgt_areas), origen)
+                condicionar = False
+            else:
+                cond_share = _share_por_linaje(sel)
+                modo_efectivo = "union"
+                logger.info("v3 (union): %d actas condicionadas (temas=%s origen=%s) sobre %d "
+                            "de la ventana", sel["acta_id"].nunique(), sorted(tgt_areas),
+                            origen, mab["acta_id"].nunique())
+
+        else:  # ponderada
+            n_total = 0
+            for area, _peso in temas_norm:
+                def _match(aid, _area=area) -> bool:
+                    info = cond_map.get(str(aid))
+                    if not info:
+                        return False
+                    if _area not in _areas_de_info(info):
+                        return False
+                    return _match_origen(info)
+
+                sel_a = mab[mab["acta_id"].map(_match)]
+                if not sel_a.empty:
+                    area_shares[area] = _share_por_linaje(sel_a)
+                    n_total += sel_a["acta_id"].nunique()
+            if n_total == 0:
+                logger.warning("combinar_temas=ponderada temas=%s origen=%s: 0 actas en "
+                               "ventana para NINGUN tema objetivo; caigo a incondicional",
+                               [a for a, _ in temas_norm], origen)
+                condicionar = False
+            else:
+                modo_efectivo = "ponderada"
+                logger.info("v3 (ponderada): %d actas condicionadas en total, repartidas "
+                            "entre %d temas objetivo (origen=%s) sobre %d de la ventana",
+                            n_total, len(temas_norm), origen, mab["acta_id"].nunique())
 
     # composicion a la fecha: padron oficial si esta; si no, conteo por ventana
     base = _bancas_padron(camara, fecha, padron_path)
@@ -541,23 +689,52 @@ def proyectar_postura(votos: pd.DataFrame, fecha, camara: str,
             desvio = float(np.clip(r["desvio"], 0.0, 1.0))
             nact = int(r["n_actas"])
             share = share_u
-            cs = cond_share.get(linaje)
-            if cs is not None:
-                n_c = float(cs["n_cond"])
-                s_c = float(cs["share_cond"])
-                # encogimiento hacia la incondicional: pocas actas del tema -> confia
-                # menos en el condicionado; muchas -> lo domina.
-                share = (n_c * s_c + float(k_shrink) * share_u) / (n_c + float(k_shrink))
-                n_cond_used = int(n_c)
+            if modo_efectivo == "ponderada":
+                # cada tema objetivo encoge SU PROPIO share hacia la incondicional
+                # (mismo k_shrink de siempre) y el resultado es el promedio ponderado
+                # por confianza de esos shares ya encogidos. Un tema sin ninguna acta
+                # de este bloque en la ventana no se descarta: aporta share_u a su
+                # peso (n_cond=0 en la fórmula de encogimiento da exactamente eso), que
+                # es "sin dato para ese lente, uso la base" — no "ese lente no cuenta".
+                num, den = 0.0, 0.0
+                for area, peso in temas_norm:
+                    cs = area_shares.get(area, {}).get(linaje)
+                    if cs is not None:
+                        n_c, s_c = float(cs["n_cond"]), float(cs["share_cond"])
+                        share_area = (n_c * s_c + float(k_shrink) * share_u) / (n_c + float(k_shrink))
+                        n_cond_used += int(n_c)
+                    else:
+                        share_area = share_u
+                    num += peso * share_area
+                    den += peso
+                if den > 0:
+                    share = num / den
+            else:
+                cs = cond_share.get(linaje)
+                if cs is not None:
+                    n_c = float(cs["n_cond"])
+                    s_c = float(cs["share_cond"])
+                    # encogimiento hacia la incondicional: pocas actas del tema -> confia
+                    # menos en el condicionado; muchas -> lo domina.
+                    share = (n_c * s_c + float(k_shrink) * share_u) / (n_c + float(k_shrink))
+                    n_cond_used = int(n_c)
         else:
             share_u, share, desvio, nact = 0.5, 0.5, 0.15, 0  # sin historia: neutro
         linea = "AFIRMATIVO" if share >= 0.5 else "NEGATIVO"
+        if condicionar:
+            if modo_efectivo == "primaria":
+                cond_txt = f"tema={tema};origen={origen}"
+            else:
+                cond_txt = (f"combinar_temas={modo_efectivo};"
+                           f"temas={[a for a, _ in temas_norm]};origen={origen}")
+        else:
+            cond_txt = None
         out.append({"bloque": str(linaje), "bancas": nb, "linea": linea,
                     "desvio": round(desvio, 4),
                     "_share_afirm": round(share, 4),
                     "_share_incond": round(share_u, 4),
                     "_n_actas": nact, "_n_cond": n_cond_used,
-                    "_cond": (f"tema={tema};origen={origen}" if condicionar else None),
+                    "_cond": cond_txt,
                     "_bancas_de": fuente_bancas})
     if not out:
         raise ValueError("ningun bloque con bancas para proyectar")

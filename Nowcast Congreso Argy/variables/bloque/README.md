@@ -16,6 +16,7 @@ largo del tiempo — y, sobre esa serie, un **proyector point-in-time** que arma
 - linajes de bloque (peronismo federal, progresismo) y como se agrupan
 - proyectar la alineacion de bloques a una fecha (point-in-time)
 - OJO: su columna `periodo` es un ANIO legislativo, no el periodo de dos anios del resto del repo
+- un proyecto con VARIOS temas a la vez (ADR-0024, 15-09): `proyectar_postura(..., combinar_temas="union"|"ponderada", temas=[...])` — default `"primaria"` (una sola etiqueta, de siempre), retrocompatible
 
 <!-- Las dos cosas de arriba las levanta `.mapa/indexar.py` al MAPA.md de la
      raiz: el `Resumen:` va a la columna "Que es" y las pistas al router

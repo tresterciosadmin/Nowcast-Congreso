@@ -270,8 +270,42 @@ def _eras_de(fechas: pd.Series) -> pd.Series:
     return fechas.map(mapa)
 
 
+_AUX_PREFIX = "AUX"
+
+
+def _areas_sustantivas(todas_ids) -> list[str]:
+    """De la multietiqueta completa de una acta (`todas_ids`, ';'-separado),
+    las áreas SUSTANTIVAS (no AUX), sin duplicados, orden estable. Sin
+    confianza por etiqueta preservada en el contrato (`tema_por_acta.py` sólo
+    guarda los ids en el orden que devolvió el agente): PASO 2 usa peso
+    IGUAL para todas al validar 'ponderada' contra el histórico real — es la
+    limitación honesta a reportar, no un defecto de esta función."""
+    if not todas_ids or (isinstance(todas_ids, float) and pd.isna(todas_ids)):
+        return []
+    vistas: list[str] = []
+    for i in str(todas_ids).split(";"):
+        i = i.strip()
+        if not i or i.upper().startswith(_AUX_PREFIX):
+            continue
+        area = i.split(".")[0].upper()
+        if area not in vistas:
+            vistas.append(area)
+    return vistas
+
+
 def correr(camara_filtro: str = "", muestra: int = 0, seed: int = 7,
-           desde: str = "", guard_era: str = GUARD_ERA_DEFAULT) -> dict:
+           desde: str = "", guard_era: str = GUARD_ERA_DEFAULT,
+           combinar_temas: str = "primaria") -> dict:
+    """`combinar_temas` (PASO 2 de coordinacion/PROMPT-MULTIETIQUETA.md, Parte A):
+    'primaria' es el comportamiento de SIEMPRE — la única etiqueta que
+    `tema_por_acta._elegir_primaria` le dejó a cada acta — y es el default, así
+    que una corrida sin este argumento da EXACTAMENTE el mismo resultado que
+    antes de que existiera. 'union'/'ponderada' condicionan `proyectar_postura`
+    con la multietiqueta COMPLETA (`todas_ids`) de la acta evaluada, no sólo su
+    primaria; comparar sus métricas contra 'primaria' es la validación empírica
+    que el prompt pide antes de recomendar activar cualquiera de las dos."""
+    if combinar_temas not in ("primaria", "union", "ponderada"):
+        raise ValueError(f"combinar_temas invalido: {combinar_temas!r}")
     from bloque import cargar as cargar_bloque, proyectar_postura, cargar_tema_por_acta
 
     logger.info("cargando canonica...")
@@ -327,16 +361,26 @@ def correr(camara_filtro: str = "", muestra: int = 0, seed: int = 7,
         if k % 250 == 0:
             logger.info("  %d/%d actas (cache=%d)", k, len(actas), len(cache))
         info = (cond_map or {}).get(str(a.acta_id), {})
-        tema = _norm_cond(info.get("tema_area"))
         origen = _norm_cond(info.get("origen"))
-        clave = (a.camara, a.fecha.year, a.fecha.month, tema, origen)
+        kwargs_tema: dict = {}
+        if combinar_temas == "primaria":
+            tema = _norm_cond(info.get("tema_area"))
+            clave_tema = tema
+        else:
+            areas = _areas_sustantivas(info.get("todas_ids"))
+            if areas:
+                kwargs_tema = {"temas": areas, "combinar_temas": combinar_temas}
+                clave_tema = tuple(areas)
+            else:
+                clave_tema = None  # sin multietiqueta sustantiva: incondicional, como primaria
+        clave = (a.camara, a.fecha.year, a.fecha.month, clave_tema, origen, combinar_temas)
         if clave in cache:
             by_lin = cache[clave]
         else:
             try:
                 post = proyectar_postura(
                     votos, a.fecha, a.camara, ventana_dias=VENTANA_DIAS,
-                    tema=tema, origen=origen, cond_por_acta=cond, k_shrink=K_SHRINK)
+                    origen=origen, cond_por_acta=cond, k_shrink=K_SHRINK, **kwargs_tema)
             except (ValueError, KeyError) as e:
                 cache[clave] = None
                 saltadas += 1
@@ -378,6 +422,7 @@ def correr(camara_filtro: str = "", muestra: int = 0, seed: int = 7,
         "ventana_dias": VENTANA_DIAS,
         "min_hist_individual": MIN_HIST_INDIVIDUAL,
         "guard_era": guard_era,
+        "combinar_temas": combinar_temas,
         "global": _metricas(d.p.values, d.y.values),
         "calibracion": _calibracion(d.p.values, d.y.values),
         "por_camara": {c: _metricas(g.p.values, g.y.values)
@@ -421,6 +466,11 @@ def main(argv):
                     help="off = como siempre; corte = el record se reinicia en cada era "
                          "(lo que hace el motor); shrink = corte + Empirical-Bayes k=5 "
                          "contra el linaje en la misma era")
+    ap.add_argument("--combinar-temas", default="primaria",
+                    choices=["primaria", "union", "ponderada"],
+                    help="primaria (default, de siempre) = una sola etiqueta por acta; "
+                         "union/ponderada (PASO 2, Parte A) condicionan con la "
+                         "multietiqueta completa (todas_ids) de la acta evaluada")
     ap.add_argument("--verbose", action="store_true",
                     help="mostrar los avisos de `bloque` uno por uno (por defecto se cuentan)")
     ap.add_argument("--salida", default=None)
@@ -432,9 +482,11 @@ def main(argv):
         cont = _ContadorAvisos()
         logging.getLogger("bloque").addFilter(cont)
         correr._tally = cont.tally
-    res = correr(args.camara, args.muestra, args.seed, args.desde, args.guard_era)
+    res = correr(args.camara, args.muestra, args.seed, args.desde, args.guard_era,
+                args.combinar_temas)
     res["_args"] = {"camara": args.camara or "ambas", "muestra": args.muestra,
-                    "desde": args.desde or None, "guard_era": args.guard_era}
+                    "desde": args.desde or None, "guard_era": args.guard_era,
+                    "combinar_temas": args.combinar_temas}
 
     out = Path(args.salida) if args.salida else (
         REPO / "evaluacion/baseline/outputs/baseline_voto_individual.json")

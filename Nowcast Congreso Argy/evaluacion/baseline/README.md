@@ -14,6 +14,7 @@
 - cuanto acierta la regla de bloque (~0,99 en direccion del voto individual)
 - contra que se compara un modelo nuevo
 - cuanto pierde el record individual en cada era, y cuanto lo arregla el guard
+- validar las reglas de combinacion de temas (ADR-0024) contra el historico real: `--combinar-temas {primaria,union,ponderada}`, default `primaria` (de siempre)
 
 <!-- Las dos cosas de arriba las levanta `.mapa/indexar.py` al MAPA.md de la
      raiz: el `Resumen:` va a la columna "Que es" y las pistas al router

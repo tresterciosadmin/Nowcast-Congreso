@@ -2,6 +2,24 @@
 
 > Documento vivo. Cada cambio importante en el proyecto se explica acá en lenguaje claro, además de registrarse en `ESTADO-DEL-PROYECTO.md`. Si algo del sistema no se entiende leyendo esto, está mal escrito y hay que arreglarlo.
 
+## El sistema ya sabía que un proyecto toca varios temas, pero el dato no llegaba a ningún lado (15-09-2026)
+
+Siguiendo con lo de arriba: la mitad del trabajo (los temas de un proyecto) ya estaba
+armada y se completó. El sistema que clasifica proyectos por tema ya sabe ponerle varias
+etiquetas a la vez, y ya existe una tabla pensada para guardarlas — el problema es que esa
+tabla está vacía, porque nadie la corrió todavía (necesita conexión a internet y una clave
+de acceso que esta sesión no tenía). Se armó el enganche que faltaba para cuando esa tabla
+se llene: hoy, si un proyecto real tiene varios temas cargados, el sistema ya sabe usarlos
+para decidir cómo vota cada bloque — antes ni siquiera había un cable conectado entre "el
+tema del proyecto" y "cómo pronostica el modelo", ese tema había que escribirlo a mano cada
+vez, y en la práctica nunca se escribía. También se armaron dos formas distintas de combinar
+varios temas a la vez (juntar toda la historia relacionada con cualquiera de ellos, o pesar
+cada tema por separado según qué tan seguro está el clasificador) para poder comparar cuál
+funciona mejor cuando haya datos reales. Todo esto quedó apagado por defecto y se probó que
+prenderlo hoy, con la tabla vacía, no cambia absolutamente nada del número publicado — y con
+un dato de prueba (insertado y borrado en el momento) se confirmó que el cable sí funciona
+de punta a punta.
+
 ## Una ley no sale como entró, y ahora tenemos el número (15-09-2026)
 
 Franco pidió mirar dos cosas que sonaban parecidas: los proyectos que tocan varios temas a

@@ -2,13 +2,13 @@
 
 <!-- GENERADO por indexar.py. No editar: los cambios se pierden. -->
 <!-- La prosa vive en el README.md de cada modulo (seccion `Buscar aca si`). -->
-<!-- 2026-09-15 23:37 UTC · 162 archivos · 40,750 LOC -->
+<!-- 2026-09-15 23:46 UTC · 162 archivos · 40,827 LOC -->
 
 ## Como usar este archivo
 
 Es el unico archivo del proyecto que hace falta leer para empezar. Para ubicar algo concreto: `python3 .mapa/buscar.py "<termino>"` devuelve archivo y linea sin abrir nada. Recien despues abrir los archivos que salgan, y solo esos.
 
-Rama `main` — ultimo commit: 2026-09-15 5a637c6 mapa: reindexar tras el cierre de sobre tablas · **hay cambios sin commitear**
+Rama `main` — ultimo commit: 2026-09-15 24f5969 modelo/agregador+ensemble: epsilon0 + tau*eta_j reemplaza al clip agregado (S:III.A.3) · **hay cambios sin commitear**
 
 ## Donde buscar que
 
@@ -46,6 +46,7 @@ Rama `main` — ultimo commit: 2026-09-15 5a637c6 mapa: reindexar tras el cierre
 | que significa `dictamen_clase = "desconocido"` (no se encontro el rotulo; NO es "despacho unico") | `datos/expedientes/` |
 | comparar comisiones: SIEMPRE matchear contra el catalogo (los nombres tienen comas; partir por separadores rompe) | `datos/expedientes/` |
 | que se cae de una ley entre la votacion en general y la votacion en particular, articulo por articulo (`votacion_por_articulo.py`, B0/B1 del prompt multietiqueta): NO reemplaza `elegir_votacion`, agrega el resto de las actas que esa funcion descarta | `datos/expedientes/` |
+| a que TITULO/CAPITULO pertenece un tramo votado (B2, 16-09): `titulo_num`/`capitulo_num` salen del propio titulo del acta, sin bajar PDF -- cobertura 9,8% (solo los omnibus complejos declaran capitulo) | `datos/expedientes/` |
 | `expedientes_giros` mezcla las DOS camaras: filtrar por camara antes de contar cobertura | `datos/expedientes/` |
 | cuantas ODs faltan bajar (2.523 de ley identificadas, 1.722 parseadas) y como reanudar `ingesta_od.py` | `datos/expedientes/` |
 | abrir las votaciones en Excel o consultarlas con SQL; la columna `periodo`, `gobierno` o `desvio` | `datos/export/` |
@@ -135,9 +136,9 @@ Rama `main` — ultimo commit: 2026-09-15 5a637c6 mapa: reindexar tras el cierre
 | Carpeta | Que es | Arch. | LOC | Bitacora |
 |---|---|---:|---:|---|
 | `modelo/ensemble/` _(src+tests)_ | La composicion final: el nowcast end-to-end de un proyecto. El punto de entrada vivo es `nowcast_puertas.py`, que corre la CADENA DE PUERTAS y devuelve un numero condicional a que las camaras voten. La formulacion v1 -P(llega al recinto) x P(mayoria dado recinto)- se dio de BAJA el 2026-08-22 (ADR-0012), junto con su backtest: `ensemble.componer` y `backtest_cadena.py` siguen ahi pero levantan SystemExit. | 24 | 6,259 | **vencida** |
-| `./` | La raiz del proyecto: los paneles que se abren con doble clic, el tablero ejecutivo y su unica fuente de datos (`tablero_datos.js`). | 6 | 5,993 | **vencida** |
+| `./` | La raiz del proyecto: los paneles que se abren con doble clic, el tablero ejecutivo y su unica fuente de datos (`tablero_datos.js`). | 6 | 5,998 | **vencida** |
 | `variables/proyecto/` _(src+tests)_ | Feature store por proyecto: tema/materia, origen (Ejecutivo/oficialismo/aliados/oposicion), jefe de bloque, mayoria requerida, texto, y el ICG como modulador de coyuntura. La postura del gobierno por acta se midio aca y su modulo se archivo el 2026-09-10 sin consumidor: la medicion quedo en el ADR-0021 y en ESTADO. | 23 | 5,280 | **vencida** |
-| `datos/expedientes/` _(src+tests)_ | Registro de todo lo PRESENTADO (no solo lo votado): titulo, autor, tipo, fecha y cadena de vida del expediente. Denominador del embudo y enlace acta -> expediente. | 17 | 4,832 | **vencida** |
+| `datos/expedientes/` _(src+tests)_ | Registro de todo lo PRESENTADO (no solo lo votado): titulo, autor, tipo, fecha y cadena de vida del expediente. Denominador del embudo y enlace acta -> expediente. | 17 | 4,904 | **vencida** |
 | `datos/padron/` _(src+tests)_ | Padron OFICIAL de bancas a nivel LEGISLADOR: quien ocupa cada banca y en que ventana de mandato. Es la composicion real de la camara a una fecha (257 / 72). | 11 | 2,645 | ok |
 | `datos/proyectos/` _(src+tests)_ | Base de Proyectos de Ley (`proyectos.db`): una fila por proyecto identificado por denominador NNNN-X-AAAA. Fuente de verdad del universo de proyectos y denominador del embudo (ADR-0009). | 10 | 2,073 | ok |
 | `variables/bloque/` _(src+tests)_ | Cohesion, tamano, postura y fracturas de cada bloque en el tiempo, y el proyector point-in-time que arma el escenario por bloque que consume el ensemble. | 6 | 1,476 | **vencida** |
@@ -171,7 +172,7 @@ Rama `main` — ultimo commit: 2026-09-15 5a637c6 mapa: reindexar tras el cierre
 
 ## Inventario de datos
 
-147 archivos de datos · 197.0 MB · 147 viajan por git, **0 no**.
+147 archivos de datos · 197.1 MB · 147 viajan por git, **0 no**.
 
 Buscar uno sin abrir nada: `python .mapa/buscar.py --dato <termino>`. Columna **git**: `si` = esta versionado, o sea que quien clone lo tiene; `NO` = vive solo en el disco de quien lo genero, que es el modo de falla mas repetido de este repo (seis veces, ver `.gitignore`). **Escribe/Lee**: quien lo produce y quien lo consume, deducido del codigo; sin lector, sobra — sin escritor, no se regenera.
 
@@ -218,7 +219,7 @@ Buscar uno sin abrir nada: `python .mapa/buscar.py --dato <termino>`. Columna **
 | `datos/expedientes/data/clean/acta_expediente_todas.parquet` _EXPEDIENTES_ACTA_EXP_TODAS_ | 5,043×13 | 424 KB | si | `enlace_senado.py`, `votacion_por_articulo.py` | `actas_ley.py`, `tema_por_proyecto.py`, `verificar_regeneracion.py` |
 | `datos/expedientes/data/clean/expedientes_dictamenes.parquet` | 24,053×8 | 373 KB | si | `ingesta_ckan.py`, `migrar_ckan.py` | _(2 lo nombran)_ |
 | `datos/expedientes/data/clean/dictamenes_firmas_senado.parquet` _EXPEDIENTES_FIRMAS_SENADO_ | 18,256×30 | 208 KB | si | `construir_firmas.py` | _(4 lo nombran)_ |
-| `datos/expedientes/data/clean/votacion_por_articulo.parquet` | 2,361×11 | 166 KB | si | `votacion_por_articulo.py` | — |
+| `datos/expedientes/data/clean/votacion_por_articulo.parquet` | 2,361×13 | 168 KB | si | `votacion_por_articulo.py` | — |
 | `datos/expedientes/data/clean/acta_expediente.parquet` _EXPEDIENTES_ACTA_EXP_ | 1,849×7 | 164 KB | si | `enlace_senado.py`, `ingesta_ckan.py` | `baseline_voto_individual.py`, `estimar_beta_dictamen.py`, `origen_por_acta.py` |
 | `datos/expedientes/data/clean/cadena_camaras.parquet` | 1,182×17 | 151 KB | si | `enlace_senado.py` | `estimar_psi_arrastre.py` |
 | `datos/expedientes/data/clean/dictamenes_comisiones.parquet` _EXPEDIENTES_DICTAMENES_COMISIONES_ | 10,031×8 | 88 KB | si | `construir_firmas.py` | — |
@@ -243,7 +244,7 @@ Buscar uno sin abrir nada: `python .mapa/buscar.py --dato <termino>`. Columna **
 | `datos/padron/data/padron_senado.csv` _PADRON_SENADO_ | 72×12 | 13 KB | si | `test_bloque_linaje_senado.py` | `to_canonical.py`, `test_padron_senado.py`, `resolver_firmantes.py` +2 |
 | `datos/padron/data/senado_linaje_manual.csv` _PADRON_SENADO_LINAJE_MANUAL_ | 25×7 | 2 KB | si | `test_bloque_linaje_senado.py` | `padron_senado_historico.py`, `bloque.py` |
 | `datos/padron/data/estado_vigilancia.json` | objeto: diputados, senado | 445 B | si | — | _(2 lo nombran)_ |
-| `datos/proyectos/data/proyectos.db` _PROYECTOS_DB_ | 607,077×6 | 86.8 MB | si | `schema.sql`, `store.py` | `verificar.py`, `test_store.py`, `tema_por_proyecto.py` |
+| `datos/proyectos/data/proyectos.db` _PROYECTOS_DB_ | 607,362×6 | 86.8 MB | si | `schema.sql`, `store.py` | `verificar.py`, `test_store.py`, `tema_por_proyecto.py` |
 | `datos/proyectos/data/cuarentena.db` _PROYECTOS_CUARENTENA_DB_ | 0×1 | 20 KB | si | — | `cuarentena.py` |
 | `datos/proyectos/data/taxonomias.csv` | 0×6 | 65 B | si | `taxonomias_backup.py` | `test_store.py` |
 | `datos/senado/data/clean/senado_actas.parquet` | 749×14 | 70 KB | si | `scrape_votaciones.py` | `aplicar_bloques.py`, `padron_bloques.py` |

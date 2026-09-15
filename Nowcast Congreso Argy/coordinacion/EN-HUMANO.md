@@ -2,6 +2,30 @@
 
 > Documento vivo. Cada cambio importante en el proyecto se explica acá en lenguaje claro, además de registrarse en `ESTADO-DEL-PROYECTO.md`. Si algo del sistema no se entiende leyendo esto, está mal escrito y hay que arreglarlo.
 
+## Encontramos gratis lo que pensábamos que iba a costar caro: saber a qué capítulo pertenece cada artículo (16-09-2026)
+
+Franco dio luz verde para seguir viendo qué se cae de una ley cuando se vota artículo
+por artículo, esta vez agrupando por CAPÍTULO (no sólo por artículo suelto). La primera
+idea era bajar cientos de documentos oficiales para leer el texto completo de cada ley
+y ubicar los capítulos ahí. Antes de arrancar esa tarea grande, se miró si hacía falta
+de verdad — y no, al menos no del todo: el título con el que cada votación queda
+registrada YA dice a qué capítulo pertenece ("Título VIII, Capítulo VIII, Artículos 208
+al 214"), sin necesidad de abrir ningún documento. Se armó una regla simple que lee ese
+título y separa esa información sola.
+
+El resultado, con números: de todas las votaciones artículo por artículo que hay en la
+base, sólo el 10% menciona un capítulo. Eso no es un problema del método: es que la
+mayoría de las leyes son de un solo tema y no están organizadas en capítulos — sólo las
+leyes ómnibus grandes, como la Ley Bases, lo están. Ese 10% es justamente la lista de
+qué leyes vale la pena mirar capítulo por capítulo.
+
+Además, se probó (sin hacerlo a gran escala todavía) que SÍ se puede bajar el documento
+oficial completo de una ley y leer el texto entero de sus artículos, con sus títulos de
+capítulo con nombre y todo ("Capítulo II: Declaración de emergencia pública..."). Bajar
+esto para las más de dos mil leyes que hay sería una tarea grande, así que se dejó
+probado que funciona, pero sin lanzarla: eso queda para cuando Franco decida si vale la
+pena a esa escala.
+
 ## Le devolvimos al modelo la incertidumbre que le faltaba, y la probamos antes de prenderla (16-09-2026)
 
 Franco pidió que esto fuera lo primero: resolver un pendiente que llevaba desde principios

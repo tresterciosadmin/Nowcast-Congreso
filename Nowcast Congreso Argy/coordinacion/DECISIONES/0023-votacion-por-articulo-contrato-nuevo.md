@@ -74,6 +74,48 @@ explícita del prompt que originó esta tarea.
    schema y pide su propio ADR (regla de `CLAUDE.md`); queda anotado, no
    implementado.
 
+## Addendum 2026-09-16 — B2 arranca: `titulo_num`/`capitulo_num`, sin bajar un PDF
+
+Franco: *"Sí, hay que hacerlo"* (arrancar B2). Antes de organizar una descarga
+masiva de PDFs de Órdenes del Día, se probó algo más barato: **el propio
+título del acta ya declara su posición en la ley.** Ley Bases lo confirma en
+sus dos rondas: `"TITULO VIII. CAPITULO VIII. ARTS. 208 AL 214."` (O.D. 7,
+segunda ronda) y `"TÍTULO II, CAP. I ART. 5 INCISO E."` (O.D. 1, primera
+ronda — nótese la coma y la abreviatura `CAP.`, los dos formatos aparecen en
+la práctica real, no son hipotéticos).
+
+`extraer_titulo_capitulo(titulo)` saca esos dos numerales romanos con dos
+regex (`TÍTULO\s+([IVXLCDM]+)`, `CAP(ITULO)?\.?\s+([IVXLCDM]+)`) y los agrega
+como columnas nuevas al MISMO contrato (`titulo_num`, `capitulo_num`) — no
+hace falta una tabla aparte ni bajar nada de red. Se guardan como TEXTO, no
+como entero: alcanza con agrupar por igualdad, no hace falta ordenar ni sumar
+romanos, y un numeral mal formado sigue sirviendo como clave de agrupamiento.
+
+**Medido sobre los 1.423 tramos particulares reales:** 12,7% trae `titulo_num`
+y 9,8% trae `capitulo_num`. **No es un techo del método: es que la mayoría de
+las leyes NO están organizadas en títulos/capítulos formales** — sólo los
+ómnibus complejos (como Ley Bases) lo hacen. La cobertura baja es, en sí
+misma, una señal útil: qué proyectos son candidatos reales a agrupamiento por
+capítulo y cuáles no lo necesitan porque ya son de un tema solo.
+
+**Y se confirmó que la vía más profunda (el PDF) es viable, sin usarla
+todavía.** Se bajó el PDF real de Ley Bases (`141-1.pdf`, la Orden del Día
+0001) y se extrajeron 106.008 caracteres de texto con `parser_od.texto_de_pdf`
+—ya existente, usado hoy sólo para extraer firmantes—, incluyendo el
+articulado completo con sus encabezados: *"Capítulo II — Declaración de
+emergencia pública y bases de delegaciones legislativas"*, seguido de
+*"Art. 3° — Declaración. Plazo. [...]"*. Es la vía para conseguir el NOMBRE de
+cada capítulo (útil para presentar el número, no para calcularlo) y para
+cubrir los tramos que el título del acta no alcanza a describir. **No se hizo
+el batch de 2.500+ descargas**: es una adquisición de datos grande y queda
+para cuando Franco decida escalar esta parte, con su propio alcance acotado
+(el candidato natural es la misma lista de 179 proyectos con votación en
+particular que ya identificó B0, no el universo entero).
+
+**Tests:** 8 checks nuevos en `test_votacion_por_articulo.py` (37 en total)
+— los dos formatos reales de Ley Bases, la ausencia de capítulo en la
+votación EN GENERAL, y que `construir()` propaga las columnas sin romper.
+
 ## Verificación
 
 `datos/expedientes/tests/test_votacion_por_articulo.py` (29 checks, sin red):

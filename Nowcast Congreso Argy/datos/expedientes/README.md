@@ -38,6 +38,7 @@ red de autorías (Módulos B/C del plan).
 - que significa `dictamen_clase = "desconocido"` (no se encontro el rotulo; NO es "despacho unico")
 - comparar comisiones: SIEMPRE matchear contra el catalogo (los nombres tienen comas; partir por separadores rompe)
 - que se cae de una ley entre la votacion en general y la votacion en particular, articulo por articulo (`votacion_por_articulo.py`, B0/B1 del prompt multietiqueta): NO reemplaza `elegir_votacion`, agrega el resto de las actas que esa funcion descarta
+- a que TITULO/CAPITULO pertenece un tramo votado (B2, 16-09): `titulo_num`/`capitulo_num` salen del propio titulo del acta, sin bajar PDF -- cobertura 9,8% (solo los omnibus complejos declaran capitulo)
 - `expedientes_giros` mezcla las DOS camaras: filtrar por camara antes de contar cobertura
 - cuantas ODs faltan bajar (2.523 de ley identificadas, 1.722 parseadas) y como reanudar `ingesta_od.py`
 

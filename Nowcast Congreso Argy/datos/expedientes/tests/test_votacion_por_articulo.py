@@ -17,7 +17,7 @@ import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from votacion_por_articulo import construir, _resultado_clase  # noqa: E402
+from votacion_por_articulo import construir, _resultado_clase, extraer_titulo_capitulo  # noqa: E402
 
 fallos: list[str] = []
 corridos = 0
@@ -118,6 +118,38 @@ check(len(res2) == 3, "3 actas -> 3 filas, ninguna cámara pisa a la otra")
 dec2 = res2[res2["es_decisiva"]]
 check(len(dec2) == 2, "una decisiva POR CADA (proyecto, camara): dos grupos, dos decisivas")
 check(set(dec2["acta_id"]) == {"c1", "c3"}, "la decisiva de cada cámara es su propia general")
+
+
+# ───────────────────────── extraer_titulo_capitulo (B2) ──────────────────────
+print("\nextraer_titulo_capitulo — títulos reales de Ley Bases (los dos formatos)")
+check(extraer_titulo_capitulo(
+    "O.D. 7 - LEY DE BASES... TITULO VIII. CAPITULO VIII. ARTS. 208 AL 214.")
+    == ("VIII", "VIII"), "formato con puntos y CAPITULO completo")
+check(extraer_titulo_capitulo(
+    "O.D. 1 - BASES... TÍTULO II, CAP. I ART. 5 INCISO E.")
+    == ("II", "I"), "formato con coma y abreviatura CAP.")
+check(extraer_titulo_capitulo("O.D. 7 - LEY DE BASES... TITULO IV. ARTS. 75 AL 80.")
+      == ("IV", None), "sólo título, sin capítulo")
+check(extraer_titulo_capitulo("O.D. 7 - LEY DE BASES... VOT. EN GRAL.") == (None, None),
+      "la votación EN GENERAL no declara título ni capítulo — es la ley entera")
+check(extraer_titulo_capitulo("") == (None, None), "vacío no rompe")
+check(extraer_titulo_capitulo(None) == (None, None), "None no rompe")
+
+print("\nconstruir() — propaga titulo_num/capitulo_num sin bajar ningún PDF")
+res3 = construir(pd.DataFrame([
+    {"proyecto_id": "HCDN_TEST2", "camara": "diputados", "acta_id": "d1",
+     "fecha": "2024-01-01", "resultado": "afirmativo",
+     "titulo": "LEY X. TITULO II. CAPITULO I. ARTS. 1 AL 5."},
+    {"proyecto_id": "HCDN_TEST2", "camara": "diputados", "acta_id": "d2",
+     "fecha": "2024-01-02", "resultado": "afirmativo",
+     "titulo": "LEY X. VOT. EN GRAL."},
+]))
+fila_cap = res3[res3["acta_id"] == "d1"].iloc[0]
+check(fila_cap["titulo_num"] == "II" and fila_cap["capitulo_num"] == "I",
+      f"el tramo con capítulo lo trae: {fila_cap[['titulo_num','capitulo_num']].to_dict()}")
+fila_gral = res3[res3["acta_id"] == "d2"].iloc[0]
+check(pd.isna(fila_gral["titulo_num"]) and pd.isna(fila_gral["capitulo_num"]),
+      "la general no pertenece a ningún capítulo (None se guarda como NaN en la columna mixta)")
 
 
 print(f"\n{corridos - len(fallos)}/{corridos} OK")

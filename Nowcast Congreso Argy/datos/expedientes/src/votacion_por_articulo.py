@@ -26,7 +26,8 @@ CONSUME (contrato de este mismo módulo, sin tocar su código):
 PRODUCE (contrato nuevo, estable):
   datos/expedientes/data/clean/votacion_por_articulo.parquet
     proyecto_id, camara, acta_id, fecha, titulo, resultado, resultado_clase,
-    es_decisiva, tipo_votacion, es_particular, n_actas_grupo
+    es_decisiva, tipo_votacion, es_particular, titulo_num, capitulo_num,
+    n_actas_grupo
 
   resultado_clase in {AFIRMATIVO, NEGATIVO, EMPATE, OTRO} — normaliza los
     9 valores crudos de `resultado` (mayúsculas/minúsculas/variantes con
@@ -38,6 +39,14 @@ PRODUCE (contrato nuevo, estable):
     None en las demás.
   es_particular: matchea `_RE_PARTICULAR` (mismo regex que `elegir_votacion`) —
     "en particular", artículos, incisos, capítulos, títulos.
+  titulo_num, capitulo_num (B2, 2026-09-16): el numeral romano que el propio
+    título del acta declara ("TITULO VIII. CAPITULO VIII. ARTS. 208 AL 214."),
+    como TEXTO (no se convierten a entero: alcanza con agrupar por igualdad).
+    None cuando el título no lo declara (la votación EN GENERAL no pertenece a
+    ningún capítulo: es la ley entera). No hace falta bajar el PDF de la Orden
+    del Día para esto — se probó que el PDF SÍ trae el articulado completo con
+    sus encabezados de capítulo (útil para el NOMBRE del capítulo, no para
+    agruparlo), pero la numeración ya está en el título de cada acta.
   n_actas_grupo: cuántas actas tiene el (proyecto_id, camara) en total —
     permite filtrar sin recomputar el groupby.
 
@@ -60,6 +69,7 @@ from __future__ import annotations
 
 import argparse
 import logging
+import re
 import sys
 from pathlib import Path
 from typing import Optional
@@ -74,6 +84,33 @@ OUT_DEFAULT = _RAIZ / "datos" / "expedientes" / "data" / "clean" / "votacion_por
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from enlace_senado import elegir_votacion, _RE_PARTICULAR  # noqa: E402
+
+# B2 (2026-09-16): a qué TÍTULO/CAPÍTULO pertenece un tramo, SIN parsear un solo
+# PDF. Descubrimiento: el título del acta YA declara la posición del tramo en
+# la ley — "TITULO VIII. CAPITULO VIII. ARTS. 208 AL 214." (Ley Bases, O.D. 7),
+# "TÍTULO II, CAP. I ART. 5 INCISO E." (Ley Bases, O.D. 1: nota la coma y la
+# abreviatura "CAP.", los dos formatos aparecen en la práctica). Verificado
+# además que el PDF de la Orden del Día SÍ trae el articulado completo con sus
+# encabezados de capítulo ("Capítulo II — Declaración de emergencia pública…",
+# 141-1.pdf, 106.008 caracteres extraídos) — es la vía para el NOMBRE del
+# capítulo si algún día hace falta; para la NUMERACIÓN, que es lo que agrupa,
+# el título del acta alcanza y no hace falta bajar nada.
+_RE_TITULO_NUM = re.compile(r"T[IÍ]TULO\s+([IVXLCDM]+)\b", re.I)
+_RE_CAPITULO_NUM = re.compile(r"CAP(?:[IÍ]TULO)?\.?\s+([IVXLCDM]+)\b", re.I)
+
+
+def extraer_titulo_capitulo(titulo: str) -> tuple[Optional[str], Optional[str]]:
+    """(título_num, capítulo_num) como numerales romanos EN TEXTO (no se
+    convierten a entero: sólo hace falta agrupar por igualdad, no ordenar ni
+    sumar, y un romano mal formado sigue sirviendo como clave de agrupamiento
+    aunque no se pueda convertir). `None` en lo que el título no declara —
+    "VOT. EN GRAL." no declara ninguno de los dos, y es lo esperable: la
+    votación en general no pertenece a un capítulo, es la ley entera."""
+    t = str(titulo or "")
+    m_tit = _RE_TITULO_NUM.search(t)
+    m_cap = _RE_CAPITULO_NUM.search(t)
+    return (m_tit.group(1).upper() if m_tit else None,
+            m_cap.group(1).upper() if m_cap else None)
 
 
 def _resultado_clase(valor: object) -> str:
@@ -132,6 +169,7 @@ def construir(actas: pd.DataFrame) -> pd.DataFrame:
             aid = str(r["acta_id"])
             titulo = str(r.get("titulo") or "")
             es_dec = aid == decisiva_acta
+            titulo_num, capitulo_num = extraer_titulo_capitulo(titulo)
             filas.append({
                 "proyecto_id": pid,
                 "camara": cam,
@@ -143,6 +181,8 @@ def construir(actas: pd.DataFrame) -> pd.DataFrame:
                 "es_decisiva": bool(es_dec),
                 "tipo_votacion": tipo_decisiva if es_dec else None,
                 "es_particular": bool(_RE_PARTICULAR.search(titulo)) if titulo else False,
+                "titulo_num": titulo_num,
+                "capitulo_num": capitulo_num,
                 "n_actas_grupo": int(n_grupo),
             })
     out = pd.DataFrame(filas)

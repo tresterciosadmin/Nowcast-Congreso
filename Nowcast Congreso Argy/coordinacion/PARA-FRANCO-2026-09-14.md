@@ -109,6 +109,16 @@ acta candidata con el mismo recuento en la ventana de fechas plausible.
   más que los 60-90 min que tardaría con el caché puesto), decímelo. Si preferís
   correrla vos con el caché que ya tenés, también sirve.
 
+  **ACTUALIZACIÓN 2026-09-14 (más tarde, autorizaste la descarga): RESUELTO
+  del todo.** Se descargaron 1.902 OD del Senado (1.778 nuevas), se
+  reconstruyeron las firmas con la regla nueva (`dictamen_clase` minoría pasa
+  de 1 a 205 actas en el Senado) y se re-estimó `estimar_beta_dictamen.py`
+  agrupando las dos cámaras: `mayoria` (157) y `solo_minoria` (30) cruzan por
+  primera vez `MIN_CLUSTERS_CONFIABLE=20`. δ sigue **apagado** en el camino
+  que corre — esto es una estimación con varianza real, no un prendido de
+  motor. Detalle en `coordinacion/DECISIONES/0022-*.md` y la entrada de
+  ESTADO "ADR-0022 cerrado del todo". P sin cambios (0,9801).
+
 - **F (Daer → massismo): aplicado y medido.** `entity_resolution.py` (mapa
   `LINAJE`), más un parche quirúrgico a mano en las 4 filas que ya existían
   (`padron_diputados.csv`, `padron_diputados_historico.csv` ×2,
@@ -116,11 +126,15 @@ acta candidata con el mismo recuento en la ventana de fechas plausible.
   padrón dio un resultado raro que no tiene que ver con este cambio** — ver el
   punto siguiente. P recalculado: 0,9801, sin cambios.
 
-- **5 (roster de jefes): RESUELTO por completo.** Naidenoff (hasta 2021→2023),
-  Di Tullio reemplaza a Fernández Sagasti (Senado), "medimos bloque, no
-  interbloque" confirmado, y Ciciliani/Binner con el corte 2015-12-09/10 que
-  confirmaste. Único punto vivo del roster: DEL CAÑO (Frente de Izquierda),
-  sin fuente que dé sus tramos — queda en `URGENTE.md` 5, no es urgente.
+- **5 (roster de jefes): RESUELTO por completo, incluido Del Caño.**
+  Naidenoff (hasta 2021→2023), Di Tullio reemplaza a Fernández Sagasti
+  (Senado), "medimos bloque, no interbloque" confirmado, y Ciciliani/Binner
+  con el corte 2015-12-09/10 que confirmaste. DEL CAÑO investigado más tarde
+  (autorizaste la búsqueda): el FIT en Diputados es un interbloque de dos
+  bancadas con presidencias rotativas — acotado su `hasta` a 2025-12-09 con
+  dos fuentes independientes (prensa + `jefes_bloque_oficial.csv`, que ya
+  marca a Del Plá/Bregman como presidentas). El tramo 2014-2025 queda sin
+  fuente de fechas finas, pero no bloquea nada — `URGENTE.md` ya está vacío.
 
 - **E (créditos de API): la dejé frenada, como pediste.** Medido offline (sin
   tocar la API), en `URGENTE.md` E: **faltan 1.960 actas** por la ruta

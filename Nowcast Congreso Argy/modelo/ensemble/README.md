@@ -1,6 +1,6 @@
 # Módulo: modelo/ensemble
 
-<!-- huella: 0d934643a411 -->
+<!-- huella: c22d20097cc8 -->
 
 **Propósito.** La composición final del Nowcast — el nowcast **end-to-end de un proyecto**:
 
@@ -22,7 +22,7 @@ Une las dos piezas ya validadas del sistema en un solo número (con su descompos
 - REVISION 25-08: multiplicar P_B x P_D supone INDEPENDENCIA entre camaras y es falsa; y `P(B|A)` es notacion enganosa (A y C son un corrimiento en logit, no un condicional bayesiano)
 - el sobre tablas: 12,5% de las leyes se sancionan SIN dictamen y el modelo no lo contempla
 - diferencia entre la BANDA (p5-p95, agregada) y los PIVOTES (P individual en [0,35;0,65])
-- el dictamen POR LEGISLADOR (quién firmó, si firmó su jefe): `beta_dictamen.py`, detrás de `BETA_DICTAMEN=1` (apagada por defecto; validado walk-forward el 14-09, recomendado prender, decisión pendiente de Franco)
+- el dictamen POR LEGISLADOR (quién firmó, si firmó su jefe): `beta_dictamen.py`, PRENDIDA por defecto desde el 14-09 (`BETA_DICTAMEN=0` apaga; validada walk-forward)
 
 <!-- Las dos cosas de arriba las levanta `.mapa/indexar.py` al MAPA.md de la
      raiz: el `Resumen:` va a la columna "Que es" y las pistas al router
@@ -193,11 +193,12 @@ término que sólo empuja hacia arriba); lo que cambia es el desagregado —en
 `HCDN291414`, "acompaña" pasa de 78 a 97 y "incógnita" de 163 a 144, nadie se
 mueve hacia "no acompaña".
 
-**BANDERA APAGADA POR DEFECTO** (`BETA_DICTAMEN=1` para prender). Apagada,
-`armar_roster` ni siquiera importa el módulo. Con la evidencia de arriba
-(walk-forward + los tres casos), la recomendación es prenderla — la decisión es
-de Franco (regla del motor, ADR-0015). Detalle completo en
-`coordinacion/FORMULA-COMPLETA.md` §III.A.2.
+**✅ PRENDIDA POR DEFECTO desde el 14-09-2026** (`BETA_DICTAMEN=0` para apagar;
+Franco: "dale, prendelo"). Corrido el panel publicado
+(`casos/nowcast_puertas_html.py diputados --fecha 2026-06-01 --origen EJECUTIVO`):
+salió byte a byte idéntico — es un proyecto hipotético, sin `proyecto_id` no hay
+dictamen que leer. P(aprobación) = 0,9801 sin moverse. Detalle completo en
+`coordinacion/FORMULA-COMPLETA.md` §III.A.2 y ADR-0016 (enmienda 14-09).
 
 ## Las guardas contra la sobreconfianza (2026-08-22)
 

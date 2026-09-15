@@ -56,6 +56,32 @@ Mantené esta tabla sincronizada con la bitácora.
 
 ## Bitácora (más reciente arriba)
 
+### [2026-09-14] modelo/ensemble — BETA_DICTAMEN prendido por defecto; panel completo regenerado
+- **Quién:** Claude, con Franco ("dale, prendelo y corré el panel completo").
+- **Qué:** `beta_dictamen.py` pasa de apagada por defecto a **prendida por
+  defecto** (`BETA_DICTAMEN=0` para apagarla). Es el cierre de la cadena de
+  esta sesión: A y B de la revisión metodológica del 25-08 (ítem 12 de
+  FORMULA-COMPLETA) pasan de "decidido" a "✅ PRENDIDO".
+- **Cómo:** corrido el panel publicado (`casos/nowcast_puertas_html.py
+  diputados --fecha 2026-06-01 --origen EJECUTIVO`, paso 8 de
+  `REGENERAR.ps1`), con backup del HTML previo. **Salió byte a byte
+  idéntico**: es un proyecto hipotético, sin `proyecto_id` no hay dictamen que
+  leer, así que `contexto_de` nunca se llama. Reindexado `.mapa/`. Suite
+  completa 41/41, `test_nowcast_puertas.py` 49/49, `test_beta_dictamen.py`
+  17/17 (ajustado a la bandera prendida), `verificar_regeneracion.py` 16/16,
+  **P(aprobación) = 0,9801 sin moverse**. Confirmado además sobre los tres
+  proyectos reales con dictamen (`HCDN291414`, `HCDN292180`, `HCDN289908`):
+  0,9801 en los tres, sin setear la variable de entorno (el default nuevo).
+- **Archivos:** `modelo/ensemble/src/beta_dictamen.py`,
+  `modelo/ensemble/tests/test_beta_dictamen.py`, `Nowcast-Puertas.html`
+  (regenerado, sin diff), `.mapa/mapa.json`, `MAPA.md`,
+  `coordinacion/{FORMULA-COMPLETA.md, DECISIONES/0016-*.md}`,
+  `modelo/ensemble/README.md`.
+- **Estado del módulo:** modelo/ensemble EN CURSO. Término 12 de la fórmula:
+  ✅ PRENDIDO.
+- **Próximo paso:** ninguno urgente. Si en algún nowcast real con dictamen
+  leído P se mueve de forma inesperada, es la primera sospechosa a revisar.
+
 ### [2026-09-14] modelo/ensemble — beta_dictamen: backtest walk-forward saca el carácter, deja F_i+lealtad (M6) — recomendado prender
 - **Quién:** Claude, con Franco ("miralo con más casos antes de decidir si lo prendemos").
 - **Qué:** la versión M5 (con `δ(carácter)`) que colapsaba P en proyectos reales

@@ -15,11 +15,14 @@ Cómo reclamar: editá este archivo en tu rama, agregá la fila, y mencioná en 
 | **datos/canonica** | Claude (con Franco) | 2026-09-14 | **HECHO, LIBRE.** El bloque personal de Daer (`BLOQUE DE LOS TRABAJADORES`) va a FRENTE RENOVADOR (massismo), ADR-0022. |
 | **datos/expedientes** | Claude (con Franco) | 2026-09-14 | **HECHO, LIBRE.** ADR-0022: en el Senado, disidencia = dictamen de MINORIA. Descargadas 1.902 OD del Senado y reconstruidas sus firmas. |
 | **datos/padron** | Claude (con Franco) | 2026-09-14 | **HECHO, LIBRE.** `padron_diputados_historico.csv` regenerado (estaba desactualizado desde antes del merge de 143 ids duplicados). |
-| **modelo/ensemble** | Claude (con Franco) | 2026-09-14 | **HECHO, LIBRE.** `estimar_beta_dictamen.py` re-corrido con el Senado al dia: δ pasa a tener varianza real agrupando las dos camaras. Sigue APAGADO en el camino que corre. |
+| **modelo/ensemble** | Claude (con Franco) | 2026-09-14 | **HECHO, LIBRE.** `estimar_beta_dictamen.py` re-corrido con el Senado al dia: δ pasa a tener varianza real agrupando las dos camaras. **Actualizacion tardia (mismo dia):** el dictamen POR LEGISLADOR (`beta_dictamen.py`, item B de la revision del 25-08) se implemento, se midio, se le saco el termino de caracter tras un backtest walk-forward (no generalizaba) y se **PRENDIO por defecto** — ver la entrada de ESTADO "BETA_DICTAMEN prendido por defecto". |
+| **coordinacion (CI)** | Claude (con Franco) | 2026-09-14 | **HECHO, LIBRE.** `.github/workflows/tests.yml` nuevo: corre la suite completa en cada push/PR (antes ningun workflow corria tests). |
+| **datos/canonica** (2do claim) | Claude (con Franco) | 2026-09-14 | **HECHO, LIBRE.** Actas gemelas "sin fecha" con mas de un candidato ya no se reportan (33 de 35 indicios previos eran falsos positivos). |
 
-**P(aprobacion) = 0,9801 en toda la sesion, nunca se movio.** Detalle completo
-de cada cambio en `ESTADO-DEL-PROYECTO.md` (entradas del 2026-09-14) y en
-ADR-0022.
+**P(aprobacion) = 0,9801 en toda la sesion, nunca se movio** — incluido el
+prendido de `BETA_DICTAMEN` (medido: el panel publicado es un proyecto
+hipotetico, sin dictamen que leer). Detalle completo de cada cambio en
+`ESTADO-DEL-PROYECTO.md` (entradas del 2026-09-14) y en ADR-0022/ADR-0016.
 
 ## Todos los modulos LIBRES (fase 6 de la limpieza cerrada el 2026-09-14)
 

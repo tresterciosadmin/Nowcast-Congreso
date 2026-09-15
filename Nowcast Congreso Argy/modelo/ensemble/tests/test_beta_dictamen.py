@@ -82,10 +82,12 @@ check(bd.ajuste(p0, "OTRO_LINAJE", "leg:firma", 0.2, None, activo=True) == p0,
       "con activo=True pero contexto=None (proyecto hipotético), no mueve nada")
 
 # ── el default del módulo respeta la variable de entorno ────────────────────
-print("\n5. BETA_DICTAMEN lee la variable de entorno, apagada por defecto")
+print("\n5. BETA_DICTAMEN está PRENDIDA por defecto desde el 14-09 (BETA_DICTAMEN=0 apaga)")
 import os  # noqa: E402
-check(os.environ.get("BETA_DICTAMEN") != "1" or bd.BETA_DICTAMEN,
-      "si no se seteó BETA_DICTAMEN=1 en este proceso, el módulo tiene que quedar apagado")
+check(os.environ.get("BETA_DICTAMEN", "1") != "0" or not bd.BETA_DICTAMEN,
+      "si el proceso tiene BETA_DICTAMEN=0, el módulo tiene que quedar apagado")
+check(os.environ.get("BETA_DICTAMEN", "1") == "0" or bd.BETA_DICTAMEN,
+      "sin BETA_DICTAMEN=0 explícito (incluida la variable ausente), el default es prendido")
 
 # ── armar_roster con contexto=None es un no-op (paridad con el default viejo) ─
 print("\n6. armar_roster sin contexto se comporta EXACTAMENTE como antes")

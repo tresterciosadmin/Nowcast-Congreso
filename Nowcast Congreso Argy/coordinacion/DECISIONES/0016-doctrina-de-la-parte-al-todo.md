@@ -111,3 +111,44 @@ quedan. $\beta_2$ es el término que Franco agregó el 26-08 y **estuvo a punto 
 un bug de matcheo de nombres**, no por el dato. Sigue atenuado por los 30 jefes sin
 resolver (URGENTE 10): su valor verdadero es mayor que +0,645.
 
+## Enmienda 2026-09-14 — el carácter también sale (esta vez del todo); PRENDIDO
+
+**Se implementó** en `modelo/ensemble/src/beta_dictamen.py`, detrás de bandera apagada,
+con el carácter todavía adentro (M5, la formulación de la enmienda de arriba). Medido
+sobre proyectos reales, colapsaba P: 0,9801 → 0,0099 en 2 de 3 casos de prueba, porque
+$\delta$(carácter) penalizaba por igual a cualquier legislador sin firma propia ni de su
+jefe (85-90% de cada cámara). Franco: *"miralo con más casos antes de decidir si lo
+prendemos"*.
+
+**Un backtest walk-forward** (`modelo/ensemble/src/validar_beta_dictamen_walkforward.py`:
+entrena con el 70% de actas más viejo, mide Brier sobre el 30% más nuevo, nunca visto al
+ajustar) mostró que **el carácter no generaliza**: empeora el Brier held-out (0,1725 →
+0,1793 total; mayoría 0,1934 → 0,2533). Es la misma familia de error que $W_{-\ell}$ en
+la enmienda de arriba, pero detectada de otra forma: ahí un coeficiente cambiaba de
+signo al agregar un control; acá un término significativo IN-SAMPLE empeora la
+predicción OUT-OF-SAMPLE. Las dos son la doctrina de este ADR funcionando: bajar el
+término al legislador y medirlo bien es lo que permite verlo.
+
+**$F_i$ y $\beta_2(1-d_i)J_{\ell(i)}$ solos, sin carácter, SÍ generalizan**
+(Brier 0,1725 → 0,1591; skill 0,1929 → 0,2672). La formulación queda:
+
+$$\text{logit}(P_i^{\text{dict}}) = \text{logit}(P_i) + \beta_1 F_i + \beta_2 (1-d_i) J_{\ell(i)}$$
+
+sin $\delta(\text{carácter})$ y sin `const` (ver el docstring de `beta_dictamen.py` para
+por qué). Reestimados sobre toda la muestra: $\beta_1=+2{,}088$, $\beta_2=+1{,}750$
+(ambos $p<0{,}0001$).
+
+**Remedido sobre los mismos tres proyectos: el colapso desapareció** (0,9801 en los
+tres — los dos coeficientes son positivos, nunca penalizan). El desagregado cambia
+sanamente (más gente pasa de "incógnita" a "acompaña" cuando firmó o su jefe firmó,
+nadie se mueve a "no acompaña").
+
+**PRENDIDO el 14-09-2026 (Franco: "dale, prendelo").** `BETA_DICTAMEN` pasa a estar
+prendida por defecto (`BETA_DICTAMEN=0` para apagarla). Medido antes de prender: el
+panel publicado (`casos/nowcast_puertas_html.py diputados --fecha 2026-06-01 --origen
+EJECUTIVO`, el de `REGENERAR.ps1` paso 8) es un proyecto **hipotético** — sin
+`proyecto_id` no hay dictamen que leer, así que el HTML regenerado salió **byte a byte
+idéntico** al de antes de prender. Suite completa 41/41, `test_nowcast_puertas.py`
+49/49, `test_beta_dictamen.py` 17/17, `verificar_regeneracion.py` 16/16,
+P(aprobación) = 0,9801 sin moverse.
+

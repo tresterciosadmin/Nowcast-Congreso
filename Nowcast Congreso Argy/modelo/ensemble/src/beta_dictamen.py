@@ -40,8 +40,14 @@ leido. (Medido igual en el walk-forward: con const el held-out mejora un poco
 mas -- Brier 0,1566 -- pero se prefiere la version sin const por lo anterior;
 la diferencia entre las dos es chica y las dos generalizan.)
 
-BANDERA APAGADA POR DEFECTO: BETA_DICTAMEN=1 (o pasar `activo=True`) para prender.
-Con la bandera apagada, `ajuste(...)` siempre devuelve delta=0 y no toca nada.
+PRENDIDA POR DEFECTO desde el 14-09-2026 (decisión de Franco, tras el backtest
+walk-forward de arriba): `BETA_DICTAMEN=0` para apagarla (o pasar `activo=False`).
+Medido antes de prender: el panel publicado (`casos/nowcast_puertas_html.py
+diputados --fecha 2026-06-01 --origen EJECUTIVO`, el que corre
+`REGENERAR.ps1` paso 8) es un proyecto HIPOTÉTICO — sin `proyecto_id` no hay
+dictamen que leer, así que `contexto_de` nunca se llama y P **no se mueve** por
+este cambio. Donde sí pega es en proyectos reales con dictamen ya leído (ver
+FORMULA-COMPLETA.md §III.A.2): ahí corre F_i/lealtad_x_jefe.
 """
 from __future__ import annotations
 
@@ -59,10 +65,10 @@ sys.path.insert(0, str(next(d for d in Path(__file__).resolve().parents
                             if (d / "rutas.py").is_file())))
 from rutas import RAIZ  # noqa: E402
 
-# BANDERA APAGADA POR DEFECTO (revision metodologica 25-08, item B / ADR-0016).
-# Coeficientes estimados y validados walk-forward (ver M6_sin_caracter en
-# beta_dictamen.json); lo que falta es que Franco decida prenderla.
-BETA_DICTAMEN = os.environ.get("BETA_DICTAMEN") == "1"
+# PRENDIDA POR DEFECTO desde el 14-09-2026 (revision metodologica 25-08, item B /
+# ADR-0016; decision de Franco tras el backtest walk-forward -- ver el docstring).
+# BETA_DICTAMEN=0 para apagarla.
+BETA_DICTAMEN = os.environ.get("BETA_DICTAMEN", "1") != "0"
 
 SALIDA = RAIZ / "modelo" / "ensemble" / "outputs" / "beta_dictamen.json"
 

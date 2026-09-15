@@ -44,7 +44,7 @@ este archivo en el mismo commit.
 | 9 | $\delta$ — dictamen | condicionar por carácter del dictamen | 🔴 **implementado en 0** (§II.3) |
 | 10 | ICG — clima político | modula según el humor social | 🔴 **medido y desconectado** (§II.4) |
 | 11 | $\mathcal{C}_c$ — gate del dictamen | admisibilidad reglamentaria | 🔲 **decidido** (§III.A.1) |
-| 12 | $\beta$ — dictamen por legislador | reemplaza a $\delta$ | 🔲 **implementado detrás de bandera, validado walk-forward y en 3 casos reales — recomendado prender, decisión pendiente de Franco** (§III.A.2) |
+| 12 | $\beta$ — dictamen por legislador | reemplaza a $\delta$ | ✅ **PRENDIDO 14-09-2026** (§III.A.2) |
 | 13 | $\varepsilon_0 + \eta_j$ — incertidumbre | reemplaza al clip | 🔲 **decidido y ESTIMADO 03-09** (§III.A.3) |
 | 14 | $\psi$ — arrastre entre cámaras | la revisora lee a la de origen | 🔲 **ESTIMADO y controlado 03-09** (§III.A.4) |
 | 15 | sobre tablas | el 24,4% que hoy es invisible | 🔲 **decidido y $\theta$ ESTIMADO 03-09** (§III.A.5) |
@@ -52,7 +52,7 @@ este archivo en el mismo commit.
 | 17 | asimetría del ICG | las caídas pesan más que las subas | 🔲 **propuesto** (§III.B.2) |
 | 18 | $\rho$ — récord por tema | falta la tabla | 🔲 **bloqueado** (§III.B.3) |
 
-**Resumen honesto: 6 términos corren, 4 están rotos o apagados, 5 están decididos sin
+**Resumen honesto: 7 términos corren, 4 están rotos o apagados, 4 están decididos sin
 implementar y 3 son propuestas.** El motor que corre hoy es más chico que esta fórmula.
 
 ---
@@ -873,10 +873,14 @@ otros dos (`HCDN292180`: 78→115 acompaña; `HCDN289908`: 78→121 acompaña). 
 comportamiento esperable de un término que sólo aporta información a favor de
 quien mostró señal (firma propia o de su jefe), no un empeoramiento.
 
-**Con la evidencia completa (walk-forward + estos tres casos), mi recomendación
-es prender `BETA_DICTAMEN=1`** — el término generaliza, mejora el Brier held-out,
-y no reproduce el colapso de M5. La decisión de prenderlo es de Franco (regla del
-motor, ADR-0015): falta el visto bueno.
+**✅ PRENDIDO el 14-09-2026 (Franco: "dale, prendelo y corré el panel completo").**
+`BETA_DICTAMEN` pasa a estar prendida por defecto (`BETA_DICTAMEN=0` apaga).
+Corrido el panel publicado (`casos/nowcast_puertas_html.py diputados --fecha
+2026-06-01 --origen EJECUTIVO`, paso 8 de `REGENERAR.ps1`): salió **byte a byte
+idéntico** al de antes de prender — es un proyecto hipotético, sin `proyecto_id`
+no hay dictamen que leer. Suite completa 41/41, `test_nowcast_puertas.py` 49/49,
+`test_beta_dictamen.py` 17/17, `verificar_regeneracion.py` 16/16,
+P(aprobación) = 0,9801 sin moverse. Detalle en ADR-0016 (enmienda 14-09).
 
 **`puerta_a.delta_caracter`** (el condicionante AGREGADO del carácter, término 9)
 **sigue sin tocar**: este hallazgo es sobre el mecanismo POR LEGISLADOR, no dice

@@ -1,6 +1,6 @@
 # Nowcast Legislativo Argentino
 
-<!-- huella: d6f0af4988ed -->
+<!-- huella: db4689d3aa3a -->
 
 Sistema que estima la probabilidad de sanción de proyectos de ley en el Congreso argentino.
 

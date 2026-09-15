@@ -1,0 +1,87 @@
+# =============================================================================
+# TESTS — corre la suite del repo en cada push/PR (idea de Franco, 2026-09-14)
+#
+# Hasta ahora ningun workflow corria los ~56 archivos test_*.py del repo: los
+# tres que existian (bot-diario, icg-mensual, padron-vivo) son bots de
+# recoleccion de datos, no tests. Los ~56 archivos solo corrian cuando alguien
+# se acordaba de correrlos a mano.
+#
+# CASI NINGUNO ES UN MODULO DE PYTEST (ver "Nowcast Congreso Argy/tests/README.md").
+# Los chequeos corren AL IMPORTAR el archivo, con un `check()` propio, y salen
+# con `raise SystemExit(1)` si algo fallo. Correr `pytest` sobre el repo entero
+# ABORTA: un SystemExit a nivel de modulo mata la recoleccion completa con
+# INTERNALERROR antes de ejecutar un solo test (le pasa hoy a
+# datos/bot_recoleccion/tests/test_votaciones.py y a
+# variables/proyecto/tests/test_modulador_shrink.py). Por eso este workflow usa
+# DOS estrategias, como documenta el propio repo:
+#   1. `tests/` y `datos/proyectos/tests` SI son modulos de pytest de verdad
+#      (definen funciones test_*) -- corren con pytest.
+#   2. Todos los demas test_*.py son scripts -- se invocan uno por uno con
+#      `python archivo.py`, y se junta el resultado de TODOS antes de fallar el
+#      job (un solo `python archivo.py && python otro.py` cortaria en el primer
+#      rojo y escondería el resto).
+#
+# Las bases y los insumos que el motor necesita viajan por git (test propio:
+# test_bases_viajan.py), asi que un checkout limpio alcanza para la mayoria.
+# La excepcion conocida es proyectos.db (no viaja, se rehace en ~1 min); los
+# tests que lo necesitan estan escritos para SALTEARSE si falta, no para fallar.
+# =============================================================================
+name: tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: tests-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  suite:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: "Nowcast Congreso Argy"
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Dependencias
+        run: python -m pip install -r requirements.txt
+
+      - name: pytest -- tests/ y datos/proyectos/tests (las dos carpetas pytest-compatibles)
+        run: python -m pytest tests/ datos/proyectos/tests -q
+
+      - name: El resto de los test_*.py -- son scripts, uno por uno (ver tests/README.md)
+        run: |
+          set +e
+          fallaron=""
+          total=0
+          while IFS= read -r f; do
+            total=$((total + 1))
+            echo "::group::$f"
+            python "$f"
+            codigo=$?
+            echo "::endgroup::"
+            if [ "$codigo" -ne 0 ]; then
+              echo "FALLO ($codigo): $f"
+              fallaron="$fallaron$f"$'\n'
+            fi
+          done < <(find . -name "test_*.py" \
+                    -not -path "./tests/*" \
+                    -not -path "./datos/proyectos/tests/*" \
+                    -not -path "./Archivos_Borrar/*" \
+                    | sort)
+          echo "corridos: $total"
+          if [ -n "$fallaron" ]; then
+            echo "FALLARON:"
+            echo "$fallaron"
+            exit 1
+          fi

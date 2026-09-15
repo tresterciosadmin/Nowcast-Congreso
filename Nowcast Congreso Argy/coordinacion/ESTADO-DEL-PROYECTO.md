@@ -56,6 +56,28 @@ Mantené esta tabla sincronizada con la bitácora.
 
 ## Bitácora (más reciente arriba)
 
+### [2026-09-14] coordinacion + variables/proyecto — CI: workflow que corre la suite, y un test que dependía de una versión de pandas
+- **Quién:** Claude, con Franco (housekeeping aprobado en la misma tanda que A/B).
+- **Qué:** (1) Nuevo `.github/workflows/tests.yml` (en la raíz git, junto a
+  `bot-diario`/`icg-mensual`/`padron-vivo`): corre `pytest tests/
+  datos/proyectos/tests` (las dos carpetas pytest-compatibles) + cada uno de los
+  otros ~47 `test_*.py` como script individual, sumando TODOS los fallos antes de
+  cortar el job (no corta en el primero). Hasta hoy ningún workflow corría los
+  tests: los tres existentes son bots de recolección de datos. (2) Al correr el
+  loop completo local antes de subir el workflow, salió UN rojo:
+  `variables/proyecto/tests/test_origen_por_acta.py` comparaba `origen_lado is
+  None`, y pandas lo devuelve como `NaN` — el mismo problema de dtype/backend
+  que ya documenta CLAUDE.md ("el sandbox tiene otra versión de pandas").
+  Corregido a `pd.isna(...)`. No es un bug de `origen_por_acta.py`: el dato
+  siempre fue correcto, era la aserción del test la que asumía un solo backend.
+- **Cómo:** corrida local de los 47+41 archivos, 100% verde después del fix.
+  No se tocó ningún módulo del motor.
+- **Archivos:** `.github/workflows/tests.yml` (nuevo, raíz git),
+  `variables/proyecto/tests/test_origen_por_acta.py`.
+- **Estado del módulo:** coordinacion/CI HECHO (primera versión). variables/proyecto
+  sin cambio de contrato.
+- **Próximo paso:** ninguno. Cuando alguien pushee o abra un PR, el workflow corre solo.
+
 ### [2026-09-14] modelo/ensemble — el dictamen por legislador (item B de la revisión metodológica): implementado detrás de bandera, MEDIDO, y el hallazgo pide revisión antes de prender
 - **Quién:** Claude, con Franco ("arrancá por A y B, medí antes de prender cualquier cosa").
 - **Qué:** A (quórum con abstenciones) ya estaba hecho de una sesión anterior —

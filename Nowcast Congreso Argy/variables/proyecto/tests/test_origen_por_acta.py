@@ -118,8 +118,12 @@ def main():
         and res.loc["a5", "origen"] == "ALIADOS",
         "vía titulo: match exacto normalizado -> autor PRO en era Milei = ALIADOS "
         "(núcleo LLA, aliado PRO), no OPOSICION")
-    chk(res.loc["a6", "origen"] == "DESCONOCIDO" and res.loc["a6", "origen_lado"] is None,
-        "sin vía -> DESCONOCIDO con lado None (no inventa)")
+    # pd.isna(), no `is None`: un faltante en una columna de DataFrame puede llegar
+    # como None, float('nan') o pd.NA segun el backend de dtype (ver CLAUDE.md,
+    # "el sandbox tiene otra version de pandas") -- `is None` es la unica de las
+    # tres que NO cubre los otros dos casos.
+    chk(res.loc["a6", "origen"] == "DESCONOCIDO" and pd.isna(res.loc["a6", "origen_lado"]),
+        "sin vía -> DESCONOCIDO con lado vacío (no inventa)")
 
     # el gobierno queda SIEMPRE, aun sin origen (sirve para el guard del proyector)
     chk(res.loc["a6", "gobierno"] == "MILEI", "gobierno etiquetado aun con origen DESCONOCIDO")

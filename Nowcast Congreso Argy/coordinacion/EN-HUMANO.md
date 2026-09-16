@@ -2,6 +2,31 @@
 
 > Documento vivo. Cada cambio importante en el proyecto se explica acá en lenguaje claro, además de registrarse en `ESTADO-DEL-PROYECTO.md`. Si algo del sistema no se entiende leyendo esto, está mal escrito y hay que arreglarlo.
 
+## Le enseñamos al modelo que un legislador no vota igual en todos los temas (16-09-2026)
+
+Esto era un pendiente viejo (desde principios de septiembre) que Franco había dejado
+anotado: "cuando modelemos la probabilidad de apoyar un proyecto con determinado tema,
+deberíamos revisar esta formulación, ya que el tema impactaría en el legislador". El
+intento anterior de meter el tema en el modelo (contado en la entrada de más arriba,
+"probamos las dos formas de combinar temas... y las dos salieron peor") fallaba porque
+se estaba metiendo el tema en el lugar equivocado: en el promedio del BLOQUE, que es
+justamente el recurso que se usa cuando de una persona no se sabe nada todavía. Es como
+preguntarle a un desconocido su opinión sobre un tema fino.
+
+La solución correcta era mover la pregunta a donde SÍ hay información: el historial de
+cada legislador. Antes de construir nada se midió: ¿un mismo diputado vota realmente
+distinto según el tema? Sí, y mucho — casi la mitad de los legisladores con historial
+suficiente muestran una diferencia entre temas mucho mayor de lo que el azar explicaría.
+Con esa confirmación, se construyó el término: el historial de cada persona EN CADA TEMA,
+mezclado con cuidado con su historial general para no confiar de más en pocos votos.
+
+Se probó sobre TODA la historia disponible, no una muestra: 11% menos de error en los
+votos donde había información de tema, y la mejora aparece en las dos cámaras y en las
+cinco épocas medidas, sin ninguna excepción negativa — muy distinto del resultado de la
+prueba anterior, que fallaba en todos lados. Con esa evidencia limpia, y con el permiso
+que Franco había dejado por escrito para prender banderas cuando el censo completo lo
+respalde, se activó directamente en el modelo.
+
 ## Bajamos 163 documentos oficiales y sacamos el nombre de cada capítulo de una ley, en 4 minutos (16-09-2026)
 
 Franco pidió seguir con la descarga a mayor escala. Se bajaron los documentos oficiales

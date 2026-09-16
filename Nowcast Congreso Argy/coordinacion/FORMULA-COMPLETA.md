@@ -36,7 +36,7 @@ este archivo en el mismo commit.
 | 1 | $s_\ell$ — share del bloque | de qué lado va el bloque | ✅ **corre** |
 | 2 | $d_i$ — desvío / lealtad | si la persona sigue a su bloque | ✅ **corre** |
 | 3 | $\pi_i$ — presencia | si aparece a votar | ✅ **corre** |
-| 4 | $\text{rec}_i$ — récord propio | historial individual ($n_i\ge1$), cortado por era y encogido hacia el bloque | ✅ **corre** — guard, encogimiento y umbral en 1, prendidos el 06-09 y confirmados con el censo: skill 0,1304 → **0,1611** (§II.5, ADR-0018) |
+| 4 | $\text{rec}_i$ — récord propio | historial individual ($n_i\ge1$), cortado por era y encogido hacia el bloque | ✅ **corre** — guard, encogimiento y umbral en 1, prendidos el 06-09 y confirmados con el censo: skill 0,1304 → **0,1611** (§II.5, ADR-0018). Desde el 16-09, condicionado por TEMA cuando hay dato — ver fila 18 |
 | 5 | umbrales y quórum | reglas del cuerpo | ✅ **corre** |
 | 6 | Monte Carlo (2.000 sims) | agrega votos a probabilidad | ✅ **corre** |
 | 7 | $\varepsilon$ — clip de confianza | recorta $P_c$ a $[0{,}01;0{,}99]$ | 🔴 **corre pero está mal** (§II.1) |
@@ -50,7 +50,7 @@ este archivo en el mismo commit.
 | 15 | sobre tablas | el 24,4% que hoy es invisible | 🔴 **PROBADO y DESCARTADO POR AHORA, 15-09** (§III.A.5) — implementado, backtest walk-forward mecanístico: el mecanismo no discrimina, con o sin θ. No es un "no" definitivo — "no todavía"; decisión de Franco |
 | 16 | proximidad electoral | el calendario cambia incentivos | 🔲 **propuesto** (§III.B.1) |
 | 17 | asimetría del ICG | las caídas pesan más que las subas | 🔲 **propuesto** (§III.B.2) |
-| 18 | $\rho$ — récord por tema | falta la tabla | 🔲 **bloqueado** (§III.B.3) |
+| 18 | $\text{rec}_i^{\text{tema}}$ — récord por tema | condiciona el récord del LEGISLADOR (no el bloque) por el tema del proyecto | ✅ **PRENDIDO 16-09-2026** (`RECORD_POR_TEMA`) — 11,1% menos Brier en el censo completo, sin cortes negativos (§III.B.3, ADR-0026). El $\rho$ del sobre-tablas (§III.A.5) sigue aparte y apagado |
 | 19 | multietiqueta en $s_\ell$ (`combinar_temas`) + `TEMA_AUTO` | un proyecto real casi siempre tiene VARIOS temas (61,2% medido) | 🔴 **PROBADO y DESCARTADO POR AHORA, 15/16-09** (§I.4a, ADR-0024) — implementado, backtest real (2.984 actas), CUATRO reglas: `primaria` (skill −0,056) le gana a `ponderada` (−0,066), `union` (−0,076) y `peor_tema` (−0,080, la peor de las tres — agregada el 16-09 a pedido de Franco, "probemos algo nuevo", y salió peor que las otras dos). No es un "no" definitivo — "no todavía"; decisión de Franco |
 
 **Resumen honesto: 7 términos corren, 5 están rotos, apagados o reprobaron su backtest
@@ -1424,22 +1424,25 @@ $\alpha$ = aceleración, $\kappa$ = cuánto más pesa la caída, $\lambda$ = amp
 niveles bajos. **Estos parámetros se acuerdan, no se estiman** — igual que el break-even
 del ADR-0008. Recupera la asimetría de teoría prospectiva perdida el 11-08.
 
-### III.B.3 — Récord por tema $\rho$ — BLOQUEADO por falta de insumo
+### III.B.3 — Récord por tema — ✅ PRENDIDO 16-09-2026 (ADR-0026, `RECORD_POR_TEMA`)
 
-Necesita `rec_i^tema`: afirmativos/emitidos de cada legislador **condicionado a la
-taxonomía**, con corte walk-forward. Hoy sólo existe el récord general.
-
-**Compromiso registrado (URGENTE 8).** Franco: *"cuando modelemos la probabilidad de apoyar
+**Compromiso de URGENTE 8, cumplido.** Franco: *"cuando modelemos la probabilidad de apoyar
 un proyecto con determinado tema, deberíamos revisar esta formulación, ya que el tema
-impactaría en el legislador"*. **Es revisión comprometida, no opcional.**
+impactaría en el legislador"*. `rec_i^tema` ya EXISTE: `nowcast_puertas.
+alineacion_individual_por_area`, prendida por defecto.
 
-Hay que medir **antes** cuántos legisladores llegan a $n_i^{\text{tema}}\ge8$. Si son
-pocos, el término entra como ruido y hay que encogerlo contra el récord general (mismo
-Empirical-Bayes que el share, $k=5$).
+$$\hat{r}_i^{k} = \frac{n_i^k\, r_i^k + k_{\text{shrink}}\, r_i}{n_i^k + k_{\text{shrink}}}, \qquad k_{\text{shrink}}=5$$
 
-**Lo que acota el margen:** con el bloque en 95,4% de acierto, un término temático disputa
-como mucho el 4,6% restante en dirección — aunque puede aportar más en **calibración**, que
-es lo que consume la simulación.
+Con varios temas, se combina **en LOGIT** entre áreas (no en probabilidad — la
+misma regla IV.2 de más abajo, ahora aplicada acá). Medido sobre el CENSO
+completo (no la muestra que este párrafo pedía): **11,1% menos Brier** en el
+subconjunto que toca (votos de actas con tema), positivo en las DOS cámaras y
+en las 5 eras — sin ningún corte negativo, a diferencia del multitema a nivel
+bloque (ADR-0024). $n_i^{\text{área}}\geq 8$ cubre el 78,5% del subconjunto;
+el encogimiento hace innecesario fijar un umbral duro. Detalle completo,
+metodología de medición y el $\rho$ del §III.A.5 (sobre tablas, todavía
+apagado — el insumo que le faltaba ya existe, pero esa vía sigue descartada
+por su propio resultado, ADR-0025 §"sobre tablas") en ADR-0026.
 
 ## III.C — Orden de implementación propuesto
 

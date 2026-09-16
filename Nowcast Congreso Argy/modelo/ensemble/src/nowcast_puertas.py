@@ -41,6 +41,7 @@ import os
 import sys
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 
 logger = logging.getLogger("nowcast_puertas")
@@ -194,16 +195,31 @@ INCERTIDUMBRE_LEGISLADOR = os.environ.get("INCERTIDUMBRE_LEGISLADOR", "1") != "0
 EPSILON0 = float(os.environ.get("EPSILON0", EPSILON0_DEFAULT))
 TAU = float(os.environ.get("TAU", TAU_DEFAULT))
 
+# RECORD POR TEMA (FASE 1, PROMPT-MULTITEMA-V2.md, URGENTE 8). PRENDIDA POR
+# DEFECTO desde el 16-09-2026 — Franco delegó la activación explícitamente en
+# este prompt ("podés prender banderas si el censo completo mejora y queda
+# documentado en fórmula + ADR"), y el censo la respalda sin ambigüedad:
+# 11,1% menos Brier que el récord general en el subconjunto que toca (votos de
+# actas con >=1 área sustantiva), POSITIVO en las dos cámaras (11,6%
+# Diputados, 7,7% Senado) y en las 5 eras medidas (5,6% a 12,8%) — a
+# diferencia del multitema a nivel BLOQUE (ADR-0024), acá no hay ningún
+# subconjunto negativo. Ver ADR-0026 y `evaluacion/baseline/outputs/
+# fase1_rec_por_tema_censo.json`. `RECORD_POR_TEMA=0` en el entorno vuelve al
+# récord general de siempre.
+RECORD_POR_TEMA = os.environ.get("RECORD_POR_TEMA", "1") != "0"
 
-def _tema_auto(proyecto_id: Optional[str], db_path=None, expedientes=None):
-    """Si TEMA_AUTO está prendida y hay proyecto_id, resuelve su multietiqueta
-    vía `tema_por_proyecto`. Devuelve (tema, temas, combinar_temas) listo para
-    pasarle a `proyectar_postura`. Degrada limpio (None, None, 'primaria') si
-    la bandera está apagada, no hay proyecto_id, o el proyecto no tiene
-    taxonomías cargadas todavía (el caso normal hoy). `db_path`/`expedientes`
-    son sólo para tests: sin pasarlos usa los contratos reales del repo."""
-    if not TEMA_AUTO or not proyecto_id:
-        return None, None, "primaria"
+
+def _resolver_multietiqueta(proyecto_id: Optional[str], db_path=None, expedientes=None):
+    """La multietiqueta [(área,confianza),...] de un proyecto, vía
+    `tema_por_proyecto.temas_de_proyecto`. [] si no hay proyecto_id o el
+    proyecto no tiene taxonomías cargadas todavía. SIN gate de ninguna
+    bandera a propósito: `TEMA_AUTO` (condiciona la POSTURA DE BLOQUE) y
+    `RECORD_POR_TEMA` (condiciona el RÉCORD del legislador) son dos
+    mecanismos independientes desde el 16-09 (ADR-0026) — uno sigue apagado
+    (ADR-0024, negativo a nivel bloque) y el otro prendido (positivo a nivel
+    legislador); cada llamador decide si usa esto, no esta función."""
+    if not proyecto_id:
+        return []
     src = RAIZ / "variables" / "proyecto" / "src"
     if str(src) not in sys.path:
         sys.path.insert(0, str(src))
@@ -214,11 +230,22 @@ def _tema_auto(proyecto_id: Optional[str], db_path=None, expedientes=None):
     if expedientes is not None:
         kwargs["expedientes"] = expedientes
     try:
-        asigs = temas_de_proyecto(proyecto_id=proyecto_id, **kwargs)
+        return temas_de_proyecto(proyecto_id=proyecto_id, **kwargs)
     except (FileNotFoundError, ValueError) as e:
-        logger.warning("TEMA_AUTO: no pude resolver temas de %s (%s): sigo sin tema",
-                       proyecto_id, e)
+        logger.warning("no pude resolver la multietiqueta de %s (%s)", proyecto_id, e)
+        return []
+
+
+def _tema_auto(proyecto_id: Optional[str], db_path=None, expedientes=None):
+    """Si TEMA_AUTO está prendida y hay proyecto_id, resuelve su multietiqueta
+    (`_resolver_multietiqueta`). Devuelve (tema, temas, combinar_temas) listo
+    para pasarle a `proyectar_postura`. Degrada limpio (None, None, 'primaria')
+    si la bandera está apagada, no hay proyecto_id, o el proyecto no tiene
+    taxonomías cargadas todavía (el caso normal hoy). `db_path`/`expedientes`
+    son sólo para tests: sin pasarlos usa los contratos reales del repo."""
+    if not TEMA_AUTO or not proyecto_id:
         return None, None, "primaria"
+    asigs = _resolver_multietiqueta(proyecto_id, db_path, expedientes)
     if not asigs:
         return None, None, "primaria"
     if COMBINAR_TEMAS == "primaria":
@@ -253,26 +280,14 @@ def era_de(fecha) -> str:
     return _e(fecha)
 
 
-def alineacion_individual(votos, origen_map: dict, origen: str | None,
-                          era_desde: str | None = None, hasta=None,
-                          guard_era: bool | None = None) -> dict:
-    """P(afirmativo) de CADA legislador sobre su PROPIO récord.
-
-    Condicionada por el ORIGEN del proyecto cuando se pasa `origen` (el motor que
-    llevó el acierto del voto individual de 59% a 76%): no es lo mismo cómo vota
-    alguien un proyecto del Ejecutivo que uno de la oposición. Sin `origen`, mira
-    todo el período. Ausente y abstención cuentan como NO afirmativo, a propósito:
-    para juntar una mayoría, el que no está no suma.
-
-    Levantada de `nowcast_bicameral_html.py` (archivado el 10-09) y parametrizada, para que no
-    queden dos copias de la misma regla en el repo.
-
-    Devuelve {(camara, legislador_id): (p_afirmativo, n_votos, presencia)}.
-    """
-    # ERA. Con la bandera apagada, la fecha fija de siempre (2023-12-10): el número
-    # publicado no se mueve. Con la bandera prendida, la era se deduce de la fecha del
-    # nowcast, que es lo mismo para el gobierno vigente y lo correcto para atrás.
-    # Un `era_desde` explícito manda sobre las dos cosas (lo usan los tests).
+def _alineacion_base(votos, origen_map: dict, origen: str | None,
+                     era_desde: str | None = None, hasta=None,
+                     guard_era: bool | None = None):
+    """El filtro de ventana/era/origen que comparten `alineacion_individual` y
+    `alineacion_individual_por_area` (FASE 1, PROMPT-MULTITEMA-V2.md) — una
+    sola copia, para que los dos "récord del legislador" (general y por área)
+    miren exactamente la misma ventana walk-forward. None si queda vacío
+    (mismo aviso de siempre)."""
     if era_desde is None:
         guard = GUARD_ERA if guard_era is None else guard_era
         era_desde = era_de(hasta) if (guard and hasta is not None) else ERA_FIJA
@@ -292,10 +307,32 @@ def alineacion_individual(votos, origen_map: dict, origen: str | None,
                        "a la era fija (%s), es el bug de URGENTE 9: probá GUARD_ERA=1.",
                        era_desde, hasta, origen,
                        int(votos["legislador_id"].nunique()), ERA_FIJA)
-        return {}
+        return None
     V = d["conducta"].astype(str).str.upper().str[:2]
     d["_af"] = V.eq("AF")
     d["_emitio"] = V.isin(["AF", "NE"])
+    return d
+
+
+def alineacion_individual(votos, origen_map: dict, origen: str | None,
+                          era_desde: str | None = None, hasta=None,
+                          guard_era: bool | None = None) -> dict:
+    """P(afirmativo) de CADA legislador sobre su PROPIO récord.
+
+    Condicionada por el ORIGEN del proyecto cuando se pasa `origen` (el motor que
+    llevó el acierto del voto individual de 59% a 76%): no es lo mismo cómo vota
+    alguien un proyecto del Ejecutivo que uno de la oposición. Sin `origen`, mira
+    todo el período. Ausente y abstención cuentan como NO afirmativo, a propósito:
+    para juntar una mayoría, el que no está no suma.
+
+    Levantada de `nowcast_bicameral_html.py` (archivado el 10-09) y parametrizada, para que no
+    queden dos copias de la misma regla en el repo.
+
+    Devuelve {(camara, legislador_id): (p_afirmativo, n_votos, presencia)}.
+    """
+    d = _alineacion_base(votos, origen_map, origen, era_desde, hasta, guard_era)
+    if d is None:
+        return {}
     g = d.groupby(["camara", "legislador_id"]).agg(
         n=("_af", "size"), n_emit=("_emitio", "sum"),
         n_af=("_af", "sum"), presencia=("_emitio", "mean"))
@@ -309,6 +346,107 @@ def alineacion_individual(votos, origen_map: dict, origen: str | None,
         n_emit = int(r["n_emit"])
         p_af = float(r["n_af"]) / n_emit if n_emit else 0.5
         out[idx] = (p_af, int(r["n"]), float(r["presencia"]), n_emit)
+    return out
+
+
+_AUX_PREFIX_RECORD = "AUX"
+
+
+def _areas_de_todas_ids(todas_ids) -> list[str]:
+    if not todas_ids or (isinstance(todas_ids, float) and pd.isna(todas_ids)):
+        return []
+    vistas: list[str] = []
+    for i in str(todas_ids).split(";"):
+        i = i.strip()
+        if not i or i.upper().startswith(_AUX_PREFIX_RECORD):
+            continue
+        area = i.split(".")[0].upper()
+        if area not in vistas:
+            vistas.append(area)
+    return vistas
+
+
+def alineacion_individual_por_area(votos, cond_por_acta, origen_map: dict,
+                                   origen: str | None, areas_objetivo: list,
+                                   ind_general: dict, k_shrink: float = K_SHRINK_RECORD,
+                                   era_desde: str | None = None, hasta=None,
+                                   guard_era: bool | None = None) -> dict:
+    """FASE 1 de PROMPT-MULTITEMA-V2.md (URGENTE 8): el récord del legislador
+    CONDICIONADO por el/los tema(s) del proyecto — medido (censo completo,
+    `evaluacion/baseline/outputs/fase1_rec_por_tema_censo.json`): 11,1% menos
+    Brier que el récord general en el subconjunto que toca, consistente en las
+    dos cámaras y en las 5 eras. Mueve el término adonde hay datos: a
+    diferencia del multitema a nivel BLOQUE (ADR-0024, negativo en las 3
+    reglas probadas), acá el insumo es individual, no un agregado ya chico.
+
+    `areas_objetivo`: [(área, confianza), ...] — la multietiqueta del
+    proyecto (mismo formato que `bloque._normalizar_temas_objetivo`).
+
+    Para cada legislador, el récord de CADA área objetivo se calcula sobre la
+    MISMA ventana walk-forward que `alineacion_individual` (`_alineacion_base`,
+    una sola copia del filtro) y se encoge Empirical-Bayes (mismo k=5 de
+    siempre) hacia el récord GENERAL de esa persona —información INDIVIDUAL,
+    no el share del bloque: es la doctrina de FASE 1—. Los récords por área ya
+    encogidos se combinan EN LOGIT, ponderados por la confianza de cada
+    etiqueta (regla IV.2 de FORMULA-COMPLETA.md: nunca promediar en
+    probabilidad).
+
+    Devuelve {(camara, legislador_id): (p_afirmativo_combinado, n_votos,
+    presencia, n_emit)} — n_votos/presencia/n_emit son los del récord GENERAL
+    (`ind_general`), sin cambios: esto sólo cambia QUÉ récord se usa, no
+    cuánto se confía en tener uno (un solo grado de libertad, como el brazo de
+    control de FASE 0). Un legislador sin ningún voto en NINGUNA área objetivo
+    cae a su propio récord general (mismo valor que ya tenía en `ind_general`)."""
+    areas_norm = [(str(a).upper(), float(c)) for a, c in areas_objetivo if c and c > 0]
+    if not areas_norm:
+        return dict(ind_general)
+    d = _alineacion_base(votos, origen_map, origen, era_desde, hasta, guard_era)
+    if d is None or cond_por_acta is None or cond_por_acta.empty:
+        return dict(ind_general)
+    tpa_col = cond_por_acta.columns[0]
+    tpa = cond_por_acta[[tpa_col, "todas_ids"]].rename(columns={tpa_col: "acta_id"}) \
+        if "todas_ids" in cond_por_acta.columns else None
+    if tpa is None:
+        return dict(ind_general)
+    tpa = tpa.drop_duplicates("acta_id")
+    tpa["areas"] = tpa["todas_ids"].map(_areas_de_todas_ids)
+    d = d.merge(tpa[["acta_id", "areas"]], on="acta_id", how="left")
+    objetivo = {a for a, _ in areas_norm}
+    d["areas_match"] = d["areas"].map(
+        lambda xs: [a for a in (xs or []) if a in objetivo] if isinstance(xs, list) else [])
+    dx = d[d["areas_match"].map(len) > 0].explode("areas_match").rename(
+        columns={"areas_match": "area"})
+    if dx.empty:
+        return dict(ind_general)
+    g = dx.groupby(["camara", "legislador_id", "area"]).agg(
+        n_area=("_af", "size"), n_af_area=("_af", "sum"))
+    por_area: dict = {}
+    for (camara, lid, area), r in g.iterrows():
+        por_area.setdefault((camara, lid), {})[area] = (float(r["n_af_area"]) / float(r["n_area"]),
+                                                         int(r["n_area"]))
+
+    out = dict(ind_general)
+    for (camara, lid), areas_leg in por_area.items():
+        base = ind_general.get((camara, lid))
+        if base is None:
+            continue
+        p_general, n_tot, presencia, n_emit = base
+        shares, pesos = [], []
+        for area, peso in areas_norm:
+            if area in areas_leg:
+                s_area, n_area = areas_leg[area]
+                s_encogido = (n_area * s_area + k_shrink * p_general) / (n_area + k_shrink)
+            else:
+                s_encogido = p_general
+            shares.append(s_encogido)
+            pesos.append(peso)
+        num, den = 0.0, 0.0
+        for s, w in zip(shares, pesos):
+            p = float(min(max(s, 1e-9), 1.0 - 1e-9))
+            num += w * np.log(p / (1.0 - p))
+            den += w
+        p_combinado = float(1.0 / (1.0 + np.exp(-(num / den)))) if den > 0 else p_general
+        out[(camara, lid)] = (p_combinado, n_tot, presencia, n_emit)
     return out
 
 
@@ -586,9 +724,20 @@ def nowcast(camara_origen: str, fecha=None, *, proyecto_id: str | None = None,
         tema_auto, temas_multi, combinar_temas_activo = _tema_auto(proyecto_id)
         tema = tema_auto
 
+    # FASE 1 (RECORD_POR_TEMA, URGENTE 8): la multietiqueta para el récord del
+    # legislador se resuelve INDEPENDIENTE de TEMA_AUTO (condiciona la POSTURA
+    # DE BLOQUE, un mecanismo distinto, apagado desde ADR-0024). Manual `tema=`
+    # sigue ganando siempre; si no hay nada manual y TEMA_AUTO ya la resolvió,
+    # se reusa esa (no se pregunta dos veces); si TEMA_AUTO está apagado pero
+    # RECORD_POR_TEMA está prendido, se resuelve acá igual.
+    areas_objetivo_ind = temas_multi if temas_multi else ([(tema, 1.0)] if tema else None)
+    if areas_objetivo_ind is None and RECORD_POR_TEMA and proyecto_id:
+        asigs_record = _resolver_multietiqueta(proyecto_id)
+        areas_objetivo_ind = asigs_record or None
+
     cargar, proyectar_postura, cargar_tema_por_acta = _bloque()
     votos = cargar(CANONICA_CLEAN)
-    cond = cargar_tema_por_acta() if (tema or origen or temas_multi) else None
+    cond = cargar_tema_por_acta() if (tema or origen or temas_multi or areas_objetivo_ind) else None
     origen_map = {}
     if origen and Path(PROYECTO_ORIGEN_POR_ACTA).exists():
         opa = pd.read_parquet(PROYECTO_ORIGEN_POR_ACTA)
@@ -597,6 +746,9 @@ def nowcast(camara_origen: str, fecha=None, *, proyecto_id: str | None = None,
         logger.warning("no encontré %s: el récord individual no se puede condicionar "
                        "por origen", PROYECTO_ORIGEN_POR_ACTA)
     ind = alineacion_individual(votos, origen_map, origen, hasta=F)
+    if RECORD_POR_TEMA and areas_objetivo_ind:
+        ind = alineacion_individual_por_area(votos, cond, origen_map, origen,
+                                             areas_objetivo_ind, ind, hasta=F)
 
     # ── A y C: el carácter OBSERVADO, si lo hay ────────────────────────────────
     tabla = tabla_caracter if tabla_caracter is not None else cargar_caracter()

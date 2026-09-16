@@ -1,0 +1,105 @@
+{
+ "camara_filtro": "ambas",
+ "global_subconjunto_con_tema": {
+  "n": 318564,
+  "brier_general": 0.13924,
+  "brier_tema": 0.12384,
+  "mejora_relativa": 0.1106
+ },
+ "por_camara": {
+  "diputados": {
+   "n": 256549,
+   "brier_general": 0.15111,
+   "brier_tema": 0.13365,
+   "mejora_relativa": 0.1156
+  },
+  "senado": {
+   "n": 62015,
+   "brier_general": 0.09014,
+   "brier_tema": 0.08324,
+   "mejora_relativa": 0.0765
+  }
+ },
+ "por_era": {
+  "hasta 2011": {
+   "n": 98465,
+   "brier_general": 0.11796,
+   "brier_tema": 0.10285,
+   "mejora_relativa": 0.1281
+  },
+  "2011-2015": {
+   "n": 75562,
+   "brier_general": 0.1081,
+   "brier_tema": 0.0947,
+   "mejora_relativa": 0.124
+  },
+  "2015-2019": {
+   "n": 88963,
+   "brier_general": 0.17447,
+   "brier_tema": 0.15449,
+   "mejora_relativa": 0.1146
+  },
+  "2019-2023": {
+   "n": 14073,
+   "brier_general": 0.09695,
+   "brier_tema": 0.09149,
+   "mejora_relativa": 0.0563
+  },
+  "desde 2023": {
+   "n": 41501,
+   "brier_general": 0.18525,
+   "brier_tema": 0.17195,
+   "mejora_relativa": 0.0718
+  }
+ },
+ "por_n_areas_del_voto": {
+  "1": {
+   "n": 111868,
+   "brier_general": 0.14765,
+   "brier_tema": 0.13318,
+   "mejora_relativa": 0.098
+  },
+  "2": {
+   "n": 111923,
+   "brier_general": 0.13933,
+   "brier_tema": 0.12691,
+   "mejora_relativa": 0.0892
+  },
+  "3": {
+   "n": 83081,
+   "brier_general": 0.12738,
+   "brier_tema": 0.10763,
+   "mejora_relativa": 0.155
+  },
+  "4": {
+   "n": 10082,
+   "brier_general": 0.14399,
+   "brier_tema": 0.12642,
+   "mejora_relativa": 0.1221
+  },
+  "5": {
+   "n": 1130,
+   "brier_general": 0.16196,
+   "brier_tema": 0.09741,
+   "mejora_relativa": 0.3986
+  },
+  "6": {
+   "n": 384,
+   "brier_general": 0.0659,
+   "brier_tema": 0.04944,
+   "mejora_relativa": 0.2498
+  },
+  "8": {
+   "n": 43,
+   "brier_general": 0.03031,
+   "brier_tema": 0.0223,
+   "mejora_relativa": 0.2643
+  },
+  "9": {
+   "n": 53,
+   "brier_general": 0.02814,
+   "brier_tema": 0.01132,
+   "mejora_relativa": 0.5977
+  }
+ }
+}

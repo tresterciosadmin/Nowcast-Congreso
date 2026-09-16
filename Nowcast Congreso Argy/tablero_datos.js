@@ -262,6 +262,11 @@ const TABLERO = {
   hitos: [
     {
       fecha: "2026-09-16",
+      titulo: "Le ensenamos al modelo que un legislador no vota igual en todos los temas",
+      texto: "Pendiente viejo de Franco: 'el tema deberia impactar en el legislador'. El intento anterior fallaba porque metia el tema en el promedio del BLOQUE -el recurso que se usa cuando de una persona no se sabe nada todavia-. La solucion correcta era moverlo a donde si hay informacion: el historial de cada legislador. Antes de construir nada se midio si un mismo diputado vota distinto segun el tema: si, y mucho -casi la mitad de los legisladores con historial suficiente muestran una diferencia entre temas mucho mayor de lo que el azar explicaria-. Se construyo el termino (historial por tema, mezclado con cuidado con el historial general) y se probo sobre TODA la historia disponible: 11% menos de error en los votos con informacion de tema, positivo en las dos camaras y en las cinco epocas medidas, sin ninguna excepcion negativa. Con esa evidencia limpia y el permiso que Franco dejo por escrito para prender banderas cuando el censo lo respalde, se activo directamente."
+    },
+    {
+      fecha: "2026-09-16",
       titulo: "Bajamos 163 documentos oficiales y sacamos el nombre de cada capitulo de una ley, en 4 minutos",
       texto: "Franco pidio seguir con la descarga a mayor escala. Se bajaron los PDF oficiales de los 145 proyectos de Diputados que en algun momento tuvieron votacion articulo por articulo: 163 documentos, 4 minutos, cero fallas. El documento crudo va al mismo cajon de siempre (no una carpeta nueva); lo que se guarda como dato permanente es el resultado de leerlos, el nombre de cada capitulo. Probado contra lo que ya se sabia por el titulo de cada votacion: 9 de cada 10 capitulos consiguieron su nombre real. En el camino se encontraron y corrigieron dos formas de que el sistema se confundiera (agarraba texto de un articulo, o el encabezado que se repite en cada hoja, como si fueran el nombre). Queda un limite honesto sin resolver: para algunos capitulos aparece mas de un nombre candidato porque el proyecto paso por varias Ordenes del Dia -- en el caso de la Ley Bases ni siquiera es un error, el capitulo se renombro de verdad entre la primera ronda de votacion (la que perdio articulos) y la segunda (la que volvio recortada)."
     },

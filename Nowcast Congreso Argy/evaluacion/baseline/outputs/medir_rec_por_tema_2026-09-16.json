@@ -1,0 +1,90 @@
+{
+ "cobertura_tema_por_acta": {
+  "n_acta_expediente_todas_ANCHA": 5043,
+  "n_tema_por_acta_clasificadas": 3083,
+  "cobertura_sobre_ancha": 0.5691,
+  "n_actas_canonico_total": 5998,
+  "cobertura_sobre_canonico_total": 0.5137,
+  "de_las_clasificadas_con_area_sustantiva": 0.8044,
+  "nota": "no se corrió el clasificador: esto es la cobertura TAL COMO ESTÁ HOY, sin gastar créditos de API sin permiso de Franco"
+ },
+ "curva_skill_umbral_n_area": {
+  "n_votos_evaluables": 610304,
+  "curva": [
+   {
+    "umbral_n_area": 0,
+    "cobertura": 1.0,
+    "n": 610304,
+    "brier_rec_area_encogido": 0.12375,
+    "brier_rec_general": 0.13471,
+    "mejora_relativa": 0.0813
+   },
+   {
+    "umbral_n_area": 1,
+    "cobertura": 1.0,
+    "n": 610304,
+    "brier_rec_area_encogido": 0.12375,
+    "brier_rec_general": 0.13471,
+    "mejora_relativa": 0.0813
+   },
+   {
+    "umbral_n_area": 2,
+    "cobertura": 0.9634,
+    "n": 587951,
+    "brier_rec_area_encogido": 0.12338,
+    "brier_rec_general": 0.13425,
+    "mejora_relativa": 0.081
+   },
+   {
+    "umbral_n_area": 4,
+    "cobertura": 0.8976,
+    "n": 547822,
+    "brier_rec_area_encogido": 0.12301,
+    "brier_rec_general": 0.13313,
+    "mejora_relativa": 0.076
+   },
+   {
+    "umbral_n_area": 8,
+    "cobertura": 0.7851,
+    "n": 479152,
+    "brier_rec_area_encogido": 0.12499,
+    "brier_rec_general": 0.13316,
+    "mejora_relativa": 0.0614
+   },
+   {
+    "umbral_n_area": 16,
+    "cobertura": 0.6138,
+    "n": 374622,
+    "brier_rec_area_encogido": 0.13031,
+    "brier_rec_general": 0.13561,
+    "mejora_relativa": 0.0391
+   },
+   {
+    "umbral_n_area": 32,
+    "cobertura": 0.3941,
+    "n": 240549,
+    "brier_rec_area_encogido": 0.14975,
+    "brier_rec_general": 0.14742,
+    "mejora_relativa": -0.0158
+   },
+   {
+    "umbral_n_area": 64,
+    "cobertura": 0.1659,
+    "n": 101233,
+    "brier_rec_area_encogido": 0.15661,
+    "brier_rec_general": 0.15767,
+    "mejora_relativa": 0.0067
+   }
+  ]
+ },
+ "discriminacion_entre_areas": {
+  "n_legisladores_elegibles": 1419,
+  "min_n_area": 8,
+  "min_areas": 2,
+  "rango_real_mediana": 0.4286,
+  "rango_real_p75": 0.6882,
+  "rango_shuffle_mediana": 0.2308,
+  "rango_shuffle_p95": 0.4792,
+  "pct_legisladores_sobre_p95_shuffle": 0.4475
+ }
+}

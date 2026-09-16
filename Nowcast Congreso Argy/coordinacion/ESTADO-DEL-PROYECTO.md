@@ -56,6 +56,14 @@ Mantené esta tabla sincronizada con la bitácora.
 
 ## Bitácora (más reciente arriba)
 
+### [2026-09-16] modelo/agregador_institucional — backtest de calibración agregada para INCERTIDUMBRE_LEGISLADOR (pedido de Franco)
+- **Quién:** Claude, a pedido explícito de Franco ("Sí, córranlo" sobre el backtest opcional que quedaba pendiente en ADR-0025).
+- **Qué:** `agregador.backtest` gana `epsilon0`/`tau` (conectados a `simular_votacion`, antes no lo estaban ahí) y una métrica nueva, `cobertura_banda_90`: ¿el intervalo [p5,p95] que declara la simulación contiene el conteo real de afirmativos la fracción de veces que promete? Corrida real sobre 4.858 actas históricas con los defaults de producción (ε₀=0,035, τ=1,19): cobertura 99,88% contra 90% esperado — la banda es CONSERVADORA (más ancha de lo estrictamente necesario), no mal calibrada en el sentido peligroso (confianza falsa). Brier 0,0287, skill 0,3814.
+- **Cómo:** sin cambios de comportamiento cuando epsilon0=tau=0 (la métrica nueva sólo se calcula si alguno es >0). No cambia ninguna decisión ya tomada (la activación de INCERTIDUMBRE_LEGISLADOR ya estaba hecha); es la confirmación de más confianza que quedaba anotada como opcional.
+- **Archivos:** `modelo/agregador_institucional/src/agregador.py`, `coordinacion/DECISIONES/0025-epsilon0-tau-incertidumbre-legislador.md`, `coordinacion/FORMULA-COMPLETA.md`.
+- **Estado del módulo:** HECHO.
+- **Próximo paso:** ninguno. La subconfianza observada en el rango medio de la calibración por decil (bins 3-6) queda anotada, no investigada a fondo — no bloqueante.
+
 ### [2026-09-16] variables/bloque + evaluacion/baseline — FASE 0 cierra el multitema a nivel BLOQUE, con brazo de control (ADR-0028, enmienda a ADR-0024)
 - **Quién:** Claude, ejecución autónoma (mandato de `coordinacion/PROMPT-MULTITEMA-V2.md`, FASE 0 — diagnosticó 4 problemas de DISEÑO en el PASO 2 de ADR-0024: sin brazo de control, `ponderada` promediaba en probabilidad no en logit, `peor_tema` con estimador sesgado, muestra adversarialmente seleccionada).
 - **Qué:** re-test corregido sobre el CENSO completo (5.855 actas, no la muestra de 2.984). Nuevo brazo `sin_tema` (control: nunca condiciona por tema) y `ponderada_logit` (combina en LOGIT con confianza REAL por etiqueta, en vez de en probabilidad con peso igual). Resultado: NINGUNA diferencia contra `primaria` es distinguible de cero (bootstrap clusterizado por acta), en ningún corte por era. Lectura más fuerte que la original de ADR-0024: no es que condicionar por tema empeore, es que la rama de bloque (gente sin historia propia) no tiene la información que el tema podría mover — confirma por qué la ganancia real está en FASE 1 (récord del legislador, ADR-0026, prendida el mismo día).

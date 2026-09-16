@@ -2,6 +2,16 @@
 
 > Documento vivo. Cada cambio importante en el proyecto se explica acá en lenguaje claro, además de registrarse en `ESTADO-DEL-PROYECTO.md`. Si algo del sistema no se entiende leyendo esto, está mal escrito y hay que arreglarlo.
 
+## Le preguntamos al modelo si sabe cuánto no sabe, y la respuesta fue "más de lo necesario" (16-09-2026)
+
+Franco pidió el último control que había quedado pendiente sobre el cambio de la
+incertidumbre del legislador (contado más abajo): cuando el modelo dice "estoy 90%
+seguro de que el resultado va a estar en este rango", ¿es cierto? Se probó sobre casi
+5.000 votaciones reales: el rango declarado contuvo el resultado real el 99,88% de las
+veces, no el 90% que se esperaba. La buena noticia es que el error está del lado seguro
+— el modelo es más cauteloso de lo estrictamente necesario, no menos. Ancho de más es
+mejor que angosto de menos.
+
 ## Repetimos la prueba del multitema con el método arreglado, y esta vez la respuesta quedó clara (16-09-2026)
 
 Franco no se conformó con el resultado anterior ("no tiene sentido, hay que encontrarle

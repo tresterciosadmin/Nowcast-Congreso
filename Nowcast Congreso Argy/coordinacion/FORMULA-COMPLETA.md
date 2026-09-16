@@ -1078,6 +1078,12 @@ comportamiento anterior). Simétrica en las dos cámaras (origen y revisora). De
 completo, tests y la comparación con el resultado negativo de la multietiqueta
 (ADR-0024) en ADR-0025.
 
+**Backtest de calibración agregada, corrido a pedido de Franco (16-09):** sobre
+4.858 actas históricas, la banda [p5,p95] declarada contiene el conteo real de
+afirmativos el **99,88%** de las veces (contra 90% esperado) — conservadora,
+no mal calibrada en el sentido peligroso. Brier 0,0287, skill 0,3814. Detalle
+en ADR-0025.
+
 **Por qué no se prendió igual, con evidencia toda favorable:** activar esto CAMBIA el
 número publicado (las bandas se ensanchan, $P_c$ deja de pegarse a 0%/100%) — decisión
 de producto, no sólo de modelo. Queda para Franco.

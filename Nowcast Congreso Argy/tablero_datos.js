@@ -262,6 +262,11 @@ const TABLERO = {
   hitos: [
     {
       fecha: "2026-09-16",
+      titulo: "Le preguntamos al modelo si sabe cuanto no sabe, y la respuesta fue mas de lo necesario",
+      texto: "Ultimo control pendiente sobre la incertidumbre del legislador: cuando el modelo dice 'estoy 90% seguro de que el resultado va a estar en este rango', es cierto? Probado sobre casi 5.000 votaciones reales: el rango declarado contuvo el resultado real el 99,88% de las veces, no el 90% esperado. El error esta del lado seguro -el modelo es mas cauteloso de lo necesario, no menos-. Ancho de mas es mejor que angosto de menos."
+    },
+    {
+      fecha: "2026-09-16",
       titulo: "Repetimos la prueba del multitema con el metodo arreglado, y esta vez la respuesta quedo clara",
       texto: "Franco no se conformo con el resultado anterior y llego una revision externa que encontro el motivo: la prueba tenia cuatro problemas de diseno, no de ejecucion -el mas importante, nunca se probo que pasa si NO se toca nada-. Se repitio con el metodo arreglado: un grupo de control, la forma correcta de combinar temas (no un simple promedio), y esta vez sobre TODA la historia disponible. Resultado clarisimo: ninguna forma de usar el tema en este punto del modelo -ni siquiera no usarlo- se distingue de las demas. No es que empeore: es que este rincon especifico (el que se usa cuando de una persona no se sabe nada todavia) no tiene la informacion que el tema podria mover. La pregunta queda cerrada, con una respuesta mas solida que la primera vez -y confirma por que la otra idea de hoy (el legislador que vota distinto segun el tema) si funciono: ahi el tema se metio donde si hay informacion real."
     },

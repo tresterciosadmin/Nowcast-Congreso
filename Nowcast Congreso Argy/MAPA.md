@@ -2,13 +2,13 @@
 
 <!-- GENERADO por indexar.py. No editar: los cambios se pierden. -->
 <!-- La prosa vive en el README.md de cada modulo (seccion `Buscar aca si`). -->
-<!-- 2026-09-16 14:37 UTC · 171 archivos · 42,719 LOC -->
+<!-- 2026-09-16 17:13 UTC · 172 archivos · 43,039 LOC -->
 
 ## Como usar este archivo
 
 Es el unico archivo del proyecto que hace falta leer para empezar. Para ubicar algo concreto: `python3 .mapa/buscar.py "<termino>"` devuelve archivo y linea sin abrir nada. Recien despues abrir los archivos que salgan, y solo esos.
 
-Rama `main` — ultimo commit: 2026-09-16 2825e2d modelo/ensemble: composicion de P(proyecto) por capitulos, por simulacion (FASE 2, ADR-0027) · **hay cambios sin commitear**
+Rama `main` — ultimo commit: 2026-09-16 03c9340 variables/bloque: FASE 0 cierra el multitema a nivel bloque con brazo de control (ADR-0028, enmienda a ADR-0024) · **hay cambios sin commitear**
 
 ## Donde buscar que
 
@@ -138,8 +138,8 @@ Rama `main` — ultimo commit: 2026-09-16 2825e2d modelo/ensemble: composicion d
 | Carpeta | Que es | Arch. | LOC | Bitacora |
 |---|---|---:|---:|---|
 | `modelo/ensemble/` _(src+tests)_ | La composicion final: el nowcast end-to-end de un proyecto. El punto de entrada vivo es `nowcast_puertas.py`, que corre la CADENA DE PUERTAS y devuelve un numero condicional a que las camaras voten. La formulacion v1 -P(llega al recinto) x P(mayoria dado recinto)- se dio de BAJA el 2026-08-22 (ADR-0012), junto con su backtest: `ensemble.componer` y `backtest_cadena.py` siguen ahi pero levantan SystemExit. | 27 | 6,857 | **vencida** |
-| `./` | La raiz del proyecto: los paneles que se abren con doble clic, el tablero ejecutivo y su unica fuente de datos (`tablero_datos.js`). | 6 | 6,038 | **vencida** |
-| `variables/proyecto/` _(src+tests)_ | Feature store por proyecto: tema/materia, origen (Ejecutivo/oficialismo/aliados/oposicion), jefe de bloque, mayoria requerida, texto, y el ICG como modulador de coyuntura. La postura del gobierno por acta se midio aca y su modulo se archivo el 2026-09-10 sin consumidor: la medicion quedo en el ADR-0021 y en ESTADO. | 23 | 5,280 | **vencida** |
+| `./` | La raiz del proyecto: los paneles que se abren con doble clic, el tablero ejecutivo y su unica fuente de datos (`tablero_datos.js`). | 6 | 6,043 | **vencida** |
+| `variables/proyecto/` _(src+tests)_ | Feature store por proyecto: tema/materia, origen (Ejecutivo/oficialismo/aliados/oposicion), jefe de bloque, mayoria requerida, texto, y el ICG como modulador de coyuntura. La postura del gobierno por acta se midio aca y su modulo se archivo el 2026-09-10 sin consumidor: la medicion quedo en el ADR-0021 y en ESTADO. | 24 | 5,574 | **vencida** |
 | `datos/expedientes/` _(src+tests)_ | Registro de todo lo PRESENTADO (no solo lo votado): titulo, autor, tipo, fecha y cadena de vida del expediente. Denominador del embudo y enlace acta -> expediente. | 19 | 5,198 | **vencida** |
 | `datos/padron/` _(src+tests)_ | Padron OFICIAL de bancas a nivel LEGISLADOR: quien ocupa cada banca y en que ventana de mandato. Es la composicion real de la camara a una fecha (257 / 72). | 11 | 2,645 | ok |
 | `datos/proyectos/` _(src+tests)_ | Base de Proyectos de Ley (`proyectos.db`): una fila por proyecto identificado por denominador NNNN-X-AAAA. Fuente de verdad del universo de proyectos y denominador del embudo (ADR-0009). | 10 | 2,073 | ok |
@@ -150,7 +150,7 @@ Rama `main` — ultimo commit: 2026-09-16 2825e2d modelo/ensemble: composicion d
 | `datos/canonica/` _(src+tests)_ | La base propia y unica de votaciones nominales: todas las fuentes unificadas, deduplicadas y con entidades resueltas. Fuente de verdad de la que leen `variables/` y `modelo/`. | 7 | 1,032 | **vencida** |
 | `datos/senado/` _(src+tests)_ | Ingesta de votaciones nominales del Senado desde senado.gob.ar + reconstruccion del bloque historico contemporaneo a cada voto. Tapa el hueco 2015-2023. | 5 | 940 | ok |
 | `datos/bot_recoleccion/` _(src+tests)_ | El bot diario que trae lo nuevo de ambas camaras (proyectos con firmantes y giros, y votaciones) con upsert idempotente. Corre solo en GitHub Actions. | 7 | 880 | ok |
-| `modelo/agregador_institucional/` _(src+tests)_ | Traduce posturas de bloque + asistencia en un resultado institucional: cuenta bancas, quorum, umbrales de mayoria y bandas. Mide la estructura, no la politica. | 2 | 735 | **vencida** |
+| `modelo/agregador_institucional/` _(src+tests)_ | Traduce posturas de bloque + asistencia en un resultado institucional: cuenta bancas, quorum, umbrales de mayoria y bandas. Mide la estructura, no la politica. | 2 | 756 | **vencida** |
 | `modelo/voto_individual/` _(src+tests)_ | No predice el voto medio (eso lo resuelve la regla de bloque ~0,99): modela el DESVIO del legislador respecto de su bloque y detecta pivotes (ADR-0003). | 2 | 597 | ok |
 | `producto/dashboard/` _(src)_ | Tablero interno: radar de traccion, mapa de pivotes y escenarios, y el MAPA DEL MODELO: el diagrama de flujo BICAMERAL de como se calcula P(sancion) -dos bloques espejo, origen y revisora, con el condicionamiento entre camaras dibujado-, generado desde el indice del repo. Los entregables se abren con doble clic desde la RAIZ; el codigo del generador vive aca. | 1 | 563 | ok |
 | `datos/seguimiento/` _(src+tests)_ | Dado un expediente ya conocido, baja su ficha oficial y extrae el estado de avance: giros, movimientos, fechas y PDF. Insumo del embudo. NO descubre proyectos nuevos. | 2 | 512 | ok |
@@ -174,7 +174,7 @@ Rama `main` — ultimo commit: 2026-09-16 2825e2d modelo/ensemble: composicion d
 
 ## Inventario de datos
 
-156 archivos de datos · 222.1 MB · 156 viajan por git, **0 no**.
+158 archivos de datos · 222.5 MB · 158 viajan por git, **0 no**.
 
 Buscar uno sin abrir nada: `python .mapa/buscar.py --dato <termino>`. Columna **git**: `si` = esta versionado, o sea que quien clone lo tiene; `NO` = vive solo en el disco de quien lo genero, que es el modo de falla mas repetido de este repo (seis veces, ver `.gitignore`). **Escribe/Lee**: quien lo produce y quien lo consume, deducido del codigo; sin lector, sobra — sin escritor, no se regenera.
 
@@ -227,7 +227,7 @@ Buscar uno sin abrir nada: `python .mapa/buscar.py --dato <termino>`. Columna **
 | `datos/expedientes/data/clean/dictamenes_comisiones.parquet` _EXPEDIENTES_DICTAMENES_COMISIONES_ | 10,031×8 | 88 KB | si | `construir_firmas.py` | — |
 | `datos/expedientes/data/clean/expedientes_leyes.parquet` | 1,347×7 | 38 KB | si | — | `origen_lider.py` |
 | `datos/expedientes/data/clean/giros_iniciales.parquet` | 4,070×4 | 31 KB | si | `giros_iniciales.py` | `embudo.py` |
-| `datos/expedientes/data/clean/capitulos_nombre.parquet` | 320×4 | 11 KB | si | `capitulos_nombre.py` | — |
+| `datos/expedientes/data/clean/capitulos_nombre.parquet` | 320×4 | 11 KB | si | `capitulos_nombre.py`, `tema_por_capitulo.py` | — |
 | `datos/expedientes/data/clean/comisiones_integrantes.parquet` | 1,477×3 | 9 KB | si | — | `origen_lider.py` |
 | `datos/expedientes/data/clean/comisiones_autoridades.parquet` | 141×5 | 7 KB | si | — | `origen_lider.py` |
 | `datos/export/data/votaciones_2003-2007_Kirchner.xlsx` | 3 hoja(s) | 15.8 MB | si | — | — |
@@ -247,7 +247,7 @@ Buscar uno sin abrir nada: `python .mapa/buscar.py --dato <termino>`. Columna **
 | `datos/padron/data/padron_senado.csv` _PADRON_SENADO_ | 72×12 | 13 KB | si | `test_bloque_linaje_senado.py` | `to_canonical.py`, `test_padron_senado.py`, `resolver_firmantes.py` +2 |
 | `datos/padron/data/senado_linaje_manual.csv` _PADRON_SENADO_LINAJE_MANUAL_ | 25×7 | 2 KB | si | `test_bloque_linaje_senado.py` | `padron_senado_historico.py`, `bloque.py` |
 | `datos/padron/data/estado_vigilancia.json` | objeto: diputados, senado | 445 B | si | — | _(2 lo nombran)_ |
-| `datos/proyectos/data/proyectos.db` _PROYECTOS_DB_ | 609,719×6 | 87.2 MB | si | `schema.sql`, `store.py` | `verificar.py`, `test_store.py`, `tema_por_proyecto.py` |
+| `datos/proyectos/data/proyectos.db` _PROYECTOS_DB_ | 609,798×6 | 87.2 MB | si | `schema.sql`, `store.py` | `verificar.py`, `test_store.py`, `tema_por_proyecto.py` |
 | `datos/proyectos/data/taxonomias.csv` | 2,655×6 | 259 KB | si | `taxonomias_backup.py` | `test_store.py` |
 | `datos/proyectos/data/cuarentena.db` _PROYECTOS_CUARENTENA_DB_ | 0×1 | 20 KB | si | — | `cuarentena.py` |
 | `datos/senado/data/clean/senado_actas.parquet` | 749×14 | 70 KB | si | `scrape_votaciones.py` | `aplicar_bloques.py`, `padron_bloques.py` |
@@ -283,8 +283,9 @@ Buscar uno sin abrir nada: `python .mapa/buscar.py --dato <termino>`. Columna **
 | `fase0/data/raw/cabecera_129_137.csv` | 899×20 | 183 KB | si | — | `ingesta.py` |
 | `fase0/data/clean/cabecera.parquet` | 899×20 | 45 KB | si | `ingesta.py` | `baseline_bloque.py` |
 | `fase0/outputs/baseline_resultados.json` | objeto: fuente, n_actas_total, n_votos_s | 701 B | si | `baseline_bloque.py` | — |
-| `modelo/agregador_institucional/outputs/backtest_agregador_asistencia.json` | objeto: n_actas, brier, brier_baseline_t | 1 KB | si | — | — |
+| `modelo/agregador_institucional/outputs/backtest_detalle.csv` | 4,858×9 | 304 KB | si | — | — |
 | `modelo/agregador_institucional/outputs/backtest_agregador.json` | objeto: n_actas, brier, brier_baseline_t | 1 KB | si | — | — |
+| `modelo/agregador_institucional/outputs/backtest_agregador_asistencia.json` | objeto: n_actas, brier, brier_baseline_t | 1 KB | si | — | — |
 | `modelo/agregador_institucional/outputs/backtest_agregador_dir_presentes.json` | objeto: n_actas, brier, brier_baseline_t | 1 KB | si | — | — |
 | `modelo/ensemble/outputs/validacion_sobre_tablas_walkforward_corte50.json` | objeto: resumen, detalle | 36 KB | si | — | — |
 | `modelo/ensemble/outputs/validacion_sobre_tablas_walkforward.json` | objeto: resumen, detalle | 25 KB | si | `validar_sobre_tablas_walkforward.py` | — |
@@ -329,6 +330,7 @@ Buscar uno sin abrir nada: `python .mapa/buscar.py --dato <termino>`. Columna **
 | `variables/proyecto/data/icg_contexto.parquet` | 297×18 | 34 KB | si | — | `estimar_gamma.py`, `estimar_gamma_individual.py`, `modulador_icg.py` |
 | `variables/proyecto/outputs/muestra_manual_taxonomias.csv` | 88×6 | 24 KB | si | — | _(2 lo nombran)_ |
 | `variables/proyecto/data/jefes_bloque.csv` _PROYECTO_JEFES_BLOQUE_ | 109×2 | 15 KB | si | `origen_lider.py` | `estimar_beta_dictamen.py` |
+| `variables/proyecto/data/tema_por_capitulo.parquet` | 103×9 | 11 KB | si | `tema_por_capitulo.py` | — |
 | `variables/proyecto/data/icg_mensual.csv` _PROYECTO_ICG_MENSUAL_ | 297×5 | 11 KB | si | `embudo.py`, `test_ingesta_icg.py` | `nowcast_puertas_html.py`, `icg_contexto.py` |
 | `variables/proyecto/data/jefes_bloque_oficial.csv` | 58×2 | 7 KB | si | `scrape_jefes_bloque.py` | `estimar_beta_dictamen.py`, `origen_lider.py` |
 | `variables/proyecto/outputs/gamma_icg_dos_capas.json` | objeto: modelo, ma_fondo, ma_corto, nota | 2 KB | si | `estimar_gamma_individual.py` | _(1 lo nombran)_ |
@@ -339,8 +341,8 @@ Buscar uno sin abrir nada: `python .mapa/buscar.py --dato <termino>`. Columna **
 
 **Lo que el inventario marca**
 
-- Tienen productor y **ningun consumidor** (48): `votaciones_nuevas.parquet`, `estado_bot.json`, `argentinadatos_actas.parquet`, `argentinadatos_votos.parquet`, `ckan_diputados_actas.parquet`, `ckan_diputados_votos.parquet`, `manual_2026_actas.parquet`, `manual_2026_votos.parquet` _+40_. Es lo esperable en un entregable para humanos; en un intermedio significa que sobra.
-- **Ningun archivo de codigo los nombra** (40, 74.5 MB): `votaciones_2003-2007_Kirchner.xlsx`, `votaciones_2015-2019_Macri.xlsx`, `votaciones_2007-2011_CFK-1.xlsx`, `votaciones_2011-2015_CFK-2.xlsx`, `fase0_detalle_ponderada_logit.parquet`, `fase0_detalle_union.parquet`, `fase0_detalle_primaria.parquet`, `fase0_detalle_sin_tema.parquet` _+32_. Ojo: un output con nombre armado por f-string cae aca y esta vivo. Lo que hay que mirar de verdad son los pesados.
+- Tienen productor y **ningun consumidor** (49): `votaciones_nuevas.parquet`, `estado_bot.json`, `argentinadatos_actas.parquet`, `argentinadatos_votos.parquet`, `ckan_diputados_actas.parquet`, `ckan_diputados_votos.parquet`, `manual_2026_actas.parquet`, `manual_2026_votos.parquet` _+41_. Es lo esperable en un entregable para humanos; en un intermedio significa que sobra.
+- **Ningun archivo de codigo los nombra** (41, 74.8 MB): `votaciones_2003-2007_Kirchner.xlsx`, `votaciones_2015-2019_Macri.xlsx`, `votaciones_2007-2011_CFK-1.xlsx`, `votaciones_2011-2015_CFK-2.xlsx`, `fase0_detalle_ponderada_logit.parquet`, `fase0_detalle_union.parquet`, `fase0_detalle_primaria.parquet`, `fase0_detalle_sin_tema.parquet` _+33_. Ojo: un output con nombre armado por f-string cae aca y esta vivo. Lo que hay que mirar de verdad son los pesados.
 
 ## Puntos de entrada
 
@@ -369,10 +371,10 @@ Ordenados por cuantos otros archivos dependen de ellos. Tocar uno de arriba tien
 | `variables/embudo/src/embudo.py` | 730 | 6 | `cargar_icg`, `_mes_rezagado`, `cargar`, `cargar_sqlite` |
 | `modelo/ensemble/src/ensemble.py` | 413 | 6 | `_cargar_simulador`, `_cargar_proyector`, `componer`, `_root` |
 | `modelo/ensemble/src/puerta_d.py` | 244 | 6 | `camara_revisora`, `_padron_de`, `_clip01`, `_logit` |
-| `modelo/agregador_institucional/src/agregador.py` | 474 | 5 | `umbral_aprobacion`, `_prob_conductas`, `simular_votacion`, `_linea_bloque_por_acta` |
+| `modelo/agregador_institucional/src/agregador.py` | 495 | 5 | `umbral_aprobacion`, `_prob_conductas`, `simular_votacion`, `_linea_bloque_por_acta` |
+| `variables/proyecto/src/agente_taxonomias.py` | 495 | 4 | `Asignacion`, `ResultadoClasificacion`, `_lista_y_reglas`, `construir_prompt` |
 | `datos/canonica/src/entity_resolution.py` | 327 | 4 | `_strip`, `_name_key`, `_leg_id`, `_aplicar_alias` |
-| `variables/proyecto/src/agente_taxonomias.py` | 495 | 3 | `Asignacion`, `ResultadoClasificacion`, `_lista_y_reglas`, `construir_prompt` |
-| `datos/padron/src/ingesta_padron.py` | 239 | 3 | `_norm_col`, `_fecha_iso`, `_limpiar_nombre`, `cargar_nomina` |
+| `variables/proyecto/src/tema_por_proyecto.py` | 355 | 3 | `cargar_crosswalk`, `_resolver_denominador`, `taxonomias_de`, `temas_de_proyecto` |
 
 ## Flujo interno
 
@@ -393,16 +395,16 @@ Ordenados por cuantos otros archivos dependen de ellos. Tocar uno de arriba tien
 
 Segun el historial de git. Si vas a cambiar uno, mira el otro.
 
-- `Nowcast Congreso Argy/coordinacion/EN-HUMANO.md` + `Nowcast Congreso Argy/coordinacion/ESTADO-DEL-PROYECTO.md` (44 commits)
-- `Nowcast Congreso Argy/coordinacion/ESTADO-DEL-PROYECTO.md` + `Nowcast Congreso Argy/tablero_datos.js` (39 commits)
-- `Nowcast Congreso Argy/.mapa/mapa.json` + `Nowcast Congreso Argy/MAPA.md` (37 commits)
-- `Nowcast Congreso Argy/coordinacion/EN-HUMANO.md` + `Nowcast Congreso Argy/tablero_datos.js` (36 commits)
+- `Nowcast Congreso Argy/coordinacion/EN-HUMANO.md` + `Nowcast Congreso Argy/coordinacion/ESTADO-DEL-PROYECTO.md` (45 commits)
+- `Nowcast Congreso Argy/coordinacion/ESTADO-DEL-PROYECTO.md` + `Nowcast Congreso Argy/tablero_datos.js` (40 commits)
+- `Nowcast Congreso Argy/.mapa/mapa.json` + `Nowcast Congreso Argy/MAPA.md` (38 commits)
+- `Nowcast Congreso Argy/coordinacion/EN-HUMANO.md` + `Nowcast Congreso Argy/tablero_datos.js` (37 commits)
 - `Nowcast Congreso Argy/coordinacion/ESTADO-DEL-PROYECTO.md` + `Nowcast Congreso Argy/coordinacion/TABLERO.md` (24 commits)
-- `Nowcast Congreso Argy/.mapa/mapa.json` + `Nowcast Congreso Argy/coordinacion/ESTADO-DEL-PROYECTO.md` (21 commits)
-- `Nowcast Congreso Argy/MAPA.md` + `Nowcast Congreso Argy/coordinacion/ESTADO-DEL-PROYECTO.md` (21 commits)
+- `Nowcast Congreso Argy/.mapa/mapa.json` + `Nowcast Congreso Argy/coordinacion/ESTADO-DEL-PROYECTO.md` (22 commits)
+- `Nowcast Congreso Argy/MAPA.md` + `Nowcast Congreso Argy/coordinacion/ESTADO-DEL-PROYECTO.md` (22 commits)
 - `Nowcast Congreso Argy/coordinacion/EN-HUMANO.md` + `Nowcast Congreso Argy/coordinacion/TABLERO.md` (21 commits)
 - `Nowcast Congreso Argy/coordinacion/TABLERO.md` + `Nowcast Congreso Argy/tablero_datos.js` (19 commits)
-- `Nowcast Congreso Argy/.mapa/mapa.json` + `Nowcast Congreso Argy/tablero_datos.js` (13 commits)
+- `Nowcast Congreso Argy/.mapa/mapa.json` + `Nowcast Congreso Argy/tablero_datos.js` (14 commits)
 
 ## Fuentes externas
 
@@ -435,7 +437,7 @@ Segun el historial de git. Si vas a cambiar uno, mira el otro.
 - `DISC` — `modelo/agregador_institucional/src/agregador.py`
 - `DISCIPLINA` — `modelo/ensemble/src/ensemble.py`
 - `EMBUDO_FUENTE` — `variables/embudo/src/embudo.py`
-- `EPSILON0` — `modelo/ensemble/src/nowcast_puertas.py`
+- `EPSILON0` — `modelo/agregador_institucional/src/agregador.py`, `modelo/ensemble/src/nowcast_puertas.py`
 
 ## Frescura
 

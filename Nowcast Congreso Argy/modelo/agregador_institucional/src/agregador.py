@@ -338,14 +338,23 @@ def _direccion_bloque_por_acta(votos: pd.DataFrame) -> pd.DataFrame:
 def backtest(canon: Path, disc: Path, n_sims: int, max_actas: int | None,
              reparto_desvio: float = 0.5, seed: int = 0,
              usar_asistencia: bool = False, asist_dir: Path | None = None,
-             ruido_asistencia: bool = True) -> dict:
+             ruido_asistencia: bool = True,
+             epsilon0: float = 0.0, tau: float = 0.0) -> dict:
     """Corre el agregador sobre las actas históricas (alimentándolo con la línea de
     bloque observada + el desvío individual medido) y mide qué tan bien predice el
     resultado real. Métricas: Brier, accuracy@0.5, calibración por deciles.
 
     usar_asistencia=True: modo escalón-1 de asistencia. La línea es la DIRECCIÓN del
     bloque entre presentes, y cada legislador emite con su presentismo histórico
-    (variables/asistencia_quorum) — corrige el sesgo pesimista de contar ausentes."""
+    (variables/asistencia_quorum) — corrige el sesgo pesimista de contar ausentes.
+
+    epsilon0/tau (2026-09-16, backtest de CALIBRACIÓN AGREGADA de ADR-0025, el paso
+    opcional que quedaba pendiente): pasados derecho a `simular_votacion`. Además de
+    Brier/calibración por deciles, agrega `cobertura_banda_90`: la fracción de actas
+    donde el conteo REAL de afirmativos cae dentro de la banda [p5, p95] que la
+    simulación declara — si el motor es honesto sobre su propia incertidumbre, esa
+    fracción tiene que rondar el 90% (band declarada = intervalo de confianza 90%,
+    no una curiosidad: es la pregunta que ADR-0025 dejó sin cerrar)."""
     votos = pd.read_parquet(canon / "votos_resuelto.parquet")
     actas = pd.read_parquet(canon / "actas_canonico.parquet")
     # desvío individual (si existe la salida de voto_individual; si no, d=0 para todos)
@@ -399,13 +408,17 @@ def backtest(canon: Path, disc: Path, n_sims: int, max_actas: int | None,
             pp = vg["legislador_id"].map(pres_map).fillna(pres_global).to_numpy(dtype=float)
         try:
             r = simular_votacion(lineas, desvios, tipo, cam, n_sims=n_sims,
-                                 reparto_desvio=reparto_desvio, seed=seed, p_presente=pp)
+                                 reparto_desvio=reparto_desvio, seed=seed, p_presente=pp,
+                                 epsilon0=epsilon0, tau=tau)
         except ValueError as e:
             log.debug("acta %s salteada: %s", aid, e)
             continue
+        afirm_real = int((vg["voto"] == "AFIRMATIVO").sum())
         filas.append({"acta_id": aid, "p_pred": r["p_aprobacion"],
                       "y_real": int(ainfo.at[aid, "y_real"]),
-                      "afirm_medio": r["afirm_medio"], "camara": cam})
+                      "afirm_medio": r["afirm_medio"], "camara": cam,
+                      "afirm_real": afirm_real,
+                      "afirm_p5": r["afirm_p5"], "afirm_p95": r["afirm_p95"]})
 
     if not filas:
         raise RuntimeError("el backtest no produjo filas: revisar rutas de datos")
@@ -428,8 +441,13 @@ def backtest(canon: Path, disc: Path, n_sims: int, max_actas: int | None,
         "accuracy_0.5": round(acc, 4),
         "tasa_base_aprobacion": round(base, 4),
         "n_sims": n_sims,
+        "epsilon0": float(epsilon0), "tau": float(tau),
         "calibracion": calib.to_dict("records"),
     }
+    if (epsilon0 > 0.0) or (tau > 0.0):
+        dentro = (res["afirm_real"] >= res["afirm_p5"]) & (res["afirm_real"] <= res["afirm_p95"])
+        resumen["cobertura_banda_90"] = round(float(dentro.mean()), 4)
+        resumen["cobertura_banda_90_esperada"] = 0.90
     return {"resumen": resumen, "detalle": res}
 
 
@@ -450,8 +468,11 @@ def main() -> None:
         ruido = os.environ.get("SIN_RUIDO") != "1"  # SIN_RUIDO=1 -> dirección entre presentes SIN bajar asistencia
         if asist and not ruido:
             sufijo = "_dir_presentes"
+        epsilon0 = float(os.environ.get("EPSILON0", "0"))
+        tau = float(os.environ.get("TAU", "0"))
         r = backtest(canon, disc, n_sims=n_sims, max_actas=max_actas,
-                     usar_asistencia=asist, ruido_asistencia=ruido)
+                     usar_asistencia=asist, ruido_asistencia=ruido,
+                     epsilon0=epsilon0, tau=tau)
         (out / f"backtest_agregador{sufijo}.json").write_text(
             json.dumps(r["resumen"], ensure_ascii=False, indent=2))
         r["detalle"].to_csv(out / f"backtest_detalle{sufijo}.csv", index=False, encoding="utf-8-sig")

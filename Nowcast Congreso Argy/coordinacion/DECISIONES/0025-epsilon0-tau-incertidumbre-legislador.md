@@ -153,14 +153,46 @@ el cambio de default.
 este commit.** `INCERTIDUMBRE_LEGISLADOR=0` en el entorno vuelve al
 comportamiento anterior sin tocar código, para quien necesite comparar.
 
+## Backtest de calibración agregada — corrido 16-09-2026, a pedido de Franco
+
+El paso opcional que quedaba pendiente: ¿la banda [p5, p95] que declara cada
+simulación contiene el conteo REAL de afirmativos la fracción de veces que
+promete? `agregador.backtest` gana `epsilon0`/`tau` (pasados derecho a
+`simular_votacion`, antes no estaban conectados ahí) y una métrica nueva,
+`cobertura_banda_90`: la fracción de actas donde `afirm_real` cae dentro de
+`[afirm_p5, afirm_p95]`.
+
+**Corrida real, 4.858 actas históricas, $\varepsilon_0{=}0{,}035$,
+$\tau{=}1{,}19$ (los defaults en producción), 1.000 sims por acta:**
+
+| métrica | valor |
+|---|---:|
+| cobertura de la banda [p5,p95] | **99,88%** (contra 90% esperado) |
+| Brier | 0,0287 (skill 0,3814 sobre la tasa base) |
+| accuracy@0,5 | 98,56% |
+
+**Lectura: la banda es CONSERVADORA, no está mal calibrada en el sentido
+peligroso.** Declarar 90% de confianza y acertar el 99,88% de las veces es un
+error en la dirección segura — la banda es más ancha de lo estrictamente
+necesario, no más angosta (que sí sería un problema: confianza falsa). La
+calibración por decil de $P_c$ (ver `calibracion` en el JSON de salida) es
+razonable en las colas (bins 0-2 y 8-9) con algo de subconfianza en el rango
+medio (bins 3-6: la tasa real de aprobación supera lo que predice $P_c$ ahí) —
+no cambia la recomendación de activación, que ya estaba tomada, pero queda
+medido y documentado como pedía este pendiente.
+
+Reproducible: `EPSILON0=0.035 TAU=1.19 N_SIMS=1000 python
+modelo/agregador_institucional/src/agregador.py backtest`. Salida guardada en
+`modelo/agregador_institucional/outputs/backtest_calibracion_epsilon0_tau_2026-09-16.json`
+(archivo aparte del `backtest_agregador.json` de siempre, que mide SIN
+$\varepsilon_0$/$\tau$ y no se toca — mismo criterio que el fix de
+calibración de `ensemble.nowcast_proyecto`, anotado en `ESTADO-DEL-PROYECTO.md`).
+
 ## Lo que queda pendiente
 
 1. **El límite del harness de estimación** (no incluye `beta_dictamen`) queda
    anotado. Si en algún momento se decide corregirlo, hay que re-estimar
    $\varepsilon_0$/$\tau$ con ese harness corregido antes de tocar los
    defaults.
-2. **Backtest de CALIBRACIÓN agregada** (¿el 95% de confianza declarado
-   contiene el resultado real el 95% de las veces?) sigue como el paso
-   opcional de más confianza si Franco lo pide más adelante — la evidencia de
-   arriba ya alcanzó para activar, pero no es lo mismo que un backtest de
-   cobertura acta por acta.
+2. **La subconfianza en el rango medio de la calibración por decil** (arriba)
+   no se investigó a fondo — no bloqueante, anotado para quien lo retome.

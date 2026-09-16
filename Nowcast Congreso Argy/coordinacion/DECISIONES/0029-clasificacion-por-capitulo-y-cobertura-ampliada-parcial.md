@@ -150,21 +150,34 @@ tratados como si fueran el mismo).
   15/15, `test_tema_por_capitulo.py` 15/15), incluido un test que reproduce
   el bug exacto (mismo `capitulo_num` bajo dos `titulo_num` distintos).
 
-**Consecuencia que SÍ cuesta:** los 437 capítulos clasificados con la clave
-vieja quedan **obsoletos** — no se puede confiar en a qué (título, capítulo)
-real corresponde cada clasificación, así que no sirven como `previas` para
-continuar idempotentemente. Se movieron a
-`tema_por_capitulo_OBSOLETO_clave_sin_titulo_2026-09-16.parquet` (no se
-borran: quedan como referencia). **Los 437 hay que reclasificarlos desde
-cero contra la clave corregida** — eso sí necesita créditos de API, que
-siguen en cero.
+**Cuánto se salva y cuánto NO — medido, no estimado.** De los 437, se separó
+cada (proyecto_id, capitulo_num) según si ese numeral de capítulo aparece
+bajo UN SOLO título real (dato correcto y reetiquetable, gratis) o bajo MÁS
+de uno (ambiguo, la clasificación vieja no dice cuál de los títulos era):
 
-**Por qué esto es una buena noticia, no sólo una mala.** El bug se encontró
-gastando UNA corrida de validación sobre 11 capítulos de un solo proyecto —
-antes de escalar a los 9.500+ proyectos que faltan de la otra tarea. Si el
-plan hubiera sido "reclasificar todo primero, validar después", el mismo
-bug se habría descubierto recién después de gastar el crédito completo en
-datos con la clave equivocada.
+| | filas |
+|---|---:|
+| **salvadas** (reetiquetadas con su `titulo_num` real, sin gastar nada) | **242** |
+| **perdidas** (capitulo_num ambiguo entre títulos: hay que reclasificar) | **195** |
+| **total clasificado el 16-09 con la clave vieja** | 437 |
+
+Las 242 ya están reescritas en `tema_por_capitulo.parquet` con la clave
+correcta — no hace falta ni un llamado nuevo a la API para ellas. Las 195
+perdidas quedan como referencia en
+`tema_por_capitulo_OBSOLETO_clave_sin_titulo_2026-09-16.parquet`, junto con
+las que ya estaban ahí. El universo real bajo la clave corregida es 1.084
+pares — con los 242 salvados ya adentro, **quedan 842 por clasificar** (los
+195 perdidos + los que nunca se habían intentado, porque separar por título
+reveló capítulos reales que antes quedaban tapados bajo la fusión).
+
+**Cuánta plata es esto, en limpio.** 195 llamados a Haiku con textos cortos
+— del orden de centavos de dólar en total, no un gasto grande. Lo que se
+pierde no es plata significativa; es TIEMPO (esos 195 capítulos hay que
+volver a pedírselos al modelo) y la razón de fondo por la que importa: es la
+prueba de que medir antes de escalar sirve — si el plan hubiera sido
+"clasificar los 9.500+ que faltan primero, validar después", este mismo bug
+se habría descubierto recién después de gastar el crédito completo con la
+clave equivocada, mucho más que centavos.
 
 **No se pudo completar la validación de plausibilidad que Franco pidió**:
 sin capítulos correctamente clasificados no hay nada real que simular
@@ -174,12 +187,11 @@ no por diseño.
 ## Lo que queda pendiente
 
 1. **Recargar crédito de la API** — bloqueante para las dos corridas.
-2. **Reclasificar `tema_por_capitulo` DESDE CERO** contra la clave corregida:
-   **1.084 pares (proyecto, título, capítulo) reales** — más, no menos, que
-   los 704 de la clave vieja (separar por título revela capítulos reales
-   que antes quedaban tapados bajo la fusión). Los 437 anteriores quedaron
-   obsoletos (ver addendum) — no hay atajo, es empezar de nuevo con
-   `python variables/proyecto/src/tema_por_capitulo.py clasificar`.
+2. **Terminar `tema_por_capitulo`**: **842 pares restantes de 1.084** (242 ya
+   se salvaron gratis, reetiquetados con su título real — ver addendum). El
+   comando de siempre (`python variables/proyecto/src/tema_por_capitulo.py
+   clasificar`) ya los saltea correctamente, es idempotente contra el
+   archivo salvado.
 3. **Terminar la cobertura ampliada**: 9.582 proyectos restantes
    (9.910-328) — a este ritmo (~3,5s/llamada) son varias horas de corrida,
    no minutos; queda como una corrida larga a lanzar cuando convenga, no

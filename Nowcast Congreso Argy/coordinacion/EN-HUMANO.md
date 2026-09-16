@@ -2,6 +2,18 @@
 
 > Documento vivo. Cada cambio importante en el proyecto se explica acá en lenguaje claro, además de registrarse en `ESTADO-DEL-PROYECTO.md`. Si algo del sistema no se entiende leyendo esto, está mal escrito y hay que arreglarlo.
 
+## Corrección: no se perdieron los 437, se salvaron 242 (16-09-2026, más tarde)
+
+Franco preguntó, con razón, si el error del bug le había hecho perder plata de vuelta.
+La respuesta anterior decía "437 clasificaciones obsoletas, hay que rehacerlas todas" —
+pero eso era una suposición, no algo medido. Se revisó de verdad: de esas 437, **242
+(más de la mitad) en realidad no tenían ningún problema** — el número de capítulo, en
+esos casos particulares, no se repetía entre partes de la ley, así que se pudieron
+etiquetar correctamente sin volver a preguntarle nada al modelo. Sólo **195 quedan
+realmente perdidas** (las que sí compartían número de capítulo entre partes distintas
+de la ley) y ésas sí hay que volver a clasificarlas. En plata, eso es centavos de
+dólar, no un gasto grande — lo que se pierde ahí es sobre todo tiempo, no dinero.
+
 ## Preguntamos si podíamos usar lo que había, y encontramos un error real antes de gastar más plata en él (16-09-2026)
 
 Franco preguntó si con lo ya clasificado podíamos hacer correr el modelo de verdad y

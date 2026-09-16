@@ -56,6 +56,14 @@ Mantené esta tabla sincronizada con la bitácora.
 
 ## Bitácora (más reciente arriba)
 
+### [2026-09-16] variables/proyecto — rescate: 242 de las 437 clasificaciones "obsoletas" en realidad se salvan gratis (ADR-0029, corrección)
+- **Quién:** Claude, a pedido de Franco ("me hiciste perder dinero de vuelta?" — la entrada anterior decía "437 obsoletas, reclasificar desde cero" sin haber medido cuántas eran realmente irrecuperables).
+- **Qué:** medido, no asumido: de los 437 capítulos clasificados con la clave vieja (`capitulo_num` solo), **242 (55%) tenían un `capitulo_num` que en realidad NO era ambiguo** (aparece bajo un solo título real) — esos se reetiquetaron con su `titulo_num` correcto y quedan VÁLIDOS, sin gastar un solo llamado nuevo a la API. Sólo **195 (45%)** eran genuinamente ambiguos (el mismo `capitulo_num` bajo varios títulos) y esos sí quedan irrecuperables — hay que reclasificarlos. En plata: 195 llamados a Haiku con texto corto son centavos de dólar, no un gasto grande; lo que se pierde es sobre todo tiempo, no dinero.
+- **Cómo:** `tema_por_capitulo.parquet` (el archivo que el motor va a leer) ahora tiene las 242 filas salvadas, con el esquema correcto (`titulo_num` real, no None). El universo total bajo la clave corregida es 1.084 pares; con las 242 adentro, quedan 842 por clasificar (no 1.084). El comando de siempre es idempotente contra este archivo salvado, así que retoma bien.
+- **Archivos:** `variables/proyecto/data/tema_por_capitulo.parquet` (regenerado con el rescate; no viaja por git, es caché), `coordinacion/DECISIONES/0029-...md` (corregido).
+- **Estado del módulo:** corrección aplicada.
+- **Próximo paso:** recargar crédito, clasificar los 842 restantes.
+
 ### [2026-09-16] datos/expedientes + variables/proyecto — bug real: el numeral de capítulo se reinicia por título (ADR-0029, addendum)
 - **Quién:** Claude, tratando de responder la pregunta de Franco ("¿podemos usar lo que tenemos para recorrer el modelo y sacar conclusiones de plausibilidad?").
 - **Qué:** al intentar correr `composicion_capitulos` de verdad sobre Ley Bases (roster real, simulación real, comparado contra la ronda 1 real), apareció que "Capítulo I" aparece bajo 6 títulos DISTINTOS en Ley Bases — la clave `capitulo_num` sola (usada en todo el trabajo de hoy: extracción del PDF y clasificación) fusionaba capítulos de partes completamente distintas de la ley. Corregido gratis (sin API): `capitulos_nombre.extraer_capitulos` trackea el título vigente y devuelve `(titulo_num, capitulo_num, nombre)`; `tema_por_capitulo` usa `(proyecto_id, titulo_num, capitulo_num)` como clave. `capitulos_nombre.parquet` se regeneró gratis (caché local de PDFs): 320→546 filas.

@@ -2,6 +2,40 @@
 
 > Documento vivo. Cada cambio importante en el proyecto se explica acá en lenguaje claro, además de registrarse en `ESTADO-DEL-PROYECTO.md`. Si algo del sistema no se entiende leyendo esto, está mal escrito y hay que arreglarlo.
 
+## Probamos comparar por título en vez de por capítulo, y el resultado explica por qué no alcanza (16-09-2026, más tarde todavía)
+
+Franco pidió avanzar con la idea de comparar a nivel TÍTULO (una unidad más grande
+que capítulo) en los proyectos que sí tienen ese dato. Se armó y se corrió: 25
+títulos comparados en 5 proyectos, sin gastar nada (sólo se combinaron clasificaciones
+que ya existían).
+
+El resultado, a primera vista, se ve mal: los títulos que en la realidad "pasaron"
+tuvieron una probabilidad moderada (alrededor de 60-70%), pero los 2 títulos que en
+la realidad "cayeron" tuvieron una probabilidad altísima (99,97% y 100%) — exactamente
+al revés de lo esperado. Antes de mostrar este número se revisó a mano que no fuera un
+error de cálculo (no lo era: el modelo arma un escenario razonable, ni too fácil ni
+absurdo).
+
+La explicación real, una vez que se miró el detalle: esos 2 títulos que "fallan" son
+de Ley Bases, y los dos mezclan VARIAS partes con historias muy distintas adentro de
+un mismo título — un capítulo popular que pasó sin problema, junto con otro capítulo
+mucho más peleado (en un caso, literalmente las "facultades delegadas", la parte más
+resistida de toda la ley) que se cayó. El modelo, al combinar todo el título en un solo
+pronóstico, refleja el promedio (mayormente favorable) — pero el resultado real
+depende de la parte MÁS resistida, no del promedio. Es la misma razón por la que ya
+existe el mecanismo que simula cada capítulo por separado: un título que mezcla
+partes muy distintas no se puede resumir en un solo número sin perder justamente lo
+que importa.
+
+En los otros 4 proyectos, donde cada título corresponde a un solo voto real (no una
+mezcla de varios), el número sale razonable y del lado correcto los 23 de 23 casos.
+
+En limpio: se confirma con datos reales lo que ya se sospechaba — el capítulo sigue
+siendo la unidad correcta para comparar, el título funciona sólo quando coincide con
+un solo voto real, y en el caso que más importa (Ley Bases) no alcanza. No hay un
+atajo barato para conseguir más casos a nivel capítulo — haría falta otra ley grande,
+votada por artículo en una sola noche, para tener más para comparar.
+
 ## El piloto en más proyectos no dio resultado — pero encontramos por qué, y es importante (16-09-2026, más tarde)
 
 Franco pidió armar un piloto con varios proyectos más, para no depender sólo de los 3

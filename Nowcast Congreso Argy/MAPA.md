@@ -2,13 +2,13 @@
 
 <!-- GENERADO por indexar.py. No editar: los cambios se pierden. -->
 <!-- La prosa vive en el README.md de cada modulo (seccion `Buscar aca si`). -->
-<!-- 2026-09-16 18:49 UTC · 175 archivos · 43,746 LOC -->
+<!-- 2026-09-16 18:59 UTC · 176 archivos · 43,947 LOC -->
 
 ## Como usar este archivo
 
 Es el unico archivo del proyecto que hace falta leer para empezar. Para ubicar algo concreto: `python3 .mapa/buscar.py "<termino>"` devuelve archivo y linea sin abrir nada. Recien despues abrir los archivos que salgan, y solo esos.
 
-Rama `main` — ultimo commit: 2026-09-16 0e5310c Merge branch 'main' of https://github.com/tresterciosadmin/Nowcast-Congreso · **hay cambios sin commitear**
+Rama `main` — ultimo commit: 2026-09-16 b449d0f variables/proyecto+evaluacion: piloto sustantivo en 20 proyectos -- hallazgo de granularidad, no resultado de plausibilidad (ADR-0029, addendum piloto) · **hay cambios sin commitear**
 
 ## Donde buscar que
 
@@ -138,11 +138,11 @@ Rama `main` — ultimo commit: 2026-09-16 0e5310c Merge branch 'main' of https:/
 | Carpeta | Que es | Arch. | LOC | Bitacora |
 |---|---|---:|---:|---|
 | `modelo/ensemble/` _(src+tests)_ | La composicion final: el nowcast end-to-end de un proyecto. El punto de entrada vivo es `nowcast_puertas.py`, que corre la CADENA DE PUERTAS y devuelve un numero condicional a que las camaras voten. La formulacion v1 -P(llega al recinto) x P(mayoria dado recinto)- se dio de BAJA el 2026-08-22 (ADR-0012), junto con su backtest: `ensemble.componer` y `backtest_cadena.py` siguen ahi pero levantan SystemExit. | 27 | 6,857 | **vencida** |
-| `./` | La raiz del proyecto: los paneles que se abren con doble clic, el tablero ejecutivo y su unica fuente de datos (`tablero_datos.js`). | 6 | 6,063 | **vencida** |
+| `./` | La raiz del proyecto: los paneles que se abren con doble clic, el tablero ejecutivo y su unica fuente de datos (`tablero_datos.js`). | 6 | 6,068 | **vencida** |
 | `variables/proyecto/` _(src+tests)_ | Feature store por proyecto: tema/materia, origen (Ejecutivo/oficialismo/aliados/oposicion), jefe de bloque, mayoria requerida, texto, y el ICG como modulador de coyuntura. La postura del gobierno por acta se midio aca y su modulo se archivo el 2026-09-10 sin consumidor: la medicion quedo en el ADR-0021 y en ESTADO. | 25 | 5,795 | **vencida** |
 | `datos/expedientes/` _(src+tests)_ | Registro de todo lo PRESENTADO (no solo lo votado): titulo, autor, tipo, fecha y cadena de vida del expediente. Denominador del embudo y enlace acta -> expediente. | 19 | 5,250 | **vencida** |
 | `datos/padron/` _(src+tests)_ | Padron OFICIAL de bancas a nivel LEGISLADOR: quien ocupa cada banca y en que ventana de mandato. Es la composicion real de la camara a una fecha (257 / 72). | 11 | 2,645 | ok |
-| `evaluacion/baseline/` _(src+tests)_ | El piso a superar, y el harness que lo mide. Lo que vive aca es el baseline del VOTO INDIVIDUAL (`baseline_voto_individual.py`, con el guard de era del ADR-0018) mas los diagnosticos del Senado. El baseline de BLOQUE -el ~0,99- se midio en `fase0/` y ahi quedo. | 11 | 2,369 | **vencida** |
+| `evaluacion/baseline/` _(src+tests)_ | El piso a superar, y el harness que lo mide. Lo que vive aca es el baseline del VOTO INDIVIDUAL (`baseline_voto_individual.py`, con el guard de era del ADR-0018) mas los diagnosticos del Senado. El baseline de BLOQUE -el ~0,99- se midio en `fase0/` y ahi quedo. | 12 | 2,565 | **vencida** |
 | `datos/proyectos/` _(src+tests)_ | Base de Proyectos de Ley (`proyectos.db`): una fila por proyecto identificado por denominador NNNN-X-AAAA. Fuente de verdad del universo de proyectos y denominador del embudo (ADR-0009). | 10 | 2,073 | ok |
 | `variables/bloque/` _(src+tests)_ | Cohesion, tamano, postura y fracturas de cada bloque en el tiempo, y el proyector point-in-time que arma el escenario por bloque que consume el ensemble. | 6 | 1,581 | **vencida** |
 | `tests/` | Tests que no pertenecen a ningun modulo: los que verifican acuerdos ENTRE modulos (definiciones y rutas compartidas) y los que vigilan INVARIANTES del repo — que las bases y los insumos del motor viajen por git, que la regla del caracter del dictamen no se reimplemente, y que las rutas que el codigo nombra en sus docstrings existan. Cada modulo tiene sus propios tests en `<modulo>/tests/`. | 8 | 1,347 | ok |
@@ -174,7 +174,7 @@ Rama `main` — ultimo commit: 2026-09-16 0e5310c Merge branch 'main' of https:/
 
 ## Inventario de datos
 
-161 archivos de datos · 222.7 MB · 161 viajan por git, **0 no**.
+162 archivos de datos · 222.7 MB · 162 viajan por git, **0 no**.
 
 Buscar uno sin abrir nada: `python .mapa/buscar.py --dato <termino>`. Columna **git**: `si` = esta versionado, o sea que quien clone lo tiene; `NO` = vive solo en el disco de quien lo genero, que es el modo de falla mas repetido de este repo (seis veces, ver `.gitignore`). **Escribe/Lee**: quien lo produce y quien lo consume, deducido del codigo; sin lector, sobra — sin escritor, no se regenera.
 
@@ -221,7 +221,7 @@ Buscar uno sin abrir nada: `python .mapa/buscar.py --dato <termino>`. Columna **
 | `datos/expedientes/data/clean/acta_expediente_todas.parquet` _EXPEDIENTES_ACTA_EXP_TODAS_ | 5,043×13 | 424 KB | si | `enlace_senado.py`, `votacion_por_articulo.py` | `actas_ley.py`, `medir_rec_por_tema.py`, `tema_por_proyecto.py` +1 |
 | `datos/expedientes/data/clean/expedientes_dictamenes.parquet` | 24,053×8 | 373 KB | si | `ingesta_ckan.py`, `migrar_ckan.py` | _(2 lo nombran)_ |
 | `datos/expedientes/data/clean/dictamenes_firmas_senado.parquet` _EXPEDIENTES_FIRMAS_SENADO_ | 18,256×30 | 208 KB | si | `construir_firmas.py` | _(4 lo nombran)_ |
-| `datos/expedientes/data/clean/votacion_por_articulo.parquet` | 2,361×13 | 168 KB | si | `votacion_por_articulo.py` | `validar_leybases_por_capitulos.py`, `validar_piloto_capitulos.py` |
+| `datos/expedientes/data/clean/votacion_por_articulo.parquet` | 2,361×13 | 168 KB | si | `votacion_por_articulo.py` | `validar_leybases_por_capitulos.py`, `validar_piloto_capitulos.py`, `validar_piloto_titulos.py` |
 | `datos/expedientes/data/clean/acta_expediente.parquet` _EXPEDIENTES_ACTA_EXP_ | 1,849×7 | 164 KB | si | `enlace_senado.py`, `ingesta_ckan.py` | `baseline_voto_individual.py`, `estimar_beta_dictamen.py`, `origen_por_acta.py` |
 | `datos/expedientes/data/clean/cadena_camaras.parquet` | 1,182×17 | 151 KB | si | `enlace_senado.py` | `estimar_psi_arrastre.py` |
 | `datos/expedientes/data/clean/dictamenes_comisiones.parquet` _EXPEDIENTES_DICTAMENES_COMISIONES_ | 10,031×8 | 88 KB | si | `construir_firmas.py` | — |
@@ -263,6 +263,7 @@ Buscar uno sin abrir nada: `python .mapa/buscar.py --dato <termino>`. Columna **
 | `evaluacion/baseline/outputs/fase0_detalle_union.parquet` | 691,869×9 | 6.1 MB | si | — | — |
 | `evaluacion/baseline/outputs/fase0_detalle_primaria.parquet` | 691,893×9 | 6.0 MB | si | — | — |
 | `evaluacion/baseline/outputs/fase0_detalle_sin_tema.parquet` | 691,460×9 | 6.0 MB | si | — | — |
+| `evaluacion/baseline/outputs/validacion_piloto_titulos_2026-09-16.json` | objeto: margen_walkforward_dias, flags,  | 7 KB | si | `validar_piloto_titulos.py` | — |
 | `evaluacion/baseline/outputs/fase0_control_temas_censo.json` | objeto: arms, n_boot, seed, muestra | 6 KB | si | `fase0_control_temas.py` | — |
 | `evaluacion/baseline/outputs/guard_era_medicion.json` | objeto: _que_es, _n_votos, resultados, m | 5 KB | si | `medir_guard_era.py` | — |
 | `evaluacion/baseline/outputs/diagnostico_senado.json` | objeto: senado | 4 KB | si | `diagnostico_senado.py` | — |
@@ -331,7 +332,7 @@ Buscar uno sin abrir nada: `python .mapa/buscar.py --dato <termino>`. Columna **
 | `variables/proyecto/data/tema_por_acta.parquet` _PROYECTO_TEMA_POR_ACTA_ | 3,083×8 | 78 KB | si | `tema_por_acta.py` | `registro.py`, `fase1_rec_por_tema.py`, `medir_rec_por_tema.py` +1 |
 | `variables/proyecto/data/icg_contexto.parquet` | 297×18 | 34 KB | si | — | `estimar_gamma.py`, `estimar_gamma_individual.py`, `modulador_icg.py` |
 | `variables/proyecto/outputs/muestra_manual_taxonomias.csv` | 88×6 | 24 KB | si | — | _(2 lo nombran)_ |
-| `variables/proyecto/data/tema_por_capitulo.parquet` | 471×10 | 21 KB | si | `tema_por_capitulo.py` | `validar_leybases_por_capitulos.py`, `validar_piloto_capitulos.py` |
+| `variables/proyecto/data/tema_por_capitulo.parquet` | 471×10 | 21 KB | si | `tema_por_capitulo.py` | `validar_leybases_por_capitulos.py`, `validar_piloto_capitulos.py`, `validar_piloto_titulos.py` |
 | `variables/proyecto/data/tema_por_capitulo_OBSOLETO_clave_sin_titulo_2026-09-16.parquet` | 437×9 | 18 KB | si | — | — |
 | `variables/proyecto/data/jefes_bloque.csv` _PROYECTO_JEFES_BLOQUE_ | 109×2 | 15 KB | si | `origen_lider.py` | `estimar_beta_dictamen.py` |
 | `variables/proyecto/data/icg_mensual.csv` _PROYECTO_ICG_MENSUAL_ | 297×5 | 11 KB | si | `embudo.py`, `test_ingesta_icg.py` | `nowcast_puertas_html.py`, `icg_contexto.py` |
@@ -344,7 +345,7 @@ Buscar uno sin abrir nada: `python .mapa/buscar.py --dato <termino>`. Columna **
 
 **Lo que el inventario marca**
 
-- Tienen productor y **ningun consumidor** (48): `votaciones_nuevas.parquet`, `estado_bot.json`, `argentinadatos_actas.parquet`, `argentinadatos_votos.parquet`, `ckan_diputados_actas.parquet`, `ckan_diputados_votos.parquet`, `manual_2026_actas.parquet`, `manual_2026_votos.parquet` _+40_. Es lo esperable en un entregable para humanos; en un intermedio significa que sobra.
+- Tienen productor y **ningun consumidor** (49): `votaciones_nuevas.parquet`, `estado_bot.json`, `argentinadatos_actas.parquet`, `argentinadatos_votos.parquet`, `ckan_diputados_actas.parquet`, `ckan_diputados_votos.parquet`, `manual_2026_actas.parquet`, `manual_2026_votos.parquet` _+41_. Es lo esperable en un entregable para humanos; en un intermedio significa que sobra.
 - **Ningun archivo de codigo los nombra** (43, 74.8 MB): `votaciones_2003-2007_Kirchner.xlsx`, `votaciones_2015-2019_Macri.xlsx`, `votaciones_2007-2011_CFK-1.xlsx`, `votaciones_2011-2015_CFK-2.xlsx`, `fase0_detalle_ponderada_logit.parquet`, `fase0_detalle_union.parquet`, `fase0_detalle_primaria.parquet`, `fase0_detalle_sin_tema.parquet` _+35_. Ojo: un output con nombre armado por f-string cae aca y esta vivo. Lo que hay que mirar de verdad son los pesados.
 
 ## Puntos de entrada
@@ -366,15 +367,15 @@ Ordenados por cuantos otros archivos dependen de ellos. Tocar uno de arriba tien
 
 | Archivo | LOC | Lo usan | Simbolos |
 |---|---:|---:|---|
-| `rutas.py` | 207 | 30 | `_env`, `inventario` |
-| `variables/bloque/src/bloque.py` | 842 | 20 | `_canon_linaje`, `_norm_nombre`, `_cargar_padron_linaje_senado`, `_enriquecer_linaje_senado` |
+| `rutas.py` | 207 | 31 | `_env`, `inventario` |
+| `variables/bloque/src/bloque.py` | 842 | 21 | `_canon_linaje`, `_norm_nombre`, `_cargar_padron_linaje_senado`, `_enriquecer_linaje_senado` |
 | `definiciones.py` | 261 | 14 | `periodo_parlamentario`, `gobierno_por_fecha`, `era_de`, `normalizar_mayoria_valor` |
-| `modelo/ensemble/src/nowcast_puertas.py` | 901 | 10 | `_resolver_multietiqueta`, `_tema_auto`, `_bloque`, `era_de` |
-| `modelo/ensemble/src/ensemble.py` | 413 | 8 | `_cargar_simulador`, `_cargar_proyector`, `componer`, `_root` |
+| `modelo/ensemble/src/nowcast_puertas.py` | 901 | 11 | `_resolver_multietiqueta`, `_tema_auto`, `_bloque`, `era_de` |
+| `modelo/ensemble/src/ensemble.py` | 413 | 9 | `_cargar_simulador`, `_cargar_proyector`, `componer`, `_root` |
 | `evaluacion/baseline/src/baseline_voto_individual.py` | 578 | 7 | `_norm_cond`, `_ContadorAvisos`, `perfil`, `_metricas` |
 | `variables/embudo/src/embudo.py` | 730 | 6 | `cargar_icg`, `_mes_rezagado`, `cargar`, `cargar_sqlite` |
+| `modelo/agregador_institucional/src/agregador.py` | 495 | 6 | `umbral_aprobacion`, `_prob_conductas`, `simular_votacion`, `_linea_bloque_por_acta` |
 | `modelo/ensemble/src/puerta_d.py` | 244 | 6 | `camara_revisora`, `_padron_de`, `_clip01`, `_logit` |
-| `modelo/agregador_institucional/src/agregador.py` | 495 | 5 | `umbral_aprobacion`, `_prob_conductas`, `simular_votacion`, `_linea_bloque_por_acta` |
 | `variables/proyecto/src/agente_taxonomias.py` | 495 | 4 | `Asignacion`, `ResultadoClasificacion`, `_lista_y_reglas`, `construir_prompt` |
 | `datos/canonica/src/entity_resolution.py` | 327 | 4 | `_strip`, `_name_key`, `_leg_id`, `_aplicar_alias` |
 | `variables/proyecto/src/tema_por_proyecto.py` | 355 | 3 | `cargar_crosswalk`, `_resolver_denominador`, `taxonomias_de`, `temas_de_proyecto` |
@@ -383,11 +384,11 @@ Ordenados por cuantos otros archivos dependen de ellos. Tocar uno de arriba tien
 
 - `modelo/ensemble/tests/` → `modelo/ensemble/src/` (14)
 - `modelo/ensemble/src/` → `./` (12)
+- `evaluacion/baseline/src/` → `./` (11)
 - `variables/proyecto/tests/` → `variables/proyecto/src/` (11)
-- `evaluacion/baseline/src/` → `./` (10)
-- `evaluacion/baseline/src/` → `variables/bloque/src/` (7)
+- `evaluacion/baseline/src/` → `variables/bloque/src/` (8)
+- `evaluacion/baseline/src/` → `modelo/ensemble/src/` (8)
 - `datos/expedientes/tests/` → `datos/expedientes/src/` (6)
-- `evaluacion/baseline/src/` → `modelo/ensemble/src/` (6)
 - `modelo/ensemble/src/` → `variables/bloque/src/` (6)
 - `datos/expedientes/src/` → `./` (5)
 - `datos/padron/tests/` → `datos/padron/src/` (5)
@@ -398,16 +399,16 @@ Ordenados por cuantos otros archivos dependen de ellos. Tocar uno de arriba tien
 
 Segun el historial de git. Si vas a cambiar uno, mira el otro.
 
-- `Nowcast Congreso Argy/coordinacion/EN-HUMANO.md` + `Nowcast Congreso Argy/coordinacion/ESTADO-DEL-PROYECTO.md` (50 commits)
-- `Nowcast Congreso Argy/coordinacion/ESTADO-DEL-PROYECTO.md` + `Nowcast Congreso Argy/tablero_datos.js` (44 commits)
-- `Nowcast Congreso Argy/.mapa/mapa.json` + `Nowcast Congreso Argy/MAPA.md` (43 commits)
-- `Nowcast Congreso Argy/coordinacion/EN-HUMANO.md` + `Nowcast Congreso Argy/tablero_datos.js` (41 commits)
-- `Nowcast Congreso Argy/.mapa/mapa.json` + `Nowcast Congreso Argy/coordinacion/ESTADO-DEL-PROYECTO.md` (27 commits)
-- `Nowcast Congreso Argy/MAPA.md` + `Nowcast Congreso Argy/coordinacion/ESTADO-DEL-PROYECTO.md` (27 commits)
+- `Nowcast Congreso Argy/coordinacion/EN-HUMANO.md` + `Nowcast Congreso Argy/coordinacion/ESTADO-DEL-PROYECTO.md` (51 commits)
+- `Nowcast Congreso Argy/coordinacion/ESTADO-DEL-PROYECTO.md` + `Nowcast Congreso Argy/tablero_datos.js` (45 commits)
+- `Nowcast Congreso Argy/.mapa/mapa.json` + `Nowcast Congreso Argy/MAPA.md` (44 commits)
+- `Nowcast Congreso Argy/coordinacion/EN-HUMANO.md` + `Nowcast Congreso Argy/tablero_datos.js` (42 commits)
+- `Nowcast Congreso Argy/.mapa/mapa.json` + `Nowcast Congreso Argy/coordinacion/ESTADO-DEL-PROYECTO.md` (28 commits)
+- `Nowcast Congreso Argy/MAPA.md` + `Nowcast Congreso Argy/coordinacion/ESTADO-DEL-PROYECTO.md` (28 commits)
 - `Nowcast Congreso Argy/coordinacion/ESTADO-DEL-PROYECTO.md` + `Nowcast Congreso Argy/coordinacion/TABLERO.md` (24 commits)
 - `Nowcast Congreso Argy/coordinacion/EN-HUMANO.md` + `Nowcast Congreso Argy/coordinacion/TABLERO.md` (21 commits)
-- `Nowcast Congreso Argy/coordinacion/TABLERO.md` + `Nowcast Congreso Argy/tablero_datos.js` (19 commits)
-- `Nowcast Congreso Argy/.mapa/mapa.json` + `Nowcast Congreso Argy/coordinacion/EN-HUMANO.md` (18 commits)
+- `Nowcast Congreso Argy/.mapa/mapa.json` + `Nowcast Congreso Argy/coordinacion/EN-HUMANO.md` (19 commits)
+- `Nowcast Congreso Argy/.mapa/mapa.json` + `Nowcast Congreso Argy/tablero_datos.js` (19 commits)
 
 ## Fuentes externas
 

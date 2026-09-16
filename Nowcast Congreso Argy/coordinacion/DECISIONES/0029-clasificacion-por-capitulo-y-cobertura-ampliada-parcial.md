@@ -327,3 +327,73 @@ Ningún capítulo/proyecto adicional se clasificó más allá de lo ya descripto
 `tema_por_capitulo.parquet`, ninguna perdida: quedan como insumo para cuando
 `composicion_capitulos` se cablee a producción, aunque no sirvan para esta
 validación puntual).
+
+## Addendum 2026-09-16 (punto 1: piloto a nivel TÍTULO — sí corrió, resultado honesto y explicado)
+
+Franco: "avanzá en el punto 1". Se armó `evaluacion/baseline/src/validar_piloto_titulos.py`:
+combina en LOGIT los temas de los capítulos de cada TÍTULO (misma maquinaria
+ya validada de FASE 0/FASE 1 — `proyectar_postura(temas=[...],
+combinar_temas="ponderada_logit")` para el bloque, `alineacion_individual_por_area`
+para el legislador — no se inventó combinación nueva), simula el título como UN
+roster con `agregador.simular_votacion`, y compara contra el resultado real
+del propio TÍTULO del acta (agrupando sólo por `titulo_num`, sin filtrar por
+ronda). Universo: 25 pares (proyecto, título) en 5 proyectos (Ley Bases
+incluido, agregado a título en vez de capítulo — más N que los 3 capítulos
+de la corrida anterior). Sin gasto de API (sólo combina clasificaciones ya
+hechas).
+
+**Resultado crudo: correlación P_titulo vs. resultado real = -0,95** (26
+títulos: 23 "pasaron" con P≈0,58–0,71; 2 "cayeron" con P≈0,9997–1,0 —
+exactamente al revés de lo esperado). **Antes de reportarlo se verificó que
+no fuera un bug** (roster reproducido a mano: NO degenerado — 184
+AFIRMATIVO/74 NEGATIVO con desvíos reales, no un roster artificialmente
+unánime; el epsilon0/tau se aplica correctamente). No es un bug: es un
+problema de LA UNIDAD DE COMPARACIÓN.
+
+**Por qué, con el dato en la mano:** los 2 títulos que "cayeron" son
+Título I y Título II de Ley Bases — y los dos son HETEROGÉNEOS: cada uno
+junta VARIOS capítulos con historias reales distintas.
+- **Título I:** Capítulo I (DESREG) pasó limpio 2 AFIRMATIVO. Capítulo II
+  (ECON) tuvo 2 AFIRMATIVO **y 2 NEGATIVO** el mismo día. El título entero
+  se marca "no pasó" (mi regla es estricta: CUALQUIER tramo negativo tumba
+  al título) aunque la mayoría de su contenido sí pasó.
+- **Título II:** Capítulo I es la "Reorganización administrativa" —el mismo
+  caso AUX mal clasificado de la corrida anterior— y tuvo un historial
+  MUY peleado: 3 AFIRMATIVO, 4 NEGATIVO el 06-02 (facultades delegadas,
+  la parte más resistida de toda la ley), recién se destrabó el 30-04
+  (segunda ronda). Los capítulos II a IV de ese mismo título, en cambio,
+  pasaron sin drama el 30-04.
+
+**El roster combinado por título predice sobre la MEZCLA de temas
+(mayormente popular: DESREG/ECON con alta alineación histórica), así que
+sale con P alta — está respondiendo bien a "¿el contenido típico de este
+título tiende a pasar?"**, pero el resultado real que le puse en frente
+("¿pasó TODO, sin una sola excepción?") depende de la parte MÁS
+resistida, no del promedio. Es la MISMA razón por la que existe
+`composicion_capitulos` en primer lugar (P_todo ≈ min_k P_k, no el
+promedio) — sólo que acá quedó demostrado con datos reales, no en teoría:
+**combinar temas en un roster único borra justo la heterogeneidad que
+determina si algo se cae.**
+
+**Los otros 23 títulos (4 proyectos, todos con exactamente 1 tramo real por
+título) no tienen este problema** — ahí "título" SÍ es la unidad real de
+votación (una sola línea del acta por título, no varias), y el título-como-
+unidad-de-simulación es válido: P sale moderada (0,58–0,71), correctamente
+del lado de "pasó" en los 23/23 casos, sin sobreconfianza. El problema es
+específico de títulos que agrupan MÚLTIPLES votos reales distintos (como
+los de Ley Bases) — y ahí, mecánicamente, no hay atajo: hace falta el
+resultado real A NIVEL CAPÍTULO (que ya sabemos que sólo existe para Ley
+Bases) para que la comparación tenga sentido.
+
+**Conclusión honesta:** el punto 1 SÍ corrió y SÍ dio una lectura, pero es
+la conclusión que ya se venía perfilando desde el intento 1: **capítulo es
+la unidad correcta, título es una aproximación que funciona sólo cuando
+título y capítulo coinciden (4 de los 5 proyectos), y falla exactamente
+donde más importa (Ley Bases, la ley heterogénea que motivó todo esto)**.
+No hay una forma barata de esquivar esto — el n real para validar a nivel
+capítulo sigue siendo 3 (Ley Bases), y seguirá siendo chico hasta que
+alguna ley futura, tan bien documentada como Ley Bases, se vote de nuevo
+por artículo en una sola ronda.
+
+**Archivos:** `evaluacion/baseline/src/validar_piloto_titulos.py` (nuevo),
+`evaluacion/baseline/outputs/validacion_piloto_titulos_2026-09-16.json`.

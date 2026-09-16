@@ -1,0 +1,245 @@
+{
+ "margen_walkforward_dias": 5,
+ "flags": {
+  "RECORD_POR_TEMA": true,
+  "INCERTIDUMBRE_LEGISLADOR": true,
+  "epsilon0": 0.035,
+  "tau": 1.19
+ },
+ "n_proyectos": 9,
+ "n_titulos_evaluados": 25,
+ "n_titulos_saltados": 0,
+ "titulos_saltados": [],
+ "n_cayeron_realidad": 2,
+ "n_pasaron_realidad": 23,
+ "P_titulo_medio_CAYERON_en_la_realidad": 0.9999,
+ "P_titulo_medio_PASARON_en_la_realidad": 0.6666,
+ "correlacion_P_titulo_vs_paso_real": -0.9527,
+ "tabla_por_titulo": [
+  {
+   "proyecto_id": "HCDN272347",
+   "titulo": "III",
+   "n_capitulos_clasificados": 6,
+   "temas": "DESREG:0.85;TRAB:0.95;ECON:0.95;TRAB:0.85;ECON:0.85;DESREG:0.85",
+   "n_tramos_reales": 2,
+   "paso_real": true,
+   "P_titulo_simulado": 0.626
+  },
+  {
+   "proyecto_id": "HCDN272347",
+   "titulo": "VI",
+   "n_capitulos_clasificados": 6,
+   "temas": "ECON:0.95;ENER:0.95;SALUD:0.90;JUST:0.95;DESREG:0.85;JUST:0.95",
+   "n_tramos_reales": 6,
+   "paso_real": true,
+   "P_titulo_simulado": 0.6697
+  },
+  {
+   "proyecto_id": "HCDN272347",
+   "titulo": "IV",
+   "n_capitulos_clasificados": 3,
+   "temas": "POLINST:0.85;AMB:0.75;CULT:0.70",
+   "n_tramos_reales": 1,
+   "paso_real": true,
+   "P_titulo_simulado": 0.671
+  },
+  {
+   "proyecto_id": "HCDN272347",
+   "titulo": "V",
+   "n_capitulos_clasificados": 11,
+   "temas": "TRAB:0.85;DESREG:0.70;JUST:0.85;CYT:0.95;JUST:0.85;JUST:0.85;JUST:0.95;JUST:0.95;JUST:0.95;JUST:0.85;DESREG:0.85",
+   "n_tramos_reales": 6,
+   "paso_real": true,
+   "P_titulo_simulado": 0.6817
+  },
+  {
+   "proyecto_id": "HCDN272347",
+   "titulo": "IX",
+   "n_capitulos_clasificados": 13,
+   "temas": "PROD:0.95;DESREG:0.85;DESREG:0.85;DESREG:0.85;POLINST:0.85;DESREG:0.85;PROD:0.95;PROD:0.95;DESREG:0.90;JUST:0.95;DESREG:0.85;POLINST:0.95;POLINST:0.85",
+   "n_tramos_reales": 1,
+   "paso_real": true,
+   "P_titulo_simulado": 0.6853
+  },
+  {
+   "proyecto_id": "HCDN272347",
+   "titulo": "VIII",
+   "n_capitulos_clasificados": 2,
+   "temas": "POLINST:0.85;DESREG:0.75",
+   "n_tramos_reales": 12,
+   "paso_real": true,
+   "P_titulo_simulado": 0.686
+  },
+  {
+   "proyecto_id": "HCDN272347",
+   "titulo": "I",
+   "n_capitulos_clasificados": 6,
+   "temas": "DESREG:0.85;AUX:0.95;ECON:0.95;ECON:0.90;POLINST:0.85;POLINST:0.90",
+   "n_tramos_reales": 7,
+   "paso_real": false,
+   "P_titulo_simulado": 0.9997
+  },
+  {
+   "proyecto_id": "HCDN272347",
+   "titulo": "II",
+   "n_capitulos_clasificados": 9,
+   "temas": "AMB:0.75;AUX:0.95;POLINST:0.75;DESREG:0.90;ENER:0.95;DESREG:0.85;POLINST:0.85;DESREG:0.95;DESREG:0.85",
+   "n_tramos_reales": 11,
+   "paso_real": false,
+   "P_titulo_simulado": 1.0
+  },
+  {
+   "proyecto_id": "HCDN274473",
+   "titulo": "II",
+   "n_capitulos_clasificados": 2,
+   "temas": "ECON:0.95;ECON:0.85",
+   "n_tramos_reales": 1,
+   "paso_real": true,
+   "P_titulo_simulado": 0.5877
+  },
+  {
+   "proyecto_id": "HCDN274473",
+   "titulo": "VII",
+   "n_capitulos_clasificados": 3,
+   "temas": "ECON:0.95;ECON:0.75;ECON:0.95",
+   "n_tramos_reales": 1,
+   "paso_real": true,
+   "P_titulo_simulado": 0.5877
+  },
+  {
+   "proyecto_id": "HCDN285290",
+   "titulo": "III",
+   "n_capitulos_clasificados": 1,
+   "temas": "ECON:0.95",
+   "n_tramos_reales": 1,
+   "paso_real": true,
+   "P_titulo_simulado": 0.636
+  },
+  {
+   "proyecto_id": "HCDN287440",
+   "titulo": "III",
+   "n_capitulos_clasificados": 5,
+   "temas": "ECON:0.99;ECON:0.95;ECON:0.95;ECON:0.95;ECON:0.95",
+   "n_tramos_reales": 1,
+   "paso_real": true,
+   "P_titulo_simulado": 0.636
+  },
+  {
+   "proyecto_id": "HCDN289082",
+   "titulo": "I",
+   "n_capitulos_clasificados": 3,
+   "temas": "TRAB:0.95;TRAB:0.95;TRAB:0.95",
+   "n_tramos_reales": 1,
+   "paso_real": true,
+   "P_titulo_simulado": 0.6797
+  },
+  {
+   "proyecto_id": "HCDN289082",
+   "titulo": "II",
+   "n_capitulos_clasificados": 9,
+   "temas": "TRAB:0.95;TRAB:0.95;TRAB:0.95;TRAB:0.95;TRAB:0.95;TRAB:0.95;TRAB:0.95;TRAB:0.95;TRAB:0.95",
+   "n_tramos_reales": 1,
+   "paso_real": true,
+   "P_titulo_simulado": 0.6797
+  },
+  {
+   "proyecto_id": "HCDN289082",
+   "titulo": "III",
+   "n_capitulos_clasificados": 5,
+   "temas": "TRAB:0.95;TRAB:0.95;TRAB:0.95;TRAB:0.95;TRAB:0.95",
+   "n_tramos_reales": 1,
+   "paso_real": true,
+   "P_titulo_simulado": 0.6797
+  },
+  {
+   "proyecto_id": "HCDN289082",
+   "titulo": "IV",
+   "n_capitulos_clasificados": 3,
+   "temas": "TRAB:0.95;TRAB:0.95;TRAB:0.95",
+   "n_tramos_reales": 1,
+   "paso_real": true,
+   "P_titulo_simulado": 0.6797
+  },
+  {
+   "proyecto_id": "HCDN289082",
+   "titulo": "IX",
+   "n_capitulos_clasificados": 2,
+   "temas": "TRAB:0.95;TRAB:0.95",
+   "n_tramos_reales": 1,
+   "paso_real": true,
+   "P_titulo_simulado": 0.6797
+  },
+  {
+   "proyecto_id": "HCDN289082",
+   "titulo": "V",
+   "n_capitulos_clasificados": 9,
+   "temas": "TRAB:0.85;TRAB:0.95;TRAB:0.95;TRAB:0.95;TRAB:0.95;TRAB:0.95;TRAB:0.85;TRAB:0.95;TRAB:0.95",
+   "n_tramos_reales": 1,
+   "paso_real": true,
+   "P_titulo_simulado": 0.6797
+  },
+  {
+   "proyecto_id": "HCDN289082",
+   "titulo": "VI",
+   "n_capitulos_clasificados": 3,
+   "temas": "TRAB:0.95;TRAB:0.85;TRAB:0.95",
+   "n_tramos_reales": 1,
+   "paso_real": true,
+   "P_titulo_simulado": 0.6797
+  },
+  {
+   "proyecto_id": "HCDN289082",
+   "titulo": "X",
+   "n_capitulos_clasificados": 4,
+   "temas": "TRAB:0.95;TRAB:0.95;TRAB:0.95;TRAB:0.95",
+   "n_tramos_reales": 1,
+   "paso_real": true,
+   "P_titulo_simulado": 0.6797
+  },
+  {
+   "proyecto_id": "HCDN289082",
+   "titulo": "XI",
+   "n_capitulos_clasificados": 5,
+   "temas": "TRAB:0.95;TRAB:0.95;TRAB:0.95;TRAB:0.95;TRAB:0.95",
+   "n_tramos_reales": 1,
+   "paso_real": true,
+   "P_titulo_simulado": 0.6797
+  },
+  {
+   "proyecto_id": "HCDN289082",
+   "titulo": "XIV",
+   "n_capitulos_clasificados": 3,
+   "temas": "TRAB:0.95;TRAB:0.95;TRAB:0.95",
+   "n_tramos_reales": 1,
+   "paso_real": true,
+   "P_titulo_simulado": 0.6797
+  },
+  {
+   "proyecto_id": "HCDN289082",
+   "titulo": "XV",
+   "n_capitulos_clasificados": 6,
+   "temas": "TRAB:0.95;TRAB:0.95;TRAB:0.95;TRAB:0.95;TRAB:0.95;TRAB:0.95",
+   "n_tramos_reales": 1,
+   "paso_real": true,
+   "P_titulo_simulado": 0.6797
+  },
+  {
+   "proyecto_id": "HCDN289082",
+   "titulo": "XXIV",
+   "n_capitulos_clasificados": 2,
+   "temas": "TRAB:0.70;TRAB:0.85",
+   "n_tramos_reales": 1,
+   "paso_real": true,
+   "P_titulo_simulado": 0.6797
+  },
+  {
+   "proyecto_id": "HCDN289082",
+   "titulo": "XXV",
+   "n_capitulos_clasificados": 2,
+   "temas": "DESREG:0.85;TRAB:0.95",
+   "n_tramos_reales": 1,
+   "paso_real": true,
+   "P_titulo_simulado": 0.709
+  }
+ ]
+}

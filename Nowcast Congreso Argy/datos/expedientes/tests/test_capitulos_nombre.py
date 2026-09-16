@@ -83,6 +83,28 @@ caps5 = extraer_capitulos(texto5)
 check(caps5[0]["nombre_capitulo"] == "Del   procedimiento" or caps5[0]["nombre_capitulo"] == "Del procedimiento",
       f"nombre razonable pese a espacios/puntuación de más: {caps5[0]['nombre_capitulo']!r}")
 
+print("\nel numeral de capítulo se REINICIA por título: 'Capítulo I' de dos títulos "
+     "distintos NO se funde en uno solo (bug real encontrado sobre Ley Bases, 16-09)")
+texto6 = (
+    "TÍTULO I\n"
+    "Capítulo I — Disposiciones generales\n"
+    "Art. 1°.- Objeto.\n\n"
+    "TÍTULO II\n"
+    "Capítulo I — Del régimen laboral\n"
+    "Art. 5°.- Ámbito de aplicación.\n"
+)
+caps6 = extraer_capitulos(texto6)
+check(len(caps6) == 2, f"dos capítulos DISTINTOS, no uno fusionado: {caps6}")
+por_titulo = {(c["titulo_num"], c["capitulo_num"]): c["nombre_capitulo"] for c in caps6}
+check(por_titulo.get(("I", "I")) == "Disposiciones generales",
+      f"Título I, Capítulo I: {por_titulo.get(('I', 'I'))!r}")
+check(por_titulo.get(("II", "I")) == "Del régimen laboral",
+      f"Título II, Capítulo I (mismo numeral de capítulo, título distinto): {por_titulo.get(('II', 'I'))!r}")
+
+print("\nsin ningún 'TÍTULO' en el texto: titulo_num queda None, no rompe (leyes sin títulos formales)")
+caps7 = extraer_capitulos("Capítulo I — Disposiciones generales\nArt. 1°.- Objeto.\n")
+check(caps7[0]["titulo_num"] is None, f"sin título en el texto -> titulo_num None: {caps7}")
+
 
 print(f"\n{corridos - len(fallos)}/{corridos} OK")
 if fallos:

@@ -262,6 +262,11 @@ const TABLERO = {
   hitos: [
     {
       fecha: "2026-09-16",
+      titulo: "Preguntamos si podiamos usar lo que habia, y encontramos un error real antes de gastar mas plata",
+      texto: "Franco pregunto si con lo ya clasificado podiamos correr el modelo de verdad y ver si tiene sentido. Se armo la prueba real: tomar la Ley Bases, simular cada capitulo por separado y comparar contra lo que REALMENTE paso la noche del retiro del recinto. Al armarla aparecio algo importante: el numero de capitulo se repite dentro de una misma ley -'Capitulo I' aparece en la Ley Bases bajo SEIS partes distintas (titulos distintos)-. Todo el trabajo de hoy agrupaba por el numero de capitulo solo, mezclando sin darse cuenta capitulos que no tienen nada que ver. Se corrigio el error en el codigo gratis (solo hubo que releer documentos ya descargados) y se confirmo que la ley tiene casi el doble de capitulos reales de los contados. Mala noticia: los 437 capitulos clasificados hoy quedaron sin validez, hay que reclasificar. Buena noticia: se encontro ANTES de escalar esto a miles de proyectos, que es para lo que sirvio la prueba."
+    },
+    {
+      fecha: "2026-09-16",
       titulo: "Arrancamos dos tareas que Franco aprobo, y a mitad de camino se acabo el credito de la API",
       texto: "Permiso explicito para dos cosas: saber de que tema trata cada CAPITULO de una ley (no solo la ley entera) y ampliar la cobertura de temas a proyectos que todavia no se votaron. Las dos corridas arrancaron bien -cientos de capitulos y proyectos reales quedaron clasificados- pero a mitad de camino la cuenta de la API se quedo sin credito. No es un error del sistema, es que se acabo el saldo. Se corto enseguida la parte que seguia intentando sin avanzar. Las dos tareas quedan con un marcador de pagina: cuando Franco recargue credito, correr el mismo comando retoma donde se corto, sin repetir nada. Estado real: 437 de 704 capitulos clasificados (62%), 328 de 9.910 proyectos nuevos (3%, recien arrancando esa parte mas grande)."
     },

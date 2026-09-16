@@ -2,6 +2,27 @@
 
 > Documento vivo. Cada cambio importante en el proyecto se explica acá en lenguaje claro, además de registrarse en `ESTADO-DEL-PROYECTO.md`. Si algo del sistema no se entiende leyendo esto, está mal escrito y hay que arreglarlo.
 
+## Preguntamos si podíamos usar lo que había, y encontramos un error real antes de gastar más plata en él (16-09-2026)
+
+Franco preguntó si con lo ya clasificado podíamos hacer correr el modelo de verdad y
+ver si tiene sentido. Se armó la prueba real: tomar la Ley Bases, con su historia real
+de legisladores, simular cada capítulo por separado y comparar contra lo que
+REALMENTE pasó la noche que el gobierno retiró el proyecto del recinto.
+
+Al armar esa prueba apareció algo importante: dentro de una misma ley, el número de
+capítulo se repite — "Capítulo I" aparece en la Ley Bases bajo SEIS partes distintas
+de la ley (títulos distintos), no una sola vez. Todo el trabajo clasificado hoy estaba
+agrupando por el número de capítulo solo, sin distinguir de qué parte de la ley era
+cada uno — mezclando, sin darse cuenta, capítulos que no tienen nada que ver entre sí.
+
+Se corrigió el error en el código (gratis, sin gastar créditos: sólo hubo que releer
+los documentos que ya estaban descargados) y se confirmó que sí importa: la ley tiene
+casi el doble de capítulos reales distintos de los que se habían contado. La mala
+noticia es que los 437 capítulos clasificados hoy quedaron sin validez — no se sabe a
+qué parte de la ley corresponde cada uno con certeza — y hay que volver a clasificarlos
+con la cuenta corregida. La buena noticia es que se encontró ANTES de gastar en escalar
+esto a miles de proyectos, que es exactamente para lo que sirvió hacer la prueba.
+
 ## Arrancamos dos tareas que Franco aprobó, y a mitad de camino se acabó el crédito de la API (16-09-2026)
 
 Franco dio permiso explícito para dos cosas que necesitan el agente clasificador:

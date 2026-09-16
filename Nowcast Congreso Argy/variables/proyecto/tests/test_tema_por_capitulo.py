@@ -33,17 +33,18 @@ def check(cond: bool, msg: str) -> None:
 
 
 def _capitulos_nombre_fixture(tmp: Path) -> Path:
-    """Espeja capitulos_nombre.parquet: dos capítulos de un mismo proyecto con
-    DOS candidatos de nombre cada uno (dos ODs) — el caso real documentado en
-    el segundo addendum de ADR-0023."""
+    """Espeja capitulos_nombre.parquet (esquema post-ADR-0029, con titulo_num):
+    HCDN000100 tiene "Capítulo I" bajo DOS títulos distintos (I y II) — el
+    caso real que rompía la clave vieja (proyecto_id, capitulo_num) — más un
+    candidato ruidoso duplicado del Título I/Capítulo I (dos ODs)."""
     p = tmp / "capitulos_nombre.parquet"
     pd.DataFrame([
         {"archivo": "141-1.pdf", "proyecto_ids": "HCDN000100",
-         "capitulo_num": "I", "nombre_capitulo": "I de"},  # candidato corto/ruidoso
+         "titulo_num": "I", "capitulo_num": "I", "nombre_capitulo": "I de"},  # ruidoso
         {"archivo": "141-7.pdf", "proyecto_ids": "HCDN000100;HCDN000200",
-         "capitulo_num": "I", "nombre_capitulo": "Disposiciones generales de la ley"},
+         "titulo_num": "I", "capitulo_num": "I", "nombre_capitulo": "Disposiciones generales de la ley"},
         {"archivo": "141-1.pdf", "proyecto_ids": "HCDN000100",
-         "capitulo_num": "II", "nombre_capitulo": "Del régimen laboral"},
+         "titulo_num": "II", "capitulo_num": "I", "nombre_capitulo": "Del régimen laboral"},
     ]).to_parquet(p, index=False)
     return p
 
@@ -83,14 +84,24 @@ with tempfile.TemporaryDirectory() as tmpdir:
     db = _db_fixture(tmp)
     exped = _expedientes_fixture(tmp)
 
-    print("cargar_capitulos — dedup por (proyecto_id, capitulo_num), se queda con el más largo")
+    print("cargar_capitulos — dedup por (proyecto_id, titulo_num, capitulo_num), NO por capitulo_num solo")
     caps = cargar_capitulos(cap_path)
-    check(len(caps) == 3, f"3 pares únicos (HCDN100/I, HCDN200/I, HCDN100/II): {len(caps)}")
-    fila_100_I = caps[(caps["proyecto_id"] == "HCDN000100") & (caps["capitulo_num"] == "I")]
-    check(fila_100_I.iloc[0]["nombre_capitulo"] == "Disposiciones generales de la ley",
-          f"se queda con el nombre más largo, no el ruidoso: {fila_100_I.iloc[0]['nombre_capitulo']!r}")
-    fila_200_I = caps[(caps["proyecto_id"] == "HCDN000200") & (caps["capitulo_num"] == "I")]
-    check(len(fila_200_I) == 1, "HCDN000200 también aparece (la OD 141-7 lo incluye)")
+    check(len(caps) == 3,
+          f"3 pares únicos (HCDN100/Tit.I/Cap.I, HCDN100/Tit.II/Cap.I, HCDN200/Tit.I/Cap.I): {len(caps)}")
+    fila_100_TI_CI = caps[(caps["proyecto_id"] == "HCDN000100") & (caps["titulo_num"] == "I") &
+                          (caps["capitulo_num"] == "I")]
+    check(len(fila_100_TI_CI) == 1 and
+         fila_100_TI_CI.iloc[0]["nombre_capitulo"] == "Disposiciones generales de la ley",
+         f"Título I/Cap I: se queda con el nombre más largo, no el ruidoso: "
+         f"{fila_100_TI_CI.iloc[0]['nombre_capitulo'] if len(fila_100_TI_CI) else None!r}")
+    fila_100_TII_CI = caps[(caps["proyecto_id"] == "HCDN000100") & (caps["titulo_num"] == "II") &
+                           (caps["capitulo_num"] == "I")]
+    check(len(fila_100_TII_CI) == 1 and fila_100_TII_CI.iloc[0]["nombre_capitulo"] == "Del régimen laboral",
+          f"Título II/Cap I: es un capítulo DISTINTO del Título I/Cap I, aunque comparten "
+          f"el mismo numeral de capítulo: {fila_100_TII_CI}")
+    fila_200 = caps[(caps["proyecto_id"] == "HCDN000200") & (caps["titulo_num"] == "I") &
+                    (caps["capitulo_num"] == "I")]
+    check(len(fila_200) == 1, "HCDN000200 también aparece (la OD 141-7 lo incluye)")
 
     print("\n_sumarios — resuelve contexto vía crosswalk, degrada limpio para el que no cruza")
     sumarios = _sumarios(["HCDN000100", "HCDN000200"], db, exped)
@@ -101,7 +112,8 @@ with tempfile.TemporaryDirectory() as tmpdir:
     print("\nclasificar_capitulos — clasifica y persiste, usando el sumario como contexto")
     res = clasificar_capitulos(caps, clasificar=_falso, db_path=db, expedientes=exped)
     check(len(res) == 3, f"las 3 filas clasificadas: {len(res)}")
-    fila = res[(res["proyecto_id"] == "HCDN000100") & (res["capitulo_num"] == "I")].iloc[0]
+    fila = res[(res["proyecto_id"] == "HCDN000100") & (res["titulo_num"] == "I") &
+              (res["capitulo_num"] == "I")].iloc[0]
     check(fila["tema_area"] == "TRAB",
           f"el contexto del sumario ('...reforma laboral') hace que el capítulo 'Disposiciones "
           f"generales' clasifique como TRAB: {fila['tema_area']}")
@@ -123,14 +135,24 @@ with tempfile.TemporaryDirectory() as tmpdir:
         return _falso(texto)
     res4 = clasificar_capitulos(caps, clasificar=_rompe, db_path=db, expedientes=exped)
     # HCDN000100 tiene "laboral" en su SUMARIO (contexto), así que sus dos capítulos
-    # (I y II) rompen con _rompe; sólo HCDN000200 (sin sumario resuelto, sin "laboral"
-    # en su nombre) sobrevive -- el lote sigue, no corta en el primer error.
-    check(len(res4) == 1, f"sólo HCDN000200/I (sin 'laboral' en el contexto) sobrevive: {len(res4)}")
+    # (Título I/Cap I y Título II/Cap I) rompen con _rompe; sólo HCDN000200 (sin
+    # sumario resuelto, sin "laboral" en su nombre) sobrevive -- el lote sigue.
+    check(len(res4) == 1, f"sólo HCDN000200 (sin 'laboral' en el contexto) sobrevive: {len(res4)}")
     check(res4.iloc[0]["proyecto_id"] == "HCDN000200", f"y es el proyecto correcto: {res4.iloc[0]['proyecto_id']}")
 
     print("\nclasificar_capitulos — respeta --limite")
     res5 = clasificar_capitulos(caps, clasificar=_falso, limite=1, db_path=db, expedientes=exped)
     check(len(res5) == 1, f"limite=1 procesa sólo 1: {len(res5)}")
+
+    print("\ncargar_capitulos — rompe claro sobre un contrato viejo (sin titulo_num)")
+    p_vieja = tmp / "capitulos_nombre_vieja.parquet"
+    pd.DataFrame([{"archivo": "x.pdf", "proyecto_ids": "HCDN1", "capitulo_num": "I",
+                  "nombre_capitulo": "Algo"}]).to_parquet(p_vieja, index=False)
+    try:
+        cargar_capitulos(p_vieja)
+        check(False, "tenía que levantar KeyError sobre un contrato sin titulo_num")
+    except KeyError as e:
+        check("titulo_num" in str(e), f"el error tiene que nombrar la columna faltante: {e}")
 
 
 print(f"\n{corridos - len(fallos)}/{corridos} OK")

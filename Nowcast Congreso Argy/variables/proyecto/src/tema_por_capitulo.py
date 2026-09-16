@@ -31,8 +31,13 @@ CONSUME (contratos existentes, no reimplementa nada):
 PRODUCE (contrato nuevo, NO toca `proyecto_taxonomias` ni el registro único —
   es una granularidad nueva, capítulo, que esas tablas no tienen):
   variables/proyecto/data/tema_por_capitulo.parquet
-    proyecto_id, capitulo_num, nombre_capitulo, tema_id, tema_area, confianza,
-    todas_ids, via, clasificado_en
+    proyecto_id, titulo_num, capitulo_num, nombre_capitulo, tema_id, tema_area,
+    confianza, todas_ids, via, clasificado_en
+
+  ⚠️ La CLAVE es (proyecto_id, titulo_num, capitulo_num), NO (proyecto_id,
+  capitulo_num): el numeral de capítulo se REINICIA en cada título — ver
+  `capitulos_nombre.extraer_capitulos` y ADR-0029 (bug real encontrado
+  corriendo `composicion_capitulos` sobre Ley Bases, corregido el 16-09).
 
 Idempotente (no reclasifica lo ya resuelto salvo --todos). Resiliente (un
 nombre roto no corta el lote). Checkpoint cada N filas.
@@ -93,19 +98,29 @@ def _clasificador_agente() -> Callable[[str], list[tuple[str, float]]]:
 
 
 def cargar_capitulos(capitulos_nombre: Path = DEFAULT_CAPITULOS) -> pd.DataFrame:
-    """Una fila por (proyecto_id, capitulo_num): explota `proyecto_ids` (una OD
-    puede cubrir varios proyectos) y, cuando el mismo par tiene más de un
-    nombre candidato (varias ODs del mismo proyecto — ver la limitación
-    honesta anotada en ADR-0023, addendum del 16-09), se queda con el más
-    LARGO — la misma heurística ya usada ahí, no una nueva."""
+    """Una fila por (proyecto_id, titulo_num, capitulo_num) — NO por
+    (proyecto_id, capitulo_num) solo: el numeral de capítulo se REINICIA en
+    cada título (bug real encontrado el 16-09 corriendo `composicion_capitulos`
+    sobre Ley Bases: "Capítulo I" aparece bajo 6 títulos distintos ahí, y
+    agrupar sin el título fusionaba capítulos de partes DISTINTAS de la ley
+    — ver `capitulos_nombre.extraer_capitulos` y ADR-0029). Explota
+    `proyecto_ids` (una OD puede cubrir varios proyectos) y, cuando el mismo
+    (proyecto, título, capítulo) tiene más de un nombre candidato (varias ODs
+    del mismo proyecto — limitación honesta anotada en ADR-0023, addendum del
+    16-09), se queda con el más LARGO."""
     c = pd.read_parquet(capitulos_nombre)
     if c.empty:
         raise ValueError(f"{capitulos_nombre} está vacío")
+    if "titulo_num" not in c.columns:
+        raise KeyError(
+            f"{capitulos_nombre} no tiene 'titulo_num' — es una versión vieja del contrato "
+            "(de antes del fix de ADR-0029); correr de nuevo "
+            "datos/expedientes/src/capitulos_nombre.py (gratis, usa el caché de PDFs)")
     cx = c.assign(proyecto_id=c["proyecto_ids"].str.split(";")).explode("proyecto_id")
     cx["_len"] = cx["nombre_capitulo"].str.len()
     cx = (cx.sort_values("_len", ascending=False)
-            .drop_duplicates(["proyecto_id", "capitulo_num"], keep="first"))
-    return cx[["proyecto_id", "capitulo_num", "nombre_capitulo"]].reset_index(drop=True)
+            .drop_duplicates(["proyecto_id", "titulo_num", "capitulo_num"], keep="first"))
+    return cx[["proyecto_id", "titulo_num", "capitulo_num", "nombre_capitulo"]].reset_index(drop=True)
 
 
 def _sumarios(proyecto_ids: list[str], db_path: Path, expedientes: Path) -> dict[str, str]:
@@ -145,11 +160,13 @@ def clasificar_capitulos(capitulos: pd.DataFrame,
         clasificar = _clasificador_agente()
 
     def _clave(df):
-        return set(zip(df["proyecto_id"].astype(str), df["capitulo_num"].astype(str)))
+        return set(zip(df["proyecto_id"].astype(str), df["titulo_num"].astype(str),
+                       df["capitulo_num"].astype(str)))
 
     ya = _clave(previas) if (previas is not None and not previas.empty and not todos) else set()
     capitulos = capitulos.copy()
     capitulos["_ya"] = list(zip(capitulos["proyecto_id"].astype(str),
+                                capitulos["titulo_num"].astype(str),
                                 capitulos["capitulo_num"].astype(str)))
     pend = capitulos[~capitulos["_ya"].isin(ya)]
     if limite is not None:
@@ -164,7 +181,8 @@ def clasificar_capitulos(capitulos: pd.DataFrame,
             b = base
             if todos and not nv.empty:
                 clave_nv = _clave(nv)
-                clave_b = list(zip(b["proyecto_id"].astype(str), b["capitulo_num"].astype(str)))
+                clave_b = list(zip(b["proyecto_id"].astype(str), b["titulo_num"].astype(str),
+                                   b["capitulo_num"].astype(str)))
                 b = b[[k not in clave_nv for k in clave_b]]
             return pd.concat([b, nv], ignore_index=True)
         return nv
@@ -181,15 +199,17 @@ def clasificar_capitulos(capitulos: pd.DataFrame,
     filas, ok, err = [], 0, 0
     for _, r in pend.iterrows():
         pid = str(r["proyecto_id"])
+        tit = str(r["titulo_num"]) if r["titulo_num"] is not None else None
         cap = str(r["capitulo_num"])
         nombre = str(r["nombre_capitulo"])
         contexto = sumarios.get(pid)
-        texto = f"{contexto} — Capítulo {cap}: {nombre}" if contexto else f"Capítulo {cap}: {nombre}"
+        capitulo_txt = f"Título {tit}, Capítulo {cap}" if tit else f"Capítulo {cap}"
+        texto = f"{contexto} — {capitulo_txt}: {nombre}" if contexto else f"{capitulo_txt}: {nombre}"
         try:
             asigs = clasificar(texto)
             tema_id, area, conf = _elegir_primaria(asigs)
             filas.append({
-                "proyecto_id": pid, "capitulo_num": cap, "nombre_capitulo": nombre,
+                "proyecto_id": pid, "titulo_num": tit, "capitulo_num": cap, "nombre_capitulo": nombre,
                 "tema_id": tema_id, "tema_area": area, "confianza": conf,
                 "todas_ids": ";".join(i for i, _ in asigs) if asigs else None,
                 "via": "texto", "clasificado_en": _ahora(),
@@ -199,7 +219,8 @@ def clasificar_capitulos(capitulos: pd.DataFrame,
                 _guardar(filas)
                 logger.info("checkpoint: %d clasificados -> %s", ok, out)
         except Exception as e:  # resiliencia: un capítulo roto no corta el lote
-            logger.warning("capítulo %s/%s sin clasificar (%s): %s", pid, cap, type(e).__name__, e)
+            logger.warning("capítulo %s (proyecto %s, título %s) sin clasificar (%s): %s",
+                           cap, pid, tit, type(e).__name__, e)
             err += 1
     logger.info("clasificados OK=%d, error=%d", ok, err)
     return _merge(previas, filas)

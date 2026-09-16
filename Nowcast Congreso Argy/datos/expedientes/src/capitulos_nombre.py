@@ -23,7 +23,14 @@ CONSUME
     columnas archivo/estado/proyecto_ids) + los PDF ahí listados.
 PRODUCE (contrato nuevo)
   datos/expedientes/data/clean/capitulos_nombre.parquet
-    archivo, proyecto_ids, capitulo_num, nombre_capitulo
+    archivo, proyecto_ids, titulo_num, capitulo_num, nombre_capitulo
+
+  ⚠️ La CLAVE es (titulo_num, capitulo_num), NO capitulo_num solo: el
+  numeral de capítulo se REINICIA en cada título (medido sobre Ley Bases:
+  "Capítulo I" aparece bajo 6 títulos distintos). Corregido el 16-09 después
+  de que una corrida real de `composicion_capitulos` (ADR-0027) sobre Ley
+  Bases mezclara capítulos de partes DISTINTAS de la ley bajo la misma
+  clave — ver el addendum de ADR-0023 y ADR-0029.
 
 Por qué no reusa `parser_od.texto_de_pdf` tal cual: esa función existe para
 sacar FIRMANTES, que viven cerca del principio del PDF, y por eso corta en
@@ -72,6 +79,14 @@ TOPE_PAGINAS_DEFAULT = 150   # generoso: el rescate con pypdf es rápido (ver do
 _RE_CAPITULO_TEXTO = re.compile(
     r"C[Aa][Pp][IiÍí][Tt][Uu][Ll][Oo]\s+([IVXLCDM]+)\.?\s*[—\-:]?\s*\n?\s*([A-ZÁÉÍÓÚÑ][^\n]{2,110})",
 )
+# El numeral de CAPÍTULO se REINICIA en cada TÍTULO ("Capítulo I" aparece una
+# vez por título — medido sobre Ley Bases: 6 títulos distintos, cada uno con
+# su propio "Capítulo I"). Sin trackear el título vigente, `extraer_capitulos`
+# fusionaba capítulos de leyes enteras DISTINTAS bajo la misma clave. Mismo
+# criterio que `votacion_por_articulo._RE_TITULO_NUM` (no se reimplementa,
+# se repite acá porque ese regex trabaja sobre el TÍTULO DE ACTA, no sobre
+# el texto completo del PDF).
+_RE_TITULO_TEXTO = re.compile(r"T[IiÍí][Tt][Uu][Ll][Oo]\s+([IVXLCDM]+)\b")
 
 
 def texto_completo_pdf(ruta: Path, tope_paginas: int = TOPE_PAGINAS_DEFAULT) -> str:
@@ -100,22 +115,37 @@ _RE_ES_ENCABEZADO_PAGINA = re.compile(r"C[ÁA]MARA\s+DE\s+(DIPUTADOS|SENADORES)|
 
 
 def extraer_capitulos(texto: str) -> list[dict]:
-    """[{capitulo_num, nombre_capitulo}, ...] — un capítulo puede repetirse si
-    el PDF lo menciona dos veces (encabezado real + índice/sumario); se
-    deduplica por numeral, quedándose con el nombre más largo (más informativo,
-    normalmente el del encabezado real y no una referencia de pasada). Un
+    """[{titulo_num, capitulo_num, nombre_capitulo}, ...] — la CLAVE real es
+    (titulo_num, capitulo_num), NO capitulo_num solo (ver el comentario de
+    `_RE_TITULO_TEXTO`): se recorre el texto en ORDEN, llevando cuál es el
+    título vigente en cada posición (None si todavía no apareció ningún
+    "TÍTULO" — leyes sin división en títulos, sólo capítulos), y cada
+    capítulo se empareja con el título bajo el que aparece. Si el mismo
+    (título, capítulo) se menciona dos veces (encabezado real + índice/
+    sumario), se queda con el nombre más largo (más informativo). Un
     capítulo sin nombre propio (el "nombre" capturado es en realidad el
     arranque del articulado, ver `_RE_ES_ARTICULO`) se descarta: mejor
     ausente que con un nombre inventado."""
-    candidatos: dict[str, str] = {}
-    for m in _RE_CAPITULO_TEXTO.finditer(texto):
-        num = m.group(1).upper()
-        nombre = " ".join(m.group(2).split()).strip(" .-—:")
+    marcas: list[tuple] = [(m.start(), "titulo", m.group(1).upper(), None)
+                           for m in _RE_TITULO_TEXTO.finditer(texto)]
+    marcas += [(m.start(), "capitulo", m.group(1).upper(),
+               " ".join(m.group(2).split()).strip(" .-—:"))
+              for m in _RE_CAPITULO_TEXTO.finditer(texto)]
+    marcas.sort(key=lambda t: t[0])
+
+    candidatos: dict[tuple, str] = {}
+    titulo_actual = None
+    for _, tipo, num, nombre in marcas:
+        if tipo == "titulo":
+            titulo_actual = num
+            continue
         if not nombre or _RE_ES_ARTICULO.match(nombre) or _RE_ES_ENCABEZADO_PAGINA.search(nombre):
             continue
-        if num not in candidatos or len(nombre) > len(candidatos[num]):
-            candidatos[num] = nombre
-    return [{"capitulo_num": n, "nombre_capitulo": t} for n, t in sorted(candidatos.items())]
+        clave = (titulo_actual, num)
+        if clave not in candidatos or len(nombre) > len(candidatos[clave]):
+            candidatos[clave] = nombre
+    return [{"titulo_num": t, "capitulo_num": c, "nombre_capitulo": nom}
+           for (t, c), nom in sorted(candidatos.items(), key=lambda kv: (kv[0][0] or "", kv[0][1]))]
 
 
 def correr(od_cache: Path = OD_CACHE_DEFAULT, out: Path = OUT_DEFAULT,
@@ -152,7 +182,7 @@ def correr(od_cache: Path = OD_CACHE_DEFAULT, out: Path = OUT_DEFAULT,
             logger.info("%d/%d PDF leídos, %d capítulos con nombre encontrados hasta ahora",
                         i, len(man), len(filas))
 
-    df = pd.DataFrame(filas, columns=["archivo", "proyecto_ids", "capitulo_num", "nombre_capitulo"])
+    df = pd.DataFrame(filas, columns=["archivo", "proyecto_ids", "titulo_num", "capitulo_num", "nombre_capitulo"])
     out.parent.mkdir(parents=True, exist_ok=True)
     df.to_parquet(out, index=False)
     logger.info("RESULTADO: %d Órdenes del Día leídas, %d SIN un capítulo reconocible, "

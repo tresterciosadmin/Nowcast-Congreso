@@ -1,5 +1,22 @@
 # Resumen para la sesión de cowork — el problema multitema
 
+> ⚠️ **ACTUALIZACIÓN 16-09-2026, más tarde el mismo día.** Después de escribir
+> este resumen llegó `coordinacion/PROMPT-MULTITEMA-V2.md` — una revisión
+> externa que encontró, con precisión, los cuatro problemas de DISEÑO que
+> explican por qué el PASO 2 de abajo no podía cerrar la pregunta (sin brazo
+> de control, `ponderada` en probabilidad no en logit, `peor_tema` con un
+> estimador sesgado, muestra adversarialmente seleccionada). Se ejecutaron
+> las tres fases que proponía, con resultado: **la pregunta a nivel BLOQUE
+> quedó cerrada de verdad** (ADR-0028: con el diseño corregido, sobre el
+> censo completo, NINGUNA diferencia —ni siquiera "no condicionar"— es
+> distinguible de cero) y **la Idea 1 de este resumen (mover el término al
+> LEGISLADOR) resultó ser la correcta**: implementada y prendida, 11,1% menos
+> Brier sin ningún corte negativo (ADR-0026). La Idea 2 (capítulos) también
+> se construyó, sin enganchar a producción todavía (ADR-0027). Este
+> documento queda como registro de cómo se llegó ahí — el análisis de abajo
+> sigue siendo correcto, sólo que las "propuestas no probadas" ya se
+> probaron. Ver ADR-0026/0027/0028 para el resultado real.
+
 **Fecha:** 2026-09-16 · **Para:** sesión de cowork de Franco (fuera de este repo) ·
 **Estado del código:** cerrado por ahora, documentado en ADR-0024 y `PASO 2`
 (`coordinacion/DECISIONES/0024-...md`), banderas apagadas, nada pendiente de

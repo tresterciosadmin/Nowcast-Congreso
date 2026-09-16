@@ -51,7 +51,7 @@ este archivo en el mismo commit.
 | 16 | proximidad electoral | el calendario cambia incentivos | 🔲 **propuesto** (§III.B.1) |
 | 17 | asimetría del ICG | las caídas pesan más que las subas | 🔲 **propuesto** (§III.B.2) |
 | 18 | $\text{rec}_i^{\text{tema}}$ — récord por tema | condiciona el récord del LEGISLADOR (no el bloque) por el tema del proyecto | ✅ **PRENDIDO 16-09-2026** (`RECORD_POR_TEMA`) — 11,1% menos Brier en el censo completo, sin cortes negativos (§III.B.3, ADR-0026). El $\rho$ del sobre-tablas (§III.A.5) sigue aparte y apagado |
-| 19 | multietiqueta en $s_\ell$ (`combinar_temas`) + `TEMA_AUTO` | un proyecto real casi siempre tiene VARIOS temas (61,2% medido) | 🔴 **PROBADO y DESCARTADO POR AHORA, 15/16-09** (§I.4a, ADR-0024) — implementado, backtest real (2.984 actas), CUATRO reglas: `primaria` (skill −0,056) le gana a `ponderada` (−0,066), `union` (−0,076) y `peor_tema` (−0,080, la peor de las tres — agregada el 16-09 a pedido de Franco, "probemos algo nuevo", y salió peor que las otras dos). No es un "no" definitivo — "no todavía"; decisión de Franco |
+| 19 | multietiqueta en $s_\ell$ (`combinar_temas`) + `TEMA_AUTO` | un proyecto real casi siempre tiene VARIOS temas (61,2% medido) | ⚪ **CERRADO 16-09-2026** (§I.4a, ADR-0024 enmendado por ADR-0028) — re-test con brazo de control sobre el censo completo: NINGUNA regla de combinación (ni siquiera "no condicionar") es distinguible de `primaria`. No es que empeore: la rama de bloque no tiene la información que el tema movería. La ganancia real está en la fila 18 (`rec_i^tema` a nivel legislador) |
 
 **Resumen honesto: 7 términos corren, 5 están rotos, apagados o reprobaron su backtest
 (el sobre tablas y la multietiqueta no generalizan fuera de la muestra con la que se
@@ -232,6 +232,21 @@ inflarían el share.
 > en `todas_ids`) cuando en la realidad casi siempre hay un tema que manda y
 > otros que son ruido. **No se recomienda activar ninguna de las cuatro.**
 > Detalle completo en ADR-0024.
+>
+> ✅ **CIERRE 16-09-2026 (FASE 0, ADR-0028, enmienda a ADR-0024).** El PASO 2
+> de arriba medía SIN brazo de control, `ponderada` en probabilidad (no
+> logit) y `peor_tema` con un estimador sesgado. Re-test corregido —
+> `sin_tema` (control), `ponderada_logit` (combina en logit con confianza
+> real), censo completo (5.855 actas, no 2.984), bootstrap clusterizado por
+> acta—: **NINGUNA diferencia contra `primaria` es distinguible de cero**
+> (rama de bloque: `sin_tema` 0,21979 vs `primaria` 0,22047, IC de la
+> diferencia [−0,00005; 0,00006]; `union`/`ponderada_logit` igual de
+> indistinguibles). Idéntico en las 5 eras. **Lectura más fuerte que la
+> original:** no es que condicionar por tema empeore — es que la rama de
+> bloque (gente sin historia propia) no tiene la información que el tema
+> podría mover. La ganancia real está en FASE 1 (fila 18 de la tabla de
+> arriba, `rec_i^tema` a nivel LEGISLADOR: +11,1%, sin ningún corte
+> negativo). Detalle en ADR-0028.
 
 **Archivo:** `variables/bloque/src/bloque.py` → `proyectar_postura`
 

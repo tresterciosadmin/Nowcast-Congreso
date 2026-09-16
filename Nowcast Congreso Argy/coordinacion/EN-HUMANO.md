@@ -2,6 +2,28 @@
 
 > Documento vivo. Cada cambio importante en el proyecto se explica acá en lenguaje claro, además de registrarse en `ESTADO-DEL-PROYECTO.md`. Si algo del sistema no se entiende leyendo esto, está mal escrito y hay que arreglarlo.
 
+## Repetimos la prueba del multitema con el método arreglado, y esta vez la respuesta quedó clara (16-09-2026)
+
+Franco no se conformó con el resultado anterior ("no tiene sentido, hay que encontrarle
+la vuelta") y llegó una revisión externa que encontró el motivo: la prueba anterior tenía
+cuatro problemas de diseño, no de ejecución. El más importante: nunca se probó qué pasa
+si NO se toca nada — sin ese punto de comparación, no se puede saber si una idea nueva es
+mala o si, directamente, ese rincón del modelo no tiene información que ninguna idea
+pueda aprovechar.
+
+Se repitió la prueba con el método arreglado: un grupo de control (no condicionar por
+nada), la forma correcta de combinar varios temas (matemáticamente, no simplemente
+promediando), y esta vez sobre TODA la historia disponible, no una muestra. El resultado
+quedó clarísimo: ninguna de las formas de usar el tema en este punto del modelo —ni
+siquiera "no usarlo"— se distingue de las demás. No es que usar el tema empeore las
+cosas: es que este rincón específico del modelo (el que se usa cuando de una persona no
+se sabe nada todavía) simplemente no tiene la información que el tema podría mover. La
+pregunta queda cerrada, y con una respuesta más sólida que la primera vez.
+
+Esto además confirma por qué la otra idea de esta misma sesión —enseñarle al modelo que
+cada legislador vota distinto según el tema (contada más abajo)— sí funcionó: ahí el tema
+se metió justo donde SÍ hay información real, no donde se rellenan los huecos.
+
 ## Le enseñamos al modelo a pensar una ley grande como varias leyes chicas, capítulo por capítulo (16-09-2026)
 
 Siguiendo con la idea del resumen para la sesión de cowork: una de las salidas propuestas

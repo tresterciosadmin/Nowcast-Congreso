@@ -518,6 +518,14 @@ def proyectar_postura(votos: pd.DataFrame, fecha, camara: str,
                     promedio ponderado por `confianza` de esos shares ya encogidos. Con
                     un solo tema de peso 1.0 da EXACTAMENTE lo mismo que 'primaria' —
                     es la generalización, no una rama aparte.
+      'ponderada_logit' — (2026-09-16, PROMPT-MULTITEMA-V2.md FASE 0, crítica #2)
+                    MISMO cómputo por área que 'ponderada', pero combina en LOGIT en
+                    vez de en probabilidad: promedia logit(share_area) ponderado por
+                    `confianza`, y recién al final aplica sigmoid. Evita que promediar
+                    en probabilidad comprima hacia 0,5 y aplaste los temas extremos
+                    (regla IV.2 de FORMULA-COMPLETA.md: condicionar en logit, nunca
+                    promediando probabilidades). Con un solo tema de peso 1.0 también
+                    da EXACTAMENTE 'primaria' (logit/sigmoid son inversas exactas).
 
     `temas` es la multietiqueta del proyecto OBJETIVO (no de la ventana): una lista de
     áreas, de `(área, confianza)`, o un dict área->confianza — típicamente `todas_ids`
@@ -560,9 +568,9 @@ def proyectar_postura(votos: pd.DataFrame, fecha, camara: str,
     )
 
     combinar_temas = (combinar_temas or "primaria").lower()
-    if combinar_temas not in ("primaria", "union", "ponderada", "peor_tema"):
+    if combinar_temas not in ("primaria", "union", "ponderada", "peor_tema", "ponderada_logit"):
         raise ValueError(f"combinar_temas debe ser 'primaria'|'union'|'ponderada'|"
-                         f"'peor_tema'; vino {combinar_temas!r}")
+                         f"'peor_tema'|'ponderada_logit'; vino {combinar_temas!r}")
     temas_norm = _normalizar_temas_objetivo(temas)
     if combinar_temas != "primaria" and tema is None and not temas_norm:
         raise ValueError(f"combinar_temas={combinar_temas!r} necesita `tema` o `temas` "
@@ -644,8 +652,8 @@ def proyectar_postura(votos: pd.DataFrame, fecha, camara: str,
                             "de la ventana", sel["acta_id"].nunique(), sorted(tgt_areas),
                             origen, mab["acta_id"].nunique())
 
-        else:  # ponderada | peor_tema — MISMO cómputo por área, sólo cambia
-                # cómo se combinan al final (ver el loop de `out`, más abajo)
+        else:  # ponderada | peor_tema | ponderada_logit — MISMO cómputo por área,
+                # sólo cambia cómo se combinan al final (ver el loop de `out`, más abajo)
             n_total = 0
             for area, _peso in temas_norm:
                 def _match(aid, _area=area) -> bool:
@@ -691,7 +699,7 @@ def proyectar_postura(votos: pd.DataFrame, fecha, camara: str,
             desvio = float(np.clip(r["desvio"], 0.0, 1.0))
             nact = int(r["n_actas"])
             share = share_u
-            if modo_efectivo in ("ponderada", "peor_tema"):
+            if modo_efectivo in ("ponderada", "peor_tema", "ponderada_logit"):
                 # cada tema objetivo encoge SU PROPIO share hacia la incondicional
                 # (mismo k_shrink de siempre). Un tema sin ninguna acta de este
                 # bloque en la ventana no se descarta: aporta share_u (n_cond=0 en
@@ -699,6 +707,7 @@ def proyectar_postura(votos: pd.DataFrame, fecha, camara: str,
                 # ese lente, uso la base", no "ese lente no cuenta".
                 shares_area = []
                 num, den = 0.0, 0.0
+                logit_num = 0.0
                 for area, peso in temas_norm:
                     cs = area_shares.get(area, {}).get(linaje)
                     if cs is not None:
@@ -710,10 +719,21 @@ def proyectar_postura(votos: pd.DataFrame, fecha, camara: str,
                     shares_area.append(share_area)
                     num += peso * share_area
                     den += peso
+                    # FASE 0 v2 (PROMPT-MULTITEMA-V2.md, crítica #2): promediar EN
+                    # PROBABILIDAD comprime hacia el centro y aplasta los temas
+                    # extremos, que son los informativos — viola la regla IV.2 de
+                    # FORMULA-COMPLETA.md ("condicionar en logit, nunca promediando
+                    # probabilidades"). `ponderada_logit` promedia el LOGIT de cada
+                    # share ya encogido, no el share — sigmoid al final.
+                    p_clip = float(np.clip(share_area, 1e-9, 1.0 - 1e-9))
+                    logit_num += peso * np.log(p_clip / (1.0 - p_clip))
                 if modo_efectivo == "ponderada":
                     # promedio de los shares ya encogidos, ponderado por confianza
                     if den > 0:
                         share = num / den
+                elif modo_efectivo == "ponderada_logit":
+                    if den > 0:
+                        share = float(1.0 / (1.0 + np.exp(-(logit_num / den))))
                 else:
                     # peor_tema: el tema donde el bloque está MÁS EN CONTRA manda —
                     # un ómnibus se cae por su capítulo más resistido (hipótesis del

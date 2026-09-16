@@ -262,6 +262,11 @@ const TABLERO = {
   hitos: [
     {
       fecha: "2026-09-16",
+      titulo: "Repetimos la prueba del multitema con el metodo arreglado, y esta vez la respuesta quedo clara",
+      texto: "Franco no se conformo con el resultado anterior y llego una revision externa que encontro el motivo: la prueba tenia cuatro problemas de diseno, no de ejecucion -el mas importante, nunca se probo que pasa si NO se toca nada-. Se repitio con el metodo arreglado: un grupo de control, la forma correcta de combinar temas (no un simple promedio), y esta vez sobre TODA la historia disponible. Resultado clarisimo: ninguna forma de usar el tema en este punto del modelo -ni siquiera no usarlo- se distingue de las demas. No es que empeore: es que este rincon especifico (el que se usa cuando de una persona no se sabe nada todavia) no tiene la informacion que el tema podria mover. La pregunta queda cerrada, con una respuesta mas solida que la primera vez -y confirma por que la otra idea de hoy (el legislador que vota distinto segun el tema) si funciono: ahi el tema se metio donde si hay informacion real."
+    },
+    {
+      fecha: "2026-09-16",
       titulo: "Le ensenamos al modelo a pensar una ley grande como varias leyes chicas, capitulo por capitulo",
       texto: "Una ley omnibus no es una ley con varios temas mezclados: es varias leyes chicas, cada una de un solo tema, encuadernadas juntas. Se construyo la pieza que simula CADA capitulo por separado y junta los resultados de forma correcta -nunca promediando ni multiplicando las probabilidades, que inventaria que un capitulo se cae sin importarle a los demas, cuando en la practica se caen juntos-. Probado reconstruyendo la Ley Bases articulo por articulo: en la primera ronda (la noche del retiro) se cayeron 7 de 13 tramos, en la segunda (ya recortada) pasaron los 35 de 35 -reproduce la historia real sin diferencias-. Queda construida y probada pero NO conectada al numero publicado: hace falta saber de que tema trata cada capitulo por separado (no solo el de la ley entera), y activar los dos numeros nuevos que esto calcularia cambia que significa 'aprobado' -las dos, decisiones de Franco."
     },

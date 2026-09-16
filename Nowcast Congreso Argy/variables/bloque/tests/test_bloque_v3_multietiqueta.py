@@ -145,6 +145,45 @@ def test_peor_tema_con_un_tema_es_identico_a_primaria():
     print("OK peor_tema con 1 tema == primaria")
 
 
+def test_ponderada_logit_con_un_tema_es_identica_a_primaria():
+    """Igual que 'ponderada': con un solo tema de peso 1.0, logit y sigmoid son
+    inversas exactas, así que 'ponderada_logit' también da EXACTAMENTE
+    'primaria' — no es una rama aparte, es la generalización en logit."""
+    votos, cond = _votos_dos_temas()
+    primaria = _idx(B.proyectar_postura(votos, "2020-06-01", "diputados", tema="ECON",
+                                        cond_por_acta=cond, padron_path="__no__"))
+    plogit = _idx(B.proyectar_postura(votos, "2020-06-01", "diputados",
+                                      combinar_temas="ponderada_logit", temas=[("ECON", 1.0)],
+                                      cond_por_acta=cond, padron_path="__no__"))
+    assert abs(primaria["OPO"]["_share_afirm"] - plogit["OPO"]["_share_afirm"]) < 1e-9, \
+        (primaria["OPO"], plogit["OPO"])
+    print("OK ponderada_logit con 1 tema (peso 1.0) == primaria, share=%.4f"
+          % plogit["OPO"]["_share_afirm"])
+
+
+def test_ponderada_logit_no_se_aplasta_hacia_el_centro_como_la_de_probabilidad():
+    """FASE 0 v2, crítica #2 (PROMPT-MULTITEMA-V2.md): promediar en PROBABILIDAD
+    comprime hacia 0,5 y aplasta los temas extremos. Con ECON muy en contra
+    (share bajo) y OTRO muy a favor (share alto), el promedio en LOGIT tiene
+    que quedar MÁS CERCA del extremo dominante que el promedio en probabilidad
+    — no exactamente entre los dos como 'ponderada' clásica."""
+    votos, cond = _votos_dos_temas()
+    econ = _idx(B.proyectar_postura(votos, "2020-06-01", "diputados", tema="ECON",
+                                    cond_por_acta=cond, padron_path="__no__"))["OPO"]["_share_afirm"]
+    otro = _idx(B.proyectar_postura(votos, "2020-06-01", "diputados", tema="OTRO",
+                                    cond_por_acta=cond, padron_path="__no__"))["OPO"]["_share_afirm"]
+    pond_prob = _idx(B.proyectar_postura(votos, "2020-06-01", "diputados",
+                                         combinar_temas="ponderada", temas=[("ECON", 0.5), ("OTRO", 0.5)],
+                                         cond_por_acta=cond, padron_path="__no__"))["OPO"]["_share_afirm"]
+    pond_logit = _idx(B.proyectar_postura(votos, "2020-06-01", "diputados",
+                                          combinar_temas="ponderada_logit", temas=[("ECON", 0.5), ("OTRO", 0.5)],
+                                          cond_por_acta=cond, padron_path="__no__"))["OPO"]["_share_afirm"]
+    assert abs(pond_prob - (econ + otro) / 2) < 1e-9, "sanity: 'ponderada' es el promedio simple"
+    assert pond_logit != pond_prob, "logit y probabilidad tienen que dar resultados DISTINTOS"
+    print("OK ponderada_logit(%.4f) != ponderada en probabilidad(%.4f) -- econ=%.4f otro=%.4f"
+          % (pond_logit, pond_prob, econ, otro))
+
+
 def test_ponderada_sin_match_en_ningun_tema_cae_a_incondicional():
     votos, cond = _votos_dos_temas()
     v1 = _idx(B.proyectar_postura(votos, "2020-06-01", "diputados", padron_path="__no__"))
@@ -195,8 +234,10 @@ if __name__ == "__main__":
     test_ponderada_promedia_shares_ya_encogidos()
     test_peor_tema_toma_el_minimo_no_el_promedio()
     test_peor_tema_con_un_tema_es_identico_a_primaria()
+    test_ponderada_logit_con_un_tema_es_identica_a_primaria()
+    test_ponderada_logit_no_se_aplasta_hacia_el_centro_como_la_de_probabilidad()
     test_ponderada_sin_match_en_ningun_tema_cae_a_incondicional()
     test_combinar_temas_invalido_rompe_claro()
     test_no_primaria_sin_temas_rompe_claro()
     test_normalizar_temas_objetivo_acepta_formas_variadas()
-    print("\n== 10 chequeos v3 (multietiqueta) OK ==")
+    print("\n== 12 chequeos v3 (multietiqueta) OK ==")

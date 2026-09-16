@@ -279,7 +279,9 @@ def _areas_sustantivas(todas_ids) -> list[str]:
     confianza por etiqueta preservada en el contrato (`tema_por_acta.py` sólo
     guarda los ids en el orden que devolvió el agente): PASO 2 usa peso
     IGUAL para todas al validar 'ponderada' contra el histórico real — es la
-    limitación honesta a reportar, no un defecto de esta función."""
+    limitación honesta a reportar, no un defecto de esta función. Para peso
+    REAL (confianza por etiqueta), ver `cargar_confianza_por_area` +
+    `combinar_temas='ponderada_logit'` (FASE 0 de PROMPT-MULTITEMA-V2.md)."""
     if not todas_ids or (isinstance(todas_ids, float) and pd.isna(todas_ids)):
         return []
     vistas: list[str] = []
@@ -293,18 +295,66 @@ def _areas_sustantivas(todas_ids) -> list[str]:
     return vistas
 
 
+REGISTRO_ASIGNACIONES = "datos/taxonomias/data/asignaciones.csv"
+
+
+def cargar_confianza_por_area(repo: Path = REPO) -> dict:
+    """acta_id -> {area: confianza} con la confianza REAL por etiqueta —no
+    peso igual— leyendo el registro único (`datos/taxonomias/src/registro.py`,
+    `nivel='acta'`). Es la pieza que le faltaba a 'ponderada' según ADR-0024
+    ("todas_ids no guarda la confianza POR etiqueta"): el registro sí la
+    guarda por fila (nivel, objeto=acta_id, área, confianza). Con más de una
+    fila para la misma (acta_id, área) —el mismo tema con `taxonomia_id`
+    distinto, ej. ECON.DEUDA y ECON.PRESU— se queda con la confianza MÁXIMA
+    (la lectura más segura de "cuánto sabemos que este tema aplica").
+    AUX se descarta: no es un tema sustantivo (mismo criterio que
+    `_areas_sustantivas`). Degradación limpia: sin el archivo, dict vacío
+    (todo cae a peso igual, como hasta ahora)."""
+    p = repo / REGISTRO_ASIGNACIONES
+    if not p.exists():
+        logger.warning("no encontré %s: ponderada_logit va a usar peso IGUAL "
+                       "(el mismo fallback que 'ponderada')", p)
+        return {}
+    a = pd.read_csv(p, dtype={"objeto": str, "area": str})
+    a = a[(a["nivel"] == "acta") & (a["area"].astype(str).str.upper() != _AUX_PREFIX)]
+    g = a.groupby(["objeto", "area"])["confianza"].max()
+    out: dict = {}
+    for (acta_id, area), conf in g.items():
+        out.setdefault(acta_id, {})[str(area).upper()] = float(conf)
+    return out
+
+
 def correr(camara_filtro: str = "", muestra: int = 0, seed: int = 7,
            desde: str = "", guard_era: str = GUARD_ERA_DEFAULT,
-           combinar_temas: str = "primaria") -> dict:
-    """`combinar_temas` (PASO 2 de coordinacion/PROMPT-MULTIETIQUETA.md, Parte A):
+           combinar_temas: str = "primaria", devolver_detalle: bool = False):
+    """`combinar_temas` (PASO 2 de coordinacion/PROMPT-MULTIETIQUETA.md, Parte A;
+    FASE 0 de PROMPT-MULTITEMA-V2.md agrega 'sin_tema' y 'ponderada_logit'):
+
     'primaria' es el comportamiento de SIEMPRE — la única etiqueta que
     `tema_por_acta._elegir_primaria` le dejó a cada acta — y es el default, así
     que una corrida sin este argumento da EXACTAMENTE el mismo resultado que
     antes de que existiera. 'union'/'ponderada' condicionan `proyectar_postura`
     con la multietiqueta COMPLETA (`todas_ids`) de la acta evaluada, no sólo su
-    primaria; comparar sus métricas contra 'primaria' es la validación empírica
-    que el prompt pide antes de recomendar activar cualquiera de las dos."""
-    if combinar_temas not in ("primaria", "union", "ponderada", "peor_tema"):
+    primaria.
+
+    'sin_tema' (FASE 0, el BRAZO DE CONTROL que PASO 2 no tenía): la rama de
+    bloque NUNCA se condiciona por tema —ni primaria ni multietiqueta—, sólo
+    por origen (que sigue igual en los 5 modos: es un eje distinto, ya
+    decidido, no lo que esta fase pone a prueba). Sin este brazo no se puede
+    distinguir "qué regla de combinación es mejor" de "condicionar por tema
+    ACÁ hace daño" — que es la pregunta real.
+
+    'ponderada_logit': mismo cómputo que 'ponderada' pero combinando en LOGIT
+    (`bloque.proyectar_postura`) con la confianza REAL por etiqueta
+    (`cargar_confianza_por_area`, el registro único) en vez de peso igual.
+
+    `devolver_detalle=True` además del resumen agregado, devuelve
+    `(resumen, d)` con `d` el DataFrame voto-a-voto (acta_id, camara, p, y,
+    fuente, caracter) — lo que hace falta para un bootstrap clusterizado por
+    acta entre brazos (FASE 0 lo pide explícitamente: "clusterizando por
+    acta", "reportá el intervalo, no sólo el punto")."""
+    if combinar_temas not in ("primaria", "union", "ponderada", "peor_tema",
+                              "sin_tema", "ponderada_logit"):
         raise ValueError(f"combinar_temas invalido: {combinar_temas!r}")
     from bloque import cargar as cargar_bloque, proyectar_postura, cargar_tema_por_acta
 
@@ -314,6 +364,7 @@ def correr(camara_filtro: str = "", muestra: int = 0, seed: int = 7,
     cond_map = None
     if cond is not None and len(cond):
         cond_map = cond.set_index(cond.columns[0]).to_dict("index")
+    conf_area = cargar_confianza_por_area() if combinar_temas == "ponderada_logit" else {}
 
     v = votos[votos["conducta"].isin(["AFIRMATIVO", "NEGATIVO"])].copy()
     if camara_filtro:
@@ -363,9 +414,29 @@ def correr(camara_filtro: str = "", muestra: int = 0, seed: int = 7,
         info = (cond_map or {}).get(str(a.acta_id), {})
         origen = _norm_cond(info.get("origen"))
         kwargs_tema: dict = {}
-        if combinar_temas == "primaria":
+        if combinar_temas == "sin_tema":
+            # el BRAZO DE CONTROL: nunca condiciona por tema (ni primaria ni
+            # multietiqueta) — origen sigue igual que en los demás brazos, es
+            # un eje distinto. kwargs_tema vacío -> proyectar_postura recibe
+            # combinar_temas='primaria' (su único modo sin match obligatorio)
+            # pero SIN tema, que es exactamente la incondicional.
+            clave_tema = None
+        elif combinar_temas == "primaria":
             tema = _norm_cond(info.get("tema_area"))
             clave_tema = tema
+        elif combinar_temas == "ponderada_logit":
+            areas = _areas_sustantivas(info.get("todas_ids"))
+            pesos_reales = conf_area.get(str(a.acta_id), {})
+            if areas:
+                # confianza real si el registro la tiene para esa área; si no
+                # (falla del cruce acta_id, ver ADR-0023/registro), 1.0 —
+                # mismo fallback a peso igual que 'ponderada' para esa etiqueta
+                # puntual, no para la corrida entera.
+                temas_pesados = [(ar, pesos_reales.get(ar, 1.0)) for ar in areas]
+                kwargs_tema = {"temas": temas_pesados, "combinar_temas": combinar_temas}
+                clave_tema = tuple(sorted(temas_pesados))
+            else:
+                clave_tema = None
         else:
             areas = _areas_sustantivas(info.get("todas_ids"))
             if areas:
@@ -452,6 +523,8 @@ def correr(camara_filtro: str = "", muestra: int = 0, seed: int = 7,
         "sesgo_medio": round(float((ma.pred - ma.real).mean()), 4),
         "p90_error_abs": round(float((ma.pred - ma.real).abs().quantile(0.90)), 4),
     }
+    if devolver_detalle:
+        return res, d
     return res
 
 
@@ -467,10 +540,14 @@ def main(argv):
                          "(lo que hace el motor); shrink = corte + Empirical-Bayes k=5 "
                          "contra el linaje en la misma era")
     ap.add_argument("--combinar-temas", default="primaria",
-                    choices=["primaria", "union", "ponderada", "peor_tema"],
+                    choices=["primaria", "union", "ponderada", "peor_tema",
+                             "sin_tema", "ponderada_logit"],
                     help="primaria (default, de siempre) = una sola etiqueta por acta; "
                          "union/ponderada (PASO 2, Parte A) condicionan con la "
-                         "multietiqueta completa (todas_ids) de la acta evaluada")
+                         "multietiqueta completa (todas_ids) de la acta evaluada; "
+                         "sin_tema (FASE 0) = brazo de control, nunca condiciona por "
+                         "tema; ponderada_logit (FASE 0) = como ponderada pero en "
+                         "logit y con confianza real por etiqueta")
     ap.add_argument("--verbose", action="store_true",
                     help="mostrar los avisos de `bloque` uno por uno (por defecto se cuentan)")
     ap.add_argument("--salida", default=None)

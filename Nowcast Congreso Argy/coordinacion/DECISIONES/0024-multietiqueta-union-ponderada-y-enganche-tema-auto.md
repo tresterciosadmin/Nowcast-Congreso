@@ -1,3 +1,17 @@
+> ⚠️ **ENMENDADO por ADR-0028 (16-09-2026).** El PASO 2 de este ADR medía sin
+> brazo de control, promediando `ponderada` en probabilidad (no en logit) y
+> con `peor_tema` sobre un estimador sesgado — tres problemas de DISEÑO, no de
+> ejecución, que el prompt `PROMPT-MULTITEMA-V2.md` señaló. El re-test
+> corregido (control + logit + estimador directo de simulación + censo
+> completo + bootstrap clusterizado) da un resultado MÁS FUERTE, no
+> contradictorio: **ninguna diferencia —incluida "no condicionar por tema"—
+> es distinguible de cero en la rama de bloque.** La recomendación práctica
+> de este ADR (no activar ninguna regla a nivel bloque) sigue siendo válida;
+> lo que cambia es el motivo: no es que las reglas nuevas empeoren, es que
+> este nivel no tiene información que ninguna regla pueda aprovechar. Ver
+> ADR-0028 para el detalle, y ADR-0026 para dónde SÍ está la ganancia
+> (`rec_i^tema`, a nivel legislador, 11,1% menos Brier).
+
 # ADR-0024 — Multietiqueta: `union`/`ponderada` en `proyectar_postura`, y el enganche `TEMA_AUTO`
 
 **Fecha:** 2026-09-15 · **Estado:** IMPLEMENTADO y **PROBADO — NO SE RECOMIENDA

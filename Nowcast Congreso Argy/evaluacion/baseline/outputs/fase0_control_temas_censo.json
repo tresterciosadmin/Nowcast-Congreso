@@ -1,0 +1,270 @@
+{
+ "arms": [
+  "sin_tema",
+  "primaria",
+  "union",
+  "ponderada_logit"
+ ],
+ "n_boot": 1000,
+ "seed": 7,
+ "muestra": "censo completo",
+ "camara_filtro": "ambas",
+ "por_arm": {
+  "sin_tema": {
+   "n_actas_totales": 5852,
+   "n_votos_totales": 691460,
+   "global": {
+    "punto": 0.13443,
+    "boot_lo_95": 0.13074,
+    "boot_hi_95": 0.13831,
+    "n_actas": 5852,
+    "n_votos": 691460
+   },
+   "rama_bloque": {
+    "punto": 0.21979,
+    "boot_lo_95": 0.16961,
+    "boot_hi_95": 0.2698,
+    "n_actas": 232,
+    "n_votos": 2258
+   },
+   "rama_bloque_por_era": {
+    "hasta 2011": {
+     "punto": 0.22012,
+     "boot_lo_95": 0.15728,
+     "boot_hi_95": 0.28708,
+     "n_actas": 112,
+     "n_votos": 670
+    },
+    "2011-2015": {
+     "punto": 0.16889,
+     "boot_lo_95": 0.09833,
+     "boot_hi_95": 0.27624,
+     "n_actas": 29,
+     "n_votos": 200
+    },
+    "2015-2019": {
+     "punto": 0.3238,
+     "boot_lo_95": 0.18171,
+     "boot_hi_95": 0.42556,
+     "n_actas": 32,
+     "n_votos": 463
+    },
+    "2019-2023": {
+     "punto": 0.14955,
+     "boot_lo_95": 0.09056,
+     "boot_hi_95": 0.33728,
+     "n_actas": 32,
+     "n_votos": 467
+    },
+    "desde 2023": {
+     "punto": 0.20803,
+     "boot_lo_95": 0.06555,
+     "boot_hi_95": 0.2414,
+     "n_actas": 27,
+     "n_votos": 458
+    }
+   }
+  },
+  "primaria": {
+   "n_actas_totales": 5855,
+   "n_votos_totales": 691893,
+   "global": {
+    "punto": 0.1346,
+    "boot_lo_95": 0.1309,
+    "boot_hi_95": 0.13856,
+    "n_actas": 5855,
+    "n_votos": 691893
+   },
+   "rama_bloque": {
+    "punto": 0.22047,
+    "boot_lo_95": 0.16502,
+    "boot_hi_95": 0.26583,
+    "n_actas": 235,
+    "n_votos": 2292
+   },
+   "rama_bloque_por_era": {
+    "hasta 2011": {
+     "punto": 0.22234,
+     "boot_lo_95": 0.16229,
+     "boot_hi_95": 0.2874,
+     "n_actas": 115,
+     "n_votos": 704
+    },
+    "2011-2015": {
+     "punto": 0.16879,
+     "boot_lo_95": 0.09862,
+     "boot_hi_95": 0.27574,
+     "n_actas": 29,
+     "n_votos": 200
+    },
+    "2015-2019": {
+     "punto": 0.3238,
+     "boot_lo_95": 0.18175,
+     "boot_hi_95": 0.42562,
+     "n_actas": 32,
+     "n_votos": 463
+    },
+    "2019-2023": {
+     "punto": 0.14955,
+     "boot_lo_95": 0.09056,
+     "boot_hi_95": 0.33728,
+     "n_actas": 32,
+     "n_votos": 467
+    },
+    "desde 2023": {
+     "punto": 0.20803,
+     "boot_lo_95": 0.06555,
+     "boot_hi_95": 0.2414,
+     "n_actas": 27,
+     "n_votos": 458
+    }
+   }
+  },
+  "union": {
+   "n_actas_totales": 5855,
+   "n_votos_totales": 691869,
+   "global": {
+    "punto": 0.13486,
+    "boot_lo_95": 0.13118,
+    "boot_hi_95": 0.13887,
+    "n_actas": 5855,
+    "n_votos": 691869
+   },
+   "rama_bloque": {
+    "punto": 0.22223,
+    "boot_lo_95": 0.16648,
+    "boot_hi_95": 0.26924,
+    "n_actas": 235,
+    "n_votos": 2292
+   },
+   "rama_bloque_por_era": {
+    "hasta 2011": {
+     "punto": 0.22061,
+     "boot_lo_95": 0.16033,
+     "boot_hi_95": 0.28537,
+     "n_actas": 115,
+     "n_votos": 704
+    },
+    "2011-2015": {
+     "punto": 0.2045,
+     "boot_lo_95": 0.09726,
+     "boot_hi_95": 0.29129,
+     "n_actas": 29,
+     "n_votos": 200
+    },
+    "2015-2019": {
+     "punto": 0.32431,
+     "boot_lo_95": 0.18293,
+     "boot_hi_95": 0.42674,
+     "n_actas": 32,
+     "n_votos": 463
+    },
+    "2019-2023": {
+     "punto": 0.14459,
+     "boot_lo_95": 0.07915,
+     "boot_hi_95": 0.33548,
+     "n_actas": 32,
+     "n_votos": 467
+    },
+    "desde 2023": {
+     "punto": 0.20843,
+     "boot_lo_95": 0.06625,
+     "boot_hi_95": 0.24211,
+     "n_actas": 27,
+     "n_votos": 458
+    }
+   }
+  },
+  "ponderada_logit": {
+   "n_actas_totales": 5855,
+   "n_votos_totales": 691869,
+   "global": {
+    "punto": 0.13496,
+    "boot_lo_95": 0.13131,
+    "boot_hi_95": 0.13895,
+    "n_actas": 5855,
+    "n_votos": 691869
+   },
+   "rama_bloque": {
+    "punto": 0.22092,
+    "boot_lo_95": 0.16611,
+    "boot_hi_95": 0.26799,
+    "n_actas": 235,
+    "n_votos": 2292
+   },
+   "rama_bloque_por_era": {
+    "hasta 2011": {
+     "punto": 0.22035,
+     "boot_lo_95": 0.15982,
+     "boot_hi_95": 0.28523,
+     "n_actas": 115,
+     "n_votos": 704
+    },
+    "2011-2015": {
+     "punto": 0.19147,
+     "boot_lo_95": 0.10716,
+     "boot_hi_95": 0.26288,
+     "n_actas": 29,
+     "n_votos": 200
+    },
+    "2015-2019": {
+     "punto": 0.32432,
+     "boot_lo_95": 0.18303,
+     "boot_hi_95": 0.42671,
+     "n_actas": 32,
+     "n_votos": 463
+    },
+    "2019-2023": {
+     "punto": 0.14483,
+     "boot_lo_95": 0.07964,
+     "boot_hi_95": 0.33663,
+     "n_actas": 32,
+     "n_votos": 467
+    },
+    "desde 2023": {
+     "punto": 0.2077,
+     "boot_lo_95": 0.06205,
+     "boot_hi_95": 0.24098,
+     "n_actas": 27,
+     "n_votos": 458
+    }
+   }
+  }
+ },
+ "diferencias_vs_primaria": {
+  "sin_tema_menos_primaria__rama_bloque": {
+   "n_actas_comunes": 232,
+   "n_actas_solo_en_brazo": 0,
+   "n_actas_solo_en_primaria": 3,
+   "diff_punto": 0.0,
+   "diff_boot_lo_95": -5e-05,
+   "diff_boot_hi_95": 6e-05,
+   "distinguible_de_cero": false
+  },
+  "union_menos_primaria__rama_bloque": {
+   "n_actas_comunes": 235,
+   "n_actas_solo_en_brazo": 0,
+   "n_actas_solo_en_primaria": 0,
+   "diff_punto": 0.00175,
+   "diff_boot_lo_95": -0.00325,
+   "diff_boot_hi_95": 0.01063,
+   "distinguible_de_cero": false
+  },
+  "ponderada_logit_menos_primaria__rama_bloque": {
+   "n_actas_comunes": 235,
+   "n_actas_solo_en_brazo": 0,
+   "n_actas_solo_en_primaria": 0,
+   "diff_punto": 0.00044,
+   "diff_boot_lo_95": -0.00601,
+   "diff_boot_hi_95": 0.00927,
+   "distinguible_de_cero": false
+  }
+ },
+ "lectura_automatica": "sin_tema <= primaria (Brier, punto): apagar el condicionamiento por tema en la rama de bloque es al menos tan bueno como condicionar -> ver si la diferencia es DISTINGUIBLE DE CERO antes de recomendar apagarlo en firme",
+ "avisos_agregados_bloque": {
+  "padron_cae_a_ventana": 4383,
+  "excluyo_aux": 7616,
+  "sin_actas_condicionadas": 114,
+  "condicionamiento_ok": 5934
+ }
+}

@@ -17,6 +17,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 from tema_por_capitulo import (  # noqa: E402
     cargar_capitulos,
     clasificar_capitulos,
+    correr,
     _sumarios,
 )
 
@@ -143,6 +144,21 @@ with tempfile.TemporaryDirectory() as tmpdir:
     print("\nclasificar_capitulos — respeta --limite")
     res5 = clasificar_capitulos(caps, clasificar=_falso, limite=1, db_path=db, expedientes=exped)
     check(len(res5) == 1, f"limite=1 procesa sólo 1: {len(res5)}")
+
+    print("\ncorrer — --proyecto-id acota la corrida a un solo proyecto (para enfocar sin gastar de más)")
+    out_scoped = tmp / "tema_por_capitulo_scoped.parquet"
+    res6 = correr(capitulos_nombre=cap_path, out=out_scoped, clasificar=_falso,
+                  proyecto_id="HCDN000200", db_path=db, expedientes=exped)
+    check(len(res6) == 1 and (res6["proyecto_id"] == "HCDN000200").all(),
+          f"sólo procesa HCDN000200, no los capítulos de HCDN000100: {res6[['proyecto_id']].to_dict('records')}")
+
+    print("\ncorrer — --proyecto-id sin ningún capítulo para ese proyecto rompe claro")
+    try:
+        correr(capitulos_nombre=cap_path, out=out_scoped, clasificar=_falso,
+              proyecto_id="HCDN_NO_EXISTE", db_path=db, expedientes=exped)
+        check(False, "tenía que levantar ValueError")
+    except ValueError as e:
+        check("HCDN_NO_EXISTE" in str(e), f"el error tiene que nombrar el proyecto: {e}")
 
     print("\ncargar_capitulos — rompe claro sobre un contrato viejo (sin titulo_num)")
     p_vieja = tmp / "capitulos_nombre_vieja.parquet"

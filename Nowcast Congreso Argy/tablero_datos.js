@@ -262,6 +262,11 @@ const TABLERO = {
   hitos: [
     {
       fecha: "2026-09-16",
+      titulo: "Terminamos Ley Bases y corrimos la prueba de verdad: mecanismo sano, pocos casos para concluir",
+      texto: "Con el credito recargado, Franco pidio enfocarse solo en Ley Bases. Se termino de clasificar el 100% de sus capitulos reales y se corrio la prueba completa: historial real de cada legislador, simulacion por capitulo, comparado contra lo que de verdad paso la noche del retiro. Resultado sin adornar: de 63 capitulos, solo 3 tuvieron votacion articulo por articulo esa primera noche (el resto se voto en la segunda ronda). Con solo 3 casos no alcanza para concluir nada con confianza, pero lo poco que hay apunta en la direccion correcta -el capitulo que de verdad se aprobo es el que el modelo le puso mas probabilidad-. Un capitulo no dio senal clara: el clasificador le puso etiqueta de 'tramite' a un capitulo que en realidad era sustantivo, y por eso el modelo no tuvo con que compararlo. El mecanismo no esta roto, pero hacen falta mas casos reales -eso significa clasificar mas proyectos, que quedo pausado."
+    },
+    {
+      fecha: "2026-09-16",
       titulo: "Preguntamos si podiamos usar lo que habia, y encontramos un error real antes de gastar mas plata",
       texto: "Franco pregunto si con lo ya clasificado podiamos correr el modelo de verdad y ver si tiene sentido. Se armo la prueba real: tomar la Ley Bases, simular cada capitulo por separado y comparar contra lo que REALMENTE paso la noche del retiro del recinto. Al armarla aparecio algo importante: el numero de capitulo se repite dentro de una misma ley -'Capitulo I' aparece en la Ley Bases bajo SEIS partes distintas (titulos distintos)-. Todo el trabajo de hoy agrupaba por el numero de capitulo solo, mezclando sin darse cuenta capitulos que no tienen nada que ver. Se corrigio el error en el codigo gratis (solo hubo que releer documentos ya descargados) y se confirmo que la ley tiene casi el doble de capitulos reales de los contados. Mala noticia: los 437 capitulos clasificados hoy quedaron sin validez, hay que reclasificar. Buena noticia: se encontro ANTES de escalar esto a miles de proyectos, que es para lo que sirvio la prueba."
     },

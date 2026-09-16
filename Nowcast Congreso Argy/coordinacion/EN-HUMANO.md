@@ -2,6 +2,28 @@
 
 > Documento vivo. Cada cambio importante en el proyecto se explica acá en lenguaje claro, además de registrarse en `ESTADO-DEL-PROYECTO.md`. Si algo del sistema no se entiende leyendo esto, está mal escrito y hay que arreglarlo.
 
+## Terminamos Ley Bases y corrimos la prueba de verdad: el mecanismo funciona bien, pero con muy pocos casos para sacar una conclusión (16-09-2026, tercera vuelta)
+
+Con el crédito recargado, Franco pidió enfocarse sólo en Ley Bases (no gastar en los
+otros miles de proyectos todavía). Se terminó de clasificar el 100% de sus capítulos
+reales y se corrió la prueba completa: tomar el historial real de cada legislador,
+simular cada capítulo por separado, y comparar contra lo que de verdad pasó la noche
+del retiro.
+
+El resultado, sin adornar: de los 63 capítulos de la ley, sólo 3 tuvieron votación
+artículo por artículo esa primera noche (el resto se votó recién en la segunda ronda,
+después de que el proyecto volviera recortado). Con sólo 3 casos para comparar, no
+alcanza para decir "esto funciona" ni "esto no funciona" con confianza — pero lo poco
+que hay apunta en la dirección correcta: el capítulo que de verdad se aprobó es el que
+el modelo le puso más probabilidad. Un capítulo no dio señal clara, y se encontró por
+qué: el clasificador le puso una etiqueta de "trámite" a un capítulo que en realidad
+era sustantivo (reorganización administrativa), y por eso el modelo no tuvo con qué
+compararlo.
+
+En limpio: el mecanismo no está roto, se comporta de forma razonable, pero hacen falta
+más casos reales para poder decir algo con más seguridad. Eso significaría clasificar
+los otros proyectos con votación por artículo, que es justo lo que quedó pausado.
+
 ## Corrección: no se perdieron los 437, se salvaron 242 (16-09-2026, más tarde)
 
 Franco preguntó, con razón, si el error del bug le había hecho perder plata de vuelta.

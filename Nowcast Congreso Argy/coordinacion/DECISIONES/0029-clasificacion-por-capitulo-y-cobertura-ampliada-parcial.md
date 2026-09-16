@@ -184,21 +184,77 @@ sin capítulos correctamente clasificados no hay nada real que simular
 todavía. Queda pendiente, bloqueada por crédito de API (para reclasificar) y
 no por diseño.
 
-## Lo que queda pendiente
+## Addendum 2026-09-16 (tercera vuelta) — Ley Bases clasificada completa, la validación corrida de verdad, resultado HONESTO: no alcanza para concluir
 
-1. **Recargar crédito de la API** — bloqueante para las dos corridas.
-2. **Terminar `tema_por_capitulo`**: **842 pares restantes de 1.084** (242 ya
-   se salvaron gratis, reetiquetados con su título real — ver addendum). El
-   comando de siempre (`python variables/proyecto/src/tema_por_capitulo.py
-   clasificar`) ya los saltea correctamente, es idempotente contra el
-   archivo salvado.
-3. **Terminar la cobertura ampliada**: 9.582 proyectos restantes
-   (9.910-328) — a este ritmo (~3,5s/llamada) son varias horas de corrida,
-   no minutos; queda como una corrida larga a lanzar cuando convenga, no
-   necesariamente de una sola vez.
-4. **Conectar `composicion_capitulos` a un proyecto real** usando
-   `tema_por_capitulo.parquet` — sigue sin hacerse (ADR-0027); ahora la
-   CLAVE es correcta, pero no hay ningún dato clasificado con ella todavía.
-5. **Correr `validar_leybases_por_capitulos.py` de verdad** (la validación de
-   plausibilidad que Franco pidió) una vez que Ley Bases tenga sus capítulos
-   reclasificados con la clave corregida.
+Franco: *"Ya hice la recarga. Pausá la ampliación a los 9500 proyectos por
+ahora. Vamos a concentrarnos en la ley bases."* Se clasificaron los 63
+capítulos reales de Ley Bases (clave `(titulo_num, capitulo_num)` corregida,
+`--proyecto-id HCDN272347`, nuevo filtro del CLI) — **100% cubierto**, sin
+tocar la tarea de cobertura ampliada (queda pausada, intacta, 9.582
+proyectos esperando).
+
+**Se corrió `validar_leybases_por_capitulos.py` de verdad** (roster real,
+walk-forward a 2024-02-01, simulación con $\eta_j$ compartido) — pero
+también se encontró que la primera versión del propio script TENÍA EL MISMO
+BUG que se acababa de corregir en otro lado (agrupaba por `capitulo_num`
+solo, no por el par) — corregido antes de correrlo de verdad.
+
+**Resultado real, y la limitación que importa más que el número:**
+
+| título | capítulo | tema | pasó en la realidad (ronda 1) | $P_k$ simulado |
+|---|---|---|:---:|---:|
+| I | I | DESREG | ✅ Sí | 0,9160 |
+| I | II | ECON | ❌ No | 0,8507 |
+| II | I | AUX | ❌ No | 0,9160 |
+
+**Sólo 3 de los 63 capítulos tuvieron tramo en la RONDA 1** — la mayoría de
+la votación en particular de Ley Bases pasó en la RONDA 2 (después del
+retiro y el recorte), no en la primera, así que no hay con qué comparar más
+capítulos de esa ronda. **Con n=3 no se puede concluir nada con confianza
+estadística.** Lo que sí se puede decir:
+
+- **Dirección correcta, débil:** el capítulo que SÍ pasó (I/I) tiene el
+  $P_k$ más alto de los tres (0,9160); el que peor la pasó en la realidad
+  (I/II, 4 tramos negativos) tiene el $P_k$ más bajo (0,8507). Consistente
+  con la hipótesis, pero un solo par no prueba nada.
+- **Un caso no distingue, y por una razón identificable:** (II/I,
+  "Reorganización administrativa") se clasificó como **AUX** — probablemente
+  mal clasificado (reorganización administrativa es una reforma sustantiva,
+  no trámite). Al ser AUX, `proyectar_postura` no encontró ninguna acta
+  histórica con ese "tema" para condicionar y cayó a la postura
+  INCONDICIONAL (el log lo confirma: *"condicionamiento tema=AUX... 0 actas
+  en ventana; caigo a incondicional"*) — por eso su $P_k$ (0,9160) es idéntico
+  al del capítulo que sí pasó: no es que el modelo haya fallado en discriminar,
+  es que efectivamente no tenía información condicionada para ese capítulo.
+
+**Conclusión honesta: el mecanismo es COHERENTE (nada roto, nada absurdo —
+$P_{\text{todo}}$, $P_{\text{algo}}$, $\mathbb E[\text{superviv.}]$ salen
+todos en el rango esperado y ordenados lógicamente) pero esta corrida NO
+alcanza para validar ni descartar la hipótesis de plausibilidad.** Hacen
+falta más casos comparables. Dos caminos, ninguno tomado todavía:
+1. Escalar la clasificación a los otros ~144 proyectos con votación en
+   particular (retomando la tarea pausada) para tener más pares
+   capítulo-real vs. capítulo-simulado.
+2. Revisar por qué "Reorganización administrativa" clasificó como AUX —
+   podría ser un patrón sistemático (nombres de capítulo cortos/genéricos
+   que el clasificador no tiene forma de distinguir de trámite) que también
+   afecte a otros proyectos.
+
+## Lo que queda pendiente (actualizado tras la tercera vuelta)
+
+1. ~~Recargar crédito de la API~~ **RESUELTO** — crédito recargado el 16-09.
+2. ~~Clasificar Ley Bases~~ **RESUELTO** — 63/63 capítulos, 100%.
+3. ~~Correr la validación de plausibilidad~~ **RESUELTO, resultado
+   INCONCLUSO** — mecanismo coherente, n=3 no alcanza para validar ni
+   descartar la hipótesis (ver addendum de la tercera vuelta).
+4. **Cobertura ampliada (9.582 proyectos) — PAUSADA a pedido explícito de
+   Franco**, no retomar sin que él lo pida.
+5. **Terminar `tema_por_capitulo` para el resto del universo de 145
+   proyectos**: 842−63 = 779 pares restantes fuera de Ley Bases — es el
+   camino más directo para conseguir más casos comparables y resolver la
+   pregunta de plausibilidad con potencia real, pero no se arrancó: es una
+   decisión de alcance de Franco, no algo que se pueda asumir.
+6. **Investigar el patrón AUX** (capítulos sustantivos con nombre corto/
+   genérico que el clasificador confunde con trámite) — encontrado en un
+   caso (Ley Bases II/I), podría repetirse en otros proyectos y degradar
+   silenciosamente el mecanismo (cae a incondicional sin avisar como error).

@@ -1,0 +1,45 @@
+{
+ "fecha_corte_walkforward": "2024-02-01",
+ "flags": {
+  "RECORD_POR_TEMA": true,
+  "INCERTIDUMBRE_LEGISLADOR": true,
+  "epsilon0": 0.035,
+  "tau": 1.19
+ },
+ "P_todo": 0.8506666666666667,
+ "P_algo": 0.916,
+ "E_supervivencia": 0.8958974358974359,
+ "min_P_k": 0.8506666666666667,
+ "cercania_a_peor_tema": 1.0,
+ "tabla_por_capitulo": [
+  {
+   "titulo": "I",
+   "capitulo": "II",
+   "tema": "ECON",
+   "n_tramos_reales": 4,
+   "paso_real_ronda1": false,
+   "P_k_simulado": 0.8507
+  },
+  {
+   "titulo": "I",
+   "capitulo": "I",
+   "tema": "DESREG",
+   "n_tramos_reales": 2,
+   "paso_real_ronda1": true,
+   "P_k_simulado": 0.916
+  },
+  {
+   "titulo": "II",
+   "capitulo": "I",
+   "tema": "AUX",
+   "n_tramos_reales": 7,
+   "paso_real_ronda1": false,
+   "P_k_simulado": 0.916
+  }
+ ],
+ "P_k_medio_capitulos_que_CAYERON_en_la_realidad": 0.8834,
+ "P_k_medio_capitulos_que_PASARON_en_la_realidad": 0.916,
+ "n_capitulos_evaluados": 3,
+ "n_cayeron_realidad": 2,
+ "n_pasaron_realidad": 1
+}

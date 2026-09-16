@@ -1,10 +1,14 @@
 # -*- coding: utf-8 -*-
 """Plausibilidad de `composicion_capitulos` sobre un caso REAL: Ley Bases.
 
-Pregunta de Franco: "¿podemos usar lo que tenemos hasta ahora (437/704 temas
-por capítulo, 62%) para recorrer el modelo y sacar conclusiones?" — sí, sobre
-Ley Bases en particular: tiene 11 de sus 12 capítulos clasificados (91,7%,
-falta sólo el XII), suficiente para una corrida real de punta a punta.
+Pregunta de Franco: "¿podemos usar lo que tenemos hasta ahora para recorrer
+el modelo y sacar conclusiones?" — sí, sobre Ley Bases: sus 63 capítulos
+reales (clave `(titulo_num, capitulo_num)`, ADR-0029 addendum) están
+clasificados de punta a punta.
+
+⚠️ La CLAVE de todo este script es `(titulo_num, capitulo_num)`, NO
+`capitulo_num` solo — la primera versión (16-09, antes del fix) agrupaba mal
+y mezclaba capítulos de partes distintas de la ley (ver ADR-0029).
 
 QUÉ HACE
 --------
@@ -18,11 +22,14 @@ fecha ANTERIOR a la primera ronda de votación (walk-forward, sin leakage:
 `P_k` contra lo que REALMENTE pasó en la ronda 1 (¿el capítulo tuvo algún
 tramo NEGATIVO?).
 
-NO ES UNA VALIDACIÓN ESTADÍSTICA (n=11, un solo proyecto) — es exactamente lo
-que se pidió: ¿el mecanismo da resultados PLAUSIBLES sobre el caso real que
-motivó todo esto? Si los capítulos que de verdad se cayeron muestran P_k más
-bajo que los que pasaron, hay señal de que vale la pena escalar. Si no, es
-mejor saberlo ahora que después de clasificar los 9.500+ proyectos que faltan.
+NO ES UNA VALIDACIÓN ESTADÍSTICA (con la clave corregida, sólo 3 de los 63
+capítulos de Ley Bases tuvieron tramo en la RONDA 1 — la mayoría de la
+votación particular pasó en la ronda 2, después del retiro y recorte) — es
+exactamente lo que se pidió: ¿el mecanismo da resultados PLAUSIBLES sobre el
+caso real que motivó todo esto? Con n=3 no se puede concluir nada con
+confianza; sirve para ver si el mecanismo es COHERENTE (nada roto, nada
+absurdo), no para validar la hipótesis. Esa validación real necesita más
+casos — ver "Lo que este script NO responde" en el reporte de ADR-0029.
 
 NO TOCA EL REPO: sólo lee y simula. Imprime el reporte y lo guarda en JSON.
 
@@ -69,13 +76,14 @@ def construir_roster_capitulo(area: str, votos, cond, fecha: str):
 
 
 def resultado_real_por_capitulo(v: pd.DataFrame) -> dict:
-    """{capitulo_num: (paso_bool, n_tramos)} de la RONDA 1 real (2024-02-06):
-    un capítulo "pasa" si NINGUNO de sus tramos dio NEGATIVO."""
+    """{(titulo_num, capitulo_num): (paso_bool, n_tramos)} de la RONDA 1 real
+    (2024-02-06): un capítulo "pasa" si NINGUNO de sus tramos dio NEGATIVO.
+    Agrupa por el PAR, no por capitulo_num solo (ver el aviso del módulo)."""
     r1 = v[(v["proyecto_id"] == PROYECTO_ID) & (v["camara"] == CAMARA) &
           (v["fecha"] == FECHA_RONDA1) & (v["es_particular"])]
     out = {}
-    for cap, g in r1.groupby("capitulo_num"):
-        out[cap] = (bool((g["resultado_clase"] != "NEGATIVO").all()), int(len(g)))
+    for (tit, cap), g in r1.groupby(["titulo_num", "capitulo_num"]):
+        out[(tit, cap)] = (bool((g["resultado_clase"] != "NEGATIVO").all()), int(len(g)))
     return out
 
 
@@ -90,48 +98,57 @@ def main() -> int:
                RECORD_POR_TEMA, INCERTIDUMBRE_LEGISLADOR, EPSILON0, TAU)
 
     temas = pd.read_parquet(REPO / "variables/proyecto/data/tema_por_capitulo.parquet")
-    temas_lb = temas[temas["proyecto_id"] == PROYECTO_ID].set_index("capitulo_num")["tema_area"].to_dict()
+    temas_lb_df = temas[temas["proyecto_id"] == PROYECTO_ID]
+    temas_lb = {(r.titulo_num, r.capitulo_num): r.tema_area for r in temas_lb_df.itertuples()}
     logger.info("capítulos de Ley Bases con tema clasificado: %d -> %s",
                len(temas_lb), temas_lb)
 
     v = pd.read_parquet(REPO / "datos/expedientes/data/clean/votacion_por_articulo.parquet")
     reales = resultado_real_por_capitulo(v)
-    logger.info("resultado REAL ronda 1 (2024-02-06): %s", reales)
+    logger.info("resultado REAL ronda 1 (2024-02-06), %d capítulos con tramo: %s",
+               len(reales), reales)
 
     votos = cargar_bloque(CANONICA_CLEAN)
     cond = cargar_tema_por_acta()
 
     capitulos_sim = {}
-    for cap, area in temas_lb.items():
-        if cap not in reales:
-            logger.info("capítulo %s clasificado pero sin tramo en ronda 1 (probablemente "
-                        "sólo tuvo tramos en ronda 2): se excluye de la comparación", cap)
+    for clave, area in temas_lb.items():
+        if clave not in reales:
+            logger.info("Título %s / Capítulo %s clasificado pero sin tramo en ronda 1 "
+                        "(probablemente sólo tuvo tramos en ronda 2): se excluye", *clave)
             continue
         try:
             lineas, desvios = construir_roster_capitulo(area, votos, cond, FECHA_CORTE)
         except (ValueError, KeyError) as e:
-            logger.warning("capítulo %s (tema=%s) no se pudo armar: %s", cap, area, e)
+            logger.warning("Título %s / Capítulo %s (tema=%s) no se pudo armar: %s",
+                           *clave, area, e)
             continue
-        n_tramos = reales[cap][1]
-        capitulos_sim[cap] = {"lineas": lineas, "desvios": desvios,
-                              "tipo_mayoria": "SIMPLE", "camara": CAMARA,
-                              "n_articulos": n_tramos}
+        n_tramos = reales[clave][1]
+        etiqueta = f"T{clave[0]}C{clave[1]}"
+        capitulos_sim[etiqueta] = {"lineas": lineas, "desvios": desvios,
+                                   "tipo_mayoria": "SIMPLE", "camara": CAMARA,
+                                   "n_articulos": n_tramos, "_clave": clave}
 
     if not capitulos_sim:
         raise RuntimeError("no se pudo armar ningún capítulo: revisar datos/temas")
+
+    claves_por_etiqueta = {k: v["_clave"] for k, v in capitulos_sim.items()}
+    for c in capitulos_sim.values():
+        del c["_clave"]
 
     r = simular_capitulos(capitulos_sim, n_sims=3000, seed=0,
                           epsilon0=EPSILON0 if EPSILON0 > 0 else 0.035,
                           tau=TAU if TAU > 0 else 1.19)
 
     filas = []
-    for cap in sorted(capitulos_sim.keys()):
-        paso_real, n_tramos = reales[cap]
+    for etq in sorted(capitulos_sim.keys()):
+        clave = claves_por_etiqueta[etq]
+        paso_real, n_tramos = reales[clave]
         filas.append({
-            "capitulo": cap, "tema": temas_lb[cap],
+            "titulo": clave[0], "capitulo": clave[1], "tema": temas_lb[clave],
             "n_tramos_reales": n_tramos,
             "paso_real_ronda1": paso_real,
-            "P_k_simulado": round(r["P_por_capitulo"][cap], 4),
+            "P_k_simulado": round(r["P_por_capitulo"][etq], 4),
         })
     tabla = pd.DataFrame(filas).sort_values("P_k_simulado")
 

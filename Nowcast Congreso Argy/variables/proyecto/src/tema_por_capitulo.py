@@ -237,8 +237,14 @@ def _leer_previas(out: Path) -> Optional[pd.DataFrame]:
 
 def correr(capitulos_nombre: Path = DEFAULT_CAPITULOS, out: Path = OUT_DEFAULT,
           clasificar=None, todos: bool = False, limite: Optional[int] = None,
+          proyecto_id: Optional[str] = None,
           db_path: Path = DEFAULT_DB, expedientes: Path = DEFAULT_EXPEDIENTES) -> pd.DataFrame:
     capitulos = cargar_capitulos(capitulos_nombre)
+    if proyecto_id:
+        capitulos = capitulos[capitulos["proyecto_id"] == proyecto_id]
+        if capitulos.empty:
+            raise ValueError(f"proyecto_id={proyecto_id!r} no tiene ningún capítulo en "
+                             f"{capitulos_nombre}")
     previas = _leer_previas(out)
     res = clasificar_capitulos(capitulos, clasificar=clasificar, previas=previas,
                                todos=todos, limite=limite, out=out,
@@ -257,9 +263,12 @@ def main(argv: Optional[list[str]] = None) -> int:
     apc = sub.add_parser("clasificar")
     apc.add_argument("--todos", action="store_true")
     apc.add_argument("--limite", type=int, default=None)
+    apc.add_argument("--proyecto-id", default=None,
+                     help="acota a un solo proyecto (HCDN...); sin esto, TODOS los "
+                          "capítulos pendientes del universo (145 proyectos de B0)")
     args = ap.parse_args(argv)
     if args.cmd == "clasificar":
-        res = correr(todos=args.todos, limite=args.limite)
+        res = correr(todos=args.todos, limite=args.limite, proyecto_id=args.proyecto_id)
         print(f"{len(res)} filas -> {OUT_DEFAULT}")
     return 0
 

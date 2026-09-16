@@ -24,34 +24,39 @@ def check(cond: bool, msg: str) -> None:
         print(f"  FALLA: {msg}")
 
 
-# Import DESPUÉS de fijar el env var por defecto (apagado), para que el módulo
-# lea la bandera apagada al cargar sus constantes de nivel de módulo.
+# Import DESPUÉS de fijar el env var por defecto (sin tocar), para que el módulo
+# lea la bandera tal como la ve cualquiera que corra el motor sin configurar nada.
 os.environ.pop("INCERTIDUMBRE_LEGISLADOR", None)
 import nowcast_puertas as N  # noqa: E402
 
-print("INCERTIDUMBRE_LEGISLADOR apagada por defecto (sin tocar el env)")
-check(N.INCERTIDUMBRE_LEGISLADOR is False, "default: apagada")
+# PRENDIDA por defecto desde el 16-09-2026 (ADR-0025, "Hagamos el cambio" — Franco).
+print("INCERTIDUMBRE_LEGISLADOR prendida por defecto (sin tocar el env)")
+check(N.INCERTIDUMBRE_LEGISLADOR is True, "default: prendida")
 
-print("\ncontrol real, bandera apagada: P(aprobación) = 0,9801 de siempre")
-r_off = N.nowcast("diputados", "2026-06-01", origen="EJECUTIVO", n_sims=2000, seed=0)
-check(abs(r_off["p_aprobacion"] - 0.9801) < 1e-9,
-      f"apagada tiene que dar EXACTAMENTE el número publicado de siempre: {r_off['p_aprobacion']}")
+print("\ncontrol real, bandera prendida (default): mueve el número de siempre")
+r_on_default = N.nowcast("diputados", "2026-06-01", origen="EJECUTIVO", n_sims=2000, seed=0)
+check(abs(r_on_default["p_aprobacion"] - 0.6132) < 1e-4,
+      f"prendida por defecto tiene que dar el número re-estimado el 16-09: "
+      f"{r_on_default['p_aprobacion']}")
 
-print("\ncon la bandera prendida (a mano, sin depender del env var): mueve algo")
-N.INCERTIDUMBRE_LEGISLADOR = True
+print("\napagada a mano (opt-out, INCERTIDUMBRE_LEGISLADOR=0): vuelve al número histórico")
+N.INCERTIDUMBRE_LEGISLADOR = False
 try:
-    r_on = N.nowcast("diputados", "2026-06-01", origen="EJECUTIVO", n_sims=2000, seed=0)
-    check(r_on["p_aprobacion"] != r_off["p_aprobacion"],
-          f"con epsilon0={N.EPSILON0}, tau={N.TAU} el número tiene que moverse: "
-          f"{r_off['p_aprobacion']} -> {r_on['p_aprobacion']}")
-    check(0.0 <= r_on["p_aprobacion"] <= 1.0, "sigue siendo una probabilidad válida")
+    r_off = N.nowcast("diputados", "2026-06-01", origen="EJECUTIVO", n_sims=2000, seed=0)
+    check(abs(r_off["p_aprobacion"] - 0.9801) < 1e-9,
+          f"apagada tiene que dar EXACTAMENTE el número publicado de antes del 16-09: "
+          f"{r_off['p_aprobacion']}")
+    check(r_off["p_aprobacion"] != r_on_default["p_aprobacion"],
+          f"apagada y prendida tienen que dar números distintos: "
+          f"{r_off['p_aprobacion']} vs {r_on_default['p_aprobacion']}")
 finally:
-    N.INCERTIDUMBRE_LEGISLADOR = False  # no contaminar otros tests del proceso
+    N.INCERTIDUMBRE_LEGISLADOR = True  # no contaminar otros tests del proceso
 
-print("\nrestaurada: vuelve a dar el número de siempre")
+print("\nrestaurada: vuelve a dar el número prendido de siempre")
 r_restaurado = N.nowcast("diputados", "2026-06-01", origen="EJECUTIVO", n_sims=2000, seed=0)
-check(abs(r_restaurado["p_aprobacion"] - 0.9801) < 1e-9,
-      "apagar la bandera de nuevo tiene que volver al número publicado")
+check(abs(r_restaurado["p_aprobacion"] - 0.6132) < 1e-4,
+      "prender la bandera de nuevo tiene que volver al número publicado actual")
+check(0.0 <= r_restaurado["p_aprobacion"] <= 1.0, "sigue siendo una probabilidad válida")
 
 
 print(f"\n{corridos - len(fallos)}/{corridos} OK")

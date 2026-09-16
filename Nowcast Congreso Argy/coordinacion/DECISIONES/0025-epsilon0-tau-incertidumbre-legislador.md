@@ -1,8 +1,9 @@
 # ADR-0025 — ε₀ + τ·η_j: la incertidumbre baja al legislador (§III.A.3)
 
-**Fecha:** 2026-09-16 · **Estado:** IMPLEMENTADO y MEDIDO, detrás de bandera
-APAGADA (`INCERTIDUMBRE_LEGISLADOR=0`) · **Decide:** Claude, con prioridad
-asignada por Franco ("Asignale prioridad y resolvamos ese shock común") ·
+**Fecha:** 2026-09-16 · **Estado:** IMPLEMENTADO, MEDIDO y **PRENDIDO**
+(`INCERTIDUMBRE_LEGISLADOR=1` por defecto desde el 16-09) · **Decide:** Franco
+("Hagamos el cambio"), prioridad asignada antes por él mismo ("Asignale
+prioridad y resolvamos ese shock común") ·
 **Toca:** `modelo/agregador_institucional/src/agregador.py`,
 `modelo/ensemble/src/ensemble.py`, `modelo/ensemble/src/puerta_d.py`,
 `modelo/ensemble/src/nowcast_puertas.py` · **Se relaciona con:** ADR-0016
@@ -124,23 +125,42 @@ puntos donde se la puede poner a prueba:**
 3. El comportamiento en el escenario de referencia es exactamente el que la
    fórmula predecía antes de escribir una línea de código.
 
-**Aun así, no se prende.** Sigue habiendo una pregunta que sólo Franco puede
-responder: activar esto CAMBIA el número publicado (las bandas se ensanchan y
-$P_c$ dejará de pegarse a 0%/100% en proyectos hoy "seguros"), así que aunque
-la evidencia sea favorable, es una decisión de producto, no sólo de modelo.
+## Activación — 2026-09-16
+
+Franco: *"Hagamos el cambio."* Antes de tocar el default se corrió la
+verificación que el ADR dejaba pendiente — **paneles reales, no sólo el
+escenario sintético** — comparando `INCERTIDUMBRE_LEGISLADOR=0` (el
+comportamiento de siempre) contra `=1` (los defaults re-estimados
+$\varepsilon_0=0{,}035$, $\tau=1{,}19$), llamando a `nowcast()` directo (no
+hizo falta correr las 2-3 horas de `REGENERAR.ps1` completo: la bandera no
+toca ningún parquet de entrada, sólo el paso de simulación):
+
+| caso | apagada (de siempre) | prendida (16-09) |
+|---|---:|---:|
+| EJECUTIVO / Diputados @2026-06-01 (hipotético, el de la tabla de §III.A.3) | 0,9801 | 0,6132 |
+| `HCDN292179` (Ley de Lobby) / Diputados @2026-07-31 | 0,9801 | 0,5277 |
+
+Las dos se mueven en la dirección que predecía la fórmula — $P_c$ deja de
+pegarse a 0,98 y baja a la banda 0,5-0,6 que el shock compartido predice para
+mayorías no abrumadoras — y la suite completa (`test_nowcast_puertas.py`
+49/49, `test_incertidumbre_legislador.py` reescrito para el nuevo default,
+`test_ensemble.py` 33, `test_puerta_d.py` 24/24, `test_guardas_confianza.py`
+14/14, `test_beta_dictamen.py` 17/17, `test_puerta_a.py` 31/31,
+`test_agregador.py` 50/50, `test_backtest_cadena.py` 53) sigue en verde tras
+el cambio de default.
+
+**`INCERTIDUMBRE_LEGISLADOR=1` es el default en `nowcast_puertas.py` desde
+este commit.** `INCERTIDUMBRE_LEGISLADOR=0` en el entorno vuelve al
+comportamiento anterior sin tocar código, para quien necesite comparar.
 
 ## Lo que queda pendiente
 
-1. **Activar `INCERTIDUMBRE_LEGISLADOR=1` en producción — decisión de Franco.**
-   Antes de decir que sí, correr `REGENERAR.ps1` con la bandera prendida y
-   mirar cómo cambian los paneles reales (`casos/`), no sólo el escenario
-   sintético.
-2. **El límite del harness de estimación** (no incluye `beta_dictamen`) queda
+1. **El límite del harness de estimación** (no incluye `beta_dictamen`) queda
    anotado. Si en algún momento se decide corregirlo, hay que re-estimar
    $\varepsilon_0$/$\tau$ con ese harness corregido antes de tocar los
    defaults.
-3. **Backtest de CALIBRACIÓN agregada** (¿el 95% de confianza declarado
-   contiene el resultado real el 95% de las veces?) queda como el paso
-   opcional de más confianza si Franco lo pide antes de activar — la evidencia
-   de arriba ya alcanza para recomendar, pero no es lo mismo que un backtest
-   de cobertura acta por acta.
+2. **Backtest de CALIBRACIÓN agregada** (¿el 95% de confianza declarado
+   contiene el resultado real el 95% de las veces?) sigue como el paso
+   opcional de más confianza si Franco lo pide más adelante — la evidencia de
+   arriba ya alcanzó para activar, pero no es lo mismo que un backtest de
+   cobertura acta por acta.

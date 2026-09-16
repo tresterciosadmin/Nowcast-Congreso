@@ -2,6 +2,23 @@
 
 > Documento vivo. Cada cambio importante en el proyecto se explica acá en lenguaje claro, además de registrarse en `ESTADO-DEL-PROYECTO.md`. Si algo del sistema no se entiende leyendo esto, está mal escrito y hay que arreglarlo.
 
+## Prendimos la incertidumbre del legislador: el número publicado ya cambió (16-09-2026)
+
+La entrada anterior de este documento contaba que se había construido y probado la
+incertidumbre a nivel legislador, pero se había dejado apagada porque cambiar el número
+publicado es una decisión de Franco, no del modelo. Franco la tomó: "Hagamos el cambio."
+
+Antes de tocarlo, se hizo la comprobación que había quedado pendiente por escrito: mirar
+cómo cambia un caso REAL, no sólo el ejemplo de manual. Se probó con la Ley de Lobby (un
+proyecto real, no inventado) y con un caso genérico de Diputados: los dos pasaron de un
+99% —el modelo viejo, demasiado seguro de sí mismo— a un 53-61%, un número mucho más
+parecido a lo que de verdad pasa en una votación reñida. Ninguna prueba existente se rompió
+con el cambio.
+
+Desde este cambio, el modelo publica CON la incertidumbre prendida por defecto. Quien
+necesite comparar con el número de antes puede pedirlo explícitamente (una variable de
+entorno), pero lo que se publica de acá en adelante es el número nuevo.
+
 ## Franco tenía razón: el clasificador de proyectos sí funciona, y ya está corrido (16-09-2026)
 
 Franco pidió revisar bien una afirmación anterior de que faltaba la clave de acceso para

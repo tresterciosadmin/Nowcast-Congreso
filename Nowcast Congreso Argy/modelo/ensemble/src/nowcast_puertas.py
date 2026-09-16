@@ -138,17 +138,19 @@ SHRINK_RECORD = os.environ.get("SHRINK_RECORD", "1") != "0"
 # enganche, cualquier regla de combinación de temas construida en
 # `variables/bloque` (union/ponderada) queda huérfana: nadie la llama en vivo.
 #
-# APAGADA POR DEFECTO, y con motivo DISTINTO al resto de las banderas de acá
-# arriba: no es que el término esté mal medido, es que el DATO no existe
-# todavía. `variables/proyecto/src/tema_por_proyecto.temas_de_proyecto()` lee
-# `proyecto_taxonomias` (datos/proyectos/data/proyectos.db), que hoy tiene 0
-# filas — nadie corrió `agente_taxonomias.clasificar_lote` (necesita
-# ANTHROPIC_API_KEY + red, no disponibles en la sesión que escribió esto).
-# Prender la bandera hoy es un no-op seguro: `temas_de_proyecto` devuelve lista
-# vacía y `nowcast()` sigue exactamente como sin la bandera. El día que la base
-# tenga taxonomías, la bandera empieza a tener efecto — momento en el que hace
-# falta el backtest de PASO 2 (ver evaluacion/baseline/src/baseline_voto_individual.py
-# --combinar-temas) ANTES de recomendar prenderla en publicación.
+# APAGADA POR DEFECTO. Motivo YA NO es "el dato no existe": desde el 16-09
+# `proyecto_taxonomias` tiene 2.655 filas (1.182 proyectos, vía
+# `tema_por_proyecto.clasificar_por_titulo` — ⚠️ CORRECCIÓN: sí había
+# ANTHROPIC_API_KEY, cargada por `.env`; el chequeo directo de la sesión del
+# 15-09 la había pasado por alto). El motivo de que siga apagada ahora es el
+# de PASO 2 (ADR-0024): las tres reglas de combinación medidas —union,
+# ponderada, peor_tema— empeoran la rama de bloque contra la que se las probó,
+# así que `COMBINAR_TEMAS=primaria` (la que NO cambia nada frente al
+# comportamiento manual de siempre) es la única combinación sin evidencia en
+# contra. Prender `TEMA_AUTO` con `primaria` es seguro (usa sólo el área de
+# mayor confianza, igual que pasar `tema=` a mano); prenderlo con cualquier
+# otra regla de combinación no tiene evidencia a favor — ver el resumen para
+# cowork en `coordinacion/RESUMEN-MULTIETIQUETA-COWORK.md`.
 TEMA_AUTO = os.environ.get("TEMA_AUTO", "0") != "0"
 # Con qué regla se combinan los temas cuando TEMA_AUTO encuentra multietiqueta.
 # 'primaria' (default) usa sólo el área de mayor confianza -> single `tema=`,
@@ -157,7 +159,13 @@ TEMA_AUTO = os.environ.get("TEMA_AUTO", "0") != "0"
 # validación empírica antes de ser el default.
 COMBINAR_TEMAS = os.environ.get("COMBINAR_TEMAS", "primaria")
 
-# INCERTIDUMBRE A NIVEL LEGISLADOR (§III.A.3, ADR-0025). APAGADA POR DEFECTO.
+# INCERTIDUMBRE A NIVEL LEGISLADOR (§III.A.3, ADR-0025). PRENDIDA POR DEFECTO
+# desde el 16-09-2026 — decisión de Franco ("Hagamos el cambio"), después de
+# que la evidencia (ver ADR-0025) apuntara a favor en los tres frentes donde
+# se la puso a prueba y ningún backtest saliera en contra. CAMBIA EL NÚMERO
+# PUBLICADO: las bandas se ensanchan y P_c deja de pegarse a 0%/100% en
+# proyectos que hoy se ven "seguros". Se puede volver al comportamiento
+# anterior con `INCERTIDUMBRE_LEGISLADOR=0` en el entorno.
 #
 # Reemplaza el clip AGREGADO (`ensemble.P_INCERTIDUMBRE`, que recorta P_c a
 # [0,01; 0,99] DESPUÉS de simular — viola la doctrina, ADR-0016 §II.1) por dos
@@ -182,7 +190,7 @@ COMBINAR_TEMAS = os.environ.get("COMBINAR_TEMAS", "primaria")
 # baseline_voto_individual.py, no incluye beta_dictamen en su p_motor).
 EPSILON0_DEFAULT = 0.035
 TAU_DEFAULT = 1.19
-INCERTIDUMBRE_LEGISLADOR = os.environ.get("INCERTIDUMBRE_LEGISLADOR", "0") != "0"
+INCERTIDUMBRE_LEGISLADOR = os.environ.get("INCERTIDUMBRE_LEGISLADOR", "1") != "0"
 EPSILON0 = float(os.environ.get("EPSILON0", EPSILON0_DEFAULT))
 TAU = float(os.environ.get("TAU", TAU_DEFAULT))
 

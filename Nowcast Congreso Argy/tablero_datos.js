@@ -262,6 +262,11 @@ const TABLERO = {
   hitos: [
     {
       fecha: "2026-09-16",
+      titulo: "Prendimos la incertidumbre del legislador: el numero publicado ya cambio",
+      texto: "El hito anterior conto que se habia construido y probado la incertidumbre a nivel legislador, pero se dejo apagada porque cambiar el numero publicado es decision de Franco, no del modelo. Franco la tomo: 'Hagamos el cambio'. Antes de tocarlo se hizo la comprobacion que habia quedado pendiente por escrito: mirar como cambia un caso REAL, no solo el ejemplo de manual. Se probo con la Ley de Lobby (proyecto real) y con un caso generico de Diputados: los dos pasaron de un 99% -el modelo viejo, demasiado seguro de si mismo- a un 53-61%, mucho mas parecido a lo que de verdad pasa en una votacion renida. Ninguna prueba existente se rompio con el cambio. Desde ahora el modelo publica CON la incertidumbre prendida por defecto; quien necesite comparar con el numero de antes puede pedirlo a mano."
+    },
+    {
+      fecha: "2026-09-16",
       titulo: "Franco tenia razon: el clasificador de proyectos si funciona, y ya esta corrido sobre 1.182 proyectos",
       texto: "Franco pidio revisar bien una afirmacion anterior de que faltaba la clave de acceso para el clasificador de proyectos. Tenia razon: la clave si estaba, el error fue de lectura de un archivo de configuracion. Investigado por que la tabla de temas de proyecto seguia vacia: la via que existia (leer el PDF completo de cada proyecto) solo alcanza al 0,06% de los proyectos, casi ninguno tiene ese documento cargado. La solucion fue la misma que ya se usa para las actas: clasificar por el TITULO en vez del PDF completo, mas barato y con cobertura del 100%. Se corrio sobre los 1.182 proyectos que alguna vez se votaron, sin errores: 2.655 clasificaciones guardadas. Resultado: 3 de cada 4 proyectos con tema tienen dos o mas temas a la vez, casi el mismo numero que ya se habia medido para las actas con un clasificador distinto. Se probo con la Ley Bases real y coincidio con lo ya sabido. Se guardo copia de seguridad para que no se pierda si se reconstruye la base de proyectos desde cero."
     },

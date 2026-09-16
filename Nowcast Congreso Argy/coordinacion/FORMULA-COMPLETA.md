@@ -45,7 +45,7 @@ este archivo en el mismo commit.
 | 10 | ICG — clima político | modula según el humor social | 🔴 **medido y desconectado** (§II.4) |
 | 11 | $\mathcal{C}_c$ — gate del dictamen | admisibilidad reglamentaria | 🔬 **IMPLEMENTADO 15-09 (aproximación), tras bandera apagada** (§III.A.1) |
 | 12 | $\beta$ — dictamen por legislador | reemplaza a $\delta$ | ✅ **PRENDIDO 14-09-2026** (§III.A.2) |
-| 13 | $\varepsilon_0 + \eta_j$ — incertidumbre | reemplaza al clip | 🔬 **IMPLEMENTADO y MEDIDO 16-09, tras bandera apagada (`INCERTIDUMBRE_LEGISLADOR`) — evidencia favorable, activación pendiente de Franco** (§III.A.3, ADR-0025) |
+| 13 | $\varepsilon_0 + \eta_j$ — incertidumbre | reemplaza al clip | ✅ **PRENDIDO 16-09-2026** — decisión de Franco, verificado contra paneles reales (§III.A.3, ADR-0025) |
 | 14 | $\psi$ — arrastre entre cámaras | la revisora lee a la de origen | 🔲 **ESTIMADO y controlado 03-09** (§III.A.4) |
 | 15 | sobre tablas | el 24,4% que hoy es invisible | 🔴 **PROBADO y DESCARTADO POR AHORA, 15-09** (§III.A.5) — implementado, backtest walk-forward mecanístico: el mecanismo no discrimina, con o sin θ. No es un "no" definitivo — "no todavía"; decisión de Franco |
 | 16 | proximidad electoral | el calendario cambia incentivos | 🔲 **propuesto** (§III.B.1) |
@@ -283,9 +283,9 @@ Cuatro cosas construidas que **no aportan**: dos están apagadas, dos están mal
 **Efecto colateral:** un clip aplasta a todos los extremos al **mismo** valor, o sea que
 **destruye el ranking de pivotes** — que es la mitad del producto (ADR-0007).
 
-**Corrección decidida:** §III.A.3. **IMPLEMENTADA el 16-09 (ADR-0025), tras bandera
-apagada** (`INCERTIDUMBRE_LEGISLADOR`) — cuando se prende, este clip se desactiva
-solo (no se apilan las dos correcciones).
+**Corrección decidida:** §III.A.3. **IMPLEMENTADA y PRENDIDA el 16-09 (ADR-0025)**
+vía `INCERTIDUMBRE_LEGISLADOR` (prendida por defecto) — este clip se desactiva solo
+cuando esa bandera está prendida (no se apilan las dos correcciones).
 
 ## II.2 🔴 El quórum ignora las abstenciones — bug confirmado
 
@@ -1028,11 +1028,14 @@ manda todo al término lineal y $b$ sale con signo arbitrario (daba negativo en 
 2,62 en Senado). El despeje directo por acta, $\tau^2 = (\text{res}^2 - S)/S^2$, con
 **mediana** en vez de media, es robusto a las actas donde el motor erró de lado.
 
-> ⚠️ **PENDIENTE DE FRANCO — actualizado 16-09.** El orden se respetó: antes de
-> implementar se re-estimó, para no fijar $\tau$ sobre un motor que iba a cambiar. Ver
-> el bloque de implementación abajo.
+> ✅ **PRENDIDO 16-09-2026 — decisión de Franco ("Hagamos el cambio").** El orden se
+> respetó: antes de implementar se re-estimó, para no fijar $\tau$ sobre un motor que
+> iba a cambiar. Verificado contra los paneles reales (no sólo el escenario sintético)
+> antes de prender: `HCDN292179` (Ley de Lobby, Diputados @2026-07-31) pasa de 0,9801 a
+> 0,5277; el caso EJECUTIVO/Diputados @2026-06-01 de la tabla de abajo pasa de 0,9801 a
+> 0,6132. Ver el bloque de implementación abajo.
 
-### 🔬 IMPLEMENTADO 16-09-2026, tras bandera apagada — ADR-0025
+### ✅ PRENDIDO 16-09-2026 (`INCERTIDUMBRE_LEGISLADOR=1` por defecto) — ADR-0025
 
 **Re-estimado antes de implementar** (2.485 actas, 293.655 votos — 5× la muestra del
 03-09, ahora con `beta_dictamen` prendido desde el 14-09): $\varepsilon_0=0{,}035$,
@@ -1054,9 +1057,11 @@ da 0,7664 — cae exactamente entre el 0,8771 (sin $\varepsilon_0$) y el 0,7758 
 $\varepsilon_0=0{,}05$) que ya estaban en la tabla de arriba. El mecanismo se comporta
 como la fórmula predecía antes de escribirse.
 
-**Bandera única:** `INCERTIDUMBRE_LEGISLADOR` (`nowcast_puertas.py`), apagada por
-defecto. Simétrica en las dos cámaras (origen y revisora). Detalle completo, tests y
-la comparación con el resultado negativo de la multietiqueta (ADR-0024) en ADR-0025.
+**Bandera única:** `INCERTIDUMBRE_LEGISLADOR` (`nowcast_puertas.py`), **prendida por
+defecto desde el 16-09-2026** (`INCERTIDUMBRE_LEGISLADOR=0` en el entorno vuelve al
+comportamiento anterior). Simétrica en las dos cámaras (origen y revisora). Detalle
+completo, tests y la comparación con el resultado negativo de la multietiqueta
+(ADR-0024) en ADR-0025.
 
 **Por qué no se prendió igual, con evidencia toda favorable:** activar esto CAMBIA el
 número publicado (las bandas se ensanchan, $P_c$ deja de pegarse a 0%/100%) — decisión

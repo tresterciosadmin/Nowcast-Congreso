@@ -2,6 +2,31 @@
 
 > Documento vivo. Cada cambio importante en el proyecto se explica acá en lenguaje claro, además de registrarse en `ESTADO-DEL-PROYECTO.md`. Si algo del sistema no se entiende leyendo esto, está mal escrito y hay que arreglarlo.
 
+## El piloto en más proyectos no dio resultado — pero encontramos por qué, y es importante (16-09-2026, más tarde)
+
+Franco pidió armar un piloto con varios proyectos más, para no depender sólo de los 3
+casos de Ley Bases. Antes de gastar, se verificó que todo lo anterior quedara bien
+guardado (estaba). Se eligieron los 20 proyectos con más votación por artículo y se
+clasificaron sus 160 capítulos — barato, sin problema.
+
+Al ir a compararlos contra la realidad, ninguno de los 20 sirvió. La razón no tiene que
+ver con la clasificación: **el dato de "qué pasó realmente en cada capítulo" casi nunca
+existe**. Se guarda en el acta de votación sólo cuando el propio texto dice
+explícitamente "Título tal, Capítulo tal" — y eso pasa en apenas 9 proyectos de los 160
+que votaron por artículo. Peor: revisando esos 9 con más cuidado, se encontró que
+**Ley Bases es el único caso donde ese dato baja hasta el nivel de capítulo** — en los
+otros 8, sólo se sabe qué pasó a nivel de TÍTULO (una unidad más grande, que agrupa
+varios capítulos).
+
+En limpio: no es que haga falta clasificar más — eso ya se probó que es barato y
+rápido. El problema es que **no existe suficiente información real para comparar a
+nivel de capítulo**, salvo en Ley Bases. Los 160 capítulos que se clasificaron no se
+tiran: quedan guardados para cuando el sistema use esto en producción. Pero para la
+pregunta de "¿funciona esto?" con más casos, el camino que queda es comparar a nivel de
+TÍTULO en esos 8 proyectos (el más rico tiene 26 votaciones), que es una pieza nueva
+todavía no armada — o aceptar que, con los datos que hay hoy, esta pregunta específica
+no tiene forma de responderse con más potencia que la que ya se tiene.
+
 ## Terminamos Ley Bases y corrimos la prueba de verdad: el mecanismo funciona bien, pero con muy pocos casos para sacar una conclusión (16-09-2026, tercera vuelta)
 
 Con el crédito recargado, Franco pidió enfocarse sólo en Ley Bases (no gastar en los

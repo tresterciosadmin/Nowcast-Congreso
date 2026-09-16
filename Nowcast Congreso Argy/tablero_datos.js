@@ -262,6 +262,11 @@ const TABLERO = {
   hitos: [
     {
       fecha: "2026-09-16",
+      titulo: "El piloto en mas proyectos no dio resultado, pero encontramos por que -y es importante",
+      texto: "Franco pidio un piloto con varios proyectos mas, para no depender solo de los 3 casos de Ley Bases. Se verifico primero que todo lo anterior quedara bien guardado (estaba). Se eligieron los 20 proyectos con mas votacion por articulo y se clasificaron 160 capitulos -barato, sin problema-. Al comparar contra la realidad, ninguno de los 20 sirvio: el dato de 'que paso realmente en cada capitulo' casi nunca existe en el acta. Se guarda solo cuando el texto dice explicitamente 'Titulo tal, Capitulo tal', y eso pasa en apenas 9 proyectos de los 160 que votaron por articulo. Revisando esos 9 con mas cuidado: Ley Bases es el UNICO caso donde ese dato llega a nivel de capitulo -en los otros 8 solo se sabe que paso a nivel de TITULO (una unidad mas grande). No es un problema de cuanto clasifiquemos -eso ya se probo barato y rapido-, es que no existe suficiente informacion real para comparar a nivel de capitulo, salvo en Ley Bases. Los 160 capitulos clasificados no se pierden, quedan guardados para produccion. Queda en manos de Franco decidir el proximo paso."
+    },
+    {
+      fecha: "2026-09-16",
       titulo: "Terminamos Ley Bases y corrimos la prueba de verdad: mecanismo sano, pocos casos para concluir",
       texto: "Con el credito recargado, Franco pidio enfocarse solo en Ley Bases. Se termino de clasificar el 100% de sus capitulos reales y se corrio la prueba completa: historial real de cada legislador, simulacion por capitulo, comparado contra lo que de verdad paso la noche del retiro. Resultado sin adornar: de 63 capitulos, solo 3 tuvieron votacion articulo por articulo esa primera noche (el resto se voto en la segunda ronda). Con solo 3 casos no alcanza para concluir nada con confianza, pero lo poco que hay apunta en la direccion correcta -el capitulo que de verdad se aprobo es el que el modelo le puso mas probabilidad-. Un capitulo no dio senal clara: el clasificador le puso etiqueta de 'tramite' a un capitulo que en realidad era sustantivo, y por eso el modelo no tuvo con que compararlo. El mecanismo no esta roto, pero hacen falta mas casos reales -eso significa clasificar mas proyectos, que quedo pausado."
     },

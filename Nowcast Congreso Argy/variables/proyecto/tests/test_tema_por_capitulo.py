@@ -152,6 +152,13 @@ with tempfile.TemporaryDirectory() as tmpdir:
     check(len(res6) == 1 and (res6["proyecto_id"] == "HCDN000200").all(),
           f"sólo procesa HCDN000200, no los capítulos de HCDN000100: {res6[['proyecto_id']].to_dict('records')}")
 
+    print("\ncorrer — proyecto_id acepta una LISTA (piloto sobre varios proyectos a la vez)")
+    out_lista = tmp / "tema_por_capitulo_lista.parquet"
+    res6b = correr(capitulos_nombre=cap_path, out=out_lista, clasificar=_falso,
+                   proyecto_id=["HCDN000100", "HCDN000200"], db_path=db, expedientes=exped)
+    check(set(res6b["proyecto_id"]) == {"HCDN000100", "HCDN000200"},
+          f"procesa los dos proyectos de la lista: {sorted(res6b['proyecto_id'].unique())}")
+
     print("\ncorrer — --proyecto-id sin ningún capítulo para ese proyecto rompe claro")
     try:
         correr(capitulos_nombre=cap_path, out=out_scoped, clasificar=_falso,

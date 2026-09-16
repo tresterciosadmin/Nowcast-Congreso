@@ -258,3 +258,72 @@ falta más casos comparables. Dos caminos, ninguno tomado todavía:
    genérico que el clasificador confunde con trámite) — encontrado en un
    caso (Ley Bases II/I), podría repetirse en otros proyectos y degradar
    silenciosamente el mecanismo (cae a incondicional sin avisar como error).
+
+## Addendum 2026-09-16 (piloto sustantivo — hallazgo de granularidad, no de clasificación)
+
+Franco pidió ampliar a "algunos proyectos, una prueba piloto sustantiva" para
+tener más casos que los n=3 de Ley Bases. Dos intentos, ambos documentados en
+`evaluacion/baseline/src/validar_piloto_capitulos.py`:
+
+**Intento 1 (fallido):** elegí los 20 proyectos de una sola ronda con más
+tramos según `capitulos_nombre.parquet` (PDF de la Orden del Día) — 33/33
+después de completarlos, 160 capítulos clasificados (`tema_por_capitulo.parquet`
+pasó de 305 a 467 filas). Al correr la validación: **0/20 proyectos tenían
+resultado real por capítulo utilizable.**
+
+**Por qué: descubrí una segunda fuente de título/capítulo, independiente de la
+que uso para clasificar.** `votacion_por_articulo.py::extraer_titulo_capitulo`
+saca `titulo_num`/`capitulo_num` del propio TÍTULO DEL ACTA de votación (texto
+tipo *"TITULO VIII. CAPITULO VIII. ARTS. 208 AL 214."*) — es la única fuente
+que dice qué resultado real tuvo CADA capítulo. El PDF de la Orden del Día
+(que uso para clasificar, `capitulos_nombre.parquet`) es mucho más rico en
+estructura pero NO dice qué pasó en la votación: son dos extracciones
+independientes que sólo coinciden si el acta declara el título/capítulo
+explícitamente, y eso pasa en **9 proyectos de los 160 con votación en
+particular en Diputados** — el resto vota "en particular" sin que el acta
+declare a qué capítulo pertenece cada tramo.
+
+**Intento 2, con el universo correcto (también sin resultado, por una razón
+distinta):** de esos 9 proyectos, **medí la granularidad real del resultado**
+(`(titulo_num, capitulo_num)` ambos no nulos vs. sólo `titulo_num`) y encontré
+que **Ley Bases es el ÚNICO proyecto de los 160 con resultado real a nivel
+CAPÍTULO** (43 filas con ambos campos). **Los otros 8 proyectos con
+título/capítulo declarado sólo lo declaran a nivel TÍTULO** (`capitulo_num`
+siempre nulo) — HCDN289082 (26 tramos), HCDN274473 (9), HCDN293348 (4),
+HCDN287440 (2), HCDN293445 (2), HCDN096679/HCDN285290/HCDN101088 (1 cada
+uno). Clasifiqué los 4 capítulos que le faltaban a HCDN285290 (costo
+trivial) para completarlo, pero no cambia el hallazgo: **no hay ningún otro
+proyecto con resultado real DESAGREGADO POR CAPÍTULO para comparar contra
+`P_k` simulado.**
+
+**Lo que esto significa, sin adornar:** el límite no es cuánto clasifiquemos
+(eso es barato y ya lo probamos dos veces) — es que **el dato de "qué pasó
+en la votación" casi nunca baja a nivel capítulo**, salvo en la ley más
+grande y mejor documentada del período (Ley Bases). El camino directo del
+punto 5 de arriba ("terminar los 779 pares restantes") **no resolvería el
+problema de n**: aunque clasifiquemos TODOS los capítulos de los 145
+proyectos, seguiríamos sin saber el resultado real de la mayoría, porque esa
+información no existe en el acta a ese nivel de detalle.
+
+**Caminos que sí quedan abiertos** (ninguno tomado, decisión de Franco):
+- **Validar a nivel TÍTULO en vez de CAPÍTULO** para los 8 proyectos con
+  granularidad de título (HCDN289082 el más rico, 26 tramos en un solo
+  título). Requiere combinar en logit los temas de los capítulos de cada
+  título (mismo patrón que `ponderada_logit`/`combinar_logit`) para simular
+  el título como unidad — no es lo mismo que se construyó (capítulo-por-
+  capítulo) y no se armó todavía: es una pieza nueva, chica pero real.
+- **Reconstruir el resultado real por capítulo desde el rango de artículos**
+  del propio texto del acta (`"ARTS. 208 AL 214"`) cruzado contra los rangos
+  de artículos de cada capítulo en el PDF de la Orden del Día — más
+  laborioso, no explorado, podría no ser mucho más rico (la mayoría de las
+  actas de votación particular ni siquiera declaran título/capítulo).
+- **Aceptar que el n disponible para esta pregunta es estructuralmente bajo**
+  y usar lo que hay (Ley Bases n=3 capítulos + potencialmente 8 proyectos a
+  nivel título) sin perseguir más clasificación — la clasificación ya no es
+  el cuello de botella.
+
+Ningún capítulo/proyecto adicional se clasificó más allá de lo ya descripto
+(160 + 4 = 164 clasificaciones nuevas esta sesión, todas ya en
+`tema_por_capitulo.parquet`, ninguna perdida: quedan como insumo para cuando
+`composicion_capitulos` se cablee a producción, aunque no sirvan para esta
+validación puntual).

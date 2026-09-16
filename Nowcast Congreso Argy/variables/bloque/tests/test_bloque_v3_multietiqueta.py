@@ -115,6 +115,36 @@ def test_ponderada_promedia_shares_ya_encogidos():
           % (pond, econ, otro))
 
 
+def test_peor_tema_toma_el_minimo_no_el_promedio():
+    """'peor_tema' (PASO 1 extendido, 16-09): el tema donde el bloque está MÁS
+    EN CONTRA manda. Con ECON (share bajo, opuesto) y OTRO (share alto,
+    favorable), el resultado tiene que ser el share de ECON, no un promedio."""
+    votos, cond = _votos_dos_temas()
+    econ = _idx(B.proyectar_postura(votos, "2020-06-01", "diputados", tema="ECON",
+                                    cond_por_acta=cond, padron_path="__no__"))["OPO"]["_share_afirm"]
+    otro = _idx(B.proyectar_postura(votos, "2020-06-01", "diputados", tema="OTRO",
+                                    cond_por_acta=cond, padron_path="__no__"))["OPO"]["_share_afirm"]
+    peor = _idx(B.proyectar_postura(votos, "2020-06-01", "diputados",
+                                    combinar_temas="peor_tema", temas=["ECON", "OTRO"],
+                                    cond_por_acta=cond, padron_path="__no__"))["OPO"]["_share_afirm"]
+    assert econ < otro, "sanity: ECON es el tema opuesto en este fixture"
+    assert peor == econ, f"peor_tema tiene que dar EXACTAMENTE el mínimo (ECON={econ}): {peor}"
+    assert peor != (econ + otro) / 2, "y no puede coincidir con el promedio simple (salvo por azar)"
+    print("OK peor_tema(ECON,OTRO) = min(%.4f, %.4f) = %.4f" % (econ, otro, peor))
+
+
+def test_peor_tema_con_un_tema_es_identico_a_primaria():
+    votos, cond = _votos_dos_temas()
+    primaria = _idx(B.proyectar_postura(votos, "2020-06-01", "diputados", tema="ECON",
+                                        cond_por_acta=cond, padron_path="__no__"))
+    peor = _idx(B.proyectar_postura(votos, "2020-06-01", "diputados",
+                                    combinar_temas="peor_tema", temas=["ECON"],
+                                    cond_por_acta=cond, padron_path="__no__"))
+    assert primaria["OPO"]["_share_afirm"] == peor["OPO"]["_share_afirm"], \
+        "con un solo tema, 'el peor' es el único -> igual a primaria"
+    print("OK peor_tema con 1 tema == primaria")
+
+
 def test_ponderada_sin_match_en_ningun_tema_cae_a_incondicional():
     votos, cond = _votos_dos_temas()
     v1 = _idx(B.proyectar_postura(votos, "2020-06-01", "diputados", padron_path="__no__"))
@@ -163,8 +193,10 @@ if __name__ == "__main__":
     test_union_usa_la_multietiqueta_completa_no_solo_la_primaria()
     test_union_pool_de_dos_temas_opuestos()
     test_ponderada_promedia_shares_ya_encogidos()
+    test_peor_tema_toma_el_minimo_no_el_promedio()
+    test_peor_tema_con_un_tema_es_identico_a_primaria()
     test_ponderada_sin_match_en_ningun_tema_cae_a_incondicional()
     test_combinar_temas_invalido_rompe_claro()
     test_no_primaria_sin_temas_rompe_claro()
     test_normalizar_temas_objetivo_acepta_formas_variadas()
-    print("\n== 8 chequeos v3 (multietiqueta) OK ==")
+    print("\n== 10 chequeos v3 (multietiqueta) OK ==")

@@ -32,26 +32,31 @@ salen esos temas para un proyecto real).
 ## Decisión — la regla de combinación (`combinar_temas`)
 
 `proyectar_postura` (`variables/bloque/src/bloque.py`) gana un parámetro
-`combinar_temas: str = "primaria"` con tres modos:
+`combinar_temas: str = "primaria"` con cuatro modos:
 
 | modo | qué hace | archivo/función |
 |---|---|---|
 | `primaria` (default) | comportamiento de SIEMPRE: una sola etiqueta (`tema=`) | sin cambios, retrocompatible byte a byte |
 | `union` | la ventana condicionada son las actas que comparten **cualquiera** de los temas objetivo — matcheando contra la multietiqueta COMPLETA de cada acta (`todas_ids`), no sólo su primaria | `_match` nuevo dentro de `proyectar_postura` |
 | `ponderada` | cada tema objetivo arma SU PROPIO share condicionado (encogido, mismo `k_shrink`) y el resultado es el promedio ponderado por confianza de esos shares ya encogidos | idem |
+| `peor_tema` **(agregado 16-09, a pedido de Franco: "probemos algo nuevo")** | mismo cómputo por tema que `ponderada`, pero el resultado final es el **mínimo** de los shares ya encogidos — el tema donde el bloque está más en contra manda, sin ponderar | idem, reusa `area_shares` |
 
-**Por qué estas dos y no las cuatro de la tabla del prompt.** El prompt pedía
-implementar "al menos dos". `union` y `ponderada` son las dos con semántica
-más clara y menos partes móviles — `ponderada` además tiene la propiedad de
-que con UN solo tema de peso 1.0 da EXACTAMENTE lo mismo que `primaria`: no es
-una rama aparte, es la generalización (verificado en test,
-`test_ponderada_con_un_tema_es_identica_a_primaria`). **`peor capítulo` y
-`jerárquica` quedan sin implementar, no descartadas**: `peor capítulo` es un
-caso particular fácil de agregar sobre la misma infraestructura (tomar el
-`min` en vez del promedio ponderado) si `union`/`ponderada` no alcanzan;
-`jerárquica` (Empirical-Bayes por tema y DESPUÉS combinar) es, mirado de
-cerca, muy parecida a `ponderada` con un paso extra — no se justificaba
-triplicar la superficie de test sin evidencia de que hiciera falta.
+**Por qué estas cuatro y no sólo dos.** El prompt original pedía "al menos
+dos"; se implementaron `union` y `ponderada` primero por ser las de semántica
+más clara. `ponderada` tiene la propiedad de que con UN solo tema de peso 1.0
+da EXACTAMENTE lo mismo que `primaria` — no es una rama aparte, es la
+generalización (`test_ponderada_con_un_tema_es_identica_a_primaria`).
+**`peor_tema` se agregó el 16-09** después de que PASO 2 diera negativo para
+`union`/`ponderada` (ver abajo): Franco pidió más pruebas o algo nuevo antes
+de cerrar el tema, y `peor_tema` es la hipótesis "un ómnibus se cae por su
+capítulo más resistido" de la tabla original del prompt, barata de agregar
+porque reusa el mismo cómputo por área que ya existía para `ponderada` — sólo
+cambia la combinación final (`min` en vez de promedio ponderado). Con un solo
+tema, `peor_tema` también da EXACTAMENTE `primaria` (mismo test que
+`ponderada`, `test_peor_tema_con_un_tema_es_identico_a_primaria`).
+**`jerárquica` queda sin implementar**: mirada de cerca, es muy parecida a
+`ponderada` con un paso extra de Empirical-Bayes anidado, y no se justificaba
+sumar una quinta variante sin que las primeras tres hayan mostrado señal.
 
 **Dónde vive en la doctrina (ADR-0016).** La combinación ocurre DENTRO de
 `proyectar_postura`, por bloque, antes de que la simulación cuente votos — es
@@ -105,58 +110,74 @@ prueba, se confirmó que el enganche efectivamente llega hasta
 > IGUAL para todas las sustantivas de cada acta — es la aproximación
 > disponible sin re-consultar al agente; cuando `TEMA_AUTO` tenga datos reales
 > de `proyecto_taxonomias` (que sí trae confianza por taxonomía), la
-> `ponderada` en producción sí pesará de verdad.
+> `ponderada` en producción sí pesará de verdad. **`peor_tema` no tiene este
+> problema**: no pondera, elige el mínimo — así que la falta de confianza por
+> etiqueta no lo afecta. Es un punto a favor de probarlo aparte.
 
-### 🔴 Resultado: NEGATIVO. `union` y `ponderada` empeoran justo donde tenían que ayudar
+### 🔴 Resultado: NEGATIVO. Las TRES reglas nuevas empeoran justo donde tenían que ayudar
 
 **Corrida real, 2.984 actas evaluadas (16 saltadas), seed=7, 353.133 votos
 totales por modo** (`evaluacion/baseline/outputs`, reproducible con
-`--muestra 3000 --seed 7 --combinar-temas {primaria,union,ponderada}`):
+`--muestra 3000 --seed 7 --combinar-temas {primaria,union,ponderada,peor_tema}`):
 
-| | `primaria` (hoy) | `union` | `ponderada` |
-|---|---:|---:|---:|
-| Brier global | 0,13634 | 0,13657 | 0,13668 |
-| skill global | 0,1527 | 0,1512 | 0,1506 |
-| **Brier rama de bloque** (n=1.263 votos) | **0,20380** | **0,20771** | **0,20569** |
-| **skill rama de bloque** | **−0,0559** | **−0,0762** | **−0,0657** |
-| MAE del margen | 0,1382 | 0,1380 | 0,1380 |
+| | `primaria` (hoy) | `ponderada` | `union` | `peor_tema` |
+|---|---:|---:|---:|---:|
+| Brier global | 0,13634 | 0,13668 | 0,13657 | 0,13670 |
+| skill global | 0,1527 | 0,1506 | 0,1512 | 0,1505 |
+| **Brier rama de bloque** (n=1.263 votos) | **0,20380** | **0,20569** | **0,20771** | **0,20836** |
+| **skill rama de bloque** | **−0,0559** | **−0,0657** | **−0,0762** | **−0,0795** |
+| MAE del margen | 0,1382 | 0,1380 | 0,1380 | 0,1381 |
+
+(ordenadas de mejor a peor por skill de la rama de bloque; `primaria` sigue
+arriba de las tres)
 
 **Global: prácticamente plano**, exactamente lo que el PASO 0 anticipaba — la
 rama de bloque es ~0,36% de los votos, así que cualquier cambio ahí se diluye
 a nada en el agregado. **Pero en el subconjunto que el cambio REALMENTE
-toca —la rama de bloque, que es donde había que mirar— los dos modos nuevos
-EMPEORAN el Brier respecto de `primaria`, no lo mejoran.** `union` es el
-peor (+0,0039, skill cae de −0,056 a −0,076); `ponderada` empeora menos
-(+0,0019) pero sigue sin ganarle a `primaria`.
+toca —la rama de bloque, que es donde había que mirar— las TRES reglas nuevas
+EMPEORAN el Brier respecto de `primaria`, ninguna lo mejora.**
 
-**Por qué, la hipótesis más plausible:** la rama de bloque ya es la parte más
-débil del motor (skill NEGATIVO incluso con `primaria`, consistente con lo
-medido en §II.5 de `FORMULA-COMPLETA.md` — "mandar gente ahí no es un refugio
-conservador: es empeorarla"). Sobre una muestra ya chica (1.263 votos),
-`union` suma actas de OTROS temas relacionados que diluyen la señal
-específica; `ponderada` promedia con PESO IGUAL entre temas (limitación de
-`todas_ids`, ver más arriba) cuando en la realidad un proyecto casi siempre
-tiene un tema que manda y otros que son ruido de fondo — promediarlos parejo
-es, en la práctica, agregar ruido a una estimación que ya tenía poca base.
+**`peor_tema` (agregada el 16-09, a pedido de Franco — "probemos algo
+nuevo") es la que PEOR sale de las tres**, incluso peor que `union`. No es lo
+que se esperaba de la hipótesis "un ómnibus se cae por su capítulo más
+resistido": tomar el mínimo entre varios shares ya encogidos empuja
+sistemáticamente hacia el extremo pesimista, y sobre una rama que YA es
+demasiado extrema para su propio bien (ver §II.5), empujarla más lejos del
+extremo correcto —que la mayoría de los proyectos igual se aprueban— es
+exactamente lo que le hace peor, no mejor. Es un resultado que vale la pena
+tener presente para cualquier futura variante "peor caso": en este motor,
+pesimismo ⧣ precisión.
+
+**Por qué, la hipótesis más plausible (las tres reglas):** la rama de bloque
+ya es la parte más débil del motor (skill NEGATIVO incluso con `primaria`,
+consistente con lo medido en §II.5 de `FORMULA-COMPLETA.md` — "mandar gente
+ahí no es un refugio conservador: es empeorarla"). Sobre una muestra ya chica
+(1.263 votos), cualquier transformación que se aleje de "una sola etiqueta,
+sin drama" agrega ruido a una estimación que ya tenía poca base: `union` lo
+hace sumando actas de otros temas, `ponderada` promediando con peso igual
+(limitación de `todas_ids`, ver más arriba), `peor_tema` empujando al extremo.
 
 **Esto es la doctrina de este proyecto funcionando, no un fracaso de la
 tarea:** la misma familia de resultado que el sobre tablas (§III.A.5) y el
-carácter del dictamen en el ADR-0016 — una hipótesis razonable que el
-backtest walk-forward rechaza. **Se reporta como corresponde: no se fuerza.**
+carácter del dictamen en el ADR-0016 — una hipótesis razonable (o tres) que
+el backtest walk-forward rechaza. **Se reporta como corresponde: no se
+fuerza, ni siquiera después de probar "algo nuevo".**
 
 **Recomendación: NO activar `TEMA_AUTO` con `COMBINAR_TEMAS != "primaria"`
-en base a esta medición.** Si algún día `proyecto_taxonomias` tiene datos
-reales (con confianza por etiqueta, no la aproximación de peso igual que usa
-esta validación), vale la pena remedir — pero con la evidencia de hoy, la
+en base a esta medición — con NINGUNA de las cuatro reglas disponibles.** Si
+algún día `proyecto_taxonomias` tiene datos reales (con confianza por
+etiqueta, no la aproximación de peso igual que usa `ponderada` en esta
+validación — nota: `peor_tema` no tiene ese problema, no pondera), vale la
+pena remedir `ponderada` en particular — pero con la evidencia de hoy, la
 regla ganadora sigue siendo no tocar nada.
 
 **Limitación de esta medición, honesta:** muestra de 3.000 de ~6.091 actas
-totales (seed único), no el censo completo. La dirección del resultado
-(ambos modos peores que primaria, en el mismo sentido) es consistente entre
-`union` y `ponderada`, lo que pesa a favor de que sea señal real y no ruido
-de una sola corrida — pero un censo completo (como el que se hizo para el
-guard de era, ADR-0018) sería la confirmación definitiva si esto se
-retoma.
+totales (seed único), no el censo completo. La dirección del resultado (las
+tres reglas peores que primaria, en el mismo sentido, con `peor_tema`
+consistentemente la peor) es uniforme entre las tres, lo que pesa a favor de
+que sea señal real y no ruido de una sola corrida — pero un censo completo
+(como el que se hizo para el guard de era, ADR-0018) sería la confirmación
+definitiva si esto se retoma.
 
 ## Verificación
 
@@ -193,16 +214,22 @@ registro único sin ningún código nuevo. Tests: 3 checks nuevos en
 
 ## Lo que queda pendiente, y de quién es cada pendiente
 
-1. **Correr `agente_taxonomias.clasificar_lote`** — necesita
-   `ANTHROPIC_API_KEY` + red, tarea operativa de Franco (o de una sesión con
-   esas credenciales). Sin esto, `TEMA_AUTO=1` sigue siendo un no-op sin
-   importar qué tan bien esté escrito el resto.
-2. ~~Decidir la regla de combinación con los números de PASO 2~~ **RESUELTO
-   por la medición de arriba: ninguna de las dos gana.** El código queda
-   (tested, documentado, reusable si cambian las condiciones — por ejemplo con
-   confianza real por etiqueta), pero no hay recomendación de activar nada.
-   Sigue siendo decisión de Franco si quiere confirmar con el censo completo
-   antes de cerrar el tema del todo.
+1. ~~Correr `agente_taxonomias.clasificar_lote`~~ **RESUELTO el 16-09 — con un
+   matiz.** La API key SÍ estaba disponible (error de la entrada anterior de
+   este ADR: ver la corrección en `tema_por_proyecto.py`). Pero `clasificar_lote`
+   (la vía PDF) tiene un cuello de botella real: sólo 71/115.495 proyectos
+   (0,06%) tienen `pdf_url`. Se clasificó en cambio por TÍTULO
+   (`clasificar_por_titulo`, más barato, mismo patrón que `tema_por_acta.py`)
+   el universo VOTADO completo (1.182 denominadores) — ver la entrada de
+   ESTADO del 16-09 con los números finales.
+2. ~~Decidir la regla de combinación con los números de PASO 2~~ **RESUELTO,
+   dos veces: ninguna de las CUATRO reglas gana** (se sumó `peor_tema` el
+   16-09 a pedido de Franco — "probemos algo nuevo" — y salió la PEOR de las
+   tres nuevas, no la mejor). El código queda (tested, documentado, reusable
+   si cambian las condiciones — por ejemplo con confianza real por etiqueta,
+   que ahora sí existe para el universo votado gracias al punto 1), pero no
+   hay recomendación de activar nada. Sigue siendo decisión de Franco si
+   quiere confirmar con el censo completo antes de cerrar el tema del todo.
 3. **No se prende nada en publicación sin aprobación de Franco** — las tres
    banderas (`TEMA_AUTO`, `COMBINAR_TEMAS`, y el default de
    `combinar_temas` en `proyectar_postura`) quedan como están hasta entonces.

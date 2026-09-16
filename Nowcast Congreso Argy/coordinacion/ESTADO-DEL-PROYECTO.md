@@ -56,6 +56,15 @@ Mantené esta tabla sincronizada con la bitácora.
 
 ## Bitácora (más reciente arriba)
 
+### [2026-09-16] variables/bloque + evaluacion/baseline — `peor_tema` (probamos "algo nuevo" como pidió Franco) y salió peor todavía
+- **Quién:** Claude, ejecución autónoma.
+- **Qué:** Franco, al ver el resultado negativo de `union`/`ponderada`, pidió "más pruebas o probar algo nuevo para incorporarlo". Se agregó `combinar_temas="peor_tema"` a `proyectar_postura` (reusa el mismo cómputo por área que `ponderada`, sólo cambia la combinación final: toma el MÍNIMO de los shares ya encogidos en vez del promedio ponderado — la hipótesis "un ómnibus se cae por su capítulo más resistido" de la tabla original del prompt). Con un solo tema da exactamente `primaria`, igual que `ponderada`. Ventaja sobre `ponderada`: no pondera, así que no sufre la limitación de que `todas_ids` no guarda confianza por etiqueta.
+- **Resultado, corrida real de 2.984 actas:** `peor_tema` es la PEOR de las tres reglas nuevas (Brier bloque 0,20836, skill −0,0795), peor incluso que `union` (−0,0762) y `ponderada` (−0,0657), todas peores que `primaria` (−0,0559). Hipótesis: tomar el mínimo empuja sistemáticamente al extremo pesimista una rama que YA predice demasiado extremo para su propio bien (§II.5) — pesimismo no es lo mismo que precisión en este motor.
+- **Tabla completa (las cuatro reglas, mejor a peor):** `primaria` −0,0559 > `ponderada` −0,0657 > `union` −0,0762 > `peor_tema` −0,0795.
+- **Archivos:** `variables/bloque/src/bloque.py`, `variables/bloque/tests/test_bloque_v3_multietiqueta.py` (+2, 10/10), `evaluacion/baseline/src/baseline_voto_individual.py`, `evaluacion/baseline/outputs/baseline_combinar_temas_peor_tema_2026-09-16.json` (nuevo), `coordinacion/DECISIONES/0024-...md` (cerrado con las cuatro reglas), `coordinacion/FORMULA-COMPLETA.md`.
+- **Estado del módulo:** Parte A definitivamente cerrada por ahora — se probaron tres hipótesis distintas de combinación y las tres perdieron contra no tocar nada.
+- **Próximo paso:** ninguno, salvo que Franco pida el censo completo para confirmar antes de cerrar del todo, o que aparezcan datos con confianza real por etiqueta (ver el punto de `clasificar_por_titulo` más abajo) que ameriten remedir `ponderada` en particular.
+
 ### [2026-09-16] datos/expedientes — B2 arranca: `titulo_num`/`capitulo_num` sin bajar un PDF, y se probó que la vía profunda funciona
 - **Quién:** Claude, ejecución autónoma (Franco: "Sí, hay que hacerlo" sobre B2).
 - **Qué:** Antes de organizar una descarga masiva de PDFs de Órdenes del Día, se encontró que el propio TÍTULO del acta ya declara título/capítulo: `"TITULO VIII. CAPITULO VIII. ARTS. 208 AL 214."` (Ley Bases, O.D. 7) y `"TÍTULO II, CAP. I ART. 5 INCISO E."` (Ley Bases, O.D. 1 — dos formatos reales, no hipotéticos). `extraer_titulo_capitulo()` (nuevo, en `votacion_por_articulo.py`) los saca con dos regex y los agrega como columnas al MISMO contrato (`titulo_num`, `capitulo_num`), sin red.

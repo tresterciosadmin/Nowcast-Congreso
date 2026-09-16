@@ -560,9 +560,9 @@ def proyectar_postura(votos: pd.DataFrame, fecha, camara: str,
     )
 
     combinar_temas = (combinar_temas or "primaria").lower()
-    if combinar_temas not in ("primaria", "union", "ponderada"):
-        raise ValueError(f"combinar_temas debe ser 'primaria'|'union'|'ponderada'; "
-                         f"vino {combinar_temas!r}")
+    if combinar_temas not in ("primaria", "union", "ponderada", "peor_tema"):
+        raise ValueError(f"combinar_temas debe ser 'primaria'|'union'|'ponderada'|"
+                         f"'peor_tema'; vino {combinar_temas!r}")
     temas_norm = _normalizar_temas_objetivo(temas)
     if combinar_temas != "primaria" and tema is None and not temas_norm:
         raise ValueError(f"combinar_temas={combinar_temas!r} necesita `tema` o `temas` "
@@ -644,7 +644,8 @@ def proyectar_postura(votos: pd.DataFrame, fecha, camara: str,
                             "de la ventana", sel["acta_id"].nunique(), sorted(tgt_areas),
                             origen, mab["acta_id"].nunique())
 
-        else:  # ponderada
+        else:  # ponderada | peor_tema — MISMO cómputo por área, sólo cambia
+                # cómo se combinan al final (ver el loop de `out`, más abajo)
             n_total = 0
             for area, _peso in temas_norm:
                 def _match(aid, _area=area) -> bool:
@@ -660,15 +661,16 @@ def proyectar_postura(votos: pd.DataFrame, fecha, camara: str,
                     area_shares[area] = _share_por_linaje(sel_a)
                     n_total += sel_a["acta_id"].nunique()
             if n_total == 0:
-                logger.warning("combinar_temas=ponderada temas=%s origen=%s: 0 actas en "
+                logger.warning("combinar_temas=%s temas=%s origen=%s: 0 actas en "
                                "ventana para NINGUN tema objetivo; caigo a incondicional",
-                               [a for a, _ in temas_norm], origen)
+                               combinar_temas, [a for a, _ in temas_norm], origen)
                 condicionar = False
             else:
-                modo_efectivo = "ponderada"
-                logger.info("v3 (ponderada): %d actas condicionadas en total, repartidas "
+                modo_efectivo = combinar_temas
+                logger.info("v3 (%s): %d actas condicionadas en total, repartidas "
                             "entre %d temas objetivo (origen=%s) sobre %d de la ventana",
-                            n_total, len(temas_norm), origen, mab["acta_id"].nunique())
+                            combinar_temas, n_total, len(temas_norm), origen,
+                            mab["acta_id"].nunique())
 
     # composicion a la fecha: padron oficial si esta; si no, conteo por ventana
     base = _bancas_padron(camara, fecha, padron_path)
@@ -689,13 +691,13 @@ def proyectar_postura(votos: pd.DataFrame, fecha, camara: str,
             desvio = float(np.clip(r["desvio"], 0.0, 1.0))
             nact = int(r["n_actas"])
             share = share_u
-            if modo_efectivo == "ponderada":
+            if modo_efectivo in ("ponderada", "peor_tema"):
                 # cada tema objetivo encoge SU PROPIO share hacia la incondicional
-                # (mismo k_shrink de siempre) y el resultado es el promedio ponderado
-                # por confianza de esos shares ya encogidos. Un tema sin ninguna acta
-                # de este bloque en la ventana no se descarta: aporta share_u a su
-                # peso (n_cond=0 en la fórmula de encogimiento da exactamente eso), que
-                # es "sin dato para ese lente, uso la base" — no "ese lente no cuenta".
+                # (mismo k_shrink de siempre). Un tema sin ninguna acta de este
+                # bloque en la ventana no se descarta: aporta share_u (n_cond=0 en
+                # la fórmula de encogimiento da exactamente eso) — "sin dato para
+                # ese lente, uso la base", no "ese lente no cuenta".
+                shares_area = []
                 num, den = 0.0, 0.0
                 for area, peso in temas_norm:
                     cs = area_shares.get(area, {}).get(linaje)
@@ -705,10 +707,20 @@ def proyectar_postura(votos: pd.DataFrame, fecha, camara: str,
                         n_cond_used += int(n_c)
                     else:
                         share_area = share_u
+                    shares_area.append(share_area)
                     num += peso * share_area
                     den += peso
-                if den > 0:
-                    share = num / den
+                if modo_efectivo == "ponderada":
+                    # promedio de los shares ya encogidos, ponderado por confianza
+                    if den > 0:
+                        share = num / den
+                else:
+                    # peor_tema: el tema donde el bloque está MÁS EN CONTRA manda —
+                    # un ómnibus se cae por su capítulo más resistido (hipótesis del
+                    # prompt original, pesimista a propósito). El peso de `temas_norm`
+                    # no entra acá: "el peor" no se pondera, se elige.
+                    if shares_area:
+                        share = min(shares_area)
             else:
                 cs = cond_share.get(linaje)
                 if cs is not None:

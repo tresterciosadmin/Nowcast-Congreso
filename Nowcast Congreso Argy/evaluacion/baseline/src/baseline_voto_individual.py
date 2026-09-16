@@ -304,7 +304,7 @@ def correr(camara_filtro: str = "", muestra: int = 0, seed: int = 7,
     con la multietiqueta COMPLETA (`todas_ids`) de la acta evaluada, no sólo su
     primaria; comparar sus métricas contra 'primaria' es la validación empírica
     que el prompt pide antes de recomendar activar cualquiera de las dos."""
-    if combinar_temas not in ("primaria", "union", "ponderada"):
+    if combinar_temas not in ("primaria", "union", "ponderada", "peor_tema"):
         raise ValueError(f"combinar_temas invalido: {combinar_temas!r}")
     from bloque import cargar as cargar_bloque, proyectar_postura, cargar_tema_por_acta
 
@@ -467,7 +467,7 @@ def main(argv):
                          "(lo que hace el motor); shrink = corte + Empirical-Bayes k=5 "
                          "contra el linaje en la misma era")
     ap.add_argument("--combinar-temas", default="primaria",
-                    choices=["primaria", "union", "ponderada"],
+                    choices=["primaria", "union", "ponderada", "peor_tema"],
                     help="primaria (default, de siempre) = una sola etiqueta por acta; "
                          "union/ponderada (PASO 2, Parte A) condicionan con la "
                          "multietiqueta completa (todas_ids) de la acta evaluada")

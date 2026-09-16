@@ -52,6 +52,8 @@
 
 - cuantos proyectos de ley hay, si uno existe, y sus autores, cofirmantes o giros
   (las TAXONOMIAS asignadas ya no viven aca: ver datos/taxonomias)
+- por que `proyecto_taxonomias` tiene pocas filas (16-09): la via PDF (`clasificar_lote`) solo alcanza al 0,06% de los proyectos (71/115.495 con `pdf_url`); la via barata por TITULO (`variables/proyecto/src/tema_por_proyecto.py::clasificar_por_titulo`) cubre el universo VOTADO (1.182 denominadores) -- ver ADR-0024
+- si corriste `migrar_ckan.py` y perdiste clasificaciones: NO se pierden, `main()` las restaura solo desde `taxonomias_backup.py` -- pero corré `exportar` despues de clasificar para que el respaldo este al dia
 - la base de proyectos no cuadra / se cargo mal (`verificar.py`, 14 invariantes), o una fila rara que no hay que dejar entrar (cuarentena, base aparte)
 - rehacer `proyectos.db` (no viaja a git: `migrar_ckan.py` + `upsert_bot.py`, ~1 min)
 

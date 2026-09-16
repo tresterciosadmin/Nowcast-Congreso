@@ -51,7 +51,7 @@ este archivo en el mismo commit.
 | 16 | proximidad electoral | el calendario cambia incentivos | 🔲 **propuesto** (§III.B.1) |
 | 17 | asimetría del ICG | las caídas pesan más que las subas | 🔲 **propuesto** (§III.B.2) |
 | 18 | $\rho$ — récord por tema | falta la tabla | 🔲 **bloqueado** (§III.B.3) |
-| 19 | multietiqueta en $s_\ell$ (`combinar_temas`) + `TEMA_AUTO` | un proyecto real casi siempre tiene VARIOS temas (61,2% medido) | 🔴 **PROBADO y DESCARTADO POR AHORA, 15-09** (§I.4a, ADR-0024) — implementado, backtest real (2.984 actas): `union` y `ponderada` EMPEORAN el Brier en la rama de bloque (−0,056 → −0,076 / −0,066 de skill) respecto de la `primaria` de siempre. No es un "no" definitivo — "no todavía"; decisión de Franco |
+| 19 | multietiqueta en $s_\ell$ (`combinar_temas`) + `TEMA_AUTO` | un proyecto real casi siempre tiene VARIOS temas (61,2% medido) | 🔴 **PROBADO y DESCARTADO POR AHORA, 15/16-09** (§I.4a, ADR-0024) — implementado, backtest real (2.984 actas), CUATRO reglas: `primaria` (skill −0,056) le gana a `ponderada` (−0,066), `union` (−0,076) y `peor_tema` (−0,080, la peor de las tres — agregada el 16-09 a pedido de Franco, "probemos algo nuevo", y salió peor que las otras dos). No es un "no" definitivo — "no todavía"; decisión de Franco |
 
 **Resumen honesto: 7 términos corren, 5 están rotos, apagados o reprobaron su backtest
 (el sobre tablas y la multietiqueta no generalizan fuera de la muestra con la que se
@@ -217,16 +217,21 @@ inflarían el share.
 > porque nadie corrió `agente_taxonomias.clasificar_lote` (necesita
 > `ANTHROPIC_API_KEY` + red).
 >
-> **PASO 2 — backtest sobre 2.984 actas reales (seed=7): `union` y `ponderada`
-> EMPEORAN el Brier de la rama de bloque** (0,2038 → 0,2077 / 0,2057; skill
-> −0,056 → −0,076 / −0,066) **contra la `primaria` de siempre**, que ya era el
-> término más débil del motor. Global: plano (0,13634 → 0,1366/0,1367), como
-> anticipaba el PASO 0 — la rama de bloque es ~0,36% de los votos. Hipótesis de
-> por qué: sobre una muestra ya chica, `union` diluye con actas de temas
-> relacionados pero distintos, y `ponderada` promedia con PESO IGUAL entre
-> temas (la confianza por etiqueta no sobrevive en `todas_ids`) cuando en la
-> realidad casi siempre hay un tema que manda y otros que son ruido. **No se
-> recomienda activar.** Detalle completo en ADR-0024.
+> **PASO 2 — backtest sobre 2.984 actas reales (seed=7): las TRES reglas nuevas
+> EMPEORAN el Brier de la rama de bloque** contra la `primaria` de siempre, que
+> ya era el término más débil del motor. Brier bloque: 0,2038 (`primaria`) →
+> 0,2057 (`ponderada`) → 0,2077 (`union`) → **0,2084 (`peor_tema`, la peor)**.
+> Skill: −0,056 → −0,066 → −0,076 → **−0,080**. Global: plano (~0,1367 en las
+> cuatro), como anticipaba el PASO 0 — la rama de bloque es ~0,36% de los votos.
+> **`peor_tema` se agregó el 16-09 a pedido de Franco ("probemos algo nuevo") y
+> salió la peor de las tres**, no la mejor: tomar el mínimo entre temas empuja
+> al extremo pesimista una rama que ya predecía demasiado extremo para su
+> propio bien. Hipótesis de por qué las otras dos: sobre una muestra ya chica,
+> `union` diluye con actas de temas relacionados pero distintos, y `ponderada`
+> promedia con PESO IGUAL entre temas (la confianza por etiqueta no sobrevive
+> en `todas_ids`) cuando en la realidad casi siempre hay un tema que manda y
+> otros que son ruido. **No se recomienda activar ninguna de las cuatro.**
+> Detalle completo en ADR-0024.
 
 **Archivo:** `variables/bloque/src/bloque.py` → `proyectar_postura`
 

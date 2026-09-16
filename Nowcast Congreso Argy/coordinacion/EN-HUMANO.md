@@ -2,6 +2,25 @@
 
 > Documento vivo. Cada cambio importante en el proyecto se explica acá en lenguaje claro, además de registrarse en `ESTADO-DEL-PROYECTO.md`. Si algo del sistema no se entiende leyendo esto, está mal escrito y hay que arreglarlo.
 
+## Probamos una tercera idea para combinar temas, como pidió Franco, y salió la peor de las tres (16-09-2026)
+
+Después del resultado negativo de las dos primeras formas de combinar temas, Franco pidió
+probar algo nuevo antes de cerrar el tema del todo. Se armó una tercera opción: en vez de
+juntar toda la historia relacionada o promediar entre temas, quedarse con el tema donde el
+bloque está MÁS en contra — la idea de que "una ley grande se cae por su parte más
+resistida". Sonaba razonable. Se probó con los mismos datos reales que las otras dos.
+
+**Salió la peor de las tres.** No la mejor: la peor. La explicación más probable es que esa
+parte del modelo ya tiende a predecir demasiado extremo (casi siempre 0% o 100%, sin
+términos medios), y quedarse con el peor caso empuja todavía más hacia ese extremo — cuando
+en la realidad la mayoría de los proyectos, aun con partes resistidas, terminan
+aprobándose. Ser pesimista no es lo mismo que tener razón.
+
+Con esto, las tres ideas de cómo combinar varios temas a la vez quedaron probadas y las
+tres perdieron contra no tocar nada. Se reporta con la misma claridad que si alguna hubiera
+funcionado — es exactamente lo que Franco pidió: probar de verdad antes de descartar, y
+decir la verdad sobre lo que salió.
+
 ## Encontramos gratis lo que pensábamos que iba a costar caro: saber a qué capítulo pertenece cada artículo (16-09-2026)
 
 Franco dio luz verde para seguir viendo qué se cae de una ley cuando se vota artículo

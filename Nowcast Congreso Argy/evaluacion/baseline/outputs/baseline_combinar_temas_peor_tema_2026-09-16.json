@@ -1,0 +1,235 @@
+{
+ "n_actas_evaluadas": 2984,
+ "n_actas_saltadas": 16,
+ "avisos_agregados": {
+  "padron_cae_a_ventana": 812,
+  "excluyo_aux": 1368,
+  "sin_actas_condicionadas": 14
+ },
+ "rango_fechas": [
+  "1997-03-20",
+  "2026-09-09"
+ ],
+ "ventana_dias": 730,
+ "min_hist_individual": 1,
+ "guard_era": "shrink",
+ "combinar_temas": "peor_tema",
+ "global": {
+  "n": 353133,
+  "tasa_base": 0.7985,
+  "brier": 0.1367,
+  "brier_climatologia": 0.16091,
+  "skill": 0.1505,
+  "logloss": 0.43519,
+  "accuracy": 0.8027
+ },
+ "calibracion": [
+  {
+   "bin": 0,
+   "n": 2252,
+   "pred": 0.0748,
+   "real": 0.1448
+  },
+  {
+   "bin": 1,
+   "n": 3797,
+   "pred": 0.1524,
+   "real": 0.2705
+  },
+  {
+   "bin": 2,
+   "n": 6319,
+   "pred": 0.2526,
+   "real": 0.4395
+  },
+  {
+   "bin": 3,
+   "n": 10731,
+   "pred": 0.3546,
+   "real": 0.4804
+  },
+  {
+   "bin": 4,
+   "n": 15702,
+   "pred": 0.4532,
+   "real": 0.5967
+  },
+  {
+   "bin": 5,
+   "n": 32325,
+   "pred": 0.555,
+   "real": 0.6381
+  },
+  {
+   "bin": 6,
+   "n": 35576,
+   "pred": 0.6481,
+   "real": 0.6557
+  },
+  {
+   "bin": 7,
+   "n": 40260,
+   "pred": 0.7539,
+   "real": 0.7554
+  },
+  {
+   "bin": 8,
+   "n": 54465,
+   "pred": 0.8545,
+   "real": 0.8429
+  },
+  {
+   "bin": 9,
+   "n": 151706,
+   "pred": 0.9563,
+   "real": 0.9429
+  }
+ ],
+ "por_camara": {
+  "diputados": {
+   "n": 272069,
+   "tasa_base": 0.7748,
+   "brier": 0.14933,
+   "brier_climatologia": 0.1745,
+   "skill": 0.1443,
+   "logloss": 0.46985,
+   "accuracy": 0.7802
+  },
+  "senado": {
+   "n": 81064,
+   "tasa_base": 0.8781,
+   "brier": 0.09431,
+   "brier_climatologia": 0.10707,
+   "skill": 0.1192,
+   "logloss": 0.31887,
+   "accuracy": 0.8782
+  }
+ },
+ "por_fuente_direccion": {
+  "bloque": {
+   "n": 1263,
+   "tasa_base": 0.7387,
+   "brier": 0.20836,
+   "brier_climatologia": 0.19301,
+   "skill": -0.0795,
+   "logloss": 0.65637,
+   "accuracy": 0.73
+  },
+  "record": {
+   "n": 351870,
+   "tasa_base": 0.7987,
+   "brier": 0.13644,
+   "brier_climatologia": 0.16078,
+   "skill": 0.1514,
+   "logloss": 0.4344,
+   "accuracy": 0.803
+  }
+ },
+ "por_caracter_dictamen": {
+  "DISPUTADO": {
+   "n": 56692,
+   "tasa_base": 0.7153,
+   "brier": 0.14054,
+   "brier_climatologia": 0.20367,
+   "skill": 0.31,
+   "logloss": 0.42889,
+   "accuracy": 0.7699
+  },
+  "UNICO": {
+   "n": 48894,
+   "tasa_base": 0.8873,
+   "brier": 0.09368,
+   "brier_climatologia": 0.09999,
+   "skill": 0.0631,
+   "logloss": 0.33174,
+   "accuracy": 0.8898
+  },
+  "mayoria": {
+   "n": 17392,
+   "tasa_base": 0.6575,
+   "brier": 0.15192,
+   "brier_climatologia": 0.2252,
+   "skill": 0.3254,
+   "logloss": 0.47281,
+   "accuracy": 0.7719
+  },
+  "solo_minoria": {
+   "n": 2223,
+   "tasa_base": 0.8763,
+   "brier": 0.0981,
+   "brier_climatologia": 0.1084,
+   "skill": 0.095,
+   "logloss": 0.32269,
+   "accuracy": 0.8853
+  },
+  "nan": {
+   "n": 227932,
+   "tasa_base": 0.8101,
+   "brier": 0.14418,
+   "brier_climatologia": 0.15382,
+   "skill": 0.0627,
+   "logloss": 0.45718,
+   "accuracy": 0.7937
+  }
+ },
+ "por_era": {
+  "hasta 2011": {
+   "n": 164517,
+   "tasa_base": 0.83,
+   "brier": 0.1191,
+   "brier_climatologia": 0.14112,
+   "skill": 0.156,
+   "logloss": 0.38883,
+   "accuracy": 0.8374
+  },
+  "2011-2015": {
+   "n": 58337,
+   "tasa_base": 0.8326,
+   "brier": 0.11198,
+   "brier_climatologia": 0.13935,
+   "skill": 0.1964,
+   "logloss": 0.35467,
+   "accuracy": 0.8288
+  },
+  "2015-2019": {
+   "n": 66466,
+   "tasa_base": 0.7871,
+   "brier": 0.15165,
+   "brier_climatologia": 0.16757,
+   "skill": 0.095,
+   "logloss": 0.4738,
+   "accuracy": 0.7835
+  },
+  "2019-2023": {
+   "n": 12751,
+   "tasa_base": 0.8387,
+   "brier": 0.09472,
+   "brier_climatologia": 0.1353,
+   "skill": 0.2999,
+   "logloss": 0.39338,
+   "accuracy": 0.8844
+  },
+  "desde 2023": {
+   "n": 51062,
+   "tasa_base": 0.6628,
+   "brier": 0.21263,
+   "brier_climatologia": 0.22351,
+   "skill": 0.0487,
+   "logloss": 0.63675,
+   "accuracy": 0.6657
+  }
+ },
+ "margen": {
+  "n_actas": 2984,
+  "mae": 0.1381,
+  "sesgo_medio": -0.0186,
+  "p90_error_abs": 0.2563
+ },
+ "_args": {
+  "camara": "ambas",
+  "muestra": 3000,
+  "desde": null,
+  "guard_era": "shrink",
+  "combinar_temas": "peor_tema"
+ }
+}

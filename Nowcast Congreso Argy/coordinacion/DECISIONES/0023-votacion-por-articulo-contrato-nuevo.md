@@ -116,6 +116,89 @@ particular que ya identificó B0, no el universo entero).
 — los dos formatos reales de Ley Bases, la ausencia de capítulo en la
 votación EN GENERAL, y que `construir()` propaga las columnas sin romper.
 
+## Addendum 2026-09-16 (segundo) — B2 escala: 163 PDF bajados, NOMBRE de capítulo para el 88,9% de los pares reales
+
+Franco: *"Deberiamos ahora seguir con escalar la descarga... Respecto del
+multitema tenemos que encontrarle la vuelta"* (esto último resuelto aparte,
+ver `coordinacion/RESUMEN-MULTIETIQUETA-COWORK.md`). Este addendum es la
+continuación de B2: pasar de "se probó que se puede" (addendum anterior, un
+solo PDF) a escala real, sobre el alcance que el propio addendum anterior
+proponía — los proyectos de Diputados con votación en particular.
+
+**Dónde vive cada cosa (respuesta a la pregunta de Franco: "¿carpeta nueva o
+cómo lo guardamos?"):** el PDF crudo **no es una carpeta nueva** — es
+descartable por diseño (régimen de `Archivos_Borrar/`, `CLAUDE.md`), así que
+usa el mismo caché que ya existía, `Archivos_Borrar/od_pdf/` (el que llena
+`ingesta_od.py` para las firmas de Diputados). Lo que SÍ es un contrato nuevo,
+y por eso SÍ vive en `datos/expedientes/data/clean/` (viaja por git,
+ADR-0020) es la salida YA PARSEADA: `capitulos_nombre.parquet`. Mismo
+principio que ya rige el resto del repo — el insumo crudo se puede
+regenerar bajándolo de nuevo; el trabajo de extraerle valor no.
+
+**Escala del alcance real, medida (no la estimación del addendum anterior):**
+de los 160 proyectos de Diputados con ≥1 tramo de votación en particular
+(B0), **145 (90,6%) tienen al menos una Orden del Día de tipo LEY** —
+`ingesta_od.py` gana `--solo-proyectos <archivo>` para bajar sólo las ODs que
+cubren una lista de `proyecto_id`, sin tocar el corpus completo de ~2.500.
+Esos 145 proyectos resuelven a **163 Órdenes del Día** (`archivo` es la
+unidad real de descarga: una OD suele cubrir varios proyectos a la vez —
+280 en total, "gratis" junto con los 145 que se pidieron).
+
+**Tiempo real, no estimado:** 163 PDF, ~4 minutos, 0 fallas (`PAUSA=0,35s`
+entre descargas + red). Muy por debajo de cualquier estimación basada en el
+corpus completo (~2.500 ODs, 45-60 min): acotar a la lista de B0 es lo que
+hace que esto sea barato.
+
+**Extracción del NOMBRE de capítulo** (`datos/expedientes/src/
+capitulos_nombre.py`, nuevo): lee el texto COMPLETO de cada PDF (no el
+`texto_de_pdf` de `parser_od.py`, que corta a los 20 páginas por diseño —
+correcto para firmantes, que están cerca del principio; incorrecto acá,
+donde el capítulo de interés puede estar al final del articulado) y busca
+encabezados "Capítulo N — Nombre" o "CAPÍTULO N\nNOMBRE". Resultado: **163
+ODs leídas, 54 con al menos un capítulo con nombre reconocible, 320 filas**
+(`datos/expedientes/data/clean/capitulos_nombre.parquet`).
+
+**Cruzado contra el contrato B1/B2 real** (los 36 pares únicos
+`(proyecto_id, capitulo_num)` que `extraer_titulo_capitulo` ya identificó
+para Diputados, 5 proyectos): **32/36 (88,9%) consiguieron al menos un
+nombre real del PDF** — de "Capítulo VIII" a "Capítulo VIII — Régimen
+Infraccional y Recursivo Aplicable al VPU".
+
+**Dos rondas de falsos positivos encontradas y corregidas EN ESTA CORRIDA,
+no simuladas** (mismo principio de "medir, no asumir" del resto del repo):
+1. Un capítulo sin nombre propio (numeral seguido directo del articulado)
+   hacía que el regex agarrara el texto del primer artículo como si fuera el
+   título ("ARTÍCULO 91.- Las disposiciones..."). 10/322 filas (3,1%) antes
+   del filtro.
+2. El encabezado de página repetido en cada hoja ("CÁMARA DE DIPUTADOS DE LA
+   NACIÓN O.D. Nº 7") caía justo después de un "CAPÍTULO N" real y se leía
+   como su nombre.
+Las dos formas se filtran ahora (`_RE_ES_ARTICULO`, `_RE_ES_ENCABEZADO_PAGINA`
+en `capitulos_nombre.py`), con test de regresión para cada una
+(`test_capitulos_nombre.py`, 11 checks).
+
+**Limitación honesta que QUEDA, sin resolver:** 18/32 pares con nombre tienen
+MÁS DE UN candidato en conflicto entre distintas ODs del mismo proyecto —
+`nombre_capitulo` de `capitulos_nombre.parquet` no es 1:1 con
+`(proyecto_id, capitulo_num)`, así que este contrato **no elige** entre
+candidatos (eso queda para quien lo consuma). Dos causas distintas mezcladas
+en esos 18: (a) ruido residual —fragmentos de sumario, capítulos mal
+delimitados— y (b) señal real: **Ley Bases (HCDN272347) tiene nombres
+DISTINTOS y ambos correctos para el mismo `capitulo_num` entre su primera
+ronda (perdió artículos, se retiró) y la segunda (volvió recortada)** — el
+capítulo se renumeró/renombró entre rondas. Esto último no es un bug: es la
+misma dinámica de "el proyecto cambia en el recinto" que motiva toda la
+Parte B del prompt original, apareciendo en un lugar donde no se la estaba
+buscando. Desambiguar (preferir la OD más reciente, o exponer las dos con su
+fecha) queda para cuando haya un consumidor real de `capitulos_nombre.parquet`.
+
+**Lo que este addendum NO hace:** no agranda la cobertura de QUÉ tramo
+pertenece a qué capítulo (eso lo decide `extraer_titulo_capitulo` sobre el
+título del acta, sin cambios) — sólo agrega el NOMBRE para presentación,
+exactamente el alcance que el addendum anterior había anotado como
+pendiente. No se escaló al Senado (usa HTML, no PDF — fuente distinta,
+scope aparte) ni a los 15 proyectos sin OD de tipo LEY identificable.
+
 ## Verificación
 
 `datos/expedientes/tests/test_votacion_por_articulo.py` (29 checks, sin red):

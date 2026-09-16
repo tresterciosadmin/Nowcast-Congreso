@@ -262,6 +262,16 @@ const TABLERO = {
   hitos: [
     {
       fecha: "2026-09-16",
+      titulo: "Bajamos 163 documentos oficiales y sacamos el nombre de cada capitulo de una ley, en 4 minutos",
+      texto: "Franco pidio seguir con la descarga a mayor escala. Se bajaron los PDF oficiales de los 145 proyectos de Diputados que en algun momento tuvieron votacion articulo por articulo: 163 documentos, 4 minutos, cero fallas. El documento crudo va al mismo cajon de siempre (no una carpeta nueva); lo que se guarda como dato permanente es el resultado de leerlos, el nombre de cada capitulo. Probado contra lo que ya se sabia por el titulo de cada votacion: 9 de cada 10 capitulos consiguieron su nombre real. En el camino se encontraron y corrigieron dos formas de que el sistema se confundiera (agarraba texto de un articulo, o el encabezado que se repite en cada hoja, como si fueran el nombre). Queda un limite honesto sin resolver: para algunos capitulos aparece mas de un nombre candidato porque el proyecto paso por varias Ordenes del Dia -- en el caso de la Ley Bases ni siquiera es un error, el capitulo se renombro de verdad entre la primera ronda de votacion (la que perdio articulos) y la segunda (la que volvio recortada)."
+    },
+    {
+      fecha: "2026-09-16",
+      titulo: "El tema multiple no se resuelve solo: armamos un resumen para pensarlo entre varios",
+      texto: "Franco no se conformo con el resultado negativo de las tres formas de combinar temas probadas: hay que encontrarle la vuelta. Se armo un resumen para llevar a una sesion de trabajo en conjunto -que es el problema en criollo, que se probo y por que salio mal, y tres ideas nuevas todavia no probadas-. La mas prometedora: en vez de tratar a una ley omnibus como si tuviera varios temas mezclados, tratarla como lo que en realidad es -varias leyes chiquitas de un solo tema, encuadernadas juntas- y resolver cada capitulo por separado en vez de mezclar todo a nivel de la ley entera. Queda documentado y cerrado por ahora, a la espera de esa conversacion."
+    },
+    {
+      fecha: "2026-09-16",
       titulo: "Prendimos la incertidumbre del legislador: el numero publicado ya cambio",
       texto: "El hito anterior conto que se habia construido y probado la incertidumbre a nivel legislador, pero se dejo apagada porque cambiar el numero publicado es decision de Franco, no del modelo. Franco la tomo: 'Hagamos el cambio'. Antes de tocarlo se hizo la comprobacion que habia quedado pendiente por escrito: mirar como cambia un caso REAL, no solo el ejemplo de manual. Se probo con la Ley de Lobby (proyecto real) y con un caso generico de Diputados: los dos pasaron de un 99% -el modelo viejo, demasiado seguro de si mismo- a un 53-61%, mucho mas parecido a lo que de verdad pasa en una votacion renida. Ninguna prueba existente se rompio con el cambio. Desde ahora el modelo publica CON la incertidumbre prendida por defecto; quien necesite comparar con el numero de antes puede pedirlo a mano."
     },

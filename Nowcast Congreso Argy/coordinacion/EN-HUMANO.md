@@ -2,6 +2,43 @@
 
 > Documento vivo. Cada cambio importante en el proyecto se explica acá en lenguaje claro, además de registrarse en `ESTADO-DEL-PROYECTO.md`. Si algo del sistema no se entiende leyendo esto, está mal escrito y hay que arreglarlo.
 
+## Bajamos 163 documentos oficiales y sacamos el nombre de cada capítulo de una ley, en 4 minutos (16-09-2026)
+
+Franco pidió seguir con la descarga a mayor escala. Se bajaron los documentos oficiales
+(PDF de la Orden del Día) de los 145 proyectos de Diputados que en algún momento tuvieron
+votación artículo por artículo — la lista que ya se había identificado antes. Resultado:
+163 documentos, 4 minutos, cero fallas. El documento crudo no se guarda en ningún lado
+nuevo: va al mismo cajón de siempre para archivos que se pueden volver a bajar. Lo que sí
+se guarda como dato permanente es el resultado de leerlos: el NOMBRE de cada capítulo
+("Capítulo VIII — Régimen Infraccional y Recursivo").
+
+Se probó contra los capítulos que ya se sabía que existían (por el título de cada
+votación, sin abrir ningún PDF): 9 de cada 10 consiguieron su nombre real. En el camino
+se encontraron y corrigieron dos formas distintas de que el sistema se confundiera —una
+vez agarraba el texto del primer artículo como si fuera el título del capítulo, otra vez
+agarraba el encabezado que se repite en cada hoja del documento ("Cámara de Diputados...
+Orden del Día N°...") como si fuera el nombre. Las dos quedaron corregidas y con una
+prueba que evita que vuelvan a pasar.
+
+Queda un límite honesto, sin resolver todavía: para algunos capítulos aparece más de un
+nombre candidato, porque el mismo proyecto pasó por varias Órdenes del Día distintas. En
+el caso de la Ley Bases, ni siquiera es un error: el capítulo se renombró de verdad entre
+la primera ronda de votación (la que perdió artículos y se retiró) y la segunda (la que
+volvió recortada) — la misma historia de "la ley cambia durante el debate" que motivó
+todo este trabajo, apareciendo en un lugar donde no se la estaba buscando.
+
+## Respecto del tema multiple: no se resuelve solo, y queda anotado para pensarlo entre varios (16-09-2026)
+
+Franco no se conformó con el resultado negativo de las tres formas de combinar temas
+probadas: "no tiene sentido" simplemente no usarlo, hay que pensarle la vuelta. Se armó
+un resumen aparte, pensado para llevarlo a una sesión de trabajo en conjunto: qué es el
+problema en criollo, qué se probó y por qué salió mal, y tres ideas NUEVAS que todavía no
+se probaron —ninguna es "una cuarta forma de combinar lo mismo"—. La más prometedora: en
+vez de tratar a una ley ómnibus como si tuviera "varios temas mezclados", tratarla como
+lo que en realidad es —varias leyes chiquitas, cada una de un solo tema, encuadernadas
+juntas— y resolver cada capítulo por separado en vez de mezclar todo a nivel de la ley
+entera. Queda documentado y cerrado por ahora, a la espera de esa conversación.
+
 ## Prendimos la incertidumbre del legislador: el número publicado ya cambió (16-09-2026)
 
 La entrada anterior de este documento contaba que se había construido y probado la

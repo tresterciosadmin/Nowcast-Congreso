@@ -207,6 +207,11 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--desde", type=int, default=None, help="año parlamentario mínimo")
     ap.add_argument("--hasta", type=int, default=None, help="año parlamentario máximo")
     ap.add_argument("--limite", type=int, default=None, help="bajar sólo las primeras N")
+    ap.add_argument("--solo-proyectos", default=None,
+                    help="archivo con un proyecto_id por línea (o coma-separados): "
+                         "sólo bajar las Órdenes del Día que cubren alguno de esos "
+                         "proyectos. Pensado para escalar B2 (ADR-0023) sin bajar el "
+                         "corpus de ~2.500 OD de ley completo.")
     ap.add_argument("--solo-lista", action="store_true", help="arma la lista y no baja nada")
     args = ap.parse_args(argv)
 
@@ -227,6 +232,19 @@ def main(argv: list[str] | None = None) -> int:
         lista = lista[lista["periodo"] >= args.desde - 1882]
     if args.hasta:
         lista = lista[lista["periodo"] <= args.hasta - 1882]
+    if args.solo_proyectos:
+        raw = Path(args.solo_proyectos).read_text(encoding="utf-8")
+        objetivo = {p.strip() for p in raw.replace(",", "\n").splitlines() if p.strip()}
+        if not objetivo:
+            raise SystemExit(f"--solo-proyectos {args.solo_proyectos!r} no tiene ningún id")
+        cubre = lista["proyecto_ids"].map(lambda s: bool(objetivo & set(s.split(";"))))
+        lista = lista[cubre]
+        encontrados = set().union(*(set(s.split(";")) for s in lista["proyecto_ids"])) if len(lista) else set()
+        logger.info("--solo-proyectos: %d de %d proyecto_id pedidos aparecen en alguna OD de ley "
+                    "(%d sin OD de ley: puede que su dictamen no sea de LEY, o que no tenga)",
+                    len(objetivo & encontrados), len(objetivo), len(objetivo - encontrados))
+        if lista.empty:
+            raise SystemExit("--solo-proyectos no matcheó ninguna Orden del Día")
     if args.limite:
         lista = lista.head(args.limite)
 

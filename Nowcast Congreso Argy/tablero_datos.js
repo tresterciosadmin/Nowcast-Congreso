@@ -262,6 +262,11 @@ const TABLERO = {
   hitos: [
     {
       fecha: "2026-09-16",
+      titulo: "Arrancamos dos tareas que Franco aprobo, y a mitad de camino se acabo el credito de la API",
+      texto: "Permiso explicito para dos cosas: saber de que tema trata cada CAPITULO de una ley (no solo la ley entera) y ampliar la cobertura de temas a proyectos que todavia no se votaron. Las dos corridas arrancaron bien -cientos de capitulos y proyectos reales quedaron clasificados- pero a mitad de camino la cuenta de la API se quedo sin credito. No es un error del sistema, es que se acabo el saldo. Se corto enseguida la parte que seguia intentando sin avanzar. Las dos tareas quedan con un marcador de pagina: cuando Franco recargue credito, correr el mismo comando retoma donde se corto, sin repetir nada. Estado real: 437 de 704 capitulos clasificados (62%), 328 de 9.910 proyectos nuevos (3%, recien arrancando esa parte mas grande)."
+    },
+    {
+      fecha: "2026-09-16",
       titulo: "Le preguntamos al modelo si sabe cuanto no sabe, y la respuesta fue mas de lo necesario",
       texto: "Ultimo control pendiente sobre la incertidumbre del legislador: cuando el modelo dice 'estoy 90% seguro de que el resultado va a estar en este rango', es cierto? Probado sobre casi 5.000 votaciones reales: el rango declarado contuvo el resultado real el 99,88% de las veces, no el 90% esperado. El error esta del lado seguro -el modelo es mas cauteloso de lo necesario, no menos-. Ancho de mas es mejor que angosto de menos."
     },

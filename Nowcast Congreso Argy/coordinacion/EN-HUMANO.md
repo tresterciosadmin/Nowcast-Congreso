@@ -2,6 +2,21 @@
 
 > Documento vivo. Cada cambio importante en el proyecto se explica acá en lenguaje claro, además de registrarse en `ESTADO-DEL-PROYECTO.md`. Si algo del sistema no se entiende leyendo esto, está mal escrito y hay que arreglarlo.
 
+## Arrancamos dos tareas que Franco aprobó, y a mitad de camino se acabó el crédito de la API (16-09-2026)
+
+Franco dio permiso explícito para dos cosas que necesitan el agente clasificador:
+saber de qué tema trata cada CAPÍTULO de una ley (no sólo la ley entera, necesario
+para la pieza que arma cada capítulo por separado) y ampliar la cobertura de temas a
+proyectos que todavía no se votaron. Las dos corridas arrancaron bien — cientos de
+capítulos y proyectos reales quedaron clasificados — pero a mitad de camino la cuenta
+de la API se quedó sin crédito. No es un error del sistema: es que se acabó el saldo.
+
+Se cortó enseguida la parte que seguía intentando sin poder avanzar. Lo bueno: las dos
+tareas quedan guardadas con un "marcador de página" — cuando Franco recargue crédito,
+correr el mismo comando de nuevo retoma exactamente donde se cortó, sin repetir nada
+ni perder lo ya hecho. Estado real: 437 de 704 capítulos clasificados (62%), 328 de
+9.910 proyectos nuevos (3%, recién arrancando esa parte más grande).
+
 ## Le preguntamos al modelo si sabe cuánto no sabe, y la respuesta fue "más de lo necesario" (16-09-2026)
 
 Franco pidió el último control que había quedado pendiente sobre el cambio de la

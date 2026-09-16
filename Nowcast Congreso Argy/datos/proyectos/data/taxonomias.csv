@@ -1,4 +1,10 @@
 denominador,taxonomia_id,taxonomia,fuente,confianza,asignada_en
+0001-CD-2026,AUX.TRAMITE,Trámite parlamentario (sin contenido sustantivo),agente:texto,0.85,2026-09-16T15:41:13+00:00
+0001-D-2025,CULT.MEDIOS,Medios / Comunicación,agente:texto,0.95,2026-09-16T15:41:17+00:00
+0001-D-2025,DESREG.EMPUB,Empresas públicas / Privatizaciones,agente:texto,0.9,2026-09-16T15:41:17+00:00
+0001-D-2025,POLINST.ORGEST,Organización del Estado / Ministerios,agente:texto,0.75,2026-09-16T15:41:17+00:00
+0001-D-2026,INFRA.TRANSP,"Transporte (incl. subsidios al transporte, trenes)",agente:texto,0.75,2026-09-16T15:41:20+00:00
+0001-D-2026,JUST.SEGINT,Seguridad interior,agente:texto,0.85,2026-09-16T15:41:20+00:00
 0001-PE-2008,DEF.TRATADO,Tratados y acuerdos internacionales,agente:texto,0.9,2026-09-15T23:39:55+00:00
 0001-PE-2008,DERSOC.DDHH,Derechos humanos,agente:texto,0.95,2026-09-15T23:39:55+00:00
 0001-PE-2008,POLINST.ORGEST,Organización del Estado / Ministerios,agente:texto,0.7,2026-09-15T23:39:55+00:00
@@ -22,10 +28,18 @@ denominador,taxonomia_id,taxonomia,fuente,confianza,asignada_en
 0001-PE-2022,ECON.PRESU,Presupuesto y gasto público,agente:texto,0.65,2026-09-15T23:40:18+00:00
 0001-PE-2023,DEF.DEFENSA,Defensa / Fuerzas Armadas,agente:texto,0.95,2026-09-15T23:40:20+00:00
 0001-PE-2023,DEF.TRATADO,Tratados y acuerdos internacionales,agente:texto,0.85,2026-09-15T23:40:20+00:00
+0001-PE-2025,CULT.DEPORTE,Deporte,agente:texto,0.85,2026-09-16T17:11:59+00:00
+0001-PE-2025,JUST.PENAL,Derecho penal / Código penal,agente:texto,0.75,2026-09-16T17:11:59+00:00
+0001-PE-2025,JUST.SEGINT,Seguridad interior,agente:texto,0.85,2026-09-16T17:11:59+00:00
 0001-PE-2026,AUX.TRAMITE,Trámite parlamentario (sin contenido sustantivo),agente:texto,0.95,2026-09-15T23:40:22+00:00
 0001-S-2023,DESREG.DESECO,Desregulación económica,agente:texto,0.75,2026-09-15T23:40:25+00:00
 0001-S-2023,DESSOC.PNC,Pensiones no contributivas,agente:texto,0.85,2026-09-15T23:40:25+00:00
 0001-S-2023,TRAB.PREV,Previsional / Jubilaciones,agente:texto,0.95,2026-09-15T23:40:25+00:00
+0002-CD-2026,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,0.95,2026-09-16T17:12:01+00:00
+0002-D-2025,DERSOC.DDHH,Derechos humanos,agente:texto,0.35,2026-09-16T17:12:04+00:00
+0002-D-2025,INFRA.TRANSP,"Transporte (incl. subsidios al transporte, trenes)",agente:texto,0.85,2026-09-16T17:12:04+00:00
+0002-D-2026,JUST.PENAL,Derecho penal / Código penal,agente:texto,0.95,2026-09-16T17:12:07+00:00
+0002-D-2026,TRAB.PREV,Previsional / Jubilaciones,agente:texto,0.85,2026-09-16T17:12:07+00:00
 0002-PE-2008,AMB.CLIMA,Cambio climático,agente:texto,0.7,2026-09-15T23:40:29+00:00
 0002-PE-2008,DESREG.DESECO,Desregulación económica,agente:texto,0.75,2026-09-15T23:40:29+00:00
 0002-PE-2008,ENER.RENOV,Renovables,agente:texto,0.85,2026-09-15T23:40:29+00:00
@@ -44,11 +58,20 @@ denominador,taxonomia_id,taxonomia,fuente,confianza,asignada_en
 0002-PE-2015,DESREG.EMPUB,Empresas públicas / Privatizaciones,agente:texto,0.85,2026-09-15T23:40:49+00:00
 0002-PE-2015,ECON.PRESU,Presupuesto y gasto público,agente:texto,0.7,2026-09-15T23:40:49+00:00
 0002-PE-2015,INFRA.TRANSP,"Transporte (incl. subsidios al transporte, trenes)",agente:texto,0.95,2026-09-15T23:40:49+00:00
+0002-PE-2025,AUX.TRAMITE,Trámite parlamentario (sin contenido sustantivo),agente:texto,0.95,2026-09-16T17:12:09+00:00
 0002-S-2026,DEF.TRATADO,Tratados y acuerdos internacionales,agente:texto,0.95,2026-09-15T23:40:52+00:00
 0002-S-2026,ECON.TRIB,Tributario / Impuestos,agente:texto,0.9,2026-09-15T23:40:52+00:00
+0003-CD-2026,ECON.PRESU,Presupuesto y gasto público,agente:texto,0.95,2026-09-16T17:12:13+00:00
+0003-CD-2026,ENER.COMBUS,Combustibles,agente:texto,0.8,2026-09-16T17:12:13+00:00
+0003-CD-2026,ENER.ELEC,Energía eléctrica,agente:texto,0.75,2026-09-16T17:12:13+00:00
+0003-CD-2026,ENER.TARIFA,Tarifas y subsidios energéticos,agente:texto,0.9,2026-09-16T17:12:13+00:00
+0003-CD-2026,PROD.REGESP,Regímenes especiales (p. ej. Zonas Frías),agente:texto,0.85,2026-09-16T17:12:13+00:00
 0003-D-2014,DEF.DEFENSA,Defensa / Fuerzas Armadas,agente:texto,0.65,2026-09-15T23:40:55+00:00
 0003-D-2014,DERSOC.DDHH,Derechos humanos,agente:texto,0.85,2026-09-15T23:40:55+00:00
 0003-D-2014,JUST.CIVCOM,Derecho civil / comercial (códigos de fondo),agente:texto,0.75,2026-09-15T23:40:55+00:00
+0003-D-2025,JUST.CIVCOM,Derecho civil / comercial (códigos de fondo),agente:texto,0.95,2026-09-16T17:12:15+00:00
+0003-D-2026,POLINST.ETICA,Transparencia / Lobby / Ética pública,agente:texto,0.75,2026-09-16T17:12:18+00:00
+0003-D-2026,TRAB.SINDIC,Sindical,agente:texto,0.95,2026-09-16T17:12:18+00:00
 0003-JGM-2010,AUX.TRAMITE,Trámite parlamentario (sin contenido sustantivo),agente:texto,0.85,2026-09-15T23:40:58+00:00
 0003-JGM-2010,ECON.DEUDA,Deuda y financiamiento,agente:texto,0.95,2026-09-15T23:40:58+00:00
 0003-JGM-2010,ECON.PRESU,Presupuesto y gasto público,agente:texto,0.7,2026-09-15T23:40:58+00:00
@@ -86,6 +109,11 @@ denominador,taxonomia_id,taxonomia,fuente,confianza,asignada_en
 0003-S-2026,DEF.TRATADO,Tratados y acuerdos internacionales,agente:texto,0.95,2026-09-15T23:41:33+00:00
 0003-S-2026,PROD.AGRO,"Agro, ganadería y pesca",agente:texto,0.85,2026-09-15T23:41:33+00:00
 0003-S-2026,PROD.COMEX,Comercio interior y exterior,agente:texto,0.75,2026-09-15T23:41:33+00:00
+0004-CD-2026,DEF.TRATADO,Tratados y acuerdos internacionales,agente:texto,0.95,2026-09-16T17:12:21+00:00
+0004-D-2025,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,0.95,2026-09-16T17:12:23+00:00
+0004-D-2026,CYT.IA,Inteligencia artificial,agente:texto,0.95,2026-09-16T17:12:27+00:00
+0004-D-2026,CYT.INNOV,Innovación / Economía del conocimiento / Software,agente:texto,0.75,2026-09-16T17:12:27+00:00
+0004-D-2026,ECON.PRESU,Presupuesto y gasto público,agente:texto,0.7,2026-09-16T17:12:27+00:00
 0004-PE-2008,JUST.PENAL,Derecho penal / Código penal,agente:texto,0.95,2026-09-15T23:41:35+00:00
 0004-PE-2010,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,0.75,2026-09-15T23:41:38+00:00
 0004-PE-2010,DERSOC.DDHH,Derechos humanos,agente:texto,0.85,2026-09-15T23:41:38+00:00
@@ -97,16 +125,30 @@ denominador,taxonomia_id,taxonomia,fuente,confianza,asignada_en
 0004-PE-2016,DERSOC.DDHH,Derechos humanos,agente:texto,0.8,2026-09-15T23:41:44+00:00
 0004-PE-2016,TRAB.LABOR,Relaciones laborales (reforma laboral),agente:texto,0.85,2026-09-15T23:41:44+00:00
 0004-PE-2024,JUST.PENAL,Derecho penal / Código penal,agente:texto,0.95,2026-09-15T23:41:47+00:00
+0004-PE-2025,AUX.TRAMITE,Trámite parlamentario (sin contenido sustantivo),agente:texto,0.85,2026-09-16T17:12:30+00:00
+0004-PE-2025,ECON.PRESU,Presupuesto y gasto público,agente:texto,0.75,2026-09-16T17:12:30+00:00
+0004-PE-2025,TRAB.PREV,Previsional / Jubilaciones,agente:texto,0.95,2026-09-16T17:12:30+00:00
+0004-PE-2026,POLINST.ETICA,Transparencia / Lobby / Ética pública,agente:texto,0.95,2026-09-16T17:12:32+00:00
 0004-S-2011,ECON.TRIB,Tributario / Impuestos,agente:texto,0.6,2026-09-15T23:41:50+00:00
 0004-S-2011,JUST.CIVCOM,Derecho civil / comercial (códigos de fondo),agente:texto,0.9,2026-09-15T23:41:50+00:00
 0004-S-2021,DEF.TRATADO,Tratados y acuerdos internacionales,agente:texto,0.95,2026-09-15T23:41:53+00:00
 0004-S-2021,JUST.JUDIC,Organización judicial / Magistratura,agente:texto,0.7,2026-09-15T23:41:53+00:00
+0004-S-2026,AMB.AGUA,Agua,agente:texto,0.7,2026-09-16T17:12:36+00:00
+0004-S-2026,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,0.92,2026-09-16T17:12:36+00:00
+0004-S-2026,ENER.RENOV,Renovables,agente:texto,0.95,2026-09-16T17:12:36+00:00
+0004-S-2026,INFRA.OBRA,Obra pública,agente:texto,0.65,2026-09-16T17:12:36+00:00
+0005-CD-2026,DEF.TRATADO,Tratados y acuerdos internacionales,agente:texto,0.95,2026-09-16T17:12:39+00:00
+0005-CD-2026,JUST.JUDIC,Organización judicial / Magistratura,agente:texto,0.85,2026-09-16T17:12:39+00:00
 0005-D-2014,AMB.RESID,Residuos,agente:texto,0.95,2026-09-15T23:41:56+00:00
 0005-D-2014,ECON.TRIB,Tributario / Impuestos,agente:texto,0.75,2026-09-15T23:41:56+00:00
 0005-D-2014,JUST.CIVCOM,Derecho civil / comercial (códigos de fondo),agente:texto,0.7,2026-09-15T23:41:56+00:00
+0005-D-2025,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,1.0,2026-09-16T17:12:41+00:00
+0005-D-2026,CYT.CIBER,Ciberseguridad y datos,agente:texto,0.75,2026-09-16T17:12:44+00:00
+0005-D-2026,JUST.PENAL,Derecho penal / Código penal,agente:texto,0.95,2026-09-16T17:12:44+00:00
 0005-JGM-2008,AUX.TRAMITE,Trámite parlamentario (sin contenido sustantivo),agente:texto,0.95,2026-09-15T23:41:58+00:00
 0005-JGM-2012,AUX.TRAMITE,Trámite parlamentario (sin contenido sustantivo),agente:texto,0.85,2026-09-15T23:42:01+00:00
 0005-JGM-2012,POLINST.ORGEST,Organización del Estado / Ministerios,agente:texto,0.95,2026-09-15T23:42:01+00:00
+0005-JGM-2026,ECON.PRESU,Presupuesto y gasto público,agente:texto,0.95,2026-09-16T17:12:46+00:00
 0005-PE-2008,DERSOC.DDHH,Derechos humanos,agente:texto,0.85,2026-09-15T23:42:03+00:00
 0005-PE-2008,JUST.JUDIC,Organización judicial / Magistratura,agente:texto,0.75,2026-09-15T23:42:03+00:00
 0005-PE-2008,JUST.PENAL,Derecho penal / Código penal,agente:texto,0.95,2026-09-15T23:42:03+00:00
@@ -117,6 +159,8 @@ denominador,taxonomia_id,taxonomia,fuente,confianza,asignada_en
 0005-PE-2014,DERSOC.NINEZ,Niñez e infancia,agente:texto,0.85,2026-09-15T23:42:14+00:00
 0005-PE-2014,EDU.BASICA,Educación básica y media,agente:texto,0.95,2026-09-15T23:42:14+00:00
 0005-PE-2024,AUX.SINCLASIF,Sin clasificar (no encaja en ninguna; revisar),agente:texto,0.95,2026-09-15T23:42:17+00:00
+0005-PE-2025,AUX.TRAMITE,Trámite parlamentario (sin contenido sustantivo),agente:texto,0.85,2026-09-16T17:12:49+00:00
+0005-PE-2025,TRAB.PREV,Previsional / Jubilaciones,agente:texto,0.95,2026-09-16T17:12:49+00:00
 0005-PE-2026,DESREG.DESECO,Desregulación económica,agente:texto,0.65,2026-09-15T23:42:21+00:00
 0005-PE-2026,ECON.TRIB,Tributario / Impuestos,agente:texto,0.6,2026-09-15T23:42:21+00:00
 0005-PE-2026,PROD.INDPYME,Industria y PyMEs,agente:texto,0.7,2026-09-15T23:42:21+00:00
@@ -128,9 +172,17 @@ denominador,taxonomia_id,taxonomia,fuente,confianza,asignada_en
 0005-S-2013,ECON.DEUDA,Deuda y financiamiento,agente:texto,0.75,2026-09-15T23:42:29+00:00
 0005-S-2024,DEF.TRATADO,Tratados y acuerdos internacionales,agente:texto,0.95,2026-09-15T23:42:31+00:00
 0005-S-2024,ECON.TRIB,Tributario / Impuestos,agente:texto,0.9,2026-09-15T23:42:31+00:00
+0005-S-2026,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,0.95,2026-09-16T17:12:51+00:00
+0006-CD-2026,DESREG.DESECO,Desregulación económica,agente:texto,0.65,2026-09-16T17:12:55+00:00
+0006-CD-2026,PROD.INDPYME,Industria y PyMEs,agente:texto,0.7,2026-09-16T17:12:55+00:00
+0006-CD-2026,PROD.INVER,Promoción de inversiones (RIGI),agente:texto,0.95,2026-09-16T17:12:55+00:00
+0006-D-2025,ECON.TRIB,Tributario / Impuestos,agente:texto,0.95,2026-09-16T17:12:58+00:00
+0006-D-2025,JUST.CIVCOM,Derecho civil / comercial (códigos de fondo),agente:texto,0.75,2026-09-16T17:12:58+00:00
+0006-D-2026,JUST.CIVCOM,Derecho civil / comercial (códigos de fondo),agente:texto,0.95,2026-09-16T17:13:00+00:00
 0006-JGM-2012,ECON.DEUDA,Deuda y financiamiento,agente:texto,0.65,2026-09-15T23:42:35+00:00
 0006-JGM-2012,ECON.PRESU,Presupuesto y gasto público,agente:texto,0.7,2026-09-15T23:42:35+00:00
 0006-JGM-2012,INFRA.VIVIENDA,Vivienda y hábitat,agente:texto,0.95,2026-09-15T23:42:35+00:00
+0006-JGM-2026,ECON.PRESU,Presupuesto y gasto público,agente:texto,0.95,2026-09-16T17:13:03+00:00
 0006-PE-2008,JUST.JUDIC,Organización judicial / Magistratura,agente:texto,0.95,2026-09-15T23:42:37+00:00
 0006-PE-2008,JUST.PENAL,Derecho penal / Código penal,agente:texto,0.9,2026-09-15T23:42:37+00:00
 0006-PE-2009,ECON.PRESU,Presupuesto y gasto público,agente:texto,0.7,2026-09-15T23:42:40+00:00
@@ -168,6 +220,12 @@ denominador,taxonomia_id,taxonomia,fuente,confianza,asignada_en
 0006-S-2024,DEF.EXTERIOR,Política exterior,agente:texto,0.75,2026-09-15T23:43:22+00:00
 0006-S-2024,DEF.TRATADO,Tratados y acuerdos internacionales,agente:texto,0.95,2026-09-15T23:43:22+00:00
 0006-S-2024,PROD.INVER,Promoción de inversiones (RIGI),agente:texto,0.85,2026-09-15T23:43:22+00:00
+0006-S-2026,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,1.0,2026-09-16T17:13:05+00:00
+0007-D-2025,DESREG.SOCIED,Régimen de sociedades / comercial,agente:texto,0.75,2026-09-16T17:13:08+00:00
+0007-D-2025,JUST.CIVCOM,Derecho civil / comercial (códigos de fondo),agente:texto,0.95,2026-09-16T17:13:08+00:00
+0007-D-2026,JUST.JUDIC,Organización judicial / Magistratura,agente:texto,0.95,2026-09-16T17:13:11+00:00
+0007-D-2026,JUST.PENAL,Derecho penal / Código penal,agente:texto,0.9,2026-09-16T17:13:11+00:00
+0007-D-2026,POLINST.ORGEST,Organización del Estado / Ministerios,agente:texto,0.85,2026-09-16T17:13:11+00:00
 0007-PE-2008,JUST.JUDIC,Organización judicial / Magistratura,agente:texto,0.95,2026-09-15T23:43:25+00:00
 0007-PE-2009,CYT.INNOV,Innovación / Economía del conocimiento / Software,agente:texto,0.7,2026-09-15T23:43:28+00:00
 0007-PE-2009,ECON.TRIB,Tributario / Impuestos,agente:texto,0.95,2026-09-15T23:43:28+00:00
@@ -196,6 +254,16 @@ denominador,taxonomia_id,taxonomia,fuente,confianza,asignada_en
 0007-S-2015,POLINST.ORGEST,Organización del Estado / Ministerios,agente:texto,0.85,2026-09-15T23:43:59+00:00
 0007-S-2016,ECON.EMERG,Emergencia económica,agente:texto,0.85,2026-09-15T23:44:02+00:00
 0007-S-2016,TRAB.EMPLEOPUB,Empleo público,agente:texto,0.65,2026-09-15T23:44:02+00:00
+0007-S-2025,AUX.TRAMITE,Trámite parlamentario (sin contenido sustantivo),agente:texto,0.7,2026-09-16T17:13:14+00:00
+0007-S-2025,ECON.EMERG,Emergencia económica,agente:texto,0.95,2026-09-16T17:13:14+00:00
+0007-S-2026,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,0.95,2026-09-16T17:13:16+00:00
+0008-D-2025,DESREG.DESECO,Desregulación económica,agente:texto,0.75,2026-09-16T17:13:20+00:00
+0008-D-2025,ECON.TRIB,Tributario / Impuestos,agente:texto,0.7,2026-09-16T17:13:20+00:00
+0008-D-2025,PROD.COMEX,Comercio interior y exterior,agente:texto,0.65,2026-09-16T17:13:20+00:00
+0008-D-2026,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,0.75,2026-09-16T17:13:24+00:00
+0008-D-2026,DEF.EXTERIOR,Política exterior,agente:texto,0.95,2026-09-16T17:13:24+00:00
+0008-D-2026,DERSOC.DDHH,Derechos humanos,agente:texto,0.92,2026-09-16T17:13:24+00:00
+0008-JGM-2025,ECON.PRESU,Presupuesto y gasto público,agente:texto,0.95,2026-09-16T17:13:26+00:00
 0008-PE-2011,JUST.PENAL,Derecho penal / Código penal,agente:texto,0.95,2026-09-15T23:44:04+00:00
 0008-PE-2011,JUST.SEGINT,Seguridad interior,agente:texto,0.85,2026-09-15T23:44:04+00:00
 0008-PE-2013,ECON.EMERG,Emergencia económica,agente:texto,0.65,2026-09-15T23:44:07+00:00
@@ -211,6 +279,11 @@ denominador,taxonomia_id,taxonomia,fuente,confianza,asignada_en
 0008-PE-2021,PROD.INVER,Promoción de inversiones (RIGI),agente:texto,0.95,2026-09-15T23:44:20+00:00
 0008-PE-2024,DEF.DEFENSA,Defensa / Fuerzas Armadas,agente:texto,0.95,2026-09-15T23:44:22+00:00
 0008-PE-2024,DEF.EXTERIOR,Política exterior,agente:texto,0.85,2026-09-15T23:44:22+00:00
+0008-PE-2025,DEF.DEFENSA,Defensa / Fuerzas Armadas,agente:texto,0.95,2026-09-16T17:13:30+00:00
+0008-PE-2025,DEF.EXTERIOR,Política exterior,agente:texto,0.75,2026-09-16T17:13:30+00:00
+0008-PE-2026,AMB.AGUA,Agua,agente:texto,0.8,2026-09-16T17:13:33+00:00
+0008-PE-2026,DEF.TRATADO,Tratados y acuerdos internacionales,agente:texto,0.95,2026-09-16T17:13:33+00:00
+0008-PE-2026,PROD.AGRO,"Agro, ganadería y pesca",agente:texto,0.85,2026-09-16T17:13:33+00:00
 0008-S-2009,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,0.95,2026-09-15T23:44:24+00:00
 0008-S-2009,CULT.CULTURA,Cultura / Patrimonio,agente:texto,0.85,2026-09-15T23:44:24+00:00
 0008-S-2011,DERSOC.DDHH,Derechos humanos,agente:texto,0.6,2026-09-15T23:44:28+00:00
@@ -223,6 +296,13 @@ denominador,taxonomia_id,taxonomia,fuente,confianza,asignada_en
 0008-S-2016,ECON.EMERG,Emergencia económica,agente:texto,0.95,2026-09-15T23:44:33+00:00
 0008-S-2025,ECON.EMERG,Emergencia económica,agente:texto,0.95,2026-09-15T23:44:36+00:00
 0008-S-2025,POLINST.ORGEST,Organización del Estado / Ministerios,agente:texto,0.6,2026-09-15T23:44:36+00:00
+0008-S-2026,CYT.CIENCIA,Ciencia y técnica,agente:texto,0.75,2026-09-16T17:13:36+00:00
+0008-S-2026,INFRA.OBRA,Obra pública,agente:texto,0.6,2026-09-16T17:13:36+00:00
+0009-CD-2026,ECON.TRIB,Tributario / Impuestos,agente:texto,0.95,2026-09-16T17:13:39+00:00
+0009-CD-2026,PROD.AGRO,"Agro, ganadería y pesca",agente:texto,0.85,2026-09-16T17:13:39+00:00
+0009-D-2025,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,0.95,2026-09-16T17:13:41+00:00
+0009-D-2026,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,0.95,2026-09-16T17:13:44+00:00
+0009-JGM-2025,AUX.TRAMITE,Trámite parlamentario (sin contenido sustantivo),agente:texto,0.95,2026-09-16T17:13:46+00:00
 0009-PE-2011,ECON.EMERG,Emergencia económica,agente:texto,0.7,2026-09-15T23:44:40+00:00
 0009-PE-2011,JUST.NARCO,Narcotráfico,agente:texto,0.85,2026-09-15T23:44:40+00:00
 0009-PE-2011,JUST.PENAL,Derecho penal / Código penal,agente:texto,0.95,2026-09-15T23:44:40+00:00
@@ -239,8 +319,22 @@ denominador,taxonomia_id,taxonomia,fuente,confianza,asignada_en
 0009-S-2009,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,0.9,2026-09-15T23:45:00+00:00
 0009-S-2009,CULT.CULTURA,Cultura / Patrimonio,agente:texto,0.95,2026-09-15T23:45:00+00:00
 0009-S-2022,JUST.JUDIC,Organización judicial / Magistratura,agente:texto,0.95,2026-09-15T23:45:02+00:00
+0009-S-2026,ECON.TRIB,Tributario / Impuestos,agente:texto,0.75,2026-09-16T17:13:50+00:00
+0009-S-2026,PROD.AGRO,"Agro, ganadería y pesca",agente:texto,0.95,2026-09-16T17:13:50+00:00
+0009-S-2026,PROD.COMEX,Comercio interior y exterior,agente:texto,0.9,2026-09-16T17:13:50+00:00
+0009-S-2026,PROD.INDPYME,Industria y PyMEs,agente:texto,0.7,2026-09-16T17:13:50+00:00
+0010-CD-2026,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,0.95,2026-09-16T17:13:53+00:00
+0010-CD-2026,CULT.CULTURA,Cultura / Patrimonio,agente:texto,0.85,2026-09-16T17:13:53+00:00
+0010-D-2025,ECON.COPART,Coparticipación / Federalismo fiscal,agente:texto,0.85,2026-09-16T17:13:56+00:00
+0010-D-2025,ECON.TRIB,Tributario / Impuestos,agente:texto,0.95,2026-09-16T17:13:56+00:00
+0010-D-2025,ENER.COMBUS,Combustibles,agente:texto,0.95,2026-09-16T17:13:56+00:00
+0010-D-2025,INFRA.VIVIENDA,Vivienda y hábitat,agente:texto,0.8,2026-09-16T17:13:56+00:00
+0010-D-2026,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,0.95,2026-09-16T17:13:59+00:00
+0010-D-2026,CULT.CULTURA,Cultura / Patrimonio,agente:texto,0.85,2026-09-16T17:13:59+00:00
 0010-JGM-2008,AUX.TRAMITE,Trámite parlamentario (sin contenido sustantivo),agente:texto,0.85,2026-09-15T23:45:05+00:00
 0010-JGM-2008,ECON.PRESU,Presupuesto y gasto público,agente:texto,0.95,2026-09-15T23:45:05+00:00
+0010-JGM-2025,AUX.TRAMITE,Trámite parlamentario (sin contenido sustantivo),agente:texto,0.95,2026-09-16T17:14:02+00:00
+0010-JGM-2026,AUX.TRAMITE,Trámite parlamentario (sin contenido sustantivo),agente:texto,0.95,2026-09-16T17:14:04+00:00
 0010-PE-2008,ECON.TRIB,Tributario / Impuestos,agente:texto,0.95,2026-09-15T23:45:08+00:00
 0010-PE-2008,INFRA.OBRA,Obra pública,agente:texto,0.9,2026-09-15T23:45:08+00:00
 0010-PE-2008,INFRA.TRANSP,"Transporte (incl. subsidios al transporte, trenes)",agente:texto,0.85,2026-09-15T23:45:08+00:00
@@ -261,10 +355,19 @@ denominador,taxonomia_id,taxonomia,fuente,confianza,asignada_en
 0010-S-2019,ECON.COPART,Coparticipación / Federalismo fiscal,agente:texto,0.6,2026-09-15T23:45:32+00:00
 0010-S-2019,ECON.EMERG,Emergencia económica,agente:texto,0.95,2026-09-15T23:45:32+00:00
 0010-S-2019,PROD.AGRO,"Agro, ganadería y pesca",agente:texto,0.92,2026-09-15T23:45:32+00:00
+0010-S-2026,DESREG.DESECO,Desregulación económica,agente:texto,0.65,2026-09-16T17:14:08+00:00
+0010-S-2026,PROD.AGRO,"Agro, ganadería y pesca",agente:texto,0.95,2026-09-16T17:14:08+00:00
+0010-S-2026,PROD.COMEX,Comercio interior y exterior,agente:texto,0.7,2026-09-16T17:14:08+00:00
+0011-CD-2026,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,0.95,2026-09-16T17:14:10+00:00
+0011-D-2025,POLINST.ELECT,Reforma electoral,agente:texto,0.95,2026-09-16T17:14:12+00:00
+0011-D-2026,ENER.TARIFA,Tarifas y subsidios energéticos,agente:texto,0.95,2026-09-16T17:14:15+00:00
+0011-D-2026,SALUD.DISCAP,Discapacidad,agente:texto,0.9,2026-09-16T17:14:15+00:00
 0011-JGM-2008,ECON.PRESU,Presupuesto y gasto público,agente:texto,0.95,2026-09-15T23:45:34+00:00
 0011-JGM-2009,ECON.EMERG,Emergencia económica,agente:texto,0.9,2026-09-15T23:45:37+00:00
 0011-JGM-2009,POLINST.ORGEST,Organización del Estado / Ministerios,agente:texto,0.6,2026-09-15T23:45:37+00:00
 0011-JGM-2009,PROD.AGRO,"Agro, ganadería y pesca",agente:texto,0.95,2026-09-15T23:45:37+00:00
+0011-JGM-2026,AUX.TRAMITE,Trámite parlamentario (sin contenido sustantivo),agente:texto,0.85,2026-09-16T17:14:18+00:00
+0011-JGM-2026,ECON.PRESU,Presupuesto y gasto público,agente:texto,0.95,2026-09-16T17:14:18+00:00
 0011-PE-2008,DESREG.DESECO,Desregulación económica,agente:texto,0.7,2026-09-15T23:45:41+00:00
 0011-PE-2008,ECON.TRIB,Tributario / Impuestos,agente:texto,0.6,2026-09-15T23:45:41+00:00
 0011-PE-2008,PROD.COMEX,Comercio interior y exterior,agente:texto,0.8,2026-09-15T23:45:41+00:00
@@ -277,16 +380,32 @@ denominador,taxonomia_id,taxonomia,fuente,confianza,asignada_en
 0011-PE-2020,SALUD.SISTEMA,Sistema de salud / Hospitales / Obras sociales,agente:texto,0.85,2026-09-15T23:45:49+00:00
 0011-PE-2024,DEF.TRATADO,Tratados y acuerdos internacionales,agente:texto,0.95,2026-09-15T23:45:52+00:00
 0011-PE-2024,JUST.PENALJUV,Régimen penal juvenil,agente:texto,0.7,2026-09-15T23:45:52+00:00
+0011-PE-2025,ECON.DEUDA,Deuda y financiamiento,agente:texto,0.7,2026-09-16T17:14:21+00:00
+0011-PE-2025,ECON.MON,Monetario y cambiario,agente:texto,0.85,2026-09-16T17:14:21+00:00
+0011-PE-2025,ECON.PRESU,Presupuesto y gasto público,agente:texto,0.9,2026-09-16T17:14:21+00:00
+0011-PE-2026,AUX.TRAMITE,Trámite parlamentario (sin contenido sustantivo),agente:texto,0.6,2026-09-16T17:14:25+00:00
+0011-PE-2026,DEF.DEFENSA,Defensa / Fuerzas Armadas,agente:texto,0.95,2026-09-16T17:14:25+00:00
+0011-PE-2026,DEF.TRATADO,Tratados y acuerdos internacionales,agente:texto,0.75,2026-09-16T17:14:25+00:00
 0011-S-2013,JUST.JUDIC,Organización judicial / Magistratura,agente:texto,0.95,2026-09-15T23:45:54+00:00
 0011-S-2014,DEF.TRATADO,Tratados y acuerdos internacionales,agente:texto,0.75,2026-09-15T23:45:58+00:00
 0011-S-2014,POLINST.ORGEST,Organización del Estado / Ministerios,agente:texto,0.65,2026-09-15T23:45:58+00:00
 0011-S-2017,DERSOC.DDHH,Derechos humanos,agente:texto,0.7,2026-09-15T23:46:01+00:00
 0011-S-2017,JUST.JUDIC,Organización judicial / Magistratura,agente:texto,0.75,2026-09-15T23:46:01+00:00
 0011-S-2017,POLINST.ETICA,Transparencia / Lobby / Ética pública,agente:texto,0.85,2026-09-15T23:46:01+00:00
+0011-S-2026,DERSOC.DDHH,Derechos humanos,agente:texto,0.7,2026-09-16T17:14:28+00:00
+0011-S-2026,SALUD.SISTEMA,Sistema de salud / Hospitales / Obras sociales,agente:texto,0.75,2026-09-16T17:14:28+00:00
+0012-CD-2026,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,0.95,2026-09-16T17:14:31+00:00
+0012-CD-2026,CULT.CULTURA,Cultura / Patrimonio,agente:texto,0.7,2026-09-16T17:14:31+00:00
+0012-CD-2026,EDU.BASICA,Educación básica y media,agente:texto,0.6,2026-09-16T17:14:31+00:00
+0012-D-2025,POLINST.ELECT,Reforma electoral,agente:texto,0.95,2026-09-16T17:14:34+00:00
+0012-D-2026,CYT.CIENCIA,Ciencia y técnica,agente:texto,0.6,2026-09-16T17:14:37+00:00
+0012-D-2026,POLINST.ORGEST,Organización del Estado / Ministerios,agente:texto,0.55,2026-09-16T17:14:37+00:00
+0012-D-2026,SALUD.DISCAP,Discapacidad,agente:texto,0.85,2026-09-16T17:14:37+00:00
 0012-JGM-2009,ECON.PRESU,Presupuesto y gasto público,agente:texto,0.95,2026-09-15T23:46:04+00:00
 0012-JGM-2012,DESREG.EMPUB,Empresas públicas / Privatizaciones,agente:texto,0.85,2026-09-15T23:46:07+00:00
 0012-JGM-2012,ECON.MON,Monetario y cambiario,agente:texto,0.7,2026-09-15T23:46:07+00:00
 0012-JGM-2013,ECON.PRESU,Presupuesto y gasto público,agente:texto,0.95,2026-09-15T23:46:09+00:00
+0012-JGM-2026,ECON.PRESU,Presupuesto y gasto público,agente:texto,0.99,2026-09-16T17:14:39+00:00
 0012-PE-2011,ECON.EMERG,Emergencia económica,agente:texto,0.85,2026-09-15T23:46:12+00:00
 0012-PE-2011,ECON.TRIB,Tributario / Impuestos,agente:texto,0.95,2026-09-15T23:46:12+00:00
 0012-PE-2020,DERSOC.GENERO,Género / Diversidad,agente:texto,0.7,2026-09-15T23:46:15+00:00
@@ -301,6 +420,9 @@ denominador,taxonomia_id,taxonomia,fuente,confianza,asignada_en
 0012-PE-2022,ECON.TRIB,Tributario / Impuestos,agente:texto,0.95,2026-09-15T23:46:21+00:00
 0012-PE-2024,DEF.TRATADO,Tratados y acuerdos internacionales,agente:texto,0.95,2026-09-15T23:46:24+00:00
 0012-PE-2024,JUST.JUDIC,Organización judicial / Magistratura,agente:texto,0.75,2026-09-15T23:46:24+00:00
+0012-PE-2025,ECON.EMERG,Emergencia económica,agente:texto,0.85,2026-09-16T17:14:43+00:00
+0012-PE-2025,ECON.PRESU,Presupuesto y gasto público,agente:texto,0.9,2026-09-16T17:14:43+00:00
+0012-PE-2025,SALUD.DISCAP,Discapacidad,agente:texto,0.95,2026-09-16T17:14:43+00:00
 0012-S-2013,JUST.CIVCOM,Derecho civil / comercial (códigos de fondo),agente:texto,0.75,2026-09-15T23:46:26+00:00
 0012-S-2013,JUST.JUDIC,Organización judicial / Magistratura,agente:texto,0.85,2026-09-15T23:46:26+00:00
 0012-S-2013,POLINST.ORGEST,Organización del Estado / Ministerios,agente:texto,0.6,2026-09-15T23:46:26+00:00
@@ -312,6 +434,14 @@ denominador,taxonomia_id,taxonomia,fuente,confianza,asignada_en
 0012-S-2017,PROD.COMEX,Comercio interior y exterior,agente:texto,0.9,2026-09-15T23:46:36+00:00
 0012-S-2019,POLINST.ETICA,Transparencia / Lobby / Ética pública,agente:texto,0.9,2026-09-15T23:46:38+00:00
 0012-S-2019,POLINST.PARTIDOS,Partidos políticos,agente:texto,0.95,2026-09-15T23:46:38+00:00
+0012-S-2026,DESREG.SOCIED,Régimen de sociedades / comercial,agente:texto,0.7,2026-09-16T17:14:47+00:00
+0012-S-2026,PROD.AGRO,"Agro, ganadería y pesca",agente:texto,0.95,2026-09-16T17:14:47+00:00
+0013-CD-2026,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,0.95,2026-09-16T17:14:49+00:00
+0013-D-2025,JUST.PENAL,Derecho penal / Código penal,agente:texto,0.75,2026-09-16T17:14:52+00:00
+0013-D-2025,POLINST.ELECT,Reforma electoral,agente:texto,0.95,2026-09-16T17:14:52+00:00
+0013-D-2026,DESREG.DESECO,Desregulación económica,agente:texto,0.75,2026-09-16T17:14:55+00:00
+0013-D-2026,ENER.ELEC,Energía eléctrica,agente:texto,0.9,2026-09-16T17:14:55+00:00
+0013-D-2026,ENER.TARIFA,Tarifas y subsidios energéticos,agente:texto,0.85,2026-09-16T17:14:55+00:00
 0013-PE-2008,DESSOC.ASIST,Asistencia social / Planes,agente:texto,0.7,2026-09-15T23:46:41+00:00
 0013-PE-2008,ECON.COPART,Coparticipación / Federalismo fiscal,agente:texto,0.8,2026-09-15T23:46:41+00:00
 0013-PE-2008,ECON.TRIB,Tributario / Impuestos,agente:texto,0.95,2026-09-15T23:46:41+00:00
@@ -325,10 +455,21 @@ denominador,taxonomia_id,taxonomia,fuente,confianza,asignada_en
 0013-PE-2022,DESREG.SOCIED,Régimen de sociedades / comercial,agente:texto,0.65,2026-09-15T23:46:53+00:00
 0013-PE-2022,DESSOC.ASIST,Asistencia social / Planes,agente:texto,0.75,2026-09-15T23:46:53+00:00
 0013-PE-2022,INFRA.VIVIENDA,Vivienda y hábitat,agente:texto,0.85,2026-09-15T23:46:53+00:00
+0013-PE-2025,DEF.DEFENSA,Defensa / Fuerzas Armadas,agente:texto,0.95,2026-09-16T17:14:57+00:00
+0013-PE-2025,DEF.EXTERIOR,Política exterior,agente:texto,0.85,2026-09-16T17:14:57+00:00
+0013-PE-2026,JUST.PROPIED,Propiedad (inviolabilidad),agente:texto,0.95,2026-09-16T17:14:59+00:00
 0013-S-2009,AUX.TRAMITE,Trámite parlamentario (sin contenido sustantivo),agente:texto,0.85,2026-09-15T23:46:55+00:00
 0013-S-2009,DEF.EXTERIOR,Política exterior,agente:texto,0.95,2026-09-15T23:46:55+00:00
 0013-S-2010,DEF.TRATADO,Tratados y acuerdos internacionales,agente:texto,0.95,2026-09-15T23:46:58+00:00
 0013-S-2010,PROD.COMEX,Comercio interior y exterior,agente:texto,0.9,2026-09-15T23:46:58+00:00
+0013-S-2026,CULT.DEPORTE,Deporte,agente:texto,0.9,2026-09-16T17:15:03+00:00
+0013-S-2026,ECON.TRIB,Tributario / Impuestos,agente:texto,0.6,2026-09-16T17:15:03+00:00
+0014-CD-2026,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,0.95,2026-09-16T17:15:05+00:00
+0014-D-2025,POLINST.ELECT,Reforma electoral,agente:texto,0.95,2026-09-16T17:15:07+00:00
+0014-D-2026,ENER.TARIFA,Tarifas y subsidios energéticos,agente:texto,0.5,2026-09-16T17:15:12+00:00
+0014-D-2026,INFRA.TELECOM,Telecomunicaciones / Conectividad,agente:texto,0.5,2026-09-16T17:15:12+00:00
+0014-D-2026,INFRA.TRANSP,"Transporte (incl. subsidios al transporte, trenes)",agente:texto,0.4,2026-09-16T17:15:12+00:00
+0014-D-2026,POLINST.ORGEST,Organización del Estado / Ministerios,agente:texto,0.75,2026-09-16T17:15:12+00:00
 0014-JGM-2025,ECON.PRESU,Presupuesto y gasto público,agente:texto,0.99,2026-09-15T23:47:00+00:00
 0014-PE-2008,JUST.CIVCOM,Derecho civil / comercial (códigos de fondo),agente:texto,0.95,2026-09-15T23:47:03+00:00
 0014-PE-2008,JUST.JUDIC,Organización judicial / Magistratura,agente:texto,0.75,2026-09-15T23:47:03+00:00
@@ -344,9 +485,17 @@ denominador,taxonomia_id,taxonomia,fuente,confianza,asignada_en
 0014-S-2009,AUX.TRAMITE,Trámite parlamentario (sin contenido sustantivo),agente:texto,0.85,2026-09-15T23:47:16+00:00
 0014-S-2009,DEF.EXTERIOR,Política exterior,agente:texto,0.95,2026-09-15T23:47:16+00:00
 0014-S-2014,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,0.95,2026-09-15T23:47:19+00:00
+0014-S-2026,JUST.JUDIC,Organización judicial / Magistratura,agente:texto,0.95,2026-09-16T17:15:14+00:00
+0015-CD-2026,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,0.95,2026-09-16T17:15:16+00:00
+0015-D-2025,POLINST.ELECT,Reforma electoral,agente:texto,0.95,2026-09-16T17:15:18+00:00
+0015-D-2026,DESSOC.ASIST,Asistencia social / Planes,agente:texto,0.75,2026-09-16T17:15:21+00:00
+0015-D-2026,INFRA.TRANSP,"Transporte (incl. subsidios al transporte, trenes)",agente:texto,0.95,2026-09-16T17:15:21+00:00
+0015-D-2026,TRAB.PREV,Previsional / Jubilaciones,agente:texto,0.85,2026-09-16T17:15:21+00:00
 0015-JGM-2012,ECON.PRESU,Presupuesto y gasto público,agente:texto,0.95,2026-09-15T23:47:21+00:00
 0015-JGM-2014,ECON.PRESU,Presupuesto y gasto público,agente:texto,0.99,2026-09-15T23:47:23+00:00
 0015-JGM-2015,ECON.PRESU,Presupuesto y gasto público,agente:texto,0.98,2026-09-15T23:47:25+00:00
+0015-JGM-2025,AUX.TRAMITE,Trámite parlamentario (sin contenido sustantivo),agente:texto,0.85,2026-09-16T17:15:24+00:00
+0015-JGM-2025,ECON.PRESU,Presupuesto y gasto público,agente:texto,0.95,2026-09-16T17:15:24+00:00
 0015-PE-2010,JUST.CIVCOM,Derecho civil / comercial (códigos de fondo),agente:texto,0.85,2026-09-15T23:47:28+00:00
 0015-PE-2010,JUST.NARCO,Narcotráfico,agente:texto,0.78,2026-09-15T23:47:28+00:00
 0015-PE-2010,JUST.PENAL,Derecho penal / Código penal,agente:texto,0.95,2026-09-15T23:47:28+00:00
@@ -358,12 +507,21 @@ denominador,taxonomia_id,taxonomia,fuente,confianza,asignada_en
 0015-PE-2016,DERSOC.DDHH,Derechos humanos,agente:texto,0.7,2026-09-15T23:47:35+00:00
 0015-PE-2016,ECON.TRIB,Tributario / Impuestos,agente:texto,0.85,2026-09-15T23:47:35+00:00
 0015-PE-2016,TRAB.PREV,Previsional / Jubilaciones,agente:texto,0.95,2026-09-15T23:47:35+00:00
+0015-PE-2025,JUST.PENALJUV,Régimen penal juvenil,agente:texto,0.95,2026-09-16T17:15:26+00:00
 0015-S-2014,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,0.95,2026-09-15T23:47:37+00:00
 0015-S-2022,DEF.TRATADO,Tratados y acuerdos internacionales,agente:texto,0.95,2026-09-15T23:47:40+00:00
 0015-S-2022,EDU.SUPERIOR,Educación superior / Universidades / Financiamiento,agente:texto,0.95,2026-09-15T23:47:40+00:00
+0015-S-2026,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,0.95,2026-09-16T17:15:29+00:00
+0015-S-2026,INFRA.OBRA,Obra pública,agente:texto,0.7,2026-09-16T17:15:29+00:00
+0015-S-2026,PROD.COMEX,Comercio interior y exterior,agente:texto,0.65,2026-09-16T17:15:29+00:00
+0016-CD-2026,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,0.95,2026-09-16T17:15:32+00:00
+0016-D-2025,JUST.JUDIC,Organización judicial / Magistratura,agente:texto,0.75,2026-09-16T17:15:35+00:00
+0016-D-2025,POLINST.ETICA,Transparencia / Lobby / Ética pública,agente:texto,0.85,2026-09-16T17:15:35+00:00
+0016-D-2026,AUX.TRAMITE,Trámite parlamentario (sin contenido sustantivo),agente:texto,0.95,2026-09-16T17:15:37+00:00
 0016-JGM-2011,ECON.PRESU,Presupuesto y gasto público,agente:texto,0.95,2026-09-15T23:47:42+00:00
 0016-JGM-2016,ECON.PRESU,Presupuesto y gasto público,agente:texto,0.95,2026-09-15T23:47:44+00:00
 0016-JGM-2018,ECON.PRESU,Presupuesto y gasto público,agente:texto,0.95,2026-09-15T23:47:46+00:00
+0016-JGM-2025,ECON.PRESU,Presupuesto y gasto público,agente:texto,0.95,2026-09-16T17:15:39+00:00
 0016-PE-2008,ECON.PRESU,Presupuesto y gasto público,agente:texto,0.7,2026-09-15T23:47:49+00:00
 0016-PE-2008,ECON.TRIB,Tributario / Impuestos,agente:texto,0.95,2026-09-15T23:47:49+00:00
 0016-PE-2019,DESSOC.ASIST,Asistencia social / Planes,agente:texto,0.85,2026-09-15T23:47:52+00:00
@@ -381,11 +539,25 @@ denominador,taxonomia_id,taxonomia,fuente,confianza,asignada_en
 0016-S-2017,SALUD.SISTEMA,Sistema de salud / Hospitales / Obras sociales,agente:texto,0.75,2026-09-15T23:47:58+00:00
 0016-S-2018,DEF.TRATADO,Tratados y acuerdos internacionales,agente:texto,0.95,2026-09-15T23:48:01+00:00
 0016-S-2018,ECON.TRIB,Tributario / Impuestos,agente:texto,0.9,2026-09-15T23:48:01+00:00
+0016-S-2026,JUST.JUDIC,Organización judicial / Magistratura,agente:texto,0.7,2026-09-16T17:15:42+00:00
+0016-S-2026,POLINST.ORGEST,Organización del Estado / Ministerios,agente:texto,0.85,2026-09-16T17:15:42+00:00
+0017-CD-2026,CULT.DEPORTE,Deporte,agente:texto,0.95,2026-09-16T17:15:46+00:00
+0017-CD-2026,DERSOC.NINEZ,Niñez e infancia,agente:texto,0.6,2026-09-16T17:15:46+00:00
+0017-CD-2026,JUST.SEGINT,Seguridad interior,agente:texto,0.75,2026-09-16T17:15:46+00:00
+0017-D-2025,POLINST.ELECT,Reforma electoral,agente:texto,0.95,2026-09-16T17:15:48+00:00
+0017-D-2026,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,0.85,2026-09-16T17:15:51+00:00
+0017-D-2026,CULT.CULTURA,Cultura / Patrimonio,agente:texto,0.75,2026-09-16T17:15:51+00:00
+0017-D-2026,CULT.DEPORTE,Deporte,agente:texto,0.95,2026-09-16T17:15:51+00:00
+0017-JGM-2025,ECON.PRESU,Presupuesto y gasto público,agente:texto,0.95,2026-09-16T17:15:53+00:00
+0017-JGM-2025,INFRA.OBRA,Obra pública,agente:texto,0.85,2026-09-16T17:15:53+00:00
 0017-PE-2010,PROD.AGRO,"Agro, ganadería y pesca",agente:texto,0.9,2026-09-15T23:48:03+00:00
 0017-PE-2010,TRAB.LABOR,Relaciones laborales (reforma laboral),agente:texto,0.95,2026-09-15T23:48:03+00:00
 0017-PE-2017,DESREG.SOCIED,Régimen de sociedades / comercial,agente:texto,0.65,2026-09-15T23:48:06+00:00
 0017-PE-2017,ECON.TRIB,Tributario / Impuestos,agente:texto,0.95,2026-09-15T23:48:06+00:00
 0017-PE-2019,AUX.TRAMITE,Trámite parlamentario (sin contenido sustantivo),agente:texto,0.95,2026-09-15T23:48:09+00:00
+0017-PE-2025,ECON.PRESU,Presupuesto y gasto público,agente:texto,0.85,2026-09-16T17:15:56+00:00
+0017-PE-2025,EDU.SUPERIOR,Educación superior / Universidades / Financiamiento,agente:texto,0.95,2026-09-16T17:15:56+00:00
+0017-PE-2025,TRAB.LABOR,Relaciones laborales (reforma laboral),agente:texto,0.8,2026-09-16T17:15:56+00:00
 0017-S-2010,ECON.DEUDA,Deuda y financiamiento,agente:texto,0.95,2026-09-15T23:48:12+00:00
 0017-S-2010,ECON.PRESU,Presupuesto y gasto público,agente:texto,0.7,2026-09-15T23:48:12+00:00
 0017-S-2014,DESREG.DESECO,Desregulación económica,agente:texto,0.7,2026-09-15T23:48:16+00:00
@@ -395,7 +567,17 @@ denominador,taxonomia_id,taxonomia,fuente,confianza,asignada_en
 0017-S-2017,ECON.EMERG,Emergencia económica,agente:texto,0.95,2026-09-15T23:48:19+00:00
 0017-S-2017,PROD.AGRO,"Agro, ganadería y pesca",agente:texto,0.95,2026-09-15T23:48:19+00:00
 0017-S-2018,DEF.TRATADO,Tratados y acuerdos internacionales,agente:texto,0.95,2026-09-15T23:48:21+00:00
+0017-S-2026,ECON.TRIB,Tributario / Impuestos,agente:texto,0.65,2026-09-16T17:15:59+00:00
+0017-S-2026,PROD.AGRO,"Agro, ganadería y pesca",agente:texto,0.95,2026-09-16T17:15:59+00:00
+0018-D-2025,JUST.JUDIC,Organización judicial / Magistratura,agente:texto,0.8,2026-09-16T17:16:02+00:00
+0018-D-2025,JUST.PENAL,Derecho penal / Código penal,agente:texto,0.75,2026-09-16T17:16:02+00:00
+0018-D-2025,POLINST.ELECT,Reforma electoral,agente:texto,0.85,2026-09-16T17:16:02+00:00
+0018-D-2025,POLINST.ETICA,Transparencia / Lobby / Ética pública,agente:texto,0.7,2026-09-16T17:16:02+00:00
+0018-D-2026,AUX.TRAMITE,Trámite parlamentario (sin contenido sustantivo),agente:texto,0.9,2026-09-16T17:16:05+00:00
+0018-D-2026,DEF.DEFENSA,Defensa / Fuerzas Armadas,agente:texto,0.75,2026-09-16T17:16:05+00:00
+0018-D-2026,DEF.EXTERIOR,Política exterior,agente:texto,0.85,2026-09-16T17:16:05+00:00
 0018-JGM-2009,POLINST.ELECT,Reforma electoral,agente:texto,0.95,2026-09-15T23:48:23+00:00
+0018-JGM-2024,ECON.PRESU,Presupuesto y gasto público,agente:texto,0.95,2026-09-16T17:16:07+00:00
 0018-PE-2008,DESREG.EMPUB,Empresas públicas / Privatizaciones,agente:texto,0.95,2026-09-15T23:48:27+00:00
 0018-PE-2008,ECON.DEUDA,Deuda y financiamiento,agente:texto,0.7,2026-09-15T23:48:27+00:00
 0018-PE-2008,ECON.PRESU,Presupuesto y gasto público,agente:texto,0.9,2026-09-15T23:48:27+00:00
@@ -406,6 +588,8 @@ denominador,taxonomia_id,taxonomia,fuente,confianza,asignada_en
 0018-S-2016,JUST.SEGINT,Seguridad interior,agente:texto,0.85,2026-09-15T23:48:35+00:00
 0018-S-2026,DEF.TRATADO,Tratados y acuerdos internacionales,agente:texto,0.95,2026-09-15T23:48:38+00:00
 0018-S-2026,TRAB.PREV,Previsional / Jubilaciones,agente:texto,0.85,2026-09-15T23:48:38+00:00
+0019-D-2025,POLINST.ELECT,Reforma electoral,agente:texto,0.95,2026-09-16T17:16:10+00:00
+0019-D-2026,DEF.DEFENSA,Defensa / Fuerzas Armadas,agente:texto,0.95,2026-09-16T17:16:12+00:00
 0019-JGM-2009,ECON.DEUDA,Deuda y financiamiento,agente:texto,0.95,2026-09-15T23:48:41+00:00
 0019-JGM-2009,ECON.MON,Monetario y cambiario,agente:texto,0.85,2026-09-15T23:48:41+00:00
 0019-JGM-2009,ECON.PRESU,Presupuesto y gasto público,agente:texto,0.75,2026-09-15T23:48:41+00:00
@@ -418,6 +602,10 @@ denominador,taxonomia_id,taxonomia,fuente,confianza,asignada_en
 0019-PE-2017,PROD.INVER,Promoción de inversiones (RIGI),agente:texto,0.7,2026-09-15T23:48:51+00:00
 0019-S-2026,DEF.TRATADO,Tratados y acuerdos internacionales,agente:texto,0.95,2026-09-15T23:48:53+00:00
 0019-S-2026,TRAB.PREV,Previsional / Jubilaciones,agente:texto,0.85,2026-09-15T23:48:53+00:00
+0020-D-2025,POLINST.ELECT,Reforma electoral,agente:texto,0.95,2026-09-16T17:16:15+00:00
+0020-D-2026,DEF.DEFENSA,Defensa / Fuerzas Armadas,agente:texto,0.8,2026-09-16T17:16:18+00:00
+0020-D-2026,ECON.PRESU,Presupuesto y gasto público,agente:texto,0.7,2026-09-16T17:16:18+00:00
+0020-D-2026,TRAB.PREV,Previsional / Jubilaciones,agente:texto,0.9,2026-09-16T17:16:18+00:00
 0020-JGM-2009,AUX.TRAMITE,Trámite parlamentario (sin contenido sustantivo),agente:texto,0.85,2026-09-15T23:48:56+00:00
 0020-JGM-2009,ECON.DEUDA,Deuda y financiamiento,agente:texto,0.95,2026-09-15T23:48:56+00:00
 0020-PE-2017,ECON.TRIB,Tributario / Impuestos,agente:texto,0.95,2026-09-15T23:48:59+00:00
@@ -441,6 +629,12 @@ denominador,taxonomia_id,taxonomia,fuente,confianza,asignada_en
 0020-S-2026,DEF.TRATADO,Tratados y acuerdos internacionales,agente:texto,0.6,2026-09-15T23:49:26+00:00
 0020-S-2026,ECON.DEUDA,Deuda y financiamiento,agente:texto,0.8,2026-09-15T23:49:26+00:00
 0020-S-2026,JUST.CIVCOM,Derecho civil / comercial (códigos de fondo),agente:texto,0.85,2026-09-15T23:49:26+00:00
+0021-D-2025,DERSOC.DDHH,Derechos humanos,agente:texto,0.85,2026-09-16T17:16:21+00:00
+0021-D-2025,DERSOC.NINEZ,Niñez e infancia,agente:texto,0.95,2026-09-16T17:16:21+00:00
+0021-D-2025,JUST.JUDIC,Organización judicial / Magistratura,agente:texto,0.7,2026-09-16T17:16:21+00:00
+0021-D-2026,CULT.MEDIOS,Medios / Comunicación,agente:texto,0.95,2026-09-16T17:16:24+00:00
+0021-D-2026,DESREG.EMPUB,Empresas públicas / Privatizaciones,agente:texto,0.85,2026-09-16T17:16:24+00:00
+0021-JGM-2025,ECON.PRESU,Presupuesto y gasto público,agente:texto,0.95,2026-09-16T17:16:26+00:00
 0021-PE-2008,AUX.TRAMITE,Trámite parlamentario (sin contenido sustantivo),agente:texto,0.95,2026-09-15T23:49:28+00:00
 0021-PE-2016,POLINST.ORGEST,Organización del Estado / Ministerios,agente:texto,0.85,2026-09-15T23:49:31+00:00
 0021-PE-2017,AMB.AGUA,Agua,agente:texto,0.9,2026-09-15T23:49:34+00:00
@@ -457,6 +651,9 @@ denominador,taxonomia_id,taxonomia,fuente,confianza,asignada_en
 0021-S-2025,ECON.COPART,Coparticipación / Federalismo fiscal,agente:texto,0.92,2026-09-15T23:49:45+00:00
 0021-S-2025,ECON.PRESU,Presupuesto y gasto público,agente:texto,0.95,2026-09-15T23:49:45+00:00
 0021-S-2026,JUST.JUDIC,Organización judicial / Magistratura,agente:texto,0.95,2026-09-15T23:49:47+00:00
+0022-D-2025,POLINST.ELECT,Reforma electoral,agente:texto,0.85,2026-09-16T17:16:30+00:00
+0022-D-2026,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,1.0,2026-09-16T17:16:32+00:00
+0022-JGM-2025,ECON.PRESU,Presupuesto y gasto público,agente:texto,0.95,2026-09-16T17:16:34+00:00
 0022-PE-2009,CULT.MEDIOS,Medios / Comunicación,agente:texto,0.95,2026-09-15T23:49:50+00:00
 0022-PE-2009,CYT.INNOV,Innovación / Economía del conocimiento / Software,agente:texto,0.6,2026-09-15T23:49:50+00:00
 0022-PE-2009,INFRA.TELECOM,Telecomunicaciones / Conectividad,agente:texto,0.85,2026-09-15T23:49:50+00:00
@@ -465,12 +662,18 @@ denominador,taxonomia_id,taxonomia,fuente,confianza,asignada_en
 0022-S-2022,POLINST.ORGEST,Organización del Estado / Ministerios,agente:texto,0.7,2026-09-15T23:49:55+00:00
 0022-S-2025,AUX.TRAMITE,Trámite parlamentario (sin contenido sustantivo),agente:texto,0.95,2026-09-15T23:49:57+00:00
 0022-S-2026,JUST.JUDIC,Organización judicial / Magistratura,agente:texto,0.95,2026-09-15T23:50:00+00:00
+0023-D-2025,POLINST.ELECT,Reforma electoral,agente:texto,0.95,2026-09-16T17:16:37+00:00
+0023-D-2026,EDU.BASICA,Educación básica y media,agente:texto,0.6,2026-09-16T17:16:39+00:00
+0023-D-2026,EDU.SUPERIOR,Educación superior / Universidades / Financiamiento,agente:texto,0.6,2026-09-16T17:16:39+00:00
+0023-D-2026,POLINST.ORGEST,Organización del Estado / Ministerios,agente:texto,0.8,2026-09-16T17:16:39+00:00
+0023-JGM-2025,ECON.PRESU,Presupuesto y gasto público,agente:texto,0.95,2026-09-16T17:16:42+00:00
 0023-PE-2009,DERSOC.DDHH,Derechos humanos,agente:texto,0.75,2026-09-15T23:50:03+00:00
 0023-PE-2009,JUST.JUDIC,Organización judicial / Magistratura,agente:texto,0.85,2026-09-15T23:50:03+00:00
 0023-PE-2009,JUST.PENAL,Derecho penal / Código penal,agente:texto,0.8,2026-09-15T23:50:03+00:00
 0023-PE-2009,POLINST.ORGEST,Organización del Estado / Ministerios,agente:texto,0.7,2026-09-15T23:50:03+00:00
 0023-PE-2017,ECON.TRIB,Tributario / Impuestos,agente:texto,0.95,2026-09-15T23:50:06+00:00
 0023-PE-2017,TRAB.PREV,Previsional / Jubilaciones,agente:texto,0.9,2026-09-15T23:50:06+00:00
+0023-PE-2024,ECON.TRIB,Tributario / Impuestos,agente:texto,0.95,2026-09-16T17:16:44+00:00
 0023-S-2010,CYT.CIENCIA,Ciencia y técnica,agente:texto,0.9,2026-09-15T23:50:08+00:00
 0023-S-2010,CYT.INNOV,Innovación / Economía del conocimiento / Software,agente:texto,0.75,2026-09-15T23:50:08+00:00
 0023-S-2010,DEF.TRATADO,Tratados y acuerdos internacionales,agente:texto,0.95,2026-09-15T23:50:08+00:00
@@ -478,6 +681,15 @@ denominador,taxonomia_id,taxonomia,fuente,confianza,asignada_en
 0023-S-2012,ENER.HIDRO,Hidrocarburos (petróleo y gas),agente:texto,0.65,2026-09-15T23:50:12+00:00
 0023-S-2024,DEF.TRATADO,Tratados y acuerdos internacionales,agente:texto,0.95,2026-09-15T23:50:14+00:00
 0023-S-2024,JUST.PENAL,Derecho penal / Código penal,agente:texto,0.85,2026-09-15T23:50:14+00:00
+0023-S-2026,CULT.MEDIOS,Medios / Comunicación,agente:texto,0.95,2026-09-16T17:16:47+00:00
+0023-S-2026,ECON.PRESU,Presupuesto y gasto público,agente:texto,0.75,2026-09-16T17:16:47+00:00
+0023-S-2026,POLINST.ETICA,Transparencia / Lobby / Ética pública,agente:texto,0.85,2026-09-16T17:16:47+00:00
+0024-D-2025,DERSOC.DDHH,Derechos humanos,agente:texto,0.8,2026-09-16T17:16:50+00:00
+0024-D-2025,DERSOC.NINEZ,Niñez e infancia,agente:texto,0.95,2026-09-16T17:16:50+00:00
+0024-D-2025,JUST.SEGINT,Seguridad interior,agente:texto,0.85,2026-09-16T17:16:50+00:00
+0024-D-2026,CULT.CULTURA,Cultura / Patrimonio,agente:texto,0.95,2026-09-16T17:16:54+00:00
+0024-D-2026,JUST.CIVCOM,Derecho civil / comercial (códigos de fondo),agente:texto,0.75,2026-09-16T17:16:54+00:00
+0024-JGM-2025,ECON.PRESU,Presupuesto y gasto público,agente:texto,0.95,2026-09-16T17:16:56+00:00
 0024-PE-2009,JUST.PENAL,Derecho penal / Código penal,agente:texto,0.95,2026-09-15T23:50:17+00:00
 0024-PE-2010,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,0.85,2026-09-15T23:50:20+00:00
 0024-PE-2010,DESREG.DESECO,Desregulación económica,agente:texto,0.65,2026-09-15T23:50:20+00:00
@@ -489,6 +701,13 @@ denominador,taxonomia_id,taxonomia,fuente,confianza,asignada_en
 0024-S-2013,DERSOC.ORIGIN,Pueblos originarios,agente:texto,0.95,2026-09-15T23:50:28+00:00
 0024-S-2013,ECON.PRESU,Presupuesto y gasto público,agente:texto,0.85,2026-09-15T23:50:28+00:00
 0024-S-2013,JUST.PROPIED,Propiedad (inviolabilidad),agente:texto,0.9,2026-09-15T23:50:28+00:00
+0024-S-2026,DEF.TRATADO,Tratados y acuerdos internacionales,agente:texto,0.75,2026-09-16T17:17:00+00:00
+0024-S-2026,ECON.DEUDA,Deuda y financiamiento,agente:texto,0.9,2026-09-16T17:17:00+00:00
+0024-S-2026,INFRA.OBRA,Obra pública,agente:texto,0.95,2026-09-16T17:17:00+00:00
+0025-D-2025,DERSOC.NINEZ,Niñez e infancia,agente:texto,0.9,2026-09-16T17:17:03+00:00
+0025-D-2025,JUST.PENALJUV,Régimen penal juvenil,agente:texto,0.95,2026-09-16T17:17:03+00:00
+0025-D-2025,JUST.SEGINT,Seguridad interior,agente:texto,0.75,2026-09-16T17:17:03+00:00
+0025-D-2026,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,1.0,2026-09-16T17:17:05+00:00
 0025-PE-2009,JUST.PENAL,Derecho penal / Código penal,agente:texto,0.98,2026-09-15T23:50:30+00:00
 0025-PE-2016,CYT.INNOV,Innovación / Economía del conocimiento / Software,agente:texto,0.65,2026-09-15T23:50:35+00:00
 0025-PE-2016,DESREG.DESECO,Desregulación económica,agente:texto,0.75,2026-09-15T23:50:35+00:00
@@ -501,9 +720,14 @@ denominador,taxonomia_id,taxonomia,fuente,confianza,asignada_en
 0025-PE-2023,DESREG.MODEST,Modernización del Estado,agente:texto,0.8,2026-09-15T23:50:41+00:00
 0025-PE-2023,ECON.PRESU,Presupuesto y gasto público,agente:texto,0.75,2026-09-15T23:50:41+00:00
 0025-PE-2023,POLINST.CONST,Reforma constitucional,agente:texto,0.95,2026-09-15T23:50:41+00:00
+0025-PE-2024,JUST.PENAL,Derecho penal / Código penal,agente:texto,0.95,2026-09-16T17:17:07+00:00
 0025-S-2012,DESREG.EMPUB,Empresas públicas / Privatizaciones,agente:texto,0.5,2026-09-15T23:50:46+00:00
 0025-S-2012,EDU.BASICA,Educación básica y media,agente:texto,0.7,2026-09-15T23:50:46+00:00
 0025-S-2012,INFRA.VIVIENDA,Vivienda y hábitat,agente:texto,0.6,2026-09-15T23:50:46+00:00
+0025-S-2026,SALUD.SISTEMA,Sistema de salud / Hospitales / Obras sociales,agente:texto,0.95,2026-09-16T17:17:10+00:00
+0026-D-2025,JUST.JUDIC,Organización judicial / Magistratura,agente:texto,0.95,2026-09-16T17:17:13+00:00
+0026-D-2025,POLINST.CONST,Reforma constitucional,agente:texto,0.85,2026-09-16T17:17:13+00:00
+0026-D-2026,AUX.TRAMITE,Trámite parlamentario (sin contenido sustantivo),agente:texto,0.95,2026-09-16T17:17:16+00:00
 0026-PE-2009,DERSOC.DDHH,Derechos humanos,agente:texto,0.9,2026-09-15T23:50:48+00:00
 0026-PE-2009,JUST.JUDIC,Organización judicial / Magistratura,agente:texto,0.85,2026-09-15T23:50:48+00:00
 0026-PE-2016,JUST.JUDIC,Organización judicial / Magistratura,agente:texto,0.95,2026-09-15T23:50:51+00:00
@@ -516,6 +740,9 @@ denominador,taxonomia_id,taxonomia,fuente,confianza,asignada_en
 0026-S-2024,DEF.TRATADO,Tratados y acuerdos internacionales,agente:texto,0.95,2026-09-15T23:50:59+00:00
 0026-S-2026,DEF.TRATADO,Tratados y acuerdos internacionales,agente:texto,0.95,2026-09-15T23:51:02+00:00
 0026-S-2026,PROD.COMEX,Comercio interior y exterior,agente:texto,0.9,2026-09-15T23:51:02+00:00
+0027-D-2025,CYT.IA,Inteligencia artificial,agente:texto,0.85,2026-09-16T17:17:18+00:00
+0027-D-2025,JUST.PENAL,Derecho penal / Código penal,agente:texto,0.95,2026-09-16T17:17:18+00:00
+0027-D-2026,AUX.TRAMITE,Trámite parlamentario (sin contenido sustantivo),agente:texto,0.95,2026-09-16T17:17:21+00:00
 0027-PE-2008,DESREG.EMPUB,Empresas públicas / Privatizaciones,agente:texto,0.65,2026-09-15T23:51:05+00:00
 0027-PE-2008,ECON.PRESU,Presupuesto y gasto público,agente:texto,0.7,2026-09-15T23:51:05+00:00
 0027-PE-2008,TRAB.PREV,Previsional / Jubilaciones,agente:texto,0.95,2026-09-15T23:51:05+00:00
@@ -529,6 +756,12 @@ denominador,taxonomia_id,taxonomia,fuente,confianza,asignada_en
 0027-S-2018,DERSOC.DDHH,Derechos humanos,agente:texto,0.72,2026-09-15T23:51:16+00:00
 0027-S-2018,JUST.PENAL,Derecho penal / Código penal,agente:texto,0.85,2026-09-15T23:51:16+00:00
 0027-S-2024,DEF.TRATADO,Tratados y acuerdos internacionales,agente:texto,0.95,2026-09-15T23:51:18+00:00
+0027-S-2026,DERSOC.DDHH,Derechos humanos,agente:texto,0.65,2026-09-16T17:17:24+00:00
+0027-S-2026,JUST.CIVCOM,Derecho civil / comercial (códigos de fondo),agente:texto,0.95,2026-09-16T17:17:24+00:00
+0028-D-2025,JUST.JUDIC,Organización judicial / Magistratura,agente:texto,0.95,2026-09-16T17:17:26+00:00
+0028-D-2026,AUX.TRAMITE,Trámite parlamentario (sin contenido sustantivo),agente:texto,0.7,2026-09-16T17:17:30+00:00
+0028-D-2026,INFRA.OBRA,Obra pública,agente:texto,0.8,2026-09-16T17:17:30+00:00
+0028-D-2026,INFRA.TRANSP,"Transporte (incl. subsidios al transporte, trenes)",agente:texto,0.9,2026-09-16T17:17:30+00:00
 0028-PE-2008,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,0.75,2026-09-15T23:51:22+00:00
 0028-PE-2008,EDU.SUPERIOR,Educación superior / Universidades / Financiamiento,agente:texto,0.7,2026-09-15T23:51:22+00:00
 0028-PE-2008,SALUD.SISTEMA,Sistema de salud / Hospitales / Obras sociales,agente:texto,0.65,2026-09-15T23:51:22+00:00
@@ -543,6 +776,11 @@ denominador,taxonomia_id,taxonomia,fuente,confianza,asignada_en
 0028-S-2024,DEF.TRATADO,Tratados y acuerdos internacionales,agente:texto,0.95,2026-09-15T23:51:36+00:00
 0028-S-2024,JUST.PENAL,Derecho penal / Código penal,agente:texto,0.85,2026-09-15T23:51:36+00:00
 0028-S-2026,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,0.95,2026-09-15T23:51:38+00:00
+0029-D-2025,POLINST.ELECT,Reforma electoral,agente:texto,0.85,2026-09-16T17:17:33+00:00
+0029-D-2025,POLINST.PARTIDOS,Partidos políticos,agente:texto,0.95,2026-09-16T17:17:33+00:00
+0029-D-2026,DESREG.EMPUB,Empresas públicas / Privatizaciones,agente:texto,0.7,2026-09-16T17:17:36+00:00
+0029-D-2026,JUST.SEGINT,Seguridad interior,agente:texto,0.75,2026-09-16T17:17:36+00:00
+0029-D-2026,POLINST.ETICA,Transparencia / Lobby / Ética pública,agente:texto,0.85,2026-09-16T17:17:36+00:00
 0029-PE-2016,DEF.TRATADO,Tratados y acuerdos internacionales,agente:texto,0.7,2026-09-15T23:51:41+00:00
 0029-PE-2016,ECON.DEUDA,Deuda y financiamiento,agente:texto,0.75,2026-09-15T23:51:41+00:00
 0029-PE-2016,INFRA.OBRA,Obra pública,agente:texto,0.65,2026-09-15T23:51:41+00:00
@@ -553,6 +791,10 @@ denominador,taxonomia_id,taxonomia,fuente,confianza,asignada_en
 0029-S-2015,JUST.JUDIC,Organización judicial / Magistratura,agente:texto,0.9,2026-09-15T23:51:48+00:00
 0029-S-2016,DESSOC.ASIST,Asistencia social / Planes,agente:texto,0.6,2026-09-15T23:51:52+00:00
 0029-S-2016,TRAB.EMPLEOPUB,Empleo público,agente:texto,0.85,2026-09-15T23:51:52+00:00
+0029-S-2026,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,0.95,2026-09-16T17:17:38+00:00
+0030-D-2025,POLINST.ELECT,Reforma electoral,agente:texto,0.7,2026-09-16T17:17:43+00:00
+0030-D-2025,POLINST.PARTIDOS,Partidos políticos,agente:texto,0.95,2026-09-16T17:17:43+00:00
+0030-D-2026,AUX.TRAMITE,Trámite parlamentario (sin contenido sustantivo),agente:texto,0.95,2026-09-16T17:17:45+00:00
 0030-PE-2009,ECON.DEUDA,Deuda y financiamiento,agente:texto,0.95,2026-09-15T23:51:55+00:00
 0030-PE-2009,ECON.PRESU,Presupuesto y gasto público,agente:texto,0.7,2026-09-15T23:51:55+00:00
 0030-S-2008,JUST.JUDIC,Organización judicial / Magistratura,agente:texto,0.95,2026-09-15T23:51:57+00:00
@@ -567,6 +809,11 @@ denominador,taxonomia_id,taxonomia,fuente,confianza,asignada_en
 0030-S-2017,PROD.AGRO,"Agro, ganadería y pesca",agente:texto,0.95,2026-09-15T23:52:07+00:00
 0030-S-2022,DEF.DEFENSA,Defensa / Fuerzas Armadas,agente:texto,0.95,2026-09-15T23:52:10+00:00
 0030-S-2022,DEF.TRATADO,Tratados y acuerdos internacionales,agente:texto,0.75,2026-09-15T23:52:10+00:00
+0030-S-2026,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,1.0,2026-09-16T17:17:47+00:00
+0031-D-2025,JUST.JUDIC,Organización judicial / Magistratura,agente:texto,0.85,2026-09-16T17:17:51+00:00
+0031-D-2025,POLINST.ETICA,Transparencia / Lobby / Ética pública,agente:texto,0.95,2026-09-16T17:17:51+00:00
+0031-D-2026,INFRA.OBRA,Obra pública,agente:texto,0.95,2026-09-16T17:17:54+00:00
+0031-D-2026,INFRA.TRANSP,"Transporte (incl. subsidios al transporte, trenes)",agente:texto,0.85,2026-09-16T17:17:54+00:00
 0031-JGM-2010,AUX.TRAMITE,Trámite parlamentario (sin contenido sustantivo),agente:texto,0.95,2026-09-15T23:52:13+00:00
 0031-PE-2008,ECON.TRIB,Tributario / Impuestos,agente:texto,0.75,2026-09-15T23:52:16+00:00
 0031-PE-2008,PROD.INDPYME,Industria y PyMEs,agente:texto,0.9,2026-09-15T23:52:16+00:00
@@ -583,6 +830,12 @@ denominador,taxonomia_id,taxonomia,fuente,confianza,asignada_en
 0031-S-2017,INFRA.VIVIENDA,Vivienda y hábitat,agente:texto,0.9,2026-09-15T23:52:26+00:00
 0031-S-2022,DEF.TRATADO,Tratados y acuerdos internacionales,agente:texto,0.7,2026-09-15T23:52:30+00:00
 0031-S-2022,ECON.COPART,Coparticipación / Federalismo fiscal,agente:texto,0.95,2026-09-15T23:52:30+00:00
+0031-S-2026,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,0.95,2026-09-16T17:17:57+00:00
+0031-S-2026,CULT.CULTURA,Cultura / Patrimonio,agente:texto,0.85,2026-09-16T17:17:57+00:00
+0032-D-2025,AUX.TRAMITE,Trámite parlamentario (sin contenido sustantivo),agente:texto,0.9,2026-09-16T17:18:00+00:00
+0032-D-2025,POLINST.ETICA,Transparencia / Lobby / Ética pública,agente:texto,0.75,2026-09-16T17:18:00+00:00
+0032-D-2025,POLINST.ORGEST,Organización del Estado / Ministerios,agente:texto,0.85,2026-09-16T17:18:00+00:00
+0032-D-2026,AUX.TRAMITE,Trámite parlamentario (sin contenido sustantivo),agente:texto,0.95,2026-09-16T17:18:02+00:00
 0032-PE-2008,ECON.EMERG,Emergencia económica,agente:texto,0.95,2026-09-15T23:52:33+00:00
 0032-PE-2009,DESREG.SOCIED,Régimen de sociedades / comercial,agente:texto,0.75,2026-09-15T23:52:36+00:00
 0032-PE-2009,ECON.TRIB,Tributario / Impuestos,agente:texto,0.95,2026-09-15T23:52:36+00:00
@@ -600,6 +853,12 @@ denominador,taxonomia_id,taxonomia,fuente,confianza,asignada_en
 0032-S-2025,AUX.TRAMITE,Trámite parlamentario (sin contenido sustantivo),agente:texto,0.75,2026-09-15T23:52:53+00:00
 0032-S-2025,POLINST.ORGEST,Organización del Estado / Ministerios,agente:texto,0.85,2026-09-15T23:52:53+00:00
 0032-S-2026,JUST.PROPIED,Propiedad (inviolabilidad),agente:texto,0.95,2026-09-15T23:52:56+00:00
+0033-D-2025,ECON.TRIB,Tributario / Impuestos,agente:texto,0.85,2026-09-16T17:18:04+00:00
+0033-D-2025,JUST.PENAL,Derecho penal / Código penal,agente:texto,0.95,2026-09-16T17:18:04+00:00
+0033-D-2026,AUX.TRAMITE,Trámite parlamentario (sin contenido sustantivo),agente:texto,0.7,2026-09-16T17:18:08+00:00
+0033-D-2026,DEF.DEFENSA,Defensa / Fuerzas Armadas,agente:texto,0.95,2026-09-16T17:18:08+00:00
+0033-D-2026,POLINST.ORGEST,Organización del Estado / Ministerios,agente:texto,0.75,2026-09-16T17:18:08+00:00
+0033-D-2026,SALUD.SISTEMA,Sistema de salud / Hospitales / Obras sociales,agente:texto,0.9,2026-09-16T17:18:08+00:00
 0033-PE-2008,ECON.TRIB,Tributario / Impuestos,agente:texto,0.95,2026-09-15T23:52:58+00:00
 0033-PE-2009,ECON.EMERG,Emergencia económica,agente:texto,0.95,2026-09-15T23:53:00+00:00
 0033-PE-2016,DEF.TRATADO,Tratados y acuerdos internacionales,agente:texto,0.95,2026-09-15T23:53:03+00:00
@@ -615,6 +874,14 @@ denominador,taxonomia_id,taxonomia,fuente,confianza,asignada_en
 0033-S-2022,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,0.95,2026-09-15T23:53:18+00:00
 0033-S-2022,CYT.CIENCIA,Ciencia y técnica,agente:texto,0.8,2026-09-15T23:53:18+00:00
 0033-S-2022,DERSOC.GENERO,Género / Diversidad,agente:texto,0.85,2026-09-15T23:53:18+00:00
+0033-S-2026,ECON.COPART,Coparticipación / Federalismo fiscal,agente:texto,0.85,2026-09-16T17:18:13+00:00
+0033-S-2026,ECON.PRESU,Presupuesto y gasto público,agente:texto,0.75,2026-09-16T17:18:13+00:00
+0033-S-2026,INFRA.TRANSP,"Transporte (incl. subsidios al transporte, trenes)",agente:texto,0.95,2026-09-16T17:18:13+00:00
+0034-D-2025,AUX.TRAMITE,Trámite parlamentario (sin contenido sustantivo),agente:texto,0.75,2026-09-16T17:18:15+00:00
+0034-D-2025,POLINST.ETICA,Transparencia / Lobby / Ética pública,agente:texto,0.85,2026-09-16T17:18:15+00:00
+0034-D-2026,DERSOC.GENERO,Género / Diversidad,agente:texto,0.78,2026-09-16T17:18:19+00:00
+0034-D-2026,DERSOC.NINEZ,Niñez e infancia,agente:texto,0.92,2026-09-16T17:18:19+00:00
+0034-D-2026,SALUD.SISTEMA,Sistema de salud / Hospitales / Obras sociales,agente:texto,0.85,2026-09-16T17:18:19+00:00
 0034-PE-2008,ECON.EMERG,Emergencia económica,agente:texto,0.85,2026-09-15T23:53:21+00:00
 0034-PE-2008,ECON.TRIB,Tributario / Impuestos,agente:texto,0.95,2026-09-15T23:53:21+00:00
 0034-S-2008,AMB.CLIMA,Cambio climático,agente:texto,0.85,2026-09-15T23:53:24+00:00
@@ -628,6 +895,11 @@ denominador,taxonomia_id,taxonomia,fuente,confianza,asignada_en
 0034-S-2013,PROD.AGRO,"Agro, ganadería y pesca",agente:texto,0.9,2026-09-15T23:53:32+00:00
 0034-S-2014,DEF.DEFENSA,Defensa / Fuerzas Armadas,agente:texto,0.85,2026-09-15T23:53:35+00:00
 0034-S-2014,EDU.SUPERIOR,Educación superior / Universidades / Financiamiento,agente:texto,0.95,2026-09-15T23:53:35+00:00
+0034-S-2026,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,0.95,2026-09-16T17:18:21+00:00
+0035-D-2025,DESSOC.ASIST,Asistencia social / Planes,agente:texto,0.7,2026-09-16T17:18:24+00:00
+0035-D-2025,ECON.COPART,Coparticipación / Federalismo fiscal,agente:texto,0.75,2026-09-16T17:18:24+00:00
+0035-D-2025,ECON.PRESU,Presupuesto y gasto público,agente:texto,0.85,2026-09-16T17:18:24+00:00
+0035-D-2026,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,0.95,2026-09-16T17:18:26+00:00
 0035-JGM-2010,AMB.MINER,Minería,agente:texto,0.7,2026-09-15T23:53:38+00:00
 0035-JGM-2010,ECON.PRESU,Presupuesto y gasto público,agente:texto,0.5,2026-09-15T23:53:38+00:00
 0035-JGM-2010,PROD.COMEX,Comercio interior y exterior,agente:texto,0.9,2026-09-15T23:53:38+00:00
@@ -638,6 +910,11 @@ denominador,taxonomia_id,taxonomia,fuente,confianza,asignada_en
 0035-S-2010,DEF.EXTERIOR,Política exterior,agente:texto,0.85,2026-09-15T23:53:48+00:00
 0035-S-2010,DEF.TRATADO,Tratados y acuerdos internacionales,agente:texto,0.95,2026-09-15T23:53:48+00:00
 0035-S-2010,ECON.COPART,Coparticipación / Federalismo fiscal,agente:texto,0.7,2026-09-15T23:53:48+00:00
+0035-S-2026,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,0.95,2026-09-16T17:18:29+00:00
+0036-D-2025,JUST.CIVCOM,Derecho civil / comercial (códigos de fondo),agente:texto,0.95,2026-09-16T17:18:32+00:00
+0036-D-2026,AUX.TRAMITE,Trámite parlamentario (sin contenido sustantivo),agente:texto,0.8,2026-09-16T17:18:35+00:00
+0036-D-2026,DEF.EXTERIOR,Política exterior,agente:texto,0.85,2026-09-16T17:18:35+00:00
+0036-D-2026,POLINST.ORGEST,Organización del Estado / Ministerios,agente:texto,0.75,2026-09-16T17:18:35+00:00
 0036-PE-2008,DESSOC.ASIST,Asistencia social / Planes,agente:texto,0.65,2026-09-15T23:53:52+00:00
 0036-PE-2008,ECON.TRIB,Tributario / Impuestos,agente:texto,0.7,2026-09-15T23:53:52+00:00
 0036-PE-2008,TRAB.PREV,Previsional / Jubilaciones,agente:texto,0.75,2026-09-15T23:53:52+00:00
@@ -649,6 +926,11 @@ denominador,taxonomia_id,taxonomia,fuente,confianza,asignada_en
 0036-S-2014,DERSOC.GENERO,Género / Diversidad,agente:texto,0.85,2026-09-15T23:53:59+00:00
 0036-S-2018,JUST.JUDIC,Organización judicial / Magistratura,agente:texto,0.95,2026-09-15T23:54:02+00:00
 0036-S-2025,AUX.TRAMITE,Trámite parlamentario (sin contenido sustantivo),agente:texto,0.95,2026-09-15T23:54:04+00:00
+0036-S-2026,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,1.0,2026-09-16T17:18:36+00:00
+0037-D-2025,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,1.0,2026-09-16T17:18:39+00:00
+0037-D-2026,DEF.DEFENSA,Defensa / Fuerzas Armadas,agente:texto,0.75,2026-09-16T17:18:42+00:00
+0037-D-2026,INFRA.OBRA,Obra pública,agente:texto,0.7,2026-09-16T17:18:42+00:00
+0037-D-2026,POLINST.ORGEST,Organización del Estado / Ministerios,agente:texto,0.65,2026-09-16T17:18:42+00:00
 0037-PE-2008,ECON.PRESU,Presupuesto y gasto público,agente:texto,0.7,2026-09-15T23:54:09+00:00
 0037-PE-2008,ECON.TRIB,Tributario / Impuestos,agente:texto,0.85,2026-09-15T23:54:09+00:00
 0037-PE-2008,PROD.AGRO,"Agro, ganadería y pesca",agente:texto,0.75,2026-09-15T23:54:09+00:00
@@ -662,6 +944,8 @@ denominador,taxonomia_id,taxonomia,fuente,confianza,asignada_en
 0037-S-2025,DERSOC.NINEZ,Niñez e infancia,agente:texto,0.65,2026-09-15T23:54:21+00:00
 0037-S-2025,SALUD.MEDIC,Medicamentos y vacunas,agente:texto,0.85,2026-09-15T23:54:21+00:00
 0037-S-2025,SALUD.SISTEMA,Sistema de salud / Hospitales / Obras sociales,agente:texto,0.7,2026-09-15T23:54:21+00:00
+0038-D-2025,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,0.95,2026-09-16T17:18:44+00:00
+0038-D-2026,AUX.TRAMITE,Trámite parlamentario (sin contenido sustantivo),agente:texto,0.95,2026-09-16T17:18:46+00:00
 0038-JGM-2022,ECON.PRESU,Presupuesto y gasto público,agente:texto,0.99,2026-09-15T23:54:23+00:00
 0038-PE-2008,DESREG.DESECO,Desregulación económica,agente:texto,0.65,2026-09-15T23:54:27+00:00
 0038-PE-2008,ECON.MON,Monetario y cambiario,agente:texto,0.7,2026-09-15T23:54:27+00:00
@@ -676,18 +960,48 @@ denominador,taxonomia_id,taxonomia,fuente,confianza,asignada_en
 0038-S-2014,POLINST.ORGEST,Organización del Estado / Ministerios,agente:texto,0.75,2026-09-15T23:54:35+00:00
 0038-S-2025,INFRA.TRANSP,"Transporte (incl. subsidios al transporte, trenes)",agente:texto,0.75,2026-09-15T23:54:38+00:00
 0038-S-2025,JUST.PENAL,Derecho penal / Código penal,agente:texto,0.95,2026-09-15T23:54:38+00:00
+0038-S-2026,AMB.BOSQUE,Bosques / Glaciares / Áreas protegidas,agente:texto,0.85,2026-09-16T17:18:49+00:00
+0038-S-2026,ECON.EMERG,Emergencia económica,agente:texto,0.95,2026-09-16T17:18:49+00:00
+0038-S-2026,POLINST.ORGEST,Organización del Estado / Ministerios,agente:texto,0.65,2026-09-16T17:18:49+00:00
+0039-D-2025,ECON.COPART,Coparticipación / Federalismo fiscal,agente:texto,0.75,2026-09-16T17:18:52+00:00
+0039-D-2025,ECON.TRIB,Tributario / Impuestos,agente:texto,0.95,2026-09-16T17:18:52+00:00
+0039-D-2026,DERSOC.DDHH,Derechos humanos,agente:texto,0.85,2026-09-16T17:18:55+00:00
+0039-D-2026,DERSOC.GENERO,Género / Diversidad,agente:texto,0.95,2026-09-16T17:18:55+00:00
+0039-D-2026,DESSOC.ASIST,Asistencia social / Planes,agente:texto,0.8,2026-09-16T17:18:55+00:00
+0039-D-2026,POLINST.ETICA,Transparencia / Lobby / Ética pública,agente:texto,0.7,2026-09-16T17:18:55+00:00
 0039-S-2010,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,0.95,2026-09-15T23:54:40+00:00
 0039-S-2018,CYT.CIENCIA,Ciencia y técnica,agente:texto,0.85,2026-09-15T23:54:43+00:00
 0039-S-2018,JUST.CIVCOM,Derecho civil / comercial (códigos de fondo),agente:texto,0.7,2026-09-15T23:54:43+00:00
 0039-S-2018,SALUD.SISTEMA,Sistema de salud / Hospitales / Obras sociales,agente:texto,0.95,2026-09-15T23:54:43+00:00
 0039-S-2024,AMB.AGUA,Agua,agente:texto,0.7,2026-09-15T23:54:46+00:00
 0039-S-2024,DEF.TRATADO,Tratados y acuerdos internacionales,agente:texto,0.95,2026-09-15T23:54:46+00:00
+0039-S-2026,CULT.CULTURA,Cultura / Patrimonio,agente:texto,0.95,2026-09-16T17:18:58+00:00
+0039-S-2026,ECON.TRIB,Tributario / Impuestos,agente:texto,0.75,2026-09-16T17:18:58+00:00
+0040-D-2025,TRAB.LABOR,Relaciones laborales (reforma laboral),agente:texto,0.95,2026-09-16T17:19:00+00:00
+0040-D-2026,AUX.TRAMITE,Trámite parlamentario (sin contenido sustantivo),agente:texto,0.9,2026-09-16T17:19:04+00:00
+0040-D-2026,ECON.COPART,Coparticipación / Federalismo fiscal,agente:texto,0.6,2026-09-16T17:19:04+00:00
+0040-D-2026,ECON.TRIB,Tributario / Impuestos,agente:texto,0.85,2026-09-16T17:19:04+00:00
+0040-D-2026,PROD.AGRO,"Agro, ganadería y pesca",agente:texto,0.85,2026-09-16T17:19:04+00:00
 0040-S-2010,DESSOC.ASIST,Asistencia social / Planes,agente:texto,0.75,2026-09-15T23:54:49+00:00
 0040-S-2010,INFRA.TRANSP,"Transporte (incl. subsidios al transporte, trenes)",agente:texto,0.9,2026-09-15T23:54:49+00:00
 0040-S-2010,SALUD.DISCAP,Discapacidad,agente:texto,0.95,2026-09-15T23:54:49+00:00
+0040-S-2026,DESREG.EMPUB,Empresas públicas / Privatizaciones,agente:texto,0.75,2026-09-16T17:19:07+00:00
+0040-S-2026,ECON.COPART,Coparticipación / Federalismo fiscal,agente:texto,0.7,2026-09-16T17:19:07+00:00
+0040-S-2026,JUST.PROPIED,Propiedad (inviolabilidad),agente:texto,0.65,2026-09-16T17:19:07+00:00
+0041-D-2025,ECON.COPART,Coparticipación / Federalismo fiscal,agente:texto,0.7,2026-09-16T17:19:10+00:00
+0041-D-2025,JUST.PROPIED,Propiedad (inviolabilidad),agente:texto,0.85,2026-09-16T17:19:10+00:00
+0041-D-2026,AUX.TRAMITE,Trámite parlamentario (sin contenido sustantivo),agente:texto,0.8,2026-09-16T17:19:13+00:00
+0041-D-2026,INFRA.OBRA,Obra pública,agente:texto,0.7,2026-09-16T17:19:13+00:00
+0041-D-2026,INFRA.TRANSP,"Transporte (incl. subsidios al transporte, trenes)",agente:texto,0.6,2026-09-16T17:19:13+00:00
 0041-S-2010,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,1.0,2026-09-15T23:54:51+00:00
 0041-S-2025,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,0.85,2026-09-15T23:54:54+00:00
 0041-S-2025,CULT.CULTURA,Cultura / Patrimonio,agente:texto,0.95,2026-09-15T23:54:54+00:00
+0041-S-2026,DESREG.MODEST,Modernización del Estado,agente:texto,0.7,2026-09-16T17:19:17+00:00
+0041-S-2026,JUST.JUDIC,Organización judicial / Magistratura,agente:texto,0.95,2026-09-16T17:19:17+00:00
+0042-D-2025,DERSOC.GENERO,Género / Diversidad,agente:texto,0.9,2026-09-16T17:19:20+00:00
+0042-D-2025,JUST.CIVCOM,Derecho civil / comercial (códigos de fondo),agente:texto,0.95,2026-09-16T17:19:20+00:00
+0042-D-2026,AUX.TRAMITE,Trámite parlamentario (sin contenido sustantivo),agente:texto,0.75,2026-09-16T17:19:23+00:00
+0042-D-2026,POLINST.ETICA,Transparencia / Lobby / Ética pública,agente:texto,0.85,2026-09-16T17:19:23+00:00
 0042-PE-2008,JUST.SEGINT,Seguridad interior,agente:texto,0.9,2026-09-15T23:54:56+00:00
 0042-S-2010,AMB.BOSQUE,Bosques / Glaciares / Áreas protegidas,agente:texto,0.85,2026-09-15T23:55:01+00:00
 0042-S-2010,DERSOC.ORIGIN,Pueblos originarios,agente:texto,0.5,2026-09-15T23:55:01+00:00
@@ -705,6 +1019,12 @@ denominador,taxonomia_id,taxonomia,fuente,confianza,asignada_en
 0042-S-2018,DERSOC.DDHH,Derechos humanos,agente:texto,0.8,2026-09-15T23:55:12+00:00
 0042-S-2025,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,0.95,2026-09-15T23:55:15+00:00
 0042-S-2025,CULT.CULTURA,Cultura / Patrimonio,agente:texto,0.85,2026-09-15T23:55:15+00:00
+0042-S-2026,CULT.CULTURA,Cultura / Patrimonio,agente:texto,0.8,2026-09-16T17:19:26+00:00
+0042-S-2026,CULT.DEPORTE,Deporte,agente:texto,0.8,2026-09-16T17:19:26+00:00
+0042-S-2026,DESSOC.ASIST,Asistencia social / Planes,agente:texto,0.85,2026-09-16T17:19:26+00:00
+0043-D-2025,DERSOC.DDHH,Derechos humanos,agente:texto,0.85,2026-09-16T17:19:29+00:00
+0043-D-2025,SALUD.SISTEMA,Sistema de salud / Hospitales / Obras sociales,agente:texto,0.95,2026-09-16T17:19:29+00:00
+0043-D-2026,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,1.0,2026-09-16T17:19:31+00:00
 0043-PE-2008,ECON.TRIB,Tributario / Impuestos,agente:texto,0.95,2026-09-15T23:55:18+00:00
 0043-S-2009,CULT.MEDIOS,Medios / Comunicación,agente:texto,0.85,2026-09-15T23:55:21+00:00
 0043-S-2009,INFRA.TELECOM,Telecomunicaciones / Conectividad,agente:texto,0.65,2026-09-15T23:55:21+00:00
@@ -712,6 +1032,15 @@ denominador,taxonomia_id,taxonomia,fuente,confianza,asignada_en
 0043-S-2014,DESSOC.PNC,Pensiones no contributivas,agente:texto,0.7,2026-09-15T23:55:24+00:00
 0043-S-2014,ECON.DEUDA,Deuda y financiamiento,agente:texto,0.85,2026-09-15T23:55:24+00:00
 0043-S-2014,TRAB.PREV,Previsional / Jubilaciones,agente:texto,0.95,2026-09-15T23:55:24+00:00
+0043-S-2026,ECON.COPART,Coparticipación / Federalismo fiscal,agente:texto,0.95,2026-09-16T17:19:35+00:00
+0043-S-2026,ECON.TRIB,Tributario / Impuestos,agente:texto,0.85,2026-09-16T17:19:35+00:00
+0044-D-2025,JUST.CIVCOM,Derecho civil / comercial (códigos de fondo),agente:texto,0.85,2026-09-16T17:19:38+00:00
+0044-D-2025,TRAB.LABOR,Relaciones laborales (reforma laboral),agente:texto,0.95,2026-09-16T17:19:38+00:00
+0044-D-2026,AUX.TRAMITE,Trámite parlamentario (sin contenido sustantivo),agente:texto,0.9,2026-09-16T17:19:41+00:00
+0044-D-2026,ECON.COPART,Coparticipación / Federalismo fiscal,agente:texto,0.6,2026-09-16T17:19:41+00:00
+0044-D-2026,ECON.EMERG,Emergencia económica,agente:texto,0.7,2026-09-16T17:19:41+00:00
+0044-D-2026,PROD.INDPYME,Industria y PyMEs,agente:texto,0.6,2026-09-16T17:19:41+00:00
+0044-D-2026,TRAB.EMPLEOPUB,Empleo público,agente:texto,0.5,2026-09-16T17:19:41+00:00
 0044-PE-2008,ECON.DEUDA,Deuda y financiamiento,agente:texto,0.68,2026-09-15T23:55:28+00:00
 0044-PE-2008,INFRA.VIVIENDA,Vivienda y hábitat,agente:texto,0.72,2026-09-15T23:55:28+00:00
 0044-PE-2008,JUST.CIVCOM,Derecho civil / comercial (códigos de fondo),agente:texto,0.85,2026-09-15T23:55:28+00:00
@@ -720,6 +1049,14 @@ denominador,taxonomia_id,taxonomia,fuente,confianza,asignada_en
 0044-S-2014,DEF.TRATADO,Tratados y acuerdos internacionales,agente:texto,0.85,2026-09-15T23:55:35+00:00
 0044-S-2014,ECON.DEUDA,Deuda y financiamiento,agente:texto,0.75,2026-09-15T23:55:35+00:00
 0044-S-2014,INFRA.OBRA,Obra pública,agente:texto,0.65,2026-09-15T23:55:35+00:00
+0044-S-2026,EDU.BASICA,Educación básica y media,agente:texto,0.7,2026-09-16T17:19:45+00:00
+0044-S-2026,EDU.SUPERIOR,Educación superior / Universidades / Financiamiento,agente:texto,0.85,2026-09-16T17:19:45+00:00
+0045-D-2025,SALUD.DISCAP,Discapacidad,agente:texto,0.75,2026-09-16T17:19:48+00:00
+0045-D-2025,TRAB.PREV,Previsional / Jubilaciones,agente:texto,0.95,2026-09-16T17:19:48+00:00
+0045-D-2026,AUX.TRAMITE,Trámite parlamentario (sin contenido sustantivo),agente:texto,0.9,2026-09-16T17:19:51+00:00
+0045-D-2026,DESSOC.ASIST,Asistencia social / Planes,agente:texto,0.75,2026-09-16T17:19:51+00:00
+0045-D-2026,SALUD.DISCAP,Discapacidad,agente:texto,0.85,2026-09-16T17:19:51+00:00
+0045-D-2026,SALUD.MEDIC,Medicamentos y vacunas,agente:texto,0.95,2026-09-16T17:19:51+00:00
 0045-JGM-2010,ECON.PRESU,Presupuesto y gasto público,agente:texto,0.95,2026-09-15T23:55:38+00:00
 0045-S-2009,CYT.CIENCIA,Ciencia y técnica,agente:texto,0.8,2026-09-15T23:55:41+00:00
 0045-S-2009,DESREG.MODEST,Modernización del Estado,agente:texto,0.6,2026-09-15T23:55:41+00:00
@@ -732,11 +1069,25 @@ denominador,taxonomia_id,taxonomia,fuente,confianza,asignada_en
 0045-S-2016,CULT.CULTURA,Cultura / Patrimonio,agente:texto,0.85,2026-09-15T23:55:49+00:00
 0045-S-2018,CULT.CULTURA,Cultura / Patrimonio,agente:texto,0.9,2026-09-15T23:55:52+00:00
 0045-S-2018,DEF.TRATADO,Tratados y acuerdos internacionales,agente:texto,0.95,2026-09-15T23:55:52+00:00
+0045-S-2026,EDU.BASICA,Educación básica y media,agente:texto,0.85,2026-09-16T17:19:54+00:00
+0045-S-2026,ENER.TARIFA,Tarifas y subsidios energéticos,agente:texto,0.95,2026-09-16T17:19:54+00:00
+0045-S-2026,SALUD.SISTEMA,Sistema de salud / Hospitales / Obras sociales,agente:texto,0.85,2026-09-16T17:19:54+00:00
+0046-D-2025,DERSOC.MIGRA,Migraciones,agente:texto,0.85,2026-09-16T17:19:58+00:00
+0046-D-2025,INFRA.TRANSP,"Transporte (incl. subsidios al transporte, trenes)",agente:texto,0.75,2026-09-16T17:19:58+00:00
+0046-D-2025,JUST.SEGINT,Seguridad interior,agente:texto,0.7,2026-09-16T17:19:58+00:00
+0046-D-2026,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,1.0,2026-09-16T17:20:00+00:00
 0046-S-2010,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,0.95,2026-09-15T23:55:54+00:00
 0046-S-2012,SALUD.MENTAL,Salud mental,agente:texto,0.7,2026-09-15T23:55:57+00:00
 0046-S-2012,SALUD.SISTEMA,Sistema de salud / Hospitales / Obras sociales,agente:texto,0.95,2026-09-15T23:55:57+00:00
 0046-S-2015,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,0.95,2026-09-15T23:56:00+00:00
 0046-S-2015,SALUD.SISTEMA,Sistema de salud / Hospitales / Obras sociales,agente:texto,0.6,2026-09-15T23:56:00+00:00
+0046-S-2026,DESREG.DESECO,Desregulación económica,agente:texto,0.8,2026-09-16T17:20:04+00:00
+0046-S-2026,ECON.MON,Monetario y cambiario,agente:texto,0.85,2026-09-16T17:20:04+00:00
+0046-S-2026,INFRA.TELECOM,Telecomunicaciones / Conectividad,agente:texto,0.7,2026-09-16T17:20:04+00:00
+0046-S-2026,TRAB.LABOR,Relaciones laborales (reforma laboral),agente:texto,0.75,2026-09-16T17:20:04+00:00
+0047-D-2025,DESSOC.ASIST,Asistencia social / Planes,agente:texto,0.75,2026-09-16T17:20:06+00:00
+0047-D-2025,ECON.EMERG,Emergencia económica,agente:texto,0.75,2026-09-16T17:20:06+00:00
+0047-D-2026,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,0.95,2026-09-16T17:20:09+00:00
 0047-S-2009,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,0.75,2026-09-15T23:56:05+00:00
 0047-S-2009,CULT.CULTURA,Cultura / Patrimonio,agente:texto,0.65,2026-09-15T23:56:05+00:00
 0047-S-2009,DERSOC.DDHH,Derechos humanos,agente:texto,0.7,2026-09-15T23:56:05+00:00
@@ -746,15 +1097,26 @@ denominador,taxonomia_id,taxonomia,fuente,confianza,asignada_en
 0047-S-2016,DEF.TRATADO,Tratados y acuerdos internacionales,agente:texto,0.95,2026-09-15T23:56:12+00:00
 0047-S-2016,DERSOC.DDHH,Derechos humanos,agente:texto,0.9,2026-09-15T23:56:12+00:00
 0047-S-2018,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,0.95,2026-09-15T23:56:14+00:00
+0047-S-2026,DESSOC.ASIST,Asistencia social / Planes,agente:texto,0.7,2026-09-16T17:20:13+00:00
+0047-S-2026,ECON.COPART,Coparticipación / Federalismo fiscal,agente:texto,0.5,2026-09-16T17:20:13+00:00
+0047-S-2026,ECON.EMERG,Emergencia económica,agente:texto,0.6,2026-09-16T17:20:13+00:00
+0047-S-2026,PROD.INDPYME,Industria y PyMEs,agente:texto,0.6,2026-09-16T17:20:13+00:00
 0048-D-2011,DERSOC.DDHH,Derechos humanos,agente:texto,0.65,2026-09-15T23:56:17+00:00
 0048-D-2011,DERSOC.GENERO,Género / Diversidad,agente:texto,0.8,2026-09-15T23:56:17+00:00
 0048-D-2011,SALUD.SISTEMA,Sistema de salud / Hospitales / Obras sociales,agente:texto,0.85,2026-09-15T23:56:17+00:00
+0048-D-2025,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,0.95,2026-09-16T17:20:16+00:00
+0048-D-2026,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,1.0,2026-09-16T17:20:18+00:00
 0048-S-2009,DESSOC.ASIST,Asistencia social / Planes,agente:texto,0.75,2026-09-15T23:56:20+00:00
 0048-S-2009,ECON.COPART,Coparticipación / Federalismo fiscal,agente:texto,0.6,2026-09-15T23:56:20+00:00
 0048-S-2009,ECON.EMERG,Emergencia económica,agente:texto,0.95,2026-09-15T23:56:20+00:00
 0048-S-2010,JUST.CIVCOM,Derecho civil / comercial (códigos de fondo),agente:texto,0.95,2026-09-15T23:56:23+00:00
 0048-S-2012,DEF.TRATADO,Tratados y acuerdos internacionales,agente:texto,0.95,2026-09-15T23:56:25+00:00
 0048-S-2012,ECON.TRIB,Tributario / Impuestos,agente:texto,0.9,2026-09-15T23:56:25+00:00
+0048-S-2026,AUX.TRAMITE,Trámite parlamentario (sin contenido sustantivo),agente:texto,0.95,2026-09-16T17:20:20+00:00
+0049-D-2025,DERSOC.DDHH,Derechos humanos,agente:texto,0.7,2026-09-16T17:20:25+00:00
+0049-D-2025,TRAB.EMPLEOPUB,Empleo público,agente:texto,0.95,2026-09-16T17:20:25+00:00
+0049-D-2026,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,0.95,2026-09-16T17:20:27+00:00
+0049-D-2026,CULT.CULTURA,Cultura / Patrimonio,agente:texto,0.85,2026-09-16T17:20:27+00:00
 0049-S-2009,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,0.95,2026-09-15T23:56:28+00:00
 0049-S-2011,DESREG.DESECO,Desregulación económica,agente:texto,0.85,2026-09-15T23:56:31+00:00
 0049-S-2011,PROD.COMEX,Comercio interior y exterior,agente:texto,0.75,2026-09-15T23:56:31+00:00
@@ -763,6 +1125,16 @@ denominador,taxonomia_id,taxonomia,fuente,confianza,asignada_en
 0049-S-2012,DESREG.EMPUB,Empresas públicas / Privatizaciones,agente:texto,0.7,2026-09-15T23:56:35+00:00
 0049-S-2012,INFRA.OBRA,Obra pública,agente:texto,0.85,2026-09-15T23:56:35+00:00
 0049-S-2012,INFRA.TRANSP,"Transporte (incl. subsidios al transporte, trenes)",agente:texto,0.8,2026-09-15T23:56:35+00:00
+0049-S-2026,ECON.COPART,Coparticipación / Federalismo fiscal,agente:texto,0.6,2026-09-16T17:20:31+00:00
+0049-S-2026,INFRA.OBRA,Obra pública,agente:texto,0.95,2026-09-16T17:20:31+00:00
+0049-S-2026,INFRA.TRANSP,"Transporte (incl. subsidios al transporte, trenes)",agente:texto,0.75,2026-09-16T17:20:31+00:00
+0050-D-2025,DERSOC.NINEZ,Niñez e infancia,agente:texto,0.7,2026-09-16T17:20:35+00:00
+0050-D-2025,DESSOC.ASIST,Asistencia social / Planes,agente:texto,0.75,2026-09-16T17:20:35+00:00
+0050-D-2025,EDU.BASICA,Educación básica y media,agente:texto,0.65,2026-09-16T17:20:35+00:00
+0050-D-2025,TRAB.LABOR,Relaciones laborales (reforma laboral),agente:texto,0.85,2026-09-16T17:20:35+00:00
+0050-D-2026,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,0.7,2026-09-16T17:20:38+00:00
+0050-D-2026,DERSOC.NINEZ,Niñez e infancia,agente:texto,0.8,2026-09-16T17:20:38+00:00
+0050-D-2026,SALUD.SISTEMA,Sistema de salud / Hospitales / Obras sociales,agente:texto,0.85,2026-09-16T17:20:38+00:00
 0050-S-2009,DERSOC.DDHH,Derechos humanos,agente:texto,0.95,2026-09-15T23:56:39+00:00
 0050-S-2009,ECON.PRESU,Presupuesto y gasto público,agente:texto,0.8,2026-09-15T23:56:39+00:00
 0050-S-2009,JUST.JUDIC,Organización judicial / Magistratura,agente:texto,0.85,2026-09-15T23:56:39+00:00
@@ -771,8 +1143,13 @@ denominador,taxonomia_id,taxonomia,fuente,confianza,asignada_en
 0050-S-2014,DEF.DEFENSA,Defensa / Fuerzas Armadas,agente:texto,0.95,2026-09-15T23:56:44+00:00
 0050-S-2014,DEF.TRATADO,Tratados y acuerdos internacionales,agente:texto,0.75,2026-09-15T23:56:44+00:00
 0050-S-2025,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,0.95,2026-09-15T23:56:46+00:00
+0050-S-2026,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,1.0,2026-09-16T17:20:40+00:00
 0051-D-2011,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,0.95,2026-09-15T23:56:49+00:00
 0051-D-2011,CULT.CULTURA,Cultura / Patrimonio,agente:texto,0.85,2026-09-15T23:56:49+00:00
+0051-D-2025,CULT.DEPORTE,Deporte,agente:texto,0.9,2026-09-16T17:20:42+00:00
+0051-D-2025,EDU.BASICA,Educación básica y media,agente:texto,0.85,2026-09-16T17:20:42+00:00
+0051-D-2026,SALUD.MEDIC,Medicamentos y vacunas,agente:texto,0.75,2026-09-16T17:20:46+00:00
+0051-D-2026,SALUD.SISTEMA,Sistema de salud / Hospitales / Obras sociales,agente:texto,0.85,2026-09-16T17:20:46+00:00
 0051-S-2008,ECON.TRIB,Tributario / Impuestos,agente:texto,0.7,2026-09-15T23:56:52+00:00
 0051-S-2008,JUST.PENAL,Derecho penal / Código penal,agente:texto,0.85,2026-09-15T23:56:52+00:00
 0051-S-2008,PROD.AGRO,"Agro, ganadería y pesca",agente:texto,0.95,2026-09-15T23:56:52+00:00
@@ -782,6 +1159,11 @@ denominador,taxonomia_id,taxonomia,fuente,confianza,asignada_en
 0051-S-2011,JUST.JUDIC,Organización judicial / Magistratura,agente:texto,0.95,2026-09-15T23:56:58+00:00
 0051-S-2025,DERSOC.DDHH,Derechos humanos,agente:texto,0.8,2026-09-15T23:57:01+00:00
 0051-S-2025,JUST.SEGINT,Seguridad interior,agente:texto,0.85,2026-09-15T23:57:01+00:00
+0051-S-2026,CULT.MEDIOS,Medios / Comunicación,agente:texto,0.92,2026-09-16T17:20:49+00:00
+0052-D-2025,EDU.BASICA,Educación básica y media,agente:texto,0.6,2026-09-16T17:20:52+00:00
+0052-D-2025,EDU.SUPERIOR,Educación superior / Universidades / Financiamiento,agente:texto,0.6,2026-09-16T17:20:52+00:00
+0052-D-2026,AMB.AGUA,Agua,agente:texto,0.3,2026-09-16T17:20:55+00:00
+0052-D-2026,DERSOC.DDHH,Derechos humanos,agente:texto,0.6,2026-09-16T17:20:55+00:00
 0052-S-2008,DEF.TRATADO,Tratados y acuerdos internacionales,agente:texto,0.95,2026-09-15T23:57:04+00:00
 0052-S-2008,JUST.PENAL,Derecho penal / Código penal,agente:texto,0.85,2026-09-15T23:57:04+00:00
 0052-S-2009,DEF.TRATADO,Tratados y acuerdos internacionales,agente:texto,0.95,2026-09-15T23:57:06+00:00
@@ -791,12 +1173,27 @@ denominador,taxonomia_id,taxonomia,fuente,confianza,asignada_en
 0052-S-2015,ECON.PRESU,Presupuesto y gasto público,agente:texto,0.7,2026-09-15T23:57:12+00:00
 0052-S-2015,TRAB.PREV,Previsional / Jubilaciones,agente:texto,0.85,2026-09-15T23:57:12+00:00
 0052-S-2025,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,0.95,2026-09-15T23:57:14+00:00
+0052-S-2026,DESREG.EMPUB,Empresas públicas / Privatizaciones,agente:texto,0.6,2026-09-16T17:20:59+00:00
+0052-S-2026,INFRA.VIVIENDA,Vivienda y hábitat,agente:texto,0.7,2026-09-16T17:20:59+00:00
+0052-S-2026,POLINST.ORGEST,Organización del Estado / Ministerios,agente:texto,0.5,2026-09-16T17:20:59+00:00
+0053-D-2025,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,0.95,2026-09-16T17:21:01+00:00
+0053-D-2026,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,0.95,2026-09-16T17:21:03+00:00
 0053-S-2008,DEF.TRATADO,Tratados y acuerdos internacionales,agente:texto,0.95,2026-09-15T23:57:17+00:00
 0053-S-2009,DEF.TRATADO,Tratados y acuerdos internacionales,agente:texto,0.95,2026-09-15T23:57:19+00:00
 0053-S-2009,PROD.COMEX,Comercio interior y exterior,agente:texto,0.75,2026-09-15T23:57:19+00:00
 0053-S-2010,ECON.TRIB,Tributario / Impuestos,agente:texto,0.95,2026-09-15T23:57:22+00:00
 0053-S-2010,TRAB.LABOR,Relaciones laborales (reforma laboral),agente:texto,0.72,2026-09-15T23:57:22+00:00
 0053-S-2015,ECON.PRESU,Presupuesto y gasto público,agente:texto,0.9,2026-09-15T23:57:25+00:00
+0053-S-2026,DESREG.EMPUB,Empresas públicas / Privatizaciones,agente:texto,0.5,2026-09-16T17:21:07+00:00
+0053-S-2026,INFRA.VIVIENDA,Vivienda y hábitat,agente:texto,0.6,2026-09-16T17:21:07+00:00
+0054-D-2025,CYT.CIENCIA,Ciencia y técnica,agente:texto,0.65,2026-09-16T17:21:10+00:00
+0054-D-2025,DESREG.MODEST,Modernización del Estado,agente:texto,0.6,2026-09-16T17:21:10+00:00
+0054-D-2025,EDU.BASICA,Educación básica y media,agente:texto,0.75,2026-09-16T17:21:10+00:00
+0054-D-2025,EDU.SUPERIOR,Educación superior / Universidades / Financiamiento,agente:texto,0.75,2026-09-16T17:21:10+00:00
+0054-D-2026,DEF.DEFENSA,Defensa / Fuerzas Armadas,agente:texto,0.7,2026-09-16T17:21:16+00:00
+0054-D-2026,DESREG.EMPUB,Empresas públicas / Privatizaciones,agente:texto,0.85,2026-09-16T17:21:16+00:00
+0054-D-2026,SALUD.SISTEMA,Sistema de salud / Hospitales / Obras sociales,agente:texto,0.65,2026-09-16T17:21:16+00:00
+0054-D-2026,TRAB.PREV,Previsional / Jubilaciones,agente:texto,0.75,2026-09-16T17:21:16+00:00
 0054-JGM-2017,ECON.PRESU,Presupuesto y gasto público,agente:texto,0.95,2026-09-15T23:57:27+00:00
 0054-S-2008,DEF.TRATADO,Tratados y acuerdos internacionales,agente:texto,0.9,2026-09-15T23:57:30+00:00
 0054-S-2008,EDU.SUPERIOR,Educación superior / Universidades / Financiamiento,agente:texto,0.95,2026-09-15T23:57:30+00:00
@@ -807,6 +1204,14 @@ denominador,taxonomia_id,taxonomia,fuente,confianza,asignada_en
 0054-S-2012,DEF.TRATADO,Tratados y acuerdos internacionales,agente:texto,0.95,2026-09-15T23:57:40+00:00
 0054-S-2012,JUST.PENAL,Derecho penal / Código penal,agente:texto,0.85,2026-09-15T23:57:40+00:00
 0054-S-2016,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,0.95,2026-09-15T23:57:42+00:00
+0054-S-2026,DESREG.DESECO,Desregulación económica,agente:texto,0.75,2026-09-16T17:21:19+00:00
+0054-S-2026,POLINST.ETICA,Transparencia / Lobby / Ética pública,agente:texto,0.7,2026-09-16T17:21:19+00:00
+0055-D-2025,AUX.TRAMITE,Trámite parlamentario (sin contenido sustantivo),agente:texto,0.95,2026-09-16T17:21:22+00:00
+0055-D-2026,AMB.AGUA,Agua,agente:texto,0.7,2026-09-16T17:21:27+00:00
+0055-D-2026,DEF.EXTERIOR,Política exterior,agente:texto,0.95,2026-09-16T17:21:27+00:00
+0055-D-2026,POLINST.ETICA,Transparencia / Lobby / Ética pública,agente:texto,0.5,2026-09-16T17:21:27+00:00
+0055-D-2026,PROD.AGRO,"Agro, ganadería y pesca",agente:texto,0.75,2026-09-16T17:21:27+00:00
+0055-D-2026,PROD.COMEX,Comercio interior y exterior,agente:texto,0.85,2026-09-16T17:21:27+00:00
 0055-S-2008,AMB.AGUA,Agua,agente:texto,0.85,2026-09-15T23:57:45+00:00
 0055-S-2008,DESREG.MODEST,Modernización del Estado,agente:texto,0.6,2026-09-15T23:57:45+00:00
 0055-S-2008,ECON.EMERG,Emergencia económica,agente:texto,0.95,2026-09-15T23:57:45+00:00
@@ -821,6 +1226,12 @@ denominador,taxonomia_id,taxonomia,fuente,confianza,asignada_en
 0055-S-2014,DEF.DEFENSA,Defensa / Fuerzas Armadas,agente:texto,0.95,2026-09-15T23:57:56+00:00
 0055-S-2014,DEF.EXTERIOR,Política exterior,agente:texto,0.75,2026-09-15T23:57:56+00:00
 0055-S-2014,DEF.TRATADO,Tratados y acuerdos internacionales,agente:texto,0.85,2026-09-15T23:57:56+00:00
+0055-S-2026,DESREG.DESECO,Desregulación económica,agente:texto,0.6,2026-09-16T17:21:30+00:00
+0055-S-2026,JUST.CIVCOM,Derecho civil / comercial (códigos de fondo),agente:texto,0.65,2026-09-16T17:21:30+00:00
+0055-S-2026,SALUD.MEDIC,Medicamentos y vacunas,agente:texto,0.75,2026-09-16T17:21:30+00:00
+0056-D-2025,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,0.95,2026-09-16T17:21:32+00:00
+0056-D-2026,DESREG.DESECO,Desregulación económica,agente:texto,0.7,2026-09-16T17:21:35+00:00
+0056-D-2026,PROD.COMEX,Comercio interior y exterior,agente:texto,0.9,2026-09-16T17:21:35+00:00
 0056-S-2009,DEF.TRATADO,Tratados y acuerdos internacionales,agente:texto,0.95,2026-09-15T23:57:59+00:00
 0056-S-2009,TRAB.PREV,Previsional / Jubilaciones,agente:texto,0.85,2026-09-15T23:57:59+00:00
 0056-S-2010,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,0.95,2026-09-15T23:58:02+00:00
@@ -830,6 +1241,14 @@ denominador,taxonomia_id,taxonomia,fuente,confianza,asignada_en
 0056-S-2011,JUST.PENAL,Derecho penal / Código penal,agente:texto,0.8,2026-09-15T23:58:05+00:00
 0056-S-2011,POLINST.ETICA,Transparencia / Lobby / Ética pública,agente:texto,0.7,2026-09-15T23:58:05+00:00
 0056-S-2014,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,0.85,2026-09-15T23:58:07+00:00
+0056-S-2026,DESREG.EMPUB,Empresas públicas / Privatizaciones,agente:texto,0.6,2026-09-16T17:21:38+00:00
+0056-S-2026,INFRA.OBRA,Obra pública,agente:texto,0.7,2026-09-16T17:21:38+00:00
+0057-D-2025,DERSOC.DDHH,Derechos humanos,agente:texto,0.85,2026-09-16T17:21:42+00:00
+0057-D-2025,DERSOC.GENERO,Género / Diversidad,agente:texto,0.95,2026-09-16T17:21:42+00:00
+0057-D-2025,JUST.PENAL,Derecho penal / Código penal,agente:texto,0.75,2026-09-16T17:21:42+00:00
+0057-D-2026,DESREG.EMPUB,Empresas públicas / Privatizaciones,agente:texto,0.6,2026-09-16T17:21:45+00:00
+0057-D-2026,INFRA.VIVIENDA,Vivienda y hábitat,agente:texto,0.65,2026-09-16T17:21:45+00:00
+0057-D-2026,JUST.PROPIED,Propiedad (inviolabilidad),agente:texto,0.85,2026-09-16T17:21:45+00:00
 0057-S-2010,DESREG.DESECO,Desregulación económica,agente:texto,0.65,2026-09-15T23:58:12+00:00
 0057-S-2010,SALUD.ADICC,Adicciones / Ludopatía,agente:texto,0.95,2026-09-15T23:58:12+00:00
 0057-S-2011,DEF.TRATADO,Tratados y acuerdos internacionales,agente:texto,0.95,2026-09-15T23:58:15+00:00
@@ -843,10 +1262,28 @@ denominador,taxonomia_id,taxonomia,fuente,confianza,asignada_en
 0057-S-2022,CYT.CIENCIA,Ciencia y técnica,agente:texto,0.95,2026-09-15T23:58:24+00:00
 0057-S-2022,CYT.INNOV,Innovación / Economía del conocimiento / Software,agente:texto,0.95,2026-09-15T23:58:24+00:00
 0057-S-2022,ECON.PRESU,Presupuesto y gasto público,agente:texto,0.7,2026-09-15T23:58:24+00:00
+0057-S-2026,DERSOC.DDHH,Derechos humanos,agente:texto,0.75,2026-09-16T17:21:49+00:00
+0057-S-2026,JUST.SEGINT,Seguridad interior,agente:texto,0.7,2026-09-16T17:21:49+00:00
+0057-S-2026,SALUD.SISTEMA,Sistema de salud / Hospitales / Obras sociales,agente:texto,0.85,2026-09-16T17:21:49+00:00
+0058-D-2025,AUX.TRAMITE,Trámite parlamentario (sin contenido sustantivo),agente:texto,0.85,2026-09-16T17:21:52+00:00
+0058-D-2025,DESREG.MODEST,Modernización del Estado,agente:texto,0.75,2026-09-16T17:21:52+00:00
+0058-D-2025,POLINST.ORGEST,Organización del Estado / Ministerios,agente:texto,0.7,2026-09-16T17:21:52+00:00
+0058-D-2025,TRAB.EMPLEOPUB,Empleo público,agente:texto,0.95,2026-09-16T17:21:52+00:00
+0058-D-2026,DERSOC.DDHH,Derechos humanos,agente:texto,0.55,2026-09-16T17:21:56+00:00
+0058-D-2026,DESREG.DESECO,Desregulación económica,agente:texto,0.6,2026-09-16T17:21:56+00:00
+0058-D-2026,SALUD.MEDIC,Medicamentos y vacunas,agente:texto,0.65,2026-09-16T17:21:56+00:00
 0058-S-2010,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,0.95,2026-09-15T23:58:27+00:00
 0058-S-2022,DESREG.EMPUB,Empresas públicas / Privatizaciones,agente:texto,0.75,2026-09-15T23:58:30+00:00
 0058-S-2022,INFRA.OBRA,Obra pública,agente:texto,0.6,2026-09-15T23:58:30+00:00
 0058-S-2022,JUST.PROPIED,Propiedad (inviolabilidad),agente:texto,0.85,2026-09-15T23:58:30+00:00
+0058-S-2026,JUST.PENAL,Derecho penal / Código penal,agente:texto,0.8,2026-09-16T17:22:00+00:00
+0058-S-2026,POLINST.ELECT,Reforma electoral,agente:texto,0.85,2026-09-16T17:22:00+00:00
+0058-S-2026,POLINST.PARTIDOS,Partidos políticos,agente:texto,0.95,2026-09-16T17:22:00+00:00
+0058-S-2026,TRAB.SINDIC,Sindical,agente:texto,0.7,2026-09-16T17:22:00+00:00
+0059-D-2025,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,0.95,2026-09-16T17:22:02+00:00
+0059-D-2026,CULT.MEDIOS,Medios / Comunicación,agente:texto,0.65,2026-09-16T17:22:05+00:00
+0059-D-2026,DERSOC.DDHH,Derechos humanos,agente:texto,0.7,2026-09-16T17:22:05+00:00
+0059-D-2026,JUST.CIVCOM,Derecho civil / comercial (códigos de fondo),agente:texto,0.85,2026-09-16T17:22:05+00:00
 0059-S-2009,CULT.CULTURA,Cultura / Patrimonio,agente:texto,0.95,2026-09-15T23:58:33+00:00
 0059-S-2009,DEF.TRATADO,Tratados y acuerdos internacionales,agente:texto,0.65,2026-09-15T23:58:33+00:00
 0059-S-2009,POLINST.ORGEST,Organización del Estado / Ministerios,agente:texto,0.75,2026-09-15T23:58:33+00:00
@@ -854,6 +1291,13 @@ denominador,taxonomia_id,taxonomia,fuente,confianza,asignada_en
 0059-S-2022,DERSOC.DDHH,Derechos humanos,agente:texto,0.95,2026-09-15T23:58:38+00:00
 0059-S-2022,DESSOC.ASIST,Asistencia social / Planes,agente:texto,0.7,2026-09-15T23:58:38+00:00
 0059-S-2022,JUST.PENAL,Derecho penal / Código penal,agente:texto,0.85,2026-09-15T23:58:38+00:00
+0059-S-2026,CYT.CIENCIA,Ciencia y técnica,agente:texto,0.95,2026-09-16T17:22:08+00:00
+0059-S-2026,CYT.INNOV,Innovación / Economía del conocimiento / Software,agente:texto,0.9,2026-09-16T17:22:08+00:00
+0059-S-2026,ECON.PRESU,Presupuesto y gasto público,agente:texto,0.85,2026-09-16T17:22:08+00:00
+0060-D-2025,DESREG.DESECO,Desregulación económica,agente:texto,0.7,2026-09-16T17:22:12+00:00
+0060-D-2025,PROD.COMEX,Comercio interior y exterior,agente:texto,0.9,2026-09-16T17:22:12+00:00
+0060-D-2026,INFRA.TRANSP,"Transporte (incl. subsidios al transporte, trenes)",agente:texto,0.95,2026-09-16T17:22:14+00:00
+0060-D-2026,JUST.CIVCOM,Derecho civil / comercial (códigos de fondo),agente:texto,0.75,2026-09-16T17:22:14+00:00
 0060-S-2009,DEF.DEFENSA,Defensa / Fuerzas Armadas,agente:texto,0.95,2026-09-15T23:58:41+00:00
 0060-S-2009,DEF.EXTERIOR,Política exterior,agente:texto,0.75,2026-09-15T23:58:41+00:00
 0060-S-2009,DEF.TRATADO,Tratados y acuerdos internacionales,agente:texto,0.9,2026-09-15T23:58:41+00:00
@@ -862,13 +1306,42 @@ denominador,taxonomia_id,taxonomia,fuente,confianza,asignada_en
 0060-S-2014,DESREG.DESECO,Desregulación económica,agente:texto,0.7,2026-09-15T23:58:47+00:00
 0060-S-2014,ECON.TRIB,Tributario / Impuestos,agente:texto,0.7,2026-09-15T23:58:47+00:00
 0060-S-2014,PROD.COMEX,Comercio interior y exterior,agente:texto,0.6,2026-09-15T23:58:47+00:00
+0060-S-2026,ECON.PRESU,Presupuesto y gasto público,agente:texto,0.75,2026-09-16T17:22:17+00:00
+0060-S-2026,EDU.BASICA,Educación básica y media,agente:texto,0.8,2026-09-16T17:22:17+00:00
+0060-S-2026,TRAB.EMPLEOPUB,Empleo público,agente:texto,0.85,2026-09-16T17:22:17+00:00
+0061-D-2025,AUX.TRAMITE,Trámite parlamentario (sin contenido sustantivo),agente:texto,0.95,2026-09-16T17:22:20+00:00
+0061-D-2026,DESREG.DESECO,Desregulación económica,agente:texto,0.7,2026-09-16T17:22:23+00:00
+0061-D-2026,JUST.CIVCOM,Derecho civil / comercial (códigos de fondo),agente:texto,0.9,2026-09-16T17:22:23+00:00
 0061-S-2009,DEF.DEFENSA,Defensa / Fuerzas Armadas,agente:texto,0.95,2026-09-15T23:58:50+00:00
 0061-S-2009,DEF.TRATADO,Tratados y acuerdos internacionales,agente:texto,0.85,2026-09-15T23:58:50+00:00
+0061-S-2026,JUST.JUDIC,Organización judicial / Magistratura,agente:texto,0.95,2026-09-16T17:22:27+00:00
+0061-S-2026,POLINST.ORGEST,Organización del Estado / Ministerios,agente:texto,0.75,2026-09-16T17:22:27+00:00
+0062-D-2025,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,0.95,2026-09-16T17:22:29+00:00
+0062-D-2026,CYT.INNOV,Innovación / Economía del conocimiento / Software,agente:texto,0.55,2026-09-16T17:22:32+00:00
+0062-D-2026,DESREG.DESECO,Desregulación económica,agente:texto,0.7,2026-09-16T17:22:32+00:00
+0062-D-2026,INFRA.TELECOM,Telecomunicaciones / Conectividad,agente:texto,0.95,2026-09-16T17:22:32+00:00
 0062-S-2011,AUX.TRAMITE,Trámite parlamentario (sin contenido sustantivo),agente:texto,0.95,2026-09-15T23:58:52+00:00
 0062-S-2014,DESREG.SOCIED,Régimen de sociedades / comercial,agente:texto,0.6,2026-09-15T23:58:55+00:00
 0062-S-2014,JUST.CIVCOM,Derecho civil / comercial (códigos de fondo),agente:texto,0.85,2026-09-15T23:58:55+00:00
+0062-S-2026,JUST.CIVCOM,Derecho civil / comercial (códigos de fondo),agente:texto,0.85,2026-09-16T17:22:37+00:00
+0062-S-2026,JUST.JUDIC,Organización judicial / Magistratura,agente:texto,0.95,2026-09-16T17:22:37+00:00
+0062-S-2026,JUST.PENAL,Derecho penal / Código penal,agente:texto,0.85,2026-09-16T17:22:37+00:00
+0062-S-2026,POLINST.CONST,Reforma constitucional,agente:texto,0.75,2026-09-16T17:22:37+00:00
+0063-D-2025,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,0.85,2026-09-16T17:22:39+00:00
+0063-D-2025,TRAB.LABOR,Relaciones laborales (reforma laboral),agente:texto,0.8,2026-09-16T17:22:39+00:00
+0063-D-2025,TRAB.SINDIC,Sindical,agente:texto,0.9,2026-09-16T17:22:39+00:00
+0063-D-2026,ECON.COPART,Coparticipación / Federalismo fiscal,agente:texto,0.5,2026-09-16T17:22:43+00:00
+0063-D-2026,INFRA.OBRA,Obra pública,agente:texto,0.6,2026-09-16T17:22:43+00:00
+0063-D-2026,JUST.PROPIED,Propiedad (inviolabilidad),agente:texto,0.85,2026-09-16T17:22:43+00:00
 0063-S-2009,ECON.PRESU,Presupuesto y gasto público,agente:texto,0.95,2026-09-15T23:58:58+00:00
 0063-S-2009,POLINST.ORGEST,Organización del Estado / Ministerios,agente:texto,0.75,2026-09-15T23:58:58+00:00
+0063-S-2026,DERSOC.NINEZ,Niñez e infancia,agente:texto,0.85,2026-09-16T17:22:46+00:00
+0063-S-2026,JUST.PENAL,Derecho penal / Código penal,agente:texto,0.95,2026-09-16T17:22:46+00:00
+0064-D-2025,AUX.TRAMITE,Trámite parlamentario (sin contenido sustantivo),agente:texto,0.85,2026-09-16T17:22:48+00:00
+0064-D-2025,DESSOC.PNC,Pensiones no contributivas,agente:texto,0.95,2026-09-16T17:22:48+00:00
+0064-D-2025,TRAB.PREV,Previsional / Jubilaciones,agente:texto,0.75,2026-09-16T17:22:48+00:00
+0064-D-2026,ECON.COPART,Coparticipación / Federalismo fiscal,agente:texto,0.7,2026-09-16T17:22:51+00:00
+0064-D-2026,TRAB.PREV,Previsional / Jubilaciones,agente:texto,0.95,2026-09-16T17:22:51+00:00
 0064-S-2010,CYT.CIENCIA,Ciencia y técnica,agente:texto,0.7,2026-09-15T23:59:01+00:00
 0064-S-2010,DESREG.MODEST,Modernización del Estado,agente:texto,0.75,2026-09-15T23:59:01+00:00
 0064-S-2010,POLINST.ORGEST,Organización del Estado / Ministerios,agente:texto,0.85,2026-09-15T23:59:01+00:00
@@ -876,6 +1349,15 @@ denominador,taxonomia_id,taxonomia,fuente,confianza,asignada_en
 0064-S-2016,DEF.TRATADO,Tratados y acuerdos internacionales,agente:texto,0.9,2026-09-15T23:59:04+00:00
 0064-S-2017,JUST.NARCO,Narcotráfico,agente:texto,0.9,2026-09-15T23:59:06+00:00
 0064-S-2017,JUST.PENAL,Derecho penal / Código penal,agente:texto,0.95,2026-09-15T23:59:06+00:00
+0064-S-2026,DERSOC.DDHH,Derechos humanos,agente:texto,0.85,2026-09-16T17:22:54+00:00
+0064-S-2026,DERSOC.NINEZ,Niñez e infancia,agente:texto,0.95,2026-09-16T17:22:54+00:00
+0064-S-2026,JUST.PENAL,Derecho penal / Código penal,agente:texto,0.98,2026-09-16T17:22:54+00:00
+0065-D-2025,DESSOC.ASIST,Asistencia social / Planes,agente:texto,0.75,2026-09-16T17:22:58+00:00
+0065-D-2025,ECON.COPART,Coparticipación / Federalismo fiscal,agente:texto,0.65,2026-09-16T17:22:58+00:00
+0065-D-2025,ECON.EMERG,Emergencia económica,agente:texto,0.85,2026-09-16T17:22:58+00:00
+0065-D-2026,DERSOC.DDHH,Derechos humanos,agente:texto,0.7,2026-09-16T17:23:01+00:00
+0065-D-2026,INFRA.TRANSP,"Transporte (incl. subsidios al transporte, trenes)",agente:texto,0.8,2026-09-16T17:23:01+00:00
+0065-D-2026,JUST.CIVCOM,Derecho civil / comercial (códigos de fondo),agente:texto,0.85,2026-09-16T17:23:01+00:00
 0065-S-2010,DEF.TRATADO,Tratados y acuerdos internacionales,agente:texto,0.9,2026-09-15T23:59:09+00:00
 0065-S-2010,ECON.DEUDA,Deuda y financiamiento,agente:texto,0.7,2026-09-15T23:59:09+00:00
 0065-S-2011,DERSOC.ORIGIN,Pueblos originarios,agente:texto,0.7,2026-09-15T23:59:12+00:00
@@ -884,17 +1366,34 @@ denominador,taxonomia_id,taxonomia,fuente,confianza,asignada_en
 0065-S-2018,DEF.TRATADO,Tratados y acuerdos internacionales,agente:texto,0.75,2026-09-15T23:59:15+00:00
 0065-S-2025,DESREG.MODEST,Modernización del Estado,agente:texto,0.85,2026-09-15T23:59:17+00:00
 0065-S-2025,TRAB.LABOR,Relaciones laborales (reforma laboral),agente:texto,0.95,2026-09-15T23:59:17+00:00
+0065-S-2026,JUST.PENAL,Derecho penal / Código penal,agente:texto,0.95,2026-09-16T17:23:03+00:00
+0066-D-2025,DERSOC.DDHH,Derechos humanos,agente:texto,0.65,2026-09-16T17:23:06+00:00
+0066-D-2025,INFRA.TRANSP,"Transporte (incl. subsidios al transporte, trenes)",agente:texto,0.75,2026-09-16T17:23:06+00:00
+0066-D-2025,SALUD.DISCAP,Discapacidad,agente:texto,0.85,2026-09-16T17:23:06+00:00
+0066-D-2026,DERSOC.DDHH,Derechos humanos,agente:texto,0.6,2026-09-16T17:23:10+00:00
+0066-D-2026,JUST.JUDIC,Organización judicial / Magistratura,agente:texto,0.7,2026-09-16T17:23:10+00:00
+0066-OV-2025,AUX.TRAMITE,Trámite parlamentario (sin contenido sustantivo),agente:texto,0.95,2026-09-16T17:23:12+00:00
 0066-S-2010,DEF.DEFENSA,Defensa / Fuerzas Armadas,agente:texto,0.95,2026-09-15T23:59:20+00:00
 0066-S-2010,DEF.TRATADO,Tratados y acuerdos internacionales,agente:texto,0.75,2026-09-15T23:59:20+00:00
 0066-S-2011,PROD.AGRO,"Agro, ganadería y pesca",agente:texto,0.95,2026-09-15T23:59:24+00:00
 0066-S-2011,SALUD.SISTEMA,Sistema de salud / Hospitales / Obras sociales,agente:texto,0.4,2026-09-15T23:59:24+00:00
 0066-S-2013,EDU.SUPERIOR,Educación superior / Universidades / Financiamiento,agente:texto,0.95,2026-09-15T23:59:26+00:00
+0066-S-2026,JUST.CIVCOM,Derecho civil / comercial (códigos de fondo),agente:texto,0.95,2026-09-16T17:23:15+00:00
 0067-D-2010,JUST.PENAL,Derecho penal / Código penal,agente:texto,0.95,2026-09-15T23:59:29+00:00
+0067-D-2025,AUX.SINCLASIF,Sin clasificar (no encaja en ninguna; revisar),agente:texto,0.95,2026-09-16T17:23:19+00:00
+0067-D-2026,DERSOC.DDHH,Derechos humanos,agente:texto,0.75,2026-09-16T17:23:21+00:00
+0067-D-2026,DERSOC.NINEZ,Niñez e infancia,agente:texto,0.9,2026-09-16T17:23:21+00:00
+0067-D-2026,SALUD.SISTEMA,Sistema de salud / Hospitales / Obras sociales,agente:texto,0.95,2026-09-16T17:23:21+00:00
 0067-S-2010,JUST.JUDIC,Organización judicial / Magistratura,agente:texto,0.85,2026-09-15T23:59:32+00:00
 0067-S-2010,JUST.PENAL,Derecho penal / Código penal,agente:texto,0.75,2026-09-15T23:59:32+00:00
 0067-S-2010,POLINST.ORGEST,Organización del Estado / Ministerios,agente:texto,0.7,2026-09-15T23:59:32+00:00
 0067-S-2016,JUST.NARCO,Narcotráfico,agente:texto,0.95,2026-09-15T23:59:34+00:00
 0067-S-2016,JUST.PENAL,Derecho penal / Código penal,agente:texto,0.85,2026-09-15T23:59:34+00:00
+0067-S-2026,POLINST.ORGEST,Organización del Estado / Ministerios,agente:texto,0.7,2026-09-16T17:23:25+00:00
+0068-D-2025,CULT.DEPORTE,Deporte,agente:texto,0.95,2026-09-16T17:23:30+00:00
+0068-D-2025,DERSOC.DDHH,Derechos humanos,agente:texto,0.85,2026-09-16T17:23:30+00:00
+0068-D-2025,SALUD.MENTAL,Salud mental,agente:texto,0.7,2026-09-16T17:23:30+00:00
+0068-D-2026,JUST.CIVCOM,Derecho civil / comercial (códigos de fondo),agente:texto,0.95,2026-09-16T17:23:33+00:00
 0068-S-2009,DEF.DEFENSA,Defensa / Fuerzas Armadas,agente:texto,0.85,2026-09-15T23:59:37+00:00
 0068-S-2009,DEF.TRATADO,Tratados y acuerdos internacionales,agente:texto,0.95,2026-09-15T23:59:37+00:00
 0068-S-2009,DERSOC.DDHH,Derechos humanos,agente:texto,0.8,2026-09-15T23:59:37+00:00
@@ -905,20 +1404,37 @@ denominador,taxonomia_id,taxonomia,fuente,confianza,asignada_en
 0068-S-2016,POLINST.ORGEST,Organización del Estado / Ministerios,agente:texto,0.75,2026-09-15T23:59:43+00:00
 0068-S-2021,DERSOC.ORIGIN,Pueblos originarios,agente:texto,0.95,2026-09-15T23:59:47+00:00
 0068-S-2021,ECON.EMERG,Emergencia económica,agente:texto,0.85,2026-09-15T23:59:47+00:00
+0068-S-2026,CULT.MEDIOS,Medios / Comunicación,agente:texto,0.65,2026-09-16T17:23:36+00:00
+0068-S-2026,DERSOC.NINEZ,Niñez e infancia,agente:texto,0.85,2026-09-16T17:23:36+00:00
+0068-S-2026,SALUD.ADICC,Adicciones / Ludopatía,agente:texto,0.95,2026-09-16T17:23:36+00:00
+0069-D-2025,JUST.SEGINT,Seguridad interior,agente:texto,0.7,2026-09-16T17:23:39+00:00
+0069-D-2025,SALUD.MEDIC,Medicamentos y vacunas,agente:texto,0.95,2026-09-16T17:23:39+00:00
+0069-D-2026,DESREG.SOCIED,Régimen de sociedades / comercial,agente:texto,0.7,2026-09-16T17:23:42+00:00
+0069-D-2026,JUST.CIVCOM,Derecho civil / comercial (códigos de fondo),agente:texto,0.95,2026-09-16T17:23:42+00:00
 0069-S-2009,CULT.CULTURA,Cultura / Patrimonio,agente:texto,0.95,2026-09-15T23:59:49+00:00
 0069-S-2009,JUST.PROPIED,Propiedad (inviolabilidad),agente:texto,0.85,2026-09-15T23:59:49+00:00
 0069-S-2011,PROD.AGRO,"Agro, ganadería y pesca",agente:texto,0.95,2026-09-15T23:59:51+00:00
 0069-S-2011,TRAB.LABOR,Relaciones laborales (reforma laboral),agente:texto,0.9,2026-09-15T23:59:51+00:00
 0069-S-2021,AMB.BOSQUE,Bosques / Glaciares / Áreas protegidas,agente:texto,0.85,2026-09-15T23:59:55+00:00
+0069-S-2026,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,0.95,2026-09-16T17:23:45+00:00
 0070-D-2018,AMB.CLIMA,Cambio climático,agente:texto,0.85,2026-09-15T23:59:58+00:00
 0070-D-2018,DESREG.DESECO,Desregulación económica,agente:texto,0.75,2026-09-15T23:59:58+00:00
 0070-D-2018,PROD.INDPYME,Industria y PyMEs,agente:texto,0.6,2026-09-15T23:59:58+00:00
+0070-D-2025,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,0.7,2026-09-16T17:23:48+00:00
+0070-D-2025,CULT.DEPORTE,Deporte,agente:texto,0.8,2026-09-16T17:23:48+00:00
+0070-D-2025,TRAB.EMPLEOPUB,Empleo público,agente:texto,0.85,2026-09-16T17:23:48+00:00
+0070-D-2026,JUST.JUDIC,Organización judicial / Magistratura,agente:texto,0.95,2026-09-16T17:23:51+00:00
+0070-D-2026,POLINST.CONST,Reforma constitucional,agente:texto,0.85,2026-09-16T17:23:51+00:00
 0070-S-2009,DEF.TRATADO,Tratados y acuerdos internacionales,agente:texto,0.95,2026-09-16T00:00:01+00:00
 0070-S-2009,PROD.AGRO,"Agro, ganadería y pesca",agente:texto,0.75,2026-09-16T00:00:01+00:00
 0070-S-2009,PROD.COMEX,Comercio interior y exterior,agente:texto,0.85,2026-09-16T00:00:01+00:00
 0070-S-2010,JUST.CIVCOM,Derecho civil / comercial (códigos de fondo),agente:texto,0.95,2026-09-16T00:00:04+00:00
 0070-S-2015,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,0.95,2026-09-16T00:00:07+00:00
 0070-S-2021,ECON.TRIB,Tributario / Impuestos,agente:texto,0.95,2026-09-16T00:00:18+00:00
+0070-S-2026,DERSOC.DDHH,Derechos humanos,agente:texto,0.75,2026-09-16T17:23:54+00:00
+0070-S-2026,DERSOC.GENERO,Género / Diversidad,agente:texto,0.95,2026-09-16T17:23:54+00:00
+0070-S-2026,JUST.PENAL,Derecho penal / Código penal,agente:texto,0.95,2026-09-16T17:23:54+00:00
+0071-D-2025,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,0.95,2026-09-16T17:23:57+00:00
 0071-S-2010,TRAB.LABOR,Relaciones laborales (reforma laboral),agente:texto,0.95,2026-09-16T00:00:22+00:00
 0071-S-2011,CYT.CIENCIA,Ciencia y técnica,agente:texto,0.7,2026-09-16T00:00:27+00:00
 0071-S-2011,CYT.INNOV,Innovación / Economía del conocimiento / Software,agente:texto,0.6,2026-09-16T00:00:27+00:00
@@ -931,6 +1447,15 @@ denominador,taxonomia_id,taxonomia,fuente,confianza,asignada_en
 0071-S-2021,ECON.COPART,Coparticipación / Federalismo fiscal,agente:texto,0.55,2026-09-16T00:00:39+00:00
 0071-S-2021,INFRA.OBRA,Obra pública,agente:texto,0.6,2026-09-16T00:00:39+00:00
 0071-S-2021,JUST.PROPIED,Propiedad (inviolabilidad),agente:texto,0.95,2026-09-16T00:00:39+00:00
+0071-S-2026,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,0.95,2026-09-16T17:23:59+00:00
+0072-D-2025,DERSOC.NINEZ,Niñez e infancia,agente:texto,0.95,2026-09-16T17:24:04+00:00
+0072-D-2025,DESSOC.ASIST,Asistencia social / Planes,agente:texto,0.65,2026-09-16T17:24:04+00:00
+0072-D-2025,EDU.BASICA,Educación básica y media,agente:texto,0.7,2026-09-16T17:24:04+00:00
+0072-D-2025,SALUD.DISCAP,Discapacidad,agente:texto,0.75,2026-09-16T17:24:04+00:00
+0072-D-2026,DEF.DEFENSA,Defensa / Fuerzas Armadas,agente:texto,0.8,2026-09-16T17:24:07+00:00
+0072-D-2026,ECON.PRESU,Presupuesto y gasto público,agente:texto,0.7,2026-09-16T17:24:07+00:00
+0072-D-2026,SALUD.SISTEMA,Sistema de salud / Hospitales / Obras sociales,agente:texto,0.75,2026-09-16T17:24:07+00:00
+0072-D-2026,TRAB.PREV,Previsional / Jubilaciones,agente:texto,0.85,2026-09-16T17:24:07+00:00
 0072-S-2010,DERSOC.DDHH,Derechos humanos,agente:texto,0.6,2026-09-16T00:00:43+00:00
 0072-S-2010,DESREG.DESECO,Desregulación económica,agente:texto,0.7,2026-09-16T00:00:43+00:00
 0072-S-2010,SALUD.SISTEMA,Sistema de salud / Hospitales / Obras sociales,agente:texto,0.85,2026-09-16T00:00:43+00:00
@@ -938,6 +1463,13 @@ denominador,taxonomia_id,taxonomia,fuente,confianza,asignada_en
 0072-S-2011,ECON.PRESU,Presupuesto y gasto público,agente:texto,0.7,2026-09-16T00:00:47+00:00
 0072-S-2025,AMB.BOSQUE,Bosques / Glaciares / Áreas protegidas,agente:texto,0.95,2026-09-16T00:00:51+00:00
 0072-S-2025,ECON.PRESU,Presupuesto y gasto público,agente:texto,0.75,2026-09-16T00:00:51+00:00
+0072-S-2026,DESSOC.ASIST,Asistencia social / Planes,agente:texto,0.95,2026-09-16T17:24:10+00:00
+0073-D-2025,AUX.TRAMITE,Trámite parlamentario (sin contenido sustantivo),agente:texto,0.85,2026-09-16T17:24:12+00:00
+0073-D-2025,ECON.PRESU,Presupuesto y gasto público,agente:texto,0.6,2026-09-16T17:24:12+00:00
+0073-D-2025,INFRA.VIVIENDA,Vivienda y hábitat,agente:texto,0.95,2026-09-16T17:24:12+00:00
+0073-D-2026,CULT.DEPORTE,Deporte,agente:texto,0.95,2026-09-16T17:24:16+00:00
+0073-D-2026,DESREG.MODEST,Modernización del Estado,agente:texto,0.65,2026-09-16T17:24:16+00:00
+0073-D-2026,ECON.TRIB,Tributario / Impuestos,agente:texto,0.75,2026-09-16T17:24:16+00:00
 0073-S-2009,DESREG.EMPUB,Empresas públicas / Privatizaciones,agente:texto,0.7,2026-09-16T00:00:55+00:00
 0073-S-2009,JUST.PROPIED,Propiedad (inviolabilidad),agente:texto,0.85,2026-09-16T00:00:55+00:00
 0073-S-2010,DESREG.DESECO,Desregulación económica,agente:texto,0.65,2026-09-16T00:01:02+00:00
@@ -954,6 +1486,13 @@ denominador,taxonomia_id,taxonomia,fuente,confianza,asignada_en
 0073-S-2019,DEF.DEFENSA,Defensa / Fuerzas Armadas,agente:texto,0.95,2026-09-16T00:01:21+00:00
 0073-S-2019,DEF.TRATADO,Tratados y acuerdos internacionales,agente:texto,0.75,2026-09-16T00:01:21+00:00
 0073-S-2021,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,0.95,2026-09-16T00:01:24+00:00
+0073-S-2026,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,1.0,2026-09-16T17:24:18+00:00
+0074-D-2025,ECON.DEUDA,Deuda y financiamiento,agente:texto,0.85,2026-09-16T17:24:20+00:00
+0074-D-2025,ENER.ELEC,Energía eléctrica,agente:texto,0.9,2026-09-16T17:24:20+00:00
+0074-D-2025,POLINST.ORGEST,Organización del Estado / Ministerios,agente:texto,0.6,2026-09-16T17:24:20+00:00
+0074-D-2026,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,0.95,2026-09-16T17:24:23+00:00
+0074-PE-2026,DEF.TRATADO,Tratados y acuerdos internacionales,agente:texto,0.95,2026-09-16T17:24:26+00:00
+0074-PE-2026,PROD.COMEX,Comercio interior y exterior,agente:texto,0.9,2026-09-16T17:24:26+00:00
 0074-S-2016,JUST.JUDIC,Organización judicial / Magistratura,agente:texto,0.95,2026-09-16T00:01:29+00:00
 0074-S-2016,JUST.PENAL,Derecho penal / Código penal,agente:texto,0.9,2026-09-16T00:01:29+00:00
 0074-S-2019,DEF.TRATADO,Tratados y acuerdos internacionales,agente:texto,0.75,2026-09-16T00:01:33+00:00
@@ -962,16 +1501,26 @@ denominador,taxonomia_id,taxonomia,fuente,confianza,asignada_en
 0074-S-2021,DERSOC.NINEZ,Niñez e infancia,agente:texto,0.95,2026-09-16T00:01:37+00:00
 0074-S-2021,DESSOC.ASIST,Asistencia social / Planes,agente:texto,0.65,2026-09-16T00:01:37+00:00
 0074-S-2021,POLINST.ORGEST,Organización del Estado / Ministerios,agente:texto,0.75,2026-09-16T00:01:37+00:00
+0074-S-2026,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,0.95,2026-09-16T17:24:28+00:00
 0075-D-2013,DESREG.MODEST,Modernización del Estado,agente:texto,0.35,2026-09-16T00:01:40+00:00
 0075-D-2013,EDU.SUPERIOR,Educación superior / Universidades / Financiamiento,agente:texto,0.95,2026-09-16T00:01:40+00:00
 0075-D-2014,JUST.PENAL,Derecho penal / Código penal,agente:texto,0.95,2026-09-16T00:01:43+00:00
 0075-D-2014,JUST.SEGINT,Seguridad interior,agente:texto,0.75,2026-09-16T00:01:43+00:00
+0075-D-2025,INFRA.TRANSP,"Transporte (incl. subsidios al transporte, trenes)",agente:texto,0.7,2026-09-16T17:24:31+00:00
+0075-D-2025,JUST.SEGINT,Seguridad interior,agente:texto,0.75,2026-09-16T17:24:31+00:00
+0075-D-2026,JUST.CIVCOM,Derecho civil / comercial (códigos de fondo),agente:texto,0.85,2026-09-16T17:24:34+00:00
+0075-D-2026,POLINST.ETICA,Transparencia / Lobby / Ética pública,agente:texto,0.95,2026-09-16T17:24:34+00:00
 0075-S-2010,DERSOC.NINEZ,Niñez e infancia,agente:texto,0.8,2026-09-16T00:01:47+00:00
 0075-S-2010,JUST.CIVCOM,Derecho civil / comercial (códigos de fondo),agente:texto,0.9,2026-09-16T00:01:47+00:00
 0075-S-2011,DERSOC.DDHH,Derechos humanos,agente:texto,0.75,2026-09-16T00:01:52+00:00
 0075-S-2011,SALUD.SISTEMA,Sistema de salud / Hospitales / Obras sociales,agente:texto,0.95,2026-09-16T00:01:52+00:00
 0075-S-2016,JUST.JUDIC,Organización judicial / Magistratura,agente:texto,0.95,2026-09-16T00:01:56+00:00
 0075-S-2016,JUST.PENAL,Derecho penal / Código penal,agente:texto,0.9,2026-09-16T00:01:56+00:00
+0076-D-2025,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,0.95,2026-09-16T17:24:37+00:00
+0076-D-2025,DERSOC.DDHH,Derechos humanos,agente:texto,0.85,2026-09-16T17:24:37+00:00
+0076-D-2025,POLINST.CONST,Reforma constitucional,agente:texto,0.6,2026-09-16T17:24:37+00:00
+0076-D-2026,ENER.ELEC,Energía eléctrica,agente:texto,0.9,2026-09-16T17:24:39+00:00
+0076-D-2026,ENER.TARIFA,Tarifas y subsidios energéticos,agente:texto,0.95,2026-09-16T17:24:39+00:00
 0076-S-2009,JUST.JUDIC,Organización judicial / Magistratura,agente:texto,0.95,2026-09-16T00:02:00+00:00
 0076-S-2010,TRAB.LABOR,Relaciones laborales (reforma laboral),agente:texto,0.7,2026-09-16T00:02:04+00:00
 0076-S-2010,TRAB.PREV,Previsional / Jubilaciones,agente:texto,0.95,2026-09-16T00:02:04+00:00
@@ -981,8 +1530,19 @@ denominador,taxonomia_id,taxonomia,fuente,confianza,asignada_en
 0076-S-2015,CYT.PI,Propiedad intelectual / Patentes,agente:texto,0.85,2026-09-16T00:02:13+00:00
 0076-S-2015,DEF.TRATADO,Tratados y acuerdos internacionales,agente:texto,0.9,2026-09-16T00:02:13+00:00
 0076-S-2015,PROD.COMEX,Comercio interior y exterior,agente:texto,0.75,2026-09-16T00:02:13+00:00
+0076-S-2026,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,1.0,2026-09-16T17:24:41+00:00
+0077-D-2025,DERSOC.GENERO,Género / Diversidad,agente:texto,0.8,2026-09-16T17:24:45+00:00
+0077-D-2025,DESREG.MODEST,Modernización del Estado,agente:texto,0.65,2026-09-16T17:24:45+00:00
+0077-D-2025,TRAB.EMPLEOPUB,Empleo público,agente:texto,0.85,2026-09-16T17:24:45+00:00
+0077-D-2026,DEF.EXTERIOR,Política exterior,agente:texto,0.95,2026-09-16T17:24:49+00:00
+0077-D-2026,JUST.PROPIED,Propiedad (inviolabilidad),agente:texto,0.75,2026-09-16T17:24:49+00:00
 0077-S-2009,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,0.95,2026-09-16T00:02:16+00:00
 0077-S-2010,TRAB.LABOR,Relaciones laborales (reforma laboral),agente:texto,0.95,2026-09-16T00:02:19+00:00
+0077-S-2026,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,1.0,2026-09-16T17:24:51+00:00
+0078-D-2025,AMB.AGUA,Agua,agente:texto,0.95,2026-09-16T17:24:54+00:00
+0078-D-2025,POLINST.ETICA,Transparencia / Lobby / Ética pública,agente:texto,0.4,2026-09-16T17:24:54+00:00
+0078-D-2026,CULT.CULTURA,Cultura / Patrimonio,agente:texto,0.95,2026-09-16T17:24:57+00:00
+0078-D-2026,DEF.DEFENSA,Defensa / Fuerzas Armadas,agente:texto,0.85,2026-09-16T17:24:57+00:00
 0078-S-2009,AMB.BOSQUE,Bosques / Glaciares / Áreas protegidas,agente:texto,0.95,2026-09-16T00:02:23+00:00
 0078-S-2009,ECON.PRESU,Presupuesto y gasto público,agente:texto,0.9,2026-09-16T00:02:23+00:00
 0078-S-2010,TRAB.LABOR,Relaciones laborales (reforma laboral),agente:texto,0.95,2026-09-16T00:02:25+00:00
@@ -991,14 +1551,31 @@ denominador,taxonomia_id,taxonomia,fuente,confianza,asignada_en
 0078-S-2011,ECON.EMERG,Emergencia económica,agente:texto,0.95,2026-09-16T00:02:28+00:00
 0078-S-2015,AMB.BOSQUE,Bosques / Glaciares / Áreas protegidas,agente:texto,0.6,2026-09-16T00:02:31+00:00
 0078-S-2015,DERSOC.DDHH,Derechos humanos,agente:texto,0.7,2026-09-16T00:02:31+00:00
+0078-S-2026,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,0.95,2026-09-16T17:25:00+00:00
+0078-S-2026,SALUD.SISTEMA,Sistema de salud / Hospitales / Obras sociales,agente:texto,0.65,2026-09-16T17:25:00+00:00
 0079-D-2008,JUST.CIVCOM,Derecho civil / comercial (códigos de fondo),agente:texto,0.75,2026-09-16T00:02:34+00:00
 0079-D-2008,SALUD.SISTEMA,Sistema de salud / Hospitales / Obras sociales,agente:texto,0.95,2026-09-16T00:02:34+00:00
+0079-D-2025,DESREG.SOCIED,Régimen de sociedades / comercial,agente:texto,0.65,2026-09-16T17:25:04+00:00
+0079-D-2025,SALUD.SISTEMA,Sistema de salud / Hospitales / Obras sociales,agente:texto,0.75,2026-09-16T17:25:04+00:00
+0079-D-2026,ECON.COPART,Coparticipación / Federalismo fiscal,agente:texto,0.75,2026-09-16T17:25:07+00:00
+0079-D-2026,INFRA.OBRA,Obra pública,agente:texto,0.95,2026-09-16T17:25:07+00:00
+0079-D-2026,INFRA.TRANSP,"Transporte (incl. subsidios al transporte, trenes)",agente:texto,0.65,2026-09-16T17:25:07+00:00
 0079-S-2010,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,0.95,2026-09-16T00:02:37+00:00
 0079-S-2010,CULT.CULTURA,Cultura / Patrimonio,agente:texto,0.85,2026-09-16T00:02:37+00:00
+0079-S-2026,JUST.PENAL,Derecho penal / Código penal,agente:texto,0.95,2026-09-16T17:25:09+00:00
+0080-D-2025,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,0.95,2026-09-16T17:25:11+00:00
+0080-D-2026,DEF.DEFENSA,Defensa / Fuerzas Armadas,agente:texto,0.95,2026-09-16T17:25:14+00:00
+0080-D-2026,POLINST.ORGEST,Organización del Estado / Ministerios,agente:texto,0.7,2026-09-16T17:25:14+00:00
 0080-S-2010,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,0.95,2026-09-16T00:02:40+00:00
 0080-S-2010,CULT.CULTURA,Cultura / Patrimonio,agente:texto,0.85,2026-09-16T00:02:40+00:00
 0080-S-2011,DEF.TRATADO,Tratados y acuerdos internacionales,agente:texto,0.95,2026-09-16T00:02:43+00:00
 0080-S-2011,ECON.DEUDA,Deuda y financiamiento,agente:texto,0.7,2026-09-16T00:02:43+00:00
+0081-D-2025,DERSOC.GENERO,Género / Diversidad,agente:texto,0.8,2026-09-16T17:25:17+00:00
+0081-D-2025,DERSOC.NINEZ,Niñez e infancia,agente:texto,0.85,2026-09-16T17:25:17+00:00
+0081-D-2025,EDU.BASICA,Educación básica y media,agente:texto,0.9,2026-09-16T17:25:17+00:00
+0081-D-2025,SALUD.DISCAP,Discapacidad,agente:texto,0.95,2026-09-16T17:25:17+00:00
+0081-D-2026,DESREG.SOCIED,Régimen de sociedades / comercial,agente:texto,0.75,2026-09-16T17:25:21+00:00
+0081-D-2026,JUST.CIVCOM,Derecho civil / comercial (códigos de fondo),agente:texto,0.85,2026-09-16T17:25:21+00:00
 0081-OV-2008,DERSOC.DDHH,Derechos humanos,agente:texto,0.85,2026-09-16T00:02:47+00:00
 0081-OV-2008,JUST.JUDIC,Organización judicial / Magistratura,agente:texto,0.95,2026-09-16T00:02:47+00:00
 0081-OV-2008,JUST.PENAL,Derecho penal / Código penal,agente:texto,0.8,2026-09-16T00:02:47+00:00
@@ -1008,6 +1585,12 @@ denominador,taxonomia_id,taxonomia,fuente,confianza,asignada_en
 0081-S-2011,PROD.AGRO,"Agro, ganadería y pesca",agente:texto,0.95,2026-09-16T00:02:54+00:00
 0081-S-2013,SALUD.MEDIC,Medicamentos y vacunas,agente:texto,0.7,2026-09-16T00:02:56+00:00
 0081-S-2013,SALUD.SISTEMA,Sistema de salud / Hospitales / Obras sociales,agente:texto,0.85,2026-09-16T00:02:56+00:00
+0081-S-2026,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,0.95,2026-09-16T17:25:23+00:00
+0082-D-2025,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,0.95,2026-09-16T17:25:25+00:00
+0082-D-2026,CULT.CULTURA,Cultura / Patrimonio,agente:texto,0.6,2026-09-16T17:25:29+00:00
+0082-D-2026,DERSOC.DDHH,Derechos humanos,agente:texto,0.7,2026-09-16T17:25:29+00:00
+0082-D-2026,EDU.BASICA,Educación básica y media,agente:texto,0.9,2026-09-16T17:25:29+00:00
+0082-OV-2025,AUX.TRAMITE,Trámite parlamentario (sin contenido sustantivo),agente:texto,0.95,2026-09-16T17:25:31+00:00
 0082-S-2009,CULT.CULTURA,Cultura / Patrimonio,agente:texto,0.85,2026-09-16T00:02:59+00:00
 0082-S-2009,CYT.PI,Propiedad intelectual / Patentes,agente:texto,0.95,2026-09-16T00:02:59+00:00
 0082-S-2010,DERSOC.DDHH,Derechos humanos,agente:texto,0.9,2026-09-16T00:03:02+00:00
@@ -1015,6 +1598,13 @@ denominador,taxonomia_id,taxonomia,fuente,confianza,asignada_en
 0082-S-2017,CULT.CULTURA,Cultura / Patrimonio,agente:texto,0.9,2026-09-16T00:03:05+00:00
 0082-S-2017,DEF.TRATADO,Tratados y acuerdos internacionales,agente:texto,0.8,2026-09-16T00:03:05+00:00
 0082-S-2017,JUST.PROPIED,Propiedad (inviolabilidad),agente:texto,0.7,2026-09-16T00:03:05+00:00
+0082-S-2026,DERSOC.GENERO,Género / Diversidad,agente:texto,0.75,2026-09-16T17:25:35+00:00
+0082-S-2026,TRAB.PREV,Previsional / Jubilaciones,agente:texto,0.95,2026-09-16T17:25:35+00:00
+0083-D-2025,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,0.95,2026-09-16T17:25:37+00:00
+0083-D-2026,DEF.DEFENSA,Defensa / Fuerzas Armadas,agente:texto,0.7,2026-09-16T17:25:41+00:00
+0083-D-2026,DESREG.EMPUB,Empresas públicas / Privatizaciones,agente:texto,0.95,2026-09-16T17:25:41+00:00
+0083-D-2026,ECON.EMERG,Emergencia económica,agente:texto,0.65,2026-09-16T17:25:41+00:00
+0083-D-2026,PROD.INDPYME,Industria y PyMEs,agente:texto,0.75,2026-09-16T17:25:41+00:00
 0083-S-2009,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,0.95,2026-09-16T00:03:07+00:00
 0083-S-2010,JUST.JUDIC,Organización judicial / Magistratura,agente:texto,0.95,2026-09-16T00:03:10+00:00
 0083-S-2011,DESREG.EMPUB,Empresas públicas / Privatizaciones,agente:texto,0.85,2026-09-16T00:03:13+00:00
@@ -1025,6 +1615,13 @@ denominador,taxonomia_id,taxonomia,fuente,confianza,asignada_en
 0083-S-2017,AMB.AGUA,Agua,agente:texto,0.9,2026-09-16T00:03:19+00:00
 0083-S-2017,DEF.TRATADO,Tratados y acuerdos internacionales,agente:texto,0.95,2026-09-16T00:03:19+00:00
 0083-S-2017,ECON.COPART,Coparticipación / Federalismo fiscal,agente:texto,0.75,2026-09-16T00:03:19+00:00
+0083-S-2026,DESREG.MODEST,Modernización del Estado,agente:texto,0.7,2026-09-16T17:25:44+00:00
+0083-S-2026,POLINST.ORGEST,Organización del Estado / Ministerios,agente:texto,0.85,2026-09-16T17:25:44+00:00
+0083-S-2026,TRAB.EMPLEOPUB,Empleo público,agente:texto,0.75,2026-09-16T17:25:44+00:00
+0084-D-2025,EDU.SUPERIOR,Educación superior / Universidades / Financiamiento,agente:texto,0.95,2026-09-16T17:25:47+00:00
+0084-D-2026,DEF.DEFENSA,Defensa / Fuerzas Armadas,agente:texto,0.85,2026-09-16T17:25:50+00:00
+0084-D-2026,DEF.EXTERIOR,Política exterior,agente:texto,0.8,2026-09-16T17:25:50+00:00
+0084-D-2026,POLINST.ETICA,Transparencia / Lobby / Ética pública,agente:texto,0.6,2026-09-16T17:25:50+00:00
 0084-S-2009,EDU.SUPERIOR,Educación superior / Universidades / Financiamiento,agente:texto,0.95,2026-09-16T00:03:21+00:00
 0084-S-2010,DEF.DEFENSA,Defensa / Fuerzas Armadas,agente:texto,0.95,2026-09-16T00:03:24+00:00
 0084-S-2010,DEF.EXTERIOR,Política exterior,agente:texto,0.85,2026-09-16T00:03:24+00:00
@@ -1033,7 +1630,15 @@ denominador,taxonomia_id,taxonomia,fuente,confianza,asignada_en
 0084-S-2017,CULT.CULTURA,Cultura / Patrimonio,agente:texto,0.9,2026-09-16T00:03:31+00:00
 0084-S-2017,JUST.PROPIED,Propiedad (inviolabilidad),agente:texto,0.85,2026-09-16T00:03:31+00:00
 0084-S-2017,POLINST.ORGEST,Organización del Estado / Ministerios,agente:texto,0.6,2026-09-16T00:03:31+00:00
+0084-S-2026,AUX.TRAMITE,Trámite parlamentario (sin contenido sustantivo),agente:texto,0.85,2026-09-16T17:25:52+00:00
+0084-S-2026,INFRA.TRANSP,"Transporte (incl. subsidios al transporte, trenes)",agente:texto,0.95,2026-09-16T17:25:52+00:00
 0085-D-2008,EDU.SUPERIOR,Educación superior / Universidades / Financiamiento,agente:texto,0.95,2026-09-16T00:03:36+00:00
+0085-D-2025,CULT.CULTURA,Cultura / Patrimonio,agente:texto,0.7,2026-09-16T17:25:55+00:00
+0085-D-2025,ECON.TRIB,Tributario / Impuestos,agente:texto,0.95,2026-09-16T17:25:55+00:00
+0085-D-2025,SALUD.ADICC,Adicciones / Ludopatía,agente:texto,0.85,2026-09-16T17:25:55+00:00
+0085-D-2026,DEF.DEFENSA,Defensa / Fuerzas Armadas,agente:texto,0.9,2026-09-16T17:25:58+00:00
+0085-D-2026,DERSOC.DDHH,Derechos humanos,agente:texto,0.75,2026-09-16T17:25:58+00:00
+0085-D-2026,SALUD.MENTAL,Salud mental,agente:texto,0.95,2026-09-16T17:25:58+00:00
 0085-S-2010,POLINST.ETICA,Transparencia / Lobby / Ética pública,agente:texto,0.95,2026-09-16T00:03:39+00:00
 0085-S-2011,ECON.COPART,Coparticipación / Federalismo fiscal,agente:texto,0.6,2026-09-16T00:03:42+00:00
 0085-S-2011,PROD.AGRO,"Agro, ganadería y pesca",agente:texto,0.95,2026-09-16T00:03:42+00:00
@@ -1046,8 +1651,10 @@ denominador,taxonomia_id,taxonomia,fuente,confianza,asignada_en
 0085-S-2015,PROD.AGRO,"Agro, ganadería y pesca",agente:texto,0.7,2026-09-16T00:03:50+00:00
 0085-S-2017,DEF.DEFENSA,Defensa / Fuerzas Armadas,agente:texto,0.95,2026-09-16T00:03:53+00:00
 0085-S-2017,DEF.TRATADO,Tratados y acuerdos internacionales,agente:texto,0.75,2026-09-16T00:03:53+00:00
+0085-S-2026,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,1.0,2026-09-16T17:26:01+00:00
 0086-D-2025,SALUD.MENTAL,Salud mental,agente:texto,0.85,2026-09-16T00:03:57+00:00
 0086-D-2025,SALUD.SISTEMA,Sistema de salud / Hospitales / Obras sociales,agente:texto,0.75,2026-09-16T00:03:57+00:00
+0086-D-2026,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,0.95,2026-09-16T17:26:04+00:00
 0086-S-2009,DEF.EXTERIOR,Política exterior,agente:texto,0.75,2026-09-16T00:04:00+00:00
 0086-S-2009,DEF.TRATADO,Tratados y acuerdos internacionales,agente:texto,0.95,2026-09-16T00:04:00+00:00
 0086-S-2009,INFRA.OBRA,Obra pública,agente:texto,0.85,2026-09-16T00:04:00+00:00
@@ -1061,11 +1668,27 @@ denominador,taxonomia_id,taxonomia,fuente,confianza,asignada_en
 0086-S-2016,DEF.TRATADO,Tratados y acuerdos internacionales,agente:texto,0.85,2026-09-16T00:04:13+00:00
 0086-S-2016,ECON.COPART,Coparticipación / Federalismo fiscal,agente:texto,0.95,2026-09-16T00:04:13+00:00
 0086-S-2017,ECON.EMERG,Emergencia económica,agente:texto,0.95,2026-09-16T00:04:15+00:00
+0086-S-2026,ECON.COPART,Coparticipación / Federalismo fiscal,agente:texto,0.7,2026-09-16T17:26:07+00:00
+0086-S-2026,ENER.ELEC,Energía eléctrica,agente:texto,0.95,2026-09-16T17:26:07+00:00
+0086-S-2026,ENER.TARIFA,Tarifas y subsidios energéticos,agente:texto,0.95,2026-09-16T17:26:07+00:00
+0087-D-2025,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,0.95,2026-09-16T17:26:10+00:00
+0087-D-2025,INFRA.TELECOM,Telecomunicaciones / Conectividad,agente:texto,0.6,2026-09-16T17:26:10+00:00
+0087-D-2026,DESREG.EMPUB,Empresas públicas / Privatizaciones,agente:texto,0.4,2026-09-16T17:26:13+00:00
+0087-D-2026,TRAB.EMPLEOPUB,Empleo público,agente:texto,0.35,2026-09-16T17:26:13+00:00
+0087-D-2026,TRAB.LABOR,Relaciones laborales (reforma laboral),agente:texto,0.45,2026-09-16T17:26:13+00:00
 0087-S-2010,DESREG.DESECO,Desregulación económica,agente:texto,0.7,2026-09-16T00:04:19+00:00
 0087-S-2010,JUST.PENAL,Derecho penal / Código penal,agente:texto,0.75,2026-09-16T00:04:19+00:00
 0087-S-2010,PROD.COMEX,Comercio interior y exterior,agente:texto,0.6,2026-09-16T00:04:19+00:00
 0087-S-2012,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,0.95,2026-09-16T00:04:21+00:00
 0087-S-2014,JUST.PENAL,Derecho penal / Código penal,agente:texto,0.95,2026-09-16T00:04:24+00:00
+0087-S-2026,DESSOC.ASIST,Asistencia social / Planes,agente:texto,0.6,2026-09-16T17:26:17+00:00
+0087-S-2026,TRAB.EMPLEOPUB,Empleo público,agente:texto,0.7,2026-09-16T17:26:17+00:00
+0087-S-2026,TRAB.LABOR,Relaciones laborales (reforma laboral),agente:texto,0.7,2026-09-16T17:26:17+00:00
+0088-D-2025,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,1.0,2026-09-16T17:26:19+00:00
+0088-D-2026,CULT.DEPORTE,Deporte,agente:texto,0.7,2026-09-16T17:26:23+00:00
+0088-D-2026,DERSOC.NINEZ,Niñez e infancia,agente:texto,0.85,2026-09-16T17:26:23+00:00
+0088-D-2026,EDU.BASICA,Educación básica y media,agente:texto,0.75,2026-09-16T17:26:23+00:00
+0088-D-2026,INFRA.TRANSP,"Transporte (incl. subsidios al transporte, trenes)",agente:texto,0.95,2026-09-16T17:26:23+00:00
 0088-S-2009,DEF.TRATADO,Tratados y acuerdos internacionales,agente:texto,0.95,2026-09-16T00:04:27+00:00
 0088-S-2009,TRAB.PREV,Previsional / Jubilaciones,agente:texto,0.85,2026-09-16T00:04:27+00:00
 0088-S-2010,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,0.95,2026-09-16T00:04:29+00:00
@@ -1078,6 +1701,14 @@ denominador,taxonomia_id,taxonomia,fuente,confianza,asignada_en
 0088-S-2016,INFRA.OBRA,Obra pública,agente:texto,0.65,2026-09-16T00:04:35+00:00
 0088-S-2017,DERSOC.DDHH,Derechos humanos,agente:texto,0.95,2026-09-16T00:04:38+00:00
 0088-S-2017,POLINST.ETICA,Transparencia / Lobby / Ética pública,agente:texto,0.75,2026-09-16T00:04:38+00:00
+0088-S-2026,CYT.CIENCIA,Ciencia y técnica,agente:texto,0.75,2026-09-16T17:26:27+00:00
+0088-S-2026,EDU.BASICA,Educación básica y media,agente:texto,0.85,2026-09-16T17:26:27+00:00
+0088-S-2026,TRAB.LABOR,Relaciones laborales (reforma laboral),agente:texto,0.7,2026-09-16T17:26:27+00:00
+0089-D-2025,CYT.INNOV,Innovación / Economía del conocimiento / Software,agente:texto,0.65,2026-09-16T17:26:31+00:00
+0089-D-2025,ECON.MON,Monetario y cambiario,agente:texto,0.85,2026-09-16T17:26:31+00:00
+0089-D-2025,POLINST.ETICA,Transparencia / Lobby / Ética pública,agente:texto,0.6,2026-09-16T17:26:31+00:00
+0089-D-2026,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,0.95,2026-09-16T17:26:35+00:00
+0089-D-2026,INFRA.TRANSP,"Transporte (incl. subsidios al transporte, trenes)",agente:texto,0.75,2026-09-16T17:26:35+00:00
 0089-S-2010,DESREG.DESECO,Desregulación económica,agente:texto,0.75,2026-09-16T00:04:41+00:00
 0089-S-2010,JUST.CIVCOM,Derecho civil / comercial (códigos de fondo),agente:texto,0.95,2026-09-16T00:04:41+00:00
 0089-S-2011,PROD.AGRO,"Agro, ganadería y pesca",agente:texto,0.9,2026-09-16T00:04:43+00:00
@@ -1085,6 +1716,11 @@ denominador,taxonomia_id,taxonomia,fuente,confianza,asignada_en
 0089-S-2016,DEF.DEFENSA,Defensa / Fuerzas Armadas,agente:texto,0.85,2026-09-16T00:04:46+00:00
 0089-S-2016,DEF.EXTERIOR,Política exterior,agente:texto,0.8,2026-09-16T00:04:46+00:00
 0089-S-2016,DEF.TRATADO,Tratados y acuerdos internacionales,agente:texto,0.7,2026-09-16T00:04:46+00:00
+0089-S-2026,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,0.95,2026-09-16T17:26:37+00:00
+0090-D-2025,ECON.PRESU,Presupuesto y gasto público,agente:texto,0.75,2026-09-16T17:26:40+00:00
+0090-D-2025,SALUD.DISCAP,Discapacidad,agente:texto,0.95,2026-09-16T17:26:40+00:00
+0090-D-2026,POLINST.ELECT,Reforma electoral,agente:texto,0.85,2026-09-16T17:26:44+00:00
+0090-D-2026,POLINST.PARTIDOS,Partidos políticos,agente:texto,0.95,2026-09-16T17:26:44+00:00
 0090-S-2010,JUST.JUDIC,Organización judicial / Magistratura,agente:texto,0.95,2026-09-16T00:04:48+00:00
 0090-S-2011,DESREG.MODEST,Modernización del Estado,agente:texto,0.6,2026-09-16T00:04:51+00:00
 0090-S-2011,EDU.SUPERIOR,Educación superior / Universidades / Financiamiento,agente:texto,0.95,2026-09-16T00:04:51+00:00
@@ -1093,6 +1729,12 @@ denominador,taxonomia_id,taxonomia,fuente,confianza,asignada_en
 0090-S-2016,POLINST.ORGEST,Organización del Estado / Ministerios,agente:texto,0.85,2026-09-16T00:04:56+00:00
 0090-S-2016,TRAB.EMPLEOPUB,Empleo público,agente:texto,0.75,2026-09-16T00:04:56+00:00
 0090-S-2016,TRAB.SINDIC,Sindical,agente:texto,0.8,2026-09-16T00:04:56+00:00
+0090-S-2026,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,0.95,2026-09-16T17:26:46+00:00
+0090-S-2026,DERSOC.DDHH,Derechos humanos,agente:texto,0.85,2026-09-16T17:26:46+00:00
+0091-D-2025,DESSOC.PNC,Pensiones no contributivas,agente:texto,0.95,2026-09-16T17:26:49+00:00
+0091-D-2025,TRAB.PREV,Previsional / Jubilaciones,agente:texto,0.75,2026-09-16T17:26:49+00:00
+0091-D-2026,EDU.BASICA,Educación básica y media,agente:texto,0.95,2026-09-16T17:26:52+00:00
+0091-D-2026,INFRA.TELECOM,Telecomunicaciones / Conectividad,agente:texto,0.6,2026-09-16T17:26:52+00:00
 0091-S-2008,AMB.BOSQUE,Bosques / Glaciares / Áreas protegidas,agente:texto,0.9,2026-09-16T00:05:00+00:00
 0091-S-2008,ECON.PRESU,Presupuesto y gasto público,agente:texto,0.6,2026-09-16T00:05:00+00:00
 0091-S-2008,PROD.AGRO,"Agro, ganadería y pesca",agente:texto,0.85,2026-09-16T00:05:00+00:00
@@ -1104,10 +1746,13 @@ denominador,taxonomia_id,taxonomia,fuente,confianza,asignada_en
 0091-S-2012,DEF.TRATADO,Tratados y acuerdos internacionales,agente:texto,0.75,2026-09-16T00:05:06+00:00
 0091-S-2015,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,0.95,2026-09-16T00:05:09+00:00
 0091-S-2015,CULT.DEPORTE,Deporte,agente:texto,0.85,2026-09-16T00:05:09+00:00
+0091-S-2026,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,1.0,2026-09-16T17:26:55+00:00
 0092-D-2024,EDU.BASICA,Educación básica y media,agente:texto,0.95,2026-09-16T00:05:12+00:00
 0092-D-2024,POLINST.ORGEST,Organización del Estado / Ministerios,agente:texto,0.65,2026-09-16T00:05:12+00:00
 0092-D-2025,AUX.TRAMITE,Trámite parlamentario (sin contenido sustantivo),agente:texto,0.75,2026-09-16T00:05:15+00:00
 0092-D-2025,POLINST.ETICA,Transparencia / Lobby / Ética pública,agente:texto,0.85,2026-09-16T00:05:15+00:00
+0092-D-2026,JUST.PROPIED,Propiedad (inviolabilidad),agente:texto,0.7,2026-09-16T17:26:58+00:00
+0092-D-2026,POLINST.ORGEST,Organización del Estado / Ministerios,agente:texto,0.75,2026-09-16T17:26:58+00:00
 0092-JGM-2020,ECON.PRESU,Presupuesto y gasto público,agente:texto,0.99,2026-09-16T00:05:18+00:00
 0092-S-2011,DEF.TRATADO,Tratados y acuerdos internacionales,agente:texto,0.95,2026-09-16T00:05:20+00:00
 0092-S-2011,JUST.PENAL,Derecho penal / Código penal,agente:texto,0.85,2026-09-16T00:05:20+00:00
@@ -1118,6 +1763,11 @@ denominador,taxonomia_id,taxonomia,fuente,confianza,asignada_en
 0092-S-2015,POLINST.ORGEST,Organización del Estado / Ministerios,agente:texto,0.8,2026-09-16T00:05:25+00:00
 0092-S-2017,DEF.DEFENSA,Defensa / Fuerzas Armadas,agente:texto,0.95,2026-09-16T00:05:28+00:00
 0092-S-2017,DEF.TRATADO,Tratados y acuerdos internacionales,agente:texto,0.85,2026-09-16T00:05:28+00:00
+0092-S-2026,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,1.0,2026-09-16T17:27:01+00:00
+0093-D-2025,AUX.TRAMITE,Trámite parlamentario (sin contenido sustantivo),agente:texto,0.95,2026-09-16T17:27:03+00:00
+0093-D-2026,CYT.CIENCIA,Ciencia y técnica,agente:texto,0.85,2026-09-16T17:27:06+00:00
+0093-D-2026,DESREG.MODEST,Modernización del Estado,agente:texto,0.75,2026-09-16T17:27:06+00:00
+0093-D-2026,SALUD.SISTEMA,Sistema de salud / Hospitales / Obras sociales,agente:texto,0.9,2026-09-16T17:27:06+00:00
 0093-S-2008,JUST.CIVCOM,Derecho civil / comercial (códigos de fondo),agente:texto,0.75,2026-09-16T00:05:31+00:00
 0093-S-2008,PROD.COMEX,Comercio interior y exterior,agente:texto,0.7,2026-09-16T00:05:31+00:00
 0093-S-2012,AMB.BOSQUE,Bosques / Glaciares / Áreas protegidas,agente:texto,0.95,2026-09-16T00:05:34+00:00
@@ -1126,6 +1776,17 @@ denominador,taxonomia_id,taxonomia,fuente,confianza,asignada_en
 0093-S-2017,JUST.CIVCOM,Derecho civil / comercial (códigos de fondo),agente:texto,0.9,2026-09-16T00:05:36+00:00
 0093-S-2018,DEF.TRATADO,Tratados y acuerdos internacionales,agente:texto,0.95,2026-09-16T00:05:39+00:00
 0093-S-2018,PROD.COMEX,Comercio interior y exterior,agente:texto,0.85,2026-09-16T00:05:39+00:00
+0093-S-2026,DERSOC.DDHH,Derechos humanos,agente:texto,0.55,2026-09-16T17:27:10+00:00
+0093-S-2026,ECON.TRIB,Tributario / Impuestos,agente:texto,0.7,2026-09-16T17:27:10+00:00
+0093-S-2026,JUST.NARCO,Narcotráfico,agente:texto,0.85,2026-09-16T17:27:10+00:00
+0094-D-2025,CYT.CIBER,Ciberseguridad y datos,agente:texto,0.6,2026-09-16T17:27:14+00:00
+0094-D-2025,ECON.MON,Monetario y cambiario,agente:texto,0.85,2026-09-16T17:27:14+00:00
+0094-D-2025,POLINST.ETICA,Transparencia / Lobby / Ética pública,agente:texto,0.55,2026-09-16T17:27:14+00:00
+0094-D-2026,DESREG.DESECO,Desregulación económica,agente:texto,0.55,2026-09-16T17:27:18+00:00
+0094-D-2026,INFRA.OBRA,Obra pública,agente:texto,0.6,2026-09-16T17:27:18+00:00
+0094-D-2026,PROD.AGRO,"Agro, ganadería y pesca",agente:texto,0.85,2026-09-16T17:27:18+00:00
+0094-PE-2026,DEF.TRATADO,Tratados y acuerdos internacionales,agente:texto,0.95,2026-09-16T17:27:21+00:00
+0094-PE-2026,TRAB.PREV,Previsional / Jubilaciones,agente:texto,0.9,2026-09-16T17:27:21+00:00
 0094-S-2009,AUX.TRAMITE,Trámite parlamentario (sin contenido sustantivo),agente:texto,0.95,2026-09-16T00:05:42+00:00
 0094-S-2010,ECON.COPART,Coparticipación / Federalismo fiscal,agente:texto,0.5,2026-09-16T00:05:45+00:00
 0094-S-2010,INFRA.VIVIENDA,Vivienda y hábitat,agente:texto,0.6,2026-09-16T00:05:45+00:00
@@ -1135,6 +1796,11 @@ denominador,taxonomia_id,taxonomia,fuente,confianza,asignada_en
 0094-S-2015,DEF.TRATADO,Tratados y acuerdos internacionales,agente:texto,0.75,2026-09-16T00:05:52+00:00
 0094-S-2015,ECON.DEUDA,Deuda y financiamiento,agente:texto,0.95,2026-09-16T00:05:52+00:00
 0094-S-2015,POLINST.ETICA,Transparencia / Lobby / Ética pública,agente:texto,0.6,2026-09-16T00:05:52+00:00
+0094-S-2026,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,0.95,2026-09-16T17:27:23+00:00
+0095-D-2025,JUST.PENAL,Derecho penal / Código penal,agente:texto,0.9,2026-09-16T17:27:26+00:00
+0095-D-2025,PROD.COMEX,Comercio interior y exterior,agente:texto,0.8,2026-09-16T17:27:26+00:00
+0095-PE-2026,DEF.TRATADO,Tratados y acuerdos internacionales,agente:texto,0.95,2026-09-16T17:27:29+00:00
+0095-PE-2026,TRAB.PREV,Previsional / Jubilaciones,agente:texto,0.9,2026-09-16T17:27:29+00:00
 0095-S-2010,AMB.CLIMA,Cambio climático,agente:texto,0.85,2026-09-16T00:05:54+00:00
 0095-S-2010,DESSOC.ASIST,Asistencia social / Planes,agente:texto,0.7,2026-09-16T00:05:54+00:00
 0095-S-2010,ECON.EMERG,Emergencia económica,agente:texto,0.95,2026-09-16T00:05:54+00:00
@@ -1143,20 +1809,38 @@ denominador,taxonomia_id,taxonomia,fuente,confianza,asignada_en
 0095-S-2018,DERSOC.NINEZ,Niñez e infancia,agente:texto,0.85,2026-09-16T00:06:00+00:00
 0095-S-2018,JUST.CIVCOM,Derecho civil / comercial (códigos de fondo),agente:texto,0.8,2026-09-16T00:06:00+00:00
 0095-S-2020,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,0.95,2026-09-16T00:06:02+00:00
+0095-S-2026,AUX.HOMENAJE,"Homenajes y declaraciones (de interés, beneplácito)",agente:texto,0.95,2026-09-16T17:27:32+00:00
+0096-D-2025,AUX.TRAMITE,Trámite parlamentario (sin contenido sustantivo),agente:texto,0.7,2026-09-16T17:27:36+00:00
+0096-D-2025,ECON.MON,Monetario y cambiario,agente:texto,0.85,2026-09-16T17:27:36+00:00
+0096-D-2025,POLINST.ETICA,Transparencia / Lobby / Ética pública,agente:texto,0.75,2026-09-16T17:27:36+00:00
+0096-D-2026,JUST.SEGINT,Seguridad interior,agente:texto,0.9,2026-09-16T17:27:40+00:00
+0096-D-2026,POLINST.ORGEST,Organización del Estado / Ministerios,agente:texto,0.7,2026-09-16T17:27:40+00:00
+0096-PE-2026,AUX.TRAMITE,Trámite parlamentario (sin contenido sustantivo),agente:texto,0.85,2026-09-16T17:27:43+00:00
+0096-PE-2026,DEF.DEFENSA,Defensa / Fuerzas Armadas,agente:texto,0.95,2026-09-16T17:27:43+00:00
+0096-PE-2026,DEF.TRATADO,Tratados y acuerdos internacionales,agente:texto,0.7,2026-09-16T17:27:43+00:00
 0096-S-2009,CYT.CIENCIA,Ciencia y técnica,agente:texto,0.95,2026-09-16T00:06:05+00:00
 0096-S-2009,POLINST.ORGEST,Organización del Estado / Ministerios,agente:texto,0.75,2026-09-16T00:06:05+00:00
 0096-S-2009,PROD.AGRO,"Agro, ganadería y pesca",agente:texto,0.8,2026-09-16T00:06:05+00:00
 0096-S-2020,DESREG.MODEST,Modernización del Estado,agente:texto,0.7,2026-09-16T00:06:08+00:00
 0096-S-2020,ECON.EMERG,Emergencia económica,agente:texto,0.65,2026-09-16T00:06:08+00:00
 0096-S-2020,JUST.SEGINT,Seguridad interior,agente:texto,0.85,2026-09-16T00:06:08+00:00
+0096-S-2026,JUST.JUDIC,Organización judicial / Magistratura,agente:texto,0.95,2026-09-16T17:27:45+00:00
 0097-D-2016,DESREG.DESECO,Desregulación económica,agente:texto,0.7,2026-09-16T00:06:11+00:00
 0097-D-2016,ENER.ELEC,Energía eléctrica,agente:texto,0.85,2026-09-16T00:06:11+00:00
 0097-D-2016,ENER.RENOV,Renovables,agente:texto,0.95,2026-09-16T00:06:11+00:00
+0097-D-2025,AUX.TRAMITE,Trámite parlamentario (sin contenido sustantivo),agente:texto,0.65,2026-09-16T17:27:48+00:00
+0097-D-2025,POLINST.ORGEST,Organización del Estado / Ministerios,agente:texto,0.75,2026-09-16T17:27:48+00:00
+0097-D-2026,JUST.SEGINT,Seguridad interior,agente:texto,0.95,2026-09-16T17:27:50+00:00
+0097-D-2026,POLINST.ORGEST,Organización del Estado / Ministerios,agente:texto,0.65,2026-09-16T17:27:50+00:00
+0097-PE-2026,DEF.TRATADO,Tratados y acuerdos internacionales,agente:texto,0.95,2026-09-16T17:27:53+00:00
+0097-PE-2026,PROD.COMEX,Comercio interior y exterior,agente:texto,0.9,2026-09-16T17:27:53+00:00
 0097-S-2009,ECON.PRESU,Presupuesto y gasto público,agente:texto,0.85,2026-09-16T00:06:13+00:00
 0097-S-2009,PROD.AGRO,"Agro, ganadería y pesca",agente:texto,0.95,2026-09-16T00:06:13+00:00
 0097-S-2012,DEF.TRATADO,Tratados y acuerdos internacionales,agente:texto,0.95,2026-09-16T00:06:16+00:00
 0097-S-2012,JUST.CIVCOM,Derecho civil / comercial (códigos de fondo),agente:texto,0.75,2026-09-16T00:06:16+00:00
 0097-S-2012,PROD.COMEX,Comercio interior y exterior,agente:texto,0.9,2026-09-16T00:06:16+00:00
+0097-S-2026,DERSOC.GENERO,Género / Diversidad,agente:texto,0.75,2026-09-16T17:27:56+00:00
+0097-S-2026,SALUD.SISTEMA,Sistema de salud / Hospitales / Obras sociales,agente:texto,0.95,2026-09-16T17:27:56+00:00
 0098-S-2012,DEF.TRATADO,Tratados y acuerdos internacionales,agente:texto,0.95,2026-09-16T00:06:20+00:00
 0098-S-2012,PROD.AGRO,"Agro, ganadería y pesca",agente:texto,0.75,2026-09-16T00:06:20+00:00
 0098-S-2012,TRAB.LABOR,Relaciones laborales (reforma laboral),agente:texto,0.7,2026-09-16T00:06:20+00:00

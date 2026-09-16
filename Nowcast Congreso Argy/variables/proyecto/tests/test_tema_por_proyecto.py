@@ -18,6 +18,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 from tema_por_proyecto import (  # noqa: E402
     cargar_crosswalk,
     clasificar_por_titulo,
+    denominadores_desde,
     taxonomias_de,
     temas_de_proyecto,
 )
@@ -132,6 +133,24 @@ with tempfile.TemporaryDirectory() as tmpdir:
     print("\ncargar_crosswalk — contrato ausente degrada limpio")
     vacio = cargar_crosswalk(tmp / "no_existe.parquet")
     check(vacio == {"pid_a_denom": {}, "denom_a_pid": {}}, "sin archivo -> dict vacío, no rompe")
+
+    print("\ndenominadores_desde — el universo RECIENTE (fecha_ingreso >=), no el votado")
+    desde_2024_02 = denominadores_desde("2024-02-01", db_path=db)
+    # 100-D-2024 (2024-01-01) queda afuera por fecha Y porque ya está clasificado;
+    # 200-D-2024 (2024-02-01) ya está clasificado (fuente humana) -> se excluye;
+    # 300-D-2024 (2024-03-01) sin clasificar todavía -> entra;
+    # 400-D-2024 (2024-04-01) sin clasificar todavía (sumario corto no aplica acá,
+    #   esta función no mira el sumario, sólo si ya tiene taxonomías) -> entra.
+    check(desde_2024_02 == ["300-D-2024", "400-D-2024"],
+          f"sólo los recientes Y sin clasificar todavía: {desde_2024_02}")
+
+    print("\ndenominadores_desde — sin filtrar por clasificado, trae también los ya resueltos")
+    desde_2024_02_todos = denominadores_desde("2024-02-01", db_path=db, sin_clasificar=False)
+    check(desde_2024_02_todos == ["200-D-2024", "300-D-2024", "400-D-2024"],
+          f"con sin_clasificar=False, 200-D-2024 (ya clasificado) también aparece: {desde_2024_02_todos}")
+
+    print("\ndenominadores_desde — fecha que no matchea nada")
+    check(denominadores_desde("2030-01-01", db_path=db) == [], "fecha futura -> lista vacía, no rompe")
 
     # ─────────────────────────── clasificar_por_titulo ───────────────────────
     from dataclasses import dataclass, field as _field

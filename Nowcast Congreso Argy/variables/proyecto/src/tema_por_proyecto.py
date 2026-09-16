@@ -201,6 +201,25 @@ def denominadores_votados(db_path: Path = DEFAULT_DB,
     return sorted(denoms)
 
 
+def denominadores_desde(fecha: str, db_path: Path = DEFAULT_DB, sin_clasificar: bool = True) -> list[str]:
+    """El universo de proyectos con `fecha_ingreso >= fecha` — proyectos
+    RECIENTES/en trámite, que es justo el que más necesita el nowcast
+    (`denominadores_votados` es el opuesto: ya se votaron, es el pasado).
+    `sin_clasificar=True` (default) excluye los que ya tienen alguna fila en
+    `proyecto_taxonomias` — mismo criterio de idempotencia que
+    `clasificar_por_titulo(solo_faltantes=True)`, para no pedir un cálculo que
+    esa función va a saltear igual."""
+    con = sqlite3.connect(str(db_path))
+    try:
+        q = "SELECT denominador FROM proyectos WHERE fecha_ingreso >= ?"
+        if sin_clasificar:
+            q += " AND NOT EXISTS (SELECT 1 FROM proyecto_taxonomias t WHERE t.denominador = proyectos.denominador)"
+        filas = con.execute(q, (fecha,)).fetchall()
+    finally:
+        con.close()
+    return sorted({r[0] for r in filas if r[0]})
+
+
 def clasificar_por_titulo(db_path: Path = DEFAULT_DB, denominadores: Optional[list[str]] = None,
                           limite: Optional[int] = None, solo_faltantes: bool = True,
                           clasificar=None, checkpoint_cada: int = 25) -> dict:
@@ -295,8 +314,12 @@ def main(argv: Optional[list[str]] = None) -> int:
     pcl = sub.add_parser("clasificar", help="clasifica por título (sumario), sin PDF")
     pcl.add_argument("--solo-votados", action="store_true",
                      help="acota a denominadores_votados() en vez de TODOS los proyectos")
+    pcl.add_argument("--desde-fecha", default=None,
+                     help="acota a proyectos con fecha_ingreso >= esta fecha (AAAA-MM-DD), "
+                          "vía denominadores_desde() -- el universo RECIENTE/en trámite")
     pcl.add_argument("--denominadores", default=None,
-                     help="lista separada por comas; si no se pasa, usa --solo-votados o TODOS")
+                     help="lista separada por comas; si no se pasa, usa --solo-votados/"
+                          "--desde-fecha o TODOS")
     pcl.add_argument("--limite", type=int, default=None)
     pcl.add_argument("--todos", action="store_true", help="reclasificar aunque ya tengan")
 
@@ -317,6 +340,10 @@ def main(argv: Optional[list[str]] = None) -> int:
     elif args.solo_votados:
         denoms = denominadores_votados()
         logger.info("universo votado: %d denominadores", len(denoms))
+    elif args.desde_fecha:
+        denoms = denominadores_desde(args.desde_fecha)
+        logger.info("universo desde %s (sin clasificar todavía): %d denominadores",
+                    args.desde_fecha, len(denoms))
     res = clasificar_por_titulo(denominadores=denoms, limite=args.limite,
                                 solo_faltantes=not args.todos)
     print(json.dumps(res, ensure_ascii=False, indent=2))

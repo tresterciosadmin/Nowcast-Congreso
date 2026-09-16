@@ -2,6 +2,31 @@
 
 > Documento vivo. Cada cambio importante en el proyecto se explica acá en lenguaje claro, además de registrarse en `ESTADO-DEL-PROYECTO.md`. Si algo del sistema no se entiende leyendo esto, está mal escrito y hay que arreglarlo.
 
+## Le enseñamos al modelo a pensar una ley grande como varias leyes chicas, capítulo por capítulo (16-09-2026)
+
+Siguiendo con la idea del resumen para la sesión de cowork: una de las salidas propuestas
+para el problema del multitema era dejar de tratar una ley ómnibus como una sola cosa con
+"varios temas mezclados" y empezar a tratarla como lo que en realidad es — varias leyes
+chicas, cada una probablemente de un solo tema, encuadernadas juntas. Se construyó la
+pieza que hace falta para eso: dado que una ley está dividida en capítulos, el sistema ya
+puede simular CADA capítulo por separado (con su propia posición de cada bloque) y después
+juntar los resultados de una forma correcta — nunca promediando ni multiplicando las
+probabilidades de cada capítulo, que sería inventar que un capítulo se cae sin que le
+importe a los demás, cuando en la práctica se caen juntos.
+
+Se probó reconstruyendo la Ley Bases artículo por artículo con los datos que ya estaban:
+en la primera ronda de votación (la noche que el gobierno retiró el proyecto del recinto)
+se cayeron 7 de 13 tramos; en la segunda ronda, ya con el proyecto recortado, pasaron los
+35 de 35. El método reproduce esa historia real sin ninguna diferencia.
+
+Esta pieza queda construida y probada, pero **no conectada** al número que se publica:
+para usarla con un proyecto real de verdad hace falta saber de qué tema trata CADA
+capítulo por separado (hoy sólo se sabe el tema de la ley entera), y esa clasificación
+es otro paso de trabajo que Franco tiene que decidir si vale la pena encarar. Y los dos
+números nuevos que esta pieza podría calcular —"se sancionó algo" y "cuánto sobrevivió"—
+cambian qué significa "aprobado", así que activarlos también es una decisión de Franco,
+no del modelo.
+
 ## Le enseñamos al modelo que un legislador no vota igual en todos los temas (16-09-2026)
 
 Esto era un pendiente viejo (desde principios de septiembre) que Franco había dejado

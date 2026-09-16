@@ -262,6 +262,11 @@ const TABLERO = {
   hitos: [
     {
       fecha: "2026-09-16",
+      titulo: "Le ensenamos al modelo a pensar una ley grande como varias leyes chicas, capitulo por capitulo",
+      texto: "Una ley omnibus no es una ley con varios temas mezclados: es varias leyes chicas, cada una de un solo tema, encuadernadas juntas. Se construyo la pieza que simula CADA capitulo por separado y junta los resultados de forma correcta -nunca promediando ni multiplicando las probabilidades, que inventaria que un capitulo se cae sin importarle a los demas, cuando en la practica se caen juntos-. Probado reconstruyendo la Ley Bases articulo por articulo: en la primera ronda (la noche del retiro) se cayeron 7 de 13 tramos, en la segunda (ya recortada) pasaron los 35 de 35 -reproduce la historia real sin diferencias-. Queda construida y probada pero NO conectada al numero publicado: hace falta saber de que tema trata cada capitulo por separado (no solo el de la ley entera), y activar los dos numeros nuevos que esto calcularia cambia que significa 'aprobado' -las dos, decisiones de Franco."
+    },
+    {
+      fecha: "2026-09-16",
       titulo: "Le ensenamos al modelo que un legislador no vota igual en todos los temas",
       texto: "Pendiente viejo de Franco: 'el tema deberia impactar en el legislador'. El intento anterior fallaba porque metia el tema en el promedio del BLOQUE -el recurso que se usa cuando de una persona no se sabe nada todavia-. La solucion correcta era moverlo a donde si hay informacion: el historial de cada legislador. Antes de construir nada se midio si un mismo diputado vota distinto segun el tema: si, y mucho -casi la mitad de los legisladores con historial suficiente muestran una diferencia entre temas mucho mayor de lo que el azar explicaria-. Se construyo el termino (historial por tema, mezclado con cuidado con el historial general) y se probo sobre TODA la historia disponible: 11% menos de error en los votos con informacion de tema, positivo en las dos camaras y en las cinco epocas medidas, sin ninguna excepcion negativa. Con esa evidencia limpia y el permiso que Franco dejo por escrito para prender banderas cuando el censo lo respalde, se activo directamente."
     },

@@ -1406,6 +1406,27 @@ validar_sobre_tablas_walkforward.py (nuevo), nowcast_puertas.py}`,
 validacion_sobre_tablas_walkforward{,_corte50}.json} (nuevos)`,
 `coordinacion/TABLERO.md`.
 
+### III.A.6 — Composición de P(proyecto) por CAPÍTULOS, por simulación (FASE 2)
+
+🔬 **IMPLEMENTADO 16-09-2026, NO enganchado a producción — ADR-0027.** Un
+ómnibus no es una ley multitema: son varias leyes, probablemente mono-tema,
+encuadernadas por capítulo (B1/B2, ADR-0023). "La P del proyecto" deja de ser
+un solo evento: $P_k$ (pasa el capítulo $k$), $P_{\text{todo}}$ (pasan
+todos), $P_{\text{algo}}$ (pasa alguno), $\mathbb E[\text{superviv.}]$
+(fracción de artículos que sobrevive, ponderada). Ninguno es el promedio ni
+el producto de los $P_k$ — **se simula cada capítulo con el MISMO $\eta_j$
+compartido** (ADR-0025) y se cuenta sobre esas simulaciones, la misma regla
+de IV.2/IV.3 aplicada a una unidad nueva.
+`modelo/ensemble/src/composicion_capitulos.py::simular_capitulos`, testeado
+(10 checks: capítulos perfectamente correlacionados dan
+$P_{\text{todo}}\approx\min_k P_k$, muy por encima del producto bajo
+independencia falsa — la revancha de `peor_tema`, esta vez sin el estimador
+sesgado que lo hizo perder en ADR-0024). **No engancha a `nowcast()`**: falta
+clasificar el tema POR CAPÍTULO (no existe ese insumo) y los dos números que
+compondría cambian la semántica del publicado — las dos, decisiones de
+Franco. Detalle completo, incluida la reconstrucción de Ley Bases
+artículo por artículo (B0), en ADR-0027.
+
 ## III.B — Propuesto, sin decidir
 
 ### III.B.1 — Proximidad electoral

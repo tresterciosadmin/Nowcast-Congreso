@@ -224,4 +224,37 @@ try:
 except (ZeroDivisionError, FloatingPointError, ValueError) as e:
     check(False, f"P_i=1.0 exacto con tau>0 rompió: {type(e).__name__}: {e}")
 
+# devolver_crudo (FASE 2, PROMPT-MULTITEMA-V2.md): trae el array crudo por-simulación,
+# y NO cambia el resumen agregado (mismo p_aprobacion con o sin el flag).
+_sin_crudo = ag.simular_votacion(_lin_e, _dv_e, "ABSOLUTA", "diputados", n_sims=2000,
+                                 seed=3, epsilon0=0.02, tau=1.0)
+_con_crudo = ag.simular_votacion(_lin_e, _dv_e, "ABSOLUTA", "diputados", n_sims=2000,
+                                 seed=3, epsilon0=0.02, tau=1.0, devolver_crudo=True)
+check("aprob_por_sim" not in _sin_crudo, "sin el flag, no viene el array crudo")
+check("aprob_por_sim" in _con_crudo and "afirm_por_sim" in _con_crudo,
+      "con el flag, vienen los dos arrays crudos")
+check(len(_con_crudo["aprob_por_sim"]) == 2000 == len(_con_crudo["afirm_por_sim"]),
+      "un valor por simulación")
+check(_con_crudo["aprob_por_sim"].mean() == _sin_crudo["p_aprobacion"],
+      "el array crudo promedia EXACTO al p_aprobacion agregado")
+
+# el mismo seed + mismos n_sims + epsilon0/tau>0 en las DOS llamadas dibuja el MISMO
+# eta_j (primer draw del rng) aunque lineas/desvios sean distintos entre las dos
+# llamadas -- es la propiedad que hace posible "componer capítulos": simular cada
+# capítulo por separado y combinar sus aprob_por_sim sim a sim, sin volver a simular.
+_lin_otro = np.array(["NEGATIVO"] * 257)  # roster totalmente distinto al de _lin_e
+_dv_otro = np.full(257, 0.3)
+_r1 = ag.simular_votacion(_lin_e, _dv_e, "ABSOLUTA", "diputados", n_sims=5000,
+                          seed=11, epsilon0=0.02, tau=1.0, devolver_crudo=True)
+_r2 = ag.simular_votacion(_lin_otro, _dv_otro, "ABSOLUTA", "diputados", n_sims=5000,
+                          seed=11, epsilon0=0.02, tau=1.0, devolver_crudo=True)
+# si comparten eta_j, los momentos en que el shock "sube" tienen que coincidir en las
+# dos corridas: un eta_j alto empuja a AMBOS rosters hacia más afirmativos a la vez
+# (con tau grande, el shock domina sobre la línea de cada uno) -> afirm_por_sim de las
+# dos corridas tiene que correlacionar POSITIVO y fuerte, que es lo que NO pasaría con
+# eta independientes entre las dos llamadas.
+_corr = float(np.corrcoef(_r1["afirm_por_sim"], _r2["afirm_por_sim"])[0, 1])
+check(_corr > 0.5, f"con el mismo seed, dos corridas con rosters distintos tienen que "
+                   f"correlacionar por compartir eta_j: corr={_corr:.3f}")
+
 print(f"OK — {ok} chequeos pasaron")

@@ -151,6 +151,7 @@ def simular_votacion(
     quorum_cuenta_abstenciones: bool | None = None,
     epsilon0: float = 0.0,
     tau: float = 0.0,
+    devolver_crudo: bool = False,
 ) -> dict:
     """Simula la votación n_sims veces a partir del roster (una línea y un desvío por
     legislador) y devuelve la distribución del resultado.
@@ -179,6 +180,13 @@ def simular_votacion(
       P_i^(j) EN LA MISMA PROPORCIÓN que tenían entre sí antes del shock — el shock
       mueve "¿cuánta gente lo acompaña hoy?", no "¿quién se ausenta en vez de votar en
       contra?", que es una pregunta distinta.
+    devolver_crudo (2026-09-16, FASE 2 de PROMPT-MULTITEMA-V2.md): además del resumen
+      agregado, agrega `aprob_por_sim` (array booleano, una fila por simulación) al
+      resultado. Hace falta para COMPONER capítulos: dos llamadas con el MISMO `seed`
+      y `n_sims` (y `epsilon0`/`tau` > 0 en las dos) dibujan el MISMO `eta` —es el
+      PRIMER draw del rng, antes de cualquier otro muestreo— así que sus `aprob_por_sim`
+      quedan alineados sim a sim y se pueden combinar (AND/OR/promedio ponderado) sin
+      volver a simular nada. Ver `modelo/ensemble/src/composicion_capitulos.py`.
     Devuelve dict con p_aprobacion, afirm_medio, afirm_std, banda (p5,p50,p95), etc.
     """
     n = len(lineas)
@@ -269,7 +277,7 @@ def simular_votacion(
     con_quorum = presentes >= min(quorum_min, n)  # si el roster es chico no lo forzamos
     aprob = (afirm >= umbrales) & con_quorum
 
-    return {
+    salida = {
         "n_roster": int(n),
         "tipo_mayoria": tipo,
         "camara": camara,
@@ -289,6 +297,10 @@ def simular_votacion(
         "epsilon0_aplicado": float(epsilon0) if usar_incertidumbre else 0.0,
         "tau_aplicado": float(tau) if usar_incertidumbre else 0.0,
     }
+    if devolver_crudo:
+        salida["aprob_por_sim"] = aprob
+        salida["afirm_por_sim"] = afirm
+    return salida
 
 
 # --------------------------- BACKTEST sobre la canónica ---------------------------

@@ -262,6 +262,11 @@ const TABLERO = {
   hitos: [
     {
       fecha: "2026-09-16",
+      titulo: "Franco tenia razon: el clasificador de proyectos si funciona, y ya esta corrido sobre 1.182 proyectos",
+      texto: "Franco pidio revisar bien una afirmacion anterior de que faltaba la clave de acceso para el clasificador de proyectos. Tenia razon: la clave si estaba, el error fue de lectura de un archivo de configuracion. Investigado por que la tabla de temas de proyecto seguia vacia: la via que existia (leer el PDF completo de cada proyecto) solo alcanza al 0,06% de los proyectos, casi ninguno tiene ese documento cargado. La solucion fue la misma que ya se usa para las actas: clasificar por el TITULO en vez del PDF completo, mas barato y con cobertura del 100%. Se corrio sobre los 1.182 proyectos que alguna vez se votaron, sin errores: 2.655 clasificaciones guardadas. Resultado: 3 de cada 4 proyectos con tema tienen dos o mas temas a la vez, casi el mismo numero que ya se habia medido para las actas con un clasificador distinto. Se probo con la Ley Bases real y coincidio con lo ya sabido. Se guardo copia de seguridad para que no se pierda si se reconstruye la base de proyectos desde cero."
+    },
+    {
+      fecha: "2026-09-16",
       titulo: "Probamos una tercera idea para combinar temas, como pidio Franco, y salio la peor de las tres",
       texto: "Despues del resultado negativo de las dos primeras formas de combinar temas, Franco pidio probar algo nuevo antes de cerrar el tema del todo. Se armo una tercera opcion: en vez de juntar toda la historia relacionada o promediar entre temas, quedarse con el tema donde el bloque esta MAS en contra -la idea de que una ley grande se cae por su parte mas resistida-. Sonaba razonable. Se probo con los mismos datos reales que las otras dos, y salio la peor de las tres, no la mejor. La explicacion mas probable: esa parte del modelo ya tiende a predecir demasiado extremo, y quedarse con el peor caso empuja todavia mas hacia ese extremo, cuando en la realidad la mayoria de los proyectos terminan aprobandose aun con partes resistidas. Con esto, las tres ideas de como combinar varios temas quedaron probadas y las tres perdieron contra no tocar nada -- se reporta con la misma claridad que si alguna hubiera funcionado."
     },

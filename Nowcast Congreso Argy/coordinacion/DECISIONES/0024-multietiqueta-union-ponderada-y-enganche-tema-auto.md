@@ -215,13 +215,24 @@ registro único sin ningún código nuevo. Tests: 3 checks nuevos en
 ## Lo que queda pendiente, y de quién es cada pendiente
 
 1. ~~Correr `agente_taxonomias.clasificar_lote`~~ **RESUELTO el 16-09 — con un
-   matiz.** La API key SÍ estaba disponible (error de la entrada anterior de
-   este ADR: ver la corrección en `tema_por_proyecto.py`). Pero `clasificar_lote`
-   (la vía PDF) tiene un cuello de botella real: sólo 71/115.495 proyectos
-   (0,06%) tienen `pdf_url`. Se clasificó en cambio por TÍTULO
-   (`clasificar_por_titulo`, más barato, mismo patrón que `tema_por_acta.py`)
-   el universo VOTADO completo (1.182 denominadores) — ver la entrada de
-   ESTADO del 16-09 con los números finales.
+   matiz, y ya corrido.** La API key SÍ estaba disponible (error de la entrada
+   anterior de este ADR: ver la corrección en `tema_por_proyecto.py`). Pero
+   `clasificar_lote` (la vía PDF) tiene un cuello de botella real: sólo
+   71/115.495 proyectos (0,06%) tienen `pdf_url`. Se clasificó en cambio por
+   TÍTULO (`clasificar_por_titulo`, más barato, mismo patrón que
+   `tema_por_acta.py`) **el universo VOTADO completo: 1.182 de 1.182
+   denominadores, 2.655 taxonomías guardadas, 0 errores.** De los ~1.070
+   proyectos con al menos una etiqueta sustantiva, **76,5% tiene ≥2** —
+   prácticamente idéntico al 76,1% medido a nivel ACTA en el PASO 0: el
+   patrón multietiqueta se confirma en las dos granularidades, con dos
+   corridas independientes del agente. Verificado de punta a punta con Ley
+   Bases real (no sintético): `POLINST(0,95)/DESREG(0,85)/ECON(0,75)` desde su
+   propio `sumario`, consistente con lo que ya daba la clasificación por
+   título de acta en el PASO 0. Respaldado en `datos/proyectos/data/
+   taxonomias.csv` (`taxonomias_backup.py exportar`, sobrevive a
+   `migrar_ckan.py`) y consolidado en el registro único
+   (`datos/taxonomias/data/asignaciones.csv`, ahora con nivel `proyecto`
+   además de `acta`: 9.427 filas, 4.304 objetos).
 2. ~~Decidir la regla de combinación con los números de PASO 2~~ **RESUELTO,
    dos veces: ninguna de las CUATRO reglas gana** (se sumó `peor_tema` el
    16-09 a pedido de Franco — "probemos algo nuevo" — y salió la PEOR de las

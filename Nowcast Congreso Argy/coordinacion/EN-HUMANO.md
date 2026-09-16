@@ -2,6 +2,27 @@
 
 > Documento vivo. Cada cambio importante en el proyecto se explica acá en lenguaje claro, además de registrarse en `ESTADO-DEL-PROYECTO.md`. Si algo del sistema no se entiende leyendo esto, está mal escrito y hay que arreglarlo.
 
+## Franco tenía razón: el clasificador de proyectos sí funciona, y ya está corrido (16-09-2026)
+
+Franco pidió revisar bien una afirmación anterior de que faltaba la clave de acceso para
+usar el clasificador de proyectos. Tenía razón: la clave sí estaba disponible, el error fue
+de lectura de un archivo de configuración. Corregido eso, se investigó por qué la tabla que
+guarda el tema de cada proyecto seguía vacía después de semanas de tener el código listo:
+la vía que existía (leer el PDF completo de cada proyecto) sólo puede alcanzar al 0,06% de
+los proyectos, porque casi ninguno tiene ese documento cargado en la base. No era un error
+de código: era que el insumo casi no está.
+
+La solución fue la misma que ya se usa para las actas votadas: clasificar por el TÍTULO del
+proyecto en vez de por su PDF completo — más barato, y ese dato sí está en el 100% de los
+casos. Se corrió sobre los 1.182 proyectos que alguna vez llegaron a votarse (el universo
+que de verdad importa para el modelo), y terminó sin errores: 2.655 clasificaciones
+guardadas. Resultado: 3 de cada 4 proyectos con tema asignado tienen dos o más temas a la
+vez — casi el mismo número que ya se había medido para las actas, con un clasificador
+distinto, lo que da confianza de que el patrón es real. Se probó con la Ley Bases real (no
+un caso inventado) y coincidió con lo que ya se sabía: administración pública, desregulación
+y economía. Y se guardó una copia de seguridad para que no se pierda si alguien reconstruye
+la base de proyectos desde cero, como ya pasó una vez con otro dato de este proyecto.
+
 ## Probamos una tercera idea para combinar temas, como pidió Franco, y salió la peor de las tres (16-09-2026)
 
 Después del resultado negativo de las dos primeras formas de combinar temas, Franco pidió

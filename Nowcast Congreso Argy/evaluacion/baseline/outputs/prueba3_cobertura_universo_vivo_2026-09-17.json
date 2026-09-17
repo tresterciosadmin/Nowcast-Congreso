@@ -1,0 +1,33 @@
+{
+ "definicion_universo_vivo": "fecha_ingreso >= 2025-01-01 (mismo corte que la tarea pausada; estado/ultimo_movimiento están 100% nulos, no sirven de filtro)",
+ "n_universo_vivo": 9962,
+ "n_con_tema": 273,
+ "n_sin_tema": 9689,
+ "fraccion_sin_tema": 0.9726,
+ "descuento_AUX_entre_clasificados_vivo": 0.1687,
+ "split_votado_no_votado": {
+  "n_votado": 49,
+  "n_votado_con_tema": 49,
+  "n_no_votado": 9913,
+  "n_no_votado_con_tema": 224
+ },
+ "cota_superior_mejora_brier_lado_votado": {
+  "supuesto": "los votos del lado VOTADO sin tema, si se clasificaran, ganarían lo mismo que ADR-0026 midió en el censo completo (11,06% de mejora de Brier) -- cota, no medición.",
+  "n_votado_sin_tema": 0,
+  "interpretacion": "cero cobertura faltante del lado votado: no hay mejora de Brier disponible por este camino, todo el hueco de cobertura está del lado NO votado, que no puede mover ningún backtest"
+ },
+ "costo": {
+  "modelo": "claude-haiku-4-5-20251001",
+  "n_llamados_necesarios": 9689,
+  "chars_prompt_input_medio": 5154,
+  "tokens_input_estimados_por_llamado": 1288,
+  "tokens_output_estimados_por_llamado": 120,
+  "tokens_input_totales_estimados": 12479432,
+  "tokens_output_totales_estimados": 1162680,
+  "formula_costo": "tokens_input_totales * precio_input_por_token + tokens_output_totales * precio_output_por_token (precio vigente de claude-haiku-4-5-20251001, NO verificado acá)",
+  "nota": "la corrida real de 437 clasificaciones por capítulo esta sesión costó 'centavos de dólar' (medido cualitativamente, no en $ exactos) -- orden de magnitud consistente con que esto sea decenas de USD, no cientos."
+ },
+ "UMBRAL_conviene": 0.4,
+ "UMBRAL_zona_gris_min": 0.15,
+ "VEREDICTO": "CONVIENE_AMPLIAR"
+}

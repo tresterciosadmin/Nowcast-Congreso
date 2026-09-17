@@ -2,6 +2,45 @@
 
 > Documento vivo. Cada cambio importante en el proyecto se explica acá en lenguaje claro, además de registrarse en `ESTADO-DEL-PROYECTO.md`. Si algo del sistema no se entiende leyendo esto, está mal escrito y hay que arreglarlo.
 
+## Veredicto: cerramos la idea de "bisagras por capítulo", pero encontramos un camino real para revivir la otra pregunta (17-09-2026)
+
+Franco pidió terminar de una vez esta discusión: armar tres pruebas con la vara puesta
+de antemano, y que el resultado fuera un sí o un no, no un "es interesante pero". Acá
+está.
+
+**La idea de "qué legisladores son bisagra en CADA capítulo" (no en la ley entera) —
+no funcionó, y se sabe exactamente por qué.** Para armarla hacía falta el historial
+propio de cada legislador en ESE tema puntual, algo que ya está probado que funciona
+bien en general. El problema es que Ley Bases se votó apenas 53 días después de que
+asumiera el nuevo gobierno — y en esos 53 días, casi no había votaciones individuales
+registradas todavía para poder condicionar nada por tema. El sistema, sin avisar,
+terminó usando el mismo cálculo genérico para TODOS los capítulos, como si el tema no
+importara. No es que el mecanismo esté mal: es que Ley Bases, el caso que motivó toda
+esta línea, resultó un mal caso de prueba en un tercer sentido (ya había fallado por
+mezclar rondas y por mezclar capítulos de partes distintas — ahora también por
+haberse votado demasiado pronto).
+
+**La buena noticia, y la que vale la pena resaltar:** al buscar una forma barata de
+conseguir más casos reales para comparar (la pregunta que quedó pendiente hace un
+día), encontramos algo que nadie había probado — cruzar el número de artículo que
+declara cada votación contra el texto original de la ley (que dice qué artículos
+tiene cada capítulo). Eso da, gratis, el resultado real de **23 leyes** en vez de
+sólo Ley Bases. Es el camino concreto para retomar esta pregunta el día que se
+decida que vale la pena invertir el trabajo de revisarlo con cuidado.
+
+**Y la pregunta de si conviene clasificar más proyectos por tema** (la que quedó
+pendiente para Franco) tiene ahora un número claro: de los casi 10.000 proyectos con
+movimiento reciente, el 97% todavía no tiene tema asignado. De los pocos que ya se
+votaron, están cubiertos al 100% — así que ampliar esto no mejoraría ninguna medición
+del pasado, pero sí la capacidad de responder sobre un proyecto actual el día que
+alguien pregunte por él.
+
+**En limpio: no se prende ninguna bandera nueva.** Lo que se construyó (la
+clasificación por capítulo, la simulación por capítulo) queda guardado en el repo,
+listo para usarse el día que haga falta, pero apagado — no se publica algo que no se
+puede respaldar con datos reales. Y queda preparada, para cuando toque, una lista
+corta de lo que le falta al modelo en el Senado.
+
 ## Probamos comparar por título en vez de por capítulo, y el resultado explica por qué no alcanza (16-09-2026, más tarde todavía)
 
 Franco pidió avanzar con la idea de comparar a nivel TÍTULO (una unidad más grande

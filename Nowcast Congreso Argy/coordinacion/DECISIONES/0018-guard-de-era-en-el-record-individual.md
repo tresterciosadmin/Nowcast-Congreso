@@ -1,5 +1,11 @@
 # ADR-0018 — El récord individual se corta por ERA, y la era sale de la fecha del nowcast
 
+> ℹ️ **Ampliado por ADR-0031 (17-09-2026).** Franco objetó que el guard resetea también
+> el récord POR TEMA de legisladores que atraviesan el recambio (caso Pichetto) —
+> testeado con datos reales (correlación temática entre eras: −0,12 pooled, nunca
+> cerca de 0,50): **la objeción no se sostiene, el diseño de este ADR queda sin
+> cambios.** Ver ADR-0031 para la medición completa.
+
 **Fecha:** 2026-09-06 · **Estado:** PRENDIDO POR DEFECTO (06-09, decisión de Franco) · **Decide:** Franco
 
 ## Contexto

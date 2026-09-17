@@ -115,6 +115,85 @@ check(ind_sin_cond == ind_general, "sin cond_por_acta tiene que degradar limpio"
 print("  OK")
 
 
+# ────────────────────────────────────────────────────────────────────────────
+# FASE 3 de PROMPT-GUARD-DE-ERA-POR-TEMA.md (2026-09-17): el fallback dejó de
+# ser silencioso. ADR-0030 midió 0,0% de legisladores con dato condicionado
+# real sobre Ley Bases y nadie se enteró hasta que alguien lo midió a
+# propósito -- `devolver_stats=True` expone la fracción, y cada salida de la
+# función lo loguea (una línea agregada, no una por fila).
+# ────────────────────────────────────────────────────────────────────────────
+print("\ndevolver_stats=True -- fallback TOTAL (0 áreas matchean) reporta 0/N, no lo esconde")
+_, stats_cero = N.alineacion_individual_por_area(
+    votos, cond, {}, None, areas_objetivo=[("SALUD", 1.0)], ind_general=ind_general,
+    hasta="2021-01-01", devolver_stats=True)
+check(stats_cero["n_con_dato_real"] == 0, f"nadie tiene SALUD: {stats_cero}")
+check(stats_cero["n_total"] == len(ind_general), f"n_total tiene que ser el universo completo: {stats_cero}")
+check(stats_cero["frac_condicionado_real"] == 0.0, f"fracción tiene que ser exactamente 0: {stats_cero}")
+print(f"  OK {stats_cero}")
+
+
+print("\ndevolver_stats=True -- con dato real reporta la fracción correcta, no 0 ni 1 falsos")
+_, stats_real = N.alineacion_individual_por_area(
+    votos, cond, {}, None, areas_objetivo=[("ECON", 1.0)], ind_general=ind_general,
+    hasta="2021-01-01", devolver_stats=True)
+check(stats_real["n_con_dato_real"] == 1, f"L1 tiene ECON: {stats_real}")
+check(stats_real["frac_condicionado_real"] == 1.0, f"único legislador del universo, con dato: {stats_real}")
+print(f"  OK {stats_real}")
+
+
+print("\ndevolver_stats=True -- sin cond_por_acta también reporta stats (0/N), no sólo el dict")
+res_sin_cond = N.alineacion_individual_por_area(
+    votos, None, {}, None, areas_objetivo=[("ECON", 1.0)], ind_general=ind_general,
+    hasta="2021-01-01", devolver_stats=True)
+check(isinstance(res_sin_cond, tuple) and len(res_sin_cond) == 2,
+     f"tiene que devolver (dict, stats) igual que el resto de las salidas: {type(res_sin_cond)}")
+check(res_sin_cond[1]["n_con_dato_real"] == 0, f"stats: {res_sin_cond[1]}")
+print("  OK")
+
+
+print("\ndevolver_stats=False (default): sigue devolviendo sólo el dict -- retrocompatible")
+solo_dict = N.alineacion_individual_por_area(
+    votos, cond, {}, None, areas_objetivo=[("ECON", 1.0)], ind_general=ind_general,
+    hasta="2021-01-01")
+check(isinstance(solo_dict, dict) and not isinstance(solo_dict, tuple),
+     f"sin devolver_stats no puede cambiar el contrato de siempre: {type(solo_dict)}")
+print("  OK")
+
+
+# ────────────────────────────────────────────────────────────────────────────
+# "El caso Pichetto": un legislador con historial temático REAL de una era
+# ANTERIOR, nowcasteado ya entrada la era NUEVA. FASE 1 (medir_estabilidad_
+# record_por_tema.py, censo completo: correlación temática -0,12 a 0,05 según
+# recambio, nunca cerca de 0,50) NO encontró señal para privilegiar ese
+# historial viejo -- el diseño A (resetear en cada recambio) queda como
+# estaba. Este test confirma que el comportamiento actual es ESE, a propósito
+# -- no que "debería" conservar la historia.
+# ────────────────────────────────────────────────────────────────────────────
+print("\ncaso Pichetto -- historial ECON real ANTES del recambio no cuenta DESPUÉS (guard de era, diseño A vigente)")
+filas_pichetto = [
+    dict(acta_id=f"vieja{i}", fecha=pd.Timestamp("2019-01-01") + pd.Timedelta(days=i),
+        camara="senado", bloque_linaje="OTRO / PROVINCIAL",
+        legislador_id="PICHETTO", conducta="AFIRMATIVO")
+    for i in range(20)  # 20 actas ECON, todas AFIRMATIVO, TODAS antes del recambio 2023-12-10
+]
+votos_p = pd.concat([votos.assign(camara="diputados"),  # L1 de arriba, para tener universo >1
+                     pd.DataFrame(filas_pichetto)], ignore_index=True)
+cond_p = pd.concat([cond, pd.DataFrame(
+    [{"acta_id": f"vieja{i}", "todas_ids": "ECON.DEUDA"} for i in range(20)])], ignore_index=True)
+
+ind_gen_post = N.alineacion_individual(votos_p, {}, None, hasta="2024-02-01", guard_era=True)
+check(("senado", "PICHETTO") not in ind_gen_post or ind_gen_post[("senado", "PICHETTO")][3] == 0,
+     f"con guard de era prendido, la ventana walk-forward arranca en 2023-12-10: "
+     f"20 actas de 2019 no pueden aparecer como récord GENERAL: {ind_gen_post.get(('senado','PICHETTO'))}")
+
+_, stats_pichetto = N.alineacion_individual_por_area(
+    votos_p, cond_p, {}, None, areas_objetivo=[("ECON", 1.0)], ind_general=ind_gen_post,
+    hasta="2024-02-01", guard_era=True, devolver_stats=True)
+check(stats_pichetto["n_con_dato_real"] == 0 or ("senado", "PICHETTO") not in ind_gen_post,
+     f"tampoco el récord POR TEMA ve esas 20 actas viejas -- diseño A, sin cambios: {stats_pichetto}")
+print(f"  OK (confirma diseño A vigente): {stats_pichetto}")
+
+
 print(f"\n{corridos - len(fallos)}/{corridos} OK")
 if fallos:
     print(f"\n{len(fallos)} FALLAS:")

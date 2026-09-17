@@ -595,6 +595,28 @@ base). Las dos eras que le importan al producto no se mueven. Se aplicó igual p
 la misma persona**: una métrica que mejora manteniendo partida una carrera mide un
 beneficio accidental. Detalle en el ADR-0018.
 
+### El récord POR TEMA se testeó contra el mismo guard, y no encontró excepción (ADR-0031, 17-09-2026)
+
+Franco objetó que el guard resetea también el récord **por tema**: alguien que atraviesa
+un recambio de gobierno con años de historia en, por ejemplo, desregulación laboral,
+pierde esa historia igual que pierde su relación con el Ejecutivo — y esas dos cosas no
+son lo mismo. Testeado con datos reales (`evaluacion/baseline/src/
+medir_estabilidad_record_por_tema.py`, los 3 recambios de la canónica, pares
+(legislador, área) encogidos EB k=5 antes de correlacionar): la correlación temática
+entre eras es **−0,116** (pooled, n≥5) — **peor** que el contraste general (−0,018), no
+mejor. La objeción no se sostiene con la evidencia disponible hoy. **La fórmula NO
+cambia**: `alineacion_individual_por_area` sigue cortando por la misma era que
+`alineacion_individual`, sin excepción para el récord por tema.
+
+**Lo que sí cambió — puramente observable, ningún valor se mueve:** esa función tenía
+cuatro salidas que degradaban a récord general SIN avisar (el mismo patrón silencioso
+que ya costó una sesión entera, ver ADR-0030: 0,0% de legisladores con dato
+condicionado real sobre Ley Bases, nadie se enteró hasta medirlo a propósito). Ahora
+cada salida loguea una línea agregada, y `nowcast()` expone `record_por_tema.
+frac_condicionado_real` en su payload — qué fracción de la predicción usó dato
+condicionado real vs. cuánto cayó en silencio al récord general. Detalle completo en
+el ADR-0031.
+
 ---
 
 # PARTE III — LO PENDIENTE

@@ -1,0 +1,555 @@
+{
+ "k_shrink": 5.0,
+ "umbrales_n": [
+  3,
+  5,
+  10
+ ],
+ "recambios": [
+  "2015-12-10",
+  "2019-12-10",
+  "2023-12-10"
+ ],
+ "por_recambio": [
+  {
+   "recambio": "2015-12-10",
+   "ventana_antes": [
+    "1900-01-01",
+    "2015-12-10"
+   ],
+   "ventana_despues": [
+    "2015-12-10",
+    "2019-12-10"
+   ],
+   "n_legisladores_activos_antes": 1440,
+   "n_legisladores_activos_despues": 464,
+   "n_continuadores": 221,
+   "frac_continuadores_sobre_activos_antes": 0.1535,
+   "composicion_bloque_linaje_OTRO_o_PROVINCIAL": {
+    "todos_los_activos_antes": 0.7083,
+    "solo_continuadores": 0.2805
+   },
+   "correlacion_GENERAL_por_umbral": {
+    "n>=3": {
+     "n_pares": 221,
+     "correlacion": -0.1553
+    },
+    "n>=5": {
+     "n_pares": 221,
+     "correlacion": -0.1553
+    },
+    "n>=10": {
+     "n_pares": 221,
+     "correlacion": -0.1553
+    }
+   },
+   "correlacion_TEMATICA_por_umbral": {
+    "n>=3": {
+     "n_pares": 2667,
+     "correlacion": -0.0828
+    },
+    "n>=5": {
+     "n_pares": 2179,
+     "correlacion": -0.1282
+    },
+    "n>=10": {
+     "n_pares": 1475,
+     "correlacion": -0.1873
+    }
+   },
+   "correlacion_tematica_por_area_n5": {
+    "AMB": {
+     "n_pares": 103,
+     "correlacion": 0.303
+    },
+    "CULT": {
+     "n_pares": 75,
+     "correlacion": -0.0382
+    },
+    "CYT": {
+     "n_pares": 20,
+     "correlacion": -0.5794
+    },
+    "DEF": {
+     "n_pares": 165,
+     "correlacion": 0.1922
+    },
+    "DERSOC": {
+     "n_pares": 187,
+     "correlacion": -0.3512
+    },
+    "DESREG": {
+     "n_pares": 191,
+     "correlacion": -0.2836
+    },
+    "DESSOC": {
+     "n_pares": 92,
+     "correlacion": -0.3472
+    },
+    "ECON": {
+     "n_pares": 214,
+     "correlacion": -0.2766
+    },
+    "EDU": {
+     "n_pares": 0,
+     "correlacion": null
+    },
+    "ENER": {
+     "n_pares": 50,
+     "correlacion": 0.6206
+    },
+    "INFRA": {
+     "n_pares": 183,
+     "correlacion": 0.2395
+    },
+    "JUST": {
+     "n_pares": 205,
+     "correlacion": -0.3763
+    },
+    "POLINST": {
+     "n_pares": 189,
+     "correlacion": -0.3978
+    },
+    "PROD": {
+     "n_pares": 176,
+     "correlacion": -0.1894
+    },
+    "SALUD": {
+     "n_pares": 132,
+     "correlacion": 0.2477
+    },
+    "TRAB": {
+     "n_pares": 197,
+     "correlacion": -0.2766
+    }
+   }
+  },
+  {
+   "recambio": "2019-12-10",
+   "ventana_antes": [
+    "2015-12-10",
+    "2019-12-10"
+   ],
+   "ventana_despues": [
+    "2019-12-10",
+    "2023-12-10"
+   ],
+   "n_legisladores_activos_antes": 464,
+   "n_legisladores_activos_despues": 469,
+   "n_continuadores": 214,
+   "frac_continuadores_sobre_activos_antes": 0.4612,
+   "composicion_bloque_linaje_OTRO_o_PROVINCIAL": {
+    "todos_los_activos_antes": 0.1659,
+    "solo_continuadores": 0.1542
+   },
+   "correlacion_GENERAL_por_umbral": {
+    "n>=3": {
+     "n_pares": 210,
+     "correlacion": 0.2025
+    },
+    "n>=5": {
+     "n_pares": 209,
+     "correlacion": 0.1997
+    },
+    "n>=10": {
+     "n_pares": 202,
+     "correlacion": 0.1954
+    }
+   },
+   "correlacion_TEMATICA_por_umbral": {
+    "n>=3": {
+     "n_pares": 821,
+     "correlacion": -0.0215
+    },
+    "n>=5": {
+     "n_pares": 517,
+     "correlacion": -0.1253
+    },
+    "n>=10": {
+     "n_pares": 247,
+     "correlacion": -0.3249
+    }
+   },
+   "correlacion_tematica_por_area_n5": {
+    "AMB": {
+     "n_pares": 9,
+     "correlacion": 0.6393
+    },
+    "CULT": {
+     "n_pares": 7,
+     "correlacion": -0.4291
+    },
+    "CYT": {
+     "n_pares": 1,
+     "correlacion": null
+    },
+    "DEF": {
+     "n_pares": 41,
+     "correlacion": 0.2415
+    },
+    "DERSOC": {
+     "n_pares": 48,
+     "correlacion": -0.3953
+    },
+    "DESREG": {
+     "n_pares": 47,
+     "correlacion": -0.4284
+    },
+    "DESSOC": {
+     "n_pares": 8,
+     "correlacion": -0.1894
+    },
+    "ECON": {
+     "n_pares": 97,
+     "correlacion": -0.1908
+    },
+    "EDU": {
+     "n_pares": 0,
+     "correlacion": null
+    },
+    "ENER": {
+     "n_pares": 0,
+     "correlacion": null
+    },
+    "INFRA": {
+     "n_pares": 42,
+     "correlacion": 0.0578
+    },
+    "JUST": {
+     "n_pares": 56,
+     "correlacion": -0.5072
+    },
+    "POLINST": {
+     "n_pares": 48,
+     "correlacion": -0.3212
+    },
+    "PROD": {
+     "n_pares": 54,
+     "correlacion": -0.4285
+    },
+    "SALUD": {
+     "n_pares": 15,
+     "correlacion": -0.1871
+    },
+    "TRAB": {
+     "n_pares": 44,
+     "correlacion": -0.4009
+    }
+   }
+  },
+  {
+   "recambio": "2023-12-10",
+   "ventana_antes": [
+    "2019-12-10",
+    "2023-12-10"
+   ],
+   "ventana_despues": [
+    "2023-12-10",
+    "2100-01-01"
+   ],
+   "n_legisladores_activos_antes": 469,
+   "n_legisladores_activos_despues": 468,
+   "n_continuadores": 210,
+   "frac_continuadores_sobre_activos_antes": 0.4478,
+   "composicion_bloque_linaje_OTRO_o_PROVINCIAL": {
+    "todos_los_activos_antes": 0.113,
+    "solo_continuadores": 0.1476
+   },
+   "correlacion_GENERAL_por_umbral": {
+    "n>=3": {
+     "n_pares": 206,
+     "correlacion": -0.2033
+    },
+    "n>=5": {
+     "n_pares": 204,
+     "correlacion": -0.2056
+    },
+    "n>=10": {
+     "n_pares": 196,
+     "correlacion": -0.2175
+    }
+   },
+   "correlacion_TEMATICA_por_umbral": {
+    "n>=3": {
+     "n_pares": 742,
+     "correlacion": 0.0421
+    },
+    "n>=5": {
+     "n_pares": 427,
+     "correlacion": 0.0527
+    },
+    "n>=10": {
+     "n_pares": 187,
+     "correlacion": -0.0621
+    }
+   },
+   "correlacion_tematica_por_area_n5": {
+    "AMB": {
+     "n_pares": 0,
+     "correlacion": null
+    },
+    "CULT": {
+     "n_pares": 0,
+     "correlacion": null
+    },
+    "CYT": {
+     "n_pares": 25,
+     "correlacion": -0.0793
+    },
+    "DEF": {
+     "n_pares": 45,
+     "correlacion": -0.5117
+    },
+    "DERSOC": {
+     "n_pares": 34,
+     "correlacion": -0.1744
+    },
+    "DESREG": {
+     "n_pares": 7,
+     "correlacion": -0.418
+    },
+    "DESSOC": {
+     "n_pares": 0,
+     "correlacion": null
+    },
+    "ECON": {
+     "n_pares": 91,
+     "correlacion": -0.1192
+    },
+    "EDU": {
+     "n_pares": 46,
+     "correlacion": 0.4549
+    },
+    "ENER": {
+     "n_pares": 0,
+     "correlacion": null
+    },
+    "INFRA": {
+     "n_pares": 0,
+     "correlacion": null
+    },
+    "JUST": {
+     "n_pares": 50,
+     "correlacion": -0.5532
+    },
+    "POLINST": {
+     "n_pares": 44,
+     "correlacion": -0.5389
+    },
+    "PROD": {
+     "n_pares": 0,
+     "correlacion": null
+    },
+    "SALUD": {
+     "n_pares": 46,
+     "correlacion": 0.5846
+    },
+    "TRAB": {
+     "n_pares": 39,
+     "correlacion": 0.5484
+    }
+   }
+  }
+ ],
+ "POOLED_temática": {
+  "n>=3": {
+   "n_pares": 4230,
+   "correlacion": -0.0731
+  },
+  "n>=5": {
+   "n_pares": 3123,
+   "correlacion": -0.1161
+  },
+  "n>=10": {
+   "n_pares": 1909,
+   "correlacion": -0.1845
+  }
+ },
+ "POOLED_general_contraste": {
+  "n>=3": {
+   "n_pares": 637,
+   "correlacion": -0.0167
+  },
+  "n>=5": {
+   "n_pares": 634,
+   "correlacion": -0.0178
+  },
+  "n>=10": {
+   "n_pares": 619,
+   "correlacion": -0.0212
+  }
+ },
+ "brecha_pooled_n5": -0.0983,
+ "caso_pichetto_leg_5daaefa4774c": [
+  {
+   "legislador_id": "leg:5daaefa4774c",
+   "area": "AMB",
+   "n_antes": 44,
+   "share_antes": 0.9772727272727273,
+   "n_despues": 2,
+   "share_despues": 1.0,
+   "recambio": "2015-12-10",
+   "prior_antes": 0.9433910789796753,
+   "prior_despues": 0.9605331939362258,
+   "s_antes": 0.9738154162224159,
+   "s_despues": 0.9718094242401614
+  },
+  {
+   "legislador_id": "leg:5daaefa4774c",
+   "area": "CULT",
+   "n_antes": 28,
+   "share_antes": 1.0,
+   "n_despues": 2,
+   "share_despues": 1.0,
+   "recambio": "2015-12-10",
+   "prior_antes": 0.9026391222694474,
+   "prior_despues": 0.9384560654571327,
+   "s_antes": 0.9852483518590072,
+   "s_despues": 0.9560400467550948
+  },
+  {
+   "legislador_id": "leg:5daaefa4774c",
+   "area": "DEF",
+   "n_antes": 119,
+   "share_antes": 0.9915966386554622,
+   "n_despues": 3,
+   "share_despues": 1.0,
+   "recambio": "2015-12-10",
+   "prior_antes": 0.8843709160033266,
+   "prior_despues": 0.9126101954771944,
+   "s_antes": 0.9872730208065857,
+   "s_despues": 0.9453813721732465
+  },
+  {
+   "legislador_id": "leg:5daaefa4774c",
+   "area": "DERSOC",
+   "n_antes": 77,
+   "share_antes": 0.948051948051948,
+   "n_despues": 13,
+   "share_despues": 1.0,
+   "recambio": "2015-12-10",
+   "prior_antes": 0.8965707710011508,
+   "prior_despues": 0.7927469256677372,
+   "s_antes": 0.9449128518903142,
+   "s_despues": 0.9424297015743713
+  },
+  {
+   "legislador_id": "leg:5daaefa4774c",
+   "area": "DESREG",
+   "n_antes": 124,
+   "share_antes": 0.967741935483871,
+   "n_despues": 17,
+   "share_despues": 1.0,
+   "recambio": "2015-12-10",
+   "prior_antes": 0.8621397720031155,
+   "prior_despues": 0.7785469819539514,
+   "s_antes": 0.9636488283722138,
+   "s_despues": 0.949669768625898
+  },
+  {
+   "legislador_id": "leg:5daaefa4774c",
+   "area": "DESSOC",
+   "n_antes": 25,
+   "share_antes": 1.0,
+   "n_despues": 4,
+   "share_despues": 1.0,
+   "recambio": "2015-12-10",
+   "prior_antes": 0.8877005347593583,
+   "prior_despues": 0.7236499843928832,
+   "s_antes": 0.981283422459893,
+   "s_despues": 0.8464722135516018
+  },
+  {
+   "legislador_id": "leg:5daaefa4774c",
+   "area": "ECON",
+   "n_antes": 250,
+   "share_antes": 0.98,
+   "n_despues": 37,
+   "share_despues": 1.0,
+   "recambio": "2015-12-10",
+   "prior_antes": 0.770885860306644,
+   "prior_despues": 0.716945943654808,
+   "s_antes": 0.9758997227511107,
+   "s_despues": 0.9663030885303343
+  },
+  {
+   "legislador_id": "leg:5daaefa4774c",
+   "area": "INFRA",
+   "n_antes": 75,
+   "share_antes": 0.9866666666666667,
+   "n_despues": 9,
+   "share_despues": 1.0,
+   "recambio": "2015-12-10",
+   "prior_antes": 0.8036396181384248,
+   "prior_despues": 0.8226315789473684,
+   "s_antes": 0.9752274761336516,
+   "s_despues": 0.9366541353383459
+  },
+  {
+   "legislador_id": "leg:5daaefa4774c",
+   "area": "JUST",
+   "n_antes": 220,
+   "share_antes": 0.9818181818181818,
+   "n_despues": 20,
+   "share_despues": 1.0,
+   "recambio": "2015-12-10",
+   "prior_antes": 0.8727598228587581,
+   "prior_despues": 0.8270579070371332,
+   "s_antes": 0.9793946627301946,
+   "s_despues": 0.9654115814074267
+  },
+  {
+   "legislador_id": "leg:5daaefa4774c",
+   "area": "POLINST",
+   "n_antes": 79,
+   "share_antes": 0.9113924050632911,
+   "n_despues": 10,
+   "share_despues": 1.0,
+   "recambio": "2015-12-10",
+   "prior_antes": 0.7447453801664551,
+   "prior_despues": 0.758477508650519,
+   "s_antes": 0.9014729392956223,
+   "s_despues": 0.9194925028835063
+  },
+  {
+   "legislador_id": "leg:5daaefa4774c",
+   "area": "PROD",
+   "n_antes": 81,
+   "share_antes": 0.9876543209876543,
+   "n_despues": 7,
+   "share_despues": 1.0,
+   "recambio": "2015-12-10",
+   "prior_antes": 0.8691593631696313,
+   "prior_despues": 0.8678610546080425,
+   "s_antes": 0.9807650792540484,
+   "s_despues": 0.9449421060866844
+  },
+  {
+   "legislador_id": "leg:5daaefa4774c",
+   "area": "SALUD",
+   "n_antes": 48,
+   "share_antes": 0.9791666666666666,
+   "n_despues": 1,
+   "share_despues": 1.0,
+   "recambio": "2015-12-10",
+   "prior_antes": 0.8955499192990547,
+   "prior_despues": 0.8964096527369041,
+   "s_antes": 0.9712782942734957,
+   "s_despues": 0.9136747106140867
+  },
+  {
+   "legislador_id": "leg:5daaefa4774c",
+   "area": "TRAB",
+   "n_antes": 92,
+   "share_antes": 0.9347826086956522,
+   "n_despues": 8,
+   "share_despues": 1.0,
+   "recambio": "2015-12-10",
+   "prior_antes": 0.8522830951036191,
+   "prior_despues": 0.705041064854149,
+   "s_antes": 0.9305300564486402,
+   "s_despues": 0.8865542557131343
+  }
+ ],
+ "VEREDICTO_FASE_1": "EL_GUARD_TIENE_RAZON_TAMBIEN_PARA_EL_TEMA"
+}

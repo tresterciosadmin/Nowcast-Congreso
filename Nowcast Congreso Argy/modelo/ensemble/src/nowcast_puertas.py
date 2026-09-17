@@ -370,7 +370,8 @@ def alineacion_individual_por_area(votos, cond_por_acta, origen_map: dict,
                                    origen: str | None, areas_objetivo: list,
                                    ind_general: dict, k_shrink: float = K_SHRINK_RECORD,
                                    era_desde: str | None = None, hasta=None,
-                                   guard_era: bool | None = None) -> dict:
+                                   guard_era: bool | None = None,
+                                   devolver_stats: bool = False):
     """FASE 1 de PROMPT-MULTITEMA-V2.md (URGENTE 8): el récord del legislador
     CONDICIONADO por el/los tema(s) del proyecto — medido (censo completo,
     `evaluacion/baseline/outputs/fase1_rec_por_tema_censo.json`): 11,1% menos
@@ -396,18 +397,38 @@ def alineacion_individual_por_area(votos, cond_por_acta, origen_map: dict,
     (`ind_general`), sin cambios: esto sólo cambia QUÉ récord se usa, no
     cuánto se confía en tener uno (un solo grado de libertad, como el brazo de
     control de FASE 0). Un legislador sin ningún voto en NINGUNA área objetivo
-    cae a su propio récord general (mismo valor que ya tenía en `ind_general`)."""
+    cae a su propio récord general (mismo valor que ya tenía en `ind_general`).
+
+    `devolver_stats=True` (FASE 3, PROMPT-GUARD-DE-ERA-POR-TEMA.md, 2026-09-17):
+    devuelve `(dict, stats)` en vez de sólo el dict. `stats` = {n_con_dato_real,
+    n_total, frac_condicionado_real}. **Por qué existe:** este cálculo puede
+    degradar a récord general para TODOS los legisladores sin que nada lo avise
+    — pasó de verdad, 0,0% exacto, corriendo `nowcast()` sobre Ley Bases a sólo
+    53 días de un recambio de gobierno (ADR-0030): el guard de era dejaba una
+    sola acta clasificada en la ventana. Nadie lo vio hasta que alguien lo midió
+    a propósito. Cada salida de esta función ahora LOGUEA (una línea agregada,
+    no una por fila — mismo patrón que `bloque.combinar_temas`) cuánto de lo
+    pedido se resolvió con dato real."""
+    def _salir(motivo: str, n_real: int = 0):
+        n_total = len(ind_general)
+        frac = (n_real / n_total) if n_total else 0.0
+        logger.info("alineacion_individual_por_area: %d/%d legisladores con dato "
+                   "condicionado real (%.1f%%) -- %s, caigo a récord general",
+                   n_real, n_total, frac * 100, motivo)
+        stats = {"n_con_dato_real": n_real, "n_total": n_total, "frac_condicionado_real": frac}
+        return (dict(ind_general), stats) if devolver_stats else dict(ind_general)
+
     areas_norm = [(str(a).upper(), float(c)) for a, c in areas_objetivo if c and c > 0]
     if not areas_norm:
-        return dict(ind_general)
+        return _salir("sin áreas objetivo válidas (vacío o todas AUX/peso<=0)")
     d = _alineacion_base(votos, origen_map, origen, era_desde, hasta, guard_era)
     if d is None or cond_por_acta is None or cond_por_acta.empty:
-        return dict(ind_general)
+        return _salir("sin votos en la ventana walk-forward o sin cond_por_acta")
     tpa_col = cond_por_acta.columns[0]
     tpa = cond_por_acta[[tpa_col, "todas_ids"]].rename(columns={tpa_col: "acta_id"}) \
         if "todas_ids" in cond_por_acta.columns else None
     if tpa is None:
-        return dict(ind_general)
+        return _salir("cond_por_acta sin columna todas_ids")
     tpa = tpa.drop_duplicates("acta_id")
     tpa["areas"] = tpa["todas_ids"].map(_areas_de_todas_ids)
     d = d.merge(tpa[["acta_id", "areas"]], on="acta_id", how="left")
@@ -417,7 +438,7 @@ def alineacion_individual_por_area(votos, cond_por_acta, origen_map: dict,
     dx = d[d["areas_match"].map(len) > 0].explode("areas_match").rename(
         columns={"areas_match": "area"})
     if dx.empty:
-        return dict(ind_general)
+        return _salir(f"0 actas de la ventana matchean las áreas objetivo {sorted(objetivo)}")
     g = dx.groupby(["camara", "legislador_id", "area"]).agg(
         n_area=("_af", "size"), n_af_area=("_af", "sum"))
     por_area: dict = {}
@@ -447,6 +468,14 @@ def alineacion_individual_por_area(votos, cond_por_acta, origen_map: dict,
             den += w
         p_combinado = float(1.0 / (1.0 + np.exp(-(num / den)))) if den > 0 else p_general
         out[(camara, lid)] = (p_combinado, n_tot, presencia, n_emit)
+
+    n_total = len(ind_general)
+    n_real = len(por_area)
+    frac = (n_real / n_total) if n_total else 0.0
+    logger.info("alineacion_individual_por_area: %d/%d legisladores con dato condicionado "
+               "real (%.1f%%), área(s)=%s", n_real, n_total, frac * 100, sorted(objetivo))
+    if devolver_stats:
+        return out, {"n_con_dato_real": n_real, "n_total": n_total, "frac_condicionado_real": frac}
     return out
 
 
@@ -746,9 +775,11 @@ def nowcast(camara_origen: str, fecha=None, *, proyecto_id: str | None = None,
         logger.warning("no encontré %s: el récord individual no se puede condicionar "
                        "por origen", PROYECTO_ORIGEN_POR_ACTA)
     ind = alineacion_individual(votos, origen_map, origen, hasta=F)
+    record_por_tema_stats = None
     if RECORD_POR_TEMA and areas_objetivo_ind:
-        ind = alineacion_individual_por_area(votos, cond, origen_map, origen,
-                                             areas_objetivo_ind, ind, hasta=F)
+        ind, record_por_tema_stats = alineacion_individual_por_area(
+            votos, cond, origen_map, origen, areas_objetivo_ind, ind, hasta=F,
+            devolver_stats=True)
 
     # ── A y C: el carácter OBSERVADO, si lo hay ────────────────────────────────
     tabla = tabla_caracter if tabla_caracter is not None else cargar_caracter()
@@ -833,6 +864,12 @@ def nowcast(camara_origen: str, fecha=None, *, proyecto_id: str | None = None,
             "origen": _tablero_camara(cam_o, F, perf_o, sim_o, det_o),
             "revisora": _tablero_camara(cam_r, F, perf_r, sim_r, det_r),
         },
+        "record_por_tema": ({
+            "activo": True, "areas_objetivo": areas_objetivo_ind,
+            "frac_condicionado_real": round(record_por_tema_stats["frac_condicionado_real"], 4),
+            "n_con_dato_real": record_por_tema_stats["n_con_dato_real"],
+            "n_total": record_por_tema_stats["n_total"],
+        } if record_por_tema_stats is not None else {"activo": False}),
     }
 
 

@@ -2,6 +2,40 @@
 
 > Documento vivo. Cada cambio importante en el proyecto se explica acá en lenguaje claro, además de registrarse en `ESTADO-DEL-PROYECTO.md`. Si algo del sistema no se entiende leyendo esto, está mal escrito y hay que arreglarlo.
 
+## Probamos la objeción de Franco sobre el reinicio de historial — y los datos no la respaldan (17-09-2026, más tarde)
+
+Franco hizo una objeción de peso: cuando cambia el gobierno, el sistema le borra a cada
+legislador su historial completo y arranca de cero — pero hay gente con muchos años en
+el Congreso (puso el ejemplo de Pichetto) que ya tenía posición tomada sobre temas
+puntuales mucho antes de ese cambio de gobierno. ¿Tiene sentido borrar también eso?
+
+Se armó la prueba que decide la pregunta, gratis, con los datos que ya había: para cada
+legislador que atravesó alguno de los tres cambios de gobierno de la base (2015, 2019,
+2023), ¿su posición sobre un tema puntual (antes del cambio) predice su posición sobre
+ese mismo tema (después)? Y, para comparar, ¿lo mismo pasa con su alineamiento general
+con el Presidente de turno?
+
+El resultado es claro y va en contra de la intuición: **la posición por tema NO predice
+mejor que el alineamiento general — predice PEOR.** No hay una reserva de historia
+sustantiva que se esté tirando sin necesidad. Se probó con el rigor que pedía la
+objeción (varios cortes, varios umbrales, corrigiendo el ruido de las muestras chicas) y
+el resultado se sostuvo en los tres cambios de gobierno. Así que el sistema sigue
+funcionando exactamente igual que hasta ahora: no se cambia nada del cálculo.
+
+Sí apareció algo interesante, aunque no cambia la conclusión: en el último cambio de
+gobierno (el que importa hoy), temas como salud, trabajo y educación mostraron algo de
+persistencia real — pero temas como justicia, instituciones o desregulación se
+invirtieron con el cambio de gobierno, más todavía que el alineamiento general. Tiene
+sentido: son justamente los temas que más se politizan según quién gobierna. Queda
+anotado para el futuro, no se hizo nada con eso ahora.
+
+Y se aprovechó para arreglar algo real que apareció mientras se investigaba esto: el
+sistema podía quedarse sin ningún dato para condicionar por tema y no avisar — pasó
+exactamente eso con Ley Bases (se descubrió la semana pasada) y nadie se enteró hasta
+que alguien lo midió a propósito. Ahora, cada vez que corre, el sistema deja registrado
+qué porcentaje de la predicción usó dato real por tema y qué porcentaje tuvo que
+recurrir al historial general — así, si vuelve a pasar, se nota en el momento.
+
 ## Veredicto: cerramos la idea de "bisagras por capítulo", pero encontramos un camino real para revivir la otra pregunta (17-09-2026)
 
 Franco pidió terminar de una vez esta discusión: armar tres pruebas con la vara puesta

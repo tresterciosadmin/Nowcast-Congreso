@@ -1,0 +1,97 @@
+provincia,periodo_desde,periodo_hasta,gobernador,espacio,ejecutivo_nacional,coincide_con_ejecutivo,confianza,fuente,nota
+Buenos Aires,2011-12-10,2015-12-09,Daniel Scioli,FpV-PJ,FpV (CFK),si,media,conocimiento-modelo,
+Buenos Aires,2015-12-10,2019-12-09,Maria Eugenia Vidal,Cambiemos-PRO,Cambiemos (Macri),si,media,conocimiento-modelo,
+Buenos Aires,2019-12-10,2023-12-09,Axel Kicillof,FdT-PJ,FdT (A. Fernandez),si,media,conocimiento-modelo,
+Buenos Aires,2023-12-10,2027-12-09,Axel Kicillof,PJ-Fuerza Patria,LLA (Milei),no,alta,es.wikipedia Anexo:Gobernadores_de_Argentina (2026-09-21),
+CABA,2011-12-10,2015-12-09,Mauricio Macri,PRO,FpV (CFK),no,media,conocimiento-modelo,
+CABA,2015-12-10,2019-12-09,Horacio Rodriguez Larreta,Cambiemos-PRO,Cambiemos (Macri),si,media,conocimiento-modelo,
+CABA,2019-12-10,2023-12-09,Horacio Rodriguez Larreta,JxC-PRO,FdT (A. Fernandez),no,media,conocimiento-modelo,
+CABA,2023-12-10,2027-12-09,Jorge Macri,PRO,LLA (Milei),parcial,alta,es.wikipedia Anexo:Gobernadores_de_Argentina (2026-09-21),coincide-espacio: alianza PRO-LLA variable; parcial es criterio subjetivo
+Catamarca,2011-12-10,2015-12-09,Lucia Corpacci,FpV-PJ,FpV (CFK),si,media,conocimiento-modelo,
+Catamarca,2015-12-10,2019-12-09,Lucia Corpacci,FpV-PJ,Cambiemos (Macri),no,media,conocimiento-modelo,
+Catamarca,2019-12-10,2023-12-09,Raul Jalil,FdT-PJ,FdT (A. Fernandez),si,media,conocimiento-modelo,
+Catamarca,2023-12-10,2027-12-09,Raul Jalil,PJ-Elijo Catamarca,LLA (Milei),no,alta,es.wikipedia Anexo:Gobernadores_de_Argentina (2026-09-21),
+Chaco,2011-12-10,2015-12-09,Jorge Capitanich,FpV-PJ,FpV (CFK),si,media,conocimiento-modelo,dejo el cargo en 2013 para ser jefe de gabinete; asumio Juan Carlos Bacileff Ivanoff
+Chaco,2015-12-10,2019-12-09,Domingo Peppo,FpV-PJ,Cambiemos (Macri),no,media,conocimiento-modelo,
+Chaco,2019-12-10,2023-12-09,Jorge Capitanich,FdT-PJ,FdT (A. Fernandez),si,media,conocimiento-modelo,
+Chaco,2023-12-10,2027-12-09,Leandro Zdero,UCR-Chaco Puede,LLA (Milei),parcial,media,es.wikipedia Anexo:Gobernadores_de_Argentina (2026-09-21),parcial es criterio subjetivo
+Chubut,2011-12-10,2015-12-09,Martin Buzzi,FpV-PJ,FpV (CFK),si,media,conocimiento-modelo,
+Chubut,2015-12-10,2019-12-09,Mario Das Neves,Chubut Somos Todos (PJ disidente),Cambiemos (Macri),parcial,baja,conocimiento-modelo,fallecio en 2017; asumio Mariano Arcioni
+Chubut,2019-12-10,2023-12-09,Mariano Arcioni,Chubut al Frente (PJ aliado),FdT (A. Fernandez),si,baja,conocimiento-modelo,
+Chubut,2023-12-10,2027-12-09,Ignacio Torres,PRO-Despierta Chubut,LLA (Milei),parcial,alta,es.wikipedia Anexo:Gobernadores_de_Argentina (2026-09-21),parcial es criterio subjetivo
+Cordoba,2011-12-10,2015-12-09,Jose Manuel de la Sota,PJ-Union por Cordoba,FpV (CFK),no,media,conocimiento-modelo,PJ disidente del kirchnerismo
+Cordoba,2015-12-10,2019-12-09,Juan Schiaretti,PJ-Hacemos por Cordoba,Cambiemos (Macri),parcial,media,conocimiento-modelo,peronismo federal dialoguista
+Cordoba,2019-12-10,2023-12-09,Juan Schiaretti,PJ-Hacemos por Cordoba,FdT (A. Fernandez),parcial,media,conocimiento-modelo,peronismo cordobes fuera del FdT
+Cordoba,2023-12-10,2027-12-09,Martin Llaryora,PJ-Hacemos por Cordoba,LLA (Milei),no,alta,es.wikipedia Anexo:Gobernadores_de_Argentina (2026-09-21),
+Corrientes,2011-12-10,2015-12-09,Ricardo Colombi,UCR-ECO,FpV (CFK),no,baja,conocimiento-modelo,NOMBRE sin verificar; el espacio (UCR/ECO) es lo que carga
+Corrientes,2015-12-10,2019-12-09,Ricardo Colombi,UCR-ECO+Cambiemos,Cambiemos (Macri),si,baja,conocimiento-modelo,NOMBRE sin verificar (Valdes asumio en 2017); espacio UCR
+Corrientes,2019-12-10,2023-12-09,Gustavo Valdes,UCR-ECO+Vamos Corrientes (JxC),FdT (A. Fernandez),no,media,conocimiento-modelo,
+Corrientes,2023-12-10,2027-12-09,Gustavo Valdes,UCR-Vamos Corrientes,LLA (Milei),no,media,es.wikipedia Anexo:Gobernadores_de_Argentina (2026-09-21),la fuente dice 'Juan Pablo Valdes': error de la fuente; parcial vs no sin definir
+Entre Rios,2011-12-10,2015-12-09,Sergio Urribarri,FpV-PJ,FpV (CFK),si,media,conocimiento-modelo,
+Entre Rios,2015-12-10,2019-12-09,Gustavo Bordet,PJ-FpV,Cambiemos (Macri),parcial,media,conocimiento-modelo,dialoguista
+Entre Rios,2019-12-10,2023-12-09,Gustavo Bordet,FdT-PJ,FdT (A. Fernandez),si,media,conocimiento-modelo,
+Entre Rios,2023-12-10,2027-12-09,Rogelio Frigerio,PRO-Juntos por Entre Rios,LLA (Milei),parcial,alta,es.wikipedia Anexo:Gobernadores_de_Argentina (2026-09-21),parcial es criterio subjetivo
+Formosa,2011-12-10,2015-12-09,Gildo Insfran,FpV-PJ,FpV (CFK),si,media,conocimiento-modelo,
+Formosa,2015-12-10,2019-12-09,Gildo Insfran,FpV-PJ,Cambiemos (Macri),no,media,conocimiento-modelo,
+Formosa,2019-12-10,2023-12-09,Gildo Insfran,FdT-PJ,FdT (A. Fernandez),si,media,conocimiento-modelo,
+Formosa,2023-12-10,2027-12-09,Gildo Insfran,PJ-Fuerza Patria,LLA (Milei),no,alta,es.wikipedia Anexo:Gobernadores_de_Argentina (2026-09-21),
+Jujuy,2011-12-10,2015-12-09,Eduardo Fellner,FpV-PJ,FpV (CFK),si,media,conocimiento-modelo,
+Jujuy,2015-12-10,2019-12-09,Gerardo Morales,UCR-Cambiemos,Cambiemos (Macri),si,media,conocimiento-modelo,
+Jujuy,2019-12-10,2023-12-09,Gerardo Morales,UCR-JxC,FdT (A. Fernandez),no,media,conocimiento-modelo,
+Jujuy,2023-12-10,2027-12-09,Carlos Sadir,UCR-Jujuy Crece,LLA (Milei),parcial,media,es.wikipedia Anexo:Gobernadores_de_Argentina (2026-09-21),parcial es criterio subjetivo
+La Pampa,2011-12-10,2015-12-09,Oscar Mario Jorge,FpV-PJ,FpV (CFK),si,media,conocimiento-modelo,
+La Pampa,2015-12-10,2019-12-09,Carlos Verna,PJ,Cambiemos (Macri),no,media,conocimiento-modelo,
+La Pampa,2019-12-10,2023-12-09,Sergio Ziliotto,FdT-PJ,FdT (A. Fernandez),si,media,conocimiento-modelo,
+La Pampa,2023-12-10,2027-12-09,Sergio Ziliotto,PJ-Fuerza Patria,LLA (Milei),no,alta,es.wikipedia Anexo:Gobernadores_de_Argentina (2026-09-21),
+La Rioja,2011-12-10,2015-12-09,Luis Beder Herrera,FpV-PJ,FpV (CFK),si,media,conocimiento-modelo,
+La Rioja,2015-12-10,2019-12-09,Sergio Casas,FpV-PJ,Cambiemos (Macri),no,media,conocimiento-modelo,
+La Rioja,2019-12-10,2023-12-09,Ricardo Quintela,FdT-PJ,FdT (A. Fernandez),si,media,conocimiento-modelo,
+La Rioja,2023-12-10,2027-12-09,Ricardo Quintela,PJ-Fuerza Patria,LLA (Milei),no,alta,es.wikipedia Anexo:Gobernadores_de_Argentina (2026-09-21),
+Mendoza,2011-12-10,2015-12-09,Francisco Perez,FpV-PJ,FpV (CFK),si,media,conocimiento-modelo,
+Mendoza,2015-12-10,2019-12-09,Alfredo Cornejo,UCR-Cambiemos,Cambiemos (Macri),si,media,conocimiento-modelo,
+Mendoza,2019-12-10,2023-12-09,Rodolfo Suarez,UCR-JxC,FdT (A. Fernandez),no,media,conocimiento-modelo,
+Mendoza,2023-12-10,2027-12-09,Alfredo Cornejo,UCR-Cambia Mendoza,LLA (Milei),parcial,alta,es.wikipedia Anexo:Gobernadores_de_Argentina (2026-09-21),alianza electoral con LLA en 2025; parcial es criterio subjetivo
+Misiones,2011-12-10,2015-12-09,Maurice Closs,FpV-Frente Renovador de la Concordia,FpV (CFK),si,media,conocimiento-modelo,
+Misiones,2015-12-10,2019-12-09,Hugo Passalacqua,Frente Renovador de la Concordia,Cambiemos (Macri),parcial,baja,conocimiento-modelo,NOMBRE sin verificar (el gobernador 2015-19 fue Passalacqua o Closs); espacio provincialista
+Misiones,2019-12-10,2023-12-09,Oscar Herrera Ahuad,Frente Renovador de la Concordia,FdT (A. Fernandez),parcial,baja,conocimiento-modelo,
+Misiones,2023-12-10,2027-12-09,Hugo Passalacqua,Frente Renovador de la Concordia,LLA (Milei),parcial,media,es.wikipedia Anexo:Gobernadores_de_Argentina (2026-09-21),parcial es criterio subjetivo
+Neuquen,2011-12-10,2015-12-09,Jorge Sapag,MPN,FpV (CFK),parcial,media,conocimiento-modelo,
+Neuquen,2015-12-10,2019-12-09,Omar Gutierrez,MPN,Cambiemos (Macri),parcial,media,conocimiento-modelo,
+Neuquen,2019-12-10,2023-12-09,Omar Gutierrez,MPN,FdT (A. Fernandez),parcial,media,conocimiento-modelo,
+Neuquen,2023-12-10,2027-12-09,Rolando Figueroa,Comunidad-La Neuquinidad,LLA (Milei),parcial,media,es.wikipedia Anexo:Gobernadores_de_Argentina (2026-09-21),parcial es criterio subjetivo
+Rio Negro,2011-12-10,2015-12-09,Carlos Soria,FpV-PJ,FpV (CFK),si,media,conocimiento-modelo,fallecio en dic-2012; asumio Alberto Weretilneck
+Rio Negro,2015-12-10,2019-12-09,Alberto Weretilneck,JSRN,Cambiemos (Macri),parcial,media,conocimiento-modelo,
+Rio Negro,2019-12-10,2023-12-09,Arabela Carreras,JSRN-FdT,FdT (A. Fernandez),si,media,conocimiento-modelo,
+Rio Negro,2023-12-10,2027-12-09,Alberto Weretilneck,JSRN-Juntos Somos Rio Negro,LLA (Milei),parcial,media,es.wikipedia Anexo:Gobernadores_de_Argentina (2026-09-21),parcial es criterio subjetivo
+Salta,2011-12-10,2015-12-09,Juan Manuel Urtubey,FpV-PJ,FpV (CFK),si,media,conocimiento-modelo,
+Salta,2015-12-10,2019-12-09,Juan Manuel Urtubey,PJ (peronismo federal),Cambiemos (Macri),parcial,media,conocimiento-modelo,
+Salta,2019-12-10,2023-12-09,Gustavo Saenz,PJ-Salta Primero,FdT (A. Fernandez),parcial,media,conocimiento-modelo,
+Salta,2023-12-10,2027-12-09,Gustavo Saenz,PAIS-Innovacion Federal,LLA (Milei),parcial,media,es.wikipedia Anexo:Gobernadores_de_Argentina (2026-09-21),parcial es criterio subjetivo
+San Juan,2011-12-10,2015-12-09,Jose Luis Gioja,FpV-PJ,FpV (CFK),si,media,conocimiento-modelo,
+San Juan,2015-12-10,2019-12-09,Sergio Uñac,PJ,Cambiemos (Macri),no,media,conocimiento-modelo,
+San Juan,2019-12-10,2023-12-09,Sergio Uñac,FdT-PJ,FdT (A. Fernandez),si,media,conocimiento-modelo,
+San Juan,2023-12-10,2027-12-09,Marcelo Orrego,Por San Juan (JxC),LLA (Milei),parcial,media,es.wikipedia Anexo:Gobernadores_de_Argentina (2026-09-21),parcial es criterio subjetivo
+San Luis,2011-12-10,2015-12-09,Claudio Poggi,Frente Unidos por San Luis,FpV (CFK),no,baja,conocimiento-modelo,NOMBRE sin verificar (Poggi 2011-15 vs A. Rodriguez Saa); espacio peronismo federal
+San Luis,2015-12-10,2019-12-09,Alberto Rodriguez Saa,PJ-peronismo federal,Cambiemos (Macri),no,baja,conocimiento-modelo,
+San Luis,2019-12-10,2023-12-09,Alberto Rodriguez Saa,PJ-FdT,FdT (A. Fernandez),si,baja,conocimiento-modelo,
+San Luis,2023-12-10,2027-12-09,Claudio Poggi,Avanzar-Ahora San Luis,LLA (Milei),parcial,media,es.wikipedia Anexo:Gobernadores_de_Argentina (2026-09-21),parcial es criterio subjetivo
+Santa Cruz,2011-12-10,2015-12-09,Daniel Peralta,FpV-PJ,FpV (CFK),si,media,conocimiento-modelo,
+Santa Cruz,2015-12-10,2019-12-09,Alicia Kirchner,FpV-PJ,Cambiemos (Macri),no,media,conocimiento-modelo,
+Santa Cruz,2019-12-10,2023-12-09,Alicia Kirchner,FdT-PJ,FdT (A. Fernandez),si,media,conocimiento-modelo,
+Santa Cruz,2023-12-10,2027-12-09,Claudio Vidal,SER,LLA (Milei),parcial,media,es.wikipedia Anexo:Gobernadores_de_Argentina (2026-09-21),parcial es criterio subjetivo
+Santa Fe,2011-12-10,2015-12-09,Antonio Bonfatti,Frente Progresista Civico y Social (PS),FpV (CFK),no,media,conocimiento-modelo,
+Santa Fe,2015-12-10,2019-12-09,Miguel Lifschitz,Frente Progresista Civico y Social (PS),Cambiemos (Macri),parcial,media,conocimiento-modelo,
+Santa Fe,2019-12-10,2023-12-09,Omar Perotti,FdT-PJ,FdT (A. Fernandez),si,media,conocimiento-modelo,
+Santa Fe,2023-12-10,2027-12-09,Maximiliano Pullaro,UCR-Unidos para Cambiar,LLA (Milei),parcial,media,es.wikipedia Anexo:Gobernadores_de_Argentina (2026-09-21),parcial es criterio subjetivo
+Santiago del Estero,2011-12-10,2015-12-09,Gerardo Zamora,Frente Civico por Santiago,FpV (CFK),si,media,conocimiento-modelo,aliado del kirchnerismo (radical K)
+Santiago del Estero,2015-12-10,2019-12-09,Claudia Ledesma Abdala,Frente Civico por Santiago,Cambiemos (Macri),parcial,baja,conocimiento-modelo,Zamora fue gobernador 2013-2017 con licencia intermedia: revisar
+Santiago del Estero,2019-12-10,2023-12-09,Gerardo Zamora,Frente Civico por Santiago,FdT (A. Fernandez),si,baja,conocimiento-modelo,
+Santiago del Estero,2023-12-10,2027-12-09,Gerardo Zamora,Frente Civico por Santiago,LLA (Milei),no,baja,es.wikipedia Anexo:Gobernadores_de_Argentina (2026-09-21),la fuente lista 'Elias Suarez / UCR': dato dudoso; se conserva Zamora sin verificar
+Tierra del Fuego,2011-12-10,2015-12-09,Fabiana Rios,ARI-Frente Civico,FpV (CFK),parcial,media,conocimiento-modelo,
+Tierra del Fuego,2015-12-10,2019-12-09,Rosana Bertone,FpV-PJ,Cambiemos (Macri),no,media,conocimiento-modelo,
+Tierra del Fuego,2019-12-10,2023-12-09,Gustavo Melella,FORJA-FdT,FdT (A. Fernandez),si,media,conocimiento-modelo,
+Tierra del Fuego,2023-12-10,2027-12-09,Gustavo Melella,FORJA-Fuerza Patria,LLA (Milei),no,alta,es.wikipedia Anexo:Gobernadores_de_Argentina (2026-09-21),
+Tucuman,2011-12-10,2015-12-09,Jose Alperovich,FpV-PJ,FpV (CFK),si,media,conocimiento-modelo,
+Tucuman,2015-12-10,2019-12-09,Juan Manzur,FpV-PJ,Cambiemos (Macri),no,media,conocimiento-modelo,
+Tucuman,2019-12-10,2023-12-09,Juan Manzur,FdT-PJ,FdT (A. Fernandez),si,media,conocimiento-modelo,licencia 2021-2023 (jefe de gabinete); Osvaldo Jaldo a cargo
+Tucuman,2023-12-10,2027-12-09,Osvaldo Jaldo,PJ-Independencia,LLA (Milei),parcial,alta,es.wikipedia Anexo:Gobernadores_de_Argentina (2026-09-21),parcial es criterio subjetivo

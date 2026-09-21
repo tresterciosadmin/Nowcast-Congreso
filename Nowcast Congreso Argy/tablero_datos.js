@@ -261,6 +261,11 @@ const TABLERO = {
   // ============ HITOS (línea de tiempo humana; el más nuevo ARRIBA) ============
   hitos: [
     {
+      fecha: "2026-09-21",
+      titulo: "Firma tematica del desvio: esta formulacion no capta lo que pasa; la linea sigue abierta",
+      texto: "Se midio si el perfil de en que temas rompe filas cada legislador persiste entre gobiernos: no (r=+0,015). Hallazgos: la rebeldia general tampoco persiste entre eras, y el perfil intra-periodo es agrupamiento por ley, no por tema. Proxima formulacion: con quien se desvia (coalicion de desvio). Tabla de gobernadores curada y apagada. Ver ADR-0032.",
+    },
+    {
       fecha: "2026-09-17",
       titulo: "Probamos la objecion de Franco sobre el reinicio de historial -y los datos no la respaldan",
       texto: "Franco objeto que el sistema borra el historial completo de cada legislador en cada cambio de gobierno, aunque haya gente con muchos anios en el Congreso (ejemplo: Pichetto) con posicion tomada sobre temas puntuales de antes. Se armo la prueba gratis con datos que ya habia: para cada legislador que atraveso un cambio de gobierno (2015, 2019, 2023), su posicion sobre un tema ANTES predice su posicion DESPUES? Resultado claro y contraintuitivo: la posicion por tema NO predice mejor que el alineamiento general con el Presidente -predice PEOR-. No hay historia sustantiva que se este tirando sin necesidad; el sistema sigue igual, no se cambio nada del calculo. Aparecio algo interesante sin cambiar la conclusion: en el ultimo cambio de gobierno, salud/trabajo/educacion mostraron algo de persistencia real, pero justicia/instituciones/desregulacion se invirtieron mas que el alineamiento general -son los temas que mas se politizan segun quien gobierna. Ademas se arreglo algo real: el sistema podia quedarse sin dato para condicionar por tema y no avisar -paso exactamente eso con Ley Bases la semana pasada, nadie se entero hasta medirlo a proposito. Ahora cada corrida deja registrado que porcentaje uso dato real por tema."

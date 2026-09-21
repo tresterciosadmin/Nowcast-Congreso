@@ -2,6 +2,26 @@
 
 > Documento vivo. Cada cambio importante en el proyecto se explica acá en lenguaje claro, además de registrarse en `ESTADO-DEL-PROYECTO.md`. Si algo del sistema no se entiende leyendo esto, está mal escrito y hay que arreglarlo.
 
+## ¿Podemos saber en qué temas rompe filas cada legislador? Todavía no, y aprendimos por qué (21-09-2026)
+
+Franco pidió encontrar a los que negocian: no los que siempre se desvían, sino los que se
+despegan de su bloque **en temas predecibles** (por ejemplo, siempre en energía y nunca en
+seguridad). Para no volver a medir la lealtad de siempre, se le restó a cada legislador su propio
+nivel de desvío general y se miró sólo *dónde* se concentra. Después se preguntó si ese dibujo
+se repite antes y después de un cambio de gobierno.
+
+No se repite: la relación da prácticamente cero, y tampoco sirve para adivinar en qué temas va a
+romper filas después. Pero salieron tres cosas útiles. Una: el nivel general de rebeldía de un
+legislador tampoco se mantiene de un gobierno a otro (depende de qué bloque lo contiene). Dos: lo
+que parecía un perfil temático dentro de un mismo período era en realidad **ley por ley** (las
+votaciones de una misma ley se parecen entre sí) y al separarlas por ley el perfil desaparece;
+la unidad natural no es el tema sino la ley. Tres: con las votaciones realmente reñidas casi no hay
+datos con tema, así que hubo que ampliar la definición (queda dicho). **Esto no significa que los
+pivotes no existan**; significa que esta forma de medirlos no los ve. Lo próximo a probar: mirar
+*con quién* rompe filas cada uno (los que se desvían juntos), en vez de *en qué tema*. Además quedó
+armada, sin usar en nada, la tabla de gobernadores por período (96 filas; los años viejos están sin
+verificar y así figura).
+
 ## Probamos la objeción de Franco sobre el reinicio de historial — y los datos no la respaldan (17-09-2026, más tarde)
 
 Franco hizo una objeción de peso: cuando cambia el gobierno, el sistema le borra a cada

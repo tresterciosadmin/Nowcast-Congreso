@@ -1,0 +1,1425 @@
+{
+ "k_shrink": 5.0,
+ "filtro": "contestada (minoria>=10%)",
+ "FASE1": {
+  "n>=3": {
+   "pooled": {
+    "d_sin_centrar": {
+     "n": 2284,
+     "n_leg": 377,
+     "r": -0.0264,
+     "ic95": [
+      -0.078,
+      0.046
+     ]
+    },
+    "d_CENTRADA": {
+     "n": 2284,
+     "n_leg": 377,
+     "r": 0.024,
+     "ic95": [
+      -0.015,
+      0.065
+     ]
+    },
+    "d_centrada_neta_area": {
+     "n": 2284,
+     "n_leg": 377,
+     "r": 0.0073,
+     "ic95": [
+      -0.037,
+      0.052
+     ]
+    },
+    "record_afirmativo": {
+     "n": 2257,
+     "n_leg": 377,
+     "r": -0.3193,
+     "ic95": [
+      -0.389,
+      -0.252
+     ]
+    }
+   },
+   "por_recambio": {
+    "2015": {
+     "d_sin_centrar": {
+      "n": 1604,
+      "n_leg": 218,
+      "r": -0.0159,
+      "ic95": [
+       -0.081,
+       0.056
+      ]
+     },
+     "d_CENTRADA": {
+      "n": 1604,
+      "n_leg": 218,
+      "r": 0.0398,
+      "ic95": [
+       -0.016,
+       0.099
+      ]
+     },
+     "d_centrada_neta_area": {
+      "n": 1604,
+      "n_leg": 218,
+      "r": 0.0174,
+      "ic95": [
+       -0.045,
+       0.069
+      ]
+     },
+     "record_afirmativo": {
+      "n": 1583,
+      "n_leg": 218,
+      "r": -0.3214,
+      "ic95": [
+       -0.407,
+       -0.225
+      ]
+     }
+    },
+    "2019": {
+     "d_sin_centrar": {
+      "n": 354,
+      "n_leg": 118,
+      "r": -0.1386,
+      "ic95": [
+       -0.227,
+       -0.043
+      ]
+     },
+     "d_CENTRADA": {
+      "n": 354,
+      "n_leg": 118,
+      "r": -0.024,
+      "ic95": [
+       -0.091,
+       0.06
+      ]
+     },
+     "d_centrada_neta_area": {
+      "n": 354,
+      "n_leg": 118,
+      "r": -0.0497,
+      "ic95": [
+       -0.117,
+       0.035
+      ]
+     },
+     "record_afirmativo": {
+      "n": 349,
+      "n_leg": 118,
+      "r": -0.4103,
+      "ic95": [
+       -0.541,
+       -0.252
+      ]
+     }
+    },
+    "2023": {
+     "d_sin_centrar": {
+      "n": 326,
+      "n_leg": 161,
+      "r": 0.2728,
+      "ic95": [
+       0.049,
+       0.489
+      ]
+     },
+     "d_CENTRADA": {
+      "n": 326,
+      "n_leg": 161,
+      "r": 0.0143,
+      "ic95": [
+       -0.106,
+       0.129
+      ]
+     },
+     "d_centrada_neta_area": {
+      "n": 326,
+      "n_leg": 161,
+      "r": 0.0489,
+      "ic95": [
+       -0.08,
+       0.197
+      ]
+     },
+     "record_afirmativo": {
+      "n": 325,
+      "n_leg": 161,
+      "r": -0.1947,
+      "ic95": [
+       -0.305,
+       -0.085
+      ]
+     }
+    }
+   }
+  },
+  "n>=5": {
+   "pooled": {
+    "d_sin_centrar": {
+     "n": 1546,
+     "n_leg": 245,
+     "r": -0.0537,
+     "ic95": [
+      -0.099,
+      0.017
+     ]
+    },
+    "d_CENTRADA": {
+     "n": 1546,
+     "n_leg": 245,
+     "r": 0.0147,
+     "ic95": [
+      -0.03,
+      0.06
+     ]
+    },
+    "d_centrada_neta_area": {
+     "n": 1546,
+     "n_leg": 245,
+     "r": 0.0018,
+     "ic95": [
+      -0.042,
+      0.048
+     ]
+    },
+    "record_afirmativo": {
+     "n": 1500,
+     "n_leg": 244,
+     "r": -0.3657,
+     "ic95": [
+      -0.448,
+      -0.293
+     ]
+    }
+   },
+   "por_recambio": {
+    "2015": {
+     "d_sin_centrar": {
+      "n": 1273,
+      "n_leg": 209,
+      "r": -0.0314,
+      "ic95": [
+       -0.1,
+       0.053
+      ]
+     },
+     "d_CENTRADA": {
+      "n": 1273,
+      "n_leg": 209,
+      "r": 0.021,
+      "ic95": [
+       -0.036,
+       0.073
+      ]
+     },
+     "d_centrada_neta_area": {
+      "n": 1273,
+      "n_leg": 209,
+      "r": -0.0028,
+      "ic95": [
+       -0.069,
+       0.052
+      ]
+     },
+     "record_afirmativo": {
+      "n": 1237,
+      "n_leg": 208,
+      "r": -0.3701,
+      "ic95": [
+       -0.452,
+       -0.278
+      ]
+     }
+    },
+    "2019": {
+     "d_sin_centrar": {
+      "n": 158,
+      "n_leg": 47,
+      "r": -0.2194,
+      "ic95": [
+       -0.343,
+       -0.095
+      ]
+     },
+     "d_CENTRADA": {
+      "n": 158,
+      "n_leg": 47,
+      "r": -0.0054,
+      "ic95": [
+       -0.114,
+       0.089
+      ]
+     },
+     "d_centrada_neta_area": {
+      "n": 158,
+      "n_leg": 47,
+      "r": 0.0125,
+      "ic95": [
+       -0.094,
+       0.105
+      ]
+     },
+     "record_afirmativo": {
+      "n": 154,
+      "n_leg": 47,
+      "r": -0.5106,
+      "ic95": [
+       -0.649,
+       -0.348
+      ]
+     }
+    },
+    "2023": {
+     "d_sin_centrar": {
+      "n": 115,
+      "n_leg": 34,
+      "r": 0.2206,
+      "ic95": [
+       0.108,
+       0.46
+      ]
+     },
+     "d_CENTRADA": {
+      "n": 115,
+      "n_leg": 34,
+      "r": 0.1592,
+      "ic95": [
+       -0.077,
+       0.357
+      ]
+     },
+     "d_centrada_neta_area": {
+      "n": 115,
+      "n_leg": 34,
+      "r": 0.1769,
+      "ic95": [
+       -0.133,
+       0.389
+      ]
+     },
+     "record_afirmativo": {
+      "n": 109,
+      "n_leg": 34,
+      "r": -0.0966,
+      "ic95": [
+       -0.244,
+       0.113
+      ]
+     }
+    }
+   }
+  },
+  "n>=10": {
+   "pooled": {
+    "d_sin_centrar": {
+     "n": 769,
+     "n_leg": 223,
+     "r": -0.0461,
+     "ic95": [
+      -0.097,
+      0.011
+     ]
+    },
+    "d_CENTRADA": {
+     "n": 769,
+     "n_leg": 223,
+     "r": 0.0412,
+     "ic95": [
+      -0.015,
+      0.101
+     ]
+    },
+    "d_centrada_neta_area": {
+     "n": 769,
+     "n_leg": 223,
+     "r": 0.0262,
+     "ic95": [
+      -0.014,
+      0.072
+     ]
+    },
+    "record_afirmativo": {
+     "n": 745,
+     "n_leg": 220,
+     "r": -0.4279,
+     "ic95": [
+      -0.517,
+      -0.332
+     ]
+    }
+   },
+   "por_recambio": {
+    "2015": {
+     "d_sin_centrar": {
+      "n": 671,
+      "n_leg": 189,
+      "r": -0.0324,
+      "ic95": [
+       -0.105,
+       0.055
+      ]
+     },
+     "d_CENTRADA": {
+      "n": 671,
+      "n_leg": 189,
+      "r": 0.0454,
+      "ic95": [
+       -0.024,
+       0.098
+      ]
+     },
+     "d_centrada_neta_area": {
+      "n": 671,
+      "n_leg": 189,
+      "r": 0.0204,
+      "ic95": [
+       -0.037,
+       0.073
+      ]
+     },
+     "record_afirmativo": {
+      "n": 647,
+      "n_leg": 186,
+      "r": -0.4342,
+      "ic95": [
+       -0.544,
+       -0.331
+      ]
+     }
+    },
+    "2019": {
+     "d_sin_centrar": {
+      "n": 51,
+      "n_leg": 38,
+      "r": -0.1255,
+      "ic95": [
+       -0.308,
+       0.093
+      ]
+     },
+     "d_CENTRADA": {
+      "n": 51,
+      "n_leg": 38,
+      "r": 0.1026,
+      "ic95": [
+       -0.057,
+       0.298
+      ]
+     },
+     "d_centrada_neta_area": {
+      "n": 51,
+      "n_leg": 38,
+      "r": 0.0917,
+      "ic95": [
+       -0.077,
+       0.255
+      ]
+     },
+     "record_afirmativo": {
+      "n": 51,
+      "n_leg": 38,
+      "r": -0.5178,
+      "ic95": [
+       -0.683,
+       -0.333
+      ]
+     }
+    },
+    "2023": {
+     "d_sin_centrar": {
+      "n": 47,
+      "n_leg": 27,
+      "r": 0.0921,
+      "ic95": [
+       -0.153,
+       0.603
+      ]
+     },
+     "d_CENTRADA": {
+      "n": 47,
+      "n_leg": 27,
+      "r": 0.2799,
+      "ic95": [
+       -0.104,
+       0.654
+      ]
+     },
+     "d_centrada_neta_area": {
+      "n": 47,
+      "n_leg": 27,
+      "r": 0.2578,
+      "ic95": [
+       -0.129,
+       0.67
+      ]
+     },
+     "record_afirmativo": {
+      "n": 47,
+      "n_leg": 27,
+      "r": -0.2563,
+      "ic95": [
+       -0.488,
+       0.015
+      ]
+     }
+    }
+   }
+  }
+ },
+ "FASE1_cortes_n>=3": {
+  "por_recambio": {
+   "2015": {
+    "sin_centrar": {
+     "n": 1604,
+     "n_leg": 218,
+     "r": -0.0159,
+     "ic95": [
+      -0.07,
+      0.054
+     ]
+    },
+    "CENTRADA": {
+     "n": 1604,
+     "n_leg": 218,
+     "r": 0.0398,
+     "ic95": [
+      -0.017,
+      0.102
+     ]
+    }
+   },
+   "2019": {
+    "sin_centrar": {
+     "n": 354,
+     "n_leg": 118,
+     "r": -0.1386,
+     "ic95": [
+      -0.228,
+      -0.033
+     ]
+    },
+    "CENTRADA": {
+     "n": 354,
+     "n_leg": 118,
+     "r": -0.024,
+     "ic95": [
+      -0.101,
+      0.066
+     ]
+    }
+   },
+   "2023": {
+    "sin_centrar": {
+     "n": 326,
+     "n_leg": 161,
+     "r": 0.2728,
+     "ic95": [
+      0.047,
+      0.498
+     ]
+    },
+    "CENTRADA": {
+     "n": 326,
+     "n_leg": 161,
+     "r": 0.0143,
+     "ic95": [
+      -0.109,
+      0.147
+     ]
+    }
+   }
+  },
+  "por_camara": {
+   "diputados": {
+    "sin_centrar": {
+     "n": 1536,
+     "n_leg": 268,
+     "r": 0.1071,
+     "ic95": [
+      0.024,
+      0.204
+     ]
+    },
+    "CENTRADA": {
+     "n": 1536,
+     "n_leg": 268,
+     "r": 0.0448,
+     "ic95": [
+      -0.032,
+      0.129
+     ]
+    }
+   },
+   "senado": {
+    "sin_centrar": {
+     "n": 748,
+     "n_leg": 123,
+     "r": -0.1264,
+     "ic95": [
+      -0.178,
+      -0.059
+     ]
+    },
+    "CENTRADA": {
+     "n": 748,
+     "n_leg": 123,
+     "r": -0.0132,
+     "ic95": [
+      -0.057,
+      0.034
+     ]
+    }
+   }
+  },
+  "por_tercil_dbar": {
+   "bajo (disciplinados)": {
+    "dbar_rango": [
+     0.0,
+     0.0
+    ],
+    "sin_centrar": {
+     "n": 536,
+     "r": null
+    },
+    "CENTRADA": {
+     "n": 536,
+     "r": null
+    }
+   },
+   "medio": {
+    "dbar_rango": [
+     0.0018,
+     0.0401
+    ],
+    "sin_centrar": {
+     "n": 802,
+     "n_leg": 143,
+     "r": 0.0452,
+     "ic95": [
+      -0.025,
+      0.126
+     ]
+    },
+    "CENTRADA": {
+     "n": 802,
+     "n_leg": 143,
+     "r": 0.0787,
+     "ic95": [
+      0.013,
+      0.139
+     ]
+    }
+   },
+   "alto (díscolos)": {
+    "dbar_rango": [
+     0.0402,
+     0.9167
+    ],
+    "sin_centrar": {
+     "n": 946,
+     "n_leg": 157,
+     "r": 0.0682,
+     "ic95": [
+      -0.032,
+      0.214
+     ]
+    },
+    "CENTRADA": {
+     "n": 946,
+     "n_leg": 157,
+     "r": 0.032,
+     "ic95": [
+      -0.055,
+      0.109
+     ]
+    }
+   }
+  },
+  "por_continuidad_bloque": {
+   "mismo_bloque": {
+    "sin_centrar": {
+     "n": 1305,
+     "n_leg": 237,
+     "r": 0.0513,
+     "ic95": [
+      -0.045,
+      0.18
+     ]
+    },
+    "CENTRADA": {
+     "n": 1305,
+     "n_leg": 237,
+     "r": 0.0229,
+     "ic95": [
+      -0.052,
+      0.088
+     ]
+    }
+   },
+   "cambio_de_bloque": {
+    "sin_centrar": {
+     "n": 979,
+     "n_leg": 180,
+     "r": -0.0709,
+     "ic95": [
+      -0.133,
+      0.009
+     ]
+    },
+    "CENTRADA": {
+     "n": 979,
+     "n_leg": 180,
+     "r": 0.0315,
+     "ic95": [
+      -0.026,
+      0.094
+     ]
+    }
+   },
+   "mismo_linaje": {
+    "sin_centrar": {
+     "n": 1789,
+     "n_leg": 325,
+     "r": -0.0336,
+     "ic95": [
+      -0.088,
+      0.046
+     ]
+    },
+    "CENTRADA": {
+     "n": 1789,
+     "n_leg": 325,
+     "r": 0.0134,
+     "ic95": [
+      -0.043,
+      0.061
+     ]
+    }
+   },
+   "cambio_de_linaje": {
+    "sin_centrar": {
+     "n": 495,
+     "n_leg": 80,
+     "r": -0.0014,
+     "ic95": [
+      -0.119,
+      0.141
+     ]
+    },
+    "CENTRADA": {
+     "n": 495,
+     "n_leg": 80,
+     "r": 0.0557,
+     "ic95": [
+      -0.058,
+      0.156
+     ]
+    }
+   }
+  }
+ },
+ "FASE1_cortes_n>=5": {
+  "por_recambio": {
+   "2015": {
+    "sin_centrar": {
+     "n": 1273,
+     "n_leg": 209,
+     "r": -0.0314,
+     "ic95": [
+      -0.091,
+      0.046
+     ]
+    },
+    "CENTRADA": {
+     "n": 1273,
+     "n_leg": 209,
+     "r": 0.021,
+     "ic95": [
+      -0.035,
+      0.076
+     ]
+    }
+   },
+   "2019": {
+    "sin_centrar": {
+     "n": 158,
+     "n_leg": 47,
+     "r": -0.2194,
+     "ic95": [
+      -0.334,
+      -0.103
+     ]
+    },
+    "CENTRADA": {
+     "n": 158,
+     "n_leg": 47,
+     "r": -0.0054,
+     "ic95": [
+      -0.105,
+      0.095
+     ]
+    }
+   },
+   "2023": {
+    "sin_centrar": {
+     "n": 115,
+     "n_leg": 34,
+     "r": 0.2206,
+     "ic95": [
+      0.112,
+      0.437
+     ]
+    },
+    "CENTRADA": {
+     "n": 115,
+     "n_leg": 34,
+     "r": 0.1592,
+     "ic95": [
+      -0.075,
+      0.357
+     ]
+    }
+   }
+  },
+  "por_camara": {
+   "diputados": {
+    "sin_centrar": {
+     "n": 1070,
+     "n_leg": 160,
+     "r": 0.0644,
+     "ic95": [
+      -0.031,
+      0.163
+     ]
+    },
+    "CENTRADA": {
+     "n": 1070,
+     "n_leg": 160,
+     "r": 0.0154,
+     "ic95": [
+      -0.077,
+      0.107
+     ]
+    }
+   },
+   "senado": {
+    "sin_centrar": {
+     "n": 476,
+     "n_leg": 94,
+     "r": -0.1356,
+     "ic95": [
+      -0.196,
+      -0.053
+     ]
+    },
+    "CENTRADA": {
+     "n": 476,
+     "n_leg": 94,
+     "r": -0.0012,
+     "ic95": [
+      -0.053,
+      0.054
+     ]
+    }
+   }
+  },
+  "por_tercil_dbar": {
+   "bajo (disciplinados)": {
+    "dbar_rango": [
+     0.0,
+     0.0093
+    ],
+    "sin_centrar": {
+     "n": 503,
+     "n_leg": 94,
+     "r": 0.0365,
+     "ic95": [
+      -0.026,
+      0.139
+     ]
+    },
+    "CENTRADA": {
+     "n": 503,
+     "n_leg": 94,
+     "r": -0.0228,
+     "ic95": [
+      -0.09,
+      0.05
+     ]
+    }
+   },
+   "medio": {
+    "dbar_rango": [
+     0.0104,
+     0.056
+    ],
+    "sin_centrar": {
+     "n": 542,
+     "n_leg": 91,
+     "r": 0.0716,
+     "ic95": [
+      -0.006,
+      0.195
+     ]
+    },
+    "CENTRADA": {
+     "n": 542,
+     "n_leg": 91,
+     "r": 0.1162,
+     "ic95": [
+      0.037,
+      0.205
+     ]
+    }
+   },
+   "alto (díscolos)": {
+    "dbar_rango": [
+     0.0571,
+     0.5309
+    ],
+    "sin_centrar": {
+     "n": 501,
+     "n_leg": 93,
+     "r": 0.0485,
+     "ic95": [
+      -0.054,
+      0.192
+     ]
+    },
+    "CENTRADA": {
+     "n": 501,
+     "n_leg": 93,
+     "r": 0.003,
+     "ic95": [
+      -0.109,
+      0.103
+     ]
+    }
+   }
+  },
+  "por_continuidad_bloque": {
+   "mismo_bloque": {
+    "sin_centrar": {
+     "n": 918,
+     "n_leg": 147,
+     "r": -0.0063,
+     "ic95": [
+      -0.092,
+      0.085
+     ]
+    },
+    "CENTRADA": {
+     "n": 918,
+     "n_leg": 147,
+     "r": 0.0416,
+     "ic95": [
+      -0.02,
+      0.103
+     ]
+    }
+   },
+   "cambio_de_bloque": {
+    "sin_centrar": {
+     "n": 628,
+     "n_leg": 115,
+     "r": -0.0953,
+     "ic95": [
+      -0.16,
+      -0.013
+     ]
+    },
+    "CENTRADA": {
+     "n": 628,
+     "n_leg": 115,
+     "r": 0.0045,
+     "ic95": [
+      -0.058,
+      0.074
+     ]
+    }
+   },
+   "mismo_linaje": {
+    "sin_centrar": {
+     "n": 1212,
+     "n_leg": 197,
+     "r": -0.0688,
+     "ic95": [
+      -0.114,
+      0.005
+     ]
+    },
+    "CENTRADA": {
+     "n": 1212,
+     "n_leg": 197,
+     "r": 0.0114,
+     "ic95": [
+      -0.034,
+      0.068
+     ]
+    }
+   },
+   "cambio_de_linaje": {
+    "sin_centrar": {
+     "n": 334,
+     "n_leg": 59,
+     "r": 0.0192,
+     "ic95": [
+      -0.128,
+      0.183
+     ]
+    },
+    "CENTRADA": {
+     "n": 334,
+     "n_leg": 59,
+     "r": 0.0287,
+     "ic95": [
+      -0.094,
+      0.14
+     ]
+    }
+   }
+  }
+ },
+ "FASE1_validacion_top_areas": {
+  "n>=3": {
+   "n_leg_recambio": 276,
+   "tope": 2,
+   "coincidencia_top_antes_vs_despues": 0.3134,
+   "esperada_por_azar": 0.3062,
+   "exceso_sobre_azar": 0.0072,
+   "ic95_exceso": [
+    -0.0258,
+    0.0432
+   ],
+   "d_cen_despues_top_menos_resto": -0.0007
+  },
+  "n>=5": {
+   "n_leg_recambio": 246,
+   "tope": 2,
+   "coincidencia_top_antes_vs_despues": 0.3882,
+   "esperada_por_azar": 0.3801,
+   "exceso_sobre_azar": 0.0081,
+   "ic95_exceso": [
+    -0.0283,
+    0.0457
+   ],
+   "d_cen_despues_top_menos_resto": -0.0002
+  }
+ },
+ "FASE1_composicion_universo": {
+  "pares_n>=3": 2284,
+  "dbar_antes_media_continuadores": 0.0557,
+  "dbar_media_todos_los_activos": 0.0658
+ },
+ "FASE1_split_half_dentro_de_era": {
+  "era0": {
+   "actas_con_tema": 556,
+   "expedientes_distintos_con_tema": 183,
+   "por_acta_al_azar": {
+    "dbar_nivel_legislador": {
+     "n": 1026,
+     "r": 0.8571
+    },
+    "firma_d_CENTRADA_leg_area": {
+     "n": 5746,
+     "r": 0.5268
+    }
+   },
+   "cronologica_1a_vs_2a_mitad": {
+    "dbar_nivel_legislador": {
+     "n": 259,
+     "r": 0.334
+    },
+    "firma_d_CENTRADA_leg_area": {
+     "n": 1464,
+     "r": -0.0021
+    }
+   },
+   "por_expediente_entero": {
+    "dbar_nivel_legislador": {
+     "n": 789,
+     "r": 0.5322
+    },
+    "firma_d_CENTRADA_leg_area": {
+     "n": 4013,
+     "r": 0.0104
+    }
+   }
+  },
+  "era1": {
+   "actas_con_tema": 288,
+   "expedientes_distintos_con_tema": 114,
+   "por_acta_al_azar": {
+    "dbar_nivel_legislador": {
+     "n": 453,
+     "r": 0.9153
+    },
+    "firma_d_CENTRADA_leg_area": {
+     "n": 3295,
+     "r": 0.5535
+    }
+   },
+   "cronologica_1a_vs_2a_mitad": {
+    "dbar_nivel_legislador": {
+     "n": 317,
+     "r": 0.5154
+    },
+    "firma_d_CENTRADA_leg_area": {
+     "n": 1780,
+     "r": 0.1209
+    }
+   },
+   "por_expediente_entero": {
+    "dbar_nivel_legislador": {
+     "n": 364,
+     "r": 0.7012
+    },
+    "firma_d_CENTRADA_leg_area": {
+     "n": 2626,
+     "r": 0.1232
+    }
+   }
+  },
+  "era2": {
+   "actas_con_tema": 48,
+   "expedientes_distintos_con_tema": 13,
+   "por_acta_al_azar": {
+    "dbar_nivel_legislador": {
+     "n": 299,
+     "r": 0.7099
+    },
+    "firma_d_CENTRADA_leg_area": {
+     "n": 260,
+     "r": -0.0931
+    }
+   },
+   "cronologica_1a_vs_2a_mitad": {
+    "dbar_nivel_legislador": {
+     "n": 74,
+     "r": 0.3838
+    },
+    "firma_d_CENTRADA_leg_area": {
+     "n": 202,
+     "r": -0.1693
+    }
+   },
+   "por_expediente_entero": "n/d: las actas con tema de esta era no tienen expediente vinculado"
+  },
+  "era3": {
+   "actas_con_tema": 178,
+   "expedientes_distintos_con_tema": 0,
+   "por_acta_al_azar": {
+    "dbar_nivel_legislador": {
+     "n": 461,
+     "r": 0.9611
+    },
+    "firma_d_CENTRADA_leg_area": {
+     "n": 1969,
+     "r": 0.7901
+    }
+   },
+   "cronologica_1a_vs_2a_mitad": {
+    "dbar_nivel_legislador": {
+     "n": 323,
+     "r": 0.5348
+    },
+    "firma_d_CENTRADA_leg_area": {
+     "n": 583,
+     "r": -0.1462
+    }
+   },
+   "por_expediente_entero": "n/d: las actas con tema de esta era no tienen expediente vinculado"
+  }
+ },
+ "FASE2": {
+  "n_celdas": 407,
+  "correlacion_tamano_vs_dispersion": -0.068,
+  "n_actas>=3_SIN_bolsa_OTRO": {
+   "sin_centrar": {
+    "n_pares": 141,
+    "n_linajes": 7,
+    "r": 0.3196,
+    "ic95_boot_por_linaje": [
+     0.071,
+     0.596
+    ]
+   },
+   "CENTRADA": {
+    "n_pares": 141,
+    "n_linajes": 7,
+    "r": 0.2023,
+    "ic95_boot_por_linaje": [
+     0.105,
+     0.45
+    ]
+   },
+   "por_recambio_CENTRADA": {
+    "2015": {
+     "n_pares": 79,
+     "r": 0.445
+    },
+    "2019": {
+     "n_pares": 34,
+     "r": 0.4547
+    },
+    "2023": {
+     "n_pares": 28,
+     "r": -0.0864
+    }
+   }
+  },
+  "n_actas>=3": {
+   "sin_centrar": {
+    "n_pares": 170,
+    "r": 0.6204
+   },
+   "CENTRADA": {
+    "n_pares": 170,
+    "r": 0.1679
+   },
+   "por_recambio": {
+    "2015": {
+     "sin_centrar": {
+      "n_pares": 92,
+      "r": 0.8398
+     },
+     "CENTRADA": {
+      "n_pares": 92,
+      "r": 0.307
+     }
+    },
+    "2019": {
+     "sin_centrar": {
+      "n_pares": 43,
+      "r": 0.8334
+     },
+     "CENTRADA": {
+      "n_pares": 43,
+      "r": 0.4478
+     }
+    },
+    "2023": {
+     "sin_centrar": {
+      "n_pares": 35,
+      "r": 0.7908
+     },
+     "CENTRADA": {
+      "n_pares": 35,
+      "r": -0.0714
+     }
+    }
+   }
+  },
+  "n_actas>=5_SIN_bolsa_OTRO": {
+   "sin_centrar": {
+    "n_pares": 109,
+    "n_linajes": 7,
+    "r": 0.4249,
+    "ic95_boot_por_linaje": [
+     0.015,
+     0.704
+    ]
+   },
+   "CENTRADA": {
+    "n_pares": 109,
+    "n_linajes": 7,
+    "r": 0.2319,
+    "ic95_boot_por_linaje": [
+     0.159,
+     0.307
+    ]
+   },
+   "por_recambio_CENTRADA": {
+    "2015": {
+     "n_pares": 70,
+     "r": 0.3347
+    },
+    "2019": {
+     "n_pares": 21,
+     "r": 0.643
+    },
+    "2023": {
+     "n_pares": 18,
+     "r": -0.2329
+    }
+   }
+  },
+  "n_actas>=5": {
+   "sin_centrar": {
+    "n_pares": 134,
+    "r": 0.6734
+   },
+   "CENTRADA": {
+    "n_pares": 134,
+    "r": 0.2008
+   },
+   "por_recambio": {
+    "2015": {
+     "sin_centrar": {
+      "n_pares": 82,
+      "r": 0.8624
+     },
+     "CENTRADA": {
+      "n_pares": 82,
+      "r": 0.2617
+     }
+    },
+    "2019": {
+     "sin_centrar": {
+      "n_pares": 28,
+      "r": 0.8787
+     },
+     "CENTRADA": {
+      "n_pares": 28,
+      "r": 0.6674
+     }
+    },
+    "2023": {
+     "sin_centrar": {
+      "n_pares": 24,
+      "r": 0.8924
+     },
+     "CENTRADA": {
+      "n_pares": 24,
+      "r": -0.2447
+     }
+    }
+   }
+  },
+  "era_2023_mas_abiertas_que_su_promedio": [
+   {
+    "bloque_linaje": "LA LIBERTAD AVANZA",
+    "area": "SALUD",
+    "n_actas": 38,
+    "c": 0.0797,
+    "c_cen": 0.0595
+   },
+   {
+    "bloque_linaje": "OTRO / PROVINCIAL",
+    "area": "CYT",
+    "n_actas": 12,
+    "c": 0.2245,
+    "c_cen": 0.0493
+   },
+   {
+    "bloque_linaje": "RADICALISMO",
+    "area": "CYT",
+    "n_actas": 12,
+    "c": 0.0704,
+    "c_cen": 0.0398
+   },
+   {
+    "bloque_linaje": "RADICALISMO",
+    "area": "TRAB",
+    "n_actas": 23,
+    "c": 0.0633,
+    "c_cen": 0.0326
+   },
+   {
+    "bloque_linaje": "RADICALISMO",
+    "area": "POLINST",
+    "n_actas": 62,
+    "c": 0.0554,
+    "c_cen": 0.0248
+   },
+   {
+    "bloque_linaje": "LA LIBERTAD AVANZA",
+    "area": "CYT",
+    "n_actas": 12,
+    "c": 0.0446,
+    "c_cen": 0.0245
+   },
+   {
+    "bloque_linaje": "PRO",
+    "area": "EDU",
+    "n_actas": 16,
+    "c": 0.0729,
+    "c_cen": 0.0236
+   },
+   {
+    "bloque_linaje": "LA LIBERTAD AVANZA",
+    "area": "DESREG",
+    "n_actas": 63,
+    "c": 0.0407,
+    "c_cen": 0.0206
+   },
+   {
+    "bloque_linaje": "COALICION CIVICA",
+    "area": "DERSOC",
+    "n_actas": 7,
+    "c": 0.0286,
+    "c_cen": 0.0198
+   },
+   {
+    "bloque_linaje": "RADICALISMO",
+    "area": "JUST",
+    "n_actas": 19,
+    "c": 0.0497,
+    "c_cen": 0.0191
+   },
+   {
+    "bloque_linaje": "FdT-UxP (kirchnerismo)",
+    "area": "JUST",
+    "n_actas": 19,
+    "c": 0.0387,
+    "c_cen": 0.0149
+   },
+   {
+    "bloque_linaje": "COALICION CIVICA",
+    "area": "POLINST",
+    "n_actas": 47,
+    "c": 0.0234,
+    "c_cen": 0.0146
+   }
+  ],
+  "era_2023_mas_cerradas": [
+   {
+    "bloque_linaje": "OTRO / PROVINCIAL",
+    "area": "DERSOC",
+    "n_actas": 10,
+    "c": 0.113,
+    "c_cen": -0.0623
+   },
+   {
+    "bloque_linaje": "OTRO / PROVINCIAL",
+    "area": "JUST",
+    "n_actas": 19,
+    "c": 0.1151,
+    "c_cen": -0.0601
+   },
+   {
+    "bloque_linaje": "PRO",
+    "area": "DERSOC",
+    "n_actas": 9,
+    "c": 0.0,
+    "c_cen": -0.0493
+   },
+   {
+    "bloque_linaje": "PRO",
+    "area": "DESREG",
+    "n_actas": 59,
+    "c": 0.0076,
+    "c_cen": -0.0417
+   },
+   {
+    "bloque_linaje": "PRO",
+    "area": "SALUD",
+    "n_actas": 32,
+    "c": 0.019,
+    "c_cen": -0.0303
+   },
+   {
+    "bloque_linaje": "PRO",
+    "area": "POLINST",
+    "n_actas": 60,
+    "c": 0.0227,
+    "c_cen": -0.0266
+   }
+  ]
+ }
+}

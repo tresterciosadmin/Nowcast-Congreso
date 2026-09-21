@@ -1,0 +1,244 @@
+{
+ "por_filtro": {
+  "disputada": {
+   "por_recambio": {
+    "2015 (K→Macri)": {
+     "n>=3": {
+      "pares": 57,
+      "legisladores": 42,
+      "leg_3+_areas": 1,
+      "leg_2+_areas": 14
+     },
+     "n>=5": {
+      "pares": 0,
+      "legisladores": 0,
+      "leg_3+_areas": 0,
+      "leg_2+_areas": 0
+     },
+     "n>=10": {
+      "pares": 0,
+      "legisladores": 0,
+      "leg_3+_areas": 0,
+      "leg_2+_areas": 0
+     }
+    },
+    "2019 (Macri→AF)": {
+     "n>=3": {
+      "pares": 0,
+      "legisladores": 0,
+      "leg_3+_areas": 0,
+      "leg_2+_areas": 0
+     },
+     "n>=5": {
+      "pares": 0,
+      "legisladores": 0,
+      "leg_3+_areas": 0,
+      "leg_2+_areas": 0
+     },
+     "n>=10": {
+      "pares": 0,
+      "legisladores": 0,
+      "leg_3+_areas": 0,
+      "leg_2+_areas": 0
+     }
+    },
+    "2023 (AF→Milei)": {
+     "n>=3": {
+      "pares": 0,
+      "legisladores": 0,
+      "leg_3+_areas": 0,
+      "leg_2+_areas": 0
+     },
+     "n>=5": {
+      "pares": 0,
+      "legisladores": 0,
+      "leg_3+_areas": 0,
+      "leg_2+_areas": 0
+     },
+     "n>=10": {
+      "pares": 0,
+      "legisladores": 0,
+      "leg_3+_areas": 0,
+      "leg_2+_areas": 0
+     }
+    }
+   },
+   "pooled": {
+    "n>=3": {
+     "pares": 57,
+     "leg_recambio_3+_areas": 1,
+     "legisladores_distintos_3+": 1
+    },
+    "n>=5": {
+     "pares": 0,
+     "leg_recambio_3+_areas": 0,
+     "legisladores_distintos_3+": 0
+    },
+    "n>=10": {
+     "pares": 0,
+     "leg_recambio_3+_areas": 0,
+     "legisladores_distintos_3+": 0
+    }
+   },
+   "por_camara_n>=3": {
+    "diputados": {
+     "pares": 55,
+     "leg_recambio_3+_areas": 1
+    },
+    "senado": {
+     "pares": 0,
+     "leg_recambio_3+_areas": 0
+    }
+   }
+  },
+  "contestada": {
+   "por_recambio": {
+    "2015 (K→Macri)": {
+     "n>=3": {
+      "pares": 1604,
+      "legisladores": 218,
+      "leg_3+_areas": 198,
+      "leg_2+_areas": 206
+     },
+     "n>=5": {
+      "pares": 1273,
+      "legisladores": 209,
+      "leg_3+_areas": 185,
+      "leg_2+_areas": 194
+     },
+     "n>=10": {
+      "pares": 671,
+      "legisladores": 189,
+      "leg_3+_areas": 128,
+      "leg_2+_areas": 170
+     }
+    },
+    "2019 (Macri→AF)": {
+     "n>=3": {
+      "pares": 354,
+      "legisladores": 118,
+      "leg_3+_areas": 47,
+      "leg_2+_areas": 49
+     },
+     "n>=5": {
+      "pares": 158,
+      "legisladores": 47,
+      "leg_3+_areas": 34,
+      "leg_2+_areas": 43
+     },
+     "n>=10": {
+      "pares": 51,
+      "legisladores": 38,
+      "leg_3+_areas": 3,
+      "leg_2+_areas": 10
+     }
+    },
+    "2023 (AF→Milei)": {
+     "n>=3": {
+      "pares": 326,
+      "legisladores": 161,
+      "leg_3+_areas": 31,
+      "leg_2+_areas": 49
+     },
+     "n>=5": {
+      "pares": 115,
+      "legisladores": 34,
+      "leg_3+_areas": 27,
+      "leg_2+_areas": 30
+     },
+     "n>=10": {
+      "pares": 47,
+      "legisladores": 27,
+      "leg_3+_areas": 1,
+      "leg_2+_areas": 19
+     }
+    }
+   },
+   "pooled": {
+    "n>=3": {
+     "pares": 2284,
+     "leg_recambio_3+_areas": 276,
+     "legisladores_distintos_3+": 236
+    },
+    "n>=5": {
+     "pares": 1546,
+     "leg_recambio_3+_areas": 246,
+     "legisladores_distintos_3+": 218
+    },
+    "n>=10": {
+     "pares": 769,
+     "leg_recambio_3+_areas": 132,
+     "legisladores_distintos_3+": 131
+    }
+   },
+   "por_camara_n>=3": {
+    "diputados": {
+     "pares": 1477,
+     "leg_recambio_3+_areas": 150
+    },
+    "senado": {
+     "pares": 562,
+     "leg_recambio_3+_areas": 91
+    }
+   }
+  }
+ },
+ "cobertura_tema": {
+  "era0": {
+   "actas": 3969,
+   "cob_tema_general": 0.3832,
+   "disputada": {
+    "actas": 407,
+    "con_tema": 40,
+    "cob_tema": 0.0983
+   },
+   "contestada": {
+    "actas": 1490,
+    "con_tema": 556,
+    "cob_tema": 0.3732
+   }
+  },
+  "era1": {
+   "actas": 937,
+   "cob_tema_general": 0.5315,
+   "disputada": {
+    "actas": 26,
+    "con_tema": 15,
+    "cob_tema": 0.5769
+   },
+   "contestada": {
+    "actas": 498,
+    "con_tema": 288,
+    "cob_tema": 0.5783
+   }
+  },
+  "era2": {
+   "actas": 296,
+   "cob_tema_general": 0.6824,
+   "disputada": {
+    "actas": 14,
+    "con_tema": 5,
+    "cob_tema": 0.3571
+   },
+   "contestada": {
+    "actas": 90,
+    "con_tema": 48,
+    "cob_tema": 0.5333
+   }
+  },
+  "era3": {
+   "actas": 637,
+   "cob_tema_general": 0.3736,
+   "disputada": {
+    "actas": 84,
+    "con_tema": 32,
+    "cob_tema": 0.381
+   },
+   "contestada": {
+    "actas": 486,
+    "con_tema": 178,
+    "cob_tema": 0.3663
+   }
+  }
+ }
+}

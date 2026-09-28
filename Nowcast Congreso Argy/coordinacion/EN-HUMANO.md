@@ -2,6 +2,26 @@
 
 > Documento vivo. Cada cambio importante en el proyecto se explica acá en lenguaje claro, además de registrarse en `ESTADO-DEL-PROYECTO.md`. Si algo del sistema no se entiende leyendo esto, está mal escrito y hay que arreglarlo.
 
+## El modelo predecía peor de lo que decíamos, y ahora sabemos cuánto (28-09-2026, más tarde)
+
+La herramienta con la que medimos al modelo tenía dos defectos. El primero: al predecir cómo votaba
+alguien el artículo 3 de una ley, le dejaba mirar cómo había votado los artículos 1 y 2 de esa misma
+ley, minutos antes y casi siempre igual. Era como corregir un examen dejando ver las respuestas de
+la hoja anterior. El segundo: en vez de usar el modelo, usaba una copia hecha a mano que con el
+tiempo había dejado de ser igual. Arreglamos las dos cosas de raíz: la herramienta ahora usa el
+modelo mismo, y no deja ver ninguna votación anterior de la misma ley. Con eso, la mejora del
+modelo sobre adivinar "casi todos votan que sí" baja de 16% a 13%, y **en el gobierno actual es
+prácticamente cero**: la mayor parte de lo que parecía acierto en estos dos años era el modelo
+repitiendo lo que ya se había votado en esa misma ley. Una pieza que habíamos prendido el 16-09
+—ajustar el historial de cada legislador según el tema del proyecto— se había justificado con esa
+misma trampa; medida bien, empeora las predicciones, así que se apagó. Y apareció otra cosa: las
+bandas de "entre tantos y tantos votos" que muestra el producto prometen acertar 9 de cada 10
+veces y aciertan algo más de 6. Eso no se tocó, porque es una decisión de producto. Lo que dice hoy
+el modelo sobre un proyecto concreto casi no cambia (el panel de referencia sigue en 61%; la Ley de
+Lobby pasa de 48% a 53%), pero ahora sabemos que la parte de la cuenta que mira a cada legislador
+aporta poco en el gobierno actual. El proyecto queda frenado para una revisión a fondo, y el punto
+de partida es `coordinacion/ESTADO-REAL-DEL-MOTOR.md`.
+
 ## La memoria del legislador sí cruza el cambio de gobierno — pero es la de su bloque (28-09-2026)
 
 Franco insistió en algo razonable: un legislador con veinte años de Congreso no llega en blanco a

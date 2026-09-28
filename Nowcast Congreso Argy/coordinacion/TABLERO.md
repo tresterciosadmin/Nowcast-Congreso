@@ -6,6 +6,16 @@ Cómo reclamar: editá este archivo en tu rama, agregá la fila, y mencioná en 
 
 ---
 
+## Sesion 2026-09-28 — cierre de etapa: la fuga y el espejo (ADR-0034, `PROMPT-CIERRE-DE-ETAPA.md`)
+
+| Modulo | Quien | Desde | Estado |
+|---|---|---|---|
+| **evaluacion/baseline** | Claude (sesión delegada por Franco) | 2026-09-28 | **HECHO, LIBRE.** Harness reescrito: importa el motor, historia estricta por fecha y por ley. Censo limpio re-corrido. |
+| **modelo/ensemble** | Claude (sesión delegada por Franco) | 2026-09-28 | **HECHO, LIBRE.** `<=` → `<` en el récord; extracción de `record_legisladores`/`necesita_cond_por_acta` sin cambio de cálculo; τ re-estimado (no aplicado). Ver ADR-0034 por el estado de `RECORD_POR_TEMA`. |
+
+**El proyecto queda PARADO para la revisión intensiva de Franco.** Punto de partida:
+`coordinacion/ESTADO-REAL-DEL-MOTOR.md`.
+
 ## Sesion 2026-09-15 — sobre tablas (§III.A.5 de FORMULA-COMPLETA.md, item C de la revision metodologica)
 
 | Modulo | Quien | Desde | Estado |

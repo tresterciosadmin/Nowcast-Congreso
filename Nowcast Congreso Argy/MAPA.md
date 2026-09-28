@@ -2,13 +2,13 @@
 
 <!-- GENERADO por indexar.py. No editar: los cambios se pierden. -->
 <!-- La prosa vive en el README.md de cada modulo (seccion `Buscar aca si`). -->
-<!-- 2026-09-28 14:20 UTC · 188 archivos · 46,796 LOC -->
+<!-- 2026-09-28 21:51 UTC · 195 archivos · 48,199 LOC -->
 
 ## Como usar este archivo
 
 Es el unico archivo del proyecto que hace falta leer para empezar. Para ubicar algo concreto: `python3 .mapa/buscar.py "<termino>"` devuelve archivo y linea sin abrir nada. Recien despues abrir los archivos que salgan, y solo esos.
 
-Rama `main` — ultimo commit: 2026-09-24 fe2a08b Archivos_Borrar: elimina los tres archivos descartables ya marcados para borrar · **hay cambios sin commitear**
+Rama `main` — ultimo commit: 2026-09-28 bf831aa FASE 2 (ADR-0034): el harness deja de ser un espejo del motor; lo importa · **hay cambios sin commitear**
 
 ## Donde buscar que
 
@@ -77,13 +77,14 @@ Rama `main` — ultimo commit: 2026-09-24 fe2a08b Archivos_Borrar: elimina los t
 | que temas existen, como se llaman, y como se agrega, renombra o fusiona uno | `docs/taxonomias/` |
 | el prompt con el que se clasifica un proyecto: esta en `variables/proyecto/src/agente_taxonomias.py`, no aca | `docs/taxonomias/` |
 | un id de taxonomia duplicado o mal escrito (`loader.py` lo detecta) | `docs/taxonomias/` |
-| cuanto acierta la regla de bloque (~0,99 en direccion del voto individual) | `evaluacion/baseline/` |
-| contra que se compara un modelo nuevo | `evaluacion/baseline/` |
-| cuanto pierde el record individual en cada era, y cuanto lo arregla el guard | `evaluacion/baseline/` |
-| validar las reglas de combinacion de temas (ADR-0024) contra el historico real: `--combinar-temas {primaria,union,ponderada}`, default `primaria` (de siempre) | `evaluacion/baseline/` |
-| el record por ORIGEN (Ejecutivo vs oposicion) entre gobiernos, relabelado por lado (ADR-0033): `record_por_origen.py` (persistencia) y `record_por_origen_brazos.py` (brazos del record sobre el censo, `--historia estricta` sin votos del mismo dia) | `evaluacion/baseline/` |
-| correr el censo en minutos y guardar el detalle voto a voto con share y desvio del linaje: `censo_detalle_paralelo.py` | `evaluacion/baseline/` |
-| la fuga del mismo dia en el record walk-forward (ADR-0033: 0,161 -> 0,092) | `evaluacion/baseline/` |
+| el numero publicado del motor (skill del voto individual) y como se reproduce: `censo_detalle_paralelo.py` + `resumen_censo_limpio.py` | `evaluacion/baseline/` |
+| la regla del EXPEDIENTE: que cuenta como historia de un voto, y como se agrupan actas en leyes (`ley_por_acta`, `historia=estricta`) | `evaluacion/baseline/` |
+| IC que re-muestrean leyes, no actas (`skill_ic_por_ley`, `dif_brier_ic_por_ley`) | `evaluacion/baseline/` |
+| la fuga del harness viejo (shift(1) por fila) y cuanto pesaba: `medir_fuga_historia.py` (0,161 -> 0,092 -> 0,074) | `evaluacion/baseline/` |
+| de donde salia el 11,06% de RECORD_POR_TEMA: `medir_record_por_tema_limpio.py` | `evaluacion/baseline/` |
+| que el harness mide al motor y no una copia: `tests/test_harness_es_el_motor.py` | `evaluacion/baseline/` |
+| el record por ORIGEN entre gobiernos (ADR-0033): `record_por_origen.py`, `record_por_origen_brazos.py` | `evaluacion/baseline/` |
+| las reglas de combinacion de temas de la POSTURA (ADR-0024/0028): `--combinar-temas`, experimento cerrado | `evaluacion/baseline/` |
 | de donde sale el 0,99 del baseline de bloque, y por que el proyecto NO apunta a predecir la direccion del voto individual | `fase0/` |
 | el codigo original de ingesta, anterior a `datos/` | `fase0/` |
 | si un proyecto junta los votos: quorum, mayoria simple/absoluta/dos tercios | `modelo/agregador_institucional/` |
@@ -140,10 +141,10 @@ Rama `main` — ultimo commit: 2026-09-24 fe2a08b Archivos_Borrar: elimina los t
 
 | Carpeta | Que es | Arch. | LOC | Bitacora |
 |---|---|---:|---:|---|
-| `modelo/ensemble/` _(src+tests)_ | La composicion final: el nowcast end-to-end de un proyecto. El punto de entrada vivo es `nowcast_puertas.py`, que corre la CADENA DE PUERTAS y devuelve un numero condicional a que las camaras voten. La formulacion v1 -P(llega al recinto) x P(mayoria dado recinto)- se dio de BAJA el 2026-08-22 (ADR-0012), junto con su backtest: `ensemble.componer` y `backtest_cadena.py` siguen ahi pero levantan SystemExit. | 27 | 6,973 | **vencida** |
-| `./` | La raiz del proyecto: los paneles que se abren con doble clic, el tablero ejecutivo y su unica fuente de datos (`tablero_datos.js`). | 6 | 6,088 | **vencida** |
+| `modelo/ensemble/` _(src+tests)_ | La composicion final: el nowcast end-to-end de un proyecto. El punto de entrada vivo es `nowcast_puertas.py`, que corre la CADENA DE PUERTAS y devuelve un numero condicional a que las camaras voten. La formulacion v1 -P(llega al recinto) x P(mayoria dado recinto)- se dio de BAJA el 2026-08-22 (ADR-0012), junto con su backtest: `ensemble.componer` y `backtest_cadena.py` siguen ahi pero levantan SystemExit. | 29 | 7,294 | **vencida** |
+| `evaluacion/baseline/` _(src+tests)_ | El censo del motor sobre el voto individual. Desde el 28-09 (ADR-0034) el harness NO reimplementa nada del legislador: importa `record_legisladores`, `proyectar_postura` y `perfil_legislador` del motor y solo decide que votos existian (historia estricta: fecha anterior y OTRA ley). Un test lo compara contra `nowcast()` legislador por legislador. El baseline de BLOQUE -el ~0,99- se midio en `fase0/` y ahi quedo. | 29 | 6,350 | **vencida** |
+| `./` | La raiz del proyecto: los paneles que se abren con doble clic, el tablero ejecutivo y su unica fuente de datos (`tablero_datos.js`). | 6 | 6,098 | **vencida** |
 | `variables/proyecto/` _(src+tests)_ | Feature store por proyecto: tema/materia, origen (Ejecutivo/oficialismo/aliados/oposicion), jefe de bloque, mayoria requerida, texto, y el ICG como modulador de coyuntura. La postura del gobierno por acta se midio aca y su modulo se archivo el 2026-09-10 sin consumidor: la medicion quedo en el ADR-0021 y en ESTADO. | 25 | 5,795 | **vencida** |
-| `evaluacion/baseline/` _(src+tests)_ | El piso a superar, y el harness que lo mide. Lo que vive aca es el baseline del VOTO INDIVIDUAL (`baseline_voto_individual.py`, con el guard de era del ADR-0018) mas los diagnosticos del Senado. El baseline de BLOQUE -el ~0,99- se midio en `fase0/` y ahi quedo. | 24 | 5,278 | **vencida** |
 | `datos/expedientes/` _(src+tests)_ | Registro de todo lo PRESENTADO (no solo lo votado): titulo, autor, tipo, fecha y cadena de vida del expediente. Denominador del embudo y enlace acta -> expediente. | 19 | 5,250 | **vencida** |
 | `datos/padron/` _(src+tests)_ | Padron OFICIAL de bancas a nivel LEGISLADOR: quien ocupa cada banca y en que ventana de mandato. Es la composicion real de la camara a una fecha (257 / 72). | 11 | 2,645 | ok |
 | `datos/proyectos/` _(src+tests)_ | Base de Proyectos de Ley (`proyectos.db`): una fila por proyecto identificado por denominador NNNN-X-AAAA. Fuente de verdad del universo de proyectos y denominador del embudo (ADR-0009). | 10 | 2,073 | ok |
@@ -177,7 +178,7 @@ Rama `main` — ultimo commit: 2026-09-24 fe2a08b Archivos_Borrar: elimina los t
 
 ## Inventario de datos
 
-175 archivos de datos · 319.3 MB · 175 viajan por git, **0 no**.
+181 archivos de datos · 354.5 MB · 181 viajan por git, **0 no**.
 
 Buscar uno sin abrir nada: `python .mapa/buscar.py --dato <termino>`. Columna **git**: `si` = esta versionado, o sea que quien clone lo tiene; `NO` = vive solo en el disco de quien lo genero, que es el modo de falla mas repetido de este repo (seis veces, ver `.gitignore`). **Escribe/Lee**: quien lo produce y quien lo consume, deducido del codigo; sin lector, sobra — sin escritor, no se regenera.
 
@@ -264,8 +265,9 @@ Buscar uno sin abrir nada: `python .mapa/buscar.py --dato <termino>`. Columna **
 | `docs/schemas/voto.schema.json` | objeto: $schema, $id, title, description | 1 KB | si | `build.py` | — |
 | `docs/taxonomias/taxonomias.json` | objeto: schema_version, actualizado, not | 7 KB | si | — | `registro.py`, `loader.py` |
 | `evaluacion/baseline/outputs/record_por_origen_fase2_detalle_harness_2026-09-27.parquet` | 691,893×21 | 53.5 MB | si | — | — |
+| `evaluacion/baseline/outputs/censo_detalle_2026-09-28.parquet` | 691,845×40 | 35.2 MB | si | — | `estimar_epsilon_tau.py` |
 | `evaluacion/baseline/outputs/record_por_origen_fase2_detalle_estricta_2026-09-27.parquet` | 691,893×21 | 32.8 MB | si | — | — |
-| `evaluacion/baseline/outputs/censo_detalle_2026-09-27.parquet` | 691,893×14 | 9.9 MB | si | — | _(2 lo nombran)_ |
+| `evaluacion/baseline/outputs/censo_detalle_2026-09-27.parquet` | 691,893×14 | 9.9 MB | si | — | _(5 lo nombran)_ |
 | `evaluacion/baseline/outputs/fase0_detalle_ponderada_logit.parquet` | 691,869×9 | 6.1 MB | si | — | — |
 | `evaluacion/baseline/outputs/fase0_detalle_union.parquet` | 691,869×9 | 6.1 MB | si | — | — |
 | `evaluacion/baseline/outputs/fase0_detalle_primaria.parquet` | 691,893×9 | 6.0 MB | si | — | — |
@@ -274,11 +276,14 @@ Buscar uno sin abrir nada: `python .mapa/buscar.py --dato <termino>`. Columna **
 | `evaluacion/baseline/outputs/record_por_origen_fase2_censo_estricta_2026-09-27.json` | objeto: n_votos, k, umbral_lado, min_act | 69 KB | si | — | — |
 | `evaluacion/baseline/outputs/record_por_origen_fase2_censo_harness_2026-09-27.json` | objeto: n_votos, k, umbral_lado, min_act | 69 KB | si | — | — |
 | `evaluacion/baseline/outputs/firma_tematica_fase1_2_2026-09-21.json` | objeto: k_shrink, filtro, FASE1, FASE1_c | 23 KB | si | `firma_tematica_fase1_2.py` | — |
+| `evaluacion/baseline/outputs/censo_limpio_2026-09-28.json` | objeto: censo, n_votos, n_actas, n_leyes | 19 KB | si | — | _(1 lo nombran)_ |
 | `evaluacion/baseline/outputs/prueba1_pivotes_por_capitulo_2026-09-17.json` | objeto: proyecto_id, fecha_corte, rango_ | 13 KB | si | `prueba1_pivotes_por_capitulo.py` | — |
 | `evaluacion/baseline/outputs/medir_estabilidad_record_por_tema_2026-09-17.json` | objeto: k_shrink, umbrales_n, recambios, | 12 KB | si | `medir_estabilidad_record_por_tema.py` | — |
 | `evaluacion/baseline/outputs/prueba2_reconstruccion_por_rango_2026-09-17.json` | objeto: paso1_tramos_con_articulo_en_act | 10 KB | si | `prueba2_reconstruccion_por_rango.py` | — |
+| `evaluacion/baseline/outputs/medir_record_por_tema_limpio_2026-09-28.json` | objeto: fila, estricta, n_comun, reprodu | 7 KB | si | — | _(1 lo nombran)_ |
 | `evaluacion/baseline/outputs/validacion_piloto_titulos_2026-09-16.json` | objeto: margen_walkforward_dias, flags,  | 7 KB | si | `validar_piloto_titulos.py` | — |
 | `evaluacion/baseline/outputs/fase0_control_temas_censo.json` | objeto: arms, n_boot, seed, muestra | 6 KB | si | `fase0_control_temas.py` | — |
+| `evaluacion/baseline/outputs/baseline_voto_individual.json` | objeto: columna, global, calibracion, po | 5 KB | si | `baseline_voto_individual.py` | `verificar_regeneracion.py` |
 | `evaluacion/baseline/outputs/firma_tematica_fase0_celdas_2026-09-21.json` | objeto: por_filtro, cobertura_tema | 5 KB | si | `firma_tematica_fase0_celdas.py` | — |
 | `evaluacion/baseline/outputs/guard_era_medicion.json` | objeto: _que_es, _n_votos, resultados, m | 5 KB | si | `medir_guard_era.py` | — |
 | `evaluacion/baseline/outputs/diagnostico_senado.json` | objeto: senado | 4 KB | si | `diagnostico_senado.py` | — |
@@ -287,10 +292,10 @@ Buscar uno sin abrir nada: `python .mapa/buscar.py --dato <termino>`. Columna **
 | `evaluacion/baseline/outputs/baseline_combinar_temas_peor_tema_2026-09-16.json` | objeto: n_actas_evaluadas, n_actas_salta | 4 KB | si | — | — |
 | `evaluacion/baseline/outputs/baseline_combinar_temas_union_2026-09-15.json` | objeto: n_actas_evaluadas, n_actas_salta | 4 KB | si | — | — |
 | `evaluacion/baseline/outputs/baseline_guard_shrink.json` | objeto: n_actas_evaluadas, n_actas_salta | 4 KB | si | — | — |
-| `evaluacion/baseline/outputs/baseline_voto_individual.json` | objeto: n_actas_evaluadas, n_actas_salta | 4 KB | si | `baseline_voto_individual.py` | `verificar_regeneracion.py` |
 | `evaluacion/baseline/outputs/baseline_guard_off.json` | objeto: n_actas_evaluadas, n_actas_salta | 4 KB | si | — | — |
 | `evaluacion/baseline/outputs/record_por_tema_2026-09-04.json` | objeto: _que_es, _como_se_reproduce, el_ | 4 KB | si | — | — |
 | `evaluacion/baseline/outputs/merge_ids_medicion_2026-09-04.json` | objeto: _que_es, _como_se_midio, _alias, | 4 KB | si | — | — |
+| `evaluacion/baseline/outputs/medir_fuga_historia_2026-09-28.json` | objeto: detalle, n_votos, votos_con_ley_ | 3 KB | si | — | _(1 lo nombran)_ |
 | `evaluacion/baseline/outputs/baseline_canonico.json` | objeto: n_votos_sustantivos, por_nivel,  | 2 KB | si | `baseline_canonico.py` | — |
 | `evaluacion/baseline/outputs/medir_rec_por_tema_2026-09-16.json` | objeto: cobertura_tema_por_acta, curva_s | 2 KB | si | `medir_rec_por_tema.py` | _(1 lo nombran)_ |
 | `evaluacion/baseline/outputs/fase1_rec_por_tema_censo.json` | objeto: camara_filtro, global_subconjunt | 2 KB | si | `fase1_rec_por_tema.py` | _(2 lo nombran)_ |
@@ -317,11 +322,13 @@ Buscar uno sin abrir nada: `python .mapa/buscar.py --dato <termino>`. Columna **
 | `modelo/ensemble/outputs/nowcast_HIP-SALUD-OPO.json` | objeto: proyecto_id, proyecto_id_interno | 3 KB | si | — | — |
 | `modelo/ensemble/outputs/nowcast_1167-D-2025.json` | objeto: proyecto_id, proyecto_id_interno | 3 KB | si | — | — |
 | `modelo/ensemble/outputs/nowcast_HIP-ECON-PE.json` | objeto: proyecto_id, proyecto_id_interno | 2 KB | si | — | — |
+| `modelo/ensemble/outputs/tau_limpio_2026-09-28.json` | objeto: n_votos, n_actas, tau_motor_hoy, | 2 KB | si | — | _(1 lo nombran)_ |
 | `modelo/ensemble/outputs/nowcast_HIP.json` | objeto: proyecto_id, proyecto_id_interno | 2 KB | si | — | — |
 | `modelo/ensemble/outputs/nowcast_HIPOTETICO-ECON-PE.json` | objeto: proyecto_id, proyecto_id_interno | 2 KB | si | — | — |
 | `modelo/ensemble/outputs/backtest_cadena.json` | objeto: n_evaluados, tasa_base_sancion,  | 2 KB | si | — | — |
 | `modelo/ensemble/outputs/backtest_cadena_fina.json` | objeto: n_evaluados, version, tasa_base_ | 2 KB | si | — | — |
 | `modelo/ensemble/outputs/theta_sobre_tablas.json` | objeto: A_theta_vs_resto, B_solo_sobre_t | 1 KB | si | `estimar_theta_sobre_tablas.py` | _(2 lo nombran)_ |
+| `modelo/ensemble/outputs/chequeo_direccion_beta_2026-09-28.json` | objeto: n_panel, n_comun, produccion_M6_ | 1001 B | si | — | _(1 lo nombran)_ |
 | `modelo/voto_individual/outputs/desvios_por_voto.parquet` _DESVIOS_POR_VOTO_ | 900,572×6 | 1.2 MB | si | `disciplina.py` | `export_base.py` |
 | `modelo/voto_individual/outputs/disciplina_por_anio.csv` | 9,302×7 | 636 KB | si | `disciplina.py`, `ficha.py` | — |
 | `modelo/voto_individual/outputs/disciplina_por_periodo.csv` | 4,718×10 | 462 KB | si | `disciplina.py`, `ficha.py` | — |
@@ -344,8 +351,8 @@ Buscar uno sin abrir nada: `python .mapa/buscar.py --dato <termino>`. Columna **
 | `variables/legislador/data/legislador_anio.parquet` | 9,900×8 | 126 KB | si | `ficha.py` | — |
 | `variables/legislador/data/legislador_bloques.parquet` | 4,127×7 | 61 KB | si | `ficha.py` | `origen_lider.py`, `origen_por_acta.py` |
 | `variables/proyecto/data/features_proyecto.parquet` _PROYECTO_FEATURES_ | 41,871×10 | 328 KB | si | `origen_lider.py` | `backtest_cadena.py` |
-| `variables/proyecto/data/origen_por_acta.parquet` _PROYECTO_ORIGEN_POR_ACTA_ | 5,998×9 | 87 KB | si | `origen_por_acta.py` | `nowcast_puertas.py`, `bloque.py`, `estimar_gamma.py` +1 |
-| `variables/proyecto/data/tema_por_acta.parquet` _PROYECTO_TEMA_POR_ACTA_ | 3,083×8 | 78 KB | si | `tema_por_acta.py` | `registro.py`, `fase1_rec_por_tema.py`, `firma_tematica_desvio.py` +4 |
+| `variables/proyecto/data/origen_por_acta.parquet` _PROYECTO_ORIGEN_POR_ACTA_ | 5,998×9 | 87 KB | si | `origen_por_acta.py` | `baseline_voto_individual.py`, `nowcast_puertas.py`, `bloque.py` +2 |
+| `variables/proyecto/data/tema_por_acta.parquet` _PROYECTO_TEMA_POR_ACTA_ | 3,083×8 | 78 KB | si | `tema_por_acta.py` | `registro.py`, `fase1_rec_por_tema.py`, `firma_tematica_desvio.py` +5 |
 | `variables/proyecto/data/icg_contexto.parquet` | 297×18 | 34 KB | si | — | `estimar_gamma.py`, `estimar_gamma_individual.py`, `modulador_icg.py` |
 | `variables/proyecto/outputs/muestra_manual_taxonomias.csv` | 88×6 | 24 KB | si | — | _(2 lo nombran)_ |
 | `variables/proyecto/data/tema_por_capitulo.parquet` | 471×10 | 21 KB | si | `tema_por_capitulo.py` | `prueba1_pivotes_por_capitulo.py`, `validar_leybases_por_capitulos.py`, `validar_piloto_capitulos.py` +1 |
@@ -383,12 +390,12 @@ Ordenados por cuantos otros archivos dependen de ellos. Tocar uno de arriba tien
 
 | Archivo | LOC | Lo usan | Simbolos |
 |---|---:|---:|---|
-| `rutas.py` | 207 | 37 | `_env`, `inventario` |
-| `variables/bloque/src/bloque.py` | 842 | 26 | `_canon_linaje`, `_norm_nombre`, `_cargar_padron_linaje_senado`, `_enriquecer_linaje_senado` |
+| `rutas.py` | 210 | 39 | `_env`, `inventario` |
+| `variables/bloque/src/bloque.py` | 842 | 29 | `_canon_linaje`, `_norm_nombre`, `_cargar_padron_linaje_senado`, `_enriquecer_linaje_senado` |
+| `modelo/ensemble/src/nowcast_puertas.py` | 981 | 17 | `_resolver_multietiqueta`, `_tema_auto`, `_bloque`, `era_de` |
 | `definiciones.py` | 261 | 16 | `periodo_parlamentario`, `gobierno_por_fecha`, `era_de`, `normalizar_mayoria_valor` |
-| `modelo/ensemble/src/nowcast_puertas.py` | 938 | 12 | `_resolver_multietiqueta`, `_tema_auto`, `_bloque`, `era_de` |
-| `modelo/ensemble/src/ensemble.py` | 413 | 10 | `_cargar_simulador`, `_cargar_proyector`, `componer`, `_root` |
-| `evaluacion/baseline/src/baseline_voto_individual.py` | 586 | 8 | `_norm_cond`, `_ContadorAvisos`, `perfil`, `_metricas` |
+| `evaluacion/baseline/src/baseline_voto_individual.py` | 823 | 13 | `_norm_cond`, `_ContadorAvisos`, `perfil`, `_metricas` |
+| `modelo/ensemble/src/ensemble.py` | 413 | 11 | `_cargar_simulador`, `_cargar_proyector`, `componer`, `_root` |
 | `variables/embudo/src/embudo.py` | 730 | 6 | `cargar_icg`, `_mes_rezagado`, `cargar`, `cargar_sqlite` |
 | `modelo/agregador_institucional/src/agregador.py` | 495 | 6 | `umbral_aprobacion`, `_prob_conductas`, `simular_votacion`, `_linea_bloque_por_acta` |
 | `modelo/ensemble/src/puerta_d.py` | 244 | 6 | `camara_revisora`, `_padron_de`, `_clip01`, `_logit` |
@@ -399,13 +406,13 @@ Ordenados por cuantos otros archivos dependen de ellos. Tocar uno de arriba tien
 ## Flujo interno
 
 - `evaluacion/baseline/src/` → `./` (19)
+- `evaluacion/baseline/src/` → `variables/bloque/src/` (15)
 - `modelo/ensemble/tests/` → `modelo/ensemble/src/` (14)
-- `evaluacion/baseline/src/` → `variables/bloque/src/` (13)
+- `evaluacion/baseline/src/` → `modelo/ensemble/src/` (12)
 - `modelo/ensemble/src/` → `./` (12)
 - `variables/proyecto/tests/` → `variables/proyecto/src/` (11)
-- `evaluacion/baseline/src/` → `modelo/ensemble/src/` (10)
+- `evaluacion/baseline/tests/` → `evaluacion/baseline/src/` (9)
 - `datos/expedientes/tests/` → `datos/expedientes/src/` (6)
-- `evaluacion/baseline/tests/` → `evaluacion/baseline/src/` (6)
 - `modelo/ensemble/src/` → `variables/bloque/src/` (6)
 - `datos/expedientes/src/` → `./` (5)
 - `datos/padron/tests/` → `datos/padron/src/` (5)

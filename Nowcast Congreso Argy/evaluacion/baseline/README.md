@@ -7,39 +7,39 @@
 **Estado:** HECHO
 **Owner actual:** _(vacante — reclamalo en coordinacion/TABLERO.md antes de empezar)_
 
-**Resumen:** El piso a superar, y el harness que lo mide. Lo que vive aca es el baseline del VOTO INDIVIDUAL (`baseline_voto_individual.py`, con el guard de era del ADR-0018) mas los diagnosticos del Senado. El baseline de BLOQUE -el ~0,99- se midio en `fase0/` y ahi quedo.
+**Resumen:** El censo del motor sobre el voto individual. Desde el 28-09 (ADR-0034) el harness NO reimplementa nada del legislador: importa `record_legisladores`, `proyectar_postura` y `perfil_legislador` del motor y solo decide que votos existian (historia estricta: fecha anterior y OTRA ley). Un test lo compara contra `nowcast()` legislador por legislador. El baseline de BLOQUE -el ~0,99- se midio en `fase0/` y ahi quedo.
 
 ## Buscar acá si
 
-- cuanto acierta la regla de bloque (~0,99 en direccion del voto individual)
-- contra que se compara un modelo nuevo
-- cuanto pierde el record individual en cada era, y cuanto lo arregla el guard
-- validar las reglas de combinacion de temas (ADR-0024) contra el historico real: `--combinar-temas {primaria,union,ponderada}`, default `primaria` (de siempre)
-- el record por ORIGEN (Ejecutivo vs oposicion) entre gobiernos, relabelado por lado (ADR-0033): `record_por_origen.py` (persistencia) y `record_por_origen_brazos.py` (brazos del record sobre el censo, `--historia estricta` sin votos del mismo dia)
-- correr el censo en minutos y guardar el detalle voto a voto con share y desvio del linaje: `censo_detalle_paralelo.py`
-- la fuga del mismo dia en el record walk-forward (ADR-0033: 0,161 -> 0,092)
+- el numero publicado del motor (skill del voto individual) y como se reproduce: `censo_detalle_paralelo.py` + `resumen_censo_limpio.py`
+- la regla del EXPEDIENTE: que cuenta como historia de un voto, y como se agrupan actas en leyes (`ley_por_acta`, `historia=estricta`)
+- IC que re-muestrean leyes, no actas (`skill_ic_por_ley`, `dif_brier_ic_por_ley`)
+- la fuga del harness viejo (shift(1) por fila) y cuanto pesaba: `medir_fuga_historia.py` (0,161 -> 0,092 -> 0,074)
+- de donde salia el 11,06% de RECORD_POR_TEMA: `medir_record_por_tema_limpio.py`
+- que el harness mide al motor y no una copia: `tests/test_harness_es_el_motor.py`
+- el record por ORIGEN entre gobiernos (ADR-0033): `record_por_origen.py`, `record_por_origen_brazos.py`
+- las reglas de combinacion de temas de la POSTURA (ADR-0024/0028): `--combinar-temas`, experimento cerrado
 
 <!-- Las dos cosas de arriba las levanta `.mapa/indexar.py` al MAPA.md de la
      raiz: el `Resumen:` va a la columna "Que es" y las pistas al router
      "Donde buscar que". Si cambia lo que hace el modulo, actualizalas aca. -->
 
-## El guard de era (URGENTE 9 / ADR-0018)
+## El harness (ADR-0034, 28-09-2026)
 
-`baseline_voto_individual.py --guard-era {off,corte,shrink}` cambia como se acumula el
-record individual: `off` es toda la historia (lo de siempre), `corte` lo reinicia en cada
-era —que es lo que el motor YA hace, con fecha fija— y `shrink` agrega Empirical-Bayes
-contra el record del linaje en la misma era.
+Hasta el 28-09 este harness tenia su propia copia del record y de `perfil` ("espejo exacto de
+`perfil_legislador`"). Divergio dos veces: no condicionaba el record por origen (el motor si)
+y contaba como historia los votos del mismo dia (`shift(1)` por fila). Ahora:
 
-**OJO con lo que este harness es y no es.** `perfil()` se documenta como espejo exacto de
-`perfil_legislador`, y en el reparto de ramas lo es; en el **record** no lo era. El motor
-corta por era y condiciona por origen, este harness acumulaba toda la historia sin
-condicionar. Mediana de la diferencia 0,004, pero 12,2% por encima de 0,10 y peor caso
-0,73. Un espejo que no refleja produce numeros sobre un modelo que no existe.
+| pieza | de donde sale |
+|---|---|
+| record | `nowcast_puertas.record_legisladores` |
+| postura del linaje | `bloque.proyectar_postura`, a la fecha exacta del acta |
+| P_i | `nowcast_puertas.perfil_legislador` |
+| que votos existian | el harness: `--historia estricta` (default), `fecha`, `dia_incluido` (el `<=` viejo del motor) |
 
-`src/medir_guard_era.py` es el **proxy** que mide los tres modos en 11 segundos aislando la
-rama del record (el baseline completo son ~1,5 min cada 150 actas). Sirve para la
-DIFERENCIA entre modos, no para el nivel absoluto. Tests en `tests/test_guard_era.py`, que
-verifican ademas los dos atajos de rendimiento contra la version lenta.
+`perfil()` queda como delegacion al motor para los `estimar_*.py` viejos. Esos scripts y
+`medir_guard_era.py`, `fase1_rec_por_tema.py`, `medir_rec_por_tema.py`, `diagnostico_senado.py`
+todavia arman su propio record con `shift(1)`: estan marcados en el codigo como espejos viejos.
 
 ## Contrato
 - **Entradas:** datos/* (detalle)

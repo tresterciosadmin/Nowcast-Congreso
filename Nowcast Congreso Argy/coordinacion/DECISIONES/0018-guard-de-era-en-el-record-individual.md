@@ -160,3 +160,17 @@ ahí no es conservador, es empeorarla — que es el argumento definitivo para ha
 `evaluacion/baseline/src/medir_guard_era.py` (nuevo),
 `evaluacion/baseline/tests/test_guard_era.py` (nuevo, 28 checks),
 `coordinacion/FORMULA-COMPLETA.md` §II.5 (ADR-0015).
+
+## Nota 2026-09-28 (ADR-0033): el guard se re-testeó contra la memoria anclada al rol, y sigue
+
+Franco objetó que el guard borra una historia que el legislador sí tiene. ADR-0033 probó la
+codificación que no se mueve con el recambio —el récord condicionado por la relación
+**propio/ajeno** con quien trae el proyecto— sin cortar por era: **predice peor** que el
+guard (+3,9% de Brier en el censo, +44% en los primeros 180 días de cada era, historia
+estricta). El guard **no cambia**. La discrepancia (lo realista predice peor) queda abierta en
+`FORMULA-COMPLETA.md` §II.5.
+
+**Y una corrección a los números de este ADR:** el harness con el que se midió (0,1304 →
+0,1611) cuenta como historia las actas previas **del mismo día**. Con historia estricta el
+guard sigue ganando (A1 0,092 contra A0 0,078), pero los niveles publicados están inflados.
+Ver URGENTE.

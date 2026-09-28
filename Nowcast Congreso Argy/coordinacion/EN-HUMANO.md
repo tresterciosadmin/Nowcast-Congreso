@@ -2,6 +2,24 @@
 
 > Documento vivo. Cada cambio importante en el proyecto se explica acá en lenguaje claro, además de registrarse en `ESTADO-DEL-PROYECTO.md`. Si algo del sistema no se entiende leyendo esto, está mal escrito y hay que arreglarlo.
 
+## La memoria del legislador sí cruza el cambio de gobierno — pero es la de su bloque (28-09-2026)
+
+Franco insistió en algo razonable: un legislador con veinte años de Congreso no llega en blanco a
+una votación sólo porque cambió el Presidente. La pregunta que se probó fue ésta: *"acompaña el
+80% de lo que manda el Ejecutivo y el 30% de lo que trae la oposición"*. Eso no debería borrarse
+con el recambio; debería **darse vuelta** si el legislador pasó al otro lado. Y es así: quien
+acompañaba al gobierno y quedó en la oposición pasa a rechazar lo del nuevo Ejecutivo y a
+acompañar lo de la oposición, de forma bastante predecible. Es la primera vez, en seis intentos,
+que una memoria del legislador sobrevive al cambio de gobierno. Pero al mirar de cerca, lo que
+sobrevive es el comportamiento **de su bloque**, no algo propio de la persona. Y eso el modelo ya
+lo reaprende en pocas semanas de la era nueva. Por eso sumarlo no mejora las predicciones, y
+sacar el "reinicio por era" las empeora (sobre todo en los primeros meses de cada gobierno). Queda
+anotado como una diferencia abierta entre lo que parece más realista y lo que predice mejor. De
+paso apareció un problema más grande: la herramienta que mide al modelo le dejaba "ver" votos de la
+misma sesión (los artículos de una misma ley) como si fueran historia previa, y eso inflaba su
+puntaje casi al doble. Quedó marcado como urgente, porque una de las piezas que hoy están prendidas
+se aprobó con esa medición.
+
 ## ¿Podemos saber en qué temas rompe filas cada legislador? Todavía no, y aprendimos por qué (21-09-2026)
 
 Franco pidió encontrar a los que negocian: no los que siempre se desvían, sino los que se

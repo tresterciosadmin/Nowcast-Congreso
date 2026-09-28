@@ -36,7 +36,7 @@ este archivo en el mismo commit.
 | 1 | $s_\ell$ — share del bloque | de qué lado va el bloque | ✅ **corre** |
 | 2 | $d_i$ — desvío / lealtad | si la persona sigue a su bloque | ✅ **corre** |
 | 3 | $\pi_i$ — presencia | si aparece a votar | ✅ **corre** |
-| 4 | $\text{rec}_i$ — récord propio | historial individual ($n_i\ge1$), cortado por era y encogido hacia el bloque | ✅ **corre** — guard, encogimiento y umbral en 1, prendidos el 06-09 y confirmados con el censo: skill 0,1304 → **0,1611** (§II.5, ADR-0018). Desde el 16-09, condicionado por TEMA cuando hay dato — ver fila 18 |
+| 4 | $\text{rec}_i$ — récord propio | historial individual ($n_i\ge1$), cortado por era y encogido hacia el bloque | ✅ **corre** — guard, encogimiento y umbral en 1, prendidos el 06-09 y confirmados con el censo: skill 0,1304 → **0,1611** (§II.5, ADR-0018). Desde el 16-09, condicionado por TEMA cuando hay dato — ver fila 18. ⚠️ **28-09: esos niveles están inflados** — el harness cuenta votos del mismo día; con historia estricta 0,092 (URGENTE U1, ADR-0033) |
 | 5 | umbrales y quórum | reglas del cuerpo | ✅ **corre** |
 | 6 | Monte Carlo (2.000 sims) | agrega votos a probabilidad | ✅ **corre** |
 | 7 | $\varepsilon$ — clip de confianza | recorta $P_c$ a $[0{,}01;0{,}99]$ | 🔴 **corre pero está mal** (§II.1) |
@@ -52,6 +52,7 @@ este archivo en el mismo commit.
 | 17 | asimetría del ICG | las caídas pesan más que las subas | 🔲 **propuesto** (§III.B.2) |
 | 18 | $\text{rec}_i^{\text{tema}}$ — récord por tema | condiciona el récord del LEGISLADOR (no el bloque) por el tema del proyecto | ✅ **PRENDIDO 16-09-2026** (`RECORD_POR_TEMA`) — 11,1% menos Brier en el censo completo, sin cortes negativos (§III.B.3, ADR-0026). El $\rho$ del sobre-tablas (§III.A.5) sigue aparte y apagado |
 | 19 | multietiqueta en $s_\ell$ (`combinar_temas`) + `TEMA_AUTO` | un proyecto real casi siempre tiene VARIOS temas (61,2% medido) | ⚪ **CERRADO 16-09-2026** (§I.4a, ADR-0024 enmendado por ADR-0028) — re-test con brazo de control sobre el censo completo: NINGUNA regla de combinación (ni siquiera "no condicionar") es distinguible de `primaria`. No es que empeore: la rama de bloque no tiene la información que el tema movería. La ganancia real está en la fila 18 (`rec_i^tema` a nivel legislador) |
+| 20 | $\hat\rho_i^{\text{her}}\,s_o$ — récord por ORIGEN heredado entre gobiernos | trae la relación del legislador con el Ejecutivo de la era anterior, relabelada por su lado | ⚪ **PROBADO E INACTIVO 28-09-2026** (§II.5, ADR-0033) — persiste entre gobiernos (+0,54) pero es memoria de linaje; sobre el espejo del motor Δ≈0. La versión sin guard predice PEOR: **discrepancia abierta** |
 
 **Resumen honesto: 7 términos corren, 5 están rotos, apagados o reprobaron su backtest
 (el sobre tablas y la multietiqueta no generalizan fuera de la muestra con la que se
@@ -616,6 +617,44 @@ cada salida loguea una línea agregada, y `nowcast()` expone `record_por_tema.
 frac_condicionado_real` en su payload — qué fracción de la predicción usó dato
 condicionado real vs. cuánto cayó en silencio al récord general. Detalle completo en
 el ADR-0031.
+
+### El récord por ORIGEN, relabelado por lado: cruza el recambio, pero no mejora el motor (ADR-0033, 28-09-2026)
+
+Sexta codificación de la memoria del legislador entre gobiernos, y la primera anclada a algo
+que no se mueve: el **rol institucional**.
+
+$$\rho_i \;=\; r_{i,\text{EJEC}} - r_{i,\text{OPOS}} \quad(\text{encogidos EB } k=5 \text{ hacia el récord general de } i)$$
+
+$$\text{logit}(P_i) \;=\; \text{logit}(P_i^{\text{base}}) \;+\; \lambda\, w_i\, \hat\rho_i^{\text{ant}}\, \ell_i^{\text{ant}}\,\ell_i^{\text{hoy}}\; s_o \qquad \textbf{(INACTIVO)}$$
+
+con $s_o=\pm1$ según el origen (EJECUTIVO/OPOSICIÓN, 0 si no), $\ell_i\in\{+1,-1,0\}$ el lado
+del linaje del legislador **en su cámara**, medido con el dato (tasa en actas EJECUTIVO menos la
+de la cámara), y $w_i=1$ o $k/(n_{i,o}^{\text{era}}+k)$.
+
+**Lo que se midió:** relabelado por el cambio de lado, $\rho$ persiste (+0,54 [0,30; 0,76],
+IC por expediente; +0,60 entre los que cambiaron de lado). Pero **el residuo individual
+($\rho_i$ menos el del linaje) no persiste** (≈0): es memoria del linaje. Y el motor ya la
+reaprende dentro de la era nueva por dos vías (share condicionado por origen del mismo
+gobierno, récord individual condicionado por origen). **En el censo, sobre el espejo del motor
+y con historia estricta: ΔBrier −0,03% global, −0,29% al arranque de era, IC incluye 0.**
+
+**Lo que el harness no espejaba:** el motor condiciona el récord individual por origen
+(`_alineacion_base`) y el harness no. Con historia estricta, el espejo del motor tiene skill
+**0,173** contra **0,092** del harness (desde 2023: 0,193 contra −0,029). El motor es mejor de lo
+que decía su harness en la era vigente.
+
+### ⚖️ Discrepancia abierta: lo realista predice peor
+
+Franco: *"no quiero adaptar la realidad al modelo"*. La versión realista —no borrar la
+historia, anclarla a la relación **propio/ajeno** con quien trae el proyecto, sin guard—
+**predice peor**: +3,9% de Brier global, **+44% en los primeros 180 días de cada era**. Con
+el acuerdo vigente: no se prende una versión que predice peor, y no se esconde. **Se deja
+escrita como discrepancia abierta.** Lectura: lo que el legislador "recuerda" entre gobiernos
+es mayormente lo que recuerda su bloque, y eso el motor lo reaprende en semanas; lo que
+es de la persona no sobrevive al cambio de bloque/rol. **Siguiente codificación candidata:** el
+prior del share de bloque al arranque de la era (hoy encoge hacia una ventana de 730 días que
+mezcla gobiernos — en Ley Bases, LLA tenía share 0,615 sobre el proyecto de su propio
+Ejecutivo) hacia el comportamiento relabelado del linaje. Detalle en el ADR-0033.
 
 ---
 
@@ -1623,6 +1662,12 @@ Todo estimador usa **sólo información anterior** a la fecha del nowcast: `shif
 `expanding`. Sin el corte por fecha, un nowcast fechado 2024-06-01 usaba el **85% de sus
 votos de después** de esa fecha.
 
+**Y "anterior" es por FECHA, no por fila (28-09-2026, ADR-0033).** `shift(1)` sobre votos
+ordenados por fecha deja entrar como historia las actas previas **de la misma sesión** —los
+artículos de la misma ley, en orden arbitrario—. Un nowcast hecho antes de la sesión no las
+tiene. Medido: el skill del harness pasa de **0,161 a 0,092** al excluirlas. El motor, en
+backtest, tiene la misma forma (`_alineacion_base` corta con `<=`). Ver URGENTE U1.
+
 ## IV.5 — Encogimiento Empirical-Bayes para muestras chicas
 
 $$\hat\vartheta = \frac{n\,\vartheta^{\text{obs}} + k\,\vartheta^{\text{prior}}}{n+k}, \qquad k=5$$
@@ -1661,6 +1706,18 @@ benigna: era el síntoma compuesto de los dos problemas juntos, cada uno tapando
 > creer un Brier/skill agregado: partirlo por el resultado observado, y si una categoría
 > queda sospechosamente vacía o uniforme, verificar el criterio de inclusión contra la
 > fuente antes de aceptar que "así es el dato".
+
+**Tercer caso: la unidad efectiva es la LEY (expediente), no el acta** (ADR-0032, confirmado
+en ADR-0033). 1.070 actas contestadas eran 310 leyes; en la era Milei, 456 actas EJEC/OPOS son
+136 expedientes (3,4 por ley). Dos reglas:
+
+1. **Los IC se sacan re-muestreando expedientes**, no actas ni votos. En ADR-0033 el
+   bootstrap por expediente dio IC hasta **5× más anchos** que por legislador; clusterizar por
+   acta subestima los errores ~1,7× (ADR-0032).
+2. **Toda "firma" o rasgo medido dentro de un período se verifica con una partición por
+   expediente entero** (split-half). Si por acta da alto y por expediente cae, es agrupamiento
+   por ley: así murió la firma temática (0,5–0,8 → ≈0). El $\rho$ por origen la pasó
+   (0,86–0,94 por expediente).
 
 ## IV.7 — Trampas conocidas de estos datos
 
@@ -1774,3 +1831,6 @@ dispersión que el motor no explica y δ debería reducirla.
 | 2026-09-03 | β₃ ($W_{-\ell}$) se descarta: colineal con el carácter, cambia de signo |
 | 2026-09-03 | θ resulta ser fenómeno de **Diputados**; en el Senado es nulo |
 | 2026-09-03 | corregido: la heterogeneidad de ψ por bloque está **sugerida, no probada** |
+| 2026-09-28 | ADR-0033: récord por origen heredado (fila 20) probado e **inactivo**; discrepancia abierta (sin guard predice peor) |
+| 2026-09-28 | medido: el harness filtra votos del mismo día — skill 0,161 → 0,092 con historia estricta (URGENTE U1) |
+| 2026-09-28 | metodología: el expediente como unidad efectiva (IV.6) y "anterior" por fecha (IV.4) |

@@ -1,0 +1,7271 @@
+{
+ "k_shrink": 5.0,
+ "umbral_lado": 0.1,
+ "recambios": [
+  [
+   "KIRCHNER",
+   "MACRI",
+   "2015-12-10"
+  ],
+  [
+   "MACRI",
+   "AF",
+   "2019-12-10"
+  ],
+  [
+   "AF",
+   "MILEI",
+   "2023-12-10"
+  ]
+ ],
+ "FASE0": {
+  "cobertura_origen_por_era_camara": {
+   "AF|diputados": {
+    "actas": 52,
+    "EJECUTIVO": 36,
+    "OPOSICION": 7,
+    "OFICIALISMO": 3,
+    "ALIADOS": 0,
+    "DESCONOCIDO": 6,
+    "frac_ejec_u_opos": 0.8269
+   },
+   "AF|senado": {
+    "actas": 244,
+    "EJECUTIVO": 54,
+    "OPOSICION": 79,
+    "OFICIALISMO": 79,
+    "ALIADOS": 0,
+    "DESCONOCIDO": 32,
+    "frac_ejec_u_opos": 0.5451
+   },
+   "KIRCHNER|diputados": {
+    "actas": 1906,
+    "EJECUTIVO": 532,
+    "OPOSICION": 125,
+    "OFICIALISMO": 222,
+    "ALIADOS": 0,
+    "DESCONOCIDO": 1027,
+    "frac_ejec_u_opos": 0.3447
+   },
+   "KIRCHNER|senado": {
+    "actas": 2131,
+    "EJECUTIVO": 560,
+    "OPOSICION": 182,
+    "OFICIALISMO": 237,
+    "ALIADOS": 0,
+    "DESCONOCIDO": 1152,
+    "frac_ejec_u_opos": 0.3482
+   },
+   "MACRI|diputados": {
+    "actas": 520,
+    "EJECUTIVO": 210,
+    "OPOSICION": 213,
+    "OFICIALISMO": 21,
+    "ALIADOS": 35,
+    "DESCONOCIDO": 41,
+    "frac_ejec_u_opos": 0.8135
+   },
+   "MACRI|senado": {
+    "actas": 417,
+    "EJECUTIVO": 62,
+    "OPOSICION": 228,
+    "OFICIALISMO": 21,
+    "ALIADOS": 35,
+    "DESCONOCIDO": 71,
+    "frac_ejec_u_opos": 0.6954
+   },
+   "MILEI|diputados": {
+    "actas": 400,
+    "EJECUTIVO": 170,
+    "OPOSICION": 109,
+    "OFICIALISMO": 0,
+    "ALIADOS": 3,
+    "DESCONOCIDO": 118,
+    "frac_ejec_u_opos": 0.6975
+   },
+   "MILEI|senado": {
+    "actas": 237,
+    "EJECUTIVO": 115,
+    "OPOSICION": 62,
+    "OFICIALISMO": 4,
+    "ALIADOS": 5,
+    "DESCONOCIDO": 51,
+    "frac_ejec_u_opos": 0.7468
+   }
+  },
+  "expedientes_por_era": {
+   "AF": {
+    "actas_EO": 176,
+    "expedientes_EO": 133,
+    "actas_por_expediente": 1.32
+   },
+   "KIRCHNER": {
+    "actas_EO": 1399,
+    "expedientes_EO": 711,
+    "actas_por_expediente": 1.97
+   },
+   "MACRI": {
+    "actas_EO": 713,
+    "expedientes_EO": 335,
+    "actas_por_expediente": 2.13
+   },
+   "MILEI": {
+    "actas_EO": 456,
+    "expedientes_EO": 136,
+    "actas_por_expediente": 3.35
+   }
+  },
+  "celdas_por_recambio": {
+   "2015-12-10": {
+    "activos_antes": 1440,
+    "activos_despues": 464,
+    "continuadores": 221,
+    "n>=5": {
+     "EJEC_ambos_lados": 218,
+     "OPOS_ambos_lados": 207,
+     "UNIVERSO_las_dos_a_ambos_lados": 206
+    },
+    "n>=10": {
+     "EJEC_ambos_lados": 215,
+     "OPOS_ambos_lados": 191,
+     "UNIVERSO_las_dos_a_ambos_lados": 190
+    },
+    "n>=20": {
+     "EJEC_ambos_lados": 199,
+     "OPOS_ambos_lados": 130,
+     "UNIVERSO_las_dos_a_ambos_lados": 126
+    },
+    "composicion_linaje_universo_n5": {
+     "FdT-UxP (kirchnerismo)": 97,
+     "RADICALISMO": 32,
+     "OTRO / PROVINCIAL": 27,
+     "PERONISMO FEDERAL": 14,
+     "PRO": 12,
+     "FRENTE RENOVADOR (massismo)": 9,
+     "IZQUIERDA": 5,
+     "COALICION CIVICA": 5,
+     "PROGRESISMO": 5
+    },
+    "composicion_linaje_activos_antes": {
+     "OTRO / PROVINCIAL": 524,
+     "FdT-UxP (kirchnerismo)": 435,
+     "RADICALISMO": 213,
+     "PERONISMO FEDERAL": 124,
+     "PROGRESISMO": 48,
+     "COALICION CIVICA": 41,
+     "PRO": 32,
+     "FRENTE RENOVADOR (massismo)": 13
+    },
+    "r_all_medio": {
+     "universo_n5": 0.8098,
+     "activos_antes": 0.7425
+    },
+    "camara_universo_n5": {
+     "diputados": 166,
+     "senado": 40
+    }
+   },
+   "2019-12-10": {
+    "activos_antes": 464,
+    "activos_despues": 469,
+    "continuadores": 214,
+    "n>=5": {
+     "EJEC_ambos_lados": 202,
+     "OPOS_ambos_lados": 112,
+     "UNIVERSO_las_dos_a_ambos_lados": 109
+    },
+    "n>=10": {
+     "EJEC_ambos_lados": 191,
+     "OPOS_ambos_lados": 60,
+     "UNIVERSO_las_dos_a_ambos_lados": 59
+    },
+    "n>=20": {
+     "EJEC_ambos_lados": 178,
+     "OPOS_ambos_lados": 56,
+     "UNIVERSO_las_dos_a_ambos_lados": 52
+    },
+    "composicion_linaje_universo_n5": {
+     "FdT-UxP (kirchnerismo)": 36,
+     "RADICALISMO": 22,
+     "OTRO / PROVINCIAL": 16,
+     "PRO": 15,
+     "PERONISMO FEDERAL": 10,
+     "FRENTE RENOVADOR (massismo)": 4,
+     "IZQUIERDA": 3,
+     "COALICION CIVICA": 3
+    },
+    "composicion_linaje_activos_antes": {
+     "FdT-UxP (kirchnerismo)": 139,
+     "PRO": 75,
+     "OTRO / PROVINCIAL": 73,
+     "RADICALISMO": 69,
+     "PERONISMO FEDERAL": 48,
+     "FRENTE RENOVADOR (massismo)": 32,
+     "IZQUIERDA": 11,
+     "COALICION CIVICA": 11
+    },
+    "r_all_medio": {
+     "universo_n5": 0.7834,
+     "activos_antes": 0.7777
+    },
+    "camara_universo_n5": {
+     "diputados": 63,
+     "senado": 46
+    }
+   },
+   "2023-12-10": {
+    "activos_antes": 469,
+    "activos_despues": 468,
+    "continuadores": 210,
+    "n>=5": {
+     "EJEC_ambos_lados": 163,
+     "OPOS_ambos_lados": 168,
+     "UNIVERSO_las_dos_a_ambos_lados": 139
+    },
+    "n>=10": {
+     "EJEC_ambos_lados": 120,
+     "OPOS_ambos_lados": 49,
+     "UNIVERSO_las_dos_a_ambos_lados": 48
+    },
+    "n>=20": {
+     "EJEC_ambos_lados": 95,
+     "OPOS_ambos_lados": 32,
+     "UNIVERSO_las_dos_a_ambos_lados": 24
+    },
+    "composicion_linaje_universo_n5": {
+     "FdT-UxP (kirchnerismo)": 83,
+     "RADICALISMO": 21,
+     "PRO": 14,
+     "OTRO / PROVINCIAL": 9,
+     "COALICION CIVICA": 6,
+     "PERONISMO FEDERAL": 3,
+     "IZQUIERDA": 2,
+     "LA LIBERTAD AVANZA": 1
+    },
+    "composicion_linaje_activos_antes": {
+     "FdT-UxP (kirchnerismo)": 219,
+     "RADICALISMO": 78,
+     "PRO": 77,
+     "OTRO / PROVINCIAL": 51,
+     "COALICION CIVICA": 17,
+     "PERONISMO FEDERAL": 11,
+     "LA LIBERTAD AVANZA": 10,
+     "IZQUIERDA": 5
+    },
+    "r_all_medio": {
+     "universo_n5": 0.8182,
+     "activos_antes": 0.7553
+    },
+    "camara_universo_n5": {
+     "diputados": 89,
+     "senado": 50
+    }
+   }
+  }
+ },
+ "FASE1_punto": {
+  "pooled|n>=5": {
+   "n": 454,
+   "mismo_lado": {
+    "n": 43,
+    "r_rho": 0.4052,
+    "r_rho_heredado": 0.4052,
+    "acuerdo_signo_crudo": 0.3953,
+    "r_resid_crudo": 0.0545,
+    "r_resid_relabelado": -0.1192
+   },
+   "cambio_lado": {
+    "n": 210,
+    "r_rho": -0.5976,
+    "r_rho_heredado": 0.5976,
+    "acuerdo_signo_crudo": 0.1714,
+    "r_resid_crudo": -0.1724,
+    "r_resid_relabelado": -0.0258
+   },
+   "ambiguo": {
+    "n": 201,
+    "r_rho": -0.0815,
+    "r_rho_heredado": null,
+    "acuerdo_signo_crudo": 0.5075,
+    "r_resid_crudo": -0.0193,
+    "r_resid_relabelado": null
+   },
+   "crudo_todos": {
+    "n": 454,
+    "r_rho": -0.3464,
+    "r_rho_heredado": null,
+    "acuerdo_signo_crudo": 0.3414,
+    "r_resid_crudo": -0.0503,
+    "r_resid_relabelado": null
+   },
+   "relabelado_todos_no_ambiguos": {
+    "n": 253,
+    "r_rho_heredado": 0.5362
+   }
+  },
+  "2015-12-10|n>=5": {
+   "n": 206,
+   "mismo_lado": {
+    "n": 22,
+    "r_rho": 0.5514,
+    "r_rho_heredado": 0.5514,
+    "acuerdo_signo_crudo": 0.4091,
+    "r_resid_crudo": 0.1988,
+    "r_resid_relabelado": -0.0145
+   },
+   "cambio_lado": {
+    "n": 91,
+    "r_rho": -0.8639,
+    "r_rho_heredado": 0.8639,
+    "acuerdo_signo_crudo": 0.0989,
+    "r_resid_crudo": -0.4029,
+    "r_resid_relabelado": 0.2314
+   },
+   "ambiguo": {
+    "n": 93,
+    "r_rho": -0.276,
+    "r_rho_heredado": null,
+    "acuerdo_signo_crudo": 0.4516,
+    "r_resid_crudo": -0.0364,
+    "r_resid_relabelado": null
+   },
+   "crudo_todos": {
+    "n": 206,
+    "r_rho": -0.5306,
+    "r_rho_heredado": null,
+    "acuerdo_signo_crudo": 0.2913,
+    "r_resid_crudo": -0.1161,
+    "r_resid_relabelado": null
+   },
+   "relabelado_todos_no_ambiguos": {
+    "n": 113,
+    "r_rho_heredado": 0.8124
+   }
+  },
+  "2019-12-10|n>=5": {
+   "n": 109,
+   "mismo_lado": {
+    "n": 11,
+    "r_rho": 0.788,
+    "r_rho_heredado": 0.788,
+    "acuerdo_signo_crudo": 0.4545,
+    "r_resid_crudo": 0.3797,
+    "r_resid_relabelado": -0.2506
+   },
+   "cambio_lado": {
+    "n": 39,
+    "r_rho": -0.9116,
+    "r_rho_heredado": 0.9116,
+    "acuerdo_signo_crudo": 0.0769,
+    "r_resid_crudo": 0.1443,
+    "r_resid_relabelado": -0.3756
+   },
+   "ambiguo": {
+    "n": 59,
+    "r_rho": 0.4505,
+    "r_rho_heredado": null,
+    "acuerdo_signo_crudo": 0.5254,
+    "r_resid_crudo": 0.0201,
+    "r_resid_relabelado": null
+   },
+   "crudo_todos": {
+    "n": 109,
+    "r_rho": -0.3189,
+    "r_rho_heredado": null,
+    "acuerdo_signo_crudo": 0.3578,
+    "r_resid_crudo": 0.1713,
+    "r_resid_relabelado": null
+   },
+   "relabelado_todos_no_ambiguos": {
+    "n": 50,
+    "r_rho_heredado": 0.7745
+   }
+  },
+  "2023-12-10|n>=5": {
+   "n": 139,
+   "mismo_lado": {
+    "n": 10,
+    "r_rho": 0.4898,
+    "r_rho_heredado": 0.4898,
+    "acuerdo_signo_crudo": 0.3,
+    "r_resid_crudo": 0.0702,
+    "r_resid_relabelado": -0.1971
+   },
+   "cambio_lado": {
+    "n": 80,
+    "r_rho": -0.7202,
+    "r_rho_heredado": 0.7202,
+    "acuerdo_signo_crudo": 0.3,
+    "r_resid_crudo": 0.0281,
+    "r_resid_relabelado": -0.0986
+   },
+   "ambiguo": {
+    "n": 49,
+    "r_rho": 0.2455,
+    "r_rho_heredado": null,
+    "acuerdo_signo_crudo": 0.5918,
+    "r_resid_crudo": -0.1235,
+    "r_resid_relabelado": null
+   },
+   "crudo_todos": {
+    "n": 139,
+    "r_rho": -0.3785,
+    "r_rho_heredado": null,
+    "acuerdo_signo_crudo": 0.4029,
+    "r_resid_crudo": -0.0207,
+    "r_resid_relabelado": null
+   },
+   "relabelado_todos_no_ambiguos": {
+    "n": 90,
+    "r_rho_heredado": 0.5983
+   }
+  },
+  "pooled|n>=10": {
+   "n": 297,
+   "mismo_lado": {
+    "n": 21,
+    "r_rho": 0.5512,
+    "r_rho_heredado": 0.5512,
+    "acuerdo_signo_crudo": 0.4286,
+    "r_resid_crudo": 0.2048,
+    "r_resid_relabelado": -0.0132
+   },
+   "cambio_lado": {
+    "n": 94,
+    "r_rho": -0.8168,
+    "r_rho_heredado": 0.8168,
+    "acuerdo_signo_crudo": 0.1383,
+    "r_resid_crudo": -0.2628,
+    "r_resid_relabelado": 0.1698
+   },
+   "ambiguo": {
+    "n": 182,
+    "r_rho": -0.1177,
+    "r_rho_heredado": null,
+    "acuerdo_signo_crudo": 0.4945,
+    "r_resid_crudo": -0.0295,
+    "r_resid_relabelado": null
+   },
+   "crudo_todos": {
+    "n": 297,
+    "r_rho": -0.3911,
+    "r_rho_heredado": null,
+    "acuerdo_signo_crudo": 0.3771,
+    "r_resid_crudo": -0.0819,
+    "r_resid_relabelado": null
+   },
+   "relabelado_todos_no_ambiguos": {
+    "n": 115,
+    "r_rho_heredado": 0.775
+   }
+  },
+  "2015-12-10|n>=10": {
+   "n": 190,
+   "mismo_lado": {
+    "n": 21,
+    "r_rho": 0.5512,
+    "r_rho_heredado": 0.5512,
+    "acuerdo_signo_crudo": 0.4286,
+    "r_resid_crudo": 0.2048,
+    "r_resid_relabelado": -0.0132
+   },
+   "cambio_lado": {
+    "n": 85,
+    "r_rho": -0.8845,
+    "r_rho_heredado": 0.8845,
+    "acuerdo_signo_crudo": 0.0824,
+    "r_resid_crudo": -0.3844,
+    "r_resid_relabelado": 0.2166
+   },
+   "ambiguo": {
+    "n": 84,
+    "r_rho": -0.2427,
+    "r_rho_heredado": null,
+    "acuerdo_signo_crudo": 0.4524,
+    "r_resid_crudo": -0.039,
+    "r_resid_relabelado": null
+   },
+   "crudo_todos": {
+    "n": 190,
+    "r_rho": -0.5313,
+    "r_rho_heredado": null,
+    "acuerdo_signo_crudo": 0.2842,
+    "r_resid_crudo": -0.1035,
+    "r_resid_relabelado": null
+   },
+   "relabelado_todos_no_ambiguos": {
+    "n": 106,
+    "r_rho_heredado": 0.8276
+   }
+  },
+  "2019-12-10|n>=10": {
+   "n": 59,
+   "mismo_lado": {
+    "n": 0,
+    "r_rho": null,
+    "r_rho_heredado": null,
+    "acuerdo_signo_crudo": null,
+    "r_resid_crudo": null,
+    "r_resid_relabelado": null
+   },
+   "cambio_lado": {
+    "n": 2,
+    "r_rho": null,
+    "r_rho_heredado": null,
+    "acuerdo_signo_crudo": 1.0,
+    "r_resid_crudo": null,
+    "r_resid_relabelado": null
+   },
+   "ambiguo": {
+    "n": 57,
+    "r_rho": 0.4515,
+    "r_rho_heredado": null,
+    "acuerdo_signo_crudo": 0.5439,
+    "r_resid_crudo": 0.0247,
+    "r_resid_relabelado": null
+   },
+   "crudo_todos": {
+    "n": 59,
+    "r_rho": 0.4468,
+    "r_rho_heredado": null,
+    "acuerdo_signo_crudo": 0.5593,
+    "r_resid_crudo": 0.0399,
+    "r_resid_relabelado": null
+   },
+   "relabelado_todos_no_ambiguos": {
+    "n": 2,
+    "r_rho_heredado": null
+   }
+  },
+  "2023-12-10|n>=10": {
+   "n": 48,
+   "mismo_lado": {
+    "n": 0,
+    "r_rho": null,
+    "r_rho_heredado": null,
+    "acuerdo_signo_crudo": null,
+    "r_resid_crudo": null,
+    "r_resid_relabelado": null
+   },
+   "cambio_lado": {
+    "n": 7,
+    "r_rho": -0.1106,
+    "r_rho_heredado": 0.1106,
+    "acuerdo_signo_crudo": 0.5714,
+    "r_resid_crudo": 0.1151,
+    "r_resid_relabelado": -0.1151
+   },
+   "ambiguo": {
+    "n": 41,
+    "r_rho": 0.4253,
+    "r_rho_heredado": null,
+    "acuerdo_signo_crudo": 0.5122,
+    "r_resid_crudo": -0.1593,
+    "r_resid_relabelado": null
+   },
+   "crudo_todos": {
+    "n": 48,
+    "r_rho": 0.1963,
+    "r_rho_heredado": null,
+    "acuerdo_signo_crudo": 0.5208,
+    "r_resid_crudo": -0.0362,
+    "r_resid_relabelado": null
+   },
+   "relabelado_todos_no_ambiguos": {
+    "n": 7,
+    "r_rho_heredado": 0.1106
+   }
+  },
+  "pooled|n>=20": {
+   "n": 202,
+   "mismo_lado": {
+    "n": 12,
+    "r_rho": 0.4323,
+    "r_rho_heredado": 0.4323,
+    "acuerdo_signo_crudo": 0.3333,
+    "r_resid_crudo": 0.3265,
+    "r_resid_relabelado": 0.2505
+   },
+   "cambio_lado": {
+    "n": 57,
+    "r_rho": -0.8592,
+    "r_rho_heredado": 0.8592,
+    "acuerdo_signo_crudo": 0.0526,
+    "r_resid_crudo": -0.1477,
+    "r_resid_relabelado": 0.1182
+   },
+   "ambiguo": {
+    "n": 133,
+    "r_rho": -0.0804,
+    "r_rho_heredado": null,
+    "acuerdo_signo_crudo": 0.5338,
+    "r_resid_crudo": 0.0017,
+    "r_resid_relabelado": null
+   },
+   "crudo_todos": {
+    "n": 202,
+    "r_rho": -0.409,
+    "r_rho_heredado": null,
+    "acuerdo_signo_crudo": 0.3861,
+    "r_resid_crudo": -0.0157,
+    "r_resid_relabelado": null
+   },
+   "relabelado_todos_no_ambiguos": {
+    "n": 69,
+    "r_rho_heredado": 0.8012
+   }
+  },
+  "2015-12-10|n>=20": {
+   "n": 126,
+   "mismo_lado": {
+    "n": 12,
+    "r_rho": 0.4323,
+    "r_rho_heredado": 0.4323,
+    "acuerdo_signo_crudo": 0.3333,
+    "r_resid_crudo": 0.3265,
+    "r_resid_relabelado": 0.2505
+   },
+   "cambio_lado": {
+    "n": 54,
+    "r_rho": -0.9344,
+    "r_rho_heredado": 0.9344,
+    "acuerdo_signo_crudo": 0.0185,
+    "r_resid_crudo": -0.2476,
+    "r_resid_relabelado": 0.1865
+   },
+   "ambiguo": {
+    "n": 60,
+    "r_rho": -0.2434,
+    "r_rho_heredado": null,
+    "acuerdo_signo_crudo": 0.4667,
+    "r_resid_crudo": 0.0302,
+    "r_resid_relabelado": null
+   },
+   "crudo_todos": {
+    "n": 126,
+    "r_rho": -0.5758,
+    "r_rho_heredado": null,
+    "acuerdo_signo_crudo": 0.2619,
+    "r_resid_crudo": -0.0186,
+    "r_resid_relabelado": null
+   },
+   "relabelado_todos_no_ambiguos": {
+    "n": 66,
+    "r_rho_heredado": 0.8621
+   }
+  },
+  "2019-12-10|n>=20": {
+   "n": 52,
+   "mismo_lado": {
+    "n": 0,
+    "r_rho": null,
+    "r_rho_heredado": null,
+    "acuerdo_signo_crudo": null,
+    "r_resid_crudo": null,
+    "r_resid_relabelado": null
+   },
+   "cambio_lado": {
+    "n": 1,
+    "r_rho": null,
+    "r_rho_heredado": null,
+    "acuerdo_signo_crudo": 1.0,
+    "r_resid_crudo": null,
+    "r_resid_relabelado": null
+   },
+   "ambiguo": {
+    "n": 51,
+    "r_rho": 0.414,
+    "r_rho_heredado": null,
+    "acuerdo_signo_crudo": 0.549,
+    "r_resid_crudo": -0.0039,
+    "r_resid_relabelado": null
+   },
+   "crudo_todos": {
+    "n": 52,
+    "r_rho": 0.4117,
+    "r_rho_heredado": null,
+    "acuerdo_signo_crudo": 0.5577,
+    "r_resid_crudo": 0.0157,
+    "r_resid_relabelado": null
+   },
+   "relabelado_todos_no_ambiguos": {
+    "n": 1,
+    "r_rho_heredado": null
+   }
+  },
+  "2023-12-10|n>=20": {
+   "n": 24,
+   "mismo_lado": {
+    "n": 0,
+    "r_rho": null,
+    "r_rho_heredado": null,
+    "acuerdo_signo_crudo": null,
+    "r_resid_crudo": null,
+    "r_resid_relabelado": null
+   },
+   "cambio_lado": {
+    "n": 2,
+    "r_rho": null,
+    "r_rho_heredado": null,
+    "acuerdo_signo_crudo": 0.5,
+    "r_resid_crudo": null,
+    "r_resid_relabelado": null
+   },
+   "ambiguo": {
+    "n": 22,
+    "r_rho": 0.3018,
+    "r_rho_heredado": null,
+    "acuerdo_signo_crudo": 0.6818,
+    "r_resid_crudo": -0.1181,
+    "r_resid_relabelado": null
+   },
+   "crudo_todos": {
+    "n": 24,
+    "r_rho": 0.2972,
+    "r_rho_heredado": null,
+    "acuerdo_signo_crudo": 0.6667,
+    "r_resid_crudo": -0.1245,
+    "r_resid_relabelado": null
+   },
+   "relabelado_todos_no_ambiguos": {
+    "n": 2,
+    "r_rho_heredado": null
+   }
+  },
+  "camara=diputados|pooled|n>=5": {
+   "n": 279,
+   "mismo_lado": {
+    "n": 42,
+    "r_rho": 0.4241,
+    "r_rho_heredado": 0.4241,
+    "acuerdo_signo_crudo": 0.381,
+    "r_resid_crudo": 0.0539,
+    "r_resid_relabelado": -0.1216
+   },
+   "cambio_lado": {
+    "n": 198,
+    "r_rho": -0.6193,
+    "r_rho_heredado": 0.6193,
+    "acuerdo_signo_crudo": 0.1515,
+    "r_resid_crudo": -0.2059,
+    "r_resid_relabelado": -0.0563
+   },
+   "ambiguo": {
+    "n": 39,
+    "r_rho": -0.0095,
+    "r_rho_heredado": null,
+    "acuerdo_signo_crudo": 0.641,
+    "r_resid_crudo": -0.0377,
+    "r_resid_relabelado": null
+   },
+   "crudo_todos": {
+    "n": 279,
+    "r_rho": -0.4659,
+    "r_rho_heredado": null,
+    "acuerdo_signo_crudo": 0.2545,
+    "r_resid_crudo": -0.0659,
+    "r_resid_relabelado": null
+   },
+   "relabelado_todos_no_ambiguos": {
+    "n": 240,
+    "r_rho_heredado": 0.5548
+   }
+  },
+  "camara=senado|pooled|n>=5": {
+   "n": 125,
+   "mismo_lado": {
+    "n": 0,
+    "r_rho": null,
+    "r_rho_heredado": null,
+    "acuerdo_signo_crudo": null,
+    "r_resid_crudo": null,
+    "r_resid_relabelado": null
+   },
+   "cambio_lado": {
+    "n": 7,
+    "r_rho": -0.3589,
+    "r_rho_heredado": 0.3589,
+    "acuerdo_signo_crudo": 0.4286,
+    "r_resid_crudo": -0.1317,
+    "r_resid_relabelado": 0.1317
+   },
+   "ambiguo": {
+    "n": 118,
+    "r_rho": -0.0658,
+    "r_rho_heredado": null,
+    "acuerdo_signo_crudo": 0.4492,
+    "r_resid_crudo": 0.0006,
+    "r_resid_relabelado": null
+   },
+   "crudo_todos": {
+    "n": 125,
+    "r_rho": -0.0905,
+    "r_rho_heredado": null,
+    "acuerdo_signo_crudo": 0.448,
+    "r_resid_crudo": 0.0111,
+    "r_resid_relabelado": null
+   },
+   "relabelado_todos_no_ambiguos": {
+    "n": 7,
+    "r_rho_heredado": 0.3589
+   }
+  },
+  "cambio_camara|pooled|n>=5": {
+   "n": 50,
+   "mismo_lado": {
+    "n": 1,
+    "r_rho": null,
+    "r_rho_heredado": null,
+    "acuerdo_signo_crudo": 1.0,
+    "r_resid_crudo": null,
+    "r_resid_relabelado": null
+   },
+   "cambio_lado": {
+    "n": 5,
+    "r_rho": -0.4431,
+    "r_rho_heredado": 0.4431,
+    "acuerdo_signo_crudo": 0.6,
+    "r_resid_crudo": 0.3607,
+    "r_resid_relabelado": 0.1831
+   },
+   "ambiguo": {
+    "n": 44,
+    "r_rho": -0.1673,
+    "r_rho_heredado": null,
+    "acuerdo_signo_crudo": 0.5455,
+    "r_resid_crudo": -0.0009,
+    "r_resid_relabelado": null
+   },
+   "crudo_todos": {
+    "n": 50,
+    "r_rho": -0.1479,
+    "r_rho_heredado": null,
+    "acuerdo_signo_crudo": 0.56,
+    "r_resid_crudo": 0.0132,
+    "r_resid_relabelado": null
+   },
+   "relabelado_todos_no_ambiguos": {
+    "n": 6,
+    "r_rho_heredado": 0.4874
+   }
+  },
+  "mismo_linaje|pooled|n>=5": {
+   "n": 376,
+   "mismo_lado": {
+    "n": 17,
+    "r_rho": 0.5114,
+    "r_rho_heredado": 0.5114,
+    "acuerdo_signo_crudo": 0.6471,
+    "r_resid_crudo": -0.0809,
+    "r_resid_relabelado": -0.1872
+   },
+   "cambio_lado": {
+    "n": 198,
+    "r_rho": -0.5913,
+    "r_rho_heredado": 0.5913,
+    "acuerdo_signo_crudo": 0.1616,
+    "r_resid_crudo": -0.3013,
+    "r_resid_relabelado": 0.0591
+   },
+   "ambiguo": {
+    "n": 161,
+    "r_rho": -0.0007,
+    "r_rho_heredado": null,
+    "acuerdo_signo_crudo": 0.5155,
+    "r_resid_crudo": -0.0639,
+    "r_resid_relabelado": null
+   },
+   "crudo_todos": {
+    "n": 376,
+    "r_rho": -0.3411,
+    "r_rho_heredado": null,
+    "acuerdo_signo_crudo": 0.3351,
+    "r_resid_crudo": -0.1628,
+    "r_resid_relabelado": null
+   },
+   "relabelado_todos_no_ambiguos": {
+    "n": 215,
+    "r_rho_heredado": 0.563
+   }
+  },
+  "cambio_linaje|pooled|n>=5": {
+   "n": 78,
+   "mismo_lado": {
+    "n": 26,
+    "r_rho": -0.1231,
+    "r_rho_heredado": -0.1231,
+    "acuerdo_signo_crudo": 0.2308,
+    "r_resid_crudo": -0.0733,
+    "r_resid_relabelado": -0.0733
+   },
+   "cambio_lado": {
+    "n": 12,
+    "r_rho": 0.111,
+    "r_rho_heredado": -0.111,
+    "acuerdo_signo_crudo": 0.3333,
+    "r_resid_crudo": 0.3923,
+    "r_resid_relabelado": -0.3923
+   },
+   "ambiguo": {
+    "n": 40,
+    "r_rho": -0.3838,
+    "r_rho_heredado": null,
+    "acuerdo_signo_crudo": 0.475,
+    "r_resid_crudo": -0.144,
+    "r_resid_relabelado": null
+   },
+   "crudo_todos": {
+    "n": 78,
+    "r_rho": -0.3693,
+    "r_rho_heredado": null,
+    "acuerdo_signo_crudo": 0.3718,
+    "r_resid_crudo": 0.141,
+    "r_resid_relabelado": null
+   },
+   "relabelado_todos_no_ambiguos": {
+    "n": 38,
+    "r_rho_heredado": 0.2478
+   }
+  },
+  "sin_OTRO_PROVINCIAL|pooled|n>=5": {
+   "n": 378,
+   "mismo_lado": {
+    "n": 24,
+    "r_rho": 0.6734,
+    "r_rho_heredado": 0.6734,
+    "acuerdo_signo_crudo": 0.5833,
+    "r_resid_crudo": 0.0712,
+    "r_resid_relabelado": -0.1512
+   },
+   "cambio_lado": {
+    "n": 203,
+    "r_rho": -0.5985,
+    "r_rho_heredado": 0.5985,
+    "acuerdo_signo_crudo": 0.1724,
+    "r_resid_crudo": -0.302,
+    "r_resid_relabelado": 0.0725
+   },
+   "ambiguo": {
+    "n": 151,
+    "r_rho": -0.0237,
+    "r_rho_heredado": null,
+    "acuerdo_signo_crudo": 0.5298,
+    "r_resid_crudo": 0.0026,
+    "r_resid_relabelado": null
+   },
+   "crudo_todos": {
+    "n": 378,
+    "r_rho": -0.3618,
+    "r_rho_heredado": null,
+    "acuerdo_signo_crudo": 0.3413,
+    "r_resid_crudo": -0.1487,
+    "r_resid_relabelado": null
+   },
+   "relabelado_todos_no_ambiguos": {
+    "n": 227,
+    "r_rho_heredado": 0.568
+   }
+  }
+ },
+ "FASE1_punto_criterio_psi_sensibilidad": {
+  "pooled|n>=5": {
+   "n": 454,
+   "mismo_lado": {
+    "n": 212,
+    "r_rho": 0.1492,
+    "r_rho_heredado": 0.1492,
+    "acuerdo_signo_crudo": 0.4858,
+    "r_resid_crudo": 0.0109,
+    "r_resid_relabelado": -0.0042
+   },
+   "cambio_lado": {
+    "n": 215,
+    "r_rho": -0.6289,
+    "r_rho_heredado": 0.6289,
+    "acuerdo_signo_crudo": 0.186,
+    "r_resid_crudo": -0.2242,
+    "r_resid_relabelado": -0.0953
+   },
+   "ambiguo": {
+    "n": 27,
+    "r_rho": 0.1781,
+    "r_rho_heredado": null,
+    "acuerdo_signo_crudo": 0.4444,
+    "r_resid_crudo": -0.0403,
+    "r_resid_relabelado": null
+   },
+   "crudo_todos": {
+    "n": 454,
+    "r_rho": -0.3464,
+    "r_rho_heredado": null,
+    "acuerdo_signo_crudo": 0.3414,
+    "r_resid_crudo": -0.0503,
+    "r_resid_relabelado": null
+   },
+   "relabelado_todos_no_ambiguos": {
+    "n": 427,
+    "r_rho_heredado": 0.3418
+   }
+  },
+  "2015-12-10|n>=5": {
+   "n": 206,
+   "mismo_lado": {
+    "n": 111,
+    "r_rho": -0.0978,
+    "r_rho_heredado": -0.0978,
+    "acuerdo_signo_crudo": 0.4865,
+    "r_resid_crudo": 0.0342,
+    "r_resid_relabelado": 0.0247
+   },
+   "cambio_lado": {
+    "n": 78,
+    "r_rho": -0.8702,
+    "r_rho_heredado": 0.8702,
+    "acuerdo_signo_crudo": 0.0128,
+    "r_resid_crudo": -0.4592,
+    "r_resid_relabelado": 0.2621
+   },
+   "ambiguo": {
+    "n": 17,
+    "r_rho": 0.3041,
+    "r_rho_heredado": null,
+    "acuerdo_signo_crudo": 0.2941,
+    "r_resid_crudo": 0.0315,
+    "r_resid_relabelado": null
+   },
+   "crudo_todos": {
+    "n": 206,
+    "r_rho": -0.5306,
+    "r_rho_heredado": null,
+    "acuerdo_signo_crudo": 0.2913,
+    "r_resid_crudo": -0.1161,
+    "r_resid_relabelado": null
+   },
+   "relabelado_todos_no_ambiguos": {
+    "n": 189,
+    "r_rho_heredado": 0.3944
+   }
+  },
+  "2019-12-10|n>=5": {
+   "n": 109,
+   "mismo_lado": {
+    "n": 68,
+    "r_rho": 0.759,
+    "r_rho_heredado": 0.759,
+    "acuerdo_signo_crudo": 0.5147,
+    "r_resid_crudo": 0.1171,
+    "r_resid_relabelado": -0.0098
+   },
+   "cambio_lado": {
+    "n": 41,
+    "r_rho": -0.9388,
+    "r_rho_heredado": 0.9388,
+    "acuerdo_signo_crudo": 0.0976,
+    "r_resid_crudo": -0.033,
+    "r_resid_relabelado": -0.3924
+   },
+   "ambiguo": {
+    "n": 0,
+    "r_rho": null,
+    "r_rho_heredado": null,
+    "acuerdo_signo_crudo": null,
+    "r_resid_crudo": null,
+    "r_resid_relabelado": null
+   },
+   "crudo_todos": {
+    "n": 109,
+    "r_rho": -0.3189,
+    "r_rho_heredado": null,
+    "acuerdo_signo_crudo": 0.3578,
+    "r_resid_crudo": 0.1713,
+    "r_resid_relabelado": null
+   },
+   "relabelado_todos_no_ambiguos": {
+    "n": 109,
+    "r_rho_heredado": 0.6718
+   }
+  },
+  "2023-12-10|n>=5": {
+   "n": 139,
+   "mismo_lado": {
+    "n": 33,
+    "r_rho": 0.3584,
+    "r_rho_heredado": 0.3584,
+    "acuerdo_signo_crudo": 0.4242,
+    "r_resid_crudo": 0.0076,
+    "r_resid_relabelado": -0.0599
+   },
+   "cambio_lado": {
+    "n": 96,
+    "r_rho": -0.8057,
+    "r_rho_heredado": 0.8057,
+    "acuerdo_signo_crudo": 0.3646,
+    "r_resid_crudo": -0.0942,
+    "r_resid_relabelado": -0.2015
+   },
+   "ambiguo": {
+    "n": 10,
+    "r_rho": 0.5514,
+    "r_rho_heredado": null,
+    "acuerdo_signo_crudo": 0.7,
+    "r_resid_crudo": -0.273,
+    "r_resid_relabelado": null
+   },
+   "crudo_todos": {
+    "n": 139,
+    "r_rho": -0.3785,
+    "r_rho_heredado": null,
+    "acuerdo_signo_crudo": 0.4029,
+    "r_resid_crudo": -0.0207,
+    "r_resid_relabelado": null
+   },
+   "relabelado_todos_no_ambiguos": {
+    "n": 129,
+    "r_rho_heredado": 0.5381
+   }
+  },
+  "pooled|n>=10": {
+   "n": 297,
+   "mismo_lado": {
+    "n": 176,
+    "r_rho": 0.0174,
+    "r_rho_heredado": 0.0174,
+    "acuerdo_signo_crudo": 0.5,
+    "r_resid_crudo": 0.0233,
+    "r_resid_relabelado": 0.0157
+   },
+   "cambio_lado": {
+    "n": 104,
+    "r_rho": -0.8178,
+    "r_rho_heredado": 0.8178,
+    "acuerdo_signo_crudo": 0.1827,
+    "r_resid_crudo": -0.3153,
+    "r_resid_relabelado": -0.0126
+   },
+   "ambiguo": {
+    "n": 17,
+    "r_rho": -0.0369,
+    "r_rho_heredado": null,
+    "acuerdo_signo_crudo": 0.2941,
+    "r_resid_crudo": -0.2014,
+    "r_resid_relabelado": null
+   },
+   "crudo_todos": {
+    "n": 297,
+    "r_rho": -0.3911,
+    "r_rho_heredado": null,
+    "acuerdo_signo_crudo": 0.3771,
+    "r_resid_crudo": -0.0819,
+    "r_resid_relabelado": null
+   },
+   "relabelado_todos_no_ambiguos": {
+    "n": 280,
+    "r_rho_heredado": 0.3763
+   }
+  },
+  "2015-12-10|n>=10": {
+   "n": 190,
+   "mismo_lado": {
+    "n": 101,
+    "r_rho": -0.0388,
+    "r_rho_heredado": -0.0388,
+    "acuerdo_signo_crudo": 0.4851,
+    "r_resid_crudo": 0.0391,
+    "r_resid_relabelado": 0.0231
+   },
+   "cambio_lado": {
+    "n": 75,
+    "r_rho": -0.8829,
+    "r_rho_heredado": 0.8829,
+    "acuerdo_signo_crudo": 0.0133,
+    "r_resid_crudo": -0.4221,
+    "r_resid_relabelado": 0.2277
+   },
+   "ambiguo": {
+    "n": 14,
+    "r_rho": 0.41,
+    "r_rho_heredado": null,
+    "acuerdo_signo_crudo": 0.2857,
+    "r_resid_crudo": -0.0744,
+    "r_resid_relabelado": null
+   },
+   "crudo_todos": {
+    "n": 190,
+    "r_rho": -0.5313,
+    "r_rho_heredado": null,
+    "acuerdo_signo_crudo": 0.2842,
+    "r_resid_crudo": -0.1035,
+    "r_resid_relabelado": null
+   },
+   "relabelado_todos_no_ambiguos": {
+    "n": 176,
+    "r_rho_heredado": 0.4443
+   }
+  },
+  "2019-12-10|n>=10": {
+   "n": 59,
+   "mismo_lado": {
+    "n": 55,
+    "r_rho": 0.4999,
+    "r_rho_heredado": 0.4999,
+    "acuerdo_signo_crudo": 0.5455,
+    "r_resid_crudo": 0.0628,
+    "r_resid_relabelado": 0.0628
+   },
+   "cambio_lado": {
+    "n": 4,
+    "r_rho": null,
+    "r_rho_heredado": null,
+    "acuerdo_signo_crudo": 0.75,
+    "r_resid_crudo": null,
+    "r_resid_relabelado": null
+   },
+   "ambiguo": {
+    "n": 0,
+    "r_rho": null,
+    "r_rho_heredado": null,
+    "acuerdo_signo_crudo": null,
+    "r_resid_crudo": null,
+    "r_resid_relabelado": null
+   },
+   "crudo_todos": {
+    "n": 59,
+    "r_rho": 0.4468,
+    "r_rho_heredado": null,
+    "acuerdo_signo_crudo": 0.5593,
+    "r_resid_crudo": 0.0399,
+    "r_resid_relabelado": null
+   },
+   "relabelado_todos_no_ambiguos": {
+    "n": 59,
+    "r_rho_heredado": 0.1842
+   }
+  },
+  "2023-12-10|n>=10": {
+   "n": 48,
+   "mismo_lado": {
+    "n": 20,
+    "r_rho": -0.1578,
+    "r_rho_heredado": -0.1578,
+    "acuerdo_signo_crudo": 0.45,
+    "r_resid_crudo": 0.0489,
+    "r_resid_relabelado": 0.0489
+   },
+   "cambio_lado": {
+    "n": 25,
+    "r_rho": -0.0546,
+    "r_rho_heredado": 0.0546,
+    "acuerdo_signo_crudo": 0.6,
+    "r_resid_crudo": -0.0454,
+    "r_resid_relabelado": 0.0454
+   },
+   "ambiguo": {
+    "n": 3,
+    "r_rho": null,
+    "r_rho_heredado": null,
+    "acuerdo_signo_crudo": 0.3333,
+    "r_resid_crudo": null,
+    "r_resid_relabelado": null
+   },
+   "crudo_todos": {
+    "n": 48,
+    "r_rho": 0.1963,
+    "r_rho_heredado": null,
+    "acuerdo_signo_crudo": 0.5208,
+    "r_resid_crudo": -0.0362,
+    "r_resid_relabelado": null
+   },
+   "relabelado_todos_no_ambiguos": {
+    "n": 45,
+    "r_rho_heredado": 0.106
+   }
+  },
+  "pooled|n>=20": {
+   "n": 202,
+   "mismo_lado": {
+    "n": 124,
+    "r_rho": -0.0772,
+    "r_rho_heredado": -0.0772,
+    "acuerdo_signo_crudo": 0.4839,
+    "r_resid_crudo": 0.0231,
+    "r_resid_relabelado": 0.0221
+   },
+   "cambio_lado": {
+    "n": 69,
+    "r_rho": -0.8739,
+    "r_rho_heredado": 0.8739,
+    "acuerdo_signo_crudo": 0.2174,
+    "r_resid_crudo": -0.1224,
+    "r_resid_relabelado": 0.0387
+   },
+   "ambiguo": {
+    "n": 9,
+    "r_rho": 0.8091,
+    "r_rho_heredado": null,
+    "acuerdo_signo_crudo": 0.3333,
+    "r_resid_crudo": -0.0138,
+    "r_resid_relabelado": null
+   },
+   "crudo_todos": {
+    "n": 202,
+    "r_rho": -0.409,
+    "r_rho_heredado": null,
+    "acuerdo_signo_crudo": 0.3861,
+    "r_resid_crudo": -0.0157,
+    "r_resid_relabelado": null
+   },
+   "relabelado_todos_no_ambiguos": {
+    "n": 193,
+    "r_rho_heredado": 0.3839
+   }
+  },
+  "2015-12-10|n>=20": {
+   "n": 126,
+   "mismo_lado": {
+    "n": 65,
+    "r_rho": -0.1751,
+    "r_rho_heredado": -0.1751,
+    "acuerdo_signo_crudo": 0.4462,
+    "r_resid_crudo": 0.0675,
+    "r_resid_relabelado": 0.0658
+   },
+   "cambio_lado": {
+    "n": 52,
+    "r_rho": -0.9419,
+    "r_rho_heredado": 0.9419,
+    "acuerdo_signo_crudo": 0.0192,
+    "r_resid_crudo": -0.2533,
+    "r_resid_relabelado": 0.2075
+   },
+   "ambiguo": {
+    "n": 9,
+    "r_rho": 0.8091,
+    "r_rho_heredado": null,
+    "acuerdo_signo_crudo": 0.3333,
+    "r_resid_crudo": -0.0138,
+    "r_resid_relabelado": null
+   },
+   "crudo_todos": {
+    "n": 126,
+    "r_rho": -0.5758,
+    "r_rho_heredado": null,
+    "acuerdo_signo_crudo": 0.2619,
+    "r_resid_crudo": -0.0186,
+    "r_resid_relabelado": null
+   },
+   "relabelado_todos_no_ambiguos": {
+    "n": 117,
+    "r_rho_heredado": 0.445
+   }
+  },
+  "2019-12-10|n>=20": {
+   "n": 52,
+   "mismo_lado": {
+    "n": 49,
+    "r_rho": 0.4265,
+    "r_rho_heredado": 0.4265,
+    "acuerdo_signo_crudo": 0.5306,
+    "r_resid_crudo": 0.0471,
+    "r_resid_relabelado": 0.0471
+   },
+   "cambio_lado": {
+    "n": 3,
+    "r_rho": null,
+    "r_rho_heredado": null,
+    "acuerdo_signo_crudo": 1.0,
+    "r_resid_crudo": null,
+    "r_resid_relabelado": null
+   },
+   "ambiguo": {
+    "n": 0,
+    "r_rho": null,
+    "r_rho_heredado": null,
+    "acuerdo_signo_crudo": null,
+    "r_resid_crudo": null,
+    "r_resid_relabelado": null
+   },
+   "crudo_todos": {
+    "n": 52,
+    "r_rho": 0.4117,
+    "r_rho_heredado": null,
+    "acuerdo_signo_crudo": 0.5577,
+    "r_resid_crudo": 0.0157,
+    "r_resid_relabelado": null
+   },
+   "relabelado_todos_no_ambiguos": {
+    "n": 52,
+    "r_rho_heredado": 0.0794
+   }
+  },
+  "2023-12-10|n>=20": {
+   "n": 24,
+   "mismo_lado": {
+    "n": 10,
+    "r_rho": -0.1633,
+    "r_rho_heredado": -0.1633,
+    "acuerdo_signo_crudo": 0.5,
+    "r_resid_crudo": -0.1823,
+    "r_resid_relabelado": -0.1823
+   },
+   "cambio_lado": {
+    "n": 14,
+    "r_rho": 0.4153,
+    "r_rho_heredado": -0.4153,
+    "acuerdo_signo_crudo": 0.7857,
+    "r_resid_crudo": 0.4117,
+    "r_resid_relabelado": -0.4117
+   },
+   "ambiguo": {
+    "n": 0,
+    "r_rho": null,
+    "r_rho_heredado": null,
+    "acuerdo_signo_crudo": null,
+    "r_resid_crudo": null,
+    "r_resid_relabelado": null
+   },
+   "crudo_todos": {
+    "n": 24,
+    "r_rho": 0.2972,
+    "r_rho_heredado": null,
+    "acuerdo_signo_crudo": 0.6667,
+    "r_resid_crudo": -0.1245,
+    "r_resid_relabelado": null
+   },
+   "relabelado_todos_no_ambiguos": {
+    "n": 24,
+    "r_rho_heredado": 0.0123
+   }
+  },
+  "camara=diputados|pooled|n>=5": {
+   "n": 279,
+   "mismo_lado": {
+    "n": 80,
+    "r_rho": 0.1517,
+    "r_rho_heredado": 0.1517,
+    "acuerdo_signo_crudo": 0.4875,
+    "r_resid_crudo": 0.0194,
+    "r_resid_relabelado": -0.0134
+   },
+   "cambio_lado": {
+    "n": 179,
+    "r_rho": -0.6255,
+    "r_rho_heredado": 0.6255,
+    "acuerdo_signo_crudo": 0.1229,
+    "r_resid_crudo": -0.2212,
+    "r_resid_relabelado": -0.0497
+   },
+   "ambiguo": {
+    "n": 20,
+    "r_rho": 0.3775,
+    "r_rho_heredado": null,
+    "acuerdo_signo_crudo": 0.5,
+    "r_resid_crudo": 0.187,
+    "r_resid_relabelado": null
+   },
+   "crudo_todos": {
+    "n": 279,
+    "r_rho": -0.4659,
+    "r_rho_heredado": null,
+    "acuerdo_signo_crudo": 0.2545,
+    "r_resid_crudo": -0.0659,
+    "r_resid_relabelado": null
+   },
+   "relabelado_todos_no_ambiguos": {
+    "n": 259,
+    "r_rho_heredado": 0.4021
+   }
+  },
+  "camara=senado|pooled|n>=5": {
+   "n": 125,
+   "mismo_lado": {
+    "n": 99,
+    "r_rho": -0.21,
+    "r_rho_heredado": -0.21,
+    "acuerdo_signo_crudo": 0.4242,
+    "r_resid_crudo": 0.0007,
+    "r_resid_relabelado": 0.0007
+   },
+   "cambio_lado": {
+    "n": 22,
+    "r_rho": -0.4098,
+    "r_rho_heredado": 0.4098,
+    "acuerdo_signo_crudo": 0.5909,
+    "r_resid_crudo": -0.2319,
+    "r_resid_relabelado": -0.1471
+   },
+   "ambiguo": {
+    "n": 4,
+    "r_rho": null,
+    "r_rho_heredado": null,
+    "acuerdo_signo_crudo": 0.25,
+    "r_resid_crudo": null,
+    "r_resid_relabelado": null
+   },
+   "crudo_todos": {
+    "n": 125,
+    "r_rho": -0.0905,
+    "r_rho_heredado": null,
+    "acuerdo_signo_crudo": 0.448,
+    "r_resid_crudo": 0.0111,
+    "r_resid_relabelado": null
+   },
+   "relabelado_todos_no_ambiguos": {
+    "n": 121,
+    "r_rho_heredado": -0.0864
+   }
+  },
+  "cambio_camara|pooled|n>=5": {
+   "n": 50,
+   "mismo_lado": {
+    "n": 33,
+    "r_rho": -0.1665,
+    "r_rho_heredado": -0.1665,
+    "acuerdo_signo_crudo": 0.6667,
+    "r_resid_crudo": 0.0055,
+    "r_resid_relabelado": 0.0055
+   },
+   "cambio_lado": {
+    "n": 14,
+    "r_rho": -0.8545,
+    "r_rho_heredado": 0.8545,
+    "acuerdo_signo_crudo": 0.3571,
+    "r_resid_crudo": -0.2718,
+    "r_resid_relabelado": -0.2794
+   },
+   "ambiguo": {
+    "n": 3,
+    "r_rho": null,
+    "r_rho_heredado": null,
+    "acuerdo_signo_crudo": 0.3333,
+    "r_resid_crudo": null,
+    "r_resid_relabelado": null
+   },
+   "crudo_todos": {
+    "n": 50,
+    "r_rho": -0.1479,
+    "r_rho_heredado": null,
+    "acuerdo_signo_crudo": 0.56,
+    "r_resid_crudo": 0.0132,
+    "r_resid_relabelado": null
+   },
+   "relabelado_todos_no_ambiguos": {
+    "n": 47,
+    "r_rho_heredado": 0.0862
+   }
+  },
+  "mismo_linaje|pooled|n>=5": {
+   "n": 376,
+   "mismo_lado": {
+    "n": 142,
+    "r_rho": 0.3837,
+    "r_rho_heredado": 0.3837,
+    "acuerdo_signo_crudo": 0.5211,
+    "r_resid_crudo": 0.0016,
+    "r_resid_relabelado": 0.0153
+   },
+   "cambio_lado": {
+    "n": 208,
+    "r_rho": -0.6117,
+    "r_rho_heredado": 0.6117,
+    "acuerdo_signo_crudo": 0.1923,
+    "r_resid_crudo": -0.3202,
+    "r_resid_relabelado": -0.0048
+   },
+   "ambiguo": {
+    "n": 26,
+    "r_rho": 0.2443,
+    "r_rho_heredado": null,
+    "acuerdo_signo_crudo": 0.4615,
+    "r_resid_crudo": -0.0345,
+    "r_resid_relabelado": null
+   },
+   "crudo_todos": {
+    "n": 376,
+    "r_rho": -0.3411,
+    "r_rho_heredado": null,
+    "acuerdo_signo_crudo": 0.3351,
+    "r_resid_crudo": -0.1628,
+    "r_resid_relabelado": null
+   },
+   "relabelado_todos_no_ambiguos": {
+    "n": 350,
+    "r_rho_heredado": 0.43
+   }
+  },
+  "cambio_linaje|pooled|n>=5": {
+   "n": 78,
+   "mismo_lado": {
+    "n": 70,
+    "r_rho": -0.2737,
+    "r_rho_heredado": -0.2737,
+    "acuerdo_signo_crudo": 0.4143,
+    "r_resid_crudo": -0.0711,
+    "r_resid_relabelado": -0.0711
+   },
+   "cambio_lado": {
+    "n": 7,
+    "r_rho": 0.4371,
+    "r_rho_heredado": -0.4371,
+    "acuerdo_signo_crudo": 0.0,
+    "r_resid_crudo": 0.7784,
+    "r_resid_relabelado": -0.7784
+   },
+   "ambiguo": {
+    "n": 1,
+    "r_rho": null,
+    "r_rho_heredado": null,
+    "acuerdo_signo_crudo": 0.0,
+    "r_resid_crudo": null,
+    "r_resid_relabelado": null
+   },
+   "crudo_todos": {
+    "n": 78,
+    "r_rho": -0.3693,
+    "r_rho_heredado": null,
+    "acuerdo_signo_crudo": 0.3718,
+    "r_resid_crudo": 0.141,
+    "r_resid_relabelado": null
+   },
+   "relabelado_todos_no_ambiguos": {
+    "n": 77,
+    "r_rho_heredado": 0.0082
+   }
+  },
+  "sin_OTRO_PROVINCIAL|pooled|n>=5": {
+   "n": 378,
+   "mismo_lado": {
+    "n": 145,
+    "r_rho": 0.385,
+    "r_rho_heredado": 0.385,
+    "acuerdo_signo_crudo": 0.5379,
+    "r_resid_crudo": 0.0542,
+    "r_resid_relabelado": 0.0027
+   },
+   "cambio_lado": {
+    "n": 209,
+    "r_rho": -0.6186,
+    "r_rho_heredado": 0.6186,
+    "acuerdo_signo_crudo": 0.1914,
+    "r_resid_crudo": -0.3207,
+    "r_resid_relabelado": -0.0025
+   },
+   "ambiguo": {
+    "n": 24,
+    "r_rho": 0.3307,
+    "r_rho_heredado": null,
+    "acuerdo_signo_crudo": 0.4583,
+    "r_resid_crudo": 0.1486,
+    "r_resid_relabelado": null
+   },
+   "crudo_todos": {
+    "n": 378,
+    "r_rho": -0.3618,
+    "r_rho_heredado": null,
+    "acuerdo_signo_crudo": 0.3413,
+    "r_resid_crudo": -0.1487,
+    "r_resid_relabelado": null
+   },
+   "relabelado_todos_no_ambiguos": {
+    "n": 354,
+    "r_rho_heredado": 0.4179
+   }
+  }
+ },
+ "lado_por_linaje_era": [
+  {
+   "era": "AF",
+   "camara": "diputados",
+   "linaje": "COALICION CIVICA",
+   "lado": -0.4737,
+   "lado_psi": -0.3286,
+   "rho_lin": -0.5256,
+   "n_leg": 17
+  },
+  {
+   "era": "AF",
+   "camara": "diputados",
+   "linaje": "FdT-UxP (kirchnerismo)",
+   "lado": 0.3523,
+   "lado_psi": 0.4974,
+   "rho_lin": -0.0026,
+   "n_leg": 169
+  },
+  {
+   "era": "AF",
+   "camara": "diputados",
+   "linaje": "IZQUIERDA",
+   "lado": -0.4576,
+   "lado_psi": -0.3125,
+   "rho_lin": -0.8125,
+   "n_leg": 5
+  },
+  {
+   "era": "AF",
+   "camara": "diputados",
+   "linaje": "LA LIBERTAD AVANZA",
+   "lado": -0.1157,
+   "lado_psi": 0.0294,
+   "rho_lin": -0.1176,
+   "n_leg": 10
+  },
+  {
+   "era": "AF",
+   "camara": "diputados",
+   "linaje": "OTRO / PROVINCIAL",
+   "lado": 0.1863,
+   "lado_psi": 0.3313,
+   "rho_lin": -0.0305,
+   "n_leg": 42
+  },
+  {
+   "era": "AF",
+   "camara": "diputados",
+   "linaje": "PERONISMO FEDERAL",
+   "lado": -0.0172,
+   "lado_psi": 0.1279,
+   "rho_lin": -0.1846,
+   "n_leg": 6
+  },
+  {
+   "era": "AF",
+   "camara": "diputados",
+   "linaje": "PRO",
+   "lado": -0.4492,
+   "lado_psi": -0.3041,
+   "rho_lin": -0.5012,
+   "n_leg": 64
+  },
+  {
+   "era": "AF",
+   "camara": "diputados",
+   "linaje": "PROGRESISMO",
+   "lado": -0.1138,
+   "lado_psi": 0.0312,
+   "rho_lin": -0.4688,
+   "n_leg": 1
+  },
+  {
+   "era": "AF",
+   "camara": "diputados",
+   "linaje": "RADICALISMO",
+   "lado": -0.4619,
+   "lado_psi": -0.3168,
+   "rho_lin": -0.5964,
+   "n_leg": 56
+  },
+  {
+   "era": "AF",
+   "camara": "senado",
+   "linaje": "FdT-UxP (kirchnerismo)",
+   "lado": 0.0523,
+   "lado_psi": 0.4873,
+   "rho_lin": -0.0103,
+   "n_leg": 50
+  },
+  {
+   "era": "AF",
+   "camara": "senado",
+   "linaje": "OTRO / PROVINCIAL",
+   "lado": -0.0067,
+   "lado_psi": 0.4283,
+   "rho_lin": 0.0451,
+   "n_leg": 9
+  },
+  {
+   "era": "AF",
+   "camara": "senado",
+   "linaje": "PERONISMO FEDERAL",
+   "lado": -0.1082,
+   "lado_psi": 0.3268,
+   "rho_lin": 0.0401,
+   "n_leg": 5
+  },
+  {
+   "era": "AF",
+   "camara": "senado",
+   "linaje": "PRO",
+   "lado": -0.1064,
+   "lado_psi": 0.3287,
+   "rho_lin": 0.0184,
+   "n_leg": 12
+  },
+  {
+   "era": "AF",
+   "camara": "senado",
+   "linaje": "RADICALISMO",
+   "lado": -0.0852,
+   "lado_psi": 0.3498,
+   "rho_lin": 0.0461,
+   "n_leg": 22
+  },
+  {
+   "era": "KIRCHNER",
+   "camara": "diputados",
+   "linaje": "COALICION CIVICA",
+   "lado": -0.4125,
+   "lado_psi": -0.15,
+   "rho_lin": -0.5811,
+   "n_leg": 39
+  },
+  {
+   "era": "KIRCHNER",
+   "camara": "diputados",
+   "linaje": "FRENTE RENOVADOR (massismo)",
+   "lado": -0.1502,
+   "lado_psi": 0.1124,
+   "rho_lin": -0.1623,
+   "n_leg": 13
+  },
+  {
+   "era": "KIRCHNER",
+   "camara": "diputados",
+   "linaje": "FdT-UxP (kirchnerismo)",
+   "lado": 0.205,
+   "lado_psi": 0.4675,
+   "rho_lin": 0.1199,
+   "n_leg": 349
+  },
+  {
+   "era": "KIRCHNER",
+   "camara": "diputados",
+   "linaje": "IZQUIERDA",
+   "lado": -0.4666,
+   "lado_psi": -0.2041,
+   "rho_lin": -0.5746,
+   "n_leg": 9
+  },
+  {
+   "era": "KIRCHNER",
+   "camara": "diputados",
+   "linaje": "OTRO / PROVINCIAL",
+   "lado": -0.0851,
+   "lado_psi": 0.1774,
+   "rho_lin": -0.1827,
+   "n_leg": 172
+  },
+  {
+   "era": "KIRCHNER",
+   "camara": "diputados",
+   "linaje": "PERONISMO FEDERAL",
+   "lado": -0.0941,
+   "lado_psi": 0.1684,
+   "rho_lin": -0.2297,
+   "n_leg": 105
+  },
+  {
+   "era": "KIRCHNER",
+   "camara": "diputados",
+   "linaje": "PRO",
+   "lado": -0.3377,
+   "lado_psi": -0.0752,
+   "rho_lin": -0.4145,
+   "n_leg": 30
+  },
+  {
+   "era": "KIRCHNER",
+   "camara": "diputados",
+   "linaje": "PROGRESISMO",
+   "lado": -0.346,
+   "lado_psi": -0.0835,
+   "rho_lin": -0.52,
+   "n_leg": 44
+  },
+  {
+   "era": "KIRCHNER",
+   "camara": "diputados",
+   "linaje": "RADICALISMO",
+   "lado": -0.3842,
+   "lado_psi": -0.1216,
+   "rho_lin": -0.5401,
+   "n_leg": 180
+  },
+  {
+   "era": "KIRCHNER",
+   "camara": "senado",
+   "linaje": "COALICION CIVICA",
+   "lado": -0.4157,
+   "lado_psi": -0.0747,
+   "rho_lin": -0.3966,
+   "n_leg": 1
+  },
+  {
+   "era": "KIRCHNER",
+   "camara": "senado",
+   "linaje": "FdT-UxP (kirchnerismo)",
+   "lado": 0.1265,
+   "lado_psi": 0.4675,
+   "rho_lin": 0.0675,
+   "n_leg": 85
+  },
+  {
+   "era": "KIRCHNER",
+   "camara": "senado",
+   "linaje": "IZQUIERDA",
+   "lado": -0.841,
+   "lado_psi": -0.5,
+   "rho_lin": null,
+   "n_leg": 1
+  },
+  {
+   "era": "KIRCHNER",
+   "camara": "senado",
+   "linaje": "OTRO / PROVINCIAL",
+   "lado": -0.1003,
+   "lado_psi": 0.2407,
+   "rho_lin": -0.1641,
+   "n_leg": 38
+  },
+  {
+   "era": "KIRCHNER",
+   "camara": "senado",
+   "linaje": "PERONISMO FEDERAL",
+   "lado": -0.2371,
+   "lado_psi": 0.1039,
+   "rho_lin": -0.2371,
+   "n_leg": 5
+  },
+  {
+   "era": "KIRCHNER",
+   "camara": "senado",
+   "linaje": "PRO",
+   "lado": -0.4564,
+   "lado_psi": -0.1154,
+   "rho_lin": -0.3932,
+   "n_leg": 1
+  },
+  {
+   "era": "KIRCHNER",
+   "camara": "senado",
+   "linaje": "PROGRESISMO",
+   "lado": -0.2677,
+   "lado_psi": 0.0733,
+   "rho_lin": -0.3416,
+   "n_leg": 2
+  },
+  {
+   "era": "KIRCHNER",
+   "camara": "senado",
+   "linaje": "RADICALISMO",
+   "lado": -0.2116,
+   "lado_psi": 0.1294,
+   "rho_lin": -0.2616,
+   "n_leg": 27
+  },
+  {
+   "era": "MACRI",
+   "camara": "diputados",
+   "linaje": "COALICION CIVICA",
+   "lado": 0.2215,
+   "lado_psi": 0.4684,
+   "rho_lin": 0.4351,
+   "n_leg": 11
+  },
+  {
+   "era": "MACRI",
+   "camara": "diputados",
+   "linaje": "FRENTE RENOVADOR (massismo)",
+   "lado": 0.1506,
+   "lado_psi": 0.3975,
+   "rho_lin": -0.071,
+   "n_leg": 32
+  },
+  {
+   "era": "MACRI",
+   "camara": "diputados",
+   "linaje": "FdT-UxP (kirchnerismo)",
+   "lado": -0.4164,
+   "lado_psi": -0.1696,
+   "rho_lin": -0.5244,
+   "n_leg": 100
+  },
+  {
+   "era": "MACRI",
+   "camara": "diputados",
+   "linaje": "IZQUIERDA",
+   "lado": -0.6585,
+   "lado_psi": -0.4117,
+   "rho_lin": -0.6282,
+   "n_leg": 10
+  },
+  {
+   "era": "MACRI",
+   "camara": "diputados",
+   "linaje": "OTRO / PROVINCIAL",
+   "lado": 0.1115,
+   "lado_psi": 0.3583,
+   "rho_lin": -0.0322,
+   "n_leg": 58
+  },
+  {
+   "era": "MACRI",
+   "camara": "diputados",
+   "linaje": "PERONISMO FEDERAL",
+   "lado": 0.1566,
+   "lado_psi": 0.4034,
+   "rho_lin": -0.044,
+   "n_leg": 39
+  },
+  {
+   "era": "MACRI",
+   "camara": "diputados",
+   "linaje": "PRO",
+   "lado": 0.2237,
+   "lado_psi": 0.4705,
+   "rho_lin": 0.334,
+   "n_leg": 67
+  },
+  {
+   "era": "MACRI",
+   "camara": "diputados",
+   "linaje": "PROGRESISMO",
+   "lado": -0.0846,
+   "lado_psi": 0.1622,
+   "rho_lin": -0.2862,
+   "n_leg": 5
+  },
+  {
+   "era": "MACRI",
+   "camara": "diputados",
+   "linaje": "RADICALISMO",
+   "lado": 0.2228,
+   "lado_psi": 0.4697,
+   "rho_lin": 0.3064,
+   "n_leg": 56
+  },
+  {
+   "era": "MACRI",
+   "camara": "senado",
+   "linaje": "FdT-UxP (kirchnerismo)",
+   "lado": -0.0555,
+   "lado_psi": 0.3476,
+   "rho_lin": -0.0042,
+   "n_leg": 39
+  },
+  {
+   "era": "MACRI",
+   "camara": "senado",
+   "linaje": "IZQUIERDA",
+   "lado": -0.48,
+   "lado_psi": -0.0769,
+   "rho_lin": -0.1957,
+   "n_leg": 1
+  },
+  {
+   "era": "MACRI",
+   "camara": "senado",
+   "linaje": "OTRO / PROVINCIAL",
+   "lado": 0.028,
+   "lado_psi": 0.431,
+   "rho_lin": 0.0092,
+   "n_leg": 15
+  },
+  {
+   "era": "MACRI",
+   "camara": "senado",
+   "linaje": "PERONISMO FEDERAL",
+   "lado": 0.0293,
+   "lado_psi": 0.4324,
+   "rho_lin": 0.0541,
+   "n_leg": 9
+  },
+  {
+   "era": "MACRI",
+   "camara": "senado",
+   "linaje": "PRO",
+   "lado": 0.0969,
+   "lado_psi": 0.5,
+   "rho_lin": 0.1226,
+   "n_leg": 8
+  },
+  {
+   "era": "MACRI",
+   "camara": "senado",
+   "linaje": "PROGRESISMO",
+   "lado": 0.0398,
+   "lado_psi": 0.4429,
+   "rho_lin": 0.0967,
+   "n_leg": 1
+  },
+  {
+   "era": "MACRI",
+   "camara": "senado",
+   "linaje": "RADICALISMO",
+   "lado": 0.0969,
+   "lado_psi": 0.5,
+   "rho_lin": 0.1001,
+   "n_leg": 13
+  },
+  {
+   "era": "MILEI",
+   "camara": "diputados",
+   "linaje": "COALICION CIVICA",
+   "lado": -0.0713,
+   "lado_psi": 0.0455,
+   "rho_lin": -0.3824,
+   "n_leg": 6
+  },
+  {
+   "era": "MILEI",
+   "camara": "diputados",
+   "linaje": "FdT-UxP (kirchnerismo)",
+   "lado": -0.4786,
+   "lado_psi": -0.3618,
+   "rho_lin": -0.8313,
+   "n_leg": 132
+  },
+  {
+   "era": "MILEI",
+   "camara": "diputados",
+   "linaje": "IZQUIERDA",
+   "lado": -0.5894,
+   "lado_psi": -0.4726,
+   "rho_lin": -0.9452,
+   "n_leg": 11
+  },
+  {
+   "era": "MILEI",
+   "camara": "diputados",
+   "linaje": "LA LIBERTAD AVANZA",
+   "lado": 0.3818,
+   "lado_psi": 0.4986,
+   "rho_lin": 0.6104,
+   "n_leg": 101
+  },
+  {
+   "era": "MILEI",
+   "camara": "diputados",
+   "linaje": "OTRO / PROVINCIAL",
+   "lado": 0.1532,
+   "lado_psi": 0.27,
+   "rho_lin": -0.0292,
+   "n_leg": 78
+  },
+  {
+   "era": "MILEI",
+   "camara": "diputados",
+   "linaje": "PERONISMO FEDERAL",
+   "lado": 0.3771,
+   "lado_psi": 0.4939,
+   "rho_lin": 0.4447,
+   "n_leg": 3
+  },
+  {
+   "era": "MILEI",
+   "camara": "diputados",
+   "linaje": "PRO",
+   "lado": 0.3816,
+   "lado_psi": 0.4983,
+   "rho_lin": 0.5991,
+   "n_leg": 30
+  },
+  {
+   "era": "MILEI",
+   "camara": "diputados",
+   "linaje": "RADICALISMO",
+   "lado": 0.3576,
+   "lado_psi": 0.4744,
+   "rho_lin": 0.2783,
+   "n_leg": 17
+  },
+  {
+   "era": "MILEI",
+   "camara": "senado",
+   "linaje": "FdT-UxP (kirchnerismo)",
+   "lado": -0.3198,
+   "lado_psi": -0.1626,
+   "rho_lin": -0.5326,
+   "n_leg": 32
+  },
+  {
+   "era": "MILEI",
+   "camara": "senado",
+   "linaje": "LA LIBERTAD AVANZA",
+   "lado": 0.264,
+   "lado_psi": 0.4212,
+   "rho_lin": 0.2577,
+   "n_leg": 17
+  },
+  {
+   "era": "MILEI",
+   "camara": "senado",
+   "linaje": "OTRO / PROVINCIAL",
+   "lado": -0.0675,
+   "lado_psi": 0.0896,
+   "rho_lin": -0.3209,
+   "n_leg": 17
+  },
+  {
+   "era": "MILEI",
+   "camara": "senado",
+   "linaje": "PERONISMO FEDERAL",
+   "lado": 0.1746,
+   "lado_psi": 0.3317,
+   "rho_lin": -0.0425,
+   "n_leg": 4
+  },
+  {
+   "era": "MILEI",
+   "camara": "senado",
+   "linaje": "PRO",
+   "lado": 0.2287,
+   "lado_psi": 0.3858,
+   "rho_lin": 0.0655,
+   "n_leg": 6
+  },
+  {
+   "era": "MILEI",
+   "camara": "senado",
+   "linaje": "RADICALISMO",
+   "lado": 0.2226,
+   "lado_psi": 0.3798,
+   "rho_lin": -0.0659,
+   "n_leg": 14
+  }
+ ],
+ "reparto_grupos_n5": [
+  {
+   "recambio": "2015-12-10",
+   "ambiguo": 93,
+   "cambio_lado": 91,
+   "mismo_lado": 22
+  },
+  {
+   "recambio": "2019-12-10",
+   "ambiguo": 59,
+   "cambio_lado": 39,
+   "mismo_lado": 11
+  },
+  {
+   "recambio": "2023-12-10",
+   "cambio_lado": 80,
+   "ambiguo": 49,
+   "mismo_lado": 10
+  }
+ ],
+ "caso_pichetto": [
+  {
+   "era": "KIRCHNER",
+   "linaje": "FdT-UxP (kirchnerismo)",
+   "camara": "senado",
+   "nE": 511.0,
+   "nO": 152.0,
+   "rho": 0.0751,
+   "lado": 0.1265,
+   "s": 1,
+   "rho_lin": 0.0675,
+   "resid": 0.0076
+  },
+  {
+   "era": "MACRI",
+   "linaje": "FdT-UxP (kirchnerismo)",
+   "camara": "senado",
+   "nE": 49.0,
+   "nO": 197.0,
+   "rho": 0.0039,
+   "lado": -0.0555,
+   "s": 0,
+   "rho_lin": -0.0042,
+   "resid": 0.0082
+  },
+  {
+   "era": "MILEI",
+   "linaje": "OTRO / PROVINCIAL",
+   "camara": "diputados",
+   "nE": 137.0,
+   "nO": 32.0,
+   "rho": -0.1761,
+   "lado": 0.1532,
+   "s": 1,
+   "rho_lin": -0.0292,
+   "resid": -0.1469
+  }
+ ],
+ "split_half_intra_era": {
+  "AF": {
+   "acta_id": {
+    "r_rho": 0.0776,
+    "r_resid_intra_linaje": 0.5859,
+    "n_legisladores": 89
+   },
+   "cluster": {
+    "r_rho": 0.0426,
+    "r_resid_intra_linaje": 0.1362,
+    "n_legisladores": 81
+   },
+   "sesion": {
+    "r_rho": 0.0288,
+    "r_resid_intra_linaje": -0.1145,
+    "n_legisladores": 72
+   },
+   "cronologica": {
+    "r_rho": -0.182,
+    "r_resid_intra_linaje": 0.5086,
+    "n_legisladores": 70
+   }
+  },
+  "KIRCHNER": {
+   "acta_id": {
+    "r_rho": 0.9432,
+    "r_resid_intra_linaje": 0.8683,
+    "n_legisladores": 561
+   },
+   "cluster": {
+    "r_rho": 0.8628,
+    "r_resid_intra_linaje": 0.6841,
+    "n_legisladores": 584
+   },
+   "sesion": {
+    "r_rho": 0.8526,
+    "r_resid_intra_linaje": 0.6591,
+    "n_legisladores": 572
+   },
+   "cronologica": {
+    "r_rho": 0.7391,
+    "r_resid_intra_linaje": 0.3832,
+    "n_legisladores": 219
+   }
+  },
+  "MACRI": {
+   "acta_id": {
+    "r_rho": 0.9664,
+    "r_resid_intra_linaje": 0.8958,
+    "n_legisladores": 453
+   },
+   "cluster": {
+    "r_rho": 0.8799,
+    "r_resid_intra_linaje": 0.6524,
+    "n_legisladores": 445
+   },
+   "sesion": {
+    "r_rho": 0.828,
+    "r_resid_intra_linaje": 0.5741,
+    "n_legisladores": 437
+   },
+   "cronologica": {
+    "r_rho": 0.8134,
+    "r_resid_intra_linaje": 0.6877,
+    "n_legisladores": 309
+   }
+  },
+  "MILEI": {
+   "acta_id": {
+    "r_rho": 0.9874,
+    "r_resid_intra_linaje": 0.9598,
+    "n_legisladores": 416
+   },
+   "cluster": {
+    "r_rho": 0.9431,
+    "r_resid_intra_linaje": 0.8271,
+    "n_legisladores": 313
+   },
+   "sesion": {
+    "r_rho": 0.9379,
+    "r_resid_intra_linaje": 0.8092,
+    "n_legisladores": 321
+   },
+   "cronologica": {
+    "r_rho": 0.9246,
+    "r_resid_intra_linaje": 0.6689,
+    "n_legisladores": 174
+   }
+  }
+ },
+ "FASE1_ic": {
+  "pooled|n>=5.mismo_lado.r_rho": {
+   "r": 0.4052,
+   "ic95": [
+    -0.2766,
+    0.7496
+   ],
+   "ic_expediente": [
+    -0.2766,
+    0.7496
+   ],
+   "ic_legislador": [
+    0.1451,
+    0.6451
+   ],
+   "razon_anchos_exp_sobre_leg": 2.0523
+  },
+  "pooled|n>=5.mismo_lado.r_rho_heredado": {
+   "r": 0.4052,
+   "ic95": [
+    -0.2766,
+    0.7496
+   ],
+   "ic_expediente": [
+    -0.2766,
+    0.7496
+   ],
+   "ic_legislador": [
+    0.1451,
+    0.6451
+   ],
+   "razon_anchos_exp_sobre_leg": 2.0523
+  },
+  "pooled|n>=5.mismo_lado.r_resid_crudo": {
+   "r": 0.0545,
+   "ic95": [
+    -0.3337,
+    0.3814
+   ],
+   "ic_expediente": [
+    -0.3337,
+    0.3814
+   ],
+   "ic_legislador": [
+    -0.1077,
+    0.2327
+   ],
+   "razon_anchos_exp_sobre_leg": 2.1006
+  },
+  "pooled|n>=5.mismo_lado.r_resid_relabelado": {
+   "r": -0.1192,
+   "ic95": [
+    -0.4227,
+    0.2407
+   ],
+   "ic_expediente": [
+    -0.4227,
+    0.2407
+   ],
+   "ic_legislador": [
+    -0.2858,
+    0.0801
+   ],
+   "razon_anchos_exp_sobre_leg": 1.8131
+  },
+  "pooled|n>=5.cambio_lado.r_rho": {
+   "r": -0.5976,
+   "ic95": [
+    -0.8204,
+    -0.2691
+   ],
+   "ic_expediente": [
+    -0.8204,
+    -0.2691
+   ],
+   "ic_legislador": [
+    -0.6485,
+    -0.54
+   ],
+   "razon_anchos_exp_sobre_leg": 5.0783
+  },
+  "pooled|n>=5.cambio_lado.r_rho_heredado": {
+   "r": 0.5976,
+   "ic95": [
+    0.2691,
+    0.8204
+   ],
+   "ic_expediente": [
+    0.2691,
+    0.8204
+   ],
+   "ic_legislador": [
+    0.54,
+    0.6485
+   ],
+   "razon_anchos_exp_sobre_leg": 5.0783
+  },
+  "pooled|n>=5.cambio_lado.r_resid_crudo": {
+   "r": -0.1724,
+   "ic95": [
+    -0.3641,
+    -0.0023
+   ],
+   "ic_expediente": [
+    -0.3641,
+    -0.0023
+   ],
+   "ic_legislador": [
+    -0.3292,
+    0.0043
+   ],
+   "razon_anchos_exp_sobre_leg": 1.085
+  },
+  "pooled|n>=5.cambio_lado.r_resid_relabelado": {
+   "r": -0.0258,
+   "ic95": [
+    -0.1574,
+    0.2204
+   ],
+   "ic_expediente": [
+    -0.1574,
+    0.2204
+   ],
+   "ic_legislador": [
+    -0.1807,
+    0.1271
+   ],
+   "razon_anchos_exp_sobre_leg": 1.2275
+  },
+  "pooled|n>=5.ambiguo.r_rho": {
+   "r": -0.0815,
+   "ic95": [
+    -0.2303,
+    0.0744
+   ],
+   "ic_expediente": [
+    -0.2303,
+    0.0744
+   ],
+   "ic_legislador": [
+    -0.1821,
+    0.0529
+   ],
+   "razon_anchos_exp_sobre_leg": 1.2968
+  },
+  "pooled|n>=5.ambiguo.r_rho_heredado": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "pooled|n>=5.ambiguo.r_resid_crudo": {
+   "r": -0.0193,
+   "ic95": [
+    -0.1331,
+    0.0709
+   ],
+   "ic_expediente": [
+    -0.0829,
+    0.0842
+   ],
+   "ic_legislador": [
+    -0.1331,
+    0.0709
+   ],
+   "razon_anchos_exp_sobre_leg": 0.8191
+  },
+  "pooled|n>=5.ambiguo.r_resid_relabelado": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "pooled|n>=5.crudo_todos.r_rho": {
+   "r": -0.3464,
+   "ic95": [
+    -0.4534,
+    -0.0997
+   ],
+   "ic_expediente": [
+    -0.4534,
+    -0.0997
+   ],
+   "ic_legislador": [
+    -0.4022,
+    -0.2798
+   ],
+   "razon_anchos_exp_sobre_leg": 2.8888
+  },
+  "pooled|n>=5.crudo_todos.r_rho_heredado": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "pooled|n>=5.crudo_todos.r_resid_crudo": {
+   "r": -0.0503,
+   "ic95": [
+    -0.14,
+    0.0275
+   ],
+   "ic_expediente": [
+    -0.1286,
+    0.0292
+   ],
+   "ic_legislador": [
+    -0.14,
+    0.0275
+   ],
+   "razon_anchos_exp_sobre_leg": 0.9416
+  },
+  "pooled|n>=5.crudo_todos.r_resid_relabelado": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "pooled|n>=5.relabelado_todos_no_ambiguos.r_rho_heredado": {
+   "r": 0.5362,
+   "ic95": [
+    0.296,
+    0.7594
+   ],
+   "ic_expediente": [
+    0.296,
+    0.7594
+   ],
+   "ic_legislador": [
+    0.4737,
+    0.5983
+   ],
+   "razon_anchos_exp_sobre_leg": 3.7206
+  },
+  "2015-12-10|n>=5.mismo_lado.r_rho": {
+   "r": 0.5514,
+   "ic95": [
+    -0.4636,
+    0.8022
+   ],
+   "ic_expediente": [
+    -0.4636,
+    0.8022
+   ],
+   "ic_legislador": [
+    0.1881,
+    0.8098
+   ],
+   "razon_anchos_exp_sobre_leg": 2.0357
+  },
+  "2015-12-10|n>=5.mismo_lado.r_rho_heredado": {
+   "r": 0.5514,
+   "ic95": [
+    -0.4636,
+    0.8022
+   ],
+   "ic_expediente": [
+    -0.4636,
+    0.8022
+   ],
+   "ic_legislador": [
+    0.1881,
+    0.8098
+   ],
+   "razon_anchos_exp_sobre_leg": 2.0357
+  },
+  "2015-12-10|n>=5.mismo_lado.r_resid_crudo": {
+   "r": 0.1988,
+   "ic95": [
+    -0.3604,
+    0.4727
+   ],
+   "ic_expediente": [
+    -0.3604,
+    0.4727
+   ],
+   "ic_legislador": [
+    -0.1331,
+    0.5398
+   ],
+   "razon_anchos_exp_sobre_leg": 1.2382
+  },
+  "2015-12-10|n>=5.mismo_lado.r_resid_relabelado": {
+   "r": -0.0145,
+   "ic95": [
+    -0.3909,
+    0.5016
+   ],
+   "ic_expediente": [
+    -0.3909,
+    0.5016
+   ],
+   "ic_legislador": [
+    -0.3876,
+    0.4078
+   ],
+   "razon_anchos_exp_sobre_leg": 1.122
+  },
+  "2015-12-10|n>=5.cambio_lado.r_rho": {
+   "r": -0.8639,
+   "ic95": [
+    -0.9014,
+    -0.6324
+   ],
+   "ic_expediente": [
+    -0.9014,
+    -0.6324
+   ],
+   "ic_legislador": [
+    -0.9078,
+    -0.8043
+   ],
+   "razon_anchos_exp_sobre_leg": 2.5971
+  },
+  "2015-12-10|n>=5.cambio_lado.r_rho_heredado": {
+   "r": 0.8639,
+   "ic95": [
+    0.6324,
+    0.9014
+   ],
+   "ic_expediente": [
+    0.6324,
+    0.9014
+   ],
+   "ic_legislador": [
+    0.8043,
+    0.9078
+   ],
+   "razon_anchos_exp_sobre_leg": 2.5971
+  },
+  "2015-12-10|n>=5.cambio_lado.r_resid_crudo": {
+   "r": -0.4029,
+   "ic95": [
+    -0.4713,
+    -0.0329
+   ],
+   "ic_expediente": [
+    -0.4713,
+    -0.0329
+   ],
+   "ic_legislador": [
+    -0.5506,
+    -0.2418
+   ],
+   "razon_anchos_exp_sobre_leg": 1.4195
+  },
+  "2015-12-10|n>=5.cambio_lado.r_resid_relabelado": {
+   "r": 0.2314,
+   "ic95": [
+    -0.0574,
+    0.336
+   ],
+   "ic_expediente": [
+    -0.0574,
+    0.336
+   ],
+   "ic_legislador": [
+    0.0495,
+    0.3919
+   ],
+   "razon_anchos_exp_sobre_leg": 1.1491
+  },
+  "2015-12-10|n>=5.ambiguo.r_rho": {
+   "r": -0.276,
+   "ic95": [
+    -0.4963,
+    0.0388
+   ],
+   "ic_expediente": [
+    -0.4963,
+    0.0388
+   ],
+   "ic_legislador": [
+    -0.4659,
+    -0.0576
+   ],
+   "razon_anchos_exp_sobre_leg": 1.3106
+  },
+  "2015-12-10|n>=5.ambiguo.r_rho_heredado": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "2015-12-10|n>=5.ambiguo.r_resid_crudo": {
+   "r": -0.0364,
+   "ic95": [
+    -0.2455,
+    0.1661
+   ],
+   "ic_expediente": [
+    -0.123,
+    0.1676
+   ],
+   "ic_legislador": [
+    -0.2455,
+    0.1661
+   ],
+   "razon_anchos_exp_sobre_leg": 0.7059
+  },
+  "2015-12-10|n>=5.ambiguo.r_resid_relabelado": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "2015-12-10|n>=5.crudo_todos.r_rho": {
+   "r": -0.5306,
+   "ic95": [
+    -0.6331,
+    -0.4069
+   ],
+   "ic_expediente": [
+    -0.5679,
+    -0.382
+   ],
+   "ic_legislador": [
+    -0.6331,
+    -0.4069
+   ],
+   "razon_anchos_exp_sobre_leg": 0.8217
+  },
+  "2015-12-10|n>=5.crudo_todos.r_rho_heredado": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "2015-12-10|n>=5.crudo_todos.r_resid_crudo": {
+   "r": -0.1161,
+   "ic95": [
+    -0.2554,
+    0.0111
+   ],
+   "ic_expediente": [
+    -0.1973,
+    0.0407
+   ],
+   "ic_legislador": [
+    -0.2554,
+    0.0111
+   ],
+   "razon_anchos_exp_sobre_leg": 0.8931
+  },
+  "2015-12-10|n>=5.crudo_todos.r_resid_relabelado": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "2015-12-10|n>=5.relabelado_todos_no_ambiguos.r_rho_heredado": {
+   "r": 0.8124,
+   "ic95": [
+    0.5864,
+    0.8587
+   ],
+   "ic_expediente": [
+    0.5864,
+    0.8587
+   ],
+   "ic_legislador": [
+    0.7373,
+    0.8782
+   ],
+   "razon_anchos_exp_sobre_leg": 1.9319
+  },
+  "2019-12-10|n>=5.mismo_lado.r_rho": {
+   "r": 0.788,
+   "ic95": [
+    -0.1115,
+    0.9627
+   ],
+   "ic_expediente": [
+    -0.1115,
+    0.9627
+   ],
+   "ic_legislador": [
+    0.3614,
+    0.9892
+   ],
+   "razon_anchos_exp_sobre_leg": 1.7112
+  },
+  "2019-12-10|n>=5.mismo_lado.r_rho_heredado": {
+   "r": 0.788,
+   "ic95": [
+    -0.1115,
+    0.9627
+   ],
+   "ic_expediente": [
+    -0.1115,
+    0.9627
+   ],
+   "ic_legislador": [
+    0.3614,
+    0.9892
+   ],
+   "razon_anchos_exp_sobre_leg": 1.7112
+  },
+  "2019-12-10|n>=5.mismo_lado.r_resid_crudo": {
+   "r": 0.3797,
+   "ic95": [
+    -0.2615,
+    0.7096
+   ],
+   "ic_expediente": [
+    -0.2615,
+    0.7096
+   ],
+   "ic_legislador": [
+    0.0422,
+    0.8304
+   ],
+   "razon_anchos_exp_sobre_leg": 1.2321
+  },
+  "2019-12-10|n>=5.mismo_lado.r_resid_relabelado": {
+   "r": -0.2506,
+   "ic95": [
+    -0.6197,
+    0.7864
+   ],
+   "ic_expediente": [
+    -0.6422,
+    0.394
+   ],
+   "ic_legislador": [
+    -0.6197,
+    0.7864
+   ],
+   "razon_anchos_exp_sobre_leg": 0.737
+  },
+  "2019-12-10|n>=5.cambio_lado.r_rho": {
+   "r": -0.9116,
+   "ic95": [
+    -0.9442,
+    0.6508
+   ],
+   "ic_expediente": [
+    -0.9442,
+    0.6508
+   ],
+   "ic_legislador": [
+    -0.9605,
+    -0.8502
+   ],
+   "razon_anchos_exp_sobre_leg": 14.47
+  },
+  "2019-12-10|n>=5.cambio_lado.r_rho_heredado": {
+   "r": 0.9116,
+   "ic95": [
+    -0.6508,
+    0.9442
+   ],
+   "ic_expediente": [
+    -0.6508,
+    0.9442
+   ],
+   "ic_legislador": [
+    0.8502,
+    0.9605
+   ],
+   "razon_anchos_exp_sobre_leg": 14.47
+  },
+  "2019-12-10|n>=5.cambio_lado.r_resid_crudo": {
+   "r": 0.1443,
+   "ic95": [
+    -0.4142,
+    0.4452
+   ],
+   "ic_expediente": [
+    -0.4142,
+    0.4452
+   ],
+   "ic_legislador": [
+    -0.1549,
+    0.4124
+   ],
+   "razon_anchos_exp_sobre_leg": 1.515
+  },
+  "2019-12-10|n>=5.cambio_lado.r_resid_relabelado": {
+   "r": -0.3756,
+   "ic95": [
+    -0.5217,
+    0.2281
+   ],
+   "ic_expediente": [
+    -0.5217,
+    0.2281
+   ],
+   "ic_legislador": [
+    -0.6059,
+    -0.1135
+   ],
+   "razon_anchos_exp_sobre_leg": 1.5228
+  },
+  "2019-12-10|n>=5.ambiguo.r_rho": {
+   "r": 0.4505,
+   "ic95": [
+    -0.2208,
+    0.5956
+   ],
+   "ic_expediente": [
+    -0.2208,
+    0.5956
+   ],
+   "ic_legislador": [
+    0.3238,
+    0.5972
+   ],
+   "razon_anchos_exp_sobre_leg": 2.9861
+  },
+  "2019-12-10|n>=5.ambiguo.r_rho_heredado": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "2019-12-10|n>=5.ambiguo.r_resid_crudo": {
+   "r": 0.0201,
+   "ic95": [
+    -0.2896,
+    0.1785
+   ],
+   "ic_expediente": [
+    -0.2896,
+    0.1785
+   ],
+   "ic_legislador": [
+    -0.1631,
+    0.1933
+   ],
+   "razon_anchos_exp_sobre_leg": 1.3137
+  },
+  "2019-12-10|n>=5.ambiguo.r_resid_relabelado": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "2019-12-10|n>=5.crudo_todos.r_rho": {
+   "r": -0.3189,
+   "ic95": [
+    -0.509,
+    0.5524
+   ],
+   "ic_expediente": [
+    -0.509,
+    0.5524
+   ],
+   "ic_legislador": [
+    -0.5696,
+    -0.0427
+   ],
+   "razon_anchos_exp_sobre_leg": 2.0145
+  },
+  "2019-12-10|n>=5.crudo_todos.r_rho_heredado": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "2019-12-10|n>=5.crudo_todos.r_resid_crudo": {
+   "r": 0.1713,
+   "ic95": [
+    -0.1582,
+    0.2051
+   ],
+   "ic_expediente": [
+    -0.1582,
+    0.2051
+   ],
+   "ic_legislador": [
+    0.0119,
+    0.3244
+   ],
+   "razon_anchos_exp_sobre_leg": 1.1624
+  },
+  "2019-12-10|n>=5.crudo_todos.r_resid_relabelado": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "2019-12-10|n>=5.relabelado_todos_no_ambiguos.r_rho_heredado": {
+   "r": 0.7745,
+   "ic95": [
+    -0.331,
+    0.8895
+   ],
+   "ic_expediente": [
+    -0.331,
+    0.8895
+   ],
+   "ic_legislador": [
+    0.6705,
+    0.8738
+   ],
+   "razon_anchos_exp_sobre_leg": 6.0044
+  },
+  "2023-12-10|n>=5.mismo_lado.r_rho": {
+   "r": 0.4898,
+   "ic95": [
+    -0.7549,
+    0.93
+   ],
+   "ic_expediente": [
+    -0.7317,
+    0.9369
+   ],
+   "ic_legislador": [
+    -0.7549,
+    0.93
+   ],
+   "razon_anchos_exp_sobre_leg": 0.9903
+  },
+  "2023-12-10|n>=5.mismo_lado.r_rho_heredado": {
+   "r": 0.4898,
+   "ic95": [
+    -0.7549,
+    0.93
+   ],
+   "ic_expediente": [
+    -0.7317,
+    0.9369
+   ],
+   "ic_legislador": [
+    -0.7549,
+    0.93
+   ],
+   "razon_anchos_exp_sobre_leg": 0.9903
+  },
+  "2023-12-10|n>=5.mismo_lado.r_resid_crudo": {
+   "r": 0.0702,
+   "ic95": [
+    -0.5898,
+    0.9505
+   ],
+   "ic_expediente": [
+    -0.5898,
+    0.9505
+   ],
+   "ic_legislador": [
+    -0.6399,
+    0.5901
+   ],
+   "razon_anchos_exp_sobre_leg": 1.2523
+  },
+  "2023-12-10|n>=5.mismo_lado.r_resid_relabelado": {
+   "r": -0.1971,
+   "ic95": [
+    -0.8923,
+    0.4249
+   ],
+   "ic_expediente": [
+    -0.8923,
+    0.4249
+   ],
+   "ic_legislador": [
+    -0.6665,
+    0.4452
+   ],
+   "razon_anchos_exp_sobre_leg": 1.1848
+  },
+  "2023-12-10|n>=5.cambio_lado.r_rho": {
+   "r": -0.7202,
+   "ic95": [
+    -0.9296,
+    0.5528
+   ],
+   "ic_expediente": [
+    -0.9296,
+    0.5528
+   ],
+   "ic_legislador": [
+    -0.8563,
+    -0.5809
+   ],
+   "razon_anchos_exp_sobre_leg": 5.3836
+  },
+  "2023-12-10|n>=5.cambio_lado.r_rho_heredado": {
+   "r": 0.7202,
+   "ic95": [
+    -0.5528,
+    0.9296
+   ],
+   "ic_expediente": [
+    -0.5528,
+    0.9296
+   ],
+   "ic_legislador": [
+    0.5809,
+    0.8563
+   ],
+   "razon_anchos_exp_sobre_leg": 5.3836
+  },
+  "2023-12-10|n>=5.cambio_lado.r_resid_crudo": {
+   "r": 0.0281,
+   "ic95": [
+    -0.3642,
+    0.4163
+   ],
+   "ic_expediente": [
+    -0.3642,
+    0.4163
+   ],
+   "ic_legislador": [
+    -0.2924,
+    0.3339
+   ],
+   "razon_anchos_exp_sobre_leg": 1.2462
+  },
+  "2023-12-10|n>=5.cambio_lado.r_resid_relabelado": {
+   "r": -0.0986,
+   "ic95": [
+    -0.5664,
+    0.2081
+   ],
+   "ic_expediente": [
+    -0.5664,
+    0.2081
+   ],
+   "ic_legislador": [
+    -0.3994,
+    0.2001
+   ],
+   "razon_anchos_exp_sobre_leg": 1.292
+  },
+  "2023-12-10|n>=5.ambiguo.r_rho": {
+   "r": 0.2455,
+   "ic95": [
+    -0.3804,
+    0.557
+   ],
+   "ic_expediente": [
+    -0.3804,
+    0.557
+   ],
+   "ic_legislador": [
+    0.0982,
+    0.443
+   ],
+   "razon_anchos_exp_sobre_leg": 2.7188
+  },
+  "2023-12-10|n>=5.ambiguo.r_rho_heredado": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "2023-12-10|n>=5.ambiguo.r_resid_crudo": {
+   "r": -0.1235,
+   "ic95": [
+    -0.2125,
+    0.2318
+   ],
+   "ic_expediente": [
+    -0.2125,
+    0.2318
+   ],
+   "ic_legislador": [
+    -0.3131,
+    0.0053
+   ],
+   "razon_anchos_exp_sobre_leg": 1.3955
+  },
+  "2023-12-10|n>=5.ambiguo.r_resid_relabelado": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "2023-12-10|n>=5.crudo_todos.r_rho": {
+   "r": -0.3785,
+   "ic95": [
+    -0.5737,
+    0.4894
+   ],
+   "ic_expediente": [
+    -0.5737,
+    0.4894
+   ],
+   "ic_legislador": [
+    -0.5289,
+    -0.2037
+   ],
+   "razon_anchos_exp_sobre_leg": 3.2697
+  },
+  "2023-12-10|n>=5.crudo_todos.r_rho_heredado": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "2023-12-10|n>=5.crudo_todos.r_resid_crudo": {
+   "r": -0.0207,
+   "ic95": [
+    -0.1707,
+    0.1679
+   ],
+   "ic_expediente": [
+    -0.1707,
+    0.1679
+   ],
+   "ic_legislador": [
+    -0.1763,
+    0.1204
+   ],
+   "razon_anchos_exp_sobre_leg": 1.1409
+  },
+  "2023-12-10|n>=5.crudo_todos.r_resid_relabelado": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "2023-12-10|n>=5.relabelado_todos_no_ambiguos.r_rho_heredado": {
+   "r": 0.5983,
+   "ic95": [
+    -0.2631,
+    0.8727
+   ],
+   "ic_expediente": [
+    -0.2631,
+    0.8727
+   ],
+   "ic_legislador": [
+    0.4586,
+    0.7215
+   ],
+   "razon_anchos_exp_sobre_leg": 4.3206
+  },
+  "pooled|n>=10.mismo_lado.r_rho": {
+   "r": 0.5512,
+   "ic95": [
+    -0.6385,
+    0.839
+   ],
+   "ic_expediente": [
+    -0.6385,
+    0.839
+   ],
+   "ic_legislador": [
+    0.1881,
+    0.8175
+   ],
+   "razon_anchos_exp_sobre_leg": 2.3473
+  },
+  "pooled|n>=10.mismo_lado.r_rho_heredado": {
+   "r": 0.5512,
+   "ic95": [
+    -0.6385,
+    0.839
+   ],
+   "ic_expediente": [
+    -0.6385,
+    0.839
+   ],
+   "ic_legislador": [
+    0.1881,
+    0.8175
+   ],
+   "razon_anchos_exp_sobre_leg": 2.3473
+  },
+  "pooled|n>=10.mismo_lado.r_resid_crudo": {
+   "r": 0.2048,
+   "ic95": [
+    -0.506,
+    0.4361
+   ],
+   "ic_expediente": [
+    -0.506,
+    0.4361
+   ],
+   "ic_legislador": [
+    -0.134,
+    0.5584
+   ],
+   "razon_anchos_exp_sobre_leg": 1.3608
+  },
+  "pooled|n>=10.mismo_lado.r_resid_relabelado": {
+   "r": -0.0132,
+   "ic95": [
+    -0.5122,
+    0.3889
+   ],
+   "ic_expediente": [
+    -0.5122,
+    0.3889
+   ],
+   "ic_legislador": [
+    -0.3876,
+    0.389
+   ],
+   "razon_anchos_exp_sobre_leg": 1.1604
+  },
+  "pooled|n>=10.cambio_lado.r_rho": {
+   "r": -0.8168,
+   "ic95": [
+    -0.8978,
+    -0.5184
+   ],
+   "ic_expediente": [
+    -0.8978,
+    -0.5184
+   ],
+   "ic_legislador": [
+    -0.8874,
+    -0.7279
+   ],
+   "razon_anchos_exp_sobre_leg": 2.3777
+  },
+  "pooled|n>=10.cambio_lado.r_rho_heredado": {
+   "r": 0.8168,
+   "ic95": [
+    0.5184,
+    0.8978
+   ],
+   "ic_expediente": [
+    0.5184,
+    0.8978
+   ],
+   "ic_legislador": [
+    0.7279,
+    0.8874
+   ],
+   "razon_anchos_exp_sobre_leg": 2.3777
+  },
+  "pooled|n>=10.cambio_lado.r_resid_crudo": {
+   "r": -0.2628,
+   "ic95": [
+    -0.4244,
+    -0.0052
+   ],
+   "ic_expediente": [
+    -0.4244,
+    -0.0052
+   ],
+   "ic_legislador": [
+    -0.4081,
+    -0.1301
+   ],
+   "razon_anchos_exp_sobre_leg": 1.5081
+  },
+  "pooled|n>=10.cambio_lado.r_resid_relabelado": {
+   "r": 0.1698,
+   "ic95": [
+    -0.0938,
+    0.2829
+   ],
+   "ic_expediente": [
+    -0.0938,
+    0.2829
+   ],
+   "ic_legislador": [
+    0.014,
+    0.3155
+   ],
+   "razon_anchos_exp_sobre_leg": 1.2494
+  },
+  "pooled|n>=10.ambiguo.r_rho": {
+   "r": -0.1177,
+   "ic95": [
+    -0.2247,
+    0.0546
+   ],
+   "ic_expediente": [
+    -0.2247,
+    0.0546
+   ],
+   "ic_legislador": [
+    -0.2083,
+    -0.0179
+   ],
+   "razon_anchos_exp_sobre_leg": 1.4666
+  },
+  "pooled|n>=10.ambiguo.r_rho_heredado": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "pooled|n>=10.ambiguo.r_resid_crudo": {
+   "r": -0.0295,
+   "ic95": [
+    -0.1546,
+    0.065
+   ],
+   "ic_expediente": [
+    -0.0763,
+    0.0798
+   ],
+   "ic_legislador": [
+    -0.1546,
+    0.065
+   ],
+   "razon_anchos_exp_sobre_leg": 0.7108
+  },
+  "pooled|n>=10.ambiguo.r_resid_relabelado": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "pooled|n>=10.crudo_todos.r_rho": {
+   "r": -0.3911,
+   "ic95": [
+    -0.4676,
+    -0.2419
+   ],
+   "ic_expediente": [
+    -0.4676,
+    -0.2419
+   ],
+   "ic_legislador": [
+    -0.4788,
+    -0.2811
+   ],
+   "razon_anchos_exp_sobre_leg": 1.1411
+  },
+  "pooled|n>=10.crudo_todos.r_rho_heredado": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "pooled|n>=10.crudo_todos.r_resid_crudo": {
+   "r": -0.0819,
+   "ic95": [
+    -0.1526,
+    0.0316
+   ],
+   "ic_expediente": [
+    -0.1526,
+    0.0316
+   ],
+   "ic_legislador": [
+    -0.1722,
+    -0.0003
+   ],
+   "razon_anchos_exp_sobre_leg": 1.0712
+  },
+  "pooled|n>=10.crudo_todos.r_resid_relabelado": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "pooled|n>=10.relabelado_todos_no_ambiguos.r_rho_heredado": {
+   "r": 0.775,
+   "ic95": [
+    0.5098,
+    0.8477
+   ],
+   "ic_expediente": [
+    0.5098,
+    0.8477
+   ],
+   "ic_legislador": [
+    0.6865,
+    0.8577
+   ],
+   "razon_anchos_exp_sobre_leg": 1.9736
+  },
+  "2015-12-10|n>=10.mismo_lado.r_rho": {
+   "r": 0.5512,
+   "ic95": [
+    -0.6385,
+    0.839
+   ],
+   "ic_expediente": [
+    -0.6385,
+    0.839
+   ],
+   "ic_legislador": [
+    0.1881,
+    0.8175
+   ],
+   "razon_anchos_exp_sobre_leg": 2.3473
+  },
+  "2015-12-10|n>=10.mismo_lado.r_rho_heredado": {
+   "r": 0.5512,
+   "ic95": [
+    -0.6385,
+    0.839
+   ],
+   "ic_expediente": [
+    -0.6385,
+    0.839
+   ],
+   "ic_legislador": [
+    0.1881,
+    0.8175
+   ],
+   "razon_anchos_exp_sobre_leg": 2.3473
+  },
+  "2015-12-10|n>=10.mismo_lado.r_resid_crudo": {
+   "r": 0.2048,
+   "ic95": [
+    -0.495,
+    0.4705
+   ],
+   "ic_expediente": [
+    -0.495,
+    0.4705
+   ],
+   "ic_legislador": [
+    -0.134,
+    0.5584
+   ],
+   "razon_anchos_exp_sobre_leg": 1.3946
+  },
+  "2015-12-10|n>=10.mismo_lado.r_resid_relabelado": {
+   "r": -0.0132,
+   "ic95": [
+    -0.495,
+    0.4161
+   ],
+   "ic_expediente": [
+    -0.495,
+    0.4161
+   ],
+   "ic_legislador": [
+    -0.3876,
+    0.389
+   ],
+   "razon_anchos_exp_sobre_leg": 1.1732
+  },
+  "2015-12-10|n>=10.cambio_lado.r_rho": {
+   "r": -0.8845,
+   "ic95": [
+    -0.9178,
+    -0.6728
+   ],
+   "ic_expediente": [
+    -0.9178,
+    -0.6728
+   ],
+   "ic_legislador": [
+    -0.9255,
+    -0.8319
+   ],
+   "razon_anchos_exp_sobre_leg": 2.6171
+  },
+  "2015-12-10|n>=10.cambio_lado.r_rho_heredado": {
+   "r": 0.8845,
+   "ic95": [
+    0.6728,
+    0.9178
+   ],
+   "ic_expediente": [
+    0.6728,
+    0.9178
+   ],
+   "ic_legislador": [
+    0.8319,
+    0.9255
+   ],
+   "razon_anchos_exp_sobre_leg": 2.6171
+  },
+  "2015-12-10|n>=10.cambio_lado.r_resid_crudo": {
+   "r": -0.3844,
+   "ic95": [
+    -0.466,
+    -0.0236
+   ],
+   "ic_expediente": [
+    -0.466,
+    -0.0236
+   ],
+   "ic_legislador": [
+    -0.5331,
+    -0.2034
+   ],
+   "razon_anchos_exp_sobre_leg": 1.3422
+  },
+  "2015-12-10|n>=10.cambio_lado.r_resid_relabelado": {
+   "r": 0.2166,
+   "ic95": [
+    -0.0853,
+    0.3346
+   ],
+   "ic_expediente": [
+    -0.0853,
+    0.3346
+   ],
+   "ic_legislador": [
+    0.0151,
+    0.3764
+   ],
+   "razon_anchos_exp_sobre_leg": 1.1622
+  },
+  "2015-12-10|n>=10.ambiguo.r_rho": {
+   "r": -0.2427,
+   "ic95": [
+    -0.4953,
+    0.0727
+   ],
+   "ic_expediente": [
+    -0.4953,
+    0.0727
+   ],
+   "ic_legislador": [
+    -0.4601,
+    0.0182
+   ],
+   "razon_anchos_exp_sobre_leg": 1.1876
+  },
+  "2015-12-10|n>=10.ambiguo.r_rho_heredado": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "2015-12-10|n>=10.ambiguo.r_resid_crudo": {
+   "r": -0.039,
+   "ic95": [
+    -0.273,
+    0.1799
+   ],
+   "ic_expediente": [
+    -0.1288,
+    0.1761
+   ],
+   "ic_legislador": [
+    -0.273,
+    0.1799
+   ],
+   "razon_anchos_exp_sobre_leg": 0.6732
+  },
+  "2015-12-10|n>=10.ambiguo.r_resid_relabelado": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "2015-12-10|n>=10.crudo_todos.r_rho": {
+   "r": -0.5313,
+   "ic95": [
+    -0.631,
+    -0.4086
+   ],
+   "ic_expediente": [
+    -0.5783,
+    -0.3914
+   ],
+   "ic_legislador": [
+    -0.631,
+    -0.4086
+   ],
+   "razon_anchos_exp_sobre_leg": 0.84
+  },
+  "2015-12-10|n>=10.crudo_todos.r_rho_heredado": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "2015-12-10|n>=10.crudo_todos.r_resid_crudo": {
+   "r": -0.1035,
+   "ic95": [
+    -0.2548,
+    0.0327
+   ],
+   "ic_expediente": [
+    -0.1936,
+    0.0459
+   ],
+   "ic_legislador": [
+    -0.2548,
+    0.0327
+   ],
+   "razon_anchos_exp_sobre_leg": 0.833
+  },
+  "2015-12-10|n>=10.crudo_todos.r_resid_relabelado": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "2015-12-10|n>=10.relabelado_todos_no_ambiguos.r_rho_heredado": {
+   "r": 0.8276,
+   "ic95": [
+    0.6123,
+    0.8662
+   ],
+   "ic_expediente": [
+    0.6123,
+    0.8662
+   ],
+   "ic_legislador": [
+    0.7487,
+    0.895
+   ],
+   "razon_anchos_exp_sobre_leg": 1.7358
+  },
+  "2019-12-10|n>=10.mismo_lado.r_rho": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "2019-12-10|n>=10.mismo_lado.r_rho_heredado": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "2019-12-10|n>=10.mismo_lado.r_resid_crudo": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "2019-12-10|n>=10.mismo_lado.r_resid_relabelado": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "2019-12-10|n>=10.cambio_lado.r_rho": {
+   "r": null,
+   "ic95": [
+    -0.9239,
+    0.8164
+   ],
+   "ic_expediente": [
+    -0.9239,
+    0.8164
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "2019-12-10|n>=10.cambio_lado.r_rho_heredado": {
+   "r": null,
+   "ic95": [
+    -0.8164,
+    0.9239
+   ],
+   "ic_expediente": [
+    -0.8164,
+    0.9239
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "2019-12-10|n>=10.cambio_lado.r_resid_crudo": {
+   "r": null,
+   "ic95": [
+    -0.5199,
+    0.5366
+   ],
+   "ic_expediente": [
+    -0.5199,
+    0.5366
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "2019-12-10|n>=10.cambio_lado.r_resid_relabelado": {
+   "r": null,
+   "ic95": [
+    -0.5489,
+    0.4845
+   ],
+   "ic_expediente": [
+    -0.5489,
+    0.4845
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "2019-12-10|n>=10.ambiguo.r_rho": {
+   "r": 0.4515,
+   "ic95": [
+    -0.2416,
+    0.5906
+   ],
+   "ic_expediente": [
+    -0.2416,
+    0.5906
+   ],
+   "ic_legislador": [
+    0.3238,
+    0.6062
+   ],
+   "razon_anchos_exp_sobre_leg": 2.9468
+  },
+  "2019-12-10|n>=10.ambiguo.r_rho_heredado": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "2019-12-10|n>=10.ambiguo.r_resid_crudo": {
+   "r": 0.0247,
+   "ic95": [
+    -0.2352,
+    0.2161
+   ],
+   "ic_expediente": [
+    -0.2352,
+    0.2161
+   ],
+   "ic_legislador": [
+    -0.1602,
+    0.208
+   ],
+   "razon_anchos_exp_sobre_leg": 1.2253
+  },
+  "2019-12-10|n>=10.ambiguo.r_resid_relabelado": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "2019-12-10|n>=10.crudo_todos.r_rho": {
+   "r": 0.4468,
+   "ic95": [
+    -0.484,
+    0.5907
+   ],
+   "ic_expediente": [
+    -0.484,
+    0.5907
+   ],
+   "ic_legislador": [
+    0.3265,
+    0.597
+   ],
+   "razon_anchos_exp_sobre_leg": 3.9733
+  },
+  "2019-12-10|n>=10.crudo_todos.r_rho_heredado": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "2019-12-10|n>=10.crudo_todos.r_resid_crudo": {
+   "r": 0.0399,
+   "ic95": [
+    -0.2274,
+    0.2336
+   ],
+   "ic_expediente": [
+    -0.2274,
+    0.2336
+   ],
+   "ic_legislador": [
+    -0.1147,
+    0.1984
+   ],
+   "razon_anchos_exp_sobre_leg": 1.4723
+  },
+  "2019-12-10|n>=10.crudo_todos.r_resid_relabelado": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "2019-12-10|n>=10.relabelado_todos_no_ambiguos.r_rho_heredado": {
+   "r": null,
+   "ic95": [
+    -0.8164,
+    0.7845
+   ],
+   "ic_expediente": [
+    -0.8164,
+    0.7845
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "2023-12-10|n>=10.mismo_lado.r_rho": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "2023-12-10|n>=10.mismo_lado.r_rho_heredado": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "2023-12-10|n>=10.mismo_lado.r_resid_crudo": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "2023-12-10|n>=10.mismo_lado.r_resid_relabelado": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "2023-12-10|n>=10.cambio_lado.r_rho": {
+   "r": -0.1106,
+   "ic95": [
+    -0.888,
+    0.8042
+   ],
+   "ic_expediente": [
+    -0.8747,
+    0.3652
+   ],
+   "ic_legislador": [
+    -0.888,
+    0.8042
+   ],
+   "razon_anchos_exp_sobre_leg": 0.7327
+  },
+  "2023-12-10|n>=10.cambio_lado.r_rho_heredado": {
+   "r": 0.1106,
+   "ic95": [
+    -0.8042,
+    0.888
+   ],
+   "ic_expediente": [
+    -0.3652,
+    0.8747
+   ],
+   "ic_legislador": [
+    -0.8042,
+    0.888
+   ],
+   "razon_anchos_exp_sobre_leg": 0.7327
+  },
+  "2023-12-10|n>=10.cambio_lado.r_resid_crudo": {
+   "r": 0.1151,
+   "ic95": [
+    -0.789,
+    0.6779
+   ],
+   "ic_expediente": [
+    -0.5142,
+    0.5163
+   ],
+   "ic_legislador": [
+    -0.789,
+    0.6779
+   ],
+   "razon_anchos_exp_sobre_leg": 0.7025
+  },
+  "2023-12-10|n>=10.cambio_lado.r_resid_relabelado": {
+   "r": -0.1151,
+   "ic95": [
+    -0.6779,
+    0.789
+   ],
+   "ic_expediente": [
+    -0.5559,
+    0.5142
+   ],
+   "ic_legislador": [
+    -0.6779,
+    0.789
+   ],
+   "razon_anchos_exp_sobre_leg": 0.7295
+  },
+  "2023-12-10|n>=10.ambiguo.r_rho": {
+   "r": 0.4253,
+   "ic95": [
+    -0.3523,
+    0.5345
+   ],
+   "ic_expediente": [
+    -0.3523,
+    0.5345
+   ],
+   "ic_legislador": [
+    0.2779,
+    0.5937
+   ],
+   "razon_anchos_exp_sobre_leg": 2.8078
+  },
+  "2023-12-10|n>=10.ambiguo.r_rho_heredado": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "2023-12-10|n>=10.ambiguo.r_resid_crudo": {
+   "r": -0.1593,
+   "ic95": [
+    -0.2368,
+    0.2377
+   ],
+   "ic_expediente": [
+    -0.2368,
+    0.2377
+   ],
+   "ic_legislador": [
+    -0.3714,
+    0.0032
+   ],
+   "razon_anchos_exp_sobre_leg": 1.2666
+  },
+  "2023-12-10|n>=10.ambiguo.r_resid_relabelado": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "2023-12-10|n>=10.crudo_todos.r_rho": {
+   "r": 0.1963,
+   "ic95": [
+    -0.5243,
+    0.5345
+   ],
+   "ic_expediente": [
+    -0.5243,
+    0.5345
+   ],
+   "ic_legislador": [
+    -0.1122,
+    0.4905
+   ],
+   "razon_anchos_exp_sobre_leg": 1.7569
+  },
+  "2023-12-10|n>=10.crudo_todos.r_rho_heredado": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "2023-12-10|n>=10.crudo_todos.r_resid_crudo": {
+   "r": -0.0362,
+   "ic95": [
+    -0.2452,
+    0.2063
+   ],
+   "ic_expediente": [
+    -0.2452,
+    0.2063
+   ],
+   "ic_legislador": [
+    -0.2644,
+    0.117
+   ],
+   "razon_anchos_exp_sobre_leg": 1.1837
+  },
+  "2023-12-10|n>=10.crudo_todos.r_resid_relabelado": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "2023-12-10|n>=10.relabelado_todos_no_ambiguos.r_rho_heredado": {
+   "r": 0.1106,
+   "ic95": [
+    -0.8042,
+    0.888
+   ],
+   "ic_expediente": [
+    -0.3614,
+    0.8075
+   ],
+   "ic_legislador": [
+    -0.8042,
+    0.888
+   ],
+   "razon_anchos_exp_sobre_leg": 0.6907
+  },
+  "pooled|n>=20.mismo_lado.r_rho": {
+   "r": 0.4323,
+   "ic95": [
+    -0.1639,
+    0.8688
+   ],
+   "ic_expediente": [
+    0.1687,
+    0.9227
+   ],
+   "ic_legislador": [
+    -0.1639,
+    0.8688
+   ],
+   "razon_anchos_exp_sobre_leg": 0.7301
+  },
+  "pooled|n>=20.mismo_lado.r_rho_heredado": {
+   "r": 0.4323,
+   "ic95": [
+    -0.1639,
+    0.8688
+   ],
+   "ic_expediente": [
+    0.1687,
+    0.9227
+   ],
+   "ic_legislador": [
+    -0.1639,
+    0.8688
+   ],
+   "razon_anchos_exp_sobre_leg": 0.7301
+  },
+  "pooled|n>=20.mismo_lado.r_resid_crudo": {
+   "r": 0.3265,
+   "ic95": [
+    -0.6351,
+    0.9201
+   ],
+   "ic_expediente": [
+    -0.4927,
+    0.7593
+   ],
+   "ic_legislador": [
+    -0.6351,
+    0.9201
+   ],
+   "razon_anchos_exp_sobre_leg": 0.805
+  },
+  "pooled|n>=20.mismo_lado.r_resid_relabelado": {
+   "r": 0.2505,
+   "ic95": [
+    -0.699,
+    0.9118
+   ],
+   "ic_expediente": [
+    -0.4858,
+    0.7636
+   ],
+   "ic_legislador": [
+    -0.699,
+    0.9118
+   ],
+   "razon_anchos_exp_sobre_leg": 0.7756
+  },
+  "pooled|n>=20.cambio_lado.r_rho": {
+   "r": -0.8592,
+   "ic95": [
+    -0.9256,
+    -0.6089
+   ],
+   "ic_expediente": [
+    -0.9256,
+    -0.6089
+   ],
+   "ic_legislador": [
+    -0.9556,
+    -0.7238
+   ],
+   "razon_anchos_exp_sobre_leg": 1.3665
+  },
+  "pooled|n>=20.cambio_lado.r_rho_heredado": {
+   "r": 0.8592,
+   "ic95": [
+    0.6089,
+    0.9256
+   ],
+   "ic_expediente": [
+    0.6089,
+    0.9256
+   ],
+   "ic_legislador": [
+    0.7238,
+    0.9556
+   ],
+   "razon_anchos_exp_sobre_leg": 1.3665
+  },
+  "pooled|n>=20.cambio_lado.r_resid_crudo": {
+   "r": -0.1477,
+   "ic95": [
+    -0.3632,
+    0.1003
+   ],
+   "ic_expediente": [
+    -0.3632,
+    0.1003
+   ],
+   "ic_legislador": [
+    -0.3576,
+    0.1012
+   ],
+   "razon_anchos_exp_sobre_leg": 1.0102
+  },
+  "pooled|n>=20.cambio_lado.r_resid_relabelado": {
+   "r": 0.1182,
+   "ic95": [
+    -0.1373,
+    0.3111
+   ],
+   "ic_expediente": [
+    -0.1373,
+    0.3111
+   ],
+   "ic_legislador": [
+    -0.1509,
+    0.2906
+   ],
+   "razon_anchos_exp_sobre_leg": 1.0153
+  },
+  "pooled|n>=20.ambiguo.r_rho": {
+   "r": -0.0804,
+   "ic95": [
+    -0.2238,
+    0.0929
+   ],
+   "ic_expediente": [
+    -0.2238,
+    0.0929
+   ],
+   "ic_legislador": [
+    -0.2082,
+    0.0562
+   ],
+   "razon_anchos_exp_sobre_leg": 1.1977
+  },
+  "pooled|n>=20.ambiguo.r_rho_heredado": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "pooled|n>=20.ambiguo.r_resid_crudo": {
+   "r": 0.0017,
+   "ic95": [
+    -0.1014,
+    0.1198
+   ],
+   "ic_expediente": [
+    -0.1014,
+    0.1198
+   ],
+   "ic_legislador": [
+    -0.0774,
+    0.0863
+   ],
+   "razon_anchos_exp_sobre_leg": 1.3512
+  },
+  "pooled|n>=20.ambiguo.r_resid_relabelado": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "pooled|n>=20.crudo_todos.r_rho": {
+   "r": -0.409,
+   "ic95": [
+    -0.5177,
+    -0.2818
+   ],
+   "ic_expediente": [
+    -0.4888,
+    -0.2865
+   ],
+   "ic_legislador": [
+    -0.5177,
+    -0.2818
+   ],
+   "razon_anchos_exp_sobre_leg": 0.8577
+  },
+  "pooled|n>=20.crudo_todos.r_rho_heredado": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "pooled|n>=20.crudo_todos.r_resid_crudo": {
+   "r": -0.0157,
+   "ic95": [
+    -0.1288,
+    0.0766
+   ],
+   "ic_expediente": [
+    -0.1288,
+    0.0766
+   ],
+   "ic_legislador": [
+    -0.1141,
+    0.0833
+   ],
+   "razon_anchos_exp_sobre_leg": 1.0406
+  },
+  "pooled|n>=20.crudo_todos.r_resid_relabelado": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "pooled|n>=20.relabelado_todos_no_ambiguos.r_rho_heredado": {
+   "r": 0.8012,
+   "ic95": [
+    0.5948,
+    0.8673
+   ],
+   "ic_expediente": [
+    0.5948,
+    0.8673
+   ],
+   "ic_legislador": [
+    0.6669,
+    0.9196
+   ],
+   "razon_anchos_exp_sobre_leg": 1.0782
+  },
+  "2015-12-10|n>=20.mismo_lado.r_rho": {
+   "r": 0.4323,
+   "ic95": [
+    -0.1639,
+    0.8688
+   ],
+   "ic_expediente": [
+    0.1687,
+    0.9227
+   ],
+   "ic_legislador": [
+    -0.1639,
+    0.8688
+   ],
+   "razon_anchos_exp_sobre_leg": 0.7301
+  },
+  "2015-12-10|n>=20.mismo_lado.r_rho_heredado": {
+   "r": 0.4323,
+   "ic95": [
+    -0.1639,
+    0.8688
+   ],
+   "ic_expediente": [
+    0.1687,
+    0.9227
+   ],
+   "ic_legislador": [
+    -0.1639,
+    0.8688
+   ],
+   "razon_anchos_exp_sobre_leg": 0.7301
+  },
+  "2015-12-10|n>=20.mismo_lado.r_resid_crudo": {
+   "r": 0.3265,
+   "ic95": [
+    -0.6351,
+    0.9201
+   ],
+   "ic_expediente": [
+    -0.4927,
+    0.7593
+   ],
+   "ic_legislador": [
+    -0.6351,
+    0.9201
+   ],
+   "razon_anchos_exp_sobre_leg": 0.805
+  },
+  "2015-12-10|n>=20.mismo_lado.r_resid_relabelado": {
+   "r": 0.2505,
+   "ic95": [
+    -0.699,
+    0.9118
+   ],
+   "ic_expediente": [
+    -0.4858,
+    0.7636
+   ],
+   "ic_legislador": [
+    -0.699,
+    0.9118
+   ],
+   "razon_anchos_exp_sobre_leg": 0.7756
+  },
+  "2015-12-10|n>=20.cambio_lado.r_rho": {
+   "r": -0.9344,
+   "ic95": [
+    -0.9383,
+    -0.7608
+   ],
+   "ic_expediente": [
+    -0.9383,
+    -0.7608
+   ],
+   "ic_legislador": [
+    -0.9756,
+    -0.8752
+   ],
+   "razon_anchos_exp_sobre_leg": 1.7671
+  },
+  "2015-12-10|n>=20.cambio_lado.r_rho_heredado": {
+   "r": 0.9344,
+   "ic95": [
+    0.7608,
+    0.9383
+   ],
+   "ic_expediente": [
+    0.7608,
+    0.9383
+   ],
+   "ic_legislador": [
+    0.8752,
+    0.9756
+   ],
+   "razon_anchos_exp_sobre_leg": 1.7671
+  },
+  "2015-12-10|n>=20.cambio_lado.r_resid_crudo": {
+   "r": -0.2476,
+   "ic95": [
+    -0.4538,
+    0.1468
+   ],
+   "ic_expediente": [
+    -0.4237,
+    0.0879
+   ],
+   "ic_legislador": [
+    -0.4538,
+    0.1468
+   ],
+   "razon_anchos_exp_sobre_leg": 0.8518
+  },
+  "2015-12-10|n>=20.cambio_lado.r_resid_relabelado": {
+   "r": 0.1865,
+   "ic95": [
+    -0.2079,
+    0.3881
+   ],
+   "ic_expediente": [
+    -0.1594,
+    0.3539
+   ],
+   "ic_legislador": [
+    -0.2079,
+    0.3881
+   ],
+   "razon_anchos_exp_sobre_leg": 0.8612
+  },
+  "2015-12-10|n>=20.ambiguo.r_rho": {
+   "r": -0.2434,
+   "ic95": [
+    -0.5497,
+    0.1144
+   ],
+   "ic_expediente": [
+    -0.5015,
+    0.157
+   ],
+   "ic_legislador": [
+    -0.5497,
+    0.1144
+   ],
+   "razon_anchos_exp_sobre_leg": 0.9917
+  },
+  "2015-12-10|n>=20.ambiguo.r_rho_heredado": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "2015-12-10|n>=20.ambiguo.r_resid_crudo": {
+   "r": 0.0302,
+   "ic95": [
+    -0.2191,
+    0.2789
+   ],
+   "ic_expediente": [
+    -0.1579,
+    0.2269
+   ],
+   "ic_legislador": [
+    -0.2191,
+    0.2789
+   ],
+   "razon_anchos_exp_sobre_leg": 0.7728
+  },
+  "2015-12-10|n>=20.ambiguo.r_resid_relabelado": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "2015-12-10|n>=20.crudo_todos.r_rho": {
+   "r": -0.5758,
+   "ic95": [
+    -0.6856,
+    -0.4336
+   ],
+   "ic_expediente": [
+    -0.608,
+    -0.4417
+   ],
+   "ic_legislador": [
+    -0.6856,
+    -0.4336
+   ],
+   "razon_anchos_exp_sobre_leg": 0.6595
+  },
+  "2015-12-10|n>=20.crudo_todos.r_rho_heredado": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "2015-12-10|n>=20.crudo_todos.r_resid_crudo": {
+   "r": -0.0186,
+   "ic95": [
+    -0.2152,
+    0.1609
+   ],
+   "ic_expediente": [
+    -0.1595,
+    0.1042
+   ],
+   "ic_legislador": [
+    -0.2152,
+    0.1609
+   ],
+   "razon_anchos_exp_sobre_leg": 0.7012
+  },
+  "2015-12-10|n>=20.crudo_todos.r_resid_relabelado": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "2015-12-10|n>=20.relabelado_todos_no_ambiguos.r_rho_heredado": {
+   "r": 0.8621,
+   "ic95": [
+    0.7469,
+    0.9437
+   ],
+   "ic_expediente": [
+    0.692,
+    0.8883
+   ],
+   "ic_legislador": [
+    0.7469,
+    0.9437
+   ],
+   "razon_anchos_exp_sobre_leg": 0.9972
+  },
+  "2019-12-10|n>=20.mismo_lado.r_rho": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "2019-12-10|n>=20.mismo_lado.r_rho_heredado": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "2019-12-10|n>=20.mismo_lado.r_resid_crudo": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "2019-12-10|n>=20.mismo_lado.r_resid_relabelado": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "2019-12-10|n>=20.cambio_lado.r_rho": {
+   "r": null,
+   "ic95": [
+    -0.4871,
+    0.6518
+   ],
+   "ic_expediente": [
+    -0.4871,
+    0.6518
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "2019-12-10|n>=20.cambio_lado.r_rho_heredado": {
+   "r": null,
+   "ic95": [
+    -0.6518,
+    0.4871
+   ],
+   "ic_expediente": [
+    -0.6518,
+    0.4871
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "2019-12-10|n>=20.cambio_lado.r_resid_crudo": {
+   "r": null,
+   "ic95": [
+    -0.3445,
+    0.642
+   ],
+   "ic_expediente": [
+    -0.3445,
+    0.642
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "2019-12-10|n>=20.cambio_lado.r_resid_relabelado": {
+   "r": null,
+   "ic95": [
+    -0.642,
+    0.3153
+   ],
+   "ic_expediente": [
+    -0.642,
+    0.3153
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "2019-12-10|n>=20.ambiguo.r_rho": {
+   "r": 0.414,
+   "ic95": [
+    -0.2514,
+    0.5841
+   ],
+   "ic_expediente": [
+    -0.2514,
+    0.5841
+   ],
+   "ic_legislador": [
+    0.284,
+    0.5684
+   ],
+   "razon_anchos_exp_sobre_leg": 2.9382
+  },
+  "2019-12-10|n>=20.ambiguo.r_rho_heredado": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "2019-12-10|n>=20.ambiguo.r_resid_crudo": {
+   "r": -0.0039,
+   "ic95": [
+    -0.31,
+    0.2847
+   ],
+   "ic_expediente": [
+    -0.31,
+    0.2847
+   ],
+   "ic_legislador": [
+    -0.2042,
+    0.188
+   ],
+   "razon_anchos_exp_sobre_leg": 1.5162
+  },
+  "2019-12-10|n>=20.ambiguo.r_resid_relabelado": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "2019-12-10|n>=20.crudo_todos.r_rho": {
+   "r": 0.4117,
+   "ic95": [
+    -0.2659,
+    0.5863
+   ],
+   "ic_expediente": [
+    -0.2659,
+    0.5863
+   ],
+   "ic_legislador": [
+    0.2778,
+    0.5662
+   ],
+   "razon_anchos_exp_sobre_leg": 2.9545
+  },
+  "2019-12-10|n>=20.crudo_todos.r_rho_heredado": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "2019-12-10|n>=20.crudo_todos.r_resid_crudo": {
+   "r": 0.0157,
+   "ic95": [
+    -0.2952,
+    0.2788
+   ],
+   "ic_expediente": [
+    -0.2952,
+    0.2788
+   ],
+   "ic_legislador": [
+    -0.1697,
+    0.2034
+   ],
+   "razon_anchos_exp_sobre_leg": 1.5385
+  },
+  "2019-12-10|n>=20.crudo_todos.r_resid_relabelado": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "2019-12-10|n>=20.relabelado_todos_no_ambiguos.r_rho_heredado": {
+   "r": null,
+   "ic95": [
+    -0.6518,
+    0.4799
+   ],
+   "ic_expediente": [
+    -0.6518,
+    0.4799
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "2023-12-10|n>=20.mismo_lado.r_rho": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "2023-12-10|n>=20.mismo_lado.r_rho_heredado": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "2023-12-10|n>=20.mismo_lado.r_resid_crudo": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "2023-12-10|n>=20.mismo_lado.r_resid_relabelado": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "2023-12-10|n>=20.cambio_lado.r_rho": {
+   "r": null,
+   "ic95": [
+    -0.846,
+    0.5565
+   ],
+   "ic_expediente": [
+    -0.846,
+    0.5565
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "2023-12-10|n>=20.cambio_lado.r_rho_heredado": {
+   "r": null,
+   "ic95": [
+    -0.5565,
+    0.846
+   ],
+   "ic_expediente": [
+    -0.5565,
+    0.846
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "2023-12-10|n>=20.cambio_lado.r_resid_crudo": {
+   "r": null,
+   "ic95": [
+    -0.6246,
+    0.5828
+   ],
+   "ic_expediente": [
+    -0.6246,
+    0.5828
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "2023-12-10|n>=20.cambio_lado.r_resid_relabelado": {
+   "r": null,
+   "ic95": [
+    -0.5828,
+    0.6246
+   ],
+   "ic_expediente": [
+    -0.5828,
+    0.6246
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "2023-12-10|n>=20.ambiguo.r_rho": {
+   "r": 0.3018,
+   "ic95": [
+    -0.6798,
+    0.736
+   ],
+   "ic_expediente": [
+    -0.6798,
+    0.736
+   ],
+   "ic_legislador": [
+    0.0585,
+    0.5608
+   ],
+   "razon_anchos_exp_sobre_leg": 2.819
+  },
+  "2023-12-10|n>=20.ambiguo.r_rho_heredado": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "2023-12-10|n>=20.ambiguo.r_resid_crudo": {
+   "r": -0.1181,
+   "ic95": [
+    -0.5291,
+    0.5411
+   ],
+   "ic_expediente": [
+    -0.5291,
+    0.5411
+   ],
+   "ic_legislador": [
+    -0.4509,
+    0.3534
+   ],
+   "razon_anchos_exp_sobre_leg": 1.3306
+  },
+  "2023-12-10|n>=20.ambiguo.r_resid_relabelado": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "2023-12-10|n>=20.crudo_todos.r_rho": {
+   "r": 0.2972,
+   "ic95": [
+    -0.6648,
+    0.7473
+   ],
+   "ic_expediente": [
+    -0.6648,
+    0.7473
+   ],
+   "ic_legislador": [
+    0.0819,
+    0.5932
+   ],
+   "razon_anchos_exp_sobre_leg": 2.7617
+  },
+  "2023-12-10|n>=20.crudo_todos.r_rho_heredado": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "2023-12-10|n>=20.crudo_todos.r_resid_crudo": {
+   "r": -0.1245,
+   "ic95": [
+    -0.4352,
+    0.462
+   ],
+   "ic_expediente": [
+    -0.4352,
+    0.462
+   ],
+   "ic_legislador": [
+    -0.4193,
+    0.2937
+   ],
+   "razon_anchos_exp_sobre_leg": 1.2584
+  },
+  "2023-12-10|n>=20.crudo_todos.r_resid_relabelado": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "2023-12-10|n>=20.relabelado_todos_no_ambiguos.r_rho_heredado": {
+   "r": null,
+   "ic95": [
+    -0.5565,
+    0.846
+   ],
+   "ic_expediente": [
+    -0.5565,
+    0.846
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "camara=diputados|pooled|n>=5.mismo_lado.r_rho": {
+   "r": 0.4241,
+   "ic95": [
+    -0.0123,
+    0.8023
+   ],
+   "ic_expediente": [
+    -0.0123,
+    0.8023
+   ],
+   "ic_legislador": [
+    0.1619,
+    0.6464
+   ],
+   "razon_anchos_exp_sobre_leg": 1.681
+  },
+  "camara=diputados|pooled|n>=5.mismo_lado.r_rho_heredado": {
+   "r": 0.4241,
+   "ic95": [
+    -0.0123,
+    0.8023
+   ],
+   "ic_expediente": [
+    -0.0123,
+    0.8023
+   ],
+   "ic_legislador": [
+    0.1619,
+    0.6464
+   ],
+   "razon_anchos_exp_sobre_leg": 1.681
+  },
+  "camara=diputados|pooled|n>=5.mismo_lado.r_resid_crudo": {
+   "r": 0.0539,
+   "ic95": [
+    -0.3296,
+    0.3854
+   ],
+   "ic_expediente": [
+    -0.3296,
+    0.3854
+   ],
+   "ic_legislador": [
+    -0.1075,
+    0.2327
+   ],
+   "razon_anchos_exp_sobre_leg": 2.1012
+  },
+  "camara=diputados|pooled|n>=5.mismo_lado.r_resid_relabelado": {
+   "r": -0.1216,
+   "ic95": [
+    -0.4288,
+    0.2407
+   ],
+   "ic_expediente": [
+    -0.4288,
+    0.2407
+   ],
+   "ic_legislador": [
+    -0.2905,
+    0.0801
+   ],
+   "razon_anchos_exp_sobre_leg": 1.8064
+  },
+  "camara=diputados|pooled|n>=5.cambio_lado.r_rho": {
+   "r": -0.6193,
+   "ic95": [
+    -0.8843,
+    -0.2627
+   ],
+   "ic_expediente": [
+    -0.8843,
+    -0.2627
+   ],
+   "ic_legislador": [
+    -0.6737,
+    -0.555
+   ],
+   "razon_anchos_exp_sobre_leg": 5.2354
+  },
+  "camara=diputados|pooled|n>=5.cambio_lado.r_rho_heredado": {
+   "r": 0.6193,
+   "ic95": [
+    0.2627,
+    0.8843
+   ],
+   "ic_expediente": [
+    0.2627,
+    0.8843
+   ],
+   "ic_legislador": [
+    0.555,
+    0.6737
+   ],
+   "razon_anchos_exp_sobre_leg": 5.2354
+  },
+  "camara=diputados|pooled|n>=5.cambio_lado.r_resid_crudo": {
+   "r": -0.2059,
+   "ic95": [
+    -0.4037,
+    -0.0003
+   ],
+   "ic_expediente": [
+    -0.4037,
+    -0.0003
+   ],
+   "ic_legislador": [
+    -0.3857,
+    0.002
+   ],
+   "razon_anchos_exp_sobre_leg": 1.0405
+  },
+  "camara=diputados|pooled|n>=5.cambio_lado.r_resid_relabelado": {
+   "r": -0.0563,
+   "ic95": [
+    -0.1846,
+    0.2646
+   ],
+   "ic_expediente": [
+    -0.1846,
+    0.2646
+   ],
+   "ic_legislador": [
+    -0.2222,
+    0.1364
+   ],
+   "razon_anchos_exp_sobre_leg": 1.2526
+  },
+  "camara=diputados|pooled|n>=5.ambiguo.r_rho": {
+   "r": -0.0095,
+   "ic95": [
+    -0.4679,
+    0.3602
+   ],
+   "ic_expediente": [
+    -0.4679,
+    0.3602
+   ],
+   "ic_legislador": [
+    -0.3287,
+    0.3351
+   ],
+   "razon_anchos_exp_sobre_leg": 1.2476
+  },
+  "camara=diputados|pooled|n>=5.ambiguo.r_rho_heredado": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "camara=diputados|pooled|n>=5.ambiguo.r_resid_crudo": {
+   "r": -0.0377,
+   "ic95": [
+    -0.2924,
+    0.2321
+   ],
+   "ic_expediente": [
+    -0.2153,
+    0.2044
+   ],
+   "ic_legislador": [
+    -0.2924,
+    0.2321
+   ],
+   "razon_anchos_exp_sobre_leg": 0.8001
+  },
+  "camara=diputados|pooled|n>=5.ambiguo.r_resid_relabelado": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "camara=diputados|pooled|n>=5.crudo_todos.r_rho": {
+   "r": -0.4659,
+   "ic95": [
+    -0.6189,
+    -0.1208
+   ],
+   "ic_expediente": [
+    -0.6189,
+    -0.1208
+   ],
+   "ic_legislador": [
+    -0.5306,
+    -0.3955
+   ],
+   "razon_anchos_exp_sobre_leg": 3.6856
+  },
+  "camara=diputados|pooled|n>=5.crudo_todos.r_rho_heredado": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "camara=diputados|pooled|n>=5.crudo_todos.r_resid_crudo": {
+   "r": -0.0659,
+   "ic95": [
+    -0.1978,
+    0.0474
+   ],
+   "ic_expediente": [
+    -0.1978,
+    0.0474
+   ],
+   "ic_legislador": [
+    -0.1884,
+    0.0368
+   ],
+   "razon_anchos_exp_sobre_leg": 1.0883
+  },
+  "camara=diputados|pooled|n>=5.crudo_todos.r_resid_relabelado": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "camara=diputados|pooled|n>=5.relabelado_todos_no_ambiguos.r_rho_heredado": {
+   "r": 0.5548,
+   "ic95": [
+    0.2773,
+    0.8547
+   ],
+   "ic_expediente": [
+    0.2773,
+    0.8547
+   ],
+   "ic_legislador": [
+    0.4921,
+    0.61
+   ],
+   "razon_anchos_exp_sobre_leg": 4.9003
+  },
+  "camara=senado|pooled|n>=5.mismo_lado.r_rho": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "camara=senado|pooled|n>=5.mismo_lado.r_rho_heredado": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "camara=senado|pooled|n>=5.mismo_lado.r_resid_crudo": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "camara=senado|pooled|n>=5.mismo_lado.r_resid_relabelado": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "camara=senado|pooled|n>=5.cambio_lado.r_rho": {
+   "r": -0.3589,
+   "ic95": [
+    -0.8301,
+    0.8013
+   ],
+   "ic_expediente": [
+    -0.7815,
+    0.5224
+   ],
+   "ic_legislador": [
+    -0.8301,
+    0.8013
+   ],
+   "razon_anchos_exp_sobre_leg": 0.7993
+  },
+  "camara=senado|pooled|n>=5.cambio_lado.r_rho_heredado": {
+   "r": 0.3589,
+   "ic95": [
+    -0.8013,
+    0.8301
+   ],
+   "ic_expediente": [
+    -0.5224,
+    0.7815
+   ],
+   "ic_legislador": [
+    -0.8013,
+    0.8301
+   ],
+   "razon_anchos_exp_sobre_leg": 0.7993
+  },
+  "camara=senado|pooled|n>=5.cambio_lado.r_resid_crudo": {
+   "r": -0.1317,
+   "ic95": [
+    -0.8351,
+    0.7407
+   ],
+   "ic_expediente": [
+    -0.5948,
+    0.594
+   ],
+   "ic_legislador": [
+    -0.8351,
+    0.7407
+   ],
+   "razon_anchos_exp_sobre_leg": 0.7544
+  },
+  "camara=senado|pooled|n>=5.cambio_lado.r_resid_relabelado": {
+   "r": 0.1317,
+   "ic95": [
+    -0.7407,
+    0.8351
+   ],
+   "ic_expediente": [
+    -0.594,
+    0.5948
+   ],
+   "ic_legislador": [
+    -0.7407,
+    0.8351
+   ],
+   "razon_anchos_exp_sobre_leg": 0.7544
+  },
+  "camara=senado|pooled|n>=5.ambiguo.r_rho": {
+   "r": -0.0658,
+   "ic95": [
+    -0.2217,
+    0.0943
+   ],
+   "ic_expediente": [
+    -0.2217,
+    0.0943
+   ],
+   "ic_legislador": [
+    -0.1853,
+    0.0619
+   ],
+   "razon_anchos_exp_sobre_leg": 1.2787
+  },
+  "camara=senado|pooled|n>=5.ambiguo.r_rho_heredado": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "camara=senado|pooled|n>=5.ambiguo.r_resid_crudo": {
+   "r": 0.0006,
+   "ic95": [
+    -0.0912,
+    0.1017
+   ],
+   "ic_expediente": [
+    -0.0912,
+    0.1017
+   ],
+   "ic_legislador": [
+    -0.088,
+    0.0909
+   ],
+   "razon_anchos_exp_sobre_leg": 1.078
+  },
+  "camara=senado|pooled|n>=5.ambiguo.r_resid_relabelado": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "camara=senado|pooled|n>=5.crudo_todos.r_rho": {
+   "r": -0.0905,
+   "ic95": [
+    -0.2433,
+    0.0411
+   ],
+   "ic_expediente": [
+    -0.2433,
+    0.0411
+   ],
+   "ic_legislador": [
+    -0.206,
+    0.0308
+   ],
+   "razon_anchos_exp_sobre_leg": 1.2011
+  },
+  "camara=senado|pooled|n>=5.crudo_todos.r_rho_heredado": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "camara=senado|pooled|n>=5.crudo_todos.r_resid_crudo": {
+   "r": 0.0111,
+   "ic95": [
+    -0.0845,
+    0.0818
+   ],
+   "ic_expediente": [
+    -0.0845,
+    0.0818
+   ],
+   "ic_legislador": [
+    -0.0704,
+    0.0929
+   ],
+   "razon_anchos_exp_sobre_leg": 1.0179
+  },
+  "camara=senado|pooled|n>=5.crudo_todos.r_resid_relabelado": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "camara=senado|pooled|n>=5.relabelado_todos_no_ambiguos.r_rho_heredado": {
+   "r": 0.3589,
+   "ic95": [
+    -0.8013,
+    0.8301
+   ],
+   "ic_expediente": [
+    -0.5224,
+    0.7815
+   ],
+   "ic_legislador": [
+    -0.8013,
+    0.8301
+   ],
+   "razon_anchos_exp_sobre_leg": 0.7993
+  },
+  "cambio_camara|pooled|n>=5.mismo_lado.r_rho": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "cambio_camara|pooled|n>=5.mismo_lado.r_rho_heredado": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "cambio_camara|pooled|n>=5.mismo_lado.r_resid_crudo": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "cambio_camara|pooled|n>=5.mismo_lado.r_resid_relabelado": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "cambio_camara|pooled|n>=5.cambio_lado.r_rho": {
+   "r": -0.4431,
+   "ic95": [
+    -1.0,
+    0.5577
+   ],
+   "ic_expediente": [
+    -0.7776,
+    0.0351
+   ],
+   "ic_legislador": [
+    -1.0,
+    0.5577
+   ],
+   "razon_anchos_exp_sobre_leg": 0.5218
+  },
+  "cambio_camara|pooled|n>=5.cambio_lado.r_rho_heredado": {
+   "r": 0.4431,
+   "ic95": [
+    -0.5577,
+    1.0
+   ],
+   "ic_expediente": [
+    -0.0351,
+    0.7776
+   ],
+   "ic_legislador": [
+    -0.5577,
+    1.0
+   ],
+   "razon_anchos_exp_sobre_leg": 0.5218
+  },
+  "cambio_camara|pooled|n>=5.cambio_lado.r_resid_crudo": {
+   "r": 0.3607,
+   "ic95": [
+    -0.3317,
+    0.9862
+   ],
+   "ic_expediente": [
+    -0.4015,
+    0.5845
+   ],
+   "ic_legislador": [
+    -0.3317,
+    0.9862
+   ],
+   "razon_anchos_exp_sobre_leg": 0.7482
+  },
+  "cambio_camara|pooled|n>=5.cambio_lado.r_resid_relabelado": {
+   "r": 0.1831,
+   "ic95": [
+    -0.6061,
+    0.9387
+   ],
+   "ic_expediente": [
+    -0.2228,
+    0.5292
+   ],
+   "ic_legislador": [
+    -0.6061,
+    0.9387
+   ],
+   "razon_anchos_exp_sobre_leg": 0.4868
+  },
+  "cambio_camara|pooled|n>=5.ambiguo.r_rho": {
+   "r": -0.1673,
+   "ic95": [
+    -0.2887,
+    0.0983
+   ],
+   "ic_expediente": [
+    -0.2887,
+    0.0983
+   ],
+   "ic_legislador": [
+    -0.3009,
+    -0.0229
+   ],
+   "razon_anchos_exp_sobre_leg": 1.3919
+  },
+  "cambio_camara|pooled|n>=5.ambiguo.r_rho_heredado": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "cambio_camara|pooled|n>=5.ambiguo.r_resid_crudo": {
+   "r": -0.0009,
+   "ic95": [
+    -0.1059,
+    0.1774
+   ],
+   "ic_expediente": [
+    -0.1018,
+    0.1087
+   ],
+   "ic_legislador": [
+    -0.1059,
+    0.1774
+   ],
+   "razon_anchos_exp_sobre_leg": 0.743
+  },
+  "cambio_camara|pooled|n>=5.ambiguo.r_resid_relabelado": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "cambio_camara|pooled|n>=5.crudo_todos.r_rho": {
+   "r": -0.1479,
+   "ic95": [
+    -0.3036,
+    0.0135
+   ],
+   "ic_expediente": [
+    -0.2676,
+    -0.0218
+   ],
+   "ic_legislador": [
+    -0.3036,
+    0.0135
+   ],
+   "razon_anchos_exp_sobre_leg": 0.7753
+  },
+  "cambio_camara|pooled|n>=5.crudo_todos.r_rho_heredado": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "cambio_camara|pooled|n>=5.crudo_todos.r_resid_crudo": {
+   "r": 0.0132,
+   "ic95": [
+    -0.0776,
+    0.1418
+   ],
+   "ic_expediente": [
+    -0.0878,
+    0.0953
+   ],
+   "ic_legislador": [
+    -0.0776,
+    0.1418
+   ],
+   "razon_anchos_exp_sobre_leg": 0.8347
+  },
+  "cambio_camara|pooled|n>=5.crudo_todos.r_resid_relabelado": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "cambio_camara|pooled|n>=5.relabelado_todos_no_ambiguos.r_rho_heredado": {
+   "r": 0.4874,
+   "ic95": [
+    -0.015,
+    0.9871
+   ],
+   "ic_expediente": [
+    0.1169,
+    0.8071
+   ],
+   "ic_legislador": [
+    -0.015,
+    0.9871
+   ],
+   "razon_anchos_exp_sobre_leg": 0.6888
+  },
+  "mismo_linaje|pooled|n>=5.mismo_lado.r_rho": {
+   "r": 0.5114,
+   "ic95": [
+    -0.7478,
+    0.6677
+   ],
+   "ic_expediente": [
+    -0.7478,
+    0.6677
+   ],
+   "ic_legislador": [
+    0.1527,
+    0.7597
+   ],
+   "razon_anchos_exp_sobre_leg": 2.3318
+  },
+  "mismo_linaje|pooled|n>=5.mismo_lado.r_rho_heredado": {
+   "r": 0.5114,
+   "ic95": [
+    -0.7478,
+    0.6677
+   ],
+   "ic_expediente": [
+    -0.7478,
+    0.6677
+   ],
+   "ic_legislador": [
+    0.1527,
+    0.7597
+   ],
+   "razon_anchos_exp_sobre_leg": 2.3318
+  },
+  "mismo_linaje|pooled|n>=5.mismo_lado.r_resid_crudo": {
+   "r": -0.0809,
+   "ic95": [
+    -0.6952,
+    0.5447
+   ],
+   "ic_expediente": [
+    -0.6952,
+    0.5447
+   ],
+   "ic_legislador": [
+    -0.6498,
+    0.3106
+   ],
+   "razon_anchos_exp_sobre_leg": 1.291
+  },
+  "mismo_linaje|pooled|n>=5.mismo_lado.r_resid_relabelado": {
+   "r": -0.1872,
+   "ic95": [
+    -0.6952,
+    0.5447
+   ],
+   "ic_expediente": [
+    -0.6952,
+    0.5447
+   ],
+   "ic_legislador": [
+    -0.5691,
+    0.2329
+   ],
+   "razon_anchos_exp_sobre_leg": 1.5461
+  },
+  "mismo_linaje|pooled|n>=5.cambio_lado.r_rho": {
+   "r": -0.5913,
+   "ic95": [
+    -0.8344,
+    -0.2497
+   ],
+   "ic_expediente": [
+    -0.8344,
+    -0.2497
+   ],
+   "ic_legislador": [
+    -0.6501,
+    -0.5261
+   ],
+   "razon_anchos_exp_sobre_leg": 4.7144
+  },
+  "mismo_linaje|pooled|n>=5.cambio_lado.r_rho_heredado": {
+   "r": 0.5913,
+   "ic95": [
+    0.2497,
+    0.8344
+   ],
+   "ic_expediente": [
+    0.2497,
+    0.8344
+   ],
+   "ic_legislador": [
+    0.5261,
+    0.6501
+   ],
+   "razon_anchos_exp_sobre_leg": 4.7144
+  },
+  "mismo_linaje|pooled|n>=5.cambio_lado.r_resid_crudo": {
+   "r": -0.3013,
+   "ic95": [
+    -0.3925,
+    -0.0353
+   ],
+   "ic_expediente": [
+    -0.3925,
+    -0.0353
+   ],
+   "ic_legislador": [
+    -0.4117,
+    -0.1637
+   ],
+   "razon_anchos_exp_sobre_leg": 1.4402
+  },
+  "mismo_linaje|pooled|n>=5.cambio_lado.r_resid_relabelado": {
+   "r": 0.0591,
+   "ic95": [
+    -0.1365,
+    0.2304
+   ],
+   "ic_expediente": [
+    -0.1365,
+    0.2304
+   ],
+   "ic_legislador": [
+    -0.0881,
+    0.2044
+   ],
+   "razon_anchos_exp_sobre_leg": 1.2544
+  },
+  "mismo_linaje|pooled|n>=5.ambiguo.r_rho": {
+   "r": -0.0007,
+   "ic95": [
+    -0.1678,
+    0.1597
+   ],
+   "ic_expediente": [
+    -0.1678,
+    0.1597
+   ],
+   "ic_legislador": [
+    -0.1093,
+    0.1386
+   ],
+   "razon_anchos_exp_sobre_leg": 1.3215
+  },
+  "mismo_linaje|pooled|n>=5.ambiguo.r_rho_heredado": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "mismo_linaje|pooled|n>=5.ambiguo.r_resid_crudo": {
+   "r": -0.0639,
+   "ic95": [
+    -0.1959,
+    0.0436
+   ],
+   "ic_expediente": [
+    -0.1443,
+    0.056
+   ],
+   "ic_legislador": [
+    -0.1959,
+    0.0436
+   ],
+   "razon_anchos_exp_sobre_leg": 0.8366
+  },
+  "mismo_linaje|pooled|n>=5.ambiguo.r_resid_relabelado": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "mismo_linaje|pooled|n>=5.crudo_todos.r_rho": {
+   "r": -0.3411,
+   "ic95": [
+    -0.4639,
+    -0.0807
+   ],
+   "ic_expediente": [
+    -0.4639,
+    -0.0807
+   ],
+   "ic_legislador": [
+    -0.4011,
+    -0.2685
+   ],
+   "razon_anchos_exp_sobre_leg": 2.8901
+  },
+  "mismo_linaje|pooled|n>=5.crudo_todos.r_rho_heredado": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "mismo_linaje|pooled|n>=5.crudo_todos.r_resid_crudo": {
+   "r": -0.1628,
+   "ic95": [
+    -0.2089,
+    -0.0066
+   ],
+   "ic_expediente": [
+    -0.2089,
+    -0.0066
+   ],
+   "ic_legislador": [
+    -0.2426,
+    -0.0757
+   ],
+   "razon_anchos_exp_sobre_leg": 1.2125
+  },
+  "mismo_linaje|pooled|n>=5.crudo_todos.r_resid_relabelado": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "mismo_linaje|pooled|n>=5.relabelado_todos_no_ambiguos.r_rho_heredado": {
+   "r": 0.563,
+   "ic95": [
+    0.308,
+    0.7966
+   ],
+   "ic_expediente": [
+    0.308,
+    0.7966
+   ],
+   "ic_legislador": [
+    0.4951,
+    0.6199
+   ],
+   "razon_anchos_exp_sobre_leg": 3.914
+  },
+  "cambio_linaje|pooled|n>=5.mismo_lado.r_rho": {
+   "r": -0.1231,
+   "ic95": [
+    -0.3323,
+    0.7665
+   ],
+   "ic_expediente": [
+    -0.3323,
+    0.7665
+   ],
+   "ic_legislador": [
+    -0.4454,
+    0.1224
+   ],
+   "razon_anchos_exp_sobre_leg": 1.9351
+  },
+  "cambio_linaje|pooled|n>=5.mismo_lado.r_rho_heredado": {
+   "r": -0.1231,
+   "ic95": [
+    -0.3323,
+    0.7665
+   ],
+   "ic_expediente": [
+    -0.3323,
+    0.7665
+   ],
+   "ic_legislador": [
+    -0.4454,
+    0.1224
+   ],
+   "razon_anchos_exp_sobre_leg": 1.9351
+  },
+  "cambio_linaje|pooled|n>=5.mismo_lado.r_resid_crudo": {
+   "r": -0.0733,
+   "ic95": [
+    -0.6663,
+    0.5624
+   ],
+   "ic_expediente": [
+    -0.6663,
+    0.5624
+   ],
+   "ic_legislador": [
+    -0.323,
+    0.3387
+   ],
+   "razon_anchos_exp_sobre_leg": 1.8568
+  },
+  "cambio_linaje|pooled|n>=5.mismo_lado.r_resid_relabelado": {
+   "r": -0.0733,
+   "ic95": [
+    -0.6663,
+    0.5624
+   ],
+   "ic_expediente": [
+    -0.6663,
+    0.5624
+   ],
+   "ic_legislador": [
+    -0.323,
+    0.3387
+   ],
+   "razon_anchos_exp_sobre_leg": 1.8568
+  },
+  "cambio_linaje|pooled|n>=5.cambio_lado.r_rho": {
+   "r": 0.111,
+   "ic95": [
+    -0.7318,
+    0.7502
+   ],
+   "ic_expediente": [
+    -0.8524,
+    0.5831
+   ],
+   "ic_legislador": [
+    -0.7318,
+    0.7502
+   ],
+   "razon_anchos_exp_sobre_leg": 0.9687
+  },
+  "cambio_linaje|pooled|n>=5.cambio_lado.r_rho_heredado": {
+   "r": -0.111,
+   "ic95": [
+    -0.7502,
+    0.7318
+   ],
+   "ic_expediente": [
+    -0.5831,
+    0.8524
+   ],
+   "ic_legislador": [
+    -0.7502,
+    0.7318
+   ],
+   "razon_anchos_exp_sobre_leg": 0.9687
+  },
+  "cambio_linaje|pooled|n>=5.cambio_lado.r_resid_crudo": {
+   "r": 0.3923,
+   "ic95": [
+    -0.39,
+    0.7239
+   ],
+   "ic_expediente": [
+    -0.39,
+    0.7239
+   ],
+   "ic_legislador": [
+    -0.177,
+    0.8912
+   ],
+   "razon_anchos_exp_sobre_leg": 1.0428
+  },
+  "cambio_linaje|pooled|n>=5.cambio_lado.r_resid_relabelado": {
+   "r": -0.3923,
+   "ic95": [
+    -0.7239,
+    0.39
+   ],
+   "ic_expediente": [
+    -0.7239,
+    0.39
+   ],
+   "ic_legislador": [
+    -0.8912,
+    0.177
+   ],
+   "razon_anchos_exp_sobre_leg": 1.0428
+  },
+  "cambio_linaje|pooled|n>=5.ambiguo.r_rho": {
+   "r": -0.3838,
+   "ic95": [
+    -0.6197,
+    -0.0534
+   ],
+   "ic_expediente": [
+    -0.4588,
+    0.0077
+   ],
+   "ic_legislador": [
+    -0.6197,
+    -0.0534
+   ],
+   "razon_anchos_exp_sobre_leg": 0.8238
+  },
+  "cambio_linaje|pooled|n>=5.ambiguo.r_rho_heredado": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "cambio_linaje|pooled|n>=5.ambiguo.r_resid_crudo": {
+   "r": -0.144,
+   "ic95": [
+    -0.2268,
+    0.2091
+   ],
+   "ic_expediente": [
+    -0.2268,
+    0.2091
+   ],
+   "ic_legislador": [
+    -0.3596,
+    0.0706
+   ],
+   "razon_anchos_exp_sobre_leg": 1.0131
+  },
+  "cambio_linaje|pooled|n>=5.ambiguo.r_resid_relabelado": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "cambio_linaje|pooled|n>=5.crudo_todos.r_rho": {
+   "r": -0.3693,
+   "ic95": [
+    -0.5351,
+    -0.228
+   ],
+   "ic_expediente": [
+    -0.447,
+    -0.1461
+   ],
+   "ic_legislador": [
+    -0.5351,
+    -0.228
+   ],
+   "razon_anchos_exp_sobre_leg": 0.9794
+  },
+  "cambio_linaje|pooled|n>=5.crudo_todos.r_rho_heredado": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "cambio_linaje|pooled|n>=5.crudo_todos.r_resid_crudo": {
+   "r": 0.141,
+   "ic95": [
+    -0.0932,
+    0.3792
+   ],
+   "ic_expediente": [
+    -0.1051,
+    0.1957
+   ],
+   "ic_legislador": [
+    -0.0932,
+    0.3792
+   ],
+   "razon_anchos_exp_sobre_leg": 0.6366
+  },
+  "cambio_linaje|pooled|n>=5.crudo_todos.r_resid_relabelado": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "cambio_linaje|pooled|n>=5.relabelado_todos_no_ambiguos.r_rho_heredado": {
+   "r": 0.2478,
+   "ic95": [
+    -0.032,
+    0.8197
+   ],
+   "ic_expediente": [
+    -0.032,
+    0.8197
+   ],
+   "ic_legislador": [
+    0.0242,
+    0.4991
+   ],
+   "razon_anchos_exp_sobre_leg": 1.7932
+  },
+  "sin_OTRO_PROVINCIAL|pooled|n>=5.mismo_lado.r_rho": {
+   "r": 0.6734,
+   "ic95": [
+    -0.2016,
+    0.8507
+   ],
+   "ic_expediente": [
+    -0.2016,
+    0.8507
+   ],
+   "ic_legislador": [
+    0.52,
+    0.8052
+   ],
+   "razon_anchos_exp_sobre_leg": 3.6899
+  },
+  "sin_OTRO_PROVINCIAL|pooled|n>=5.mismo_lado.r_rho_heredado": {
+   "r": 0.6734,
+   "ic95": [
+    -0.2016,
+    0.8507
+   ],
+   "ic_expediente": [
+    -0.2016,
+    0.8507
+   ],
+   "ic_legislador": [
+    0.52,
+    0.8052
+   ],
+   "razon_anchos_exp_sobre_leg": 3.6899
+  },
+  "sin_OTRO_PROVINCIAL|pooled|n>=5.mismo_lado.r_resid_crudo": {
+   "r": 0.0712,
+   "ic95": [
+    -0.4858,
+    0.5204
+   ],
+   "ic_expediente": [
+    -0.4858,
+    0.5204
+   ],
+   "ic_legislador": [
+    -0.1873,
+    0.4136
+   ],
+   "razon_anchos_exp_sobre_leg": 1.6743
+  },
+  "sin_OTRO_PROVINCIAL|pooled|n>=5.mismo_lado.r_resid_relabelado": {
+   "r": -0.1512,
+   "ic95": [
+    -0.4838,
+    0.5367
+   ],
+   "ic_expediente": [
+    -0.4838,
+    0.5367
+   ],
+   "ic_legislador": [
+    -0.4158,
+    0.2859
+   ],
+   "razon_anchos_exp_sobre_leg": 1.4543
+  },
+  "sin_OTRO_PROVINCIAL|pooled|n>=5.cambio_lado.r_rho": {
+   "r": -0.5985,
+   "ic95": [
+    -0.8348,
+    -0.2658
+   ],
+   "ic_expediente": [
+    -0.8348,
+    -0.2658
+   ],
+   "ic_legislador": [
+    -0.654,
+    -0.5353
+   ],
+   "razon_anchos_exp_sobre_leg": 4.7942
+  },
+  "sin_OTRO_PROVINCIAL|pooled|n>=5.cambio_lado.r_rho_heredado": {
+   "r": 0.5985,
+   "ic95": [
+    0.2658,
+    0.8348
+   ],
+   "ic_expediente": [
+    0.2658,
+    0.8348
+   ],
+   "ic_legislador": [
+    0.5353,
+    0.654
+   ],
+   "razon_anchos_exp_sobre_leg": 4.7942
+  },
+  "sin_OTRO_PROVINCIAL|pooled|n>=5.cambio_lado.r_resid_crudo": {
+   "r": -0.302,
+   "ic95": [
+    -0.3941,
+    -0.0417
+   ],
+   "ic_expediente": [
+    -0.3941,
+    -0.0417
+   ],
+   "ic_legislador": [
+    -0.4103,
+    -0.1662
+   ],
+   "razon_anchos_exp_sobre_leg": 1.4435
+  },
+  "sin_OTRO_PROVINCIAL|pooled|n>=5.cambio_lado.r_resid_relabelado": {
+   "r": 0.0725,
+   "ic95": [
+    -0.1353,
+    0.2372
+   ],
+   "ic_expediente": [
+    -0.1353,
+    0.2372
+   ],
+   "ic_legislador": [
+    -0.0643,
+    0.217
+   ],
+   "razon_anchos_exp_sobre_leg": 1.324
+  },
+  "sin_OTRO_PROVINCIAL|pooled|n>=5.ambiguo.r_rho": {
+   "r": -0.0237,
+   "ic95": [
+    -0.1997,
+    0.1672
+   ],
+   "ic_expediente": [
+    -0.1997,
+    0.1672
+   ],
+   "ic_legislador": [
+    -0.1425,
+    0.135
+   ],
+   "razon_anchos_exp_sobre_leg": 1.3219
+  },
+  "sin_OTRO_PROVINCIAL|pooled|n>=5.ambiguo.r_rho_heredado": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "sin_OTRO_PROVINCIAL|pooled|n>=5.ambiguo.r_resid_crudo": {
+   "r": 0.0026,
+   "ic95": [
+    -0.0665,
+    0.1386
+   ],
+   "ic_expediente": [
+    -0.0665,
+    0.1386
+   ],
+   "ic_legislador": [
+    -0.0754,
+    0.0812
+   ],
+   "razon_anchos_exp_sobre_leg": 1.3097
+  },
+  "sin_OTRO_PROVINCIAL|pooled|n>=5.ambiguo.r_resid_relabelado": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "sin_OTRO_PROVINCIAL|pooled|n>=5.crudo_todos.r_rho": {
+   "r": -0.3618,
+   "ic95": [
+    -0.4845,
+    -0.1064
+   ],
+   "ic_expediente": [
+    -0.4845,
+    -0.1064
+   ],
+   "ic_legislador": [
+    -0.4185,
+    -0.2843
+   ],
+   "razon_anchos_exp_sobre_leg": 2.8172
+  },
+  "sin_OTRO_PROVINCIAL|pooled|n>=5.crudo_todos.r_rho_heredado": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "sin_OTRO_PROVINCIAL|pooled|n>=5.crudo_todos.r_resid_crudo": {
+   "r": -0.1487,
+   "ic95": [
+    -0.1906,
+    0.0114
+   ],
+   "ic_expediente": [
+    -0.1906,
+    0.0114
+   ],
+   "ic_legislador": [
+    -0.2282,
+    -0.0593
+   ],
+   "razon_anchos_exp_sobre_leg": 1.1964
+  },
+  "sin_OTRO_PROVINCIAL|pooled|n>=5.crudo_todos.r_resid_relabelado": {
+   "r": null,
+   "ic95": [
+    null,
+    null
+   ],
+   "ic_expediente": [
+    null,
+    null
+   ],
+   "ic_legislador": [
+    null,
+    null
+   ],
+   "razon_anchos_exp_sobre_leg": null
+  },
+  "sin_OTRO_PROVINCIAL|pooled|n>=5.relabelado_todos_no_ambiguos.r_rho_heredado": {
+   "r": 0.568,
+   "ic95": [
+    0.3174,
+    0.7917
+   ],
+   "ic_expediente": [
+    0.3174,
+    0.7917
+   ],
+   "ic_legislador": [
+    0.498,
+    0.622
+   ],
+   "razon_anchos_exp_sobre_leg": 3.8273
+  }
+ }
+}

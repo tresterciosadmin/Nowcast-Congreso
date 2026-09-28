@@ -326,7 +326,8 @@ def cargar_confianza_por_area(repo: Path = REPO) -> dict:
 
 def correr(camara_filtro: str = "", muestra: int = 0, seed: int = 7,
            desde: str = "", guard_era: str = GUARD_ERA_DEFAULT,
-           combinar_temas: str = "primaria", devolver_detalle: bool = False):
+           combinar_temas: str = "primaria", devolver_detalle: bool = False,
+           hasta: str = ""):
     """`combinar_temas` (PASO 2 de coordinacion/PROMPT-MULTIETIQUETA.md, Parte A;
     FASE 0 de PROMPT-MULTITEMA-V2.md agrega 'sin_tema' y 'ponderada_logit'):
 
@@ -394,6 +395,10 @@ def correr(camara_filtro: str = "", muestra: int = 0, seed: int = 7,
     if desde:
         piso = max(piso, pd.Timestamp(desde))
     actas = actas[actas["fecha"] >= piso]
+    # `hasta` (exclusivo) sólo recorta QUÉ actas se evalúan: el récord ya se calculó
+    # sobre toda la historia, así que partir el censo por fechas da el mismo detalle.
+    if hasta:
+        actas = actas[actas["fecha"] < pd.Timestamp(hasta)]
     if muestra:
         actas = actas.sample(min(muestra, len(actas)), random_state=seed).sort_values("fecha")
     logger.info("actas a evaluar: %d", len(actas))
@@ -476,6 +481,9 @@ def correr(camara_filtro: str = "", muestra: int = 0, seed: int = 7,
                 "y": r.af,
                 "fuente": ("record" if (not pd.isna(r.record)
                                         and r.n_prev >= MIN_HIST_INDIVIDUAL) else "bloque"),
+                # insumos de `p`, para recomputar brazos sin re-proyectar la postura
+                "share": p["_share_afirm"], "desvio": p["desvio"],
+                "record": r.record, "n_prev": r.n_prev, "origen": origen,
             })
 
     d = pd.DataFrame(filas)

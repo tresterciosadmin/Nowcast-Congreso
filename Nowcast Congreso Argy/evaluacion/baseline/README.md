@@ -15,6 +15,9 @@
 - contra que se compara un modelo nuevo
 - cuanto pierde el record individual en cada era, y cuanto lo arregla el guard
 - validar las reglas de combinacion de temas (ADR-0024) contra el historico real: `--combinar-temas {primaria,union,ponderada}`, default `primaria` (de siempre)
+- el record por ORIGEN (Ejecutivo vs oposicion) entre gobiernos, relabelado por lado (ADR-0033): `record_por_origen.py` (persistencia) y `record_por_origen_brazos.py` (brazos del record sobre el censo, `--historia estricta` sin votos del mismo dia)
+- correr el censo en minutos y guardar el detalle voto a voto con share y desvio del linaje: `censo_detalle_paralelo.py`
+- la fuga del mismo dia en el record walk-forward (ADR-0033: 0,161 -> 0,092)
 
 <!-- Las dos cosas de arriba las levanta `.mapa/indexar.py` al MAPA.md de la
      raiz: el `Resumen:` va a la columna "Que es" y las pistas al router

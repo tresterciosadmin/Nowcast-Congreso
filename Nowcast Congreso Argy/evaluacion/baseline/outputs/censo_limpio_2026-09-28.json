@@ -1,0 +1,1020 @@
+{
+ "censo": "evaluacion/baseline/outputs/censo_detalle_2026-09-28.parquet",
+ "n_votos": 691845,
+ "n_actas": 5856,
+ "n_leyes": 3731,
+ "frac_votos_sin_ley": 0.1532,
+ "publicado_nuevo": {
+  "columna": "p__estricta__general",
+  "global": {
+   "n": 691845,
+   "tasa_base": 0.7992,
+   "brier": 0.1391,
+   "brier_climatologia": 0.1605,
+   "skill": 0.1333,
+   "logloss": 0.52393,
+   "accuracy": 0.8096,
+   "skill_ic95_ley": [
+    0.0574,
+    0.1979
+   ],
+   "n_leyes": 3731
+  },
+  "calibracion": [
+   {
+    "bin": 0,
+    "n": 9265,
+    "pred": 0.0514,
+    "real": 0.2805
+   },
+   {
+    "bin": 1,
+    "n": 12741,
+    "pred": 0.1535,
+    "real": 0.3665
+   },
+   {
+    "bin": 2,
+    "n": 20625,
+    "pred": 0.257,
+    "real": 0.4096
+   },
+   {
+    "bin": 3,
+    "n": 21179,
+    "pred": 0.3463,
+    "real": 0.4762
+   },
+   {
+    "bin": 4,
+    "n": 22694,
+    "pred": 0.4536,
+    "real": 0.6102
+   },
+   {
+    "bin": 5,
+    "n": 42529,
+    "pred": 0.552,
+    "real": 0.6665
+   },
+   {
+    "bin": 6,
+    "n": 45296,
+    "pred": 0.6493,
+    "real": 0.6883
+   },
+   {
+    "bin": 7,
+    "n": 73946,
+    "pred": 0.7534,
+    "real": 0.7282
+   },
+   {
+    "bin": 8,
+    "n": 97550,
+    "pred": 0.852,
+    "real": 0.8111
+   },
+   {
+    "bin": 9,
+    "n": 346020,
+    "pred": 0.9701,
+    "real": 0.927
+   }
+  ],
+  "por_camara": {
+   "diputados": {
+    "n": 531905,
+    "tasa_base": 0.7755,
+    "brier": 0.15213,
+    "brier_climatologia": 0.17408,
+    "skill": 0.1261,
+    "logloss": 0.57682,
+    "accuracy": 0.7888,
+    "skill_ic95_ley": [
+     0.051,
+     0.1958
+    ],
+    "n_leyes": 1915
+   },
+   "senado": {
+    "n": 159940,
+    "tasa_base": 0.8777,
+    "brier": 0.09576,
+    "brier_climatologia": 0.10732,
+    "skill": 0.1077,
+    "logloss": 0.34805,
+    "accuracy": 0.8786,
+    "skill_ic95_ley": [
+     0.0581,
+     0.1497
+    ],
+    "n_leyes": 2101
+   }
+  },
+  "por_fuente_direccion": {
+   "bloque": {
+    "n": 32312,
+    "tasa_base": 0.6853,
+    "brier": 0.29762,
+    "brier_climatologia": 0.21568,
+    "skill": -0.3799,
+    "logloss": 2.3844,
+    "accuracy": 0.6598,
+    "skill_ic95_ley": [
+     -0.6668,
+     0.1351
+    ],
+    "n_leyes": 936
+   },
+   "record": {
+    "n": 659533,
+    "tasa_base": 0.8047,
+    "brier": 0.13133,
+    "brier_climatologia": 0.15713,
+    "skill": 0.1642,
+    "logloss": 0.43278,
+    "accuracy": 0.8169,
+    "skill_ic95_ley": [
+     0.1095,
+     0.2204
+    ],
+    "n_leyes": 3705
+   }
+  },
+  "por_caracter_dictamen": {
+   "DISPUTADO": {
+    "n": 117288,
+    "tasa_base": 0.7121,
+    "brier": 0.1234,
+    "brier_climatologia": 0.20501,
+    "skill": 0.3981,
+    "logloss": 0.40662,
+    "accuracy": 0.8309
+   },
+   "UNICO": {
+    "n": 90906,
+    "tasa_base": 0.8866,
+    "brier": 0.14943,
+    "brier_climatologia": 0.10058,
+    "skill": -0.4858,
+    "logloss": 1.00462,
+    "accuracy": 0.8276
+   },
+   "mayoria": {
+    "n": 32140,
+    "tasa_base": 0.6602,
+    "brier": 0.13769,
+    "brier_climatologia": 0.22434,
+    "skill": 0.3862,
+    "logloss": 0.43125,
+    "accuracy": 0.8082
+   },
+   "solo_minoria": {
+    "n": 5972,
+    "tasa_base": 0.8342,
+    "brier": 0.09755,
+    "brier_climatologia": 0.13829,
+    "skill": 0.2946,
+    "logloss": 0.33878,
+    "accuracy": 0.8888
+   },
+   "nan": {
+    "n": 445539,
+    "tasa_base": 0.8138,
+    "brier": 0.14178,
+    "brier_climatologia": 0.15152,
+    "skill": 0.0643,
+    "logloss": 0.4659,
+    "accuracy": 0.7993
+   }
+  },
+  "por_era": {
+   "hasta 2011": {
+    "n": 318335,
+    "tasa_base": 0.8363,
+    "brier": 0.11867,
+    "brier_climatologia": 0.13689,
+    "skill": 0.1331,
+    "logloss": 0.39767,
+    "accuracy": 0.833,
+    "skill_ic95_ley": [
+     0.0708,
+     0.1897
+    ],
+    "n_leyes": 2017
+   },
+   "2011-2015": {
+    "n": 115967,
+    "tasa_base": 0.8345,
+    "brier": 0.09986,
+    "brier_climatologia": 0.13811,
+    "skill": 0.277,
+    "logloss": 0.32128,
+    "accuracy": 0.8565,
+    "skill_ic95_ley": [
+     0.1903,
+     0.3516
+    ],
+    "n_leyes": 679
+   },
+   "2015-2019": {
+    "n": 126454,
+    "tasa_base": 0.7826,
+    "brier": 0.15637,
+    "brier_climatologia": 0.17011,
+    "skill": 0.0808,
+    "logloss": 0.50838,
+    "accuracy": 0.787,
+    "skill_ic95_ley": [
+     -0.0435,
+     0.197
+    ],
+    "n_leyes": 505
+   },
+   "2019-2023": {
+    "n": 25755,
+    "tasa_base": 0.8155,
+    "brier": 0.14874,
+    "brier_climatologia": 0.15044,
+    "skill": 0.0113,
+    "logloss": 0.54059,
+    "accuracy": 0.801,
+    "skill_ic95_ley": [
+     -0.2027,
+     0.1063
+    ],
+    "n_leyes": 246
+   },
+   "desde 2023": {
+    "n": 105334,
+    "tasa_base": 0.6639,
+    "brier": 0.22093,
+    "brier_climatologia": 0.22315,
+    "skill": 0.01,
+    "logloss": 1.14321,
+    "accuracy": 0.7163,
+    "skill_ic95_ley": [
+     -0.2642,
+     0.246
+    ],
+    "n_leyes": 312
+   }
+  },
+  "margen": {
+   "n_actas": 5856,
+   "mae": 0.1381,
+   "sesgo_medio": -0.0069,
+   "p90_error_abs": 0.2678
+  },
+  "variante": "p__estricta__general"
+ },
+ "mismos_votos": {
+  "n_votos_nuevo": 691845,
+  "n_votos_viejo": 691893,
+  "n_en_comun": 691677,
+  "y_coincide": true
+ },
+ "descomposicion": {
+  "global": {
+   "n_votos": 691677,
+   "n_leyes": 3730,
+   "viejo_publicado": {
+    "skill": 0.1614,
+    "ic95_ley": [
+     0.0974,
+     0.2206
+    ]
+   },
+   "motor_dia_incluido__tema": {
+    "skill": 0.3546,
+    "ic95_ley": [
+     0.2945,
+     0.4167
+    ]
+   },
+   "motor_dia_incluido__general": {
+    "skill": 0.3257,
+    "ic95_ley": [
+     0.265,
+     0.3858
+    ]
+   },
+   "motor_fecha__tema": {
+    "skill": 0.1574,
+    "ic95_ley": [
+     0.0974,
+     0.2077
+    ]
+   },
+   "motor_estricta__tema": {
+    "skill": 0.1152,
+    "ic95_ley": [
+     0.0409,
+     0.1823
+    ]
+   },
+   "motor_estricta__general": {
+    "skill": 0.1335,
+    "ic95_ley": [
+     0.0647,
+     0.1984
+    ]
+   }
+  },
+  "era=hasta 2011": {
+   "n_votos": 318168,
+   "n_leyes": 2016,
+   "viejo_publicado": {
+    "skill": 0.1583,
+    "ic95_ley": [
+     0.0958,
+     0.2183
+    ]
+   },
+   "motor_dia_incluido__tema": {
+    "skill": 0.2511,
+    "ic95_ley": [
+     0.1801,
+     0.3206
+    ]
+   },
+   "motor_dia_incluido__general": {
+    "skill": 0.245,
+    "ic95_ley": [
+     0.1796,
+     0.3045
+    ]
+   },
+   "motor_fecha__tema": {
+    "skill": 0.0913,
+    "ic95_ley": [
+     0.0221,
+     0.1562
+    ]
+   },
+   "motor_estricta__tema": {
+    "skill": 0.0876,
+    "ic95_ley": [
+     0.0179,
+     0.151
+    ]
+   },
+   "motor_estricta__general": {
+    "skill": 0.1336,
+    "ic95_ley": [
+     0.0697,
+     0.1898
+    ]
+   }
+  },
+  "era=2011-2015": {
+   "n_votos": 115966,
+   "n_leyes": 679,
+   "viejo_publicado": {
+    "skill": 0.2194,
+    "ic95_ley": [
+     0.1488,
+     0.2628
+    ]
+   },
+   "motor_dia_incluido__tema": {
+    "skill": 0.4371,
+    "ic95_ley": [
+     0.3038,
+     0.5255
+    ]
+   },
+   "motor_dia_incluido__general": {
+    "skill": 0.3742,
+    "ic95_ley": [
+     0.2764,
+     0.4443
+    ]
+   },
+   "motor_fecha__tema": {
+    "skill": 0.2792,
+    "ic95_ley": [
+     0.1696,
+     0.3531
+    ]
+   },
+   "motor_estricta__tema": {
+    "skill": 0.2785,
+    "ic95_ley": [
+     0.1685,
+     0.3524
+    ]
+   },
+   "motor_estricta__general": {
+    "skill": 0.2769,
+    "ic95_ley": [
+     0.1903,
+     0.3516
+    ]
+   }
+  },
+  "era=2015-2019": {
+   "n_votos": 126454,
+   "n_leyes": 505,
+   "viejo_publicado": {
+    "skill": 0.1023,
+    "ic95_ley": [
+     -0.023,
+     0.2084
+    ]
+   },
+   "motor_dia_incluido__tema": {
+    "skill": 0.3643,
+    "ic95_ley": [
+     0.2519,
+     0.4517
+    ]
+   },
+   "motor_dia_incluido__general": {
+    "skill": 0.2903,
+    "ic95_ley": [
+     0.1623,
+     0.3897
+    ]
+   },
+   "motor_fecha__tema": {
+    "skill": 0.0882,
+    "ic95_ley": [
+     -0.0165,
+     0.1773
+    ]
+   },
+   "motor_estricta__tema": {
+    "skill": 0.0878,
+    "ic95_ley": [
+     -0.0172,
+     0.1773
+    ]
+   },
+   "motor_estricta__general": {
+    "skill": 0.0808,
+    "ic95_ley": [
+     -0.0435,
+     0.197
+    ]
+   }
+  },
+  "era=2019-2023": {
+   "n_votos": 25755,
+   "n_leyes": 246,
+   "viejo_publicado": {
+    "skill": 0.331,
+    "ic95_ley": [
+     -0.2689,
+     0.5254
+    ]
+   },
+   "motor_dia_incluido__tema": {
+    "skill": 0.5342,
+    "ic95_ley": [
+     0.0523,
+     0.7127
+    ]
+   },
+   "motor_dia_incluido__general": {
+    "skill": 0.4926,
+    "ic95_ley": [
+     -0.0379,
+     0.6895
+    ]
+   },
+   "motor_fecha__tema": {
+    "skill": 0.0143,
+    "ic95_ley": [
+     -0.1999,
+     0.1197
+    ]
+   },
+   "motor_estricta__tema": {
+    "skill": 0.0141,
+    "ic95_ley": [
+     -0.2003,
+     0.1189
+    ]
+   },
+   "motor_estricta__general": {
+    "skill": 0.0113,
+    "ic95_ley": [
+     -0.2027,
+     0.1063
+    ]
+   }
+  },
+  "era=desde 2023": {
+   "n_votos": 105334,
+   "n_leyes": 312,
+   "viejo_publicado": {
+    "skill": 0.0627,
+    "ic95_ley": [
+     -0.1833,
+     0.2543
+    ]
+   },
+   "motor_dia_incluido__tema": {
+    "skill": 0.3815,
+    "ic95_ley": [
+     0.1611,
+     0.5387
+    ]
+   },
+   "motor_dia_incluido__general": {
+    "skill": 0.3738,
+    "ic95_ley": [
+     0.1503,
+     0.5339
+    ]
+   },
+   "motor_fecha__tema": {
+    "skill": 0.1919,
+    "ic95_ley": [
+     -0.0109,
+     0.3141
+    ]
+   },
+   "motor_estricta__tema": {
+    "skill": 0.0004,
+    "ic95_ley": [
+     -0.2732,
+     0.2428
+    ]
+   },
+   "motor_estricta__general": {
+    "skill": 0.01,
+    "ic95_ley": [
+     -0.2642,
+     0.246
+    ]
+   }
+  },
+  "camara=diputados": {
+   "n_votos": 531742,
+   "n_leyes": 1914,
+   "viejo_publicado": {
+    "skill": 0.1579,
+    "ic95_ley": [
+     0.0817,
+     0.2259
+    ]
+   },
+   "motor_dia_incluido__tema": {
+    "skill": 0.3693,
+    "ic95_ley": [
+     0.3054,
+     0.4262
+    ]
+   },
+   "motor_dia_incluido__general": {
+    "skill": 0.3343,
+    "ic95_ley": [
+     0.2684,
+     0.3924
+    ]
+   },
+   "motor_fecha__tema": {
+    "skill": 0.1658,
+    "ic95_ley": [
+     0.1014,
+     0.2218
+    ]
+   },
+   "motor_estricta__tema": {
+    "skill": 0.1151,
+    "ic95_ley": [
+     0.0225,
+     0.1882
+    ]
+   },
+   "motor_estricta__general": {
+    "skill": 0.1263,
+    "ic95_ley": [
+     0.0369,
+     0.1965
+    ]
+   }
+  },
+  "camara=senado": {
+   "n_votos": 159935,
+   "n_leyes": 2101,
+   "viejo_publicado": {
+    "skill": 0.1181,
+    "ic95_ley": [
+     0.0871,
+     0.1435
+    ]
+   },
+   "motor_dia_incluido__tema": {
+    "skill": 0.2275,
+    "ic95_ley": [
+     0.1772,
+     0.277
+    ]
+   },
+   "motor_dia_incluido__general": {
+    "skill": 0.2289,
+    "ic95_ley": [
+     0.1767,
+     0.2698
+    ]
+   },
+   "motor_fecha__tema": {
+    "skill": 0.0487,
+    "ic95_ley": [
+     -0.0083,
+     0.0977
+    ]
+   },
+   "motor_estricta__tema": {
+    "skill": 0.0493,
+    "ic95_ley": [
+     -0.0075,
+     0.0996
+    ]
+   },
+   "motor_estricta__general": {
+    "skill": 0.1076,
+    "ic95_ley": [
+     0.0579,
+     0.1496
+    ]
+   }
+  }
+ },
+ "por_fuente_direccion_mismos_votos": {
+  "motor_dia_incluido__tema": {
+   "record": {
+    "n": 691677,
+    "tasa_base": 0.7992,
+    "brier": 0.10355,
+    "brier_climatologia": 0.16046,
+    "skill": 0.3546,
+    "logloss": 0.32931,
+    "accuracy": 0.855
+   }
+  },
+  "motor_dia_incluido__general": {
+   "record": {
+    "n": 691677,
+    "tasa_base": 0.7992,
+    "brier": 0.10819,
+    "brier_climatologia": 0.16046,
+    "skill": 0.3257,
+    "logloss": 0.3395,
+    "accuracy": 0.8449
+   }
+  },
+  "motor_fecha__tema": {
+   "bloque": {
+    "n": 20086,
+    "tasa_base": 0.7697,
+    "brier": 0.18561,
+    "brier_climatologia": 0.17727,
+    "skill": -0.0471,
+    "logloss": 0.63692,
+    "accuracy": 0.7281
+   },
+   "record": {
+    "n": 671591,
+    "tasa_base": 0.8001,
+    "brier": 0.1337,
+    "brier_climatologia": 0.15993,
+    "skill": 0.164,
+    "logloss": 0.43669,
+    "accuracy": 0.8131
+   }
+  },
+  "motor_estricta__tema": {
+   "bloque": {
+    "n": 32287,
+    "tasa_base": 0.6852,
+    "brier": 0.29773,
+    "brier_climatologia": 0.2157,
+    "skill": -0.3803,
+    "logloss": 2.38588,
+    "accuracy": 0.6596
+   },
+   "record": {
+    "n": 659390,
+    "tasa_base": 0.8048,
+    "brier": 0.13435,
+    "brier_climatologia": 0.15709,
+    "skill": 0.1447,
+    "logloss": 0.4397,
+    "accuracy": 0.8125
+   }
+  },
+  "motor_estricta__general": {
+   "bloque": {
+    "n": 32287,
+    "tasa_base": 0.6852,
+    "brier": 0.29769,
+    "brier_climatologia": 0.2157,
+    "skill": -0.3801,
+    "logloss": 2.38578,
+    "accuracy": 0.6598
+   },
+   "record": {
+    "n": 659390,
+    "tasa_base": 0.8048,
+    "brier": 0.13126,
+    "brier_climatologia": 0.15709,
+    "skill": 0.1644,
+    "logloss": 0.43181,
+    "accuracy": 0.817
+   }
+  }
+ },
+ "viejo_publicado_por_su_fuente": {
+  "n": 691677,
+  "tasa_base": 0.7992,
+  "brier": 0.13456,
+  "brier_climatologia": 0.16046,
+  "skill": 0.1614,
+  "logloss": 0.42574,
+  "accuracy": 0.8058,
+  "skill_ic95_ley": [
+   0.0974,
+   0.2206
+  ],
+  "n_leyes": 3730
+ },
+ "record_por_tema": {
+  "limpio (estricta)": {
+   "frac_votos_que_toca": 0.3914,
+   "global": {
+    "dBrier": 0.002948,
+    "dBrier_rel_%": 2.12,
+    "ic95_rel_%_ley": [
+     0.84,
+     3.48
+    ],
+    "n_votos": 691845,
+    "n_leyes": 3731,
+    "brier_general": 0.1391,
+    "brier_tema": 0.14205,
+    "mejora_relativa_%": -2.12
+   },
+   "toca": {
+    "dBrier": 0.007532,
+    "dBrier_rel_%": 6.36,
+    "ic95_rel_%_ley": [
+     2.86,
+     10.11
+    ],
+    "n_votos": 270765,
+    "n_leyes": 1453,
+    "brier_general": 0.1184,
+    "brier_tema": 0.12593,
+    "mejora_relativa_%": -6.36
+   },
+   "toca&camara=diputados": {
+    "dBrier": 0.004846,
+    "dBrier_rel_%": 3.82,
+    "ic95_rel_%_ley": [
+     0.16,
+     7.86
+    ],
+    "n_votos": 214347,
+    "n_leyes": 772,
+    "brier_general": 0.12682,
+    "brier_tema": 0.13166,
+    "mejora_relativa_%": -3.82
+   },
+   "toca&camara=senado": {
+    "dBrier": 0.017738,
+    "dBrier_rel_%": 20.52,
+    "ic95_rel_%_ley": [
+     14.63,
+     28.82
+    ],
+    "n_votos": 56418,
+    "n_leyes": 776,
+    "brier_general": 0.08642,
+    "brier_tema": 0.10416,
+    "mejora_relativa_%": -20.52
+   },
+   "toca&era=hasta 2011": {
+    "dBrier": 0.022116,
+    "dBrier_rel_%": 19.62,
+    "ic95_rel_%_ley": [
+     13.39,
+     26.15
+    ],
+    "n_votos": 90515,
+    "n_leyes": 670,
+    "brier_general": 0.11273,
+    "brier_tema": 0.13484,
+    "mejora_relativa_%": -19.62
+   },
+   "toca&era=2011-2015": {
+    "dBrier": -0.000346,
+    "dBrier_rel_%": -0.36,
+    "ic95_rel_%_ley": [
+     -7.41,
+     9.15
+    ],
+    "n_votos": 71380,
+    "n_leyes": 312,
+    "brier_general": 0.09692,
+    "brier_tema": 0.09657,
+    "mejora_relativa_%": 0.36
+   },
+   "toca&era=2015-2019": {
+    "dBrier": -0.001883,
+    "dBrier_rel_%": -1.26,
+    "ic95_rel_%_ley": [
+     -7.03,
+     4.56
+    ],
+    "n_votos": 80514,
+    "n_leyes": 239,
+    "brier_general": 0.14888,
+    "brier_tema": 0.14699,
+    "mejora_relativa_%": 1.26
+   },
+   "toca&era=2019-2023": {
+    "dBrier": -0.00096,
+    "dBrier_rel_%": -1.24,
+    "ic95_rel_%_ley": [
+     -5.06,
+     3.57
+    ],
+    "n_votos": 11353,
+    "n_leyes": 170,
+    "brier_general": 0.07716,
+    "brier_tema": 0.0762,
+    "mejora_relativa_%": 1.24
+   },
+   "toca&era=desde 2023": {
+    "dBrier": 0.013218,
+    "dBrier_rel_%": 10.83,
+    "ic95_rel_%_ley": [
+     1.22,
+     23.94
+    ],
+    "n_votos": 17003,
+    "n_leyes": 73,
+    "brier_general": 0.12201,
+    "brier_tema": 0.13523,
+    "mejora_relativa_%": -10.83
+   }
+  },
+  "con la fuga del motor (dia_incluido)": {
+   "frac_votos_que_toca": 0.4571,
+   "global": {
+    "dBrier": -0.004638,
+    "dBrier_rel_%": -4.29,
+    "ic95_rel_%_ley": [
+     -6.51,
+     -2.11
+    ],
+    "n_votos": 691845,
+    "n_leyes": 3731,
+    "brier_general": 0.10823,
+    "brier_tema": 0.10359,
+    "mejora_relativa_%": 4.29
+   },
+   "toca": {
+    "dBrier": -0.010147,
+    "dBrier_rel_%": -10.65,
+    "ic95_rel_%_ley": [
+     -14.89,
+     -6.41
+    ],
+    "n_votos": 316248,
+    "n_leyes": 1525,
+    "brier_general": 0.09526,
+    "brier_tema": 0.08511,
+    "mejora_relativa_%": 10.65
+   },
+   "toca&camara=diputados": {
+    "dBrier": -0.012695,
+    "dBrier_rel_%": -12.71,
+    "ic95_rel_%_ley": [
+     -17.01,
+     -8.09
+    ],
+    "n_votos": 254615,
+    "n_leyes": 807,
+    "brier_general": 0.09984,
+    "brier_tema": 0.08715,
+    "mejora_relativa_%": 12.71
+   },
+   "toca&camara=senado": {
+    "dBrier": 0.00038,
+    "dBrier_rel_%": 0.5,
+    "ic95_rel_%_ley": [
+     -5.04,
+     7.82
+    ],
+    "n_votos": 61633,
+    "n_leyes": 823,
+    "brier_general": 0.07632,
+    "brier_tema": 0.0767,
+    "mejora_relativa_%": -0.5
+   },
+   "toca&era=hasta 2011": {
+    "dBrier": -0.002739,
+    "dBrier_rel_%": -2.72,
+    "ic95_rel_%_ley": [
+     -9.96,
+     5.02
+    ],
+    "n_votos": 96841,
+    "n_leyes": 691,
+    "brier_general": 0.10072,
+    "brier_tema": 0.09799,
+    "mejora_relativa_%": 2.72
+   },
+   "toca&era=2011-2015": {
+    "dBrier": -0.013293,
+    "dBrier_rel_%": -16.67,
+    "ic95_rel_%_ley": [
+     -27.66,
+     -3.19
+    ],
+    "n_votos": 75679,
+    "n_leyes": 313,
+    "brier_general": 0.07976,
+    "brier_tema": 0.06647,
+    "mejora_relativa_%": 16.67
+   },
+   "toca&era=2015-2019": {
+    "dBrier": -0.017942,
+    "dBrier_rel_%": -16.23,
+    "ic95_rel_%_ley": [
+     -24.04,
+     -10.06
+    ],
+    "n_votos": 88836,
+    "n_leyes": 260,
+    "brier_general": 0.11054,
+    "brier_tema": 0.0926,
+    "mejora_relativa_%": 16.23
+   },
+   "toca&era=2019-2023": {
+    "dBrier": -0.011558,
+    "dBrier_rel_%": -15.06,
+    "ic95_rel_%_ley": [
+     -18.05,
+     -11.35
+    ],
+    "n_votos": 13941,
+    "n_leyes": 186,
+    "brier_general": 0.07674,
+    "brier_tema": 0.06518,
+    "mejora_relativa_%": 15.06
+   },
+   "toca&era=desde 2023": {
+    "dBrier": -0.00446,
+    "dBrier_rel_%": -5.3,
+    "ic95_rel_%_ley": [
+     -12.8,
+     3.22
+    ],
+    "n_votos": 40951,
+    "n_leyes": 88,
+    "brier_general": 0.08412,
+    "brier_tema": 0.07966,
+    "mejora_relativa_%": 5.3
+   }
+  }
+ },
+ "adr0018_reevaluado": {
+  "record_general": {
+   "motor (encoge, n>=1)": {
+    "skill": 0.1333,
+    "skill_desde_2023": 0.01
+   },
+   "corta sin encoger (n>=1)": {
+    "skill": 0.1088,
+    "skill_desde_2023": -0.0089,
+    "vs_motor": {
+     "dBrier": 0.003936,
+     "dBrier_rel_%": 2.83,
+     "ic95_rel_%_ley": [
+      1.81,
+      4.19
+     ]
+    }
+   },
+   "encoge, n>=8": {
+    "skill": 0.1288,
+    "skill_desde_2023": -0.006,
+    "vs_motor": {
+     "dBrier": 0.000723,
+     "dBrier_rel_%": 0.52,
+     "ic95_rel_%_ley": [
+      -0.01,
+      1.26
+     ]
+    }
+   }
+  }
+ }
+}

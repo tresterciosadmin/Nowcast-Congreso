@@ -122,10 +122,15 @@ for args in ((0.7, 0.1, 0.9, 12, True), (0.7, 0.1, 0.9, 12, False), (0.3, 0.2, N
     check(abs(H.perfil(s, dv, r, n, sh) - esp) < 1e-15, f"perfil{args} difiere del motor")
 
 print("1. contra nowcast() real, legislador por legislador")
+import logging  # noqa: E402
+logging.disable(logging.WARNING)
+ctx_r = None
 try:
-    import logging
-    logging.disable(logging.WARNING)
     ctx_r = H.Contexto.desde_repo()
+except Exception as e:  # noqa: BLE001 — sin datos reales (CI) se saltea; con datos, se compara
+    print(f"   SALTEADO (no pude cargar los datos reales: {type(e).__name__}: {e}) -- este es "
+          "el test que importa, correlo en la PC")
+if ctx_r is not None:
     v = ctx_r.votos
     em = v[v["conducta"].isin(["AFIRMATIVO", "NEGATIVO"])]
     a = em.drop_duplicates("acta_id")[["acta_id", "fecha", "camara"]]
@@ -134,33 +139,29 @@ try:
     a["ley"] = a["acta_id"].map(ctx_r.ley_de_acta)
     primera = v[v["camara"] == "diputados"].groupby("_ley")["fecha"].min()
     a = a[a["fecha"] == a["ley"].map(primera)].sort_values(["fecha", "acta_id"])
-    if a.empty:
-        raise LookupError("no encontré un acta EJECUTIVO que sea la primera de su ley")
-    x = a.iloc[len(a) // 2]
-    F = pd.Timestamp(x["fecha"])
-    print(f"   acta {x['acta_id']} ({F.date()}, ley {x['ley']})")
-    sub = em[em["acta_id"] == x["acta_id"]]
-    h = ctx_r.p_legisladores(x["acta_id"], "diputados", F, sub, "estricta", False)
-    nc = NP.nowcast("diputados", F, origen="EJECUTIVO", n_sims=50)
-    leg = {r["legislador_id"]: r for r in nc["camaras"]["origen"]["legisladores"]}
-    lin_voto = dict(zip(sub["legislador_id"], sub["bloque_linaje"]))
-    comparados, distintos = 0, []
-    for lid, (p, fuente, *_rest) in h.items():
-        r = leg.get(lid)
-        if r is None or r["n_emitidos"] < 1 or r["bloque"] != lin_voto.get(lid):
-            continue
-        comparados += 1
-        if abs(round(p, 4) - r["p_si_vota"]) > 1e-4 + 1e-9:
-            distintos.append((lid, round(p, 4), r["p_si_vota"]))
-    print(f"   comparados {comparados} legisladores; distintos {len(distintos)}")
-    check(comparados >= 100, f"muy pocos legisladores comparables ({comparados}): el test "
-          "no prueba nada")
-    check(not distintos, f"el harness y nowcast() difieren en {len(distintos)}: {distintos[:5]}")
-except (FileNotFoundError, LookupError, ImportError) as e:
-    print(f"   SALTEADO (sin datos reales: {e}) -- este es el test que importa, correlo en la PC")
-finally:
-    import logging
-    logging.disable(logging.NOTSET)
+    check(not a.empty, "no encontré un acta EJECUTIVO que sea la primera de su ley")
+    if not a.empty:
+        x = a.iloc[len(a) // 2]
+        F = pd.Timestamp(x["fecha"])
+        print(f"   acta {x['acta_id']} ({F.date()}, ley {x['ley']})")
+        sub = em[em["acta_id"] == x["acta_id"]]
+        h = ctx_r.p_legisladores(x["acta_id"], "diputados", F, sub, "estricta", False)
+        nc = NP.nowcast("diputados", F, origen="EJECUTIVO", n_sims=50)
+        leg = {r["legislador_id"]: r for r in nc["camaras"]["origen"]["legisladores"]}
+        lin_voto = dict(zip(sub["legislador_id"], sub["bloque_linaje"]))
+        comparados, distintos = 0, []
+        for lid, (p, fuente, *_rest) in h.items():
+            r = leg.get(lid)
+            if r is None or r["n_emitidos"] < 1 or r["bloque"] != lin_voto.get(lid):
+                continue
+            comparados += 1
+            if abs(round(p, 4) - r["p_si_vota"]) > 1e-4 + 1e-9:
+                distintos.append((lid, round(p, 4), r["p_si_vota"]))
+        print(f"   comparados {comparados} legisladores; distintos {len(distintos)}")
+        check(comparados >= 100, f"muy pocos legisladores comparables ({comparados}): el test "
+              "no prueba nada")
+        check(not distintos, f"el harness y nowcast() difieren en {len(distintos)}: {distintos[:5]}")
+logging.disable(logging.NOTSET)
 
 print(f"\n{corridos - len(fallos)}/{corridos} OK")
 if fallos:

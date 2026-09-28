@@ -1,233 +1,266 @@
 {
- "n_actas_evaluadas": 5855,
- "n_actas_saltadas": 38,
- "avisos_agregados": {
-  "sin_actas_condicionadas": 653,
-  "padron_cae_a_ventana": 1225,
-  "excluyo_aux": 2070
- },
- "rango_fechas": [
-  "1997-03-20",
-  "2026-09-09"
- ],
- "ventana_dias": 730,
- "min_hist_individual": 1,
- "guard_era": "shrink",
+ "columna": "p__estricta__general",
  "global": {
-  "n": 691893,
+  "n": 691845,
   "tasa_base": 0.7992,
-  "brier": 0.13509,
-  "brier_climatologia": 0.16049,
-  "skill": 0.1583,
-  "logloss": 0.42723,
-  "accuracy": 0.8049
+  "brier": 0.1391,
+  "brier_climatologia": 0.1605,
+  "skill": 0.1333,
+  "logloss": 0.52393,
+  "accuracy": 0.8096,
+  "skill_ic95_ley": [
+   0.0574,
+   0.1979
+  ],
+  "n_leyes": 3731
  },
  "calibracion": [
   {
    "bin": 0,
-   "n": 3646,
-   "pred": 0.076,
-   "real": 0.1684
+   "n": 9265,
+   "pred": 0.0514,
+   "real": 0.2805
   },
   {
    "bin": 1,
-   "n": 8556,
-   "pred": 0.1534,
-   "real": 0.254
+   "n": 12741,
+   "pred": 0.1535,
+   "real": 0.3665
   },
   {
    "bin": 2,
-   "n": 12150,
-   "pred": 0.2521,
-   "real": 0.3951
+   "n": 20625,
+   "pred": 0.257,
+   "real": 0.4096
   },
   {
    "bin": 3,
-   "n": 20530,
-   "pred": 0.3551,
-   "real": 0.4951
+   "n": 21179,
+   "pred": 0.3463,
+   "real": 0.4762
   },
   {
    "bin": 4,
-   "n": 29938,
-   "pred": 0.4537,
-   "real": 0.5904
+   "n": 22694,
+   "pred": 0.4536,
+   "real": 0.6102
   },
   {
    "bin": 5,
-   "n": 64480,
-   "pred": 0.5547,
-   "real": 0.6348
+   "n": 42529,
+   "pred": 0.552,
+   "real": 0.6665
   },
   {
    "bin": 6,
-   "n": 68832,
-   "pred": 0.6481,
-   "real": 0.6664
+   "n": 45296,
+   "pred": 0.6493,
+   "real": 0.6883
   },
   {
    "bin": 7,
-   "n": 79964,
-   "pred": 0.7541,
-   "real": 0.748
+   "n": 73946,
+   "pred": 0.7534,
+   "real": 0.7282
   },
   {
    "bin": 8,
-   "n": 105357,
-   "pred": 0.8542,
-   "real": 0.8374
+   "n": 97550,
+   "pred": 0.852,
+   "real": 0.8111
   },
   {
    "bin": 9,
-   "n": 298440,
-   "pred": 0.9561,
-   "real": 0.9472
+   "n": 346020,
+   "pred": 0.9701,
+   "real": 0.927
   }
  ],
  "por_camara": {
   "diputados": {
-   "n": 531958,
-   "tasa_base": 0.7756,
-   "brier": 0.14726,
-   "brier_climatologia": 0.17407,
-   "skill": 0.154,
-   "logloss": 0.45986,
-   "accuracy": 0.783
+   "n": 531905,
+   "tasa_base": 0.7755,
+   "brier": 0.15213,
+   "brier_climatologia": 0.17408,
+   "skill": 0.1261,
+   "logloss": 0.57682,
+   "accuracy": 0.7888,
+   "skill_ic95_ley": [
+    0.051,
+    0.1958
+   ],
+   "n_leyes": 1915
   },
   "senado": {
-   "n": 159935,
-   "tasa_base": 0.8778,
-   "brier": 0.0946,
-   "brier_climatologia": 0.1073,
-   "skill": 0.1184,
-   "logloss": 0.31869,
-   "accuracy": 0.8776
+   "n": 159940,
+   "tasa_base": 0.8777,
+   "brier": 0.09576,
+   "brier_climatologia": 0.10732,
+   "skill": 0.1077,
+   "logloss": 0.34805,
+   "accuracy": 0.8786,
+   "skill_ic95_ley": [
+    0.0581,
+    0.1497
+   ],
+   "n_leyes": 2101
   }
  },
  "por_fuente_direccion": {
   "bloque": {
-   "n": 2292,
-   "tasa_base": 0.678,
-   "brier": 0.22716,
-   "brier_climatologia": 0.21831,
-   "skill": -0.0405,
-   "logloss": 0.70211,
-   "accuracy": 0.6545
+   "n": 32312,
+   "tasa_base": 0.6853,
+   "brier": 0.29762,
+   "brier_climatologia": 0.21568,
+   "skill": -0.3799,
+   "logloss": 2.3844,
+   "accuracy": 0.6598,
+   "skill_ic95_ley": [
+    -0.6668,
+    0.1351
+   ],
+   "n_leyes": 936
   },
   "record": {
-   "n": 689601,
-   "tasa_base": 0.7996,
-   "brier": 0.13478,
-   "brier_climatologia": 0.16025,
-   "skill": 0.1589,
-   "logloss": 0.42631,
-   "accuracy": 0.8054
+   "n": 659533,
+   "tasa_base": 0.8047,
+   "brier": 0.13133,
+   "brier_climatologia": 0.15713,
+   "skill": 0.1642,
+   "logloss": 0.43278,
+   "accuracy": 0.8169,
+   "skill_ic95_ley": [
+    0.1095,
+    0.2204
+   ],
+   "n_leyes": 3705
   }
  },
  "por_caracter_dictamen": {
   "DISPUTADO": {
    "n": 117288,
    "tasa_base": 0.7121,
-   "brier": 0.1398,
+   "brier": 0.1234,
    "brier_climatologia": 0.20501,
-   "skill": 0.3181,
-   "logloss": 0.42722,
-   "accuracy": 0.7761
+   "skill": 0.3981,
+   "logloss": 0.40662,
+   "accuracy": 0.8309
   },
   "UNICO": {
    "n": 90906,
    "tasa_base": 0.8866,
-   "brier": 0.08955,
+   "brier": 0.14943,
    "brier_climatologia": 0.10058,
-   "skill": 0.1096,
-   "logloss": 0.31163,
-   "accuracy": 0.8973
+   "skill": -0.4858,
+   "logloss": 1.00462,
+   "accuracy": 0.8276
   },
   "mayoria": {
    "n": 32140,
    "tasa_base": 0.6602,
-   "brier": 0.15297,
+   "brier": 0.13769,
    "brier_climatologia": 0.22434,
-   "skill": 0.3181,
-   "logloss": 0.46968,
-   "accuracy": 0.7614
+   "skill": 0.3862,
+   "logloss": 0.43125,
+   "accuracy": 0.8082
   },
   "solo_minoria": {
    "n": 5972,
    "tasa_base": 0.8342,
-   "brier": 0.11586,
+   "brier": 0.09755,
    "brier_climatologia": 0.13829,
-   "skill": 0.1622,
-   "logloss": 0.36925,
-   "accuracy": 0.8367
+   "skill": 0.2946,
+   "logloss": 0.33878,
+   "accuracy": 0.8888
   },
   "nan": {
-   "n": 445587,
+   "n": 445539,
    "tasa_base": 0.8138,
-   "brier": 0.14211,
-   "brier_climatologia": 0.15151,
-   "skill": 0.062,
-   "logloss": 0.44853,
-   "accuracy": 0.7964
+   "brier": 0.14178,
+   "brier_climatologia": 0.15152,
+   "skill": 0.0643,
+   "logloss": 0.4659,
+   "accuracy": 0.7993
   }
  },
  "por_era": {
   "hasta 2011": {
-   "n": 318384,
+   "n": 318335,
    "tasa_base": 0.8363,
-   "brier": 0.11527,
-   "brier_climatologia": 0.13688,
-   "skill": 0.1578,
-   "logloss": 0.37839,
-   "accuracy": 0.8428
+   "brier": 0.11867,
+   "brier_climatologia": 0.13689,
+   "skill": 0.1331,
+   "logloss": 0.39767,
+   "accuracy": 0.833,
+   "skill_ic95_ley": [
+    0.0708,
+    0.1897
+   ],
+   "n_leyes": 2017
   },
   "2011-2015": {
-   "n": 115966,
+   "n": 115967,
    "tasa_base": 0.8345,
-   "brier": 0.10845,
+   "brier": 0.09986,
    "brier_climatologia": 0.13811,
-   "skill": 0.2148,
-   "logloss": 0.3388,
-   "accuracy": 0.8329
+   "skill": 0.277,
+   "logloss": 0.32128,
+   "accuracy": 0.8565,
+   "skill_ic95_ley": [
+    0.1903,
+    0.3516
+   ],
+   "n_leyes": 679
   },
   "2015-2019": {
    "n": 126454,
    "tasa_base": 0.7826,
-   "brier": 0.15381,
+   "brier": 0.15637,
    "brier_climatologia": 0.17011,
-   "skill": 0.0958,
-   "logloss": 0.47818,
-   "accuracy": 0.7838
+   "skill": 0.0808,
+   "logloss": 0.50838,
+   "accuracy": 0.787,
+   "skill_ic95_ley": [
+    -0.0435,
+    0.197
+   ],
+   "n_leyes": 505
   },
   "2019-2023": {
    "n": 25755,
    "tasa_base": 0.8155,
-   "brier": 0.09931,
+   "brier": 0.14874,
    "brier_climatologia": 0.15044,
-   "skill": 0.3399,
-   "logloss": 0.3705,
-   "accuracy": 0.8686
+   "skill": 0.0113,
+   "logloss": 0.54059,
+   "accuracy": 0.801,
+   "skill_ic95_ley": [
+    -0.2027,
+    0.1063
+   ],
+   "n_leyes": 246
   },
   "desde 2023": {
    "n": 105334,
    "tasa_base": 0.6639,
-   "brier": 0.2106,
+   "brier": 0.22093,
    "brier_climatologia": 0.22315,
-   "skill": 0.0563,
-   "logloss": 0.62489,
-   "accuracy": 0.6692
+   "skill": 0.01,
+   "logloss": 1.14321,
+   "accuracy": 0.7163,
+   "skill_ic95_ley": [
+    -0.2642,
+    0.246
+   ],
+   "n_leyes": 312
   }
  },
  "margen": {
-  "n_actas": 5855,
+  "n_actas": 5856,
   "mae": 0.1381,
-  "sesgo_medio": -0.0192,
-  "p90_error_abs": 0.2554
+  "sesgo_medio": -0.0069,
+  "p90_error_abs": 0.2678
  },
- "_args": {
-  "camara": "ambas",
-  "muestra": 0,
-  "desde": null,
-  "guard_era": "shrink"
- }
+ "variante": "p__estricta__general",
+ "_nota": "ADR-0034 (28-09-2026): censo con el harness que IMPORTA el motor, historia estricta (fecha anterior y otra ley). Reemplaza al 0,1611 publicado, que estaba inflado por fuga. Detalle: evaluacion/baseline/outputs/censo_limpio_2026-09-28.json"
 }

@@ -1,0 +1,336 @@
+{
+ "fila": {
+  "subconjunto_propio": {
+   "global": {
+    "n": 318564,
+    "brier_general": 0.13924,
+    "brier_tema": 0.12384,
+    "mejora_relativa_%": 11.06,
+    "ic95_dBrier_rel_%_ley": [
+     -14.65,
+     -7.42
+    ]
+   },
+   "camara=diputados": {
+    "n": 256549,
+    "brier_general": 0.15111,
+    "brier_tema": 0.13365,
+    "mejora_relativa_%": 11.56,
+    "ic95_dBrier_rel_%_ley": [
+     -15.6,
+     -7.29
+    ]
+   },
+   "camara=senado": {
+    "n": 62015,
+    "brier_general": 0.09014,
+    "brier_tema": 0.08324,
+    "mejora_relativa_%": 7.65,
+    "ic95_dBrier_rel_%_ley": [
+     -10.01,
+     -5.42
+    ]
+   },
+   "era=hasta 2011": {
+    "n": 98465,
+    "brier_general": 0.11796,
+    "brier_tema": 0.10285,
+    "mejora_relativa_%": 12.81,
+    "ic95_dBrier_rel_%_ley": [
+     -17.08,
+     -7.78
+    ]
+   },
+   "era=2011-2015": {
+    "n": 75562,
+    "brier_general": 0.1081,
+    "brier_tema": 0.0947,
+    "mejora_relativa_%": 12.4,
+    "ic95_dBrier_rel_%_ley": [
+     -17.66,
+     -7.23
+    ]
+   },
+   "era=2015-2019": {
+    "n": 88963,
+    "brier_general": 0.17447,
+    "brier_tema": 0.15449,
+    "mejora_relativa_%": 11.46,
+    "ic95_dBrier_rel_%_ley": [
+     -17.07,
+     -5.3
+    ]
+   },
+   "era=2019-2023": {
+    "n": 14073,
+    "brier_general": 0.09695,
+    "brier_tema": 0.09149,
+    "mejora_relativa_%": 5.63,
+    "ic95_dBrier_rel_%_ley": [
+     -8.73,
+     -2.88
+    ]
+   },
+   "era=desde 2023": {
+    "n": 41501,
+    "brier_general": 0.18525,
+    "brier_tema": 0.17195,
+    "mejora_relativa_%": 7.18,
+    "ic95_dBrier_rel_%_ley": [
+     -20.03,
+     12.33
+    ]
+   }
+  },
+  "subconjunto_comun": {
+   "global": {
+    "n": 317091,
+    "brier_general": 0.1395,
+    "brier_tema": 0.12403,
+    "mejora_relativa_%": 11.08,
+    "ic95_dBrier_rel_%_ley": [
+     -14.67,
+     -7.43
+    ]
+   },
+   "camara=diputados": {
+    "n": 255517,
+    "brier_general": 0.15133,
+    "brier_tema": 0.13381,
+    "mejora_relativa_%": 11.58,
+    "ic95_dBrier_rel_%_ley": [
+     -15.62,
+     -7.3
+    ]
+   },
+   "camara=senado": {
+    "n": 61574,
+    "brier_general": 0.0904,
+    "brier_tema": 0.08348,
+    "mejora_relativa_%": 7.66,
+    "ic95_dBrier_rel_%_ley": [
+     -10.02,
+     -5.41
+    ]
+   },
+   "era=hasta 2011": {
+    "n": 97703,
+    "brier_general": 0.11822,
+    "brier_tema": 0.10303,
+    "mejora_relativa_%": 12.84,
+    "ic95_dBrier_rel_%_ley": [
+     -17.12,
+     -7.79
+    ]
+   },
+   "era=2011-2015": {
+    "n": 75036,
+    "brier_general": 0.10826,
+    "brier_tema": 0.09476,
+    "mejora_relativa_%": 12.47,
+    "ic95_dBrier_rel_%_ley": [
+     -17.8,
+     -7.27
+    ]
+   },
+   "era=2015-2019": {
+    "n": 88874,
+    "brier_general": 0.17456,
+    "brier_tema": 0.15455,
+    "mejora_relativa_%": 11.46,
+    "ic95_dBrier_rel_%_ley": [
+     -17.08,
+     -5.3
+    ]
+   },
+   "era=2019-2023": {
+    "n": 14054,
+    "brier_general": 0.09687,
+    "brier_tema": 0.09142,
+    "mejora_relativa_%": 5.63,
+    "ic95_dBrier_rel_%_ley": [
+     -8.73,
+     -2.88
+    ]
+   },
+   "era=desde 2023": {
+    "n": 41424,
+    "brier_general": 0.1855,
+    "brier_tema": 0.17218,
+    "mejora_relativa_%": 7.18,
+    "ic95_dBrier_rel_%_ley": [
+     -20.03,
+     12.34
+    ]
+   }
+  }
+ },
+ "estricta": {
+  "subconjunto_propio": {
+   "global": {
+    "n": 317091,
+    "brier_general": 0.15653,
+    "brier_tema": 0.16109,
+    "mejora_relativa_%": -2.91,
+    "ic95_dBrier_rel_%_ley": [
+     -2.08,
+     8.63
+    ]
+   },
+   "camara=diputados": {
+    "n": 255517,
+    "brier_general": 0.17194,
+    "brier_tema": 0.17827,
+    "mejora_relativa_%": -3.68,
+    "ic95_dBrier_rel_%_ley": [
+     -1.92,
+     10.35
+    ]
+   },
+   "camara=senado": {
+    "n": 61574,
+    "brier_general": 0.09258,
+    "brier_tema": 0.0898,
+    "mejora_relativa_%": 3.01,
+    "ic95_dBrier_rel_%_ley": [
+     -5.32,
+     -0.97
+    ]
+   },
+   "era=hasta 2011": {
+    "n": 97703,
+    "brier_general": 0.12536,
+    "brier_tema": 0.11966,
+    "mejora_relativa_%": 4.55,
+    "ic95_dBrier_rel_%_ley": [
+     -7.68,
+     -1.59
+    ]
+   },
+   "era=2011-2015": {
+    "n": 75036,
+    "brier_general": 0.11198,
+    "brier_tema": 0.1087,
+    "mejora_relativa_%": 2.93,
+    "ic95_dBrier_rel_%_ley": [
+     -9.33,
+     5.49
+    ]
+   },
+   "era=2015-2019": {
+    "n": 88874,
+    "brier_general": 0.19402,
+    "brier_tema": 0.19851,
+    "mejora_relativa_%": -2.31,
+    "ic95_dBrier_rel_%_ley": [
+     -4.96,
+     10.56
+    ]
+   },
+   "era=2019-2023": {
+    "n": 14054,
+    "brier_general": 0.09789,
+    "brier_tema": 0.09234,
+    "mejora_relativa_%": 5.67,
+    "ic95_dBrier_rel_%_ley": [
+     -8.92,
+     -2.8
+    ]
+   },
+   "era=desde 2023": {
+    "n": 41424,
+    "brier_general": 0.25024,
+    "brier_tema": 0.29675,
+    "mejora_relativa_%": -18.59,
+    "ic95_dBrier_rel_%_ley": [
+     3.96,
+     38.78
+    ]
+   }
+  },
+  "subconjunto_comun": {
+   "global": {
+    "n": 317091,
+    "brier_general": 0.15653,
+    "brier_tema": 0.16109,
+    "mejora_relativa_%": -2.91,
+    "ic95_dBrier_rel_%_ley": [
+     -2.08,
+     8.63
+    ]
+   },
+   "camara=diputados": {
+    "n": 255517,
+    "brier_general": 0.17194,
+    "brier_tema": 0.17827,
+    "mejora_relativa_%": -3.68,
+    "ic95_dBrier_rel_%_ley": [
+     -1.92,
+     10.35
+    ]
+   },
+   "camara=senado": {
+    "n": 61574,
+    "brier_general": 0.09258,
+    "brier_tema": 0.0898,
+    "mejora_relativa_%": 3.01,
+    "ic95_dBrier_rel_%_ley": [
+     -5.32,
+     -0.97
+    ]
+   },
+   "era=hasta 2011": {
+    "n": 97703,
+    "brier_general": 0.12536,
+    "brier_tema": 0.11966,
+    "mejora_relativa_%": 4.55,
+    "ic95_dBrier_rel_%_ley": [
+     -7.68,
+     -1.59
+    ]
+   },
+   "era=2011-2015": {
+    "n": 75036,
+    "brier_general": 0.11198,
+    "brier_tema": 0.1087,
+    "mejora_relativa_%": 2.93,
+    "ic95_dBrier_rel_%_ley": [
+     -9.33,
+     5.49
+    ]
+   },
+   "era=2015-2019": {
+    "n": 88874,
+    "brier_general": 0.19402,
+    "brier_tema": 0.19851,
+    "mejora_relativa_%": -2.31,
+    "ic95_dBrier_rel_%_ley": [
+     -4.96,
+     10.56
+    ]
+   },
+   "era=2019-2023": {
+    "n": 14054,
+    "brier_general": 0.09789,
+    "brier_tema": 0.09234,
+    "mejora_relativa_%": 5.67,
+    "ic95_dBrier_rel_%_ley": [
+     -8.92,
+     -2.8
+    ]
+   },
+   "era=desde 2023": {
+    "n": 41424,
+    "brier_general": 0.25024,
+    "brier_tema": 0.29675,
+    "mejora_relativa_%": -18.59,
+    "ic95_dBrier_rel_%_ley": [
+     3.96,
+     38.78
+    ]
+   }
+  }
+ },
+ "n_comun": 317091,
+ "reproduce_11_06": 11.06
+}

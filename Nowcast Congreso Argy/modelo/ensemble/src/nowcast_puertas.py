@@ -206,7 +206,17 @@ TAU = float(os.environ.get("TAU", TAU_DEFAULT))
 # subconjunto negativo. Ver ADR-0026 y `evaluacion/baseline/outputs/
 # fase1_rec_por_tema_censo.json`. `RECORD_POR_TEMA=0` en el entorno vuelve al
 # récord general de siempre.
-RECORD_POR_TEMA = os.environ.get("RECORD_POR_TEMA", "1") != "0"
+#
+# 28-09-2026 — APAGADA (ADR-0034, enmienda al ADR-0026). El 11,1% se midió con fuga:
+# `shift(1)` por fila contaba como historia los artículos anteriores de la MISMA ley,
+# que comparten tema, y comparaba contra un récord "general" que no era el del motor.
+# Re-medido en el censo con el harness que importa el motor y historia estricta
+# (fecha anterior y otra ley), el récord por tema EMPEORA: +2,1% de Brier en el total
+# (IC por ley [0,8; 3,5]) y +6,4% en los votos que toca ([2,9; 10,1]); Senado +20,5%,
+# hasta 2011 +19,6%, desde 2023 +10,8%. Criterio simétrico al que la prendió ("prender
+# si el censo completo mejora"): si el censo limpio no mejora, se apaga. La función
+# queda (término inactivo, fila 18 de FORMULA). `RECORD_POR_TEMA=1` la vuelve a prender.
+RECORD_POR_TEMA = os.environ.get("RECORD_POR_TEMA", "0") != "0"
 
 
 def _resolver_multietiqueta(proyecto_id: Optional[str], db_path=None, expedientes=None):

@@ -1,0 +1,107 @@
+{
+ "n_votos": 691677,
+ "n_actas": 5855,
+ "tau_motor_hoy": 1.19,
+ "eps0_motor_hoy": 0.035,
+ "tau_publicado_2026_09_03": 1.197,
+ "tau_reestimado_2026_09_16": 1.19,
+ "estimaciones": {
+  "harness_viejo_con_fuga": {
+   "eps0_optimo_logloss": 0.015,
+   "eps0_optimo_brier": 0.02,
+   "tau_sin_epsilon": 1.1855,
+   "tau_IQR": [
+    0.7634,
+    1.4798
+   ],
+   "tau_con_epsilon": 1.1778,
+   "sobredispersion": 40.12,
+   "fraccion_error_sesgo": 0.0063,
+   "n_actas_tau": 5851,
+   "por_camara": {
+    "diputados": {
+     "tau": 1.2258
+    },
+    "senado": {
+     "tau": 1.1807
+    }
+   }
+  },
+  "motor_dia_incluido": {
+   "eps0_optimo_logloss": 0.0,
+   "eps0_optimo_brier": 0.01,
+   "tau_sin_epsilon": 1.1456,
+   "tau_IQR": [
+    0.7638,
+    1.5092
+   ],
+   "tau_con_epsilon": 1.1456,
+   "sobredispersion": 41.45,
+   "fraccion_error_sesgo": 0.0016,
+   "n_actas_tau": 5851,
+   "por_camara": {
+    "diputados": {
+     "tau": 1.1863
+    },
+    "senado": {
+     "tau": 1.1329
+    }
+   }
+  },
+  "motor_limpio": {
+   "eps0_optimo_logloss": 0.055,
+   "eps0_optimo_brier": 0.06,
+   "tau_sin_epsilon": 1.197,
+   "tau_IQR": [
+    0.8791,
+    1.6128
+   ],
+   "tau_con_epsilon": 1.1517,
+   "sobredispersion": 52.65,
+   "fraccion_error_sesgo": 0.0,
+   "n_actas_tau": 5851,
+   "por_camara": {
+    "diputados": {
+     "tau": 1.3185
+    },
+    "senado": {
+     "tau": 1.1625
+    }
+   }
+  }
+ },
+ "cobertura_banda": {
+  "limpio__tau_1.19_eps_0.035": {
+   "n_actas": 5851,
+   "cobertura_banda_90": 0.6363,
+   "ancho_mediano_votos": 40.0,
+   "sesgo_medio_votos": 6.93,
+   "eps0": 0.035,
+   "tau": 1.19
+  },
+  "limpio__tau_reestimado": {
+   "n_actas": 5851,
+   "cobertura_banda_90": 0.6037,
+   "ancho_mediano_votos": 42.1,
+   "sesgo_medio_votos": 8.68,
+   "eps0": 0.055,
+   "tau": 1.197
+  },
+  "limpio__sin_tau": {
+   "n_actas": 5851,
+   "cobertura_banda_90": 0.1484,
+   "ancho_mediano_votos": 10.0,
+   "sesgo_medio_votos": 2.79,
+   "eps0": 0.035,
+   "tau": 0.0
+  },
+  "harness_viejo__tau_1.19": {
+   "n_actas": 5851,
+   "cobertura_banda_90": 0.6095,
+   "ancho_mediano_votos": 43.0,
+   "sesgo_medio_votos": 8.73,
+   "eps0": 0.035,
+   "tau": 1.19
+  }
+ }
+}

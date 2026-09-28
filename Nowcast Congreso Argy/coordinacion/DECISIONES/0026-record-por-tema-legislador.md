@@ -11,6 +11,13 @@ ADR-0016 (doctrina de la parte al todo), ADR-0024 (multitema a nivel bloque,
 negativo), ADR-0025 ($\eta_j$, el otro término prendido por censo), URGENTE 8
 (pendiente desde el 04-09, medido y descartado esa vez por falta de dato)
 
+> **⚠️ ENMENDADO POR ADR-0034 (28-09-2026): `RECORD_POR_TEMA` está APAGADO.** El 11,06% de
+> abajo se midió con fuga (`shift(1)` por fila: el récord por área veía los artículos de la
+> misma ley, votados el mismo día). Con la misma metodología e historia estricta da −2,91%; en
+> el censo con el harness que importa el motor, el récord por tema **empeora** el Brier 2,1%
+> (IC por ley [0,8; 3,5]) y 6,4% en los votos donde actúa. Se apagó con el criterio simétrico
+> al que lo prendió. La implementación queda; lo de abajo se conserva como registro.
+
 ## Contexto — por qué esto es distinto de ADR-0024
 
 `PROMPT-MULTITEMA-V2.md` diagnosticó que el experimento de ADR-0024 (multitema

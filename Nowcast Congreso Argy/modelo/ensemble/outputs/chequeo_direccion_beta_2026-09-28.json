@@ -1,0 +1,53 @@
+{
+ "n_panel": 246306,
+ "n_comun": 246306,
+ "produccion_M6_publicado": {
+  "F_i": 2.0877,
+  "lealtad_x_jefe": 1.75
+ },
+ "clusters": "ley (ADR-0032); la estimación original clusterizó por acta",
+ "offset_de_la_estimacion": {
+  "n": 246306,
+  "coef": {
+   "const": -0.3413,
+   "F_i": 2.0877,
+   "lealtad_x_jefe": 1.75
+  },
+  "se_cluster_ley": {
+   "const": 0.1038,
+   "F_i": 0.3975,
+   "lealtad_x_jefe": 0.3696
+  }
+ },
+ "harness_viejo_con_fuga": {
+  "n": 246306,
+  "coef": {
+   "const": -0.1724,
+   "F_i": 1.918,
+   "lealtad_x_jefe": 1.4237
+  },
+  "se_cluster_ley": {
+   "const": 0.088,
+   "F_i": 0.3257,
+   "lealtad_x_jefe": 0.351
+  }
+ },
+ "motor_limpio": {
+  "n": 246306,
+  "coef": {
+   "const": -0.1991,
+   "F_i": 2.0532,
+   "lealtad_x_jefe": 1.2921
+  },
+  "se_cluster_ley": {
+   "const": 0.2006,
+   "F_i": 0.4311,
+   "lealtad_x_jefe": 0.328
+  }
+ },
+ "brier_offsets": {
+  "p_motor": 0.14303,
+  "p_harness_viejo": 0.12131,
+  "p_limpio": 0.1352
+ }
+}

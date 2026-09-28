@@ -3,6 +3,16 @@
 **Última actualización:** 2026-09-28 (ADR-0034, cierre de etapa) · **Regla:** ADR-0015 —
 quien toca el motor actualiza este archivo en el mismo commit.
 
+> **2026-09-28 — FASES 3 y 4 de ADR-0034: se APAGA $\text{rec}_i^{\text{tema}}$ (fila 18) y
+> cambia el número publicado.** *La función:* `RECORD_POR_TEMA` pasa a `0` por defecto; el
+> récord vuelve a ser el general (por era, por origen, encogido). *El motor:* cambia $P_i$ de
+> los legisladores con historia en las áreas del proyecto, sólo cuando el proyecto tiene
+> `proyecto_id` con taxonomía (el panel hipotético de `REGENERAR` no se mueve); ningún
+> contrato cambia de forma; se saca el supuesto "el récord por tema generaliza". *La
+> fórmula:* §I.00 y fila 18 marcadas inactivas. El número publicado pasa de 0,1611 (inflado
+> por fuga) a **0,1333** (§II.5). τ y ε₀ re-estimados sobre el offset limpio (1,197 y 0,055)
+> **no se aplican**: TAU y EPSILON0 del motor quedan en 1,19 y 0,035 hasta que decida Franco.
+>
 > **2026-09-28 — FASE 2 de ADR-0034: la fórmula NO cambia.** Se extraen de `nowcast()`
 > dos piezas, sin tocar lo que calculan: `record_legisladores` (récord general + por tema
 > según `RECORD_POR_TEMA`) y `necesita_cond_por_acta` (cuándo se carga `tema_por_acta`,
@@ -54,7 +64,7 @@ quien toca el motor actualiza este archivo en el mismo commit.
 | 1 | $s_\ell$ — share del bloque | de qué lado va el bloque | ✅ **corre** |
 | 2 | $d_i$ — desvío / lealtad | si la persona sigue a su bloque | ✅ **corre** |
 | 3 | $\pi_i$ — presencia | si aparece a votar | ✅ **corre** |
-| 4 | $\text{rec}_i$ — récord propio | historial individual ($n_i\ge1$), cortado por era y encogido hacia el bloque | ✅ **corre** — guard, encogimiento y umbral en 1, prendidos el 06-09 y confirmados con el censo: skill 0,1304 → **0,1611** (§II.5, ADR-0018). Desde el 16-09, condicionado por TEMA cuando hay dato — ver fila 18. ⚠️ **28-09: esos niveles están inflados** — el harness cuenta votos del mismo día; con historia estricta 0,092 (URGENTE U1, ADR-0033) |
+| 4 | $\text{rec}_i$ — récord propio | historial individual ($n_i\ge1$) en la era, condicionado por el origen del proyecto, encogido hacia el bloque | ✅ **corre** — **número publicado desde el 28-09: skill 0,1333** [0,057; 0,198] (IC re-muestreando leyes), era vigente **0,010** [−0,26; 0,25], sobre el censo con el harness que importa el motor e historia estricta (§II.5, ADR-0034). **El 0,1611 anterior estaba inflado por fuga.** El encogimiento sigue ganando con el harness limpio (cortar sin encoger: +2,8% de Brier); el umbral n≥1 vs n≥8 queda en el borde (+0,5%, IC [−0,01; 1,26]) |
 | 5 | umbrales y quórum | reglas del cuerpo | ✅ **corre** |
 | 6 | Monte Carlo (2.000 sims) | agrega votos a probabilidad | ✅ **corre** |
 | 7 | $\varepsilon$ — clip de confianza | recorta $P_c$ a $[0{,}01;0{,}99]$ | 🔴 **corre pero está mal** (§II.1) |
@@ -62,22 +72,25 @@ quien toca el motor actualiza este archivo en el mismo commit.
 | 9 | $\delta$ — dictamen | condicionar por carácter del dictamen | 🔴 **implementado en 0** (§II.3) |
 | 10 | ICG — clima político | modula según el humor social | 🔴 **medido y desconectado** (§II.4) |
 | 11 | $\mathcal{C}_c$ — gate del dictamen | admisibilidad reglamentaria | 🔬 **IMPLEMENTADO 15-09 (aproximación), tras bandera apagada** (§III.A.1) |
-| 12 | $\beta$ — dictamen por legislador | reemplaza a $\delta$ | ✅ **PRENDIDO 14-09-2026** (§III.A.2) |
-| 13 | $\varepsilon_0 + \eta_j$ — incertidumbre | reemplaza al clip | ✅ **PRENDIDO 16-09-2026** — decisión de Franco, verificado contra paneles reales (§III.A.3, ADR-0025) |
+| 12 | $\beta$ — dictamen por legislador | reemplaza a $\delta$ | ✅ **PRENDIDO 14-09-2026** (§III.A.2). ⚠️ Estimado y validado walk-forward con un offset con fuga (espejo viejo del harness); el censo no lo mide (el harness no aplica β). Con el offset limpio (ADR-0034): $F_i$ 2,09 → **2,05** (se sostiene), lealtad×jefe 1,75 → **1,29** (baja 26%); no se cambiaron los coeficientes |
+| 13 | $\varepsilon_0 + \eta_j$ — incertidumbre | reemplaza al clip | ✅ **PRENDIDO 16-09-2026** (§III.A.3, ADR-0025). ⚠️ **28-09:** τ re-estimado con el offset limpio da 1,197 (con el viejo, 1,186: el sesgo existía pero era de 1%). **La banda [p5,p95] cubre el recuento real el 63,6% de las actas, no el 99,88%** que decía ADR-0025 (aquel backtest le daba al agregador la línea de bloque OBSERVADA). No se cambió ningún valor: decisión de Franco (ADR-0034) |
 | 14 | $\psi$ — arrastre entre cámaras | la revisora lee a la de origen | 🔲 **ESTIMADO y controlado 03-09** (§III.A.4) |
 | 15 | sobre tablas | el 24,4% que hoy es invisible | 🔴 **PROBADO y DESCARTADO POR AHORA, 15-09** (§III.A.5) — implementado, backtest walk-forward mecanístico: el mecanismo no discrimina, con o sin θ. No es un "no" definitivo — "no todavía"; decisión de Franco |
 | 16 | proximidad electoral | el calendario cambia incentivos | 🔲 **propuesto** (§III.B.1) |
 | 17 | asimetría del ICG | las caídas pesan más que las subas | 🔲 **propuesto** (§III.B.2) |
-| 18 | $\text{rec}_i^{\text{tema}}$ — récord por tema | condiciona el récord del LEGISLADOR (no el bloque) por el tema del proyecto | ✅ **PRENDIDO 16-09-2026** (`RECORD_POR_TEMA`) — 11,1% menos Brier en el censo completo, sin cortes negativos (§III.B.3, ADR-0026). El $\rho$ del sobre-tablas (§III.A.5) sigue aparte y apagado |
+| 18 | $\text{rec}_i^{\text{tema}}$ — récord por tema | condiciona el récord del LEGISLADOR (no el bloque) por el tema del proyecto | ⚪ **APAGADO 28-09-2026** (`RECORD_POR_TEMA=0`, ADR-0034 enmienda ADR-0026). El 11,1% que lo prendió era fuga: con la misma metodología y historia estricta da −2,9%; en el censo con el motor **empeora** 2,1% (IC [0,8; 3,5]) y 6,4% donde actúa. Se prendió con "si el censo mejora"; se apaga con el criterio simétrico |
 | 19 | multietiqueta en $s_\ell$ (`combinar_temas`) + `TEMA_AUTO` | un proyecto real casi siempre tiene VARIOS temas (61,2% medido) | ⚪ **CERRADO 16-09-2026** (§I.4a, ADR-0024 enmendado por ADR-0028) — re-test con brazo de control sobre el censo completo: NINGUNA regla de combinación (ni siquiera "no condicionar") es distinguible de `primaria`. No es que empeore: la rama de bloque no tiene la información que el tema movería. La ganancia real está en la fila 18 (`rec_i^tema` a nivel legislador) |
 | 20 | $\hat\rho_i^{\text{her}}\,s_o$ — récord por ORIGEN heredado entre gobiernos | trae la relación del legislador con el Ejecutivo de la era anterior, relabelada por su lado | ⚪ **PROBADO E INACTIVO 28-09-2026** (§II.5, ADR-0033) — persiste entre gobiernos (+0,54) pero es memoria de linaje; sobre el espejo del motor Δ≈0. La versión sin guard predice PEOR: **discrepancia abierta** |
 
-**Resumen honesto: 7 términos corren, 5 están rotos, apagados o reprobaron su backtest
-(el sobre tablas y la multietiqueta no generalizan fuera de la muestra con la que se
-construyeron), 2 están implementados detrás de bandera con evidencia FAVORABLE a la
-espera de que Franco decida activarlos ($\mathcal{C}_c$ y, desde el 16-09,
-$\varepsilon_0+\tau\eta_j$ — ADR-0025), 1 está decidido sin implementar ($\psi$) y 3 son
-propuestas.** El motor que corre hoy es más chico que esta fórmula.
+**Resumen honesto (28-09-2026, después de ADR-0034): 7 términos corren** (share, desvío,
+presencia, récord, umbrales, Monte Carlo, y dos prendidos por bandera: β del dictamen y
+$\varepsilon_0+\tau\eta_j$). **El número que los mide es skill 0,1333** — y en la era vigente
+0,010, indistinguible de cero. De los dos prendidos por bandera, **ninguno tiene hoy evidencia
+limpia**: β se estimó sobre un offset con fuga y el censo no lo mide; la banda de ε₀+τη cubre el
+63,6% de las veces, no el 90% que promete. **1 se apagó el 28-09** ($\text{rec}_i^{\text{tema}}$:
+su evidencia era fuga). Del resto: 5 rotos, apagados o reprobados, 1 decidido sin implementar
+($\psi$), 3 propuestas. El inventario con la evidencia de cada uno está en
+`coordinacion/ESTADO-REAL-DEL-MOTOR.md`. El motor que corre hoy es más chico que esta fórmula.
 
 ---
 ---
@@ -85,6 +98,34 @@ propuestas.** El motor que corre hoy es más chico que esta fórmula.
 # PARTE I — LO QUE HOY CORRE
 
 Esto es el número publicado. Nada de lo que sigue en las Partes II y III lo afecta.
+
+## I.00 — $P_i$ tal como la calcula el motor HOY (verificado 28-09-2026, ADR-0034)
+
+> ⚠️ **Las secciones I.1 a I.4 de abajo describen versiones anteriores** (umbral $n\ge8$,
+> sin encogimiento, clip agregado, sin β). Se dejan por la historia de cada decisión, pero
+> **la ecuación vigente es ésta**, y es la que mide el censo: el harness la importa y un test
+> la compara contra `nowcast()` legislador por legislador (238/238 iguales,
+> `test_harness_es_el_motor.py`). El inventario término por término, con qué evidencia
+> sostiene cada uno, está en `coordinacion/ESTADO-REAL-DEL-MOTOR.md`.
+
+Para el legislador $i$ de linaje $\ell$, un proyecto de origen $o$ y áreas $\{k\}$, a la fecha $F$:
+
+$$\text{rec}_i \;=\; \frac{\#\text{afirmativos}}{\#\text{emitidos}}\ \text{ sobre sus votos con } t_{\text{era}(F)}\le t<F \text{ y origen } o$$
+
+$$\text{rec}_i \;\leftarrow\; \sigma\!\left(\frac{\sum_k w_k\,\text{logit}\!\big(\tfrac{n_{ik}\,r_{ik}+5\,\text{rec}_i}{n_{ik}+5}\big)}{\sum_k w_k}\right) \quad \text{sólo si } \texttt{RECORD\_POR\_TEMA}\text{ — ⚪ APAGADO desde el 28-09}$$
+
+$$P_i \;=\; \begin{cases}\dfrac{n_i\,\text{rec}_i + 5\,s_\ell}{n_i+5} & n_i\ge1 \quad(\text{95,3\% de los votos del censo})\\[8pt] s_\ell(1-d_i)+(1-s_\ell)\tfrac{d_i}{2} & n_i=0\end{cases}$$
+
+$$\text{logit}\,P_i^{\text{dict}} \;=\; \text{logit}\,P_i + \beta_1 F_i + \beta_2(1-d_i)J_\ell \qquad(\texttt{BETA\_DICTAMEN}, \text{si el proyecto tiene dictamen})$$
+
+$$\tilde P_i = \varepsilon_0 + (1-2\varepsilon_0)P_i, \qquad P_i^{(j)} = \sigma\big(\text{logit}\,\tilde P_i + \tau\,\eta_j\big),\ \eta_j\sim N(0,1) \qquad(\texttt{INCERTIDUMBRE\_LEGISLADOR}, \text{en la simulación})$$
+
+$n_i$ = emitidos de $i$ en esa ventana; $s_\ell$ = share del linaje proyectado por
+`proyectar_postura` (730 días, `<`, condicionado por origen dentro del mismo gobierno,
+encogido $k=5$); $d_i$ = desvío de la ficha individual (sólo en la rama de bloque y en β).
+**Lo que el censo NO mide:** β (el harness no lo aplica), ε₀ y τη (actúan en la
+simulación, no en $P_i$), la presencia $\pi_i$ (se evalúa sobre votos emitidos) y el paso
+de $P_i$ a la probabilidad de la cámara.
 
 ## I.0 — El número
 
@@ -660,6 +701,55 @@ y con historia estricta: ΔBrier −0,03% global, −0,29% al arranque de era, I
 (`_alineacion_base`) y el harness no. Con historia estricta, el espejo del motor tiene skill
 **0,173** contra **0,092** del harness (desde 2023: 0,193 contra −0,029). El motor es mejor de lo
 que decía su harness en la era vigente.
+
+### 📌 EL NÚMERO PUBLICADO (28-09-2026, ADR-0034): skill **0,1333**. El anterior estaba inflado por fuga.
+
+**El 0,1611 publicado desde el 06-09 estaba inflado por fuga.** El harness contaba como
+historia los artículos anteriores de la misma ley, votados el mismo día, y además no
+condicionaba el récord por origen como el motor. Re-corrido el censo con el harness que
+IMPORTA el motor (`test_harness_es_el_motor.py`: 238/238 legisladores iguales a
+`nowcast()`) e historia estricta —fecha anterior y otra ley—, **ése pasa a ser el número
+publicado**:
+
+| | **publicado nuevo** | IC 95% (leyes) |
+|---|---:|---|
+| **skill global** | **0,1333** | [0,057; 0,198] |
+| Brier | 0,1391 | climatología 0,1605 |
+| hasta 2011 | 0,1331 | [0,071; 0,190] |
+| 2011-2015 | 0,2770 | [0,190; 0,352] |
+| 2015-2019 | 0,0808 | [−0,044; 0,197] |
+| 2019-2023 | 0,0113 | [−0,203; 0,106] |
+| **desde 2023** | **0,0100** | **[−0,264; 0,246]** |
+| Diputados / Senado | 0,1261 / 0,1077 | [0,051; 0,196] / [0,058; 0,150] |
+| rama récord (95,3% de los votos) | 0,1642 | [0,110; 0,220] |
+| rama bloque (4,7%) | **−0,380** | [−0,667; 0,135] |
+| MAE del margen por acta | 0,1381 | sesgo −0,007 |
+
+691.845 votos, 5.856 actas, **3.731 leyes**. Con `RECORD_POR_TEMA` apagado (fila 18). El
+15,3% de los votos cae en actas sin ley identificable: ahí el corte por expediente no ve nada,
+así que el número sigue teniendo una fuga residual en esa fracción.
+
+**Antes y después sobre los MISMOS 691.677 votos** (`resumen_censo_limpio.py`):
+
+| | global | desde 2023 | Diputados | Senado |
+|---|---:|---:|---:|---:|
+| harness viejo (lo publicado: `shift(1)`, sin origen) | 0,1614 | 0,0627 | 0,1579 | 0,1181 |
+| motor con su corte `<=` (el acta a predecir adentro) | 0,3257 | 0,3738 | 0,3343 | 0,2289 |
+| motor, `<` sin excluir la ley (con récord por tema) | 0,1574 | 0,1919 | 0,1658 | 0,0487 |
+| motor limpio, con récord por tema | 0,1152 | 0,0004 | 0,1151 | 0,0493 |
+| **motor limpio, sin récord por tema (el que queda)** | **0,1335** | **0,0100** | **0,1263** | **0,1076** |
+
+**Lo que dice:** el motor es **peor** de lo que se publicaba (0,161 → 0,133), aunque mejor
+que el harness limpio con su propio récord (0,074: el condicionamiento por origen del motor
+vale). **En la era vigente no se distingue de la climatología.** La mayor parte de lo que
+parecía skill en 2023-26 era el récord aprendiendo de votaciones de la misma ley (3,4 actas
+por ley en la era Milei). La ventaja del motor sobre el harness en esta era, que ADR-0033 midió
+en 0,19 contra −0,03, era en buena parte eso mismo: queda 0,01 contra −0,11.
+
+**ADR-0018 re-evaluado con el harness limpio** (mismos insumos, cambiando sólo el parámetro en
+`perfil_legislador`): cortar sin encoger empeora +2,8% de Brier (IC [1,8; 4,2]) — **el
+encogimiento se sostiene**; $n\ge8$ contra $n\ge1$, +0,5% (IC [−0,01; 1,26]) — el umbral en 1
+queda justificado por el punto, no por el intervalo.
 
 ### ⚖️ Discrepancia abierta: lo realista predice peor
 
@@ -1545,7 +1635,17 @@ $\alpha$ = aceleración, $\kappa$ = cuánto más pesa la caída, $\lambda$ = amp
 niveles bajos. **Estos parámetros se acuerdan, no se estiman** — igual que el break-even
 del ADR-0008. Recupera la asimetría de teoría prospectiva perdida el 11-08.
 
-### III.B.3 — Récord por tema — ✅ PRENDIDO 16-09-2026 (ADR-0026, `RECORD_POR_TEMA`)
+### III.B.3 — Récord por tema — ⚪ APAGADO 28-09-2026 (ADR-0034, enmienda ADR-0026). Estuvo prendido del 16-09 al 28-09
+
+> **Por qué se apagó.** El "11,1% menos Brier" que lo prendió se midió con `shift(1)` por
+> fila: el récord por área veía los artículos anteriores de la misma ley, que comparten tema.
+> Con la misma metodología y sólo cambiando la historia a estricta, **+11,06% pasa a −2,91%**
+> (IC por ley [−8,6; +2,1] en mejora: no se distingue de 0; desde 2023, −18,6%). Medido contra
+> el motor en el censo limpio, **empeora** el Brier 2,1% en total (IC [0,8; 3,5]) y 6,4% en los
+> votos donde actúa ([2,9; 10,1]); Senado +20,5%, hasta 2011 +19,6%, desde 2023 +10,8%. Se
+> prendió con el criterio "si el censo completo mejora"; se apaga con el simétrico. La
+> función sigue en el motor (`alineacion_individual_por_area`) y `RECORD_POR_TEMA=1` la
+> vuelve a prender. Lo que sigue es cómo estaba descripta cuando corría.
 
 **Compromiso de URGENTE 8, cumplido.** Franco: *"cuando modelemos la probabilidad de apoyar
 un proyecto con determinado tema, deberíamos revisar esta formulación, ya que el tema
@@ -1738,17 +1838,31 @@ benigna: era el síntoma compuesto de los dos problemas juntos, cada uno tapando
 > queda sospechosamente vacía o uniforme, verificar el criterio de inclusión contra la
 > fuente antes de aceptar que "así es el dato".
 
-**Tercer caso: la unidad efectiva es la LEY (expediente), no el acta** (ADR-0032, confirmado
-en ADR-0033). 1.070 actas contestadas eran 310 leyes; en la era Milei, 456 actas EJEC/OPOS son
-136 expedientes (3,4 por ley). Dos reglas:
+### 📏 LA REGLA DEL EXPEDIENTE (ADR-0032 + ADR-0034 — una sola regla, no dos hallazgos)
 
-1. **Los IC se sacan re-muestreando expedientes**, no actas ni votos. En ADR-0033 el
-   bootstrap por expediente dio IC hasta **5× más anchos** que por legislador; clusterizar por
-   acta subestima los errores ~1,7× (ADR-0032).
-2. **Toda "firma" o rasgo medido dentro de un período se verifica con una partición por
-   expediente entero** (split-half). Si por acta da alto y por expediente cae, es agrupamiento
-   por ley: así murió la firma temática (0,5–0,8 → ≈0). El $\rho$ por origen la pasó
-   (0,86–0,94 por expediente).
+> **La unidad efectiva es el EXPEDIENTE, no el acta.** 1.070 actas son 310 leyes. Eso tiene
+> dos consecuencias y son la misma: **(a)** clusterizar por acta subestima los errores
+> estándar ~1,7×; **(b)** usar una acta de la misma ley como historia es fuga, porque no es
+> una observación independiente. Todo corte, cluster o ventana de historia **se hace por
+> expediente**.
+
+Las actas de una ley no son independientes: se votan juntas, casi siempre con el mismo
+resultado, y en la era Milei son 3,4 por ley (456 actas EJEC/OPOS = 136 expedientes). La
+misma dependencia se vio primero en el **error estándar** (ADR-0032) y después en el **punto
+estimado** (ADR-0034: el skill publicado 0,161 era fuga). En la práctica:
+
+1. **Historia:** el récord de un voto sólo puede usar votos de fecha **anterior** y de
+   **otra ley** (`baseline_voto_individual`, `historia="estricta"`; el motor corta con `<`).
+2. **IC:** se re-muestrean **leyes enteras**, no actas ni votos (`skill_ic_por_ley`,
+   `dif_brier_ic_por_ley`). En ADR-0033 el bootstrap por expediente dio IC hasta 5× más anchos
+   que por legislador.
+3. **Rasgos dentro de un período:** se verifican con una partición por expediente entero
+   (split-half). Si por acta da alto y por expediente cae, es agrupamiento por ley: así murió
+   la firma temática (0,5–0,8 → ≈0); el $\rho$ por origen la pasó (0,86–0,94).
+
+"Ley" = el grupo de actas que comparten `proyecto_id` o expediente normalizado en cualquiera
+de las tres tablas que lo dicen (`ley_por_acta`). El 15% de los votos cae en actas sin
+ninguna clave: ahí cada acta es su propia ley y el corte no ve nada (se loguea).
 
 ## IV.7 — Trampas conocidas de estos datos
 
@@ -1759,6 +1873,23 @@ en ADR-0033). 1.070 actas contestadas eran 310 leyes; en la era Milei, 456 actas
 | **`od_numero` se repite entre períodos** | 1.722 números para 2.517 pares | la clave es `(periodo, od_numero)` o directamente `archivo` |
 | **Cachés vacíos ≠ datos faltantes** | 90 minutos de descarga para reproducir un archivo idéntico | mirar el **parquet**, no la carpeta de trabajo. `Archivos_Borrar/` y `data/raw/` son descartables por diseño |
 | **Actas `AUX`** | shares inflados hacia el sí | excluir homenajes, trámite y consenso |
+
+### Los defaults silenciosos — ya son un patrón, no una casualidad
+
+Cinco veces un valor por defecto que nadie eligió cambió el resultado sin dar error. En
+todas, el síntoma fue un número imposible o sospechosamente bueno:
+
+| # | default silencioso | qué produjo |
+|---|---|---|
+| 1 | `clase="unico"` en el parser del Senado | **0%** de dictámenes de mayoría, imposible |
+| 2 | capítulos sustantivos clasificados `AUX` | caían a incondicional sin error |
+| 3 | partir comisiones por comas | una comisión faltante el **100%** de las veces |
+| 4 | encogimiento que degradaba sin aviso | el **0,0%** de ADR-0030 |
+| 5 | **un `<=` donde debía ir `<`** (y `shift(1)` por fila en vez de por fecha) | el skill publicado **0,161** era fuga; el `RECORD_POR_TEMA` se prendió por un 11,06% medido con la misma fuga (ADR-0034) |
+
+**Qué hacer:** todo corte temporal se escribe con `<` y con un test que lo fije; todo
+fallback avisa (contador agregado); y un salto grande en una métrica se trata como
+sospechoso hasta que se lo explica.
 
 ## IV.8 — Todo cambio al motor se presenta en tres niveles (ADR-0015)
 
@@ -1812,28 +1943,53 @@ doctrina: un corrimiento agregado mueve el número sin decir sobre quién actuar
 
 ---
 
-# Parámetros estimados el 2026-09-03 y el 2026-09-04 (ninguno implementado)
+# Parámetros estimados (03-09 al 16-09) — ⚠️ TODOS CON OFFSET CONTAMINADO
 
-| parámetro | valor | se | p | script |
-|---|---:|---:|---:|---|
-| $\beta_1$ — firmó él ($F_i$) | **+1,529** | 0,110 | <0,0001 | `estimar_beta_dictamen.py` |
-| $\beta_2$ — jefe × lealtad | **+0,645** | 0,172 | 0,0002 | idem *(roster completado el 04-09; el coeficiente no se movió, bajó el SE — §III.A.2)* |
-| $\beta_1$, $\beta_2$ — **SENADO** | **+2,22 / +2,28** | 0,71 / 0,63 | 0,0018 / 0,0003 | idem `--camara senado` *(nuevo el 04-09: antes daba 0 actas — ADR-0017; `--muestra 400`)* |
-| $\delta$ — **SENADO** | **no estimable** | — | — | el carácter es 100% ÚNICO en el Senado: sin varianza. No es el parser (ADR-0017) |
-| ~~$\beta_3$ — anchura $W_{-\ell}$~~ | +0,262 | 0,227 | 0,25 | **DESCARTADO 03-09** (colineal) |
-| $\delta$ — DISPUTADO vs ÚNICO | **−2,285** | 0,198 | <0,0001 | idem *(con tema y origen)* |
-| $\delta$ — mayoría sin minoría | −2,356 | 0,223 | <0,0001 | idem |
-| $\delta$ — sólo minoría | −2,019 | 0,395 | <0,0001 | idem |
-| $\varepsilon_0$ | **0,020** | — | — | `estimar_epsilon_tau.py` |
-| $\tau$ | **1,197** | IQR [0,88; 1,46] | — | idem |
-| $\theta_D$ — sobre tablas, Diputados | **−2,047** | 0,217 | <0,0001 | `estimar_theta_sobre_tablas.py` |
-| $\theta_S$ — sobre tablas, Senado | −0,262 | 0,185 | 0,157 | idem → **usar 0** |
-| $\psi$ — arrastre entre cámaras | **+7,725** | 0,816 | <0,0001 | `estimar_psi_arrastre.py` |
+> **28-09-2026 (ADR-0034) — ninguno de estos números es limpio.** Todos se estimaron encima
+> de un offset que salía de una copia vieja del harness: récord con `shift(1)` por fila (los
+> artículos anteriores de la misma ley, del mismo día, contaban como historia), **sin** guard de
+> era, **sin** encoger hacia el bloque y **sin** condicionar por origen. Y los SE se
+> clusterizaron por ACTA: por ley son 3-4× más anchos (ADR-0032). **No citarlos como limpios.**
+>
+> **La dirección del sesgo, verificada donde se pudo.** El supuesto era "offset demasiado
+> bueno ⇒ coeficientes atenuados (conservadores) y τ subestimado". Resultó a medias:
+> - **τ:** sí sube con el offset limpio, pero **1%** (1,186 → 1,197 sobre los mismos votos).
+> - **β:** mismo panel, misma especificación (M6), tres offsets (`chequear_direccion_beta.py`):
+>
+>   | offset | $F_i$ | lealtad×jefe | Brier del offset |
+>   |---|---:|---:|---:|
+>   | el de la estimación (espejo viejo) | **2,09** (SE ley 0,40) | **1,75** (0,37) | 0,143 |
+>   | harness con fuga (27-09) | 1,92 (0,33) | 1,42 (0,35) | 0,121 |
+>   | **motor limpio** | **2,05** (0,43) | **1,29** (0,33) | 0,135 |
+>
+>   $F_i$ se comporta como decía el argumento; **lealtad×jefe no: baja** con el offset limpio
+>   (1,42 → 1,29) y queda un 26% por debajo del valor de producción. Y el offset con el que se
+>   estimó β **no era "demasiado bueno"**: tenía fuga, pero también le faltaban guard, encogimiento
+>   y origen, y su Brier es PEOR que el limpio. **El razonamiento sobre la dirección del sesgo
+>   no se sostiene como regla general**: depende de qué le faltaba a cada offset además de la fuga.
+> - δ, θ y ψ **no se re-midieron**: su sesgo tiene dirección desconocida.
 
-**Todos son estimaciones sobre muestras (400-900 actas) con el motor ACTUAL como offset.**
-Al implementar cualquiera hay que re-estimar los demás: los parámetros no son
-independientes entre sí. En particular **$\tau$ se re-estima al final**, porque mide la
-dispersión que el motor no explica y δ debería reducirla.
+| parámetro | valor | se | p | script | offset / estado al 28-09 |
+|---|---:|---:|---:|---|---|
+| $\beta_1$ — firmó él ($F_i$) — **PRODUCCIÓN (M6, 14-09)** | **+2,088** | 0,095 por acta · **0,40 por ley** | — | `estimar_beta_dictamen.py` | ⚠️ contaminado. Con offset limpio: **2,05** — se sostiene |
+| $\beta_2$ — lealtad×jefe — **PRODUCCIÓN (M6, 14-09)** | **+1,750** | 0,165 por acta · **0,37 por ley** | — | idem | ⚠️ contaminado. Con offset limpio: **1,29** — **baja 26%** |
+| $\beta_1$ — firmó él (03-09, M3) | +1,529 | 0,110 | <0,0001 | idem | histórico, reemplazado por M6 |
+| $\beta_2$ — jefe × lealtad (03-09, M3) | +0,645 | 0,172 | 0,0002 | idem | histórico |
+| $\beta_1$, $\beta_2$ — **SENADO** | +2,22 / +2,28 | 0,71 / 0,63 | 0,0018 / 0,0003 | idem `--camara senado` | ⚠️ contaminado, no re-medido |
+| $\delta$ — **SENADO** | **no estimable** | — | — | — | el carácter es 100% ÚNICO en el Senado |
+| ~~$\beta_3$ — anchura $W_{-\ell}$~~ | +0,262 | 0,227 | 0,25 | — | descartado 03-09 (colineal) |
+| $\delta$ — DISPUTADO vs ÚNICO | −2,285 | 0,198 | <0,0001 | idem | ⚠️ contaminado, no re-medido (término en 0) |
+| $\delta$ — mayoría sin minoría | −2,356 | 0,223 | <0,0001 | idem | idem |
+| $\delta$ — sólo minoría | −2,019 | 0,395 | <0,0001 | idem | idem |
+| $\varepsilon_0$ — **PRODUCCIÓN** | **0,035** | — | — | `estimar_epsilon_tau.py` (16-09) | ⚠️ contaminado. Con offset limpio: **0,055** (no aplicado) |
+| $\tau$ — **PRODUCCIÓN** | **1,19** (1,197 el 03-09; 1,190 el 16-09) | IQR [0,88; 1,46] | — | idem | ⚠️ contaminado. Con offset limpio: **1,197** (IQR [0,88; 1,61]; Diputados 1,32, Senado 1,16). **La banda cubre el 63,6%**, no el 90% (URGENTE U2) |
+| $\theta_D$ — sobre tablas, Diputados | −2,047 | 0,217 | <0,0001 | `estimar_theta_sobre_tablas.py` | ⚠️ contaminado; término descartado |
+| $\theta_S$ — sobre tablas, Senado | −0,262 | 0,185 | 0,157 | idem | usar 0 |
+| $\psi$ — arrastre entre cámaras | +7,725 | 0,816 | <0,0001 | `estimar_psi_arrastre.py` | ⚠️ contaminado, no re-medido, no implementado |
+
+**Al implementar o re-estimar cualquiera, hay que re-estimar los demás:** no son independientes
+entre sí. El offset limpio voto a voto ya existe: la columna `p__estricta__general` de
+`evaluacion/baseline/outputs/censo_detalle_2026-09-28.parquet` (`censo_detalle_paralelo.py`).
 
 ---
 
@@ -1866,3 +2022,8 @@ dispersión que el motor no explica y δ debería reducirla.
 | 2026-09-28 | medido: el harness filtra votos del mismo día — skill 0,161 → 0,092 con historia estricta (URGENTE U1) |
 | 2026-09-28 | metodología: el expediente como unidad efectiva (IV.6) y "anterior" por fecha (IV.4) |
 | 2026-09-28 | ADR-0034 FASE 1: el motor corta el récord con `<` (era `<=`); el harness excluye fecha del acta y misma ley. En producción no cambia el número; en backtest sí |
+| 2026-09-28 | ADR-0034 FASE 2: el harness importa el motor (`record_legisladores`, `necesita_cond_por_acta`, `perfil_legislador`); la fórmula no cambia |
+| 2026-09-28 | ADR-0034: **número publicado 0,1333** (era 0,1611, inflado por fuga); era vigente 0,010 |
+| 2026-09-28 | ADR-0034: `RECORD_POR_TEMA` **apagado** — su 11,06% era fuga; limpio empeora 2,1% |
+| 2026-09-28 | ADR-0034: τ limpio 1,197 (no aplicado); la banda cubre el 63,6%, no el 99,88% |
+| 2026-09-28 | ADR-0034: regla del EXPEDIENTE (IV.6) y quinto default silencioso, `<=` por `<` (IV.7) |

@@ -3,6 +3,13 @@
 sobre el CENSO completo, walk-forward, comparado PAREADO voto a voto contra el
 récord general (lo que el motor usa HOY).
 
+⚠️ ADR-0034 (28-09-2026): ESTA MEDICIÓN TIENE FUGA Y NO MIDE EL MOTOR. El récord se arma
+con `shift(1)` por fila —cuenta como historia los artículos anteriores de la MISMA ley,
+votados el mismo día, que comparten tema— y el récord "general" contra el que compara no
+es el del motor (sin guard de era, sin encoger hacia el bloque, sin origen). De acá salió
+el 11,06% que justificó prender RECORD_POR_TEMA. La re-medición limpia es
+`medir_record_por_tema_limpio.py`. Se deja como estaba para poder reproducir el número.
+
 QUÉ AGREGA sobre `medir_rec_por_tema.py` (que ya midió, por ÁREA SUELTA, que el
 récord encogido hacia el general gana ~8% de Brier relativo, ver salida
 `medir_rec_por_tema_2026-09-16.json`):

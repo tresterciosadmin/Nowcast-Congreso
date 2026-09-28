@@ -35,7 +35,8 @@ sys.path.insert(0, str(REPO / "variables" / "bloque" / "src"))
 sys.path.insert(0, str(REPO / "evaluacion" / "baseline" / "src"))
 
 import nowcast_puertas as NP  # noqa: E402
-from baseline_voto_individual import agrupar_leyes, record_previo  # noqa: E402
+from baseline_voto_individual import agrupar_leyes  # noqa: E402
+from medir_fuga_historia import record_previo  # noqa: E402
 
 fallos: list[str] = []
 corridos = 0

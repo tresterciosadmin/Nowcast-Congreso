@@ -139,6 +139,9 @@ DESVIOS_POR_VOTO = VOTO_INDIVIDUAL_OUT / "desvios_por_voto.parquet"
 
 AGREGADOR_OUT = RAIZ / "modelo" / "agregador_institucional" / "outputs"
 ENSEMBLE_OUT = RAIZ / "modelo" / "ensemble" / "outputs"
+# Las mediciones del motor (censo, brazos). Los .json viajan por git; los detalles
+# .parquet voto a voto no (pesan ~100 MB) y se regeneran con el script que los nombra.
+BASELINE_OUT = RAIZ / "evaluacion" / "baseline" / "outputs"
 
 # ─────────────────────────────────────────────────── compartido y coordinacion
 
@@ -176,7 +179,7 @@ GENERADOS = {
     "LEGISLADOR_DATA", "ASISTENCIA_OUT",
     "PROYECTO_FEATURES", "PROYECTO_ORIGEN_POR_ACTA", "PROYECTO_TEMA_POR_ACTA",
     "EMBUDO_OUT", "VOTO_INDIVIDUAL_OUT", "DISCIPLINA_INDIVIDUAL", "DESVIOS_POR_VOTO",
-    "AGREGADOR_OUT", "ENSEMBLE_OUT",
+    "AGREGADOR_OUT", "ENSEMBLE_OUT", "BASELINE_OUT",
     "MANUAL_2026_XLSX",            # lo mantiene Franco a mano, puede no estar en un clon
     "SEMILLA_DECADA_VOTADA_ZIP",   # material de terceros, no siempre presente
 }

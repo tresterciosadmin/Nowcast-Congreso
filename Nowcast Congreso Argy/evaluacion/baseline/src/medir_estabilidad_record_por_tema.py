@@ -46,7 +46,7 @@ K_SHRINK = 5.0
 UMBRALES_N = [3, 5, 10]
 _AUX_PREFIX = "AUX"
 
-# límites de era de `datos/expedientes/src/definiciones.py::GOBIERNOS` -- los
+# límites de era de `definiciones.py::GOBIERNOS` (raíz del repo) -- los
 # ÚNICOS recambios que el guard de era (ADR-0018) trata como tales. Antes de
 # 2015-12-10 la canónica entera cae en la era "KIRCHNER" (1900-2015-12-10):
 # no hay un cuarto recambio que medir ahí, es una sola era larga por diseño.

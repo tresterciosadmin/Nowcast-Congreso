@@ -1,13 +1,17 @@
 # -*- coding: utf-8 -*-
 """El censo de `baseline_voto_individual.correr` partido por FECHAS en procesos
-paralelos, con el detalle voto a voto guardado (incluye share y desvío del linaje, el
-récord y su n), para poder recomputar brazos del récord sin re-proyectar la postura.
+paralelos, con el detalle voto a voto guardado.
 
-Da el MISMO detalle que una corrida única: el récord walk-forward se calcula sobre toda
-la historia en cada proceso y `hasta`/`desde` sólo recortan qué actas se evalúan; la
-postura depende sólo de (cámara, mes, tema, origen).
+Da el MISMO detalle que una corrida única: `desde`/`hasta` sólo recortan qué actas se
+evalúan (la historia es siempre toda la anterior), y desde el 28-09 la postura y el
+récord se calculan a la fecha exacta de cada acta — ya no por mes —, así que no
+dependen de dónde caen los bordes.
 
-    python evaluacion/baseline/src/censo_detalle_paralelo.py --procesos 3
+Desde el 28-09 (ADR-0034) calcula varias variantes en la misma pasada: la principal
+(historia estricta, el motor como está) y las que hacen falta para descomponer el
+arreglo de la fuga y para medir RECORD_POR_TEMA con el harness limpio.
+
+    python evaluacion/baseline/src/censo_detalle_paralelo.py --procesos 7
 """
 from __future__ import annotations
 
@@ -22,19 +26,31 @@ import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-SALIDA = "evaluacion/baseline/outputs/censo_detalle_2026-09-27.parquet"
+SALIDA = "evaluacion/baseline/outputs/censo_detalle_2026-09-28.parquet"
+
+# (historia, record_por_tema). La primera es la principal (columna `p`): la del motor
+# como está (RECORD_POR_TEMA según su bandera), con historia estricta.
+VARIANTES = (("estricta", None),
+             ("estricta", False), ("estricta", True),
+             ("fecha", True),
+             ("dia_incluido", True), ("dia_incluido", False))
 
 
 def _tramo(args):
-    desde, hasta = args
-    from baseline_voto_individual import correr, _ContadorAvisos
+    desde, hasta, variantes = args
+    from baseline_voto_individual import correr, silenciar_avisos_del_motor, _nombre
     logging.basicConfig(level=logging.INFO, stream=sys.stdout,
                         format=f"%(asctime)s [{desde}] %(levelname)s %(message)s")
-    logging.getLogger("bloque").addFilter(_ContadorAvisos())
+    silenciar_avisos_del_motor()
+    principal = variantes[0]
+    extra = tuple(x for x in variantes[1:] if _nombre(*x) != _nombre(*principal))
     t0 = time.time()
-    _, d = correr(desde=desde, hasta=hasta, devolver_detalle=True)
-    logging.getLogger("censo").info("tramo %s..%s: %d votos en %.1f min",
-                                    desde, hasta, len(d), (time.time() - t0) / 60)
+    res, d = correr(desde=desde, hasta=hasta, historia=principal[0],
+                    record_por_tema=principal[1], variantes_extra=extra,
+                    devolver_detalle=True)
+    logging.getLogger("censo").info("tramo %s..%s: %d votos en %.1f min · avisos %s",
+                                    desde, hasta, len(d), (time.time() - t0) / 60,
+                                    res.get("avisos_motor"))
     return d
 
 
@@ -46,14 +62,14 @@ def bordes(n_tramos: int) -> list[tuple[str, str]]:
     a = v.drop_duplicates("acta_id")["fecha"].sort_values()
     a = a[a >= a.min() + pd.Timedelta(days=VENTANA_DIAS)]
     q = [a.quantile(i / n_tramos) for i in range(1, n_tramos)]
-    cortes = [""] + [pd.Timestamp(x).strftime("%Y-%m-%d") for x in q] + [""]
-    return [(cortes[i], cortes[i + 1]) for i in range(n_tramos)]
+    cortes = [""] + sorted({pd.Timestamp(x).strftime("%Y-%m-%d") for x in q}) + [""]
+    return [(cortes[i], cortes[i + 1]) for i in range(len(cortes) - 1)]
 
 
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--procesos", type=int, default=3)
-    ap.add_argument("--tramos", type=int, default=9)
+    ap.add_argument("--procesos", type=int, default=7)
+    ap.add_argument("--tramos", type=int, default=21)
     ap.add_argument("--salida", default=None)
     args = ap.parse_args(argv)
     logging.basicConfig(level=logging.INFO, stream=sys.stdout,
@@ -63,7 +79,7 @@ def main(argv=None) -> int:
     logging.info("tramos: %s", tramos)
     t0 = time.time()
     with get_context("spawn").Pool(args.procesos) as pool:
-        partes = list(pool.imap_unordered(_tramo, tramos))
+        partes = list(pool.imap_unordered(_tramo, [(a, b, VARIANTES) for a, b in tramos]))
     d = pd.concat(partes, ignore_index=True).sort_values(["fecha", "acta_id"]).reset_index(drop=True)
     dup = d.duplicated(["acta_id", "legislador"]).sum()
     if dup:

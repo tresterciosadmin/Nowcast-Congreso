@@ -2,6 +2,13 @@
 """FASE 1 de coordinacion/PROMPT-MULTITEMA-V2.md — "medí primero, esto decide el
 diseño" de `rec_i^tema` (el récord de un legislador CONDICIONADO por tema, URGENTE 8).
 
+⚠️ ADR-0034 (28-09-2026): ESTA MEDICIÓN TIENE FUGA Y NO MIDE EL MOTOR. El récord se arma
+con `shift(1)` por fila —cuenta como historia los artículos anteriores de la MISMA ley,
+votados el mismo día, que comparten tema— y el récord "general" contra el que compara no
+es el del motor (sin guard de era, sin encoger hacia el bloque, sin origen). De acá salió
+el 11,06% que justificó prender RECORD_POR_TEMA. La re-medición limpia es
+`medir_record_por_tema_limpio.py`. Se deja como estaba para poder reproducir el número.
+
 Contesta, con datos reales y walk-forward (sin leakage), las tres preguntas que el
 prompt pide medir ANTES de construir nada:
 

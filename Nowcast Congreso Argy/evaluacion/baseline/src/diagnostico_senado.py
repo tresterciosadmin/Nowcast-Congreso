@@ -84,6 +84,14 @@ def construir(camara: str, muestra: int, seed: int = 7) -> pd.DataFrame:
               & (votos["camara"] == camara)].copy()
     v["af"] = (v["conducta"] == "AFIRMATIVO").astype(int)
     v = v.sort_values("fecha")
+    # ⚠️ ESPEJO VIEJO DEL MOTOR (ADR-0034, 28-09-2026). Este récord es el del harness
+    # hasta el 28-09: `shift(1)` por FILA (cuenta como historia los artículos anteriores
+    # de la misma ley, votados el mismo día), sin guard de era, sin encoger hacia el
+    # bloque y sin condicionar por origen. Lo que se estimó con esto usó un OFFSET
+    # CONTAMINADO (ver la tabla de parámetros de FORMULA-COMPLETA). No se corrige acá a
+    # propósito: re-estimar es una decisión aparte. Para un offset limpio, el P_i del
+    # motor voto a voto está en el censo (`censo_detalle_paralelo.py`, columna `p`);
+    # así lo hace `estimar_epsilon_tau.py --panel censo`.
     gp = v.groupby("legislador_id")["af"]
     v["record"] = gp.transform(lambda s: s.shift(1).expanding().mean())
     v["n_prev"] = gp.transform(lambda s: s.shift(1).expanding().count()).fillna(0)

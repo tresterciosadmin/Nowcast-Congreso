@@ -36,9 +36,18 @@ equivoca, se equivoca para toda el acta a la vez). Este estimador no las separa,
 justamente lo que las bandas tienen que reflejar. Pero no es "el mundo se movio junto";
 parte es "el motor no sabia". Bajar el sesgo del motor deberia bajar tau.
 
+EL OFFSET (28-09-2026, ADR-0034). tau mide lo que el motor NO explica, asi que depende de
+que P_i se le pase. Hasta el 28-09 el panel lo armaba `panel()`, una copia vieja del
+harness: `shift(1)` por fila (cuenta los articulos anteriores de la MISMA ley del mismo
+dia), sin guard de era, sin encoger, sin origen. Un offset que conoce la respuesta deja
+menos residuo: tau salia SUBESTIMADO. Ahora el default es `--panel censo`: el P_i del
+MOTOR voto a voto, tal como lo deja `censo_detalle_paralelo.py` (historia estricta).
+`--panel harness_viejo` queda solo para reproducir el 1,197 / 1,190 anteriores.
+
 Uso:
-    python modelo/ensemble/src/estimar_epsilon_tau.py --muestra 600
-    python modelo/ensemble/src/estimar_epsilon_tau.py
+    python modelo/ensemble/src/estimar_epsilon_tau.py                      # censo limpio
+    python modelo/ensemble/src/estimar_epsilon_tau.py --columna p__dia_incluido__tema
+    python modelo/ensemble/src/estimar_epsilon_tau.py --panel harness_viejo --muestra 2500
 """
 from __future__ import annotations
 
@@ -69,7 +78,11 @@ sys.path.insert(0, str(REPO / "evaluacion" / "baseline" / "src"))
 
 
 def panel(muestra: int = 0, seed: int = 7, camara: str = "") -> pd.DataFrame:
-    """(acta_id, camara, fecha, p_motor, y) para cada voto emitido."""
+    """(acta_id, camara, fecha, p_motor, y) para cada voto emitido — con el HARNESS VIEJO.
+
+    ⚠️ ESPEJO VIEJO DEL MOTOR (ADR-0034): shift(1) por fila, sin guard, sin encoger, sin
+    origen. Sólo para reproducir las estimaciones anteriores al 28-09 (`--panel
+    harness_viejo`). El default es `panel_censo`."""
     from bloque import cargar as cargar_bloque, proyectar_postura, cargar_tema_por_acta
     from baseline_voto_individual import perfil, _norm_cond, _ContadorAvisos, MIN_HIST_INDIVIDUAL
 
@@ -132,6 +145,24 @@ def panel(muestra: int = 0, seed: int = 7, camara: str = "") -> pd.DataFrame:
     d = pd.DataFrame(filas)
     d.attrs["avisos"] = dict(cont.tally)
     return d
+
+
+CENSO = "evaluacion/baseline/outputs/censo_detalle_2026-09-28.parquet"
+
+
+def panel_censo(ruta=None, columna: str = "p", camara: str = "") -> pd.DataFrame:
+    """(acta_id, camara, fecha, p_motor, y) desde el detalle del censo: el P_i que
+    calcula el MOTOR (`baseline_voto_individual`, que lo importa), no una copia."""
+    d = pd.read_parquet(Path(ruta) if ruta else REPO / CENSO)
+    if columna not in d.columns:
+        raise KeyError(f"el censo no tiene la columna {columna!r}; hay "
+                       f"{[c for c in d.columns if c.startswith('p')]}")
+    if camara:
+        d = d[d["camara"] == camara]
+    out = d[["acta_id", "camara", "fecha", "y"]].copy()
+    out["p_motor"] = d[columna].astype(float).to_numpy()
+    out.attrs["avisos"] = {"panel": "censo", "columna": columna}
+    return out
 
 
 def _brier(p, y):
@@ -236,11 +267,19 @@ def main(argv):
     ap.add_argument("--camara", default="")
     ap.add_argument("--seed", type=int, default=7)
     ap.add_argument("--salida", default=None)
+    ap.add_argument("--panel", choices=["censo", "harness_viejo"], default="censo",
+                    help="censo (default) = P_i del motor, historia estricta; "
+                         "harness_viejo = la copia con fuga que se usó hasta el 28-09")
+    ap.add_argument("--detalle", default=None, help="parquet del censo (default: CENSO)")
+    ap.add_argument("--columna", default="p", help="qué variante del censo usar como offset")
     args = ap.parse_args(argv)
 
     logging.basicConfig(level=logging.INFO, stream=sys.stdout,
                         format="%(levelname)s %(name)s: %(message)s")
-    d = panel(args.muestra, args.seed, args.camara)
+    if args.panel == "censo":
+        d = panel_censo(args.detalle, args.columna, args.camara)
+    else:
+        d = panel(args.muestra, args.seed, args.camara)
     if d.empty:
         raise SystemExit("panel vacio")
     eps = estimar_epsilon(d)

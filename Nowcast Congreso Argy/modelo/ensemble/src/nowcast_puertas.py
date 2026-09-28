@@ -485,6 +485,36 @@ def alineacion_individual_por_area(votos, cond_por_acta, origen_map: dict,
     return out
 
 
+def necesita_cond_por_acta(tema, origen, temas_multi, areas_objetivo_ind) -> bool:
+    """¿Hace falta cargar `tema_por_acta`? Sólo si algo condiciona por tema u origen.
+
+    Extraída de `nowcast` el 28-09-2026 (ADR-0034) para que el harness la IMPORTE en
+    vez de copiarla. No es un detalle: sin `cond_por_acta`, `proyectar_postura` no
+    puede excluir las actas AUX, así que esta regla decide también qué ventana ve la
+    postura del bloque. Comportamiento idéntico al de antes."""
+    return bool(tema or origen or temas_multi or areas_objetivo_ind)
+
+
+def record_legisladores(votos, hasta, origen, origen_map: dict, areas_objetivo_ind,
+                        cond_por_acta, record_por_tema: bool | None = None):
+    """El récord de cada legislador tal como entra a `perfil_legislador`: el general
+    (`alineacion_individual`) y, si `RECORD_POR_TEMA` y el proyecto tiene áreas, el
+    condicionado por tema (`alineacion_individual_por_area`).
+
+    Extraída de `nowcast` el 28-09-2026 (ADR-0034): el harness del censo tenía su propia
+    copia del récord —el "espejo exacto"— y divergió dos veces (no condicionaba por
+    origen, y contaba votos del mismo día). Ahora hay UNA copia y la usan los dos.
+    `record_por_tema=None` sigue a la bandera; True/False lo fuerza (para medirla).
+    Devuelve `(ind, stats)`; `stats` es None si el récord por tema no corrió."""
+    usar_tema = RECORD_POR_TEMA if record_por_tema is None else record_por_tema
+    ind = alineacion_individual(votos, origen_map, origen, hasta=hasta)
+    if usar_tema and areas_objetivo_ind:
+        return alineacion_individual_por_area(votos, cond_por_acta, origen_map, origen,
+                                              areas_objetivo_ind, ind, hasta=hasta,
+                                              devolver_stats=True)
+    return ind, None
+
+
 def perfil_legislador(share_linaje: float, desvio: float, record=None,
                       n_emitidos: int = 0, presencia: float = 1.0,
                       min_hist: int = None, shrink: bool | None = None) -> dict:
@@ -772,7 +802,8 @@ def nowcast(camara_origen: str, fecha=None, *, proyecto_id: str | None = None,
 
     cargar, proyectar_postura, cargar_tema_por_acta = _bloque()
     votos = cargar(CANONICA_CLEAN)
-    cond = cargar_tema_por_acta() if (tema or origen or temas_multi or areas_objetivo_ind) else None
+    cond = (cargar_tema_por_acta()
+            if necesita_cond_por_acta(tema, origen, temas_multi, areas_objetivo_ind) else None)
     origen_map = {}
     if origen and Path(PROYECTO_ORIGEN_POR_ACTA).exists():
         opa = pd.read_parquet(PROYECTO_ORIGEN_POR_ACTA)
@@ -780,12 +811,8 @@ def nowcast(camara_origen: str, fecha=None, *, proyecto_id: str | None = None,
     elif origen:
         logger.warning("no encontré %s: el récord individual no se puede condicionar "
                        "por origen", PROYECTO_ORIGEN_POR_ACTA)
-    ind = alineacion_individual(votos, origen_map, origen, hasta=F)
-    record_por_tema_stats = None
-    if RECORD_POR_TEMA and areas_objetivo_ind:
-        ind, record_por_tema_stats = alineacion_individual_por_area(
-            votos, cond, origen_map, origen, areas_objetivo_ind, ind, hasta=F,
-            devolver_stats=True)
+    ind, record_por_tema_stats = record_legisladores(votos, F, origen, origen_map,
+                                                     areas_objetivo_ind, cond)
 
     # ── A y C: el carácter OBSERVADO, si lo hay ────────────────────────────────
     tabla = tabla_caracter if tabla_caracter is not None else cargar_caracter()

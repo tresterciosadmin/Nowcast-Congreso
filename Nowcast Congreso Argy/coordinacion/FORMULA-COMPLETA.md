@@ -3,6 +3,15 @@
 **Última actualización:** 2026-09-28 (ADR-0034, cierre de etapa) · **Regla:** ADR-0015 —
 quien toca el motor actualiza este archivo en el mismo commit.
 
+> **2026-09-28 — FASE 2 de ADR-0034: la fórmula NO cambia.** Se extraen de `nowcast()`
+> dos piezas, sin tocar lo que calculan: `record_legisladores` (récord general + por tema
+> según `RECORD_POR_TEMA`) y `necesita_cond_por_acta` (cuándo se carga `tema_por_acta`,
+> que decide si la postura puede excluir las actas AUX). El motivo es que el harness del
+> censo las IMPORTE: hasta hoy tenía su propia copia del récord y de `perfil`, y medía
+> otra cosa. Verificado: el harness y `nowcast()` dan la misma $P_i$ en 238 de 238
+> legisladores de un acta real (`test_harness_es_el_motor.py`); los 49 tests del motor,
+> sin cambios.
+>
 > **2026-09-28 — FASE 1 de ADR-0034: el corte del récord en el motor pasa de `<=` a `<`.**
 > *La función:* `_alineacion_base` (compartida por `alineacion_individual` y
 > `alineacion_individual_por_area`) ya no cuenta como historia los votos del día del

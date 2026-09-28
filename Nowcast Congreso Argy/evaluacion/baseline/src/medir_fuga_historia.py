@@ -12,8 +12,10 @@ el harness):
     fecha     sólo fechas anteriores
     estricta  fechas anteriores y OTRA ley (el default desde el 28-09)
 
-El récord se encoge hacia el share con la función del harness (`perfil`), igual que
-en el censo. Métricas por voto; IC por bootstrap de Poisson sobre LEYES (ADR-0032).
+El récord se encoge hacia el share con `perfil` (que delega en el motor), igual que en
+el censo. `record_previo` vive ACÁ y no en el harness: desde la FASE 2 el harness no
+calcula récords (los pide al motor); esto es la reconstrucción del harness VIEJO, para
+poder descomponer el arreglo con la postura fija. Métricas por voto; IC por bootstrap de Poisson sobre LEYES (ADR-0032).
 
 La fuga del MOTOR (`<=` en `_alineacion_base`) no se mide acá: el harness de hoy no
 usa esa función. Se mide en el censo nuevo (FASE 3), donde el harness sí la importa.
@@ -31,18 +33,46 @@ import numpy as np
 import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from baseline_voto_individual import (REPO, HISTORIAS, _eras_de, ley_por_acta,  # noqa: E402
-                                      perfil, record_previo)
+from baseline_voto_individual import (REPO, _eras_de, ley_por_acta, perfil,  # noqa: E402
+                                      skill_ic_por_ley)
 
 logger = logging.getLogger("medir_fuga_historia")
 
 DETALLE = "evaluacion/baseline/outputs/censo_detalle_2026-09-27.parquet"
 SALIDA = "evaluacion/baseline/outputs/medir_fuga_historia_2026-09-28.json"
-N_BOOT = 300
-SEED = 7
 ERA_BINS = [pd.Timestamp("1990-01-01"), pd.Timestamp("2011-12-10"), pd.Timestamp("2015-12-10"),
             pd.Timestamp("2019-12-10"), pd.Timestamp("2023-12-10"), pd.Timestamp("2030-01-01")]
 ERA_LABELS = ["hasta 2011", "2011-2015", "2015-2019", "2019-2023", "desde 2023"]
+
+
+HISTORIAS = ("fila", "fecha", "estricta")
+
+
+def record_previo(v: pd.DataFrame, llave: list[str], historia: str = "estricta"
+                  ) -> tuple[np.ndarray, np.ndarray]:
+    """(n, afirmativos) de la historia de cada fila dentro de `llave`.
+
+    `v` tiene que venir ordenado por fecha y traer `af`, `fecha` y `_ley`. Con
+    `historia="fila"` es exactamente `shift(1).expanding()` —el harness hasta el 28-09—;
+    con "fecha" se descuentan las filas del mismo día; con "estricta" además las de la
+    misma ley en fechas anteriores. Todo con cumcount/cumsum: sobre un millón de filas
+    el `transform(lambda)` tarda minutos."""
+    if historia not in HISTORIAS:
+        raise ValueError(f"historia invalida: {historia!r} (esperaba {HISTORIAS})")
+
+    def _cum(cols):
+        g = v.groupby(cols, sort=False, observed=True)["af"]
+        return g.cumcount().to_numpy(float), (g.cumsum() - v["af"]).to_numpy(float)
+
+    n, a = _cum(llave)
+    if historia in ("fecha", "estricta"):
+        n_d, a_d = _cum(llave + ["fecha"])
+        n, a = n - n_d, a - a_d
+    if historia == "estricta":
+        n_l, a_l = _cum(llave + ["_ley"])
+        n_ld, a_ld = _cum(llave + ["_ley", "fecha"])
+        n, a = n - (n_l - n_ld), a - (a_l - a_ld)
+    return n, a
 
 
 def skill(p, y) -> float:
@@ -50,23 +80,6 @@ def skill(p, y) -> float:
     b = float(((np.asarray(p, float) - y) ** 2).mean())
     bb = float(((y.mean() - y) ** 2).mean())
     return 1 - b / bb if bb > 0 else float("nan")
-
-
-def skill_ic_por_ley(p, y, ley, n_boot: int = N_BOOT, seed: int = SEED) -> list[float]:
-    """IC 95% del skill re-muestreando LEYES enteras (Poisson). La climatología se
-    recalcula en cada réplica con la tasa base de esa réplica."""
-    p, y = np.asarray(p, float), np.asarray(y, float)
-    _, cod = np.unique(np.asarray(ley).astype(str), return_inverse=True)
-    k = cod.max() + 1
-    se = np.bincount(cod, (p - y) ** 2, k)
-    sy = np.bincount(cod, y, k)
-    n = np.bincount(cod, minlength=k).astype(float)
-    W = np.random.default_rng(seed).poisson(1.0, (n_boot, k)).astype(float)
-    N, SY, SE = W @ n, W @ sy, W @ se
-    base = SY / N
-    brier_clim = base - base ** 2          # y binaria: mean((base-y)^2) = base(1-base)
-    s = 1 - (SE / N) / brier_clim
-    return [round(float(np.percentile(s, 2.5)), 4), round(float(np.percentile(s, 97.5)), 4)]
 
 
 def resumen(d: pd.DataFrame, col: str) -> dict:

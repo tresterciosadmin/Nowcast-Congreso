@@ -102,7 +102,7 @@ MIN_HIST_ANTERIOR = 8   # para el A/B; ver §II.5 de FORMULA-COMPLETA.md
 # cualquier nowcast del gobierno vigente eso es exactamente la era correcta, así que
 # la bandera NO mueve el número publicado (medido: idéntico al 06-09-2026). Lo que
 # arregla es lo de atrás: fechado en 2018 o en 2022, el filtro `fecha >= 2023-12-10`
-# combinado con `fecha <= hasta` deja el conjunto VACÍO y los ~478 legisladores caen
+# combinado con `fecha < hasta` deja el conjunto VACÍO y los ~478 legisladores caen
 # todos a la rama de bloque. Medido el 06-09:
 #
 #   nowcast al 2026-06-01 (MILEI)     -> 478 legisladores con récord propio
@@ -296,8 +296,14 @@ def _alineacion_base(votos, origen_map: dict, origen: str | None,
     # nowcast fechado 2024-06-01 usaba el 85% de sus votos de DESPUÉS de esa fecha.
     # `proyectar_postura` ya cortaba bien; esto no, y en el HTML anterior el récord
     # entraba directo al número.
+    #
+    # ESTRICTO (`<`), NO `<=` — 28-09-2026, ADR-0034. Con `<=`, un backtest fechado el
+    # día de una sesión contaba como historia TODAS las actas de ese día, incluida la
+    # que se predice: el récord traía la respuesta adentro. Es el mismo corte que ya
+    # usaba `proyectar_postura`. En producción (fecha = hoy, sin sesión en curso) no
+    # cambia nada; lo que se arregla es cualquier backtest del motor.
     if hasta is not None:
-        d = d[d["fecha"] <= pd.Timestamp(hasta)]
+        d = d[d["fecha"] < pd.Timestamp(hasta)]
     if origen:
         d["_ori"] = d["acta_id"].map(origen_map)
         d = d[d["_ori"] == origen]

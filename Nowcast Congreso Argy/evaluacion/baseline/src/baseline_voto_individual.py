@@ -31,7 +31,8 @@ ya predice igual de bien en los dos, delta no tiene nada que aportar.
 
 WALK-FORWARD. La postura de cada bloque se proyecta con la ventana ANTERIOR a la fecha
 del acta (`proyectar_postura`, contrato de variables/bloque; no se reimplementa). El
-record individual se acumula con `shift(1)` sobre las actas ordenadas por fecha.
+record individual usa sólo votos de FECHA ANTERIOR y de OTRA LEY (ver HISTORIAS; hasta
+el 28-09 era `shift(1)` por fila y contaba los artículos previos de la misma ley).
 
 MEMOIZACION. La postura depende de (camara, mes, tema, origen) y no del acta puntual, asi
 que se cachea por esa clave: sin eso la corrida completa no termina. Mismo truco que
@@ -87,6 +88,23 @@ K_SHRINK = 5.0
 # mide otra cosa que el motor es el bug que este mismo bloque documenta.
 GUARD_ERA_MODOS = ("off", "corte", "shrink")
 GUARD_ERA_DEFAULT = "shrink"
+
+# QUÉ CUENTA COMO HISTORIA (28-09-2026, ADR-0034 — la regla del EXPEDIENTE).
+#
+#   "estricta"  votos de FECHA anterior al acta y de OTRA ley. El default: es lo único
+#               que un nowcast hecho antes de que la ley empiece a votarse puede saber.
+#   "fecha"     votos de fecha anterior, aunque sean de la misma ley (sólo para medir
+#               cuánto pesa cada parte del arreglo).
+#   "fila"      lo que se hacía hasta el 28-09: `shift(1)` sobre votos ordenados por
+#               fecha. Cuenta como historia los artículos ANTERIORES DE LA MISMA LEY,
+#               votados el mismo día y casi siempre con el mismo resultado: le dice la
+#               respuesta. Se deja sólo para reproducir el número viejo.
+#
+# La unidad efectiva es la LEY, no el acta (ADR-0032: 1.070 actas son 310 leyes). La
+# misma dependencia que subestimaba los errores estándar, puesta en el punto estimado:
+# una votación anterior de la misma ley no es una observación independiente.
+HISTORIAS = ("estricta", "fecha", "fila")
+HISTORIA_DEFAULT = "estricta"
 
 
 # La raiz del repo sale de `rutas.py`: hay UNA sola copia del criterio
@@ -260,6 +278,101 @@ def mapa_acta_caracter(repo: Path) -> pd.DataFrame:
     return ae[["acta_id", "proyecto_id", "caracter"]].drop_duplicates("acta_id")
 
 
+ORIGEN_POR_ACTA = "variables/proyecto/data/origen_por_acta.parquet"
+TEMA_POR_ACTA = "variables/proyecto/data/tema_por_acta.parquet"
+
+
+def ley_por_acta(repo: Path = REPO) -> dict:
+    """acta_id -> la LEY (expediente) a la que pertenece. La unidad efectiva (ADR-0034).
+
+    Hay tres tablas que dicen a qué proyecto pertenece un acta, con formatos distintos
+    ('0017-PE-2019' / '0017-PE-19' / 'PE-17/19-PL') y coberturas distintas (ninguna
+    pasa del 72%). Una sola no alcanza: si el art. 1 de una ley sale con `proyecto_id`
+    y el art. 2 sólo con expediente, quedan como dos leyes y el corte no los separa.
+    Por eso se UNEN: dos actas que comparten `proyecto_id` o expediente normalizado
+    (`enlace_senado.normalizar_expediente`, el normalizador del repo — no se copia)
+    son la misma ley. Lo que no tiene ninguna clave queda como su propia ley, y se
+    CUENTA (lo loguea `correr`): una ley sin clave es una fuga que el corte no ve."""
+    sys.path.insert(0, str(repo / "datos" / "expedientes" / "src"))
+    from enlace_senado import normalizar_expediente  # noqa: E402
+
+    pares: list[tuple[str, str]] = []
+    fuentes = [(ORIGEN_POR_ACTA, ["proyecto_id"], ["expediente"]),
+               (ENLACE_TODAS, ["proyecto_id"], ["expediente", "clave"]),
+               (TEMA_POR_ACTA, [], ["expediente"])]
+    for rel, cols_pid, cols_exp in fuentes:
+        ruta = repo / rel
+        if not ruta.exists():
+            logger.warning("ley_por_acta: falta %s (se arma con las otras fuentes)", rel)
+            continue
+        t = pd.read_parquet(ruta)
+        for c in cols_pid:
+            if c in t.columns:
+                for a, x in zip(t["acta_id"].astype(str), t[c]):
+                    if not pd.isna(x) and str(x).strip():
+                        pares.append((a, "pid:" + str(x).strip()))
+        for c in cols_exp:
+            if c in t.columns:
+                for a, x in zip(t["acta_id"].astype(str), t[c]):
+                    e = normalizar_expediente(x)
+                    if e:
+                        pares.append((a, "exp:" + e))
+    return agrupar_leyes(pares)
+
+
+def agrupar_leyes(pares: list[tuple[str, str]]) -> dict:
+    """[(acta_id, clave)] -> {acta_id: 'ley:<acta menor del grupo>'}. Union-find: dos
+    actas que comparten CUALQUIER clave son la misma ley, aunque no compartan todas."""
+    padre: dict = {}
+
+    def _raiz(x):
+        while padre.setdefault(x, x) != x:
+            padre[x] = padre[padre[x]]
+            x = padre[x]
+        return x
+
+    for a, k in pares:
+        ra, rk = _raiz("acta:" + a), _raiz(k)
+        if ra != rk:
+            padre[max(ra, rk)] = min(ra, rk)
+    grupos: dict = {}
+    for a, _ in pares:
+        grupos.setdefault(_raiz("acta:" + a), []).append(a)
+    out = {}
+    for miembros in grupos.values():
+        etiqueta = "ley:" + min(miembros)
+        for a in miembros:
+            out[a] = etiqueta
+    return out
+
+
+def record_previo(v: pd.DataFrame, llave: list[str], historia: str = HISTORIA_DEFAULT
+                  ) -> tuple[np.ndarray, np.ndarray]:
+    """(n, afirmativos) de la historia de cada fila dentro de `llave`.
+
+    `v` tiene que venir ordenado por fecha (orden estable) y traer `af`, `fecha` y
+    `_ley`. Con `historia="fila"` es exactamente `shift(1).expanding()` —el de siempre—;
+    con "fecha" se descuentan las filas del mismo día; con "estricta" además las de la
+    misma ley en fechas anteriores. Todo con cumcount/cumsum: sobre un millón de filas
+    el `transform(lambda)` tarda minutos."""
+    if historia not in HISTORIAS:
+        raise ValueError(f"historia invalida: {historia!r} (esperaba {HISTORIAS})")
+
+    def _cum(cols):
+        g = v.groupby(cols, sort=False, observed=True)["af"]
+        return g.cumcount().to_numpy(float), (g.cumsum() - v["af"]).to_numpy(float)
+
+    n, a = _cum(llave)
+    if historia in ("fecha", "estricta"):
+        n_d, a_d = _cum(llave + ["fecha"])
+        n, a = n - n_d, a - a_d
+    if historia == "estricta":
+        n_l, a_l = _cum(llave + ["_ley"])
+        n_ld, a_ld = _cum(llave + ["_ley", "fecha"])
+        n, a = n - (n_l - n_ld), a - (a_l - a_ld)
+    return n, a
+
+
 def _eras_de(fechas: pd.Series) -> pd.Series:
     """Era de cada fecha. `era_de` sale de `definiciones.py` (ADR-0014) —si el
     calendario cambiara, se cambia UNA vez y lo ven todos los consumidores, incluido
@@ -327,7 +440,7 @@ def cargar_confianza_por_area(repo: Path = REPO) -> dict:
 def correr(camara_filtro: str = "", muestra: int = 0, seed: int = 7,
            desde: str = "", guard_era: str = GUARD_ERA_DEFAULT,
            combinar_temas: str = "primaria", devolver_detalle: bool = False,
-           hasta: str = ""):
+           hasta: str = "", historia: str = HISTORIA_DEFAULT):
     """`combinar_temas` (PASO 2 de coordinacion/PROMPT-MULTIETIQUETA.md, Parte A;
     FASE 0 de PROMPT-MULTITEMA-V2.md agrega 'sin_tema' y 'ponderada_logit'):
 
@@ -371,19 +484,32 @@ def correr(camara_filtro: str = "", muestra: int = 0, seed: int = 7,
     if camara_filtro:
         v = v[v["camara"] == camara_filtro]
     v["af"] = (v["conducta"] == "AFIRMATIVO").astype(int)
+    # el mismo `sort_values` de siempre (no `stable`): con historia="fila" el orden dentro
+    # del día decide el récord, y así reproduce el número viejo bit a bit. Con
+    # "fecha"/"estricta" el orden dentro del día no importa.
     v = v.sort_values("fecha")
 
     # record propio walk-forward: promedio de los votos ANTERIORES de esa persona.
     # Con guard, ese promedio se reinicia en cada era (ver GUARD_ERA_MODOS arriba).
+    # "Anteriores" según `historia` (ver HISTORIAS): por defecto, de fecha anterior Y
+    # de otra ley.
     if guard_era not in GUARD_ERA_MODOS:
         raise ValueError(f"guard_era invalido: {guard_era!r} (esperaba {GUARD_ERA_MODOS})")
+    leyes = ley_por_acta(REPO)
+    v["_ley"] = v["acta_id"].astype(str).map(leyes)
+    sin_ley = v["_ley"].isna()
+    v.loc[sin_ley, "_ley"] = "acta:" + v.loc[sin_ley, "acta_id"].astype(str)
+    logger.info("ley_por_acta: %.1f%% de los votos con ley conocida (el resto: cada acta "
+                "es su propia ley, y ahí el corte por expediente no ve nada)",
+                100 * (1 - sin_ley.mean()))
     if guard_era == "off":
-        gp = v.groupby("legislador_id")["af"]
+        llave = ["legislador_id"]
     else:
         v["_era"] = _eras_de(v["fecha"])
-        gp = v.groupby(["legislador_id", "_era"])["af"]
-    v["record"] = gp.transform(lambda s: s.shift(1).expanding().mean())
-    v["n_prev"] = gp.transform(lambda s: s.shift(1).expanding().count()).fillna(0)
+        llave = ["legislador_id", "_era"]
+    n_prev, a_prev = record_previo(v, llave, historia)
+    v["n_prev"] = n_prev
+    v["record"] = np.where(n_prev > 0, a_prev / np.maximum(n_prev, 1), np.nan)
     # el encogimiento NO se hace aca: se hace en `perfil()`, contra el share proyectado
     # del linaje, que es exactamente donde y contra que lo hace el motor.
     encoger = guard_era == "shrink"
@@ -501,6 +627,7 @@ def correr(camara_filtro: str = "", muestra: int = 0, seed: int = 7,
         "ventana_dias": VENTANA_DIAS,
         "min_hist_individual": MIN_HIST_INDIVIDUAL,
         "guard_era": guard_era,
+        "historia": historia,
         "combinar_temas": combinar_temas,
         "global": _metricas(d.p.values, d.y.values),
         "calibracion": _calibracion(d.p.values, d.y.values),
@@ -556,6 +683,9 @@ def main(argv):
                          "sin_tema (FASE 0) = brazo de control, nunca condiciona por "
                          "tema; ponderada_logit (FASE 0) = como ponderada pero en "
                          "logit y con confianza real por etiqueta")
+    ap.add_argument("--historia", default=HISTORIA_DEFAULT, choices=list(HISTORIAS),
+                    help="estricta (default) = fecha anterior y otra ley; fecha = fecha "
+                         "anterior; fila = shift(1), el harness con fuga hasta el 28-09")
     ap.add_argument("--verbose", action="store_true",
                     help="mostrar los avisos de `bloque` uno por uno (por defecto se cuentan)")
     ap.add_argument("--salida", default=None)
@@ -568,10 +698,10 @@ def main(argv):
         logging.getLogger("bloque").addFilter(cont)
         correr._tally = cont.tally
     res = correr(args.camara, args.muestra, args.seed, args.desde, args.guard_era,
-                args.combinar_temas)
+                args.combinar_temas, historia=args.historia)
     res["_args"] = {"camara": args.camara or "ambas", "muestra": args.muestra,
                     "desde": args.desde or None, "guard_era": args.guard_era,
-                    "combinar_temas": args.combinar_temas}
+                    "combinar_temas": args.combinar_temas, "historia": args.historia}
 
     out = Path(args.salida) if args.salida else (
         REPO / "evaluacion/baseline/outputs/baseline_voto_individual.json")

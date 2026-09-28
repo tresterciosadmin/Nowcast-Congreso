@@ -1,7 +1,16 @@
 # La fórmula completa del nowcast
 
-**Última actualización:** 2026-09-08 · **Regla:** ADR-0015 — quien toca el motor actualiza
-este archivo en el mismo commit.
+**Última actualización:** 2026-09-28 (ADR-0034, cierre de etapa) · **Regla:** ADR-0015 —
+quien toca el motor actualiza este archivo en el mismo commit.
+
+> **2026-09-28 — FASE 1 de ADR-0034: el corte del récord en el motor pasa de `<=` a `<`.**
+> *La función:* `_alineacion_base` (compartida por `alineacion_individual` y
+> `alineacion_individual_por_area`) ya no cuenta como historia los votos del día del
+> nowcast. *El motor:* en producción (fecha = hoy, sin sesión en curso) el número publicado
+> no se mueve; en cualquier backtest del motor sí — antes el récord veía el día entero,
+> incluida el acta a predecir. Mismo corte que ya usaba `proyectar_postura`. *La fórmula:*
+> $\text{rec}_i$ (fila 4) y $\text{rec}_i^{\text{tema}}$ (fila 18) se calculan sobre
+> $\{\text{votos}: t_{\text{era}}\le t < F\}$; antes $\le F$.
 
 > **2026-09-08 — la fórmula NO cambia.** El ADR-0021 movió dos cosas del motor a
 > `definiciones.py` y a `rutas.py`: la regla del **carácter del dictamen** —que estaba
@@ -1662,11 +1671,24 @@ Todo estimador usa **sólo información anterior** a la fecha del nowcast: `shif
 `expanding`. Sin el corte por fecha, un nowcast fechado 2024-06-01 usaba el **85% de sus
 votos de después** de esa fecha.
 
-**Y "anterior" es por FECHA, no por fila (28-09-2026, ADR-0033).** `shift(1)` sobre votos
-ordenados por fecha deja entrar como historia las actas previas **de la misma sesión** —los
-artículos de la misma ley, en orden arbitrario—. Un nowcast hecho antes de la sesión no las
-tiene. Medido: el skill del harness pasa de **0,161 a 0,092** al excluirlas. El motor, en
-backtest, tiene la misma forma (`_alineacion_base` corta con `<=`). Ver URGENTE U1.
+**Y "anterior" es por FECHA y por LEY, no por fila (28-09-2026, ADR-0033 → ADR-0034).**
+`shift(1)` sobre votos ordenados por fecha deja entrar como historia las actas previas **de
+la misma sesión** —los artículos de la misma ley, en orden arbitrario—. Un nowcast hecho
+antes de la sesión no las tiene. Y una votación de la misma ley en una fecha anterior (la
+general del martes para la particular del jueves) tampoco es historia legítima: no es una
+observación independiente (ver IV.6, la regla del expediente). **Arreglado en los dos lados
+el 28-09:** el harness corta por fecha estricta y excluye la misma ley
+(`baseline_voto_individual.record_previo`, `historia="estricta"`); el motor corta con `<` en
+`_alineacion_base` (era `<=`: en backtest veía el día entero, incluida el acta a predecir).
+Medido con la misma postura, sólo cambiando la historia del récord del harness:
+
+| historia del récord | skill | desde 2023 |
+|---|---:|---:|
+| `shift(1)` por fila (lo publicado) | 0,1613 | 0,0627 |
+| fecha estricta | 0,0916 | −0,0293 |
+| **fecha estricta y otra ley** | **0,0742** | **−0,1086** |
+
+(`medir_fuga_historia.py`; el número que queda publicado sale del censo nuevo, §II.5.)
 
 ## IV.5 — Encogimiento Empirical-Bayes para muestras chicas
 
@@ -1834,3 +1856,4 @@ dispersión que el motor no explica y δ debería reducirla.
 | 2026-09-28 | ADR-0033: récord por origen heredado (fila 20) probado e **inactivo**; discrepancia abierta (sin guard predice peor) |
 | 2026-09-28 | medido: el harness filtra votos del mismo día — skill 0,161 → 0,092 con historia estricta (URGENTE U1) |
 | 2026-09-28 | metodología: el expediente como unidad efectiva (IV.6) y "anterior" por fecha (IV.4) |
+| 2026-09-28 | ADR-0034 FASE 1: el motor corta el récord con `<` (era `<=`); el harness excluye fecha del acta y misma ley. En producción no cambia el número; en backtest sí |

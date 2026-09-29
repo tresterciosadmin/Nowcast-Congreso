@@ -39,7 +39,7 @@ Control que sostiene la regla: un récord propio armado **desde el voto crudo, s
 - **Diez scripts de estimación** con offset espejo declarado (`estimar_*`, `validar_*`, `diagnostico_senado`, `fase1_*`, `medir_rec_por_tema`, `medir_guard_era`).
 - **Ningún test fija el valor** de `RECORD_POR_TEMA`, `SHRINK_RECORD`, `EPSILON0` ni `TAU`.
 - **`tests/test_insumos_del_motor_viajan.py` falla en `HEAD`:** el detalle del censo, que produce el 0,1333 y τ, existe sólo en un disco.
-- **Documentos:** el panel HTML publicado dice 98,01% y el motor da 61,3%; `tablero_datos.js` afirma a la vez 63,6% y 99,88%.
+- **Documentos:** el panel HTML publicado dice 98,01% (= 0,99², el techo del clip) y su titular lo calcula un JavaScript aparte (regenerado da 98,0%; el motor, 61,3%); `tablero_datos.js` afirma a la vez 63,6% y 99,88%. Los controles "el número publicado no se movió (0,9801)" **no podían fallar**.
 
 **Lo que esta regla reemplaza:** ADR-0015 (presentar el cambio en tres niveles) pasa a ser *una entrada en el registro con medición*; FORMULA §IV.4 y §IV.6 se reescriben con "fecha estricta y otra ley; IC por ley" y sin `shift(1)`.
 

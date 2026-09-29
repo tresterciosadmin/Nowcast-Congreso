@@ -2,7 +2,59 @@
 
 Los borradores están en `adr-consolidados/` (C1-C6) y `REGLAS-borrador.md`. Este archivo trae la tabla 34 → 6 (§5.1), las reglas (§5.2 resumen) y el **mecanismo de anclaje** (§5.3). Costos en horas de trabajo (h) y minutos de cómputo; todo lo que dice "medido" se corrió en esta auditoría.
 
-<!--TABLA_34_A_6-->
+## 5.1 La tabla 34 → 6 (35 archivos, cada uno en **exactamente un** destino principal; las referencias no cuentan)
+
+| destino | ADR que absorbe | n |
+|---|---|---:|
+| **C1 Repo, datos y contratos compartidos** | 0001, 0002, 0009, 0009-BORRADOR, 0010, 0011, 0014, 0019, 0020, 0021 | 10 |
+| **C2 Voto individual** | 0003, 0004, 0005, 0017, 0018, 0022 | 6 |
+| **C3 Formulación y salida del número** | 0007, 0012, 0013, 0016 | 4 |
+| **C4 Incertidumbre y coyuntura** | 0008, 0025 | 2 |
+| **C5 Medición y evidencia** | 0015, 0032, 0034 | 3 |
+| **C6 Línea de tema/capítulo/origen (cerrada)** | 0006, 0023, 0024, 0026, 0027, 0028, 0029, 0030, 0031, 0033 | 10 |
+| | **total** | **35** |
+
+Detalle por ADR (veredicto de `03-adr.md`; **regla que sobrevive** / **que se pierde**):
+
+| ADR | veredicto | destino | regla que sobrevive / que se pierde |
+|---|---|:-:|---|
+| 0001 | VIGENTE-ESTRUCTURAL | C1 | módulo/dueño/contrato, ADR para cambiar un contrato / datos fuera de git, una rama por módulo |
+| 0002 | VIGENTE-ESTRUCTURAL | C1 | semilla estática → canónica propia → bot que detecta / "el bot agrega" |
+| 0009 | VIGENTE-ESTRUCTURAL | C1 | merge por campo, giro acumulado ≠ giro al ingresar, cuarentena con freno por invariante / "cuelga todo el nowcast" |
+| 0009-BORRADOR | SUPERSEDIDO (por 0009) | C1 · **DESCARTABLE** | nada; el texto vive en `git show fd2aa2b` |
+| 0010 | VIGENTE-ESTRUCTURAL | C1 | `rutas.py`, MAPA generado / la garantía de completitud, el hook, las cifras (246 líneas, 2 módulos) |
+| 0011 | VIGENTE-ESTRUCTURAL | C1 | preguntarle a git con ruta relativa y `-v` / la prohibición del exit code |
+| 0014 | VIGENTE-ESTRUCTURAL | C1 | lo compartido vive una vez, se re-exporta y se controla por identidad / — |
+| 0019 | VIGENTE-ESTRUCTURAL | C1 | una sola frontera de eras (`definiciones.GOBIERNOS`) / — |
+| 0020 | VIGENTE-ESTRUCTURAL | C1 | las bases viajan; aviso a 50, falla a 95 / "no viaja" (`tests.yml:26`) |
+| 0021 | VIGENTE-ESTRUCTURAL | C1 | `definiciones.caracter_de_dictamen`, raíz por `rutas.py` / — |
+| 0003 | VIGENTE-EVIDENCIA-ROTA | C2 | el desvío se modela respecto del bloque / el plan de 4 piezas y sus gates |
+| 0004 | VIGENTE-ESTRUCTURAL | C2 | desvío v2 por conducta / la "línea bottom-up" (no es la del motor) |
+| 0005 | VIGENTE-ESTRUCTURAL | C2 | 10 linajes con ventanas por fecha / Proyecto Sur ya no es PROGRESISMO |
+| 0017 | VIGENTE-ESTRUCTURAL | C2 | `desconocido` ≠ único; enlace = `acta_expediente_todas` / la reserva sin levantar |
+| 0018 | VIGENTE-EVIDENCIA-ROTA (el guard; el encogimiento tiene evidencia limpia) | C2 | el récord se encoge hacia el share del linaje (k=5); la era se deduce de la fecha con `definiciones` / 0,1304 → 0,1611, "valles cerrados" |
+| 0022 | VIGENTE-ESTRUCTURAL | C2 | en el Senado la disidencia es minoría; Daer → massismo / la cifra "205 actas" |
+| 0007 | VIGENTE-ESTRUCTURAL | C3 | probabilidad + nombres + límites declarados / la plantilla de 7 secciones, "skill 0,36" |
+| 0012 | VIGENTE-ESTRUCTURAL | C3 | P(aprob \| se vota) = P_B·P_D; A y C se observan / el gancho δ agregado, `backtest_cadena` (880 LOC con test) |
+| 0013 | VIGENTE-ESTRUCTURAL | C3 | ⌊E/2⌋+1 y su test / nada (el presidente queda como pendiente) |
+| 0016 | VIGENTE-ESTRUCTURAL (las enmiendas de β: EVIDENCIA-ROTA) | C3 (+C2, C4) | la regla y sus dos excepciones; "si un término va a la derecha de la simulación, está mal ubicado" / "0,9801 en los tres" como evidencia |
+| 0008 | INACTIVO | C4 | el clima, si entra, entra por $P_i$ con γ por tramo de desvío y signo por origen, y se prueba como predictor antes de prender / mecanismo 2, neutro 1,90, tablas viejas (≈ 1.490 LOC) |
+| 0025 | VIGENTE-EVIDENCIA-ROTA (la dirección se rehabilita en parte: log-loss −0,036, in-sample) | C4 | la incertidumbre se modela en $P_i$ y como shock común dentro de la simulación, nunca como clip del agregado / el "99,88% conservadora" |
+| 0015 | VIGENTE-ESTRUCTURAL | C5 | los tres niveles y "apagar deja el término marcado"; **se agrega un Nivel 0**: la medición que justifica corre el motor real, fecha estricta, otra ley, IC por ley, y el control tiene poder / — |
+| 0032 | REGISTRO-HISTÓRICO | C5 (+C6) | la unidad efectiva es el expediente; un rasgo intra-era debe sobrevivir a la partición por ley entera / el "1,7×", `gobernadores.csv` |
+| 0034 | **VIGENTE-SÓLIDO** (con reservas: τ/β/ficha no re-medidos, IC con 300 réplicas) | C5 | fecha estricta y otra ley; el harness importa el motor; IC por ley / el "~1,7×" |
+| 0006 | INACTIVO | C6 (+C3) | no se publica una P por título sin un target con qué backtestearla / la unidad jerárquica como decisión vigente |
+| 0023 | INACTIVO | C6 (+C1) | agregar sin reemplazar; el 9,8% de leyes aprobadas pierde algún tramo / la cifra 6/47 |
+| 0024 | INACTIVO | C6 (+C5) | lo manual gana; sin dato, no-op / el "dónde SÍ está la ganancia" (0026) |
+| 0026 | SUPERSEDIDO (por 0034) | C6 (+C2) | un grado de libertad, encoger al récord general, en logit / el "+11,06%" |
+| 0027 | INACTIVO | C6 (+C3) | P(proyecto) no es un evento: se simula con shock común / — |
+| 0028 | REGISTRO-HISTÓRICO | C6 (método → C5) | un control que da idéntico al tratamiento es una alarma / la conclusión "ninguna regla mejora" |
+| 0029 | INACTIVO | C6 | clave de capítulo = `(proyecto_id, titulo_num, capitulo_num)` / la cobertura ampliada, los conteos 437→242→471 |
+| 0030 | REGISTRO-HISTÓRICO | C6 (+C5) | medir la fracción con dato condicionado real antes del skill; criterios escritos antes / el diagnóstico del Senado |
+| 0031 | REGISTRO-HISTÓRICO | C6 (+C5) | todo fallback avisa con un contador agregado / "el guard queda confirmado también para el tema" |
+| 0033 | REGISTRO-HISTÓRICO | C6 (+C2, C5) | lo individual no persiste entre gobiernos, persiste el linaje; no se prende lo que predice peor / los niveles de skill, B1/B2 |
+
+**El ADR C6 sí merece existir** (no una nota dentro de otro): guarda qué se probó, qué dio y con qué medición mínima se reabre. Sin él, las reglas que sobreviven de esos diez ADR (agregar sin reemplazar; un solo grado de libertad; un control idéntico al tratamiento es una alarma) se pierden con ellos.
 
 ## 5.2 Las reglas
 

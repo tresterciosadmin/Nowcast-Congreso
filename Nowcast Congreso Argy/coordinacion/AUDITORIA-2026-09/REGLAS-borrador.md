@@ -12,7 +12,7 @@
 | **6** | **Lo declarado se contrasta con lo observado:** banda, calibración y P(aprobación). | banda "90%" cubre 63,6% | `calibracion_declarada.json` generado; falla si cobertura observada − declarada > 5 pp | C4 |
 | **7** | **Una mejora sin explicación es una alarma.** | la fuga *mejoró* el número | gate: falla si el ΔBrier pareado mejora > 2% sin entrada de medición registrada | C5 |
 | **8** | **Ningún default cambia sin un test que fije el valor nuevo y cite la medición.** | nada fijaba `RECORD_POR_TEMA`, `SHRINK_RECORD`, `EPSILON0`, `TAU`; mismo nombre con dos defaults | `test_defaults_fijados` generado del registro | C5, C6 |
-| **9** | **Un dato, un lugar:** el estado, la fórmula-tabla y el tablero se **generan** del código y de las mediciones; lo escrito a mano no repite números. | el panel HTML dice 98,01% y el motor da 61,3%; `tablero_datos.js` dice 63,6% y 99,88% | `generar_estado.py` + test: el HTML publicado = la salida del motor | C1 |
+| **9** | **Un dato, un lugar:** el estado, la fórmula-tabla y el tablero se **generan** del código y de las mediciones; lo escrito a mano no repite números; **el número que ve el usuario es la salida del motor, no un recálculo**. | el HTML dice 98,01% y su titular lo calcula un JavaScript aparte (98,0% aun regenerado; el motor da 61,3%); `tablero_datos.js` dice 63,6% y 99,88% | `generar_estado.py` + test: el titular del HTML = `p_aprobacion` del motor | C1, C3 |
 | **10** | **Prender algo exige el OK de Franco, IC a favor con Holm sobre las banderas de la ronda y confirmación fuera de muestra. Apagar no exige nada.** | 10 de los 12 ADR 0023-0034 los decidió Claude en sesión delegada | entrada del registro con `aprobado_por` y `fecha`; el gate la exige | C5, C6 |
 
 ## Qué pasa con las reglas de hoy

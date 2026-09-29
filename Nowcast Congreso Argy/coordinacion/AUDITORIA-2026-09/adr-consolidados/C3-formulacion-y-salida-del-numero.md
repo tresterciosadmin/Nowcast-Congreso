@@ -30,7 +30,8 @@ Un ajuste hecho sobre el agregado se apila con los de abajo, cuenta dos veces la
   - **No cumple:** con `INCERTIDUMBRE_LEGISLADOR=0` **reaparece el clip agregado 0,01** (`ensemble.py:367-376`). El piso de 0,02 (23,2% de los votos topan en 0,98) **no figura en FORMULA §I.00**.
 - **Empate:** `umbral_aprobacion` devuelve `emitidos // 2 + 1` (`agregador.py:123`); cubierto por `test_agregador.py`.
 - **Dos respuestas:** el panel devuelve `a_negociar` y la banda `[p5,p95]` (`nowcast_puertas.py:748-771`); la banda declarada al 90% cubre 63,6% (ver C4).
-- **Diferencia con lo que ve el usuario:** el HTML publicado (`Nowcast-Puertas.html`) dice 98,01%; el motor de hoy da **61,3%** para el mismo caso.
+- **Lo que ve el usuario no es la salida del motor.** El HTML publicado dice 98,01% (= 0,99², el techo del clip) y su titular lo recalcula `paprob()` en JavaScript (`casos/nowcast_puertas_html.py:237-297`: normal bajo independencia, clip [0,01; 0,99], sin τη, ICG con γ de la tabla original de 0008): regenerado hoy da **98,0%** contra **61,3%** del motor. **Viola 0016 y 0025** y es una segunda formulación del número.
+- **Otros ajustes agregados latentes** (en cero o apagados): `puerta_d` "Manera 2" (`:127-128,195`), `_via_sobre_tablas` (`nowcast_puertas.py:624-629`, no pasa ε₀/τ). Y **las dos cámaras usan el mismo η** (misma semilla), que `p_final = P_B·P_D` descarta al multiplicar marginales.
 - ADR-0006 (multitaxonomía por título) sigue "aceptado (diseño) / pendiente (implementación)".
 
 **Historia:** 0007 (07-31) régimen de salida: *dos respuestas, siempre* · 0012 (08-22) formulación única por puertas; se dio de baja la v1 (`p_llega_recinto`) · 0013 (08-22) mayoría simple = la mitad más uno; antes `emitidos/2` hacía que un empate aprobara, y el error corría a favor de la aprobación en los casos ajustados · 0016 (08-26) la doctrina de la parte al todo.

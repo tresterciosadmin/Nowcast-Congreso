@@ -35,7 +35,7 @@ Control que sostiene la regla: un récord propio armado **desde el voto crudo, s
 ## 5. Estado real hoy (verificado)
 
 - **Cumple:** el harness importa el motor (`baseline_voto_individual.py:535-536`), historia estricta (`:497-505`), IC por ley (`:402,422`). Pero con **300 réplicas y semilla fija** (`n_boot=300, seed=7`), y sin sensibilidad por fecha.
-- **Sin medición vigente que dependa del motor real:** β (coeficientes con offset contaminado; el censo no lo aplica), ε₀ y τ (estimados sobre el mismo panel; ε₀ óptimo limpio **0,055** contra 0,035 en producción), la presencia, la ficha de desvío (toda la historia; acotada en ≤0,002 de Brier) y el guard de era **encendido/apagado** (nadie lo midió con el harness limpio).
+- **Sin medición vigente que dependa del motor real:** β (coeficientes con offset contaminado; el censo no lo aplica), ε₀ y τ (estimados sobre el mismo panel; ε₀ óptimo limpio **0,055** contra 0,035 en producción), la presencia, la ficha de desvío (toda la historia; acotada en ≤0,002 de Brier) y el guard de era con el **motor completo** (la medición independiente lo deja en +2% de Brier a favor [incluye 0], cero en la era vigente).
 - **Diez scripts de estimación** con offset espejo declarado (`estimar_*`, `validar_*`, `diagnostico_senado`, `fase1_*`, `medir_rec_por_tema`, `medir_guard_era`).
 - **Ningún test fija el valor** de `RECORD_POR_TEMA`, `SHRINK_RECORD`, `EPSILON0` ni `TAU`.
 - **`tests/test_insumos_del_motor_viajan.py` falla en `HEAD`:** el detalle del censo, que produce el 0,1333 y τ, existe sólo en un disco.

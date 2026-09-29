@@ -47,7 +47,7 @@ Con los defaults de hoy y el panel B (`REGENERAR.ps1:291`):
 
 ## 3. Matriz de banderas
 
-Trece banderas de entorno cambian el cómputo (`01-motor-real.md` §3) y la CLI del agregador suma cuatro más. Con 9 de ellas booleanas hay 512 combinaciones. **El censo mide una sola: la de los defaults** (β no se aplica, ε₀/τη no están en $P_i$). Lo que se ejercita por test es cada bandera aislada, nunca sus interacciones. [V]
+Catorce variables de entorno cambian el cómputo (`01-motor-real.md` §3) y la CLI del agregador suma cuatro más. Con 9 de ellas booleanas hay 512 combinaciones. **El censo mide una sola: la de los defaults** (β no se aplica, ε₀/τη no están en $P_i$). Lo que se ejercita por test es cada bandera aislada, nunca sus interacciones. [V]
 
 | combinación | qué pasa | ¿protegida? |
 |---|---|---|

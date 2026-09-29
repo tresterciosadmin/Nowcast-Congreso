@@ -126,6 +126,12 @@ def predictores(e: pd.DataFrame, v: pd.DataFrame) -> dict:
     n_ro, a_ro = historia(e, v, ["legislador_id", "era", "origen"])
     p6 = np.where(tiene_o, (a_ro + K * bloque_o) / (n_ro + K), p4)
 
+    # SIN GUARD DE ERA: el mismo récord con origen, pero SIN cortar por era (usa todo el pasado del legislador)
+    n_rg, a_rg = historia(e, v, ["legislador_id"])
+    p4_ng = (a_rg + K * bloque) / (n_rg + K)
+    n_rog, a_rog = historia(e, v, ["legislador_id", "origen"])
+    p6_ng = np.where(tiene_o, (a_rog + K * bloque_o) / (n_rog + K), p4_ng)
+
     # persistencia ingenua: cómo votó su última fecha anterior (NO excluye la ley: es un ingenuo)
     dia = v.groupby(["legislador_id", "fecha"], sort=False)["af"].mean().reset_index().sort_values(["legislador_id", "fecha"])
     dia["ult"] = dia.groupby("legislador_id", sort=False)["af"].shift(1)
@@ -141,6 +147,7 @@ def predictores(e: pd.DataFrame, v: pd.DataFrame) -> dict:
 
     return {"climatologia_walkforward": base, "bloque_ingenuo": bloque, "record_puro": p1,
             "record_encogido_al_bloque": p4, "record_encogido_con_origen": p6,
+            "record_con_origen_SIN_guard_de_era": p6_ng,
             "persistencia_ultima_fecha": p5,
             "CONTROL_POSITIVO_record_con_fuga_del_mismo_dia": p_fuga}
 
@@ -214,6 +221,11 @@ def main(argv=None) -> int:
     for nom, m in cortes.items():
         res["cortes"][nom] = skill_y_ic({k: s[m] for k, s in se.items()}, y[m], e["ley"].to_numpy()[m],
                                         comparar="MOTOR (p__estricta__general, el de hoy)")
+    # ON/OFF del guard de era: ΔBrier pareado por ley de "sin guard" contra "con guard" (mismo récord con origen)
+    G, N = "record_encogido_con_origen", "record_con_origen_SIN_guard_de_era"
+    res["guard_de_era_on_off"] = {
+        nom: skill_y_ic({G: se[G][m], N: se[N][m]}, y[m], e["ley"].to_numpy()[m], comparar=G)["predictores"][N]["dBrier_vs_" + G]
+        for nom, m in cortes.items()}
     Path(a.salida).parent.mkdir(parents=True, exist_ok=True)
     Path(a.salida).write_text(json.dumps(res, ensure_ascii=False, indent=1), encoding="utf-8")
     g = res["cortes"]["global"]

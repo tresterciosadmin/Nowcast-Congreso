@@ -16,7 +16,7 @@
 | Skill publicado anterior 0,1611 | **NO CONFIABLE** | `shift(1)` por fila, misma ley y mismo día; copia del récord sin origen |
 | Récord por tema "+11,06%" | **NO CONFIABLE** | misma fuga. El número limpio (−2,12% [0,84; 3,48] contra el motor) es **CONFIABLE** |
 | Encoger vs cortar (+2,8% [1,8; 4,2]); `n ≥ 8` vs `n ≥ 1` (+0,5% [−0,01; 1,26]) | **CONFIABLE** | re-medidos limpios en ADR-0034 |
-| Guard de era | **CON RESERVA** | nadie lo midió encendido/apagado con el harness limpio; lo mejor es 0033 (fecha estricta, sin "otra ley") |
+| Guard de era | **CON RESERVA** | con el motor completo nadie lo midió encendido/apagado (`GUARD_ERA=0` deja sin récord todo lo anterior a 2023, no sirve). **Medido acá con el control independiente**, quitando sólo el corte por era: **+0,0028 de Brier a favor del guard [−0,0006; +0,0066]** (≈ 2%, incluye 0; sólo el Senado lo excluye: +0,0030 [0,0005; 0,0057]); **en la era vigente −0,0003 [−0,012; +0,010]**: no hace nada |
 | β (`F_i` 2,088, lealtad×jefe 1,750) | **NO CONFIABLE** | offset con fuga y sin guard/encoger/origen; con el offset limpio 2,05 y **1,29**; el walk-forward que lo prendió no se re-corrió; el censo no lo aplica |
 | ε₀ = 0,035, τ = 1,19 | **CON RESERVA** | estimados sobre el offset del espejo; limpio: ε₀ **0,055**, τ 1,197. El término sí mejora el log-loss contra resultados reales (Δ −0,036 [−0,055; −0,018]) |
 | ψ, θ, δ | **NO CONFIABLE** | offset contaminado, no re-medidos; ninguno está en el número (ψ ni siquiera está implementado) |
@@ -160,6 +160,8 @@ Búsqueda por `grep` y AST en `modelo/`, `evaluacion/`, `variables/`, `datos/`, 
 | última votación del legislador | −0,2695 | [−0,366; −0,167] |
 | **control positivo**: récord con fuga del mismo día | 0,2039 | [0,138; 0,267] |
 | el motor con su corte viejo (`<=`, misma ley) | 0,3257 | [0,260; 0,384] |
+
+**Guard de era, encendido/apagado** (mismo récord con origen, sólo se quita el corte por era; ΔBrier pareado por ley, positivo = el guard ayuda): global +0,0028 [−0,0006; +0,0066]; 2015-2019 +0,0144 [−0,0004; +0,0288]; 2019-2023 −0,0021; era vigente −0,0003 [−0,012; +0,010]; Senado +0,0030 [0,0005; 0,0057].
 
 ΔBrier pareado (récord con origen − motor) global: −0,00002 [−0,004; +0,003]. **Por era el motor sólo gana en el arranque de un gobierno:** 2019-2023 el récord independiente pierde por 0,037 de Brier [0,002; 0,069] (empieza la era con la historia vacía). En la era vigente el independiente da 0,050 y el motor 0,010 (ΔBrier −0,009 [−0,026; +0,003]).
 

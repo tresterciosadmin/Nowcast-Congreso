@@ -20,7 +20,7 @@ Skill del voto individual **0,1333** [0,057; 0,198] sobre 691.845 votos y 3.731 
 
 - Que el skill de la era vigente siga siendo ≈ 0 cuando se acumulen leyes (con IC ±0,25 hacen falta del orden de 2.000 leyes para ±0,10).
 - Que la etiqueta de **origen** sea mala: es el insumo más influyente del modelo y **nadie validó sus etiquetas** contra una muestra a mano (fuera de esta auditoría). Hoy 43% de las actas tienen origen `DESCONOCIDO` (2.582 de 5.998) y ahí el récord es incondicional.
-- Que aparezca una medición limpia de `GUARD_ERA` apagado que lo iguale o lo supere.
+- Que una medición con el motor completo (un brazo "sin corte por era", que hoy no existe) muestre que el guard no ayuda: el control independiente lo deja en +2% [incluye 0].
 
 ## 5. Estado real hoy (verificado)
 
@@ -28,7 +28,7 @@ Skill del voto individual **0,1333** [0,057; 0,198] sobre 691.845 votos y 3.731 
 |---|---|---|
 | récord propio, era, origen, `<`, `n ≥ 1` | ON; el origen sólo actúa **si el llamador pasa `origen`** | `nowcast_puertas.py:293-330,317-319`, `MIN_HIST_INDIVIDUAL=1` (`:97`) |
 | encogimiento k=5 | ON, sin test que fije la bandera ni el valor; **no ajustado** (mismo k del bloque) | `:131,574` |
-| guard de era | ON; su evidencia (0,1304 → 0,1611) salió del harness con fuga; **nunca se midió apagado/encendido con el harness limpio** (0033 da +3,6% sin guard con fecha estricta pero sin "otra ley") | `:119` |
+| guard de era | ON; su evidencia (0,1304 → 0,1611) salió del harness con fuga. **Medido acá con el control independiente** (sólo se quita el corte por era): ayuda **+0,0028 de Brier [−0,0006; +0,0066]**, ≈ 2%, incluye 0 (Senado sí lo excluye); **en la era vigente no hace nada** (−0,0003). Con el motor completo no se puede medir con la bandera: `GUARD_ERA=0` deja sin récord todo lo anterior a 2023 | `:119` |
 | desvío individual | la **ficha** `disciplina_individual.csv` usa toda la historia; en $P_i$ entra sólo sin récord (4,7% de los votos, skill −0,38) y en β; el censo no ejercita ese código | `ensemble.py:204-252`, `disciplina.py` |
 | β (dictamen por legislador) | ON, pero **no actúa en el panel** (sin `proyecto_id`); coeficientes con offset contaminado (lealtad×jefe 1,75 → 1,29 con offset limpio); `contexto_de` no corta por fecha | `beta_dictamen.py:71,124` |
 | linajes (0005) | 10 linajes; ventanas por fecha; Proyecto Sur pasó a IZQUIERDA | `variables/bloque/src/bloque.py` |

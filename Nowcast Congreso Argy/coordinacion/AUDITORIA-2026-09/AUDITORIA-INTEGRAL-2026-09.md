@@ -1,6 +1,6 @@
 # Auditoría integral del motor y de los ADR — informe final
 
-> **Actualizado el 2026-09-29 tras las decisiones de Franco: ver el §9** (decisiones, correcciones y plan para retomar en una conversación nueva). **Donde el §7 y el §9 difieran, vale el §9.** El §9.2 corrige dos afirmaciones de este informe (el "skill 0,25" de P(aprobación) y el efecto de ε₀+τη).
+> **Actualizado el 2026-09-29 tras las decisiones de Franco y sus correcciones de la tarde: ver el §9 (en especial §9.1b y §9.9)** (decisiones, correcciones y plan para retomar en una conversación nueva). **Donde el §7 y el §9 difieran, vale el §9.** El §9.2 corrige dos afirmaciones de este informe (el "skill 0,25" de P(aprobación) y el efecto de ε₀+τη).
 
 **Commit auditado:** `bcc62b3` (motor idéntico a `6e6b629`) · **Rama:** `auditoria-2026-09` · **Fecha:** 2026-09-28/29 · **Modo:** sólo lectura y medición; se creó únicamente `coordinacion/AUDITORIA-2026-09/` y, como intermedios, `Archivos_Borrar/`. Nada se ejecutó de lo que se propone. **Auditor:** Claude (Sonnet 5.5; Opus como asesor). Como el auditor es del mismo tipo que escribió los ADR 0026-0034, los criterios de refutación se registraron **antes** de medir (`00-preregistro.md`) y hay tres mediciones independientes (`control_independiente.py`, `invariancia_al_futuro.py`, `contraste_aprobacion.py`).
 
@@ -107,18 +107,18 @@ Regla: **nada se borra, se mueve** (a `coordinacion/archivo/` o `Archivos_Borrar
 
 | # | qué | LOC aprox. | riesgo | ahorro | criterio de salida específico | test que **debería fallar** si la poda rompe algo |
 |---|---|---:|---|---|---|---|
-| **P0** | **Archivar lo muerto**: `composicion_capitulos.py` (+test), `tema_por_capitulo.py` y `capitulos_nombre.py` (+tests), `backtest_cadena.py` (+test), `comparar_vias_icg.py`, los stubs "dados de baja" de `ensemble.py`, `0009-BORRADOR`, `CONECTAR-GIT.md`, `_wtest` | ~2.500 con tests | **nulo** | alto | `python .mapa/buscar.py --archivo <cada uno>` devuelve sólo tests/validaciones | `tests/test_rutas_citadas_existen.py`, `verificar_regeneracion.py` |
+| **P0** | **Archivar lo muerto**: `composicion_capitulos.py` (+test), `tema_por_capitulo.py` y `capitulos_nombre.py` (+tests), `backtest_cadena.py` (+test), los stubs "dados de baja" de `ensemble.py`, `0009-BORRADOR`, `CONECTAR-GIT.md`, `_wtest` (**`comparar_vias_icg.py` sale de P0**: el ICG entra a la fórmula, §9.1b) | ~2.500 con tests | **nulo** | alto | `python .mapa/buscar.py --archivo <cada uno>` devuelve sólo tests/validaciones | `tests/test_rutas_citadas_existen.py`, `verificar_regeneracion.py` |
 | **P1** | **Archivar la línea cerrada de medición** (0023-0033): `prueba1/2/3`, `validar_*capitulos/titulos`, `firma_tematica_*`, `medir_estabilidad_*`, `record_por_origen*` (rescatar `split_half` y el bootstrap), `fase0_control_temas`, `diagnostico_senado`, `fase1_rec_por_tema`, `medir_rec_por_tema` (los dos con la fuga) | ~3.900 + ~800 tests | **muy bajo** | muy alto | nadie los importa; C6 conserva cómo reabrir | `test_firma_tematica.py`, `test_fase1_rec_por_tema.py` (se mueven con ellos) |
-| **P2** | **SUSPENDIDA (decisión 2 de Franco: ψ, θ y δ se re-estiman, no se archivan).** Términos descartados: `estimar_psi_arrastre`, `estimar_theta_sobre_tablas`, `validar_sobre_tablas_walkforward`, `sobre_tablas.py` + `_via_sobre_tablas` + bandera `SOBRE_TABLAS` | ~950 | bajo | medio | el registro deja de listar `SOBRE_TABLAS` | `test_sobre_tablas.py` (se mueve) |
+| **P2** | **DESCARTADA (decisión 2 y ronda 2, punto 2: ψ, θ y δ se corrigen y se re-estiman; no se archivan).** Términos descartados: `estimar_psi_arrastre`, `estimar_theta_sobre_tablas`, `validar_sobre_tablas_walkforward`, `sobre_tablas.py` + `_via_sobre_tablas` + bandera `SOBRE_TABLAS` | ~950 | bajo | medio | el registro deja de listar `SOBRE_TABLAS` | `test_sobre_tablas.py` (se mueve) |
 | **P3** | **Ramas dormidas en archivos vivos:** `alineacion_individual_por_area` y la plomería de `RECORD_POR_TEMA`; las ramas `union/ponderada/peor_tema` de `proyectar_postura` y `TEMA_AUTO`/`COMBINAR_TEMAS`; la rama `QUORUM_ABSTENCIONES`; "Manera 2" de `puerta_d` | ~400 y **3-4 banderas** | medio-bajo | alto (menos banderas) | el registro baja de 14 a ≤ 10 banderas | `test_harness_es_el_motor.py` (238/238), `test_agregador.py`, `test_incertidumbre_legislador.py` |
-| **P4** | **A y C decorativas:** reemplazar `cargar_caracter`/`condicionar`/`delta_caracter`/`COEF_POR_DEFECTO` por la lectura del rótulo ya calculado (el payload `pasos[]` no cambia); deja de leer 143.817 firmas por corrida | ~300 | medio (contrato del payload) | medio | `pasos[]` idéntico en el panel y en 3 proyectos reales; `p_final` idéntico | `test_caracter_dictamen.py` |
-| **P5** | **Desacoplar producción de la estimación:** mover `firmas_por_acta` y `jefes` a `beta_dictamen.py`; después archivar `estimar_beta_dictamen.py` (o reescribirlo sobre el offset del censo) | 562 | medio | medio (el motor deja de depender de un estimador) | `contexto_de` idéntico en los 34 proyectos con dictamen | `test_beta_dictamen.py` |
+| **P4** | **REFORMULAR (decisión 2: δ se re-estima, no se reemplaza).** A y C decorativas: reemplazar `cargar_caracter`/`condicionar`/`delta_caracter`/`COEF_POR_DEFECTO` por la lectura del rótulo ya calculado (el payload `pasos[]` no cambia); deja de leer 143.817 firmas por corrida | ~300 | medio (contrato del payload) | medio | `pasos[]` idéntico en el panel y en 3 proyectos reales; `p_final` idéntico | `test_caracter_dictamen.py` |
+| **P5** | **REFORMULAR (decisión 2: β se re-estima, no se archiva).** Desacoplar producción de la estimación: mover `firmas_por_acta` y `jefes` a `beta_dictamen.py`; después archivar `estimar_beta_dictamen.py` (o reescribirlo sobre el offset del censo) | 562 | medio | medio (el motor deja de depender de un estimador) | `contexto_de` idéntico en los 34 proyectos con dictamen | `test_beta_dictamen.py` |
 | **P6** | **Bajar las banderas de 14 a ≤ 4:** dejar `INCERTIDUMBRE_LEGISLADOR`, `GUARD_ERA` (hasta medirlo) y `BETA_DICTAMEN`; `SHRINK_RECORD`, `EPSILON0`, `TAU`, `MIN_VOTOS_FICHA` pasan a constantes del registro; unificar los nombres con dos defaults | ~100 | bajo-medio | alto (la matriz de banderas colapsa) | `test_defaults_fijados` verde | el propio `test_defaults_fijados` |
 | **P7** | **Reescribir comentarios y docstrings que contradicen** y sacar la historia de `nowcast_puertas.py` (ya está en los ADR): 980 → ~600 líneas | ~400 de prosa | nulo (sólo comentarios) | medio (legibilidad) | `git diff` sin cambios de código | — |
 | **P8** | **Documentos, HTML y panel — DECIDIDO por Franco (§9, decisiones 1 y 6): se eliminan el panel y los HTML de producto** (ya no se reemplaza `paprob()`); además (ver `05` §5.3, pieza 7): congelar `ESTADO-DEL-PROYECTO` y `PROMPT-*.md`, generar el estado; **que el titular del HTML lea `p_aprobacion` del motor** (borrar `paprob()` y el slider del ICG con γ viejos, ~60 líneas de JS) y regenerar el panel en CI | ~60 de JS | **medio: cambia el número visible de 98% a 61%** | muy alto | el titular del HTML = `p_aprobacion` del motor | test de igualdad titular-motor |
 | **P9** | **No se recomienda todavía:** achicar el modelo mismo (reemplazar `proyectar_postura` por el récord con origen de 30 líneas, ~570 líneas de `bloque.py`) | ~570 | **alto** | medio | — | el control independiente **empata** en skill global (ΔBrier −0,00002), pero el motor le gana en el **arranque de cada era** (2019-2023: 0,037 [0,002; 0,069]). Decidir después de los pasos 0-3 del anclaje |
 
-**P0-P1 (≈ 7.000 líneas con tests) no pueden mover el número** y se pueden hacer ya (P2 quedó suspendida, §9). P3-P7 esperan al paso 3 del anclaje (la métrica de verdad) para tener con qué demostrar que nada se movió. Con P0-P7 el código no-test del alcance pasa de 16.482 a ≈ 9.000 líneas y las banderas de 14 a ≤ 4.
+**P0-P1 (≈ 7.000 líneas con tests) no pueden mover el número** y se pueden hacer ya (P2 quedó descartada, §9). P3-P7 esperan al paso 3 del anclaje (la métrica de verdad) para tener con qué demostrar que nada se movió. Con P0-P7 el código no-test del alcance pasa de 16.482 a ≈ 9.000 líneas y las banderas de 14 a ≤ 4.
 
 ## 6. De 34 ADR a 6, reglas simples y anclaje a la realidad
 
@@ -179,13 +179,14 @@ Lista cerrada. Recomendación primero; costo entre paréntesis.
 
 ## 9. Decisiones de Franco (2026-09-29) y plan para la próxima conversación
 
-**Este es el registro para retomar en una conversación nueva.** Lo que sigue *reemplaza* a las recomendaciones del §7 donde difieran. Nada de lo decidido se ejecutó todavía.
+**Este es el registro para retomar en una conversación nueva.** Lo que sigue *reemplaza* a las recomendaciones del §7 donde difieran. Nada de lo decidido se ejecutó todavía. **Las correcciones de Franco de la tarde del 29-09 están en el §9.1b y prevalecen sobre la tabla 9.1;** las reglas del carril, en el §9.9; el modelo recomendado, en el §9.10; y el plan vivo, con sus ítems y su estado, en `ESTADO-EJECUCION.md`.
 
 ### 9.0 Estado, reglas vigentes y cómo arrancar
 
 - **La auditoría sigue abierta** hasta que Franco escriba explícitamente que queda cerrada (ver §9.8). Mientras tanto vale la autorización de §9.3.
-- **Dónde está todo:** rama local `auditoria-2026-09` (sin `push`; `main` intacto), carpeta `coordinacion/AUDITORIA-2026-09/`. **Decisión pendiente y recomendada:** mergearla a `main` (es sólo documentación, sin efecto en ejecución) o arrancar la nueva conversación con `git switch auditoria-2026-09`; si no, la carpeta no existe en `main`.
-- **Política de ramas (decisión 13):** `main` = sólo lo que funciona; todo lo nuevo va en una rama y se mergea cuando los tests dan verde. Ver la advertencia sobre los bots en §9.6.
+- **Dónde está todo:** carpeta `coordinacion/AUDITORIA-2026-09/`, **en `main`** (la rama `auditoria-2026-09` se mergeó a `main` el 29-09 por decisión de Franco: es sólo documentación; sin `push`, lo hace Franco). El plan vivo es `ESTADO-EJECUCION.md`; el estacionamiento de ideas, `PENDIENTES-POST-AUDITORIA.md`.
+- **Política de ramas (decisión 13, corregida en la ronda 2, punto 6):** la auditoría **corrige** el repo y trabaja **en `main`**, con commits chicos y la suite en verde antes de cada uno; **las ramas se reservan para proyectos que agreguen capacidades** a `main`, después de la auditoría. Excepción: una corrección que no pueda dejar la suite en verde entre commits usa una rama de vida corta que se mergea en la misma sesión. Bots: §9.6, d10.
+- **Alcance cerrado:** durante la auditoría **no se hace nada que no sea la auditoría o la corrección del modelo**; las mejoras están suspendidas hasta que el modelo funcione según el §9.4. Reglas en el §9.9.
 - **Lo que no hay que borrar:** `evaluacion/baseline/outputs/censo_detalle_2026-09-28.parquet` (37 MB, sólo existe en el disco de Franco y es el panel limpio de la re-estimación) ni la rama `claude/suspicious-lalande-8a89b7` sin rescatar antes su commit `c916e0e` (ver decisión 12).
 - Las tres mediciones nuevas, los scripts y sus resultados están versionados en esta carpeta (`resultados/`); los datos de trabajo intermedios (`Archivos_Borrar/`) se pueden borrar.
 
@@ -193,19 +194,19 @@ Lista cerrada. Recomendación primero; costo entre paréntesis.
 
 | # | Decisión de Franco | Qué implica (y qué cambia respecto de lo que recomendé) | Primer paso | Criterio de cierre |
 |---|---|---|---|---|
-| **1** | **Eliminar todos los HTML.** "Esta es una etapa de puesta en marcha operativa": declarar cuánto se mide de verdad y dejar como tarea aumentarlo. | Se interpretan como **los tres HTML de producto** y sus generadores (inventario abajo). **Por confirmar con Franco:** los 6 fixtures HTML de los tests del bot y de los scrapers (~6 KB; sin ellos fallan esos tests), la muestra `datos/senado/muestras/Senado_2002-03-05_muestra.html` (720 KB) y `docs/contexto/premortem-report-...html` (documento). La declaración de lo que se mide está en §9.4. | escribir `coordinacion/QUE-SE-MIDE.md` (§9.4); rama `quitar-html`; **no** tocar `nowcast_puertas.py` (el número interno sigue saliendo por consola/JSON) | `git ls-files \| grep -i html` sólo devuelve fixtures/muestras confirmados; `REGENERAR.ps1` y `verificar_regeneracion.py` sin panel; tests verdes |
-| **2** | **Reestimar todas las variables; "empecemos limpios".** | **Cambia mi recomendación:** δ, θ y ψ **no se archivan**, se re-estiman; **la poda P2 queda suspendida**. Método obligatorio: **walk-forward** (estimar con datos hasta *t*, evaluar después); estimar y evaluar en el mismo panel es in-sample y no cuenta como "medición vigente" (regla 1). Los parámetros **no son independientes**: se re-estiman en orden (§9.5, fase D). | fase D; antes, fases A-C | cada parámetro con: valor, panel, corte, IC por ley pareado contra el valor anterior, fecha, sha del motor |
+| **1** | **Eliminar todos los HTML.** "Esta es una etapa de puesta en marcha operativa": declarar cuánto se mide de verdad y dejar como tarea aumentarlo. | Se interpretan como **los tres HTML de producto** y sus generadores (inventario abajo). **Confirmado en la ronda 2 (§9.1b, punto 6):** se quedan los 6 fixtures HTML (los usan los tests de los bots y de los scrapers) y **salen** la muestra `datos/senado/muestras/Senado_2002-03-05_muestra.html` (738 KB) y `docs/contexto/premortem-report-20260625-validado.html`. La declaración de lo que se mide está en §9.4. | escribir `coordinacion/QUE-SE-MIDE.md` (§9.4); **en `main`** (ítem A6); **no** tocar `nowcast_puertas.py` (el número interno sigue saliendo por consola/JSON) | `git ls-files \| grep -i html` sólo devuelve los 6 fixtures; `REGENERAR.ps1` y `verificar_regeneracion.py` sin panel; tests verdes |
+| **2** | **Reestimar todas las variables; "empecemos limpios".** | **Cambia mi recomendación:** δ, θ y ψ **no se archivan**, se re-estiman; **la poda P2 queda descartada** (ronda 2, punto 2: los estimadores se corrigen y se re-estiman para que aporten al motor; no se archivan). Método obligatorio: **walk-forward** (estimar con datos hasta *t*, evaluar después); estimar y evaluar en el mismo panel es in-sample y no cuenta como "medición vigente" (regla 1). Los parámetros **no son independientes**: se re-estiman en orden (§9.5, fase D). | fase D; antes, fases A-C | cada parámetro con: valor, panel, corte, IC por ley pareado contra el valor anterior, fecha, sha del motor |
 | **3** | **Claude puede prender y apagar banderas sin pedir permiso durante la readecuación**; para el futuro, no. Regla vigente **hasta que la auditoría quede explícitamente cerrada**. | Ver el texto y las salvaguardas recomendadas en §9.3. | — | se revoca solo al declararse cerrada la auditoría |
 | **4** | **6 ADR.** | C1-C6 quedan como el diseño. Los borradores **no se promueven todavía**: sus "estado real" cambiarán con la re-estimación (C2, C4, C5). C1, C3 y C6 pueden promoverse antes. Los ADR originales **se conservan intactos** con un banner "consolidado en …". | promover C6 y C1 primero | 6 archivos en `coordinacion/DECISIONES/` con la estructura fija; los 35 originales con su banner |
 | **5** | **De acuerdo:** primero el registro con los defaults fijados y la invariancia; el gate estadístico después. | pasos 0-2 del anclaje (`05` §5.3), ~14 h | paso 0: CI en verde (ver decisión 11) | los criterios de salida de los pasos 0-2 |
 | **6** | **Eliminar el panel.** | Es la misma acción que la 1 (`Nowcast-Puertas.html` + `casos/nowcast_puertas_html.py`). **Reemplaza** mi recomendación de "regenerarlo o que el titular lea el motor". El paso 8 de `REGENERAR.ps1` pasa a correr `nowcast_puertas.py diputados --fecha 2026-06-01 --origen EJECUTIVO --json` como **panel de regresión** (un JSON, no un HTML): sirve para el registro de parámetros (`afecta_panel`) y para detectar si un cambio mueve el número. | ídem 1 | el JSON de regresión existe y un test lo compara contra el motor |
 | **7** | **Guard de era: dejarlo, pero bajo revisión** ("algo que no me convence"). | Queda ON como término **provisional (P)** con vencimiento en el registro, marcado "bajo revisión de Franco". La medición independiente lo deja en +2% de Brier a favor con IC que incluye 0 y **sin efecto en la era vigente**. Hay que construir el brazo "sin corte por era" con el motor completo (hoy `GUARD_ERA=0` deja sin récord todo lo anterior a 2023). Entra en la fase D. | brazo `era_desde` en el harness | veredicto medido con el motor completo, y decisión de Franco |
-| **8** | **Validar las etiquetas de origen, "hagámoslo".** | Protocolo en §9.6 (d1); **necesita tiempo de Franco** (~2 h) o de alguien con criterio institucional. | armar la muestra | precisión por clase y efecto en el skill si se corrigen |
+| **8** | **Validar las etiquetas de origen, "hagámoslo".** | **Diferida (ronda 2, punto 8): se hace más adelante y con una persona.** Protocolo en §9.6 (d1); queda fuera del plan de la auditoría (`PENDIENTES-POST-AUDITORIA.md`) y se declara como límite en `QUE-SE-MIDE.md`. | — | precisión por clase y efecto en el skill si se corrigen |
 | **9** | **Apagar las mayorías especiales.** Primero dejar funcionando la mayoría simple **en ambas cámaras**. | `nowcast()` con `tipo_mayoria ≠ SIMPLE` devuelve **sin número** (`p_aprobacion = None` y un motivo). La evaluación se restringe a mayoría simple. **Hallazgo nuevo que cambia lo que quiere decir "funcionando": §9.2.** | ídem | `nowcast()` no devuelve número para mayorías especiales; test que lo fija |
-| **10** | **De acuerdo** con la poda P0-P2. | **P0 y P1 van** (≈ 7.000 líneas con tests). **P2 queda suspendida** por la decisión 2: los estimadores de ψ, θ y el módulo de "sobre tablas" se archivan sólo si la re-estimación limpia confirma que no sirven. | rama `poda-p0-p1` | los criterios de salida de `§5` del informe |
-| **11** | **"Explicame qué es eso"** (el CI en rojo). | **Sin decidir.** Explicación en §9.7. | — | — |
+| **10** | **De acuerdo** con la poda P0-P2. | **P0 y P1 van** (≈ 7.000 líneas con tests; `comparar_vias_icg.py` sale de P0). **P2 se descarta** (ronda 2, punto 2): los estimadores de ψ, θ y el módulo de "sobre tablas" no se archivan, se corrigen y se re-estiman. **P4 y P5 se reformulan** por lo mismo (no reemplazar ni archivar δ ni β). | en `main` (ítem A7) | los criterios de salida de `§5` del informe |
+| **11** | **"Explicame qué es eso"** (el CI en rojo). | **Decidido en la ronda 2 (punto 3): estadísticos por ley en git** (§9.7, opción 1; ítem A2). | — | — |
 | **12** | **Eliminar el worktree `suspicious-lalande` y `Archivos_Borrar/repro/`** (los borra Franco). | **Cuidado:** la rama de ese worktree tiene **un commit que no está en `main`** (`c916e0e`, 15-09, arreglo real de `datos/taxonomias`). Comandos seguros en §9.6 (d9). | rescatar `c916e0e` | worktree y `repro/` eliminados; el commit, en una rama de trabajo o descartado a conciencia |
-| **13** | **Trabajar por ramas; en `main` sólo lo funcional.** | Ver la advertencia sobre los bots en §9.6. | — | cada cambio llega a `main` por merge de rama con tests en verde |
+| **13** | **Trabajar por ramas; en `main` sólo lo funcional.** | **Corregida en la ronda 2 (punto 6):** la auditoría trabaja en `main`; las ramas se reservan para proyectos que agreguen capacidades. Bots: §9.6, d10. | — | cada cambio llega a `main` con la suite en verde antes del commit |
 
 **Inventario de HTML (decisiones 1 y 6):**
 
@@ -214,11 +215,29 @@ Lista cerrada. Recomendación primero; costo entre paréntesis.
 | `Nowcast-Puertas.html` (el panel) | 153 KB | `casos/nowcast_puertas_html.py` (350 líneas) | `REGENERAR.ps1` paso 8; **`verificar_regeneracion.py`** (chequeos del panel); `casos/README.md`; `README.md`; `mapa_modelo_datos.js`; `modelo/ensemble/README.md` |
 | `MAPA-MODELO.html` | 89 KB | `producto/dashboard/src/generar_mapa_modelo.py` (482 líneas) | `mapa_modelo_datos.js` (161 KB), `tablero_datos.js`; `producto/dashboard/README.md`; `MAPA.md` |
 | `TABLERO-CONTROL.html` | 14 KB | (diseño fijo) | **`tablero_datos.js`** (212 KB, KPIs e hitos); la regla del TABLERO de `CLAUDE.md` |
-| fixtures de tests (6) | ~6 KB | — | tests del bot y de los scrapers (`datos/bot_recoleccion`, `datos/seguimiento`, `datos/senado`) — **no borrar sin confirmar** |
-| `datos/senado/muestras/Senado_2002-03-05_muestra.html` | 720 KB | — | muestra de datos |
-| `docs/contexto/premortem-report-20260625-validado.html` | 11 KB | — | documento de contexto |
+| fixtures de tests (6) | ~6 KB | — | tests del bot y de los scrapers (`datos/bot_recoleccion`, `datos/seguimiento`, `datos/senado`) — **se quedan** (ronda 2, punto 6) |
+| `datos/senado/muestras/Senado_2002-03-05_muestra.html` | 720 KB | — | muestra de datos — **sale** (ronda 2, punto 6) |
+| `docs/contexto/premortem-report-20260625-validado.html` | 11 KB | — | documento de contexto — **sale** (ronda 2, punto 6) |
+| `COMPARADOR-ICG.html` (no versionado) | — | `variables/proyecto/src/comparar_vias_icg.py` | análisis del ICG: **se conserva el script y se le saca la salida HTML** (ítem D6) |
 
-Al eliminarlos hay que tocar también: `REGENERAR.ps1` (paso 8), `verificar_regeneracion.py`, `CLAUDE.md` (la regla del TABLERO DE CONTROL y las referencias al mapa), `README.md`, `casos/README.md`, y decidir qué pasa con `tablero_datos.js` y `mapa_modelo_datos.js` (que sólo alimentan esos HTML). `casos/2026-07-31_ley-de-lobby.md` y su `.json` no dependen de los HTML.
+Al eliminarlos hay que tocar también: `REGENERAR.ps1` (paso 8), `verificar_regeneracion.py`, `CLAUDE.md` (la regla del TABLERO DE CONTROL y las referencias al mapa), `README.md`, `casos/README.md`, y decidir qué pasa con `tablero_datos.js` y `mapa_modelo_datos.js` (que sólo alimentan esos HTML: **se eliminan también**, ítem A6). Las rutas a la muestra del Senado y al premortem aparecen en `datos/senado/NOTA-2001-2003.md`, `docs/contexto/INSTRUCTIVO-MAESTRO.md`, `docs/contexto/Nowcast-Congreso_viabilidad_y_plan.md`, `README.md` y los README de `variables/proyecto` y `producto/dashboard`: hay que corregirlas para no dejar rutas rotas (`tests/test_rutas_citadas_existen.py`). `casos/2026-07-31_ley-de-lobby.md` y su `.json` no dependen de los HTML.
+
+### 9.1b Correcciones de Franco (ronda 2, 2026-09-29, tarde)
+
+Franco respondió punto por punto a la lista "lo que tenés que saber" del cierre de la sesión anterior (los números son los de esa lista, del 2 al 9; el 1 era un error mío y no llevaba respuesta). **Estas respuestas prevalecen sobre la tabla 9.1.**
+
+| punto | respuesta de Franco | qué queda decidido | ítem |
+|---|---|---|---|
+| **2** | "Dejá mi decisión. No quiero archivar y luego borrar estimadores que pueden estar funcionando. Hay que corregirlos y reestimar para que agreguen al motor." | La poda **P2 se descarta** (ya no "suspendida"). δ, θ, ψ y β **no se archivan ni se borran**: se **corrigen y se re-estiman** para que aporten al motor. Si en la fase D alguno no aporta, sacarlo lo decide Franco con la medición delante, no antes. P4 y P5 se reformulan por lo mismo | D3, D4 |
+| **3** | "Ok, perfecto, hagamos eso." | CI: **estadísticos por ley guardados en git** (opción 1 del §9.7) | A2 |
+| **4** | "Ok" | Se rescata `c916e0e` antes de tocar la rama o el worktree; no se borra el parquet del censo | A8 |
+| **5** | "Ok, cómo hacemos eso" | Cómo dejar funcionando a los bots con `main` protegido: §9.6, d10. **Ahora no se exige PR ni CI en `main`**; sólo se bloquea borrado y force-push | A9 |
+| **6** | "Dejá lo que sea necesario para que funcionen los bots. El resto afuera. La idea de la auditoría es corregir el repo, la rama dejémosla para proyectos que agreguen al main." | **(a) HTML:** se quedan los 6 fixtures (los usan los tests de los bots y de los scrapers); **salen** los 3 HTML de producto, la muestra del Senado y el premortem. **(b) Ramas:** la auditoría **trabaja en `main`**; las ramas se reservan para proyectos que agreguen capacidades, después de la auditoría. Consecuencia: `auditoria-2026-09` se **mergeó a `main`** (sólo documentación) | A6 y todo el plan |
+| **7** | "Ok" | La práctica de §9.3 (la autorización exime del OK, no de la medición) queda **adoptada** | fase D |
+| **8** | "Está bien, lo dejaremos para más adelante, pero se hará con una persona." | La validación de las etiquetas de origen **sale del plan de la auditoría**: va a `PENDIENTES-POST-AUDITORIA.md` y se declara como límite en `QUE-SE-MIDE.md` | — |
+| **9** | "No, dejalo que recolecte la información. ICG tiene que ser parte de la fórmula matemática." | **`icg-mensual.yml` no se pausa** (d8 queda sin efecto). El ICG **entra a la fórmula**: hoy está "medido y desconectado" (`FORMULA-COMPLETA` §II.4, término 10) y su único efecto visible era el slider del panel que se elimina. Nuevo ítem **D6**; `comparar_vias_icg.py` sale de la poda P0 | D6, A7 |
+
+**Alcance y carril (pedido de Franco):** la auditoría es lo único que se hace, sin abrir tareas ajenas y con las mejoras suspendidas hasta que el modelo funcione. Reglas en el §9.9; modelo recomendado en el §9.10; plan por ítems en `ESTADO-EJECUCION.md`.
 
 ### 9.2 Correcciones al informe (posteriores a las decisiones)
 
@@ -236,7 +255,7 @@ Lectura: **(i)** en mayoría simple el modelo rinde peor que una constante (Brie
 
 Consecuencia para la decisión 9: **"dejar funcionando la mayoría simple en ambas cámaras" hoy no se cumple** y hace falta definir "funcionando" con números (propuesta en §9.4).
 
-**(b) La decisión 2 pisa a la P2** (ver decisión 10): la poda baja de ≈ 8.000 a ≈ 7.000 líneas.
+**(b) La decisión 2 pisa a la P2, y en la ronda 2 Franco la descartó** (§9.1b, punto 2): la poda baja de ≈ 8.000 a ≈ 7.000 líneas.
 
 **(c) La recomendación "regenerar el panel" queda superada** por la eliminación (decisiones 1 y 6).
 
@@ -244,7 +263,7 @@ Consecuencia para la decisión 9: **"dejar funcionando la mayoría simple en amb
 
 > **Texto:** durante la readecuación y el reacomodamiento del proyecto, Claude puede **prender y apagar** banderas y términos **sin pedir permiso** a Franco. **Vigente hasta que Franco declare explícitamente cerrada la auditoría.** Después vuelve la regla 10: Claude propone, Franco aprueba.
 
-*Práctica recomendada (no impuesta por Franco; puede descartarla):* la autorización **exime del OK, no de la medición**. Cada cambio de bandera o de parámetro debería (1) apoyarse en una medición según las reglas 1-3 del informe, (2) quedar anotado con fecha, motivo, valor anterior y medición (en el registro de parámetros cuando exista; hasta entonces, en `coordinacion/AUDITORIA-2026-09/CAMBIOS-DE-BANDERAS.md`), y (3) hacerse en rama, mergeando con tests en verde. Es lo que evita repetir septiembre: los tres términos que se prendieron en 48 horas tenían el OK; les faltaba la medición.
+*Práctica recomendada (no impuesta por Franco; puede descartarla):* la autorización **exime del OK, no de la medición**. Cada cambio de bandera o de parámetro debería (1) apoyarse en una medición según las reglas 1-3 del informe, (2) quedar anotado con fecha, motivo, valor anterior y medición (en el registro de parámetros cuando exista; hasta entonces, en `coordinacion/AUDITORIA-2026-09/CAMBIOS-DE-BANDERAS.md`), y (3) hacerse en rama, mergeando con tests en verde. Es lo que evita repetir septiembre: los tres términos que se prendieron en 48 horas tenían el OK; les faltaba la medición. **Franco adoptó esta práctica en la ronda 2 (punto 7).** La autorización cubre banderas y términos, **no el alcance**: qué se hace lo fija el plan (§9.9).
 
 ### 9.4 Declaración de lo que hoy se mide (borrador de `QUE-SE-MIDE.md`, decisión 1)
 
@@ -263,49 +282,110 @@ Consecuencia para la decisión 9: **"dejar funcionando la mayoría simple en amb
 
 ### 9.5 Plan de trabajo, en orden (con dependencias)
 
+**El plan con sus ítems numerados (A1…E6), criterios de salida y estado está en `ESTADO-EJECUCION.md`.** Esta tabla es el resumen, ya corregido por la ronda 2.
+
 | fase | qué | h aprox. | depende de |
 |---|---|---:|---|
-| **A** | **Orden y limpieza (ramas):** política de ramas y protección de `main` (ver §9.6, bots); CI en verde (decisión 11); `QUE-SE-MIDE.md`; **apagar mayorías especiales**; eliminar HTML y panel, dejando el **panel de regresión en JSON**; poda P0 y P1; actualizar `CLAUDE.md` | 20-30 | — |
+| **A** | **Orden y limpieza, en `main`:** CI en verde (estadísticos por ley, decisión 11); paridad Python 3.11; `QUE-SE-MIDE.md`; **apagar mayorías especiales**; eliminar HTML y panel (queda el **panel de regresión en JSON**); poda P0 y P1; rescatar `c916e0e`; los bots siguen intactos; actualizar `CLAUDE.md` | 20-30 | — |
 | **B** | **Anclaje básico (pasos 1-2 del anclaje):** registro de parámetros generado desde el código, `test_defaults_fijados`, invariancia al futuro y control independiente dentro de los tests | 14 | A |
-| **C** | **Métrica de verdad y calibración declarada** generadas (pasos 3 del anclaje); brazo "sin corte por era" en el harness; **validación de origen** (decisión 8, en paralelo) | 18-24 | B |
-| **D** | **Re-estimación limpia y walk-forward de todo** (decisión 2), en este orden: (1) parámetros de $P_i$: `k_shrink` del récord y de la postura, ventana de 730 días, `MIN_HIST`, `MIN_VOTOS_FICHA`, granularidad del origen, guard de era; (2) piso 0,02, ε₀ y τ; (3) β y δ (sobre el offset de (1)); (4) θ y ψ; (5) recheck de ε₀ y τ con β prendido. Cada uno: panel = detalle del censo, corte *t*, IC por ley pareado contra el valor de hoy | 40-60 | C |
-| **E** | **Cierre:** promover los ADR C1-C6 con el "estado real" resultante; adoptar las 10 reglas; documentos generados; gate pareado (pasos 4-5 del anclaje); monitoreo hacia adelante nivel 1; **Franco declara la auditoría cerrada** | 30-40 | D |
+| **C** | **Métrica de verdad y calibración declarada** generadas (paso 3 del anclaje); brazo "sin corte por era" en el harness. *(La validación de origen salió del plan: §9.1b, punto 8)* | 12-18 | B |
+| **D** | **Re-estimación limpia y walk-forward de todo** (decisión 2), en este orden: (1) parámetros de $P_i$: `k_shrink` del récord y de la postura, ventana de 730 días, `MIN_HIST`, `MIN_VOTOS_FICHA`, granularidad del origen, guard de era; (2) piso 0,02, ε₀ y τ; (3) β y δ (sobre el offset de (1)); (4) θ y ψ (**corregirlos y re-estimarlos, no archivarlos**); (5) recheck de ε₀ y τ con β prendido; (6) **el ICG entra a la fórmula** (ronda 2, punto 9). Cada uno: panel = detalle del censo, corte *t*, IC por ley pareado contra el valor de hoy | 50-70 | C |
+| **E** | **Cierre:** promover los ADR C1-C6 con el "estado real" resultante; adoptar las 10 reglas; documentos generados; gate pareado (pasos 4-5 del anclaje); monitoreo hacia adelante nivel 1; actualizar `FORMULA-COMPLETA.md`; **Franco declara la auditoría cerrada** | 30-40 | D |
 
-Total orientativo: **≈ 120-170 h**. El objetivo operativo de la mayoría simple (definido en §9.4) se ataca en las fases C-D; **la fase D es donde se decide si el modelo actual se conserva, se recalibra o se simplifica** (la opción P9 del §5).
+Total orientativo: **≈ 125-170 h**. El objetivo operativo de la mayoría simple (definido en §9.4) se ataca en las fases C-D; **la fase D es donde se decide si el modelo actual se conserva, se recalibra o se simplifica** (la opción P9 del §5).
 
 ### 9.6 Recomendaciones fijadas para el punto (d) (segunda ronda) y notas de las decisiones
 
 | # | tema | recomendación | costo | criterio de cierre |
 |---|---|---|---:|---|
-| **d1** | **Etiquetas de origen** (decisión 8) | muestra estratificada de **200 actas** (por clase de origen, era y cámara, incluyendo 40 `DESCONOCIDO`); etiqueta a mano contra la ficha oficial del expediente (Poder Ejecutivo o legislador y su bloque); **precisión y matriz de confusión por clase**, y cuánto cambia el skill si se corrigen. Claude prepara la muestra y una etiqueta tentativa **pero la verdad la pone una persona** (si no, es circular con `origen_por_acta`) | 6 h + ~2 h de Franco | precisión ≥ 90% o plan de corrección |
+| **d1** | **Etiquetas de origen** (decisión 8) — **DIFERIDA: más adelante y con una persona** (ronda 2, punto 8) | muestra estratificada de **200 actas** (por clase de origen, era y cámara, incluyendo 40 `DESCONOCIDO`); etiqueta a mano contra la ficha oficial del expediente (Poder Ejecutivo o legislador y su bloque); **precisión y matriz de confusión por clase**, y cuánto cambia el skill si se corrigen. Claude prepara la muestra y una etiqueta tentativa **pero la verdad la pone una persona** (si no, es circular con `origen_por_acta`) | 6 h + ~2 h de la persona | precisión ≥ 90% o plan de corrección. **Fuera del plan de la auditoría** (`PENDIENTES-POST-AUDITORIA.md`); queda declarada como límite en `QUE-SE-MIDE.md` |
 | **d2** | **Presencia** | agregar los ausentes al harness y medir la calibración de `p_presente` y su efecto en la cobertura de la banda | 8-12 h | Brier de la presencia; cobertura de la banda con asistencia real |
 | **d3** | **Bot, workflows y datos** | auditoría de segunda ronda de `datos/` y de los tres workflows, con una matriz insumo → motor y un test de validez por insumo | ~20 h | matriz completa y tests |
 | **d4** | **Calidad de la canónica** | investigar el **hueco de Diputados 2020-23** (25 actas, 6.421 votos según el lote A) y otros; parte de d3 | ~6 h | cobertura por año publicada |
 | **d5** | **Estado real del CI** | que Franco corra `gh auth login` (o revise la pestaña *Actions* del repo) y confirmar si `HEAD` está rojo | 15 min | se sabe el estado |
 | **d6** | **Paridad de versiones** | fijar Python y pandas (3.11 en el CI, 3.14 y pandas 3.0 en esta PC) y correr la suite en 3.11 | ~2 h | mismos resultados en ambos |
 | **d7** | **Origen Senado** | mantener la precaución de `CLAUDE.md` (no publicar P(sanción) de proyectos con origen Senado: sesgo de supervivencia, ~48% contra ~1,7%). La "mayoría simple en ambas cámaras" de la decisión 9 se entiende con el **Senado como cámara votante**, no como origen | 0,5 h para declararlo en `QUE-SE-MIDE.md` | declarado |
-| **d8** | **ICG** | con los HTML eliminados el ICG sólo queda como serie mensual sin uso; **pausar `icg-mensual.yml`** hasta que el ICG vuelva a entrar al número (decisión de Franco) | 0,5 h | workflow pausado |
+| **d8** | **ICG** (ronda 2, punto 9) | **No se pausa `icg-mensual.yml`: que siga recolectando.** El ICG **tiene que ser parte de la fórmula matemática**: hoy está medido y desconectado (`FORMULA-COMPLETA` §II.4) y sólo actuaba en el slider del panel que se elimina. Se conecta en el ítem **D6** (γ y forma de entrada, walk-forward; si la serie no alcanza para decidirlo, queda declarado "pendiente de datos") | ~10 h (D6) | decisión escrita sobre el ICG con su medición |
 | **d9** | **Worktree y `repro/`** (decisión 12) | desde la raíz git: `git worktree remove ".claude/worktrees/suspicious-lalande-8a89b7"` (**conserva la rama**). Antes, rescatar el commit propio con `git switch -c rescate-taxonomias main` y `git cherry-pick c916e0e`. Recién ahí, si se quiere, `git branch -D claude/suspicious-lalande-8a89b7`. `Archivos_Borrar/repro/` se borra a mano | 0,5 h | worktree eliminado, commit a salvo |
-| **d10** | **Bots y protección de `main`** (decisión 13) | `bot-diario.yml` hace `git push origin main` directo (y también `padron-vivo` e `icg-mensual`). **Si se activa protección de rama en GitHub, los bots dejan de poder empujar.** Opciones: permitir que los bots salten la regla (recomendado), o que empujen a una rama `datos-bot` que se mergea sola | 1-2 h | los bots siguen funcionando con `main` protegido |
+| **d10** | **Bots y protección de `main`** (decisión 13; ronda 2, punto 5) | Los tres bots empujan directo a `main` con el `GITHUB_TOKEN` por defecto (los workflows no usan ningún token propio), y **ese token no puede entrar en la lista de excepciones de una regla de protección**. **Ahora: no exigir PR ni CI en `main`;** sólo bloquear borrado y force-push, que no afecta a los bots. Pasos abajo | 0,5 h | los bots siguen funcionando con `main` protegido contra borrado y force-push |
 
-### 9.7 Qué es el "CI en rojo" (decisión 11, sin decidir)
+
+**Alcance de las recomendaciones (d): qué entra al plan y qué espera** *(propuesta mía; Franco puede moverlas con `CAMBIO DE ALCANCE:`)*. **Dentro de la auditoría:** d4-a (medir y declarar la cobertura de la canónica por año), d5, d6, d7, d8 (→ D6), d9 y el paso "ahora" de d10. **Fuera, al estacionamiento** (`PENDIENTES-POST-AUDITORIA.md`): d1, d2, d3, d4-b (investigar y rellenar el hueco) y el paso "más adelante" de d10.
+
+**Cómo se hace d10, paso a paso en GitHub** (los nombres de los menús pueden variar un poco: no los verifiqué contra tu cuenta):
+1. Repo → **Settings → Rules → Rulesets → New ruleset → New branch ruleset**. Nombre: `proteger-main`. **Enforcement status: Active**. En *Target branches* → *Add target* → **Include default branch** (`main`).
+2. En *Branch rules* marcar **sólo** *Restrict deletions* y *Block force pushes*. **No** marcar *Require a pull request* ni *Require status checks*: bloquearían a los bots.
+3. Guardar, y comprobar en la pestaña *Actions* que el próximo `bot-diario` (07:00 ARG, lunes a sábado) empuja sin error.
+
+**Si más adelante se quiere exigir PR + CI en `main`** (proyecto posterior a la auditoría): hay que darles a los bots una vía que salte la regla, porque el `GITHUB_TOKEN` por defecto no puede figurar en la lista de excepciones. Las vías que sí pueden son una **deploy key con escritura** (va en la lista de *bypass* del ruleset; los workflows la usan con `ssh-key:` en el `checkout`), un **token personal de un administrador** guardado como secreto, o una **GitHub App**. Requiere tocar los tres workflows (~2 h). Fuentes: [Allowing github-actions[bot] to push to protected branch](https://github.com/orgs/community/discussions/25305) y [Allow github actions to bypass branch protection](https://github.com/orgs/community/discussions/13836).
+
+### 9.7 Qué es el "CI en rojo" (decisión 11; **decidida en la ronda 2: opción 1**)
 
 **CI** es la revisión automática que GitHub corre cada vez que se sube código (`.github/workflows/tests.yml`): ejecuta los tests del repo en una máquina limpia y avisa si algo falla. **Hoy esa revisión falla en `HEAD`**, por un solo test: `test_insumos_del_motor_viajan`. Ese test verifica que **todo archivo que el motor lee viaje por git**, y detecta que el detalle del censo (`censo_detalle_2026-09-28.parquet`, 37 MB) —el insumo del 0,1333 y de τ— está **ignorado por git**: existe sólo en el disco de Franco. Quien clone el repo no puede re-estimar ε₀ ni τ, y la reproducción depende de regenerar el censo (43 minutos).
 
-**Por qué importa:** un CI en rojo permanente enseña a ignorarlo, y el día que falle un test importante se va a perder entre el ruido. Además, para trabajar con `main` protegido (decisión 13) el CI tiene que estar en verde. **Sin decidir; opciones:**
+**Por qué importa:** un CI en rojo permanente enseña a ignorarlo, y el día que falle un test importante se va a perder entre el ruido. Además, para trabajar con `main` protegido (decisión 13) el CI tiene que estar en verde. **Decidido (ronda 2, punto 3): opción 1. Las opciones que se evaluaron:**
 1. **(Recomendada)** guardar en git unos **estadísticos por ley** (n, Σy, ΣSE por variante: ~200 KB) que alcanzan para recalcular el skill y los IC sin el archivo de 37 MB, y que quien necesite el detalle lo regenere.
 2. Declarar el archivo como **excepción documentada** en el propio test, con su motivo (el test lo prevé), y regenerarlo cuando haga falta.
 3. Subirlo con **Git LFS** (la sqlite ya se acerca a los 95 MiB del techo: mejor no sumar peso).
 
 *Nota:* que esté rojo en GitHub es una **inferencia** (no pude leer el estado real; d5).
 
+*Cómo se ejecuta la opción 1 (ítem A2):* antes de guardar nada, verificar qué necesita cada consumidor (el skill y su IC piden estadísticos por ley; τ y ε₀ piden estadísticos por acta) y guardar lo mínimo suficiente **en JSON** (los `.parquet` y `.csv` están ignorados por git). Lo que se guarda se regenera cada vez que la fase D re-estima.
+
 ### 9.8 Cuándo queda cerrada la auditoría
 
-Propuesta: cuando (1) las fases A-E estén hechas o descartadas por escrito, (2) `QUE-SE-MIDE.md` esté publicado, (3) los ADR C1-C6 estén promovidos con su estado real, (4) las 10 reglas estén adoptadas en `CLAUDE.md`, y (5) **Franco lo declare explícitamente**. Ese acto revoca la autorización de §9.3 y devuelve la regla de "Claude propone, Franco aprueba".
+Propuesta: cuando (1) las fases A-E estén hechas o descartadas **por escrito** en `ESTADO-EJECUCION.md`, (2) `QUE-SE-MIDE.md` esté publicado y declare los límites que quedan (etiquetas de origen sin validar, presencia sin medir), (3) los ADR C1-C6 estén promovidos con su estado real, (4) las 10 reglas estén adoptadas en `CLAUDE.md`, (5) esté generado `PROMPT-POST-AUDITORIA.md` a partir de `PENDIENTES-POST-AUDITORIA.md`, y (6) **Franco lo declare explícitamente**. Ese acto revoca la autorización de §9.3, retira el bloque MODO AUDITORÍA de `CLAUDE.md` y devuelve la regla de "Claude propone, Franco aprueba".
 
-### 10. Prompt de arranque sugerido para la conversación nueva
+### 9.9 Reglas del carril (para que la auditoría llegue a cierre)
 
-> Estoy retomando el trabajo del proyecto *Nowcast Congreso*. Leé **`coordinacion/AUDITORIA-2026-09/AUDITORIA-INTEGRAL-2026-09.md`, empezando por el §9** (decisiones mías del 29-09), y `00-linea-base.md`. La auditoría sigue **abierta**. Reglas de esta etapa: (1) trabajá en **ramas** y mergeá a `main` sólo lo que funciona y tiene tests en verde; (2) **podés prender y apagar banderas sin pedirme permiso** hasta que yo declare cerrada la auditoría, pero cada cambio se apoya en una medición hecha con el motor real y queda registrado; (3) **no borres nada**: se mueve a `Archivos_Borrar/`, salvo lo que este informe dice que elimine (HTML de producto y panel); (4) sin `git push`. Empezá por la **fase A** del §9.5 y pedime las confirmaciones que el §9.1 marca como "por confirmar" (los HTML que no son de producto y el destino de la rama de auditoría).
+Vigentes desde ahora **hasta que Franco declare cerrada la auditoría**. Están también en `CLAUDE.md` (bloque MODO AUDITORÍA), que es lo primero que lee cualquier conversación. Existen porque el proyecto ya perdió el control una vez por acumular trabajo razonable que nadie había pedido medir.
+
+| # | regla | por qué |
+|---|---|---|
+| **1** | **Todo lo que se hace es un ítem de `ESTADO-EJECUCION.md`** (A1…E6). Lo que no está, no se hace: se anota en una línea en `PENDIENTES-POST-AUDITORIA.md` y se vuelve al ítem en curso | un carril con lista cerrada; sin esto, cada hallazgo se vuelve una tarea nueva |
+| **2** | **Cambiar el alcance es un acto explícito y registrado:** sólo con la frase `CAMBIO DE ALCANCE:` de Franco, y Claude lo anota en la bitácora de alcance **antes** de ejecutarlo, con lo que se posterga a cambio. Si Franco pide algo fuera del plan sin esa frase, Claude no lo hace, lo dice en una frase y ofrece anotarlo. Las **preguntas** para entender el modelo o el estado se responden: preguntar no abre trabajo | protege de la deriva, también de la que viene de Franco; el costo es una frase |
+| **3** | **Mejoras suspendidas; nada nuevo entra.** Se corrigen y re-estiman los términos que existen; no se agregan términos, variables, módulos, banderas ni documentos que el plan no nombre. Tampoco se abren tareas en `TABLERO.md` | en septiembre tres términos se prendieron en 48 horas porque "sonaban bien" |
+| **4** | **Una fase a la vez, con evidencia de salida.** No se empieza la siguiente sin mostrar el criterio de salida cumplido (comando y salida, o sha del commit) | ADR-0015 se cumplió en la forma y no frenó nada: presentar no es verificar |
+| **5** | **Pre-registro antes de medir.** Qué se mide, con qué panel y corte, y qué umbral decide, **escrito antes de ver el resultado**; con el motor real; cada cambio de bandera o parámetro queda anotado con el valor anterior | evita el in-sample y el "ajustar hasta que dé" |
+| **6** | **"Funciona" tiene definición numérica** (§9.4): nadie lo declara sin esos números. Y **Claude no valida su propio veredicto** en las fases D y E: lo revisa un segundo agente que no vio la conclusión | en esta auditoría, la corrección más grande (§9.2) y varios matices aparecieron recién con una segunda medición o una revisión ciega |
+| **7** | **`main` siempre verde; commits chicos, uno por corrección; sin `git push`; nada se borra sin mirar quién lo usa** | los bots empujan a `main`; un rojo permanente enseña a ignorar el CI |
+| **8** | **El estado vive en el repo, no en el chat:** al cerrar cada ítem y cada sesión se actualiza `ESTADO-EJECUCION.md`; si la conversación se alarga, se abre una nueva en vez de seguir | la conversación anterior se quedó sin contexto |
+| **9** | **Ante la duda de alcance, no se hace y se anota** | anotar cuesta una línea; hacer, una semana |
+| **10** | **Sólo Franco declara cerrada la auditoría** (§9.8). Al cerrarla se genera el prompt de mejoras desde el estacionamiento y se retira el bloque MODO AUDITORÍA | fija el final |
+
+*Sobre la regla 6:* el revisor es un subagente (Opus) al que no se le muestra la conclusión, el mismo patrón con el que se cerró esta auditoría (10 afirmaciones, ninguna refutada, 4 con matices).
+
+### 9.10 Qué modelo usar para la auditoría (recomendación)
+
+**Sonnet 5.5 como principal y Opus 5.5 como revisor en cuatro puntos fijos**, el mismo esquema de esta auditoría (tu instrucción del 28-09):
+
+- **Fases A y B, y C1-C2: Sonnet solo.** Es trabajo mecánico y verificable por tests (mover, borrar, generar, fijar defaults); si sale mal, la suite lo dice.
+- **Puntos de revisión de Opus** (subagente que no ve la conclusión): **(1)** antes de D1, el protocolo walk-forward y los criterios pre-registrados; **(2)** cada veredicto de la fase D (conservar / recalibrar / simplificar); **(3)** el diseño de cómo entra el ICG a la fórmula (D6); **(4)** el veredicto de cierre de la fase E y la promoción de los ADR.
+- **Por qué no Opus para todo:** lo caro es leer, ejecutar y medir, y para eso alcanza Sonnet; el riesgo de esta auditoría no es de capacidad sino de proceso (dejarse convencer por un número in-sample), y eso lo cubren el pre-registro (regla 5) y el revisor ciego (regla 6), no un modelo más grande. **Cuándo subir el principal a Opus:** si en la fase D el revisor encuentra fallas de diseño dos veces seguidas, o si hay que decidir sobre resultados ambiguos (intervalos que incluyen 0).
+- **Operativo:** una conversación por fase (A-B, C, D, E) para no agotar el contexto; los agentes en paralelo se lanzan **escalonados** (el límite de tasa cortó trabajo dos veces); esfuerzo alto en la fase D. No tengo base para comparar Fable 5.1 en este trabajo.
+
+### 10. Prompt de arranque para la conversación nueva
+
+*(Copia idéntica en `PROMPT-NUEVA-CONVERSACION.md`, lista para pegar.)*
+
+> Estoy retomando el proyecto *Nowcast Congreso* (repo `Nowcast Congreso`, carpeta de trabajo `Nowcast Congreso Argy`). Estamos en **MODO AUDITORÍA**: ejecutar la auditoría integral del motor y corregir el modelo hasta que vuelva a funcionar, según lo que decidí el 29-09-2026.
+>
+> **Leé, en este orden, antes de hacer nada:** (1) `CLAUDE.md`, empezando por el bloque MODO AUDITORÍA; (2) `coordinacion/AUDITORIA-2026-09/AUDITORIA-INTEGRAL-2026-09.md`, **desde el §9** (mis decisiones y las reglas del carril, §9.9); (3) `coordinacion/AUDITORIA-2026-09/ESTADO-EJECUCION.md` (el plan por ítems A1…E6 y su estado); (4) `00-linea-base.md` de esa carpeta.
+>
+> **Alcance cerrado (lo más importante):**
+> 1. **No me dejes saltar a otros temas.** Sólo trabajamos en la auditoría íntegra y en la corrección del modelo. Si te pido algo fuera del plan, no lo hagas: decime en una frase que está fuera, anotalo en `PENDIENTES-POST-AUDITORIA.md` y volvé al ítem en curso. Sólo lo hacés si escribo textualmente `CAMBIO DE ALCANCE:` seguido de lo que quiero, y antes de ejecutarlo lo registrás en la bitácora de alcance de `ESTADO-EJECUCION.md`. Las preguntas para entender el modelo o el estado se responden sin abrir trabajo.
+> 2. **No se abren tareas nuevas** (ni en `TABLERO.md`, ni ramas, ni documentos) que no sean de la auditoría o de la corrección del modelo. **Las mejoras están suspendidas** hasta que el modelo esté funcionando según la definición numérica del §9.4. Nada nuevo entra al modelo: se corrigen y re-estiman los términos que ya existen (δ, θ, ψ, β, ε₀, τ, guard de era, ICG…).
+> 3. Ante la duda de si algo está dentro del alcance, **no lo hagas y anotalo**.
+>
+> **Cómo se trabaja:** una fase a la vez, empezando por la **A**; no pasás a la siguiente sin mostrarme la evidencia del criterio de salida (comando y salida). Se trabaja en **`main`**, con commits chicos y la suite en verde antes de cada uno; **sin `git push`** (lo hago yo). Podés prender y apagar banderas sin pedirme permiso hasta que yo declare cerrada la auditoría, pero **cada cambio se apoya en una medición hecha con el motor real, con el criterio fijado antes de mirar el resultado, y queda anotado con el valor anterior**. Nada se borra sin mirar quién lo usa: se copia a `Archivos_Borrar/`; lo que el informe manda eliminar (HTML de producto y panel) es lo único que sale de git. Los bots (`bot-diario`, `padron-vivo`, `icg-mensual`) tienen que seguir funcionando; el `icg-mensual` **no se pausa**.
+>
+> **Modelos:** trabajá con Sonnet 5.5 como principal y llamá a Opus 5.5 como revisor en los puntos del §9.10 (diseño de la re-estimación, cada veredicto de la fase D, la integración del ICG y el veredicto de cierre). Lanzá los subagentes escalonados (el límite de tasa ya cortó trabajo dos veces).
+>
+> **Al terminar cada ítem y cada sesión:** actualizá `ESTADO-EJECUCION.md` (estado + evidencia) y decime cuál es el próximo ítem. Si la conversación se alarga, pedime abrir una nueva antes de que se pierda contexto: el estado vive en el repo, no en el chat.
+>
+> **Cierre:** sólo yo declaro cerrada la auditoría (criterios en el §9.8). Ahí generás `PROMPT-POST-AUDITORIA.md` a partir de `PENDIENTES-POST-AUDITORIA.md` para empezar con las mejoras.
+>
+> **Empezá por el ítem A1** y avisame si algo del estado del repo no coincide con lo que dice el informe.
 
 ---
 

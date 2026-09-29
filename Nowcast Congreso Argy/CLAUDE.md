@@ -4,6 +4,25 @@
 
 **Repositorio (fuente de verdad):** https://github.com/tresterciosadmin/Nowcast-Congreso
 
+## 🚧 MODO AUDITORÍA — vigente desde 2026-09-29, hasta que Franco declare cerrada la auditoría
+
+> **Este bloque prevalece sobre el resto de este archivo donde haya conflicto** (rama por tarea, reclamar módulos en `TABLERO.md`, un PR por cambio, actualizar `tablero_datos.js`). Sólo Franco lo retira.
+
+El motor se está auditando y corrigiendo hasta que vuelva a funcionar según la definición numérica del §9.4 del informe. **Las mejoras están suspendidas.** Antes de tocar nada leé el informe `coordinacion/AUDITORIA-2026-09/AUDITORIA-INTEGRAL-2026-09.md` **desde el §9** y el plan vivo `coordinacion/AUDITORIA-2026-09/ESTADO-EJECUCION.md`.
+
+1. **Todo lo que se hace es un ítem de `ESTADO-EJECUCION.md`.** Lo que no está, no se hace: se anota en una línea en `coordinacion/AUDITORIA-2026-09/PENDIENTES-POST-AUDITORIA.md` y se vuelve al ítem en curso.
+2. **El alcance sólo cambia con la frase `CAMBIO DE ALCANCE:` de Franco**, y se registra en la bitácora de alcance *antes* de ejecutar. Si Franco pide algo fuera del plan sin esa frase: no se hace, se le dice en una frase y se ofrece anotarlo. Las **preguntas** para entender el modelo o el estado se responden; preguntar no abre trabajo.
+3. **Nada nuevo entra:** se corrigen y re-estiman los términos que ya existen; no se agregan términos, variables, módulos, banderas ni documentos que el plan no nombre; no se abren tareas en `TABLERO.md`.
+4. **Una fase a la vez**, con la evidencia del criterio de salida (comando y salida, o sha) antes de pasar a la siguiente.
+5. **Pre-registro antes de medir** (qué, con qué panel y corte, qué umbral decide), con el motor real. Claude puede prender y apagar banderas **sin pedir permiso**, pero **no sin medición**, y cada cambio queda anotado con el valor anterior.
+6. **"Funciona" tiene definición numérica** (§9.4): nadie lo declara sin esos números; en las fases D y E el veredicto lo revisa un segundo agente que no vio la conclusión.
+7. **Se trabaja en `main`** (las ramas quedan para proyectos que agreguen capacidades, después): commits chicos, la suite en verde antes de cada uno, **sin `git push`**, y nada se borra sin mirar quién lo usa. Los bots tienen que seguir funcionando.
+8. **El estado vive en el repo, no en el chat:** al cerrar cada ítem y cada sesión se actualiza `ESTADO-EJECUCION.md`; si la conversación se alarga, se abre una nueva.
+9. **Ante la duda de alcance, no se hace y se anota.**
+10. **Sólo Franco declara cerrada la auditoría.** Ahí se genera el prompt de mejoras desde el estacionamiento y se retira este bloque.
+
+`coordinacion/URGENTE.md` se sigue leyendo primero; si lo que trae no es de la auditoría, se le avisa a Franco y se anota en el estacionamiento (salvo que rompa a los bots: eso se le avisa de inmediato). Modelo: Sonnet 5.5 como principal y Opus 5.5 como revisor en los puntos del §9.10.
+
 ## Qué es este proyecto
 Nowcast Legislativo Argentino: estima la probabilidad de sanción de proyectos de ley en el Congreso. Contexto de negocio, metodología y reglas de dominio están en `docs/contexto/INSTRUCTIVO-MAESTRO.md` y `docs/contexto/Nowcast-Congreso_viabilidad_y_plan.md`. **No los repitas; citalos.**
 

@@ -1,0 +1,1385 @@
+{
+ "independiente_por_AST": true,
+ "n_evaluados": 691845,
+ "n_boot": 2000,
+ "cortes": {
+  "global": {
+   "n_votos": 691845,
+   "n_leyes": 3731,
+   "tasa_base": 0.7992,
+   "predictores": {
+    "MOTOR (p__estricta__general, el de hoy)": {
+     "skill": 0.1333,
+     "ic95_ley": [
+      0.0586,
+      0.1996
+     ],
+     "brier": 0.1391
+    },
+    "motor con récord por tema (el de hasta el 28-09)": {
+     "skill": 0.115,
+     "ic95_ley": [
+      0.0426,
+      0.1808
+     ],
+     "brier": 0.14205,
+     "dBrier_vs_MOTOR (p__estricta__general, el de hoy)": {
+      "pt": 0.00295,
+      "ic95_ley": [
+       0.0012,
+       0.00446
+      ]
+     }
+    },
+    "motor con su corte viejo (día incluido, sin excluir ley)": {
+     "skill": 0.3257,
+     "ic95_ley": [
+      0.2601,
+      0.3842
+     ],
+     "brier": 0.10823,
+     "dBrier_vs_MOTOR (p__estricta__general, el de hoy)": {
+      "pt": -0.03087,
+      "ic95_ley": [
+       -0.04864,
+       -0.0192
+      ]
+     }
+    },
+    "climatologia_walkforward": {
+     "skill": 0.0135,
+     "ic95_ley": [
+      -0.0117,
+      0.0343
+     ],
+     "brier": 0.15833,
+     "dBrier_vs_MOTOR (p__estricta__general, el de hoy)": {
+      "pt": 0.01923,
+      "ic95_ley": [
+       0.00613,
+       0.03031
+      ]
+     }
+    },
+    "bloque_ingenuo": {
+     "skill": 0.0266,
+     "ic95_ley": [
+      -0.0277,
+      0.0776
+     ],
+     "brier": 0.15623,
+     "dBrier_vs_MOTOR (p__estricta__general, el de hoy)": {
+      "pt": 0.01713,
+      "ic95_ley": [
+       0.00918,
+       0.02591
+      ]
+     }
+    },
+    "record_puro": {
+     "skill": 0.0318,
+     "ic95_ley": [
+      -0.0351,
+      0.0913
+     ],
+     "brier": 0.1554,
+     "dBrier_vs_MOTOR (p__estricta__general, el de hoy)": {
+      "pt": 0.0163,
+      "ic95_ley": [
+       0.00996,
+       0.02348
+      ]
+     }
+    },
+    "record_encogido_al_bloque": {
+     "skill": 0.0481,
+     "ic95_ley": [
+      -0.0137,
+      0.104
+     ],
+     "brier": 0.15278,
+     "dBrier_vs_MOTOR (p__estricta__general, el de hoy)": {
+      "pt": 0.01368,
+      "ic95_ley": [
+       0.00648,
+       0.02127
+      ]
+     }
+    },
+    "record_encogido_con_origen": {
+     "skill": 0.1335,
+     "ic95_ley": [
+      0.0687,
+      0.1964
+     ],
+     "brier": 0.13908,
+     "dBrier_vs_MOTOR (p__estricta__general, el de hoy)": {
+      "pt": -2e-05,
+      "ic95_ley": [
+       -0.00412,
+       0.00349
+      ]
+     }
+    },
+    "record_con_origen_SIN_guard_de_era": {
+     "skill": 0.116,
+     "ic95_ley": [
+      0.0586,
+      0.1739
+     ],
+     "brier": 0.14187,
+     "dBrier_vs_MOTOR (p__estricta__general, el de hoy)": {
+      "pt": 0.00278,
+      "ic95_ley": [
+       -0.0021,
+       0.00763
+      ]
+     }
+    },
+    "persistencia_ultima_fecha": {
+     "skill": -0.2695,
+     "ic95_ley": [
+      -0.3657,
+      -0.1674
+     ],
+     "brier": 0.20375,
+     "dBrier_vs_MOTOR (p__estricta__general, el de hoy)": {
+      "pt": 0.06465,
+      "ic95_ley": [
+       0.04036,
+       0.08818
+      ]
+     }
+    },
+    "CONTROL_POSITIVO_record_con_fuga_del_mismo_dia": {
+     "skill": 0.2039,
+     "ic95_ley": [
+      0.1377,
+      0.2673
+     ],
+     "brier": 0.12778,
+     "dBrier_vs_MOTOR (p__estricta__general, el de hoy)": {
+      "pt": -0.01132,
+      "ic95_ley": [
+       -0.02887,
+       0.00149
+      ]
+     }
+    }
+   }
+  },
+  "era=hasta 2011": {
+   "n_votos": 318335,
+   "n_leyes": 2017,
+   "tasa_base": 0.8363,
+   "predictores": {
+    "MOTOR (p__estricta__general, el de hoy)": {
+     "skill": 0.1331,
+     "ic95_ley": [
+      0.0722,
+      0.1942
+     ],
+     "brier": 0.11867
+    },
+    "motor con récord por tema (el de hasta el 28-09)": {
+     "skill": 0.0871,
+     "ic95_ley": [
+      0.0194,
+      0.1516
+     ],
+     "brier": 0.12496,
+     "dBrier_vs_MOTOR (p__estricta__general, el de hoy)": {
+      "pt": 0.00629,
+      "ic95_ley": [
+       0.00469,
+       0.00781
+      ]
+     }
+    },
+    "motor con su corte viejo (día incluido, sin excluir ley)": {
+     "skill": 0.245,
+     "ic95_ley": [
+      0.1814,
+      0.3076
+     ],
+     "brier": 0.10336,
+     "dBrier_vs_MOTOR (p__estricta__general, el de hoy)": {
+      "pt": -0.01532,
+      "ic95_ley": [
+       -0.01833,
+       -0.01263
+      ]
+     }
+    },
+    "climatologia_walkforward": {
+     "skill": 0.0067,
+     "ic95_ley": [
+      -0.0149,
+      0.025
+     ],
+     "brier": 0.13597,
+     "dBrier_vs_MOTOR (p__estricta__general, el de hoy)": {
+      "pt": 0.0173,
+      "ic95_ley": [
+       0.0098,
+       0.02573
+      ]
+     }
+    },
+    "bloque_ingenuo": {
+     "skill": 0.0805,
+     "ic95_ley": [
+      0.0288,
+      0.132
+     ],
+     "brier": 0.12587,
+     "dBrier_vs_MOTOR (p__estricta__general, el de hoy)": {
+      "pt": 0.0072,
+      "ic95_ley": [
+       0.00419,
+       0.01018
+      ]
+     }
+    },
+    "record_puro": {
+     "skill": 0.0961,
+     "ic95_ley": [
+      0.0327,
+      0.1591
+     ],
+     "brier": 0.12374,
+     "dBrier_vs_MOTOR (p__estricta__general, el de hoy)": {
+      "pt": 0.00507,
+      "ic95_ley": [
+       0.00265,
+       0.00811
+      ]
+     }
+    },
+    "record_encogido_al_bloque": {
+     "skill": 0.1174,
+     "ic95_ley": [
+      0.0587,
+      0.1759
+     ],
+     "brier": 0.12082,
+     "dBrier_vs_MOTOR (p__estricta__general, el de hoy)": {
+      "pt": 0.00215,
+      "ic95_ley": [
+       -6e-05,
+       0.00468
+      ]
+     }
+    },
+    "record_encogido_con_origen": {
+     "skill": 0.1324,
+     "ic95_ley": [
+      0.0715,
+      0.1928
+     ],
+     "brier": 0.11877,
+     "dBrier_vs_MOTOR (p__estricta__general, el de hoy)": {
+      "pt": 0.0001,
+      "ic95_ley": [
+       -0.00061,
+       0.00068
+      ]
+     }
+    },
+    "record_con_origen_SIN_guard_de_era": {
+     "skill": 0.1324,
+     "ic95_ley": [
+      0.0715,
+      0.1928
+     ],
+     "brier": 0.11877,
+     "dBrier_vs_MOTOR (p__estricta__general, el de hoy)": {
+      "pt": 0.0001,
+      "ic95_ley": [
+       -0.00061,
+       0.00068
+      ]
+     }
+    },
+    "persistencia_ultima_fecha": {
+     "skill": -0.2727,
+     "ic95_ley": [
+      -0.3565,
+      -0.2022
+     ],
+     "brier": 0.17423,
+     "dBrier_vs_MOTOR (p__estricta__general, el de hoy)": {
+      "pt": 0.05555,
+      "ic95_ley": [
+       0.04742,
+       0.06379
+      ]
+     }
+    },
+    "CONTROL_POSITIVO_record_con_fuga_del_mismo_dia": {
+     "skill": 0.187,
+     "ic95_ley": [
+      0.1277,
+      0.2488
+     ],
+     "brier": 0.11129,
+     "dBrier_vs_MOTOR (p__estricta__general, el de hoy)": {
+      "pt": -0.00738,
+      "ic95_ley": [
+       -0.01038,
+       -0.00433
+      ]
+     }
+    }
+   }
+  },
+  "era=2011-2015": {
+   "n_votos": 115967,
+   "n_leyes": 679,
+   "tasa_base": 0.8345,
+   "predictores": {
+    "MOTOR (p__estricta__general, el de hoy)": {
+     "skill": 0.277,
+     "ic95_ley": [
+      0.1851,
+      0.3565
+     ],
+     "brier": 0.09986
+    },
+    "motor con récord por tema (el de hasta el 28-09)": {
+     "skill": 0.2785,
+     "ic95_ley": [
+      0.1774,
+      0.3611
+     ],
+     "brier": 0.09965,
+     "dBrier_vs_MOTOR (p__estricta__general, el de hoy)": {
+      "pt": -0.00021,
+      "ic95_ley": [
+       -0.00578,
+       0.00445
+      ]
+     }
+    },
+    "motor con su corte viejo (día incluido, sin excluir ley)": {
+     "skill": 0.3743,
+     "ic95_ley": [
+      0.2852,
+      0.4428
+     ],
+     "brier": 0.08642,
+     "dBrier_vs_MOTOR (p__estricta__general, el de hoy)": {
+      "pt": -0.01344,
+      "ic95_ley": [
+       -0.0217,
+       -0.00739
+      ]
+     }
+    },
+    "climatologia_walkforward": {
+     "skill": -0.0128,
+     "ic95_ley": [
+      -0.0394,
+      0.006
+     ],
+     "brier": 0.13988,
+     "dBrier_vs_MOTOR (p__estricta__general, el de hoy)": {
+      "pt": 0.04002,
+      "ic95_ley": [
+       0.02684,
+       0.05436
+      ]
+     }
+    },
+    "bloque_ingenuo": {
+     "skill": 0.1628,
+     "ic95_ley": [
+      0.0593,
+      0.2382
+     ],
+     "brier": 0.11563,
+     "dBrier_vs_MOTOR (p__estricta__general, el de hoy)": {
+      "pt": 0.01577,
+      "ic95_ley": [
+       0.00471,
+       0.02568
+      ]
+     }
+    },
+    "record_puro": {
+     "skill": 0.2205,
+     "ic95_ley": [
+      0.103,
+      0.3106
+     ],
+     "brier": 0.10766,
+     "dBrier_vs_MOTOR (p__estricta__general, el de hoy)": {
+      "pt": 0.0078,
+      "ic95_ley": [
+       -0.00278,
+       0.01737
+      ]
+     }
+    },
+    "record_encogido_al_bloque": {
+     "skill": 0.2261,
+     "ic95_ley": [
+      0.1115,
+      0.3141
+     ],
+     "brier": 0.10688,
+     "dBrier_vs_MOTOR (p__estricta__general, el de hoy)": {
+      "pt": 0.00702,
+      "ic95_ley": [
+       -0.00359,
+       0.01638
+      ]
+     }
+    },
+    "record_encogido_con_origen": {
+     "skill": 0.2841,
+     "ic95_ley": [
+      0.167,
+      0.3899
+     ],
+     "brier": 0.09888,
+     "dBrier_vs_MOTOR (p__estricta__general, el de hoy)": {
+      "pt": -0.00098,
+      "ic95_ley": [
+       -0.00611,
+       0.00387
+      ]
+     }
+    },
+    "record_con_origen_SIN_guard_de_era": {
+     "skill": 0.2715,
+     "ic95_ley": [
+      0.1766,
+      0.353
+     ],
+     "brier": 0.10062,
+     "dBrier_vs_MOTOR (p__estricta__general, el de hoy)": {
+      "pt": 0.00076,
+      "ic95_ley": [
+       -9e-05,
+       0.0016
+      ]
+     }
+    },
+    "persistencia_ultima_fecha": {
+     "skill": -0.08,
+     "ic95_ley": [
+      -0.2507,
+      0.0613
+     ],
+     "brier": 0.14916,
+     "dBrier_vs_MOTOR (p__estricta__general, el de hoy)": {
+      "pt": 0.0493,
+      "ic95_ley": [
+       0.03723,
+       0.06227
+      ]
+     }
+    },
+    "CONTROL_POSITIVO_record_con_fuga_del_mismo_dia": {
+     "skill": 0.3047,
+     "ic95_ley": [
+      0.1898,
+      0.3907
+     ],
+     "brier": 0.09603,
+     "dBrier_vs_MOTOR (p__estricta__general, el de hoy)": {
+      "pt": -0.00383,
+      "ic95_ley": [
+       -0.01661,
+       0.00745
+      ]
+     }
+    }
+   }
+  },
+  "era=2015-2019": {
+   "n_votos": 126454,
+   "n_leyes": 505,
+   "tasa_base": 0.7826,
+   "predictores": {
+    "MOTOR (p__estricta__general, el de hoy)": {
+     "skill": 0.0808,
+     "ic95_ley": [
+      -0.0469,
+      0.2024
+     ],
+     "brier": 0.15637
+    },
+    "motor con récord por tema (el de hasta el 28-09)": {
+     "skill": 0.0878,
+     "ic95_ley": [
+      -0.026,
+      0.1888
+     ],
+     "brier": 0.15517,
+     "dBrier_vs_MOTOR (p__estricta__general, el de hoy)": {
+      "pt": -0.0012,
+      "ic95_ley": [
+       -0.00808,
+       0.00395
+      ]
+     }
+    },
+    "motor con su corte viejo (día incluido, sin excluir ley)": {
+     "skill": 0.2903,
+     "ic95_ley": [
+      0.151,
+      0.4026
+     ],
+     "brier": 0.12074,
+     "dBrier_vs_MOTOR (p__estricta__general, el de hoy)": {
+      "pt": -0.03563,
+      "ic95_ley": [
+       -0.05356,
+       -0.0236
+      ]
+     }
+    },
+    "climatologia_walkforward": {
+     "skill": -0.0011,
+     "ic95_ley": [
+      -0.0148,
+      0.0099
+     ],
+     "brier": 0.1703,
+     "dBrier_vs_MOTOR (p__estricta__general, el de hoy)": {
+      "pt": 0.01393,
+      "ic95_ley": [
+       -0.00704,
+       0.03514
+      ]
+     }
+    },
+    "bloque_ingenuo": {
+     "skill": -0.005,
+     "ic95_ley": [
+      -0.1165,
+      0.1071
+     ],
+     "brier": 0.17096,
+     "dBrier_vs_MOTOR (p__estricta__general, el de hoy)": {
+      "pt": 0.01459,
+      "ic95_ley": [
+       0.00178,
+       0.02465
+      ]
+     }
+    },
+    "record_puro": {
+     "skill": -0.0423,
+     "ic95_ley": [
+      -0.1663,
+      0.081
+     ],
+     "brier": 0.17732,
+     "dBrier_vs_MOTOR (p__estricta__general, el de hoy)": {
+      "pt": 0.02095,
+      "ic95_ley": [
+       0.0078,
+       0.03322
+      ]
+     }
+    },
+    "record_encogido_al_bloque": {
+     "skill": -0.0209,
+     "ic95_ley": [
+      -0.139,
+      0.0962
+     ],
+     "brier": 0.17367,
+     "dBrier_vs_MOTOR (p__estricta__general, el de hoy)": {
+      "pt": 0.0173,
+      "ic95_ley": [
+       0.00529,
+       0.0276
+      ]
+     }
+    },
+    "record_encogido_con_origen": {
+     "skill": 0.0781,
+     "ic95_ley": [
+      -0.0498,
+      0.2006
+     ],
+     "brier": 0.15683,
+     "dBrier_vs_MOTOR (p__estricta__general, el de hoy)": {
+      "pt": 0.00046,
+      "ic95_ley": [
+       -0.00096,
+       0.00215
+      ]
+     }
+    },
+    "record_con_origen_SIN_guard_de_era": {
+     "skill": -0.0064,
+     "ic95_ley": [
+      -0.1033,
+      0.079
+     ],
+     "brier": 0.1712,
+     "dBrier_vs_MOTOR (p__estricta__general, el de hoy)": {
+      "pt": 0.01483,
+      "ic95_ley": [
+       0.00018,
+       0.02887
+      ]
+     }
+    },
+    "persistencia_ultima_fecha": {
+     "skill": -0.5322,
+     "ic95_ley": [
+      -0.6989,
+      -0.4017
+     ],
+     "brier": 0.26066,
+     "dBrier_vs_MOTOR (p__estricta__general, el de hoy)": {
+      "pt": 0.10429,
+      "ic95_ley": [
+       0.07179,
+       0.13667
+      ]
+     }
+    },
+    "CONTROL_POSITIVO_record_con_fuga_del_mismo_dia": {
+     "skill": 0.1485,
+     "ic95_ley": [
+      -0.0102,
+      0.2749
+     ],
+     "brier": 0.14485,
+     "dBrier_vs_MOTOR (p__estricta__general, el de hoy)": {
+      "pt": -0.01152,
+      "ic95_ley": [
+       -0.03198,
+       0.0058
+      ]
+     }
+    }
+   }
+  },
+  "era=2019-2023": {
+   "n_votos": 25755,
+   "n_leyes": 246,
+   "tasa_base": 0.8155,
+   "predictores": {
+    "MOTOR (p__estricta__general, el de hoy)": {
+     "skill": 0.0113,
+     "ic95_ley": [
+      -0.2537,
+      0.1049
+     ],
+     "brier": 0.14874
+    },
+    "motor con récord por tema (el de hasta el 28-09)": {
+     "skill": 0.0141,
+     "ic95_ley": [
+      -0.2528,
+      0.1127
+     ],
+     "brier": 0.14832,
+     "dBrier_vs_MOTOR (p__estricta__general, el de hoy)": {
+      "pt": -0.00042,
+      "ic95_ley": [
+       -0.00209,
+       0.00092
+      ]
+     }
+    },
+    "motor con su corte viejo (día incluido, sin excluir ley)": {
+     "skill": 0.4926,
+     "ic95_ley": [
+      -0.083,
+      0.7006
+     ],
+     "brier": 0.07634,
+     "dBrier_vs_MOTOR (p__estricta__general, el de hoy)": {
+      "pt": -0.07241,
+      "ic95_ley": [
+       -0.13703,
+       -0.012
+      ]
+     }
+    },
+    "climatologia_walkforward": {
+     "skill": -0.2318,
+     "ic95_ley": [
+      -0.3771,
+      -0.0525
+     ],
+     "brier": 0.18531,
+     "dBrier_vs_MOTOR (p__estricta__general, el de hoy)": {
+      "pt": 0.03656,
+      "ic95_ley": [
+       -0.00509,
+       0.07165
+      ]
+     }
+    },
+    "bloque_ingenuo": {
+     "skill": -0.2516,
+     "ic95_ley": [
+      -0.4561,
+      0.002
+     ],
+     "brier": 0.18829,
+     "dBrier_vs_MOTOR (p__estricta__general, el de hoy)": {
+      "pt": 0.03954,
+      "ic95_ley": [
+       0.00308,
+       0.07202
+      ]
+     }
+    },
+    "record_puro": {
+     "skill": -0.2543,
+     "ic95_ley": [
+      -0.4514,
+      -0.0106
+     ],
+     "brier": 0.18869,
+     "dBrier_vs_MOTOR (p__estricta__general, el de hoy)": {
+      "pt": 0.03995,
+      "ic95_ley": [
+       0.00448,
+       0.07223
+      ]
+     }
+    },
+    "record_encogido_al_bloque": {
+     "skill": -0.2446,
+     "ic95_ley": [
+      -0.444,
+      0.0114
+     ],
+     "brier": 0.18724,
+     "dBrier_vs_MOTOR (p__estricta__general, el de hoy)": {
+      "pt": 0.0385,
+      "ic95_ley": [
+       0.00212,
+       0.07152
+      ]
+     }
+    },
+    "record_encogido_con_origen": {
+     "skill": -0.2317,
+     "ic95_ley": [
+      -0.4126,
+      0.0342
+     ],
+     "brier": 0.1853,
+     "dBrier_vs_MOTOR (p__estricta__general, el de hoy)": {
+      "pt": 0.03656,
+      "ic95_ley": [
+       0.00191,
+       0.06946
+      ]
+     }
+    },
+    "record_con_origen_SIN_guard_de_era": {
+     "skill": -0.2179,
+     "ic95_ley": [
+      -0.3674,
+      -0.0259
+     ],
+     "brier": 0.18321,
+     "dBrier_vs_MOTOR (p__estricta__general, el de hoy)": {
+      "pt": 0.03447,
+      "ic95_ley": [
+       -0.00044,
+       0.06618
+      ]
+     }
+    },
+    "persistencia_ultima_fecha": {
+     "skill": -0.3528,
+     "ic95_ley": [
+      -0.7998,
+      -0.2608
+     ],
+     "brier": 0.20351,
+     "dBrier_vs_MOTOR (p__estricta__general, el de hoy)": {
+      "pt": 0.05477,
+      "ic95_ley": [
+       0.02876,
+       0.07268
+      ]
+     }
+    },
+    "CONTROL_POSITIVO_record_con_fuga_del_mismo_dia": {
+     "skill": 0.3701,
+     "ic95_ley": [
+      -0.3638,
+      0.6337
+     ],
+     "brier": 0.09476,
+     "dBrier_vs_MOTOR (p__estricta__general, el de hoy)": {
+      "pt": -0.05398,
+      "ic95_ley": [
+       -0.12384,
+       0.01569
+      ]
+     }
+    }
+   }
+  },
+  "era=desde 2023": {
+   "n_votos": 105334,
+   "n_leyes": 312,
+   "tasa_base": 0.6639,
+   "predictores": {
+    "MOTOR (p__estricta__general, el de hoy)": {
+     "skill": 0.01,
+     "ic95_ley": [
+      -0.2776,
+      0.2562
+     ],
+     "brier": 0.22093
+    },
+    "motor con récord por tema (el de hasta el 28-09)": {
+     "skill": 0.0004,
+     "ic95_ley": [
+      -0.2861,
+      0.2468
+     ],
+     "brier": 0.22307,
+     "dBrier_vs_MOTOR (p__estricta__general, el de hoy)": {
+      "pt": 0.00213,
+      "ic95_ley": [
+       0.00017,
+       0.00501
+      ]
+     }
+    },
+    "motor con su corte viejo (día incluido, sin excluir ley)": {
+     "skill": 0.3738,
+     "ic95_ley": [
+      0.15,
+      0.5181
+     ],
+     "brier": 0.13975,
+     "dBrier_vs_MOTOR (p__estricta__general, el de hoy)": {
+      "pt": -0.08118,
+      "ic95_ley": [
+       -0.16805,
+       -0.02825
+      ]
+     }
+    },
+    "climatologia_walkforward": {
+     "skill": -0.0092,
+     "ic95_ley": [
+      -0.0458,
+      0.0092
+     ],
+     "brier": 0.22521,
+     "dBrier_vs_MOTOR (p__estricta__general, el de hoy)": {
+      "pt": 0.00427,
+      "ic95_ley": [
+       -0.06376,
+       0.06128
+      ]
+     }
+    },
+    "bloque_ingenuo": {
+     "skill": -0.1971,
+     "ic95_ley": [
+      -0.3251,
+      -0.0441
+     ],
+     "brier": 0.26714,
+     "dBrier_vs_MOTOR (p__estricta__general, el de hoy)": {
+      "pt": 0.04621,
+      "ic95_ley": [
+       -0.0028,
+       0.09028
+      ]
+     }
+    },
+    "record_puro": {
+     "skill": -0.2063,
+     "ic95_ley": [
+      -0.3896,
+      -0.0065
+     ],
+     "brier": 0.26919,
+     "dBrier_vs_MOTOR (p__estricta__general, el de hoy)": {
+      "pt": 0.04826,
+      "ic95_ley": [
+       0.01329,
+       0.08034
+      ]
+     }
+    },
+    "record_encogido_al_bloque": {
+     "skill": -0.1937,
+     "ic95_ley": [
+      -0.3532,
+      -0.02
+     ],
+     "brier": 0.26638,
+     "dBrier_vs_MOTOR (p__estricta__general, el de hoy)": {
+      "pt": 0.04545,
+      "ic95_ley": [
+       0.0027,
+       0.08282
+      ]
+     }
+    },
+    "record_encogido_con_origen": {
+     "skill": 0.0496,
+     "ic95_ley": [
+      -0.1738,
+      0.2574
+     ],
+     "brier": 0.21208,
+     "dBrier_vs_MOTOR (p__estricta__general, el de hoy)": {
+      "pt": -0.00885,
+      "ic95_ley": [
+       -0.02647,
+       0.00327
+      ]
+     }
+    },
+    "record_con_origen_SIN_guard_de_era": {
+     "skill": 0.0509,
+     "ic95_ley": [
+      -0.1594,
+      0.23
+     ],
+     "brier": 0.2118,
+     "dBrier_vs_MOTOR (p__estricta__general, el de hoy)": {
+      "pt": -0.00913,
+      "ic95_ley": [
+       -0.02681,
+       0.00678
+      ]
+     }
+    },
+    "persistencia_ultima_fecha": {
+     "skill": -0.2763,
+     "ic95_ley": [
+      -0.6906,
+      0.0716
+     ],
+     "brier": 0.28481,
+     "dBrier_vs_MOTOR (p__estricta__general, el de hoy)": {
+      "pt": 0.06388,
+      "ic95_ley": [
+       -0.06959,
+       0.20045
+      ]
+     }
+    },
+    "CONTROL_POSITIVO_record_con_fuga_del_mismo_dia": {
+     "skill": 0.1033,
+     "ic95_ley": [
+      -0.1216,
+      0.2875
+     ],
+     "brier": 0.2001,
+     "dBrier_vs_MOTOR (p__estricta__general, el de hoy)": {
+      "pt": -0.02083,
+      "ic95_ley": [
+       -0.12196,
+       0.04538
+      ]
+     }
+    }
+   }
+  },
+  "camara=diputados": {
+   "n_votos": 531905,
+   "n_leyes": 1915,
+   "tasa_base": 0.7755,
+   "predictores": {
+    "MOTOR (p__estricta__general, el de hoy)": {
+     "skill": 0.1261,
+     "ic95_ley": [
+      0.0375,
+      0.2049
+     ],
+     "brier": 0.15213
+    },
+    "motor con récord por tema (el de hasta el 28-09)": {
+     "skill": 0.1148,
+     "ic95_ley": [
+      0.0301,
+      0.1924
+     ],
+     "brier": 0.15408,
+     "dBrier_vs_MOTOR (p__estricta__general, el de hoy)": {
+      "pt": 0.00195,
+      "ic95_ley": [
+       -0.00013,
+       0.0039
+      ]
+     }
+    },
+    "motor con su corte viejo (día incluido, sin excluir ley)": {
+     "skill": 0.3342,
+     "ic95_ley": [
+      0.2626,
+      0.3995
+     ],
+     "brier": 0.11589,
+     "dBrier_vs_MOTOR (p__estricta__general, el de hoy)": {
+      "pt": -0.03624,
+      "ic95_ley": [
+       -0.05772,
+       -0.02132
+      ]
+     }
+    },
+    "climatologia_walkforward": {
+     "skill": 0.0017,
+     "ic95_ley": [
+      -0.0244,
+      0.0243
+     ],
+     "brier": 0.17377,
+     "dBrier_vs_MOTOR (p__estricta__general, el de hoy)": {
+      "pt": 0.02164,
+      "ic95_ley": [
+       0.00478,
+       0.03516
+      ]
+     }
+    },
+    "bloque_ingenuo": {
+     "skill": 0.0062,
+     "ic95_ley": [
+      -0.0597,
+      0.0674
+     ],
+     "brier": 0.173,
+     "dBrier_vs_MOTOR (p__estricta__general, el de hoy)": {
+      "pt": 0.02087,
+      "ic95_ley": [
+       0.00983,
+       0.03155
+      ]
+     }
+    },
+    "record_puro": {
+     "skill": 0.0105,
+     "ic95_ley": [
+      -0.0679,
+      0.0821
+     ],
+     "brier": 0.17224,
+     "dBrier_vs_MOTOR (p__estricta__general, el de hoy)": {
+      "pt": 0.02011,
+      "ic95_ley": [
+       0.01132,
+       0.02868
+      ]
+     }
+    },
+    "record_encogido_al_bloque": {
+     "skill": 0.0287,
+     "ic95_ley": [
+      -0.0456,
+      0.0949
+     ],
+     "brier": 0.16908,
+     "dBrier_vs_MOTOR (p__estricta__general, el de hoy)": {
+      "pt": 0.01695,
+      "ic95_ley": [
+       0.00733,
+       0.02618
+      ]
+     }
+    },
+    "record_encogido_con_origen": {
+     "skill": 0.1284,
+     "ic95_ley": [
+      0.0503,
+      0.1985
+     ],
+     "brier": 0.15173,
+     "dBrier_vs_MOTOR (p__estricta__general, el de hoy)": {
+      "pt": -0.0004,
+      "ic95_ley": [
+       -0.0054,
+       0.00409
+      ]
+     }
+    },
+    "record_con_origen_SIN_guard_de_era": {
+     "skill": 0.1126,
+     "ic95_ley": [
+      0.042,
+      0.1777
+     ],
+     "brier": 0.15448,
+     "dBrier_vs_MOTOR (p__estricta__general, el de hoy)": {
+      "pt": 0.00235,
+      "ic95_ley": [
+       -0.0039,
+       0.00853
+      ]
+     }
+    },
+    "persistencia_ultima_fecha": {
+     "skill": -0.2815,
+     "ic95_ley": [
+      -0.4009,
+      -0.1604
+     ],
+     "brier": 0.22307,
+     "dBrier_vs_MOTOR (p__estricta__general, el de hoy)": {
+      "pt": 0.07094,
+      "ic95_ley": [
+       0.03948,
+       0.10112
+      ]
+     }
+    },
+    "CONTROL_POSITIVO_record_con_fuga_del_mismo_dia": {
+     "skill": 0.2028,
+     "ic95_ley": [
+      0.1248,
+      0.2757
+     ],
+     "brier": 0.13878,
+     "dBrier_vs_MOTOR (p__estricta__general, el de hoy)": {
+      "pt": -0.01336,
+      "ic95_ley": [
+       -0.03652,
+       0.003
+      ]
+     }
+    }
+   }
+  },
+  "camara=senado": {
+   "n_votos": 159940,
+   "n_leyes": 2101,
+   "tasa_base": 0.8777,
+   "predictores": {
+    "MOTOR (p__estricta__general, el de hoy)": {
+     "skill": 0.1077,
+     "ic95_ley": [
+      0.0603,
+      0.1567
+     ],
+     "brier": 0.09576
+    },
+    "motor con récord por tema (el de hasta el 28-09)": {
+     "skill": 0.0494,
+     "ic95_ley": [
+      -0.0103,
+      0.1034
+     ],
+     "brier": 0.10201,
+     "dBrier_vs_MOTOR (p__estricta__general, el de hoy)": {
+      "pt": 0.00626,
+      "ic95_ley": [
+       0.0046,
+       0.00791
+      ]
+     }
+    },
+    "motor con su corte viejo (día incluido, sin excluir ley)": {
+     "skill": 0.229,
+     "ic95_ley": [
+      0.1772,
+      0.281
+     ],
+     "brier": 0.08274,
+     "dBrier_vs_MOTOR (p__estricta__general, el de hoy)": {
+      "pt": -0.01301,
+      "ic95_ley": [
+       -0.01688,
+       -0.00967
+      ]
+     }
+    },
+    "climatologia_walkforward": {
+     "skill": 0.0034,
+     "ic95_ley": [
+      -0.0127,
+      0.019
+     ],
+     "brier": 0.10695,
+     "dBrier_vs_MOTOR (p__estricta__general, el de hoy)": {
+      "pt": 0.01119,
+      "ic95_ley": [
+       0.0063,
+       0.01662
+      ]
+     }
+    },
+    "bloque_ingenuo": {
+     "skill": 0.064,
+     "ic95_ley": [
+      0.0417,
+      0.0845
+     ],
+     "brier": 0.10044,
+     "dBrier_vs_MOTOR (p__estricta__general, el de hoy)": {
+      "pt": 0.00469,
+      "ic95_ley": [
+       0.00069,
+       0.00927
+      ]
+     }
+    },
+    "record_puro": {
+     "skill": 0.0739,
+     "ic95_ley": [
+      0.0382,
+      0.1051
+     ],
+     "brier": 0.09938,
+     "dBrier_vs_MOTOR (p__estricta__general, el de hoy)": {
+      "pt": 0.00363,
+      "ic95_ley": [
+       0.00045,
+       0.00703
+      ]
+     }
+    },
+    "record_encogido_al_bloque": {
+     "skill": 0.0815,
+     "ic95_ley": [
+      0.0479,
+      0.1112
+     ],
+     "brier": 0.09857,
+     "dBrier_vs_MOTOR (p__estricta__general, el de hoy)": {
+      "pt": 0.00282,
+      "ic95_ley": [
+       -0.00018,
+       0.0062
+      ]
+     }
+    },
+    "record_encogido_con_origen": {
+     "skill": 0.0962,
+     "ic95_ley": [
+      0.0435,
+      0.147
+     ],
+     "brier": 0.09699,
+     "dBrier_vs_MOTOR (p__estricta__general, el de hoy)": {
+      "pt": 0.00123,
+      "ic95_ley": [
+       1e-05,
+       0.00248
+      ]
+     }
+    },
+    "record_con_origen_SIN_guard_de_era": {
+     "skill": 0.0687,
+     "ic95_ley": [
+      0.0323,
+      0.102
+     ],
+     "brier": 0.09995,
+     "dBrier_vs_MOTOR (p__estricta__general, el de hoy)": {
+      "pt": 0.00419,
+      "ic95_ley": [
+       0.00209,
+       0.00681
+      ]
+     }
+    },
+    "persistencia_ultima_fecha": {
+     "skill": -0.2998,
+     "ic95_ley": [
+      -0.4298,
+      -0.1758
+     ],
+     "brier": 0.13949,
+     "dBrier_vs_MOTOR (p__estricta__general, el de hoy)": {
+      "pt": 0.04373,
+      "ic95_ley": [
+       0.03494,
+       0.05259
+      ]
+     }
+    },
+    "CONTROL_POSITIVO_record_con_fuga_del_mismo_dia": {
+     "skill": 0.1502,
+     "ic95_ley": [
+      0.1107,
+      0.1845
+     ],
+     "brier": 0.09119,
+     "dBrier_vs_MOTOR (p__estricta__general, el de hoy)": {
+      "pt": -0.00456,
+      "ic95_ley": [
+       -0.00793,
+       -0.00138
+      ]
+     }
+    }
+   }
+  }
+ },
+ "guard_de_era_on_off": {
+  "global": {
+   "pt": 0.0028,
+   "ic95_ley": [
+    -0.00056,
+    0.00663
+   ]
+  },
+  "era=hasta 2011": {
+   "pt": 0.0,
+   "ic95_ley": [
+    0.0,
+    0.0
+   ]
+  },
+  "era=2011-2015": {
+   "pt": 0.00174,
+   "ic95_ley": [
+    -0.00243,
+    0.00613
+   ]
+  },
+  "era=2015-2019": {
+   "pt": 0.01437,
+   "ic95_ley": [
+    -0.00041,
+    0.02875
+   ]
+  },
+  "era=2019-2023": {
+   "pt": -0.00208,
+   "ic95_ley": [
+    -0.01087,
+    0.00743
+   ]
+  },
+  "era=desde 2023": {
+   "pt": -0.00027,
+   "ic95_ley": [
+    -0.01249,
+    0.0104
+   ]
+  },
+  "camara=diputados": {
+   "pt": 0.00275,
+   "ic95_ley": [
+    -0.0017,
+    0.00797
+   ]
+  },
+  "camara=senado": {
+   "pt": 0.00296,
+   "ic95_ley": [
+    0.00054,
+    0.00573
+   ]
+  }
+ }
+}

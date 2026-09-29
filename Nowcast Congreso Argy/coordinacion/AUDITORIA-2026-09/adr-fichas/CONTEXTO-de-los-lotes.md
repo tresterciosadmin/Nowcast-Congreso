@@ -1,0 +1,38 @@
+# Contexto común para los lotes de re-litigio de ADR (auditoría 2026-09)
+
+Repo: `C:\Users\Franco\OneDrive\Desktop\TresTercios\Nowcast Congreso\Nowcast Congreso Argy\` (la raíz git es un nivel arriba). Nowcast legislativo argentino: estima P(sanción). Se audita el motor y sus 34 ADR (`coordinacion/DECISIONES/`, 35 archivos: hay dos 0009).
+
+## Reglas de trabajo (no negociables)
+- **SOLO LECTURA.** No edites, borres ni muevas nada del repo. Sólo podés ESCRIBIR tu archivo de salida en `Archivos_Borrar/auditoria/` (gitignored). No corras scripts de medición, el censo ni tests (hay corridas en curso). Sí podés: Read, Grep, Glob, `git log`/`git show`/`git blame`, y `python .mapa/buscar.py --archivo <ruta>` (sólo lectura).
+- Leé el CUERPO COMPLETO de cada ADR de tu lote, no sólo el encabezado. Verificá contra el código real.
+- Cada afirmación lleva **nivel de confianza** (VERIFICADO = lo viste en código/dato/git con `archivo:línea`; INFERIDO; NO VERIFICADO) y referencia `archivo:línea` o comando. Sin referencia, no entra.
+- NO abras `coordinacion/ESTADO-DEL-PROYECTO.md` entero (650 KB): sólo Grep por "ADR-00NN" o por fecha. Los documentos vivos que pueden contradecir al código: `coordinacion/FORMULA-COMPLETA.md` (ecuación vigente = §I.00, líneas 102-128; I.1-I.4 son versiones anteriores), `coordinacion/ESTADO-REAL-DEL-MOTOR.md` (20 filas de términos), `coordinacion/EN-HUMANO.md`, `tablero_datos.js`, `CLAUDE.md`, `MAPA.md`.
+
+## Hechos ya verificados por el auditor principal (usalos, no los re-verifiques)
+- **La fuga (ADR-0034, 28-09-2026).** El harness de evaluación medía con FUGA: el récord del legislador se armaba con `shift(1)` por fila (contaba como historia los artículos anteriores de la misma ley, del mismo día) y era una copia "espejo" del motor que no condicionaba por origen. Skill publicado del voto individual: 0,1611 → **0,1333 [0,057; 0,198]** (IC re-muestreando LEYES; 3.731 leyes, 691.845 votos); era vigente (desde 2023) **0,010 [−0,26; 0,25]**. Los scripts de ESTIMACIÓN (`estimar_beta_dictamen`, `estimar_epsilon_tau`, `estimar_psi_arrastre`, `estimar_theta_sobre_tablas`, `diagnostico_senado`, `fase1_rec_por_tema`, `medir_rec_por_tema`, `medir_guard_era`, `validar_beta_dictamen_walkforward`, `validar_sobre_tablas_walkforward`) arman su propio offset con `shift(1)` (verificado: `estimar_beta_dictamen.py:296-310`, `estimar_epsilon_tau.py:103-104`, `estimar_psi_arrastre.py:87-88`, `estimar_theta_sobre_tablas.py:115`, `diagnostico_senado.py:96-97`, `fase1_rec_por_tema.py:117-132`, `medir_rec_por_tema.py:88-100`). Sólo τ y β se re-chequearon.
+- **El 0,1333 reproduce aritméticamente** (auditor: control independiente sin importar el motor da 0,1335 con un récord propio condicionado por origen, fecha estricta y otra ley; sin origen baja a 0,048).
+- **Defaults EFECTIVOS en el código HOY** (verificados): `BETA_DICTAMEN` ON (`modelo/ensemble/src/beta_dictamen.py:71`; coeficientes de `modelo/ensemble/outputs/beta_dictamen.json`, estimados con offset contaminado; sólo actúa con `proyecto_id` que tenga contexto de dictamen; el harness del censo NO lo aplica) · `GUARD_ERA` ON (`nowcast_puertas.py:119`) · `SHRINK_RECORD` ON (`:131`) · `MIN_HIST_INDIVIDUAL=1` (`:97`) · `INCERTIDUMBRE_LEGISLADOR` ON con `EPSILON0=0.035`, `TAU=1.19` (`:192-196`) · `RECORD_POR_TEMA` OFF (`:219`) · `TEMA_AUTO` OFF (`:155`), `COMBINAR_TEMAS='primaria'` (`:161`) · `SOBRE_TABLAS` OFF (`sobre_tablas.py:72`) · `QUORUM_ABSTENCIONES` OFF (`modelo/agregador_institucional/src/agregador.py:102`) · `MATCH_AUTOR_FUZZY` ON (`variables/proyecto/src/origen_lider.py:217`).
+- `puerta_a.COEF_POR_DEFECTO` está TODO EN CERO (`modelo/ensemble/src/puerta_a.py` ~96): `condicionar()` es la identidad, o sea que los pasos A y C (carácter del dictamen agregado) no mueven el número; `p_final = p_B * p_D` (`nowcast_puertas.py:873`).
+- `DESVIO_MIN_INDIVIDUAL = 0.02` sigue activo (`modelo/ensemble/src/ensemble.py:361`, piso de desvío por legislador → topa P_i en 0,98) y NO figura en FORMULA §I.00. El clip agregado `P_INCERTIDUMBRE=0.01` se apaga solo cuando ε₀ o τ > 0 (`ensemble.py:367-376`). El ICG está desconectado del número.
+- **Producción** (`REGENERAR.ps1:291`) sólo corre un panel hipotético: `casos/nowcast_puertas_html.py diputados --fecha 2026-06-01 --origen EJECUTIVO`, SIN `proyecto_id` ni `tema`: con eso β, `RECORD_POR_TEMA` y TEMA_AUTO no pueden actuar en el número publicado.
+- La banda [p5,p95] declarada al 90% cubre 63,6% de 5.851 actas (ADR-0034 §4.2); el 99,88% de ADR-0025 salía de `agregador.backtest`, que usa la línea de bloque OBSERVADA.
+- El hook `pre-commit` que CLAUDE.md dice que existe NO está instalado (`.git/hooks` sólo tiene `.sample`). `pytest tests/` da 40 OK / 1 falla en HEAD (`test_insumos_del_motor_viajan`: el parquet del censo lo lee `estimar_epsilon_tau.py` y git lo IGNORA). Los 62 scripts `test_*.py` del CI pasan. `verificar_regeneracion.py` marca "MAPA.md dentro del presupuesto de contexto" como a mirar.
+- El 15,3% de los votos cae en actas sin clave de ley (`ley='acta:<id>'`); las leyes con clave son 2.944 (mediana 1 acta; máx 57; 382 se votan en más de un día).
+
+## Destinos tentativos de consolidación (los 34 ADR deben terminar en 5-7 ADR nuevos; proponé destino principal + referencias; podés sugerir reagrupar)
+1 Repo, datos y definiciones compartidas · 2 Voto individual (desvío, linajes, récord, guard de era, dictamen) · 3 Formulación y salida del número (puertas, mayoría, parte al todo) · 4 Incertidumbre y coyuntura (ε₀+τη, ICG) · 5 Medición y evidencia (unidad = expediente, walk-forward, cómo se prende una bandera) · 6 Línea de tema/capítulo/origen (cerrada).
+
+## Qué producir por CADA ADR de tu lote (una fila)
+1. número, fecha, título corto.
+2. **QUIÉN DECIDIÓ** (Franco / Valle / Claude en sesión delegada / Claude con permiso puntual / otro), citando la línea del ADR.
+3. **ESTADO declarado** en el encabezado vs **ESTADO REAL** (verificado en código o dato).
+4. **MEDICIÓN QUE LO JUSTIFICA**: qué script, qué harness, qué historia de récord.
+5. **¿ESA MEDICIÓN DEPENDE DE LA FUGA O DE UN ESPEJO?** (sí / no / parcial / no aplica) y por qué en una línea.
+6. **¿SIGUE VIGENTE EN EL CÓDIGO?** (bandera, default efectivo, `archivo:línea`; y si algo del camino que produce P(sanción) con los defaults lo llama; para infraestructura: test que la cubre).
+7. **¿LA DOCUMENTACIÓN COINCIDE CON EL CÓDIGO?** (FORMULA, ESTADO —por Grep—, EN-HUMANO, tablero_datos.js): cuál contradice y en qué.
+8. **VEREDICTO**, exactamente uno de: `VIGENTE-SÓLIDO` · `VIGENTE-ESTRUCTURAL` (reglamento/mecánica/proceso, sin "medición") · `VIGENTE-SIN-EVIDENCIA` · `VIGENTE-EVIDENCIA-ROTA` · `INACTIVO` · `SUPERSEDIDO` (decí por cuál) · `REGISTRO-HISTÓRICO`. Criterio: ¿se ejecuta u obliga hoy? No: revertido por otro ADR → SUPERSEDIDO; código presente y apagado → INACTIVO; si no → REGISTRO-HISTÓRICO. Sí: reglamento/mecánica/proceso → VIGENTE-ESTRUCTURAL; con medición que usó motor real + fecha estricta + otra ley + IC por ley y reproducible → VIGENTE-SÓLIDO; con medición que usó fuga/espejo/oráculo → VIGENTE-EVIDENCIA-ROTA; sin ninguna → VIGENTE-SIN-EVIDENCIA.
+9. **DESTINO** en la consolidación (1-6 principal, más referencias, o `DESCARTABLE` si no aporta ninguna regla viva). Qué **REGLA** sobrevive (una línea) y cuál se pierde.
+Al final: (a) contradicciones entre cuerpo y encabezado de un mismo ADR; (b) contenido/código que ya no vale y sigue en el árbol (con LOC); (c) las notas que se pidan en tu lote.
+
+## Salida
+Escribí TODO en el archivo `Archivos_Borrar/auditoria/adr_lote_<X>.md` que se te indique. Tu respuesta final: la misma tabla compacta (una fila por ADR, cada campo ≤ 30 palabras) más las notas. Máximo ~1.400 palabras. Sin relleno; español rioplatense.

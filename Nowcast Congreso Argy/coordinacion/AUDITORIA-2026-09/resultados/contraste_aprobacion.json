@@ -1,0 +1,337 @@
+{
+ "detalle": "C:\\Users\\Franco\\OneDrive\\Desktop\\TresTercios\\Nowcast Congreso\\Nowcast Congreso Argy\\evaluacion\\baseline\\outputs\\censo_detalle_2026-09-28.parquet",
+ "n_sims": 2000,
+ "n_actas_simuladas": 5852,
+ "acuerdo_resultado_oficial_vs_recontado_de_los_votos": 0.995,
+ "salidas": {
+  "produccion_eps0_0.035_tau_1.19": {
+   "resultado_oficial__todas": {
+    "n_actas": 5831,
+    "n_leyes": 3722,
+    "tasa_base_aprobacion": 0.9398,
+    "brier": 0.04242,
+    "logloss": 0.17118,
+    "skill_vs_tasa_base": 0.2501,
+    "skill_ic95_ley": [
+     0.1859,
+     0.304
+    ],
+    "seguras_y_equivocadas": {
+     "P>0.95_y_rechazada": 23,
+     "P<0.05_y_aprobada": 0
+    },
+    "calibracion": [
+     {
+      "bin": "[0.00,0.05)",
+      "n": 5,
+      "p_medio": 0.03,
+      "frec_real": 0.0
+     },
+     {
+      "bin": "[0.05,0.20)",
+      "n": 18,
+      "p_medio": 0.1527,
+      "frec_real": 0.0556
+     },
+     {
+      "bin": "[0.20,0.50)",
+      "n": 121,
+      "p_medio": 0.3729,
+      "frec_real": 0.2975
+     },
+     {
+      "bin": "[0.50,0.80)",
+      "n": 664,
+      "p_medio": 0.7095,
+      "frec_real": 0.7907
+     },
+     {
+      "bin": "[0.80,0.95)",
+      "n": 2606,
+      "p_medio": 0.9089,
+      "frec_real": 0.9689
+     },
+     {
+      "bin": "[0.95,1.00)",
+      "n": 2417,
+      "p_medio": 0.9668,
+      "frec_real": 0.9901
+     }
+    ]
+   },
+   "resultado_oficial__disputadas(>=10%_en_contra)": {
+    "n_actas": 2542,
+    "n_leyes": 1322,
+    "tasa_base_aprobacion": 0.8631,
+    "brier": 0.08492,
+    "logloss": 0.2964,
+    "skill_vs_tasa_base": 0.2813,
+    "skill_ic95_ley": [
+     0.2297,
+     0.3302
+    ],
+    "seguras_y_equivocadas": {
+     "P>0.95_y_rechazada": 22,
+     "P<0.05_y_aprobada": 0
+    },
+    "calibracion": [
+     {
+      "bin": "[0.00,0.05)",
+      "n": 5,
+      "p_medio": 0.03,
+      "frec_real": 0.0
+     },
+     {
+      "bin": "[0.05,0.20)",
+      "n": 17,
+      "p_medio": 0.1558,
+      "frec_real": 0.0588
+     },
+     {
+      "bin": "[0.20,0.50)",
+      "n": 107,
+      "p_medio": 0.3669,
+      "frec_real": 0.215
+     },
+     {
+      "bin": "[0.50,0.80)",
+      "n": 518,
+      "p_medio": 0.7096,
+      "frec_real": 0.7317
+     },
+     {
+      "bin": "[0.80,0.95)",
+      "n": 1243,
+      "p_medio": 0.9001,
+      "frec_real": 0.9348
+     },
+     {
+      "bin": "[0.95,1.00)",
+      "n": 652,
+      "p_medio": 0.9658,
+      "frec_real": 0.9647
+     }
+    ]
+   },
+   "recontado_de_los_votos__todas": {
+    "n_actas": 5852,
+    "n_leyes": 3728,
+    "tasa_base_aprobacion": 0.9359,
+    "brier": 0.0448,
+    "logloss": 0.17802,
+    "skill_vs_tasa_base": 0.253,
+    "skill_ic95_ley": [
+     0.1973,
+     0.3013
+    ],
+    "seguras_y_equivocadas": {
+     "P>0.95_y_rechazada": 27,
+     "P<0.05_y_aprobada": 0
+    },
+    "calibracion": [
+     {
+      "bin": "[0.00,0.05)",
+      "n": 5,
+      "p_medio": 0.03,
+      "frec_real": 0.0
+     },
+     {
+      "bin": "[0.05,0.20)",
+      "n": 18,
+      "p_medio": 0.1527,
+      "frec_real": 0.0556
+     },
+     {
+      "bin": "[0.20,0.50)",
+      "n": 121,
+      "p_medio": 0.3729,
+      "frec_real": 0.281
+     },
+     {
+      "bin": "[0.50,0.80)",
+      "n": 668,
+      "p_medio": 0.7095,
+      "frec_real": 0.7799
+     },
+     {
+      "bin": "[0.80,0.95)",
+      "n": 2615,
+      "p_medio": 0.909,
+      "frec_real": 0.9652
+     },
+     {
+      "bin": "[0.95,1.00)",
+      "n": 2425,
+      "p_medio": 0.9669,
+      "frec_real": 0.9885
+     }
+    ]
+   }
+  },
+  "sin_incertidumbre_legislador(clip_agregado_0.01)": {
+   "resultado_oficial__todas": {
+    "n_actas": 5831,
+    "n_leyes": 3722,
+    "tasa_base_aprobacion": 0.9398,
+    "brier": 0.04419,
+    "logloss": 0.20718,
+    "skill_vs_tasa_base": 0.2188,
+    "skill_ic95_ley": [
+     0.1642,
+     0.2703
+    ],
+    "seguras_y_equivocadas": {
+     "P>0.95_y_rechazada": 230,
+     "P<0.05_y_aprobada": 4
+    },
+    "calibracion": [
+     {
+      "bin": "[0.00,0.05)",
+      "n": 78,
+      "p_medio": 0.0119,
+      "frec_real": 0.0513
+     },
+     {
+      "bin": "[0.05,0.20)",
+      "n": 12,
+      "p_medio": 0.1383,
+      "frec_real": 0.25
+     },
+     {
+      "bin": "[0.20,0.50)",
+      "n": 37,
+      "p_medio": 0.3276,
+      "frec_real": 0.4865
+     },
+     {
+      "bin": "[0.50,0.80)",
+      "n": 24,
+      "p_medio": 0.6701,
+      "frec_real": 0.625
+     },
+     {
+      "bin": "[0.80,0.95)",
+      "n": 28,
+      "p_medio": 0.8798,
+      "frec_real": 0.6429
+     },
+     {
+      "bin": "[0.95,1.00)",
+      "n": 5652,
+      "p_medio": 0.99,
+      "frec_real": 0.9593
+     }
+    ]
+   },
+   "resultado_oficial__disputadas(>=10%_en_contra)": {
+    "n_actas": 2542,
+    "n_leyes": 1322,
+    "tasa_base_aprobacion": 0.8631,
+    "brier": 0.09887,
+    "logloss": 0.45442,
+    "skill_vs_tasa_base": 0.1632,
+    "skill_ic95_ley": [
+     0.1004,
+     0.2229
+    ],
+    "seguras_y_equivocadas": {
+     "P>0.95_y_rechazada": 229,
+     "P<0.05_y_aprobada": 3
+    },
+    "calibracion": [
+     {
+      "bin": "[0.00,0.05)",
+      "n": 75,
+      "p_medio": 0.0115,
+      "frec_real": 0.04
+     },
+     {
+      "bin": "[0.05,0.20)",
+      "n": 11,
+      "p_medio": 0.1449,
+      "frec_real": 0.1818
+     },
+     {
+      "bin": "[0.20,0.50)",
+      "n": 30,
+      "p_medio": 0.3153,
+      "frec_real": 0.3667
+     },
+     {
+      "bin": "[0.50,0.80)",
+      "n": 21,
+      "p_medio": 0.6739,
+      "frec_real": 0.5714
+     },
+     {
+      "bin": "[0.80,0.95)",
+      "n": 21,
+      "p_medio": 0.8789,
+      "frec_real": 0.5238
+     },
+     {
+      "bin": "[0.95,1.00)",
+      "n": 2384,
+      "p_medio": 0.9899,
+      "frec_real": 0.9039
+     }
+    ]
+   },
+   "recontado_de_los_votos__todas": {
+    "n_actas": 5852,
+    "n_leyes": 3728,
+    "tasa_base_aprobacion": 0.9359,
+    "brier": 0.0476,
+    "logloss": 0.22335,
+    "skill_vs_tasa_base": 0.2063,
+    "skill_ic95_ley": [
+     0.1552,
+     0.2602
+    ],
+    "seguras_y_equivocadas": {
+     "P>0.95_y_rechazada": 251,
+     "P<0.05_y_aprobada": 4
+    },
+    "calibracion": [
+     {
+      "bin": "[0.00,0.05)",
+      "n": 78,
+      "p_medio": 0.0119,
+      "frec_real": 0.0513
+     },
+     {
+      "bin": "[0.05,0.20)",
+      "n": 12,
+      "p_medio": 0.1383,
+      "frec_real": 0.25
+     },
+     {
+      "bin": "[0.20,0.50)",
+      "n": 37,
+      "p_medio": 0.3276,
+      "frec_real": 0.4324
+     },
+     {
+      "bin": "[0.50,0.80)",
+      "n": 24,
+      "p_medio": 0.6701,
+      "frec_real": 0.625
+     },
+     {
+      "bin": "[0.80,0.95)",
+      "n": 28,
+      "p_medio": 0.8798,
+      "frec_real": 0.6071
+     },
+     {
+      "bin": "[0.95,1.00)",
+      "n": 5673,
+      "p_medio": 0.99,
+      "frec_real": 0.9558
+     }
+    ]
+   }
+  }
+ },
+ "n_actas_con_resultado_oficial_binario": 5831
+}

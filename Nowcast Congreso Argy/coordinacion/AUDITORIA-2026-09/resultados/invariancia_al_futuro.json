@@ -1,0 +1,3647 @@
+{
+ "resumen": {
+  "n_actas": 150,
+  "por_era": 30,
+  "estricta_max_abs_dP_global": 0.0,
+  "estricta_actas_con_diferencia": 0,
+  "por_era_estricta": {
+   "2011-2015": {
+    "actas": 30,
+    "con_diferencia": 0,
+    "max_abs_dP": 0.0
+   },
+   "2015-2019": {
+    "actas": 30,
+    "con_diferencia": 0,
+    "max_abs_dP": 0.0
+   },
+   "2019-2023": {
+    "actas": 30,
+    "con_diferencia": 0,
+    "max_abs_dP": 0.0
+   },
+   "desde 2023": {
+    "actas": 30,
+    "con_diferencia": 0,
+    "max_abs_dP": 0.0
+   },
+   "hasta 2011": {
+    "actas": 30,
+    "con_diferencia": 0,
+    "max_abs_dP": 0.0
+   }
+  },
+  "CONTROL_dia_incluido": {
+   "actas_donde_deberia_detectar": 144,
+   "actas_donde_detecta": 144,
+   "max_abs_dP": 0.8379331306990883
+  },
+  "CONTROL_fecha": {
+   "actas_donde_deberia_detectar": 71,
+   "actas_donde_detecta": 12,
+   "max_abs_dP": 0.588568739473684
+  }
+ },
+ "detalle": [
+  {
+   "acta_id": "decada_votada:sen:230",
+   "era": "hasta 2011",
+   "camara": "senado",
+   "fecha": "2004-10-06",
+   "votos_corrompidos": 878793,
+   "n_mismo_dia_otras_actas": 1800,
+   "n_misma_ley_otras_actas": 0,
+   "estricta": {
+    "n": 41,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 41,
+    "max_abs_dP": 0.8261096774193549,
+    "n_distintos": 41
+   },
+   "CONTROL_fecha": {
+    "n": 41,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "decada_votada:sen:329",
+   "era": "hasta 2011",
+   "camara": "senado",
+   "fecha": "2004-12-01",
+   "votos_corrompidos": 850859,
+   "n_mismo_dia_otras_actas": 2568,
+   "n_misma_ley_otras_actas": 0,
+   "estricta": {
+    "n": 39,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 39,
+    "max_abs_dP": 0.1145374449339207,
+    "n_distintos": 39
+   },
+   "CONTROL_fecha": {
+    "n": 39,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "decada_votada:sen:340",
+   "era": "hasta 2011",
+   "camara": "senado",
+   "fecha": "2004-12-01",
+   "votos_corrompidos": 850859,
+   "n_mismo_dia_otras_actas": 2568,
+   "n_misma_ley_otras_actas": 0,
+   "estricta": {
+    "n": 40,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 40,
+    "max_abs_dP": 0.1694915254237288,
+    "n_distintos": 40
+   },
+   "CONTROL_fecha": {
+    "n": 40,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "decada_votada:sen:378",
+   "era": "hasta 2011",
+   "camara": "senado",
+   "fecha": "2004-12-16",
+   "votos_corrompidos": 847705,
+   "n_mismo_dia_otras_actas": 4440,
+   "n_misma_ley_otras_actas": 0,
+   "estricta": {
+    "n": 45,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 45,
+    "max_abs_dP": 0.31707317073170727,
+    "n_distintos": 45
+   },
+   "CONTROL_fecha": {
+    "n": 45,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "decada_votada:dip:222",
+   "era": "hasta 2011",
+   "camara": "diputados",
+   "fecha": "2005-02-09",
+   "votos_corrompidos": 842432,
+   "n_mismo_dia_otras_actas": 1792,
+   "n_misma_ley_otras_actas": 1792,
+   "estricta": {
+    "n": 148,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 148,
+    "max_abs_dP": 0.09787413086111607,
+    "n_distintos": 148
+   },
+   "CONTROL_fecha": {
+    "n": 148,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "decada_votada:sen:505",
+   "era": "hasta 2011",
+   "camara": "senado",
+   "fecha": "2005-06-22",
+   "votos_corrompidos": 829408,
+   "n_mismo_dia_otras_actas": 504,
+   "n_misma_ley_otras_actas": 0,
+   "estricta": {
+    "n": 49,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 49,
+    "max_abs_dP": 0.03585749792874904,
+    "n_distintos": 49
+   },
+   "CONTROL_fecha": {
+    "n": 49,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "decada_votada:dip:312",
+   "era": "hasta 2011",
+   "camara": "diputados",
+   "fecha": "2006-03-15",
+   "votos_corrompidos": 793219,
+   "n_mismo_dia_otras_actas": 3288,
+   "n_misma_ley_otras_actas": 2816,
+   "estricta": {
+    "n": 185,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 185,
+    "max_abs_dP": 0.23256891891891895,
+    "n_distintos": 185
+   },
+   "CONTROL_fecha": {
+    "n": 185,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "decada_votada:dip:343",
+   "era": "hasta 2011",
+   "camara": "diputados",
+   "fecha": "2006-03-29",
+   "votos_corrompidos": 784227,
+   "n_mismo_dia_otras_actas": 1024,
+   "n_misma_ley_otras_actas": 512,
+   "estricta": {
+    "n": 198,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 198,
+    "max_abs_dP": 0.07217214663643234,
+    "n_distintos": 198
+   },
+   "CONTROL_fecha": {
+    "n": 198,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "decada_votada:dip:461",
+   "era": "hasta 2011",
+   "camara": "diputados",
+   "fecha": "2006-09-27",
+   "votos_corrompidos": 735452,
+   "n_mismo_dia_otras_actas": 7136,
+   "n_misma_ley_otras_actas": 0,
+   "estricta": {
+    "n": 129,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 129,
+    "max_abs_dP": 0.5196527777777777,
+    "n_distintos": 129
+   },
+   "CONTROL_fecha": {
+    "n": 129,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "decada_votada:dip:501",
+   "era": "hasta 2011",
+   "camara": "diputados",
+   "fecha": "2006-11-08",
+   "votos_corrompidos": 717006,
+   "n_mismo_dia_otras_actas": 4096,
+   "n_misma_ley_otras_actas": 0,
+   "estricta": {
+    "n": 132,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 132,
+    "max_abs_dP": 0.33536655011655025,
+    "n_distintos": 132
+   },
+   "CONTROL_fecha": {
+    "n": 132,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "decada_votada:dip:543",
+   "era": "hasta 2011",
+   "camara": "diputados",
+   "fecha": "2006-11-22",
+   "votos_corrompidos": 705998,
+   "n_mismo_dia_otras_actas": 2592,
+   "n_misma_ley_otras_actas": 512,
+   "estricta": {
+    "n": 193,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 193,
+    "max_abs_dP": 0.1148722550675676,
+    "n_distintos": 193
+   },
+   "CONTROL_fecha": {
+    "n": 193,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "decada_votada:dip:554",
+   "era": "hasta 2011",
+   "camara": "diputados",
+   "fecha": "2006-11-29",
+   "votos_corrompidos": 702638,
+   "n_mismo_dia_otras_actas": 5864,
+   "n_misma_ley_otras_actas": 0,
+   "estricta": {
+    "n": 137,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 137,
+    "max_abs_dP": 0.18088689809630465,
+    "n_distintos": 137
+   },
+   "CONTROL_fecha": {
+    "n": 137,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "decada_votada:sen:835",
+   "era": "hasta 2011",
+   "camara": "senado",
+   "fecha": "2006-11-29",
+   "votos_corrompidos": 702638,
+   "n_mismo_dia_otras_actas": 6048,
+   "n_misma_ley_otras_actas": 0,
+   "estricta": {
+    "n": 55,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 55,
+    "max_abs_dP": 0.15270289855072472,
+    "n_distintos": 55
+   },
+   "CONTROL_fecha": {
+    "n": 55,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "decada_votada:dip:813",
+   "era": "hasta 2011",
+   "camara": "diputados",
+   "fecha": "2007-12-04",
+   "votos_corrompidos": 619747,
+   "n_mismo_dia_otras_actas": 5376,
+   "n_misma_ley_otras_actas": 0,
+   "estricta": {
+    "n": 129,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 129,
+    "max_abs_dP": 0.6958022564814815,
+    "n_distintos": 129
+   },
+   "CONTROL_fecha": {
+    "n": 129,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "decada_votada:sen:1007",
+   "era": "hasta 2011",
+   "camara": "senado",
+   "fecha": "2007-12-12",
+   "votos_corrompidos": 613899,
+   "n_mismo_dia_otras_actas": 936,
+   "n_misma_ley_otras_actas": 0,
+   "estricta": {
+    "n": 65,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 65,
+    "max_abs_dP": 0.734642105263158,
+    "n_distintos": 65
+   },
+   "CONTROL_fecha": {
+    "n": 65,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "decada_votada:sen:1033",
+   "era": "hasta 2011",
+   "camara": "senado",
+   "fecha": "2007-12-19",
+   "votos_corrompidos": 612891,
+   "n_mismo_dia_otras_actas": 3632,
+   "n_misma_ley_otras_actas": 0,
+   "estricta": {
+    "n": 57,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 57,
+    "max_abs_dP": 0.6056092542857143,
+    "n_distintos": 57
+   },
+   "CONTROL_fecha": {
+    "n": 57,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "decada_votada:sen:1046",
+   "era": "hasta 2011",
+   "camara": "senado",
+   "fecha": "2007-12-26",
+   "votos_corrompidos": 609187,
+   "n_mismo_dia_otras_actas": 2080,
+   "n_misma_ley_otras_actas": 216,
+   "estricta": {
+    "n": 59,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 59,
+    "max_abs_dP": 0.39720080999999996,
+    "n_distintos": 59
+   },
+   "CONTROL_fecha": {
+    "n": 59,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "decada_votada:sen:1053",
+   "era": "hasta 2011",
+   "camara": "senado",
+   "fecha": "2008-02-27",
+   "votos_corrompidos": 606747,
+   "n_mismo_dia_otras_actas": 360,
+   "n_misma_ley_otras_actas": 0,
+   "estricta": {
+    "n": 62,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 62,
+    "max_abs_dP": 0.2327161654135339,
+    "n_distintos": 62
+   },
+   "CONTROL_fecha": {
+    "n": 62,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "decada_votada:dip:865",
+   "era": "hasta 2011",
+   "camara": "diputados",
+   "fecha": "2008-05-07",
+   "votos_corrompidos": 599139,
+   "n_mismo_dia_otras_actas": 2560,
+   "n_misma_ley_otras_actas": 584,
+   "estricta": {
+    "n": 133,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 133,
+    "max_abs_dP": 0.5583940914285714,
+    "n_distintos": 133
+   },
+   "CONTROL_fecha": {
+    "n": 133,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "decada_votada:sen:1164",
+   "era": "hasta 2011",
+   "camara": "senado",
+   "fecha": "2008-11-05",
+   "votos_corrompidos": 578203,
+   "n_mismo_dia_otras_actas": 1080,
+   "n_misma_ley_otras_actas": 0,
+   "estricta": {
+    "n": 52,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 52,
+    "max_abs_dP": 0.1241160714285714,
+    "n_distintos": 52
+   },
+   "CONTROL_fecha": {
+    "n": 52,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "decada_votada:sen:1178",
+   "era": "hasta 2011",
+   "camara": "senado",
+   "fecha": "2008-11-05",
+   "votos_corrompidos": 579739,
+   "n_mismo_dia_otras_actas": 1080,
+   "n_misma_ley_otras_actas": 2544,
+   "estricta": {
+    "n": 61,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 61,
+    "max_abs_dP": 0.2418968771448181,
+    "n_distintos": 61
+   },
+   "CONTROL_fecha": {
+    "n": 61,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "decada_votada:sen:1196",
+   "era": "hasta 2011",
+   "camara": "senado",
+   "fecha": "2008-11-26",
+   "votos_corrompidos": 571355,
+   "n_mismo_dia_otras_actas": 5576,
+   "n_misma_ley_otras_actas": 256,
+   "estricta": {
+    "n": 46,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 46,
+    "max_abs_dP": 0.014083299798792748,
+    "n_distintos": 46
+   },
+   "CONTROL_fecha": {
+    "n": 46,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "decada_votada:dip:1027",
+   "era": "hasta 2011",
+   "camara": "diputados",
+   "fecha": "2009-10-28",
+   "votos_corrompidos": 535827,
+   "n_mismo_dia_otras_actas": 4272,
+   "n_misma_ley_otras_actas": 216,
+   "estricta": {
+    "n": 151,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 151,
+    "max_abs_dP": 0.11986090909090907,
+    "n_distintos": 151
+   },
+   "CONTROL_fecha": {
+    "n": 151,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "decada_votada:dip:1037",
+   "era": "hasta 2011",
+   "camara": "diputados",
+   "fecha": "2009-10-28",
+   "votos_corrompidos": 535827,
+   "n_mismo_dia_otras_actas": 4272,
+   "n_misma_ley_otras_actas": 0,
+   "estricta": {
+    "n": 120,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 120,
+    "max_abs_dP": 0.4080681818181818,
+    "n_distintos": 120
+   },
+   "CONTROL_fecha": {
+    "n": 120,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "decada_votada:sen:1346",
+   "era": "hasta 2011",
+   "camara": "senado",
+   "fecha": "2009-11-11",
+   "votos_corrompidos": 529763,
+   "n_mismo_dia_otras_actas": 3176,
+   "n_misma_ley_otras_actas": 0,
+   "estricta": {
+    "n": 57,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 57,
+    "max_abs_dP": 0.39659999999999995,
+    "n_distintos": 57
+   },
+   "CONTROL_fecha": {
+    "n": 57,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "decada_votada:dip:1088",
+   "era": "hasta 2011",
+   "camara": "diputados",
+   "fecha": "2010-04-21",
+   "votos_corrompidos": 510497,
+   "n_mismo_dia_otras_actas": 256,
+   "n_misma_ley_otras_actas": 0,
+   "estricta": {
+    "n": 232,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 232,
+    "max_abs_dP": 0.12496226214285722,
+    "n_distintos": 232
+   },
+   "CONTROL_fecha": {
+    "n": 232,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "decada_votada:dip:1105",
+   "era": "hasta 2011",
+   "camara": "diputados",
+   "fecha": "2010-06-23",
+   "votos_corrompidos": 504055,
+   "n_mismo_dia_otras_actas": 2048,
+   "n_misma_ley_otras_actas": 0,
+   "estricta": {
+    "n": 222,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 222,
+    "max_abs_dP": 0.36240000000000006,
+    "n_distintos": 222
+   },
+   "CONTROL_fecha": {
+    "n": 222,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "decada_votada:dip:1122",
+   "era": "hasta 2011",
+   "camara": "diputados",
+   "fecha": "2010-08-11",
+   "votos_corrompidos": 499167,
+   "n_mismo_dia_otras_actas": 1888,
+   "n_misma_ley_otras_actas": 0,
+   "estricta": {
+    "n": 168,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 168,
+    "max_abs_dP": 0.17961616161616167,
+    "n_distintos": 168
+   },
+   "CONTROL_fecha": {
+    "n": 168,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "decada_votada:sen:1476",
+   "era": "hasta 2011",
+   "camara": "senado",
+   "fecha": "2010-08-11",
+   "votos_corrompidos": 499167,
+   "n_mismo_dia_otras_actas": 2072,
+   "n_misma_ley_otras_actas": 400,
+   "estricta": {
+    "n": 65,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 65,
+    "max_abs_dP": 0.20795833333333336,
+    "n_distintos": 65
+   },
+   "CONTROL_fecha": {
+    "n": 65,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "ckan_diputados:396",
+   "era": "hasta 2011",
+   "camara": "diputados",
+   "fecha": "2011-11-30",
+   "votos_corrompidos": 472117,
+   "n_mismo_dia_otras_actas": 2024,
+   "n_misma_ley_otras_actas": 72,
+   "estricta": {
+    "n": 150,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 150,
+    "max_abs_dP": 0.21606249999999994,
+    "n_distintos": 150
+   },
+   "CONTROL_fecha": {
+    "n": 150,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "ckan_diputados:443",
+   "era": "2011-2015",
+   "camara": "diputados",
+   "fecha": "2011-12-15",
+   "votos_corrompidos": 467712,
+   "n_mismo_dia_otras_actas": 1285,
+   "n_misma_ley_otras_actas": 72,
+   "estricta": {
+    "n": 226,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 226,
+    "max_abs_dP": 0.17930769230769228,
+    "n_distintos": 226
+   },
+   "CONTROL_fecha": {
+    "n": 226,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "decada_votada:sen:1695",
+   "era": "2011-2015",
+   "camara": "senado",
+   "fecha": "2012-05-16",
+   "votos_corrompidos": 455004,
+   "n_mismo_dia_otras_actas": 576,
+   "n_misma_ley_otras_actas": 0,
+   "estricta": {
+    "n": 46,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 46,
+    "max_abs_dP": 0.26639999999999997,
+    "n_distintos": 46
+   },
+   "CONTROL_fecha": {
+    "n": 46,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "ckan_diputados:323",
+   "era": "2011-2015",
+   "camara": "diputados",
+   "fecha": "2012-11-14",
+   "votos_corrompidos": 438492,
+   "n_mismo_dia_otras_actas": 4555,
+   "n_misma_ley_otras_actas": 72,
+   "estricta": {
+    "n": 159,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 159,
+    "max_abs_dP": 0.39046249999999993,
+    "n_distintos": 159
+   },
+   "CONTROL_fecha": {
+    "n": 159,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "decada_votada:sen:1758",
+   "era": "2011-2015",
+   "camara": "senado",
+   "fecha": "2012-11-14",
+   "votos_corrompidos": 438420,
+   "n_mismo_dia_otras_actas": 4740,
+   "n_misma_ley_otras_actas": 0,
+   "estricta": {
+    "n": 57,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 57,
+    "max_abs_dP": 0.20675087719298246,
+    "n_distintos": 57
+   },
+   "CONTROL_fecha": {
+    "n": 57,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "decada_votada:sen:1773",
+   "era": "2011-2015",
+   "camara": "senado",
+   "fecha": "2012-11-14",
+   "votos_corrompidos": 438420,
+   "n_mismo_dia_otras_actas": 4740,
+   "n_misma_ley_otras_actas": 0,
+   "estricta": {
+    "n": 48,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 48,
+    "max_abs_dP": 0.1746568120226657,
+    "n_distintos": 48
+   },
+   "CONTROL_fecha": {
+    "n": 48,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "ckan_diputados:308",
+   "era": "2011-2015",
+   "camara": "diputados",
+   "fecha": "2012-11-21",
+   "votos_corrompidos": 432837,
+   "n_mismo_dia_otras_actas": 3084,
+   "n_misma_ley_otras_actas": 0,
+   "estricta": {
+    "n": 168,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 168,
+    "max_abs_dP": 0.40659090909090906,
+    "n_distintos": 168
+   },
+   "CONTROL_fecha": {
+    "n": 168,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "decada_votada:sen:1807",
+   "era": "2011-2015",
+   "camara": "senado",
+   "fecha": "2012-11-29",
+   "votos_corrompidos": 421497,
+   "n_mismo_dia_otras_actas": 2159,
+   "n_misma_ley_otras_actas": 329,
+   "estricta": {
+    "n": 54,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 54,
+    "max_abs_dP": 0.043449033724895836,
+    "n_distintos": 54
+   },
+   "CONTROL_fecha": {
+    "n": 54,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "decada_votada:sen:1808",
+   "era": "2011-2015",
+   "camara": "senado",
+   "fecha": "2012-11-29",
+   "votos_corrompidos": 421497,
+   "n_mismo_dia_otras_actas": 2159,
+   "n_misma_ley_otras_actas": 329,
+   "estricta": {
+    "n": 55,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 55,
+    "max_abs_dP": 0.043449033724895836,
+    "n_distintos": 55
+   },
+   "CONTROL_fecha": {
+    "n": 55,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "decada_votada:sen:1817",
+   "era": "2011-2015",
+   "camara": "senado",
+   "fecha": "2013-04-17",
+   "votos_corrompidos": 415421,
+   "n_mismo_dia_otras_actas": 1100,
+   "n_misma_ley_otras_actas": 0,
+   "estricta": {
+    "n": 60,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 60,
+    "max_abs_dP": 0.006033778508321319,
+    "n_distintos": 60
+   },
+   "CONTROL_fecha": {
+    "n": 60,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "decada_votada:sen:1843",
+   "era": "2011-2015",
+   "camara": "senado",
+   "fecha": "2013-07-03",
+   "votos_corrompidos": 399085,
+   "n_mismo_dia_otras_actas": 2951,
+   "n_misma_ley_otras_actas": 0,
+   "estricta": {
+    "n": 44,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 44,
+    "max_abs_dP": 0.07780384111961336,
+    "n_distintos": 44
+   },
+   "CONTROL_fecha": {
+    "n": 44,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "decada_votada:sen:1847",
+   "era": "2011-2015",
+   "camara": "senado",
+   "fecha": "2013-07-03",
+   "votos_corrompidos": 399085,
+   "n_mismo_dia_otras_actas": 2951,
+   "n_misma_ley_otras_actas": 0,
+   "estricta": {
+    "n": 38,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 38,
+    "max_abs_dP": 0.07780384111961336,
+    "n_distintos": 38
+   },
+   "CONTROL_fecha": {
+    "n": 38,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "ckan_diputados:215",
+   "era": "2011-2015",
+   "camara": "diputados",
+   "fecha": "2013-09-11",
+   "votos_corrompidos": 395013,
+   "n_mismo_dia_otras_actas": 514,
+   "n_misma_ley_otras_actas": 0,
+   "estricta": {
+    "n": 225,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 225,
+    "max_abs_dP": 0.09996111111111117,
+    "n_distintos": 225
+   },
+   "CONTROL_fecha": {
+    "n": 225,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "ckan_diputados:207",
+   "era": "2011-2015",
+   "camara": "diputados",
+   "fecha": "2013-09-26",
+   "votos_corrompidos": 391435,
+   "n_mismo_dia_otras_actas": 2827,
+   "n_misma_ley_otras_actas": 1542,
+   "estricta": {
+    "n": 236,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 236,
+    "max_abs_dP": 0.3610454545454545,
+    "n_distintos": 236
+   },
+   "CONTROL_fecha": {
+    "n": 236,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "ckan_diputados:210",
+   "era": "2011-2015",
+   "camara": "diputados",
+   "fecha": "2013-09-26",
+   "votos_corrompidos": 391435,
+   "n_mismo_dia_otras_actas": 2827,
+   "n_misma_ley_otras_actas": 1542,
+   "estricta": {
+    "n": 236,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 236,
+    "max_abs_dP": 0.3610454545454545,
+    "n_distintos": 236
+   },
+   "CONTROL_fecha": {
+    "n": 236,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "decada_votada:sen:1883",
+   "era": "2011-2015",
+   "camara": "senado",
+   "fecha": "2013-10-09",
+   "votos_corrompidos": 388351,
+   "n_mismo_dia_otras_actas": 216,
+   "n_misma_ley_otras_actas": 0,
+   "estricta": {
+    "n": 67,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 67,
+    "max_abs_dP": 0.028210189999999913,
+    "n_distintos": 67
+   },
+   "CONTROL_fecha": {
+    "n": 67,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "decada_votada:sen:1935",
+   "era": "2011-2015",
+   "camara": "senado",
+   "fecha": "2013-12-04",
+   "votos_corrompidos": 378935,
+   "n_mismo_dia_otras_actas": 216,
+   "n_misma_ley_otras_actas": 0,
+   "estricta": {
+    "n": 50,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 50,
+    "max_abs_dP": 0.04750618131868134,
+    "n_distintos": 50
+   },
+   "CONTROL_fecha": {
+    "n": 50,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "ckan_diputados:136",
+   "era": "2011-2015",
+   "camara": "diputados",
+   "fecha": "2014-05-21",
+   "votos_corrompidos": 375778,
+   "n_mismo_dia_otras_actas": 833,
+   "n_misma_ley_otras_actas": 0,
+   "estricta": {
+    "n": 230,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 230,
+    "max_abs_dP": 0.19987500000000002,
+    "n_distintos": 230
+   },
+   "CONTROL_fecha": {
+    "n": 230,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "ckan_diputados:123",
+   "era": "2011-2015",
+   "camara": "diputados",
+   "fecha": "2014-07-02",
+   "votos_corrompidos": 373526,
+   "n_mismo_dia_otras_actas": 3804,
+   "n_misma_ley_otras_actas": 0,
+   "estricta": {
+    "n": 226,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 226,
+    "max_abs_dP": 0.31898848,
+    "n_distintos": 226
+   },
+   "CONTROL_fecha": {
+    "n": 226,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "decada_votada:sen:1981",
+   "era": "2011-2015",
+   "camara": "senado",
+   "fecha": "2014-07-02",
+   "votos_corrompidos": 373526,
+   "n_mismo_dia_otras_actas": 3989,
+   "n_misma_ley_otras_actas": 0,
+   "estricta": {
+    "n": 54,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 54,
+    "max_abs_dP": 0.1942625,
+    "n_distintos": 54
+   },
+   "CONTROL_fecha": {
+    "n": 54,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "argentinadatos:diputados:135",
+   "era": "2011-2015",
+   "camara": "diputados",
+   "fecha": "2014-07-03",
+   "votos_corrompidos": 369465,
+   "n_mismo_dia_otras_actas": 0,
+   "n_misma_ley_otras_actas": 0,
+   "estricta": {
+    "n": 180,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 180,
+    "max_abs_dP": 0.058085164835164904,
+    "n_distintos": 180
+   },
+   "CONTROL_fecha": {
+    "n": 180,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "ckan_diputados:119",
+   "era": "2011-2015",
+   "camara": "diputados",
+   "fecha": "2014-08-06",
+   "votos_corrompidos": 369136,
+   "n_mismo_dia_otras_actas": 1028,
+   "n_misma_ley_otras_actas": 0,
+   "estricta": {
+    "n": 197,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 197,
+    "max_abs_dP": 0.23068846153846156,
+    "n_distintos": 197
+   },
+   "CONTROL_fecha": {
+    "n": 197,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "decada_votada:sen:2010",
+   "era": "2011-2015",
+   "camara": "senado",
+   "fecha": "2014-10-30",
+   "votos_corrompidos": 356100,
+   "n_mismo_dia_otras_actas": 257,
+   "n_misma_ley_otras_actas": 0,
+   "estricta": {
+    "n": 61,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 61,
+    "max_abs_dP": 0.015823902696985748,
+    "n_distintos": 61
+   },
+   "CONTROL_fecha": {
+    "n": 61,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "argentinadatos:diputados:74",
+   "era": "2011-2015",
+   "camara": "diputados",
+   "fecha": "2014-11-13",
+   "votos_corrompidos": 353458,
+   "n_mismo_dia_otras_actas": 3341,
+   "n_misma_ley_otras_actas": 257,
+   "estricta": {
+    "n": 180,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 180,
+    "max_abs_dP": 0.3202161654135338,
+    "n_distintos": 180
+   },
+   "CONTROL_fecha": {
+    "n": 180,
+    "max_abs_dP": 0.06301875000000001,
+    "n_distintos": 180
+   }
+  },
+  {
+   "acta_id": "argentinadatos:diputados:174",
+   "era": "2011-2015",
+   "camara": "diputados",
+   "fecha": "2015-02-26",
+   "votos_corrompidos": 335766,
+   "n_mismo_dia_otras_actas": 257,
+   "n_misma_ley_otras_actas": 0,
+   "estricta": {
+    "n": 234,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 234,
+    "max_abs_dP": 0.03910333333333338,
+    "n_distintos": 234
+   },
+   "CONTROL_fecha": {
+    "n": 234,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "senado:425",
+   "era": "2011-2015",
+   "camara": "senado",
+   "fecha": "2015-03-11",
+   "votos_corrompidos": 335252,
+   "n_mismo_dia_otras_actas": 144,
+   "n_misma_ley_otras_actas": 0,
+   "estricta": {
+    "n": 47,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 47,
+    "max_abs_dP": 0.14169047619047614,
+    "n_distintos": 47
+   },
+   "CONTROL_fecha": {
+    "n": 47,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "ckan_diputados:45",
+   "era": "2011-2015",
+   "camara": "diputados",
+   "fecha": "2015-04-29",
+   "votos_corrompidos": 334563,
+   "n_mismo_dia_otras_actas": 1542,
+   "n_misma_ley_otras_actas": 0,
+   "estricta": {
+    "n": 213,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 213,
+    "max_abs_dP": 0.13293461538461543,
+    "n_distintos": 213
+   },
+   "CONTROL_fecha": {
+    "n": 213,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "ckan_diputados:32",
+   "era": "2011-2015",
+   "camara": "diputados",
+   "fecha": "2015-06-10",
+   "votos_corrompidos": 331828,
+   "n_mismo_dia_otras_actas": 1028,
+   "n_misma_ley_otras_actas": 0,
+   "estricta": {
+    "n": 216,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 216,
+    "max_abs_dP": 0.0714189560439561,
+    "n_distintos": 216
+   },
+   "CONTROL_fecha": {
+    "n": 216,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "senado:447",
+   "era": "2011-2015",
+   "camara": "senado",
+   "fecha": "2015-07-01",
+   "votos_corrompidos": 328744,
+   "n_mismo_dia_otras_actas": 1296,
+   "n_misma_ley_otras_actas": 72,
+   "estricta": {
+    "n": 62,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 62,
+    "max_abs_dP": 0.21453968253968247,
+    "n_distintos": 62
+   },
+   "CONTROL_fecha": {
+    "n": 62,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "senado:489",
+   "era": "2011-2015",
+   "camara": "senado",
+   "fecha": "2015-11-25",
+   "votos_corrompidos": 315758,
+   "n_mismo_dia_otras_actas": 216,
+   "n_misma_ley_otras_actas": 0,
+   "estricta": {
+    "n": 53,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 53,
+    "max_abs_dP": 0.05456699346405225,
+    "n_distintos": 53
+   },
+   "CONTROL_fecha": {
+    "n": 53,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "ckan_diputados:450",
+   "era": "2011-2015",
+   "camara": "diputados",
+   "fecha": "2015-11-26",
+   "votos_corrompidos": 315470,
+   "n_mismo_dia_otras_actas": 514,
+   "n_misma_ley_otras_actas": 0,
+   "estricta": {
+    "n": 129,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 129,
+    "max_abs_dP": 0.0681,
+    "n_distintos": 129
+   },
+   "CONTROL_fecha": {
+    "n": 129,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "ckan_diputados:1839",
+   "era": "2015-2019",
+   "camara": "diputados",
+   "fecha": "2016-04-06",
+   "votos_corrompidos": 313712,
+   "n_mismo_dia_otras_actas": 257,
+   "n_misma_ley_otras_actas": 0,
+   "estricta": {
+    "n": 220,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 220,
+    "max_abs_dP": 0.15307936507936504,
+    "n_distintos": 220
+   },
+   "CONTROL_fecha": {
+    "n": 220,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "ckan_diputados:2190",
+   "era": "2015-2019",
+   "camara": "diputados",
+   "fecha": "2016-06-16",
+   "votos_corrompidos": 309260,
+   "n_mismo_dia_otras_actas": 10023,
+   "n_misma_ley_otras_actas": 10023,
+   "estricta": {
+    "n": 226,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 226,
+    "max_abs_dP": 0.8379331306990883,
+    "n_distintos": 226
+   },
+   "CONTROL_fecha": {
+    "n": 226,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "ckan_diputados:2191",
+   "era": "2015-2019",
+   "camara": "diputados",
+   "fecha": "2016-06-16",
+   "votos_corrompidos": 309260,
+   "n_mismo_dia_otras_actas": 10023,
+   "n_misma_ley_otras_actas": 10023,
+   "estricta": {
+    "n": 227,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 227,
+    "max_abs_dP": 0.8379331306990883,
+    "n_distintos": 227
+   },
+   "CONTROL_fecha": {
+    "n": 227,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "senado:31",
+   "era": "2015-2019",
+   "camara": "senado",
+   "fecha": "2016-06-29",
+   "votos_corrompidos": 298209,
+   "n_mismo_dia_otras_actas": 1440,
+   "n_misma_ley_otras_actas": 1440,
+   "estricta": {
+    "n": 67,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 67,
+    "max_abs_dP": 0.7758333333333334,
+    "n_distintos": 67
+   },
+   "CONTROL_fecha": {
+    "n": 67,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "senado:61",
+   "era": "2015-2019",
+   "camara": "senado",
+   "fecha": "2016-08-10",
+   "votos_corrompidos": 294353,
+   "n_mismo_dia_otras_actas": 1296,
+   "n_misma_ley_otras_actas": 584,
+   "estricta": {
+    "n": 52,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 52,
+    "max_abs_dP": 0.3112380952380953,
+    "n_distintos": 52
+   },
+   "CONTROL_fecha": {
+    "n": 52,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "ckan_diputados:3037",
+   "era": "2015-2019",
+   "camara": "diputados",
+   "fecha": "2016-10-19",
+   "votos_corrompidos": 287340,
+   "n_mismo_dia_otras_actas": 987,
+   "n_misma_ley_otras_actas": 0,
+   "estricta": {
+    "n": 206,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 206,
+    "max_abs_dP": 0.3304166666666667,
+    "n_distintos": 206
+   },
+   "CONTROL_fecha": {
+    "n": 206,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "ckan_diputados:3045",
+   "era": "2015-2019",
+   "camara": "diputados",
+   "fecha": "2016-10-20",
+   "votos_corrompidos": 286096,
+   "n_mismo_dia_otras_actas": 12079,
+   "n_misma_ley_otras_actas": 12079,
+   "estricta": {
+    "n": 226,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 226,
+    "max_abs_dP": 0.7489936948297604,
+    "n_distintos": 226
+   },
+   "CONTROL_fecha": {
+    "n": 226,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "ckan_diputados:3052",
+   "era": "2015-2019",
+   "camara": "diputados",
+   "fecha": "2016-10-20",
+   "votos_corrompidos": 286096,
+   "n_mismo_dia_otras_actas": 12079,
+   "n_misma_ley_otras_actas": 12079,
+   "estricta": {
+    "n": 216,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 216,
+    "max_abs_dP": 0.7489936948297604,
+    "n_distintos": 216
+   },
+   "CONTROL_fecha": {
+    "n": 216,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "ckan_diputados:3064",
+   "era": "2015-2019",
+   "camara": "diputados",
+   "fecha": "2016-10-20",
+   "votos_corrompidos": 286096,
+   "n_mismo_dia_otras_actas": 12079,
+   "n_misma_ley_otras_actas": 12079,
+   "estricta": {
+    "n": 217,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 217,
+    "max_abs_dP": 0.7489936948297604,
+    "n_distintos": 217
+   },
+   "CONTROL_fecha": {
+    "n": 217,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "ckan_diputados:3102",
+   "era": "2015-2019",
+   "camara": "diputados",
+   "fecha": "2016-11-03",
+   "votos_corrompidos": 270100,
+   "n_mismo_dia_otras_actas": 1799,
+   "n_misma_ley_otras_actas": 2118,
+   "estricta": {
+    "n": 210,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 210,
+    "max_abs_dP": 0.22021647058823535,
+    "n_distintos": 210
+   },
+   "CONTROL_fecha": {
+    "n": 210,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "senado:139",
+   "era": "2015-2019",
+   "camara": "senado",
+   "fecha": "2016-11-30",
+   "votos_corrompidos": 259181,
+   "n_mismo_dia_otras_actas": 4032,
+   "n_misma_ley_otras_actas": 1337,
+   "estricta": {
+    "n": 67,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 67,
+    "max_abs_dP": 0.4473994252873563,
+    "n_distintos": 67
+   },
+   "CONTROL_fecha": {
+    "n": 67,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "senado:147",
+   "era": "2015-2019",
+   "camara": "senado",
+   "fecha": "2016-11-30",
+   "votos_corrompidos": 259181,
+   "n_mismo_dia_otras_actas": 4032,
+   "n_misma_ley_otras_actas": 1337,
+   "estricta": {
+    "n": 67,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 67,
+    "max_abs_dP": 0.4473994252873563,
+    "n_distintos": 67
+   },
+   "CONTROL_fecha": {
+    "n": 67,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "senado:170",
+   "era": "2015-2019",
+   "camara": "senado",
+   "fecha": "2016-11-30",
+   "votos_corrompidos": 258924,
+   "n_mismo_dia_otras_actas": 4032,
+   "n_misma_ley_otras_actas": 1800,
+   "estricta": {
+    "n": 59,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 59,
+    "max_abs_dP": 0.4473994252873563,
+    "n_distintos": 59
+   },
+   "CONTROL_fecha": {
+    "n": 59,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "senado:200",
+   "era": "2015-2019",
+   "camara": "senado",
+   "fecha": "2016-12-21",
+   "votos_corrompidos": 254162,
+   "n_mismo_dia_otras_actas": 432,
+   "n_misma_ley_otras_actas": 1316,
+   "estricta": {
+    "n": 58,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 58,
+    "max_abs_dP": 0.23770476190476197,
+    "n_distintos": 58
+   },
+   "CONTROL_fecha": {
+    "n": 58,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "senado:229",
+   "era": "2015-2019",
+   "camara": "senado",
+   "fecha": "2017-05-31",
+   "votos_corrompidos": 245408,
+   "n_mismo_dia_otras_actas": 504,
+   "n_misma_ley_otras_actas": 0,
+   "estricta": {
+    "n": 49,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 49,
+    "max_abs_dP": 0.4169569377990431,
+    "n_distintos": 49
+   },
+   "CONTROL_fecha": {
+    "n": 49,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "senado:234",
+   "era": "2015-2019",
+   "camara": "senado",
+   "fecha": "2017-08-23",
+   "votos_corrompidos": 235966,
+   "n_mismo_dia_otras_actas": 792,
+   "n_misma_ley_otras_actas": 0,
+   "estricta": {
+    "n": 46,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 46,
+    "max_abs_dP": 0.12439583333333337,
+    "n_distintos": 46
+   },
+   "CONTROL_fecha": {
+    "n": 46,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "senado:238",
+   "era": "2015-2019",
+   "camara": "senado",
+   "fecha": "2017-08-23",
+   "votos_corrompidos": 235966,
+   "n_mismo_dia_otras_actas": 792,
+   "n_misma_ley_otras_actas": 0,
+   "estricta": {
+    "n": 43,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 43,
+    "max_abs_dP": 0.15690789473684208,
+    "n_distintos": 43
+   },
+   "CONTROL_fecha": {
+    "n": 43,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "senado:244",
+   "era": "2015-2019",
+   "camara": "senado",
+   "fecha": "2017-08-23",
+   "votos_corrompidos": 235966,
+   "n_mismo_dia_otras_actas": 792,
+   "n_misma_ley_otras_actas": 0,
+   "estricta": {
+    "n": 41,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 41,
+    "max_abs_dP": 0.15690789473684208,
+    "n_distintos": 41
+   },
+   "CONTROL_fecha": {
+    "n": 41,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "senado:285",
+   "era": "2015-2019",
+   "camara": "senado",
+   "fecha": "2017-11-29",
+   "votos_corrompidos": 216566,
+   "n_mismo_dia_otras_actas": 792,
+   "n_misma_ley_otras_actas": 1172,
+   "estricta": {
+    "n": 66,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 66,
+    "max_abs_dP": 0.20417307692307696,
+    "n_distintos": 66
+   },
+   "CONTROL_fecha": {
+    "n": 66,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "ckan_diputados:3729",
+   "era": "2015-2019",
+   "camara": "diputados",
+   "fecha": "2017-12-19",
+   "votos_corrompidos": 214376,
+   "n_mismo_dia_otras_actas": 1028,
+   "n_misma_ley_otras_actas": 987,
+   "estricta": {
+    "n": 243,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 243,
+    "max_abs_dP": 0.42997369499999993,
+    "n_distintos": 243
+   },
+   "CONTROL_fecha": {
+    "n": 243,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "ckan_diputados:3735",
+   "era": "2015-2019",
+   "camara": "diputados",
+   "fecha": "2017-12-20",
+   "votos_corrompidos": 212875,
+   "n_mismo_dia_otras_actas": 2056,
+   "n_misma_ley_otras_actas": 1542,
+   "estricta": {
+    "n": 161,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 161,
+    "max_abs_dP": 0.46329411764705886,
+    "n_distintos": 161
+   },
+   "CONTROL_fecha": {
+    "n": 161,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "ckan_diputados:3764",
+   "era": "2015-2019",
+   "camara": "diputados",
+   "fecha": "2018-03-21",
+   "votos_corrompidos": 204383,
+   "n_mismo_dia_otras_actas": 2005,
+   "n_misma_ley_otras_actas": 0,
+   "estricta": {
+    "n": 211,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 211,
+    "max_abs_dP": 0.24749999999999994,
+    "n_distintos": 211
+   },
+   "CONTROL_fecha": {
+    "n": 211,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "senado:344",
+   "era": "2015-2019",
+   "camara": "senado",
+   "fecha": "2018-04-25",
+   "votos_corrompidos": 200517,
+   "n_mismo_dia_otras_actas": 8862,
+   "n_misma_ley_otras_actas": 1008,
+   "estricta": {
+    "n": 59,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 59,
+    "max_abs_dP": 0.6732467532467532,
+    "n_distintos": 59
+   },
+   "CONTROL_fecha": {
+    "n": 59,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "ckan_diputados:3831",
+   "era": "2015-2019",
+   "camara": "diputados",
+   "fecha": "2018-07-05",
+   "votos_corrompidos": 182937,
+   "n_mismo_dia_otras_actas": 514,
+   "n_misma_ley_otras_actas": 0,
+   "estricta": {
+    "n": 175,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 175,
+    "max_abs_dP": 0.12183035714285717,
+    "n_distintos": 175
+   },
+   "CONTROL_fecha": {
+    "n": 175,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "ckan_diputados:3858",
+   "era": "2015-2019",
+   "camara": "diputados",
+   "fecha": "2018-12-18",
+   "votos_corrompidos": 173797,
+   "n_mismo_dia_otras_actas": 1028,
+   "n_misma_ley_otras_actas": 771,
+   "estricta": {
+    "n": 190,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 190,
+    "max_abs_dP": 0.14644999999999997,
+    "n_distintos": 190
+   },
+   "CONTROL_fecha": {
+    "n": 190,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "senado:420",
+   "era": "2015-2019",
+   "camara": "senado",
+   "fecha": "2019-03-20",
+   "votos_corrompidos": 171710,
+   "n_mismo_dia_otras_actas": 648,
+   "n_misma_ley_otras_actas": 576,
+   "estricta": {
+    "n": 57,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 57,
+    "max_abs_dP": 0.39322049689440997,
+    "n_distintos": 57
+   },
+   "CONTROL_fecha": {
+    "n": 57,
+    "max_abs_dP": 0.08011904761904765,
+    "n_distintos": 57
+   }
+  },
+  {
+   "acta_id": "ckan_diputados:3866",
+   "era": "2015-2019",
+   "camara": "diputados",
+   "fecha": "2019-04-04",
+   "votos_corrompidos": 170918,
+   "n_mismo_dia_otras_actas": 514,
+   "n_misma_ley_otras_actas": 0,
+   "estricta": {
+    "n": 193,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 193,
+    "max_abs_dP": 0.24177575000000007,
+    "n_distintos": 193
+   },
+   "CONTROL_fecha": {
+    "n": 193,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "senado:749",
+   "era": "2015-2019",
+   "camara": "senado",
+   "fecha": "2019-04-16",
+   "votos_corrompidos": 170147,
+   "n_mismo_dia_otras_actas": 504,
+   "n_misma_ley_otras_actas": 0,
+   "estricta": {
+    "n": 1,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 1,
+    "max_abs_dP": 0.02075358215358214,
+    "n_distintos": 1
+   },
+   "CONTROL_fecha": {
+    "n": 1,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "senado:1018",
+   "era": "2015-2019",
+   "camara": "senado",
+   "fecha": "2019-05-22",
+   "votos_corrompidos": 161090,
+   "n_mismo_dia_otras_actas": 504,
+   "n_misma_ley_otras_actas": 0,
+   "estricta": {
+    "n": 49,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 49,
+    "max_abs_dP": 0.07379784366576814,
+    "n_distintos": 49
+   },
+   "CONTROL_fecha": {
+    "n": 49,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "ckan_diputados:3919",
+   "era": "2015-2019",
+   "camara": "diputados",
+   "fecha": "2019-11-20",
+   "votos_corrompidos": 157491,
+   "n_mismo_dia_otras_actas": 6400,
+   "n_misma_ley_otras_actas": 0,
+   "estricta": {
+    "n": 147,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 147,
+    "max_abs_dP": 0.39917738970588235,
+    "n_distintos": 147
+   },
+   "CONTROL_fecha": {
+    "n": 147,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "ckan_diputados:3934",
+   "era": "2019-2023",
+   "camara": "diputados",
+   "fecha": "2019-12-20",
+   "votos_corrompidos": 150579,
+   "n_mismo_dia_otras_actas": 6616,
+   "n_misma_ley_otras_actas": 6544,
+   "estricta": {
+    "n": 244,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 244,
+    "max_abs_dP": 0.785890625,
+    "n_distintos": 244
+   },
+   "CONTROL_fecha": {
+    "n": 244,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "ckan_diputados:3943",
+   "era": "2019-2023",
+   "camara": "diputados",
+   "fecha": "2019-12-20",
+   "votos_corrompidos": 150579,
+   "n_mismo_dia_otras_actas": 6616,
+   "n_misma_ley_otras_actas": 6544,
+   "estricta": {
+    "n": 234,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 234,
+    "max_abs_dP": 0.785890625,
+    "n_distintos": 234
+   },
+   "CONTROL_fecha": {
+    "n": 234,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "ckan_diputados:3946",
+   "era": "2019-2023",
+   "camara": "diputados",
+   "fecha": "2019-12-20",
+   "votos_corrompidos": 150579,
+   "n_mismo_dia_otras_actas": 6616,
+   "n_misma_ley_otras_actas": 6544,
+   "estricta": {
+    "n": 233,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 233,
+    "max_abs_dP": 0.785890625,
+    "n_distintos": 233
+   },
+   "CONTROL_fecha": {
+    "n": 233,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "ckan_diputados:3948",
+   "era": "2019-2023",
+   "camara": "diputados",
+   "fecha": "2019-12-20",
+   "votos_corrompidos": 150579,
+   "n_mismo_dia_otras_actas": 6616,
+   "n_misma_ley_otras_actas": 6544,
+   "estricta": {
+    "n": 234,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 234,
+    "max_abs_dP": 0.785890625,
+    "n_distintos": 234
+   },
+   "CONTROL_fecha": {
+    "n": 234,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "ckan_diputados:3950",
+   "era": "2019-2023",
+   "camara": "diputados",
+   "fecha": "2019-12-20",
+   "votos_corrompidos": 150579,
+   "n_mismo_dia_otras_actas": 6616,
+   "n_misma_ley_otras_actas": 6544,
+   "estricta": {
+    "n": 236,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 236,
+    "max_abs_dP": 0.785890625,
+    "n_distintos": 236
+   },
+   "CONTROL_fecha": {
+    "n": 236,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "ckan_diputados:3951",
+   "era": "2019-2023",
+   "camara": "diputados",
+   "fecha": "2019-12-20",
+   "votos_corrompidos": 150579,
+   "n_mismo_dia_otras_actas": 6616,
+   "n_misma_ley_otras_actas": 6544,
+   "estricta": {
+    "n": 236,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 236,
+    "max_abs_dP": 0.785890625,
+    "n_distintos": 236
+   },
+   "CONTROL_fecha": {
+    "n": 236,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "ckan_diputados:3955",
+   "era": "2019-2023",
+   "camara": "diputados",
+   "fecha": "2019-12-20",
+   "votos_corrompidos": 150579,
+   "n_mismo_dia_otras_actas": 6616,
+   "n_misma_ley_otras_actas": 6544,
+   "estricta": {
+    "n": 231,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 231,
+    "max_abs_dP": 0.785890625,
+    "n_distintos": 231
+   },
+   "CONTROL_fecha": {
+    "n": 231,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "ckan_diputados:3960",
+   "era": "2019-2023",
+   "camara": "diputados",
+   "fecha": "2020-01-29",
+   "votos_corrompidos": 143707,
+   "n_mismo_dia_otras_actas": 768,
+   "n_misma_ley_otras_actas": 0,
+   "estricta": {
+    "n": 226,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 226,
+    "max_abs_dP": 0.3545728199999999,
+    "n_distintos": 226
+   },
+   "CONTROL_fecha": {
+    "n": 226,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "ckan_diputados:3962",
+   "era": "2019-2023",
+   "camara": "diputados",
+   "fecha": "2020-01-29",
+   "votos_corrompidos": 143779,
+   "n_mismo_dia_otras_actas": 768,
+   "n_misma_ley_otras_actas": 72,
+   "estricta": {
+    "n": 216,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 216,
+    "max_abs_dP": 0.3545728199999999,
+    "n_distintos": 216
+   },
+   "CONTROL_fecha": {
+    "n": 216,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "ckan_diputados:3963",
+   "era": "2019-2023",
+   "camara": "diputados",
+   "fecha": "2020-01-29",
+   "votos_corrompidos": 143707,
+   "n_mismo_dia_otras_actas": 768,
+   "n_misma_ley_otras_actas": 0,
+   "estricta": {
+    "n": 207,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 207,
+    "max_abs_dP": 0.3467532467532467,
+    "n_distintos": 207
+   },
+   "CONTROL_fecha": {
+    "n": 207,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "senado:1163",
+   "era": "2019-2023",
+   "camara": "senado",
+   "fecha": "2020-02-05",
+   "votos_corrompidos": 143197,
+   "n_mismo_dia_otras_actas": 0,
+   "n_misma_ley_otras_actas": 586,
+   "estricta": {
+    "n": 65,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 65,
+    "max_abs_dP": 0.14862349333333336,
+    "n_distintos": 65
+   },
+   "CONTROL_fecha": {
+    "n": 65,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "senado:1190",
+   "era": "2019-2023",
+   "camara": "senado",
+   "fecha": "2020-07-23",
+   "votos_corrompidos": 141315,
+   "n_mismo_dia_otras_actas": 360,
+   "n_misma_ley_otras_actas": 0,
+   "estricta": {
+    "n": 70,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 70,
+    "max_abs_dP": 0.19824583333333334,
+    "n_distintos": 70
+   },
+   "CONTROL_fecha": {
+    "n": 70,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "senado:1216",
+   "era": "2019-2023",
+   "camara": "senado",
+   "fecha": "2020-10-02",
+   "votos_corrompidos": 139443,
+   "n_mismo_dia_otras_actas": 144,
+   "n_misma_ley_otras_actas": 0,
+   "estricta": {
+    "n": 41,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 41,
+    "max_abs_dP": 0.06518333333333337,
+    "n_distintos": 41
+   },
+   "CONTROL_fecha": {
+    "n": 41,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "argentinadatos:diputados:4040",
+   "era": "2019-2023",
+   "camara": "diputados",
+   "fecha": "2020-11-12",
+   "votos_corrompidos": 137242,
+   "n_mismo_dia_otras_actas": 72,
+   "n_misma_ley_otras_actas": 0,
+   "estricta": {
+    "n": 224,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 224,
+    "max_abs_dP": 0.14007142857142862,
+    "n_distintos": 224
+   },
+   "CONTROL_fecha": {
+    "n": 224,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "senado:1246",
+   "era": "2019-2023",
+   "camara": "senado",
+   "fecha": "2020-11-27",
+   "votos_corrompidos": 136913,
+   "n_mismo_dia_otras_actas": 360,
+   "n_misma_ley_otras_actas": 0,
+   "estricta": {
+    "n": 66,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 66,
+    "max_abs_dP": 0.10959722222222223,
+    "n_distintos": 66
+   },
+   "CONTROL_fecha": {
+    "n": 66,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "senado:1247",
+   "era": "2019-2023",
+   "camara": "senado",
+   "fecha": "2020-11-27",
+   "votos_corrompidos": 136913,
+   "n_mismo_dia_otras_actas": 360,
+   "n_misma_ley_otras_actas": 0,
+   "estricta": {
+    "n": 69,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 69,
+    "max_abs_dP": 0.18619471153846157,
+    "n_distintos": 69
+   },
+   "CONTROL_fecha": {
+    "n": 69,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "senado:1248",
+   "era": "2019-2023",
+   "camara": "senado",
+   "fecha": "2020-11-30",
+   "votos_corrompidos": 137067,
+   "n_mismo_dia_otras_actas": 288,
+   "n_misma_ley_otras_actas": 586,
+   "estricta": {
+    "n": 69,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 69,
+    "max_abs_dP": 0.13339152298850576,
+    "n_distintos": 69
+   },
+   "CONTROL_fecha": {
+    "n": 69,
+    "max_abs_dP": 0.03685173160173161,
+    "n_distintos": 69
+   }
+  },
+  {
+   "acta_id": "senado:1254",
+   "era": "2019-2023",
+   "camara": "senado",
+   "fecha": "2020-12-04",
+   "votos_corrompidos": 136121,
+   "n_mismo_dia_otras_actas": 288,
+   "n_misma_ley_otras_actas": 0,
+   "estricta": {
+    "n": 67,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 67,
+    "max_abs_dP": 0.0823636363636363,
+    "n_distintos": 67
+   },
+   "CONTROL_fecha": {
+    "n": 67,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "senado:1260",
+   "era": "2019-2023",
+   "camara": "senado",
+   "fecha": "2020-12-29",
+   "votos_corrompidos": 135617,
+   "n_mismo_dia_otras_actas": 329,
+   "n_misma_ley_otras_actas": 0,
+   "estricta": {
+    "n": 67,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 67,
+    "max_abs_dP": 0.1277128205128205,
+    "n_distintos": 67
+   },
+   "CONTROL_fecha": {
+    "n": 67,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "senado:1261",
+   "era": "2019-2023",
+   "camara": "senado",
+   "fecha": "2020-12-29",
+   "votos_corrompidos": 135617,
+   "n_mismo_dia_otras_actas": 329,
+   "n_misma_ley_otras_actas": 0,
+   "estricta": {
+    "n": 65,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 65,
+    "max_abs_dP": 0.1277128205128205,
+    "n_distintos": 65
+   },
+   "CONTROL_fecha": {
+    "n": 65,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "argentinadatos:diputados:4085",
+   "era": "2019-2023",
+   "camara": "diputados",
+   "fecha": "2021-02-11",
+   "votos_corrompidos": 135144,
+   "n_mismo_dia_otras_actas": 0,
+   "n_misma_ley_otras_actas": 72,
+   "estricta": {
+    "n": 239,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 239,
+    "max_abs_dP": 0.15202976666666668,
+    "n_distintos": 239
+   },
+   "CONTROL_fecha": {
+    "n": 239,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "senado:1317",
+   "era": "2019-2023",
+   "camara": "senado",
+   "fecha": "2021-05-13",
+   "votos_corrompidos": 133807,
+   "n_mismo_dia_otras_actas": 576,
+   "n_misma_ley_otras_actas": 0,
+   "estricta": {
+    "n": 58,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 58,
+    "max_abs_dP": 0.25,
+    "n_distintos": 58
+   },
+   "CONTROL_fecha": {
+    "n": 58,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "senado:1300",
+   "era": "2019-2023",
+   "camara": "senado",
+   "fecha": "2021-06-02",
+   "votos_corrompidos": 132727,
+   "n_mismo_dia_otras_actas": 216,
+   "n_misma_ley_otras_actas": 0,
+   "estricta": {
+    "n": 62,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 62,
+    "max_abs_dP": 0.07692307692307687,
+    "n_distintos": 62
+   },
+   "CONTROL_fecha": {
+    "n": 62,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "senado:1316",
+   "era": "2019-2023",
+   "camara": "senado",
+   "fecha": "2021-07-15",
+   "votos_corrompidos": 132223,
+   "n_mismo_dia_otras_actas": 720,
+   "n_misma_ley_otras_actas": 144,
+   "estricta": {
+    "n": 59,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 59,
+    "max_abs_dP": 0.16510526315789475,
+    "n_distintos": 59
+   },
+   "CONTROL_fecha": {
+    "n": 59,
+    "max_abs_dP": 0.029403763440860153,
+    "n_distintos": 59
+   }
+  },
+  {
+   "acta_id": "senado:1351",
+   "era": "2019-2023",
+   "camara": "senado",
+   "fecha": "2021-12-09",
+   "votos_corrompidos": 129775,
+   "n_mismo_dia_otras_actas": 792,
+   "n_misma_ley_otras_actas": 72,
+   "estricta": {
+    "n": 1,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 1,
+    "max_abs_dP": 0.06666666666666665,
+    "n_distintos": 1
+   },
+   "CONTROL_fecha": {
+    "n": 1,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "senado:1355",
+   "era": "2019-2023",
+   "camara": "senado",
+   "fecha": "2021-12-29",
+   "votos_corrompidos": 128983,
+   "n_mismo_dia_otras_actas": 71,
+   "n_misma_ley_otras_actas": 72,
+   "estricta": {
+    "n": 37,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 37,
+    "max_abs_dP": 0.2818142857142857,
+    "n_distintos": 37
+   },
+   "CONTROL_fecha": {
+    "n": 37,
+    "max_abs_dP": 0.05882352941176472,
+    "n_distintos": 30
+   }
+  },
+  {
+   "acta_id": "senado:1360",
+   "era": "2019-2023",
+   "camara": "senado",
+   "fecha": "2022-05-12",
+   "votos_corrompidos": 128697,
+   "n_mismo_dia_otras_actas": 144,
+   "n_misma_ley_otras_actas": 72,
+   "estricta": {
+    "n": 47,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 47,
+    "max_abs_dP": 0.23922222222222222,
+    "n_distintos": 47
+   },
+   "CONTROL_fecha": {
+    "n": 47,
+    "max_abs_dP": 0.05013043478260859,
+    "n_distintos": 47
+   }
+  },
+  {
+   "acta_id": "argentinadatos:diputados:4617",
+   "era": "2019-2023",
+   "camara": "diputados",
+   "fecha": "2022-10-26",
+   "votos_corrompidos": 126198,
+   "n_mismo_dia_otras_actas": 0,
+   "n_misma_ley_otras_actas": 144,
+   "estricta": {
+    "n": 189,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 189,
+    "max_abs_dP": 0.16666666666666663,
+    "n_distintos": 189
+   },
+   "CONTROL_fecha": {
+    "n": 189,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "argentinadatos:diputados:4752",
+   "era": "2019-2023",
+   "camara": "diputados",
+   "fecha": "2023-03-28",
+   "votos_corrompidos": 123607,
+   "n_mismo_dia_otras_actas": 0,
+   "n_misma_ley_otras_actas": 72,
+   "estricta": {
+    "n": 214,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 214,
+    "max_abs_dP": 0.1428571428571429,
+    "n_distintos": 214
+   },
+   "CONTROL_fecha": {
+    "n": 214,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "argentinadatos:diputados:4814",
+   "era": "2019-2023",
+   "camara": "diputados",
+   "fecha": "2023-07-05",
+   "votos_corrompidos": 122373,
+   "n_mismo_dia_otras_actas": 257,
+   "n_misma_ley_otras_actas": 0,
+   "estricta": {
+    "n": 192,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 192,
+    "max_abs_dP": 0.2142857142857143,
+    "n_distintos": 90
+   },
+   "CONTROL_fecha": {
+    "n": 192,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "argentinadatos:diputados:5158",
+   "era": "desde 2023",
+   "camara": "diputados",
+   "fecha": "2024-04-30",
+   "votos_corrompidos": 119422,
+   "n_mismo_dia_otras_actas": 11308,
+   "n_misma_ley_otras_actas": 12593,
+   "estricta": {
+    "n": 245,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 245,
+    "max_abs_dP": 0.6706589982539684,
+    "n_distintos": 158
+   },
+   "CONTROL_fecha": {
+    "n": 245,
+    "max_abs_dP": 0.588568739473684,
+    "n_distintos": 153
+   }
+  },
+  {
+   "acta_id": "argentinadatos:diputados:5216",
+   "era": "desde 2023",
+   "camara": "diputados",
+   "fecha": "2024-04-30",
+   "votos_corrompidos": 119422,
+   "n_mismo_dia_otras_actas": 11308,
+   "n_misma_ley_otras_actas": 12593,
+   "estricta": {
+    "n": 226,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 226,
+    "max_abs_dP": 0.6706589982539684,
+    "n_distintos": 147
+   },
+   "CONTROL_fecha": {
+    "n": 226,
+    "max_abs_dP": 0.588568739473684,
+    "n_distintos": 142
+   }
+  },
+  {
+   "acta_id": "argentinadatos:diputados:5235",
+   "era": "desde 2023",
+   "camara": "diputados",
+   "fecha": "2024-05-21",
+   "votos_corrompidos": 104259,
+   "n_mismo_dia_otras_actas": 1028,
+   "n_misma_ley_otras_actas": 0,
+   "estricta": {
+    "n": 200,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 200,
+    "max_abs_dP": 0.06887697396500214,
+    "n_distintos": 200
+   },
+   "CONTROL_fecha": {
+    "n": 200,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "argentinadatos:senado:2481",
+   "era": "desde 2023",
+   "camara": "senado",
+   "fecha": "2024-07-04",
+   "votos_corrompidos": 99376,
+   "n_mismo_dia_otras_actas": 144,
+   "n_misma_ley_otras_actas": 0,
+   "estricta": {
+    "n": 48,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 48,
+    "max_abs_dP": 0.16446666666666665,
+    "n_distintos": 48
+   },
+   "CONTROL_fecha": {
+    "n": 48,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "argentinadatos:diputados:5332",
+   "era": "desde 2023",
+   "camara": "diputados",
+   "fecha": "2024-08-21",
+   "votos_corrompidos": 92221,
+   "n_mismo_dia_otras_actas": 1285,
+   "n_misma_ley_otras_actas": 0,
+   "estricta": {
+    "n": 156,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 156,
+    "max_abs_dP": 0.07576562500000006,
+    "n_distintos": 156
+   },
+   "CONTROL_fecha": {
+    "n": 156,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "argentinadatos:senado:2482",
+   "era": "desde 2023",
+   "camara": "senado",
+   "fecha": "2024-08-22",
+   "votos_corrompidos": 90679,
+   "n_mismo_dia_otras_actas": 1008,
+   "n_misma_ley_otras_actas": 0,
+   "estricta": {
+    "n": 65,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 65,
+    "max_abs_dP": 0.7198222222222223,
+    "n_distintos": 65
+   },
+   "CONTROL_fecha": {
+    "n": 65,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "argentinadatos:senado:2490",
+   "era": "desde 2023",
+   "camara": "senado",
+   "fecha": "2024-08-22",
+   "votos_corrompidos": 90679,
+   "n_mismo_dia_otras_actas": 1008,
+   "n_misma_ley_otras_actas": 576,
+   "estricta": {
+    "n": 66,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 66,
+    "max_abs_dP": 0.7198222222222223,
+    "n_distintos": 66
+   },
+   "CONTROL_fecha": {
+    "n": 66,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "argentinadatos:senado:2503",
+   "era": "desde 2023",
+   "camara": "senado",
+   "fecha": "2024-09-13",
+   "votos_corrompidos": 88982,
+   "n_mismo_dia_otras_actas": 720,
+   "n_misma_ley_otras_actas": 648,
+   "estricta": {
+    "n": 62,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 62,
+    "max_abs_dP": 0.5454166666666667,
+    "n_distintos": 62
+   },
+   "CONTROL_fecha": {
+    "n": 62,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "argentinadatos:diputados:5385",
+   "era": "desde 2023",
+   "camara": "diputados",
+   "fecha": "2024-10-01",
+   "votos_corrompidos": 87686,
+   "n_mismo_dia_otras_actas": 1799,
+   "n_misma_ley_otras_actas": 545,
+   "estricta": {
+    "n": 231,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 231,
+    "max_abs_dP": 0.5287773881818183,
+    "n_distintos": 231
+   },
+   "CONTROL_fecha": {
+    "n": 231,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "argentinadatos:diputados:5481",
+   "era": "desde 2023",
+   "camara": "diputados",
+   "fecha": "2024-11-27",
+   "votos_corrompidos": 84088,
+   "n_mismo_dia_otras_actas": 2313,
+   "n_misma_ley_otras_actas": 0,
+   "estricta": {
+    "n": 150,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 150,
+    "max_abs_dP": 0.07762193012798341,
+    "n_distintos": 150
+   },
+   "CONTROL_fecha": {
+    "n": 150,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "argentinadatos:diputados:5507",
+   "era": "desde 2023",
+   "camara": "diputados",
+   "fecha": "2024-11-28",
+   "votos_corrompidos": 82546,
+   "n_mismo_dia_otras_actas": 9766,
+   "n_misma_ley_otras_actas": 10537,
+   "estricta": {
+    "n": 199,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 199,
+    "max_abs_dP": 0.6753667582417583,
+    "n_distintos": 199
+   },
+   "CONTROL_fecha": {
+    "n": 199,
+    "max_abs_dP": 0.3528166666666667,
+    "n_distintos": 199
+   }
+  },
+  {
+   "acta_id": "argentinadatos:diputados:5517",
+   "era": "desde 2023",
+   "camara": "diputados",
+   "fecha": "2024-11-28",
+   "votos_corrompidos": 82546,
+   "n_mismo_dia_otras_actas": 9766,
+   "n_misma_ley_otras_actas": 10537,
+   "estricta": {
+    "n": 206,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 206,
+    "max_abs_dP": 0.6753667582417583,
+    "n_distintos": 206
+   },
+   "CONTROL_fecha": {
+    "n": 206,
+    "max_abs_dP": 0.3528166666666667,
+    "n_distintos": 206
+   }
+  },
+  {
+   "acta_id": "argentinadatos:senado:2538",
+   "era": "desde 2023",
+   "camara": "senado",
+   "fecha": "2025-02-21",
+   "votos_corrompidos": 66118,
+   "n_mismo_dia_otras_actas": 360,
+   "n_misma_ley_otras_actas": 0,
+   "estricta": {
+    "n": 64,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 64,
+    "max_abs_dP": 0.11187918660287077,
+    "n_distintos": 64
+   },
+   "CONTROL_fecha": {
+    "n": 64,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "argentinadatos:diputados:5671",
+   "era": "desde 2023",
+   "camara": "diputados",
+   "fecha": "2025-06-05",
+   "votos_corrompidos": 60309,
+   "n_mismo_dia_otras_actas": 3084,
+   "n_misma_ley_otras_actas": 1357,
+   "estricta": {
+    "n": 209,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 209,
+    "max_abs_dP": 0.3181798245614035,
+    "n_distintos": 209
+   },
+   "CONTROL_fecha": {
+    "n": 209,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "argentinadatos:senado:2561",
+   "era": "desde 2023",
+   "camara": "senado",
+   "fecha": "2025-07-10",
+   "votos_corrompidos": 55940,
+   "n_mismo_dia_otras_actas": 432,
+   "n_misma_ley_otras_actas": 329,
+   "estricta": {
+    "n": 52,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 52,
+    "max_abs_dP": 0.178051282051282,
+    "n_distintos": 52
+   },
+   "CONTROL_fecha": {
+    "n": 52,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "argentinadatos:senado:2563",
+   "era": "desde 2023",
+   "camara": "senado",
+   "fecha": "2025-07-11",
+   "votos_corrompidos": 55436,
+   "n_mismo_dia_otras_actas": 72,
+   "n_misma_ley_otras_actas": 257,
+   "estricta": {
+    "n": 55,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 55,
+    "max_abs_dP": 0.09468717948717953,
+    "n_distintos": 55
+   },
+   "CONTROL_fecha": {
+    "n": 55,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "argentinadatos:senado:2565",
+   "era": "desde 2023",
+   "camara": "senado",
+   "fecha": "2025-08-21",
+   "votos_corrompidos": 50666,
+   "n_mismo_dia_otras_actas": 2118,
+   "n_misma_ley_otras_actas": 0,
+   "estricta": {
+    "n": 68,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 68,
+    "max_abs_dP": 0.30459375,
+    "n_distintos": 68
+   },
+   "CONTROL_fecha": {
+    "n": 68,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "argentinadatos:senado:2566",
+   "era": "desde 2023",
+   "camara": "senado",
+   "fecha": "2025-08-21",
+   "votos_corrompidos": 50666,
+   "n_mismo_dia_otras_actas": 2118,
+   "n_misma_ley_otras_actas": 0,
+   "estricta": {
+    "n": 68,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 68,
+    "max_abs_dP": 0.30459375,
+    "n_distintos": 68
+   },
+   "CONTROL_fecha": {
+    "n": 68,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "argentinadatos:senado:2583",
+   "era": "desde 2023",
+   "camara": "senado",
+   "fecha": "2025-09-18",
+   "votos_corrompidos": 46430,
+   "n_mismo_dia_otras_actas": 504,
+   "n_misma_ley_otras_actas": 0,
+   "estricta": {
+    "n": 68,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 68,
+    "max_abs_dP": 0.16831140350877194,
+    "n_distintos": 68
+   },
+   "CONTROL_fecha": {
+    "n": 68,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "argentinadatos:diputados:5781",
+   "era": "desde 2023",
+   "camara": "diputados",
+   "fecha": "2025-10-09",
+   "votos_corrompidos": 43047,
+   "n_mismo_dia_otras_actas": 2056,
+   "n_misma_ley_otras_actas": 0,
+   "estricta": {
+    "n": 215,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 215,
+    "max_abs_dP": 0.1167191252144083,
+    "n_distintos": 215
+   },
+   "CONTROL_fecha": {
+    "n": 215,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "argentinadatos:diputados:5821",
+   "era": "desde 2023",
+   "camara": "diputados",
+   "fecha": "2025-12-17",
+   "votos_corrompidos": 40590,
+   "n_mismo_dia_otras_actas": 0,
+   "n_misma_ley_otras_actas": 0,
+   "estricta": {
+    "n": 242,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 242,
+    "max_abs_dP": 0.18400550999999987,
+    "n_distintos": 242
+   },
+   "CONTROL_fecha": {
+    "n": 242,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "argentinadatos:diputados:5827",
+   "era": "desde 2023",
+   "camara": "diputados",
+   "fecha": "2025-12-18",
+   "votos_corrompidos": 40333,
+   "n_mismo_dia_otras_actas": 4369,
+   "n_misma_ley_otras_actas": 4349,
+   "estricta": {
+    "n": 229,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 229,
+    "max_abs_dP": 0.7353142857142856,
+    "n_distintos": 229
+   },
+   "CONTROL_fecha": {
+    "n": 229,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "argentinadatos:diputados:5834",
+   "era": "desde 2023",
+   "camara": "diputados",
+   "fecha": "2025-12-18",
+   "votos_corrompidos": 40333,
+   "n_mismo_dia_otras_actas": 4369,
+   "n_misma_ley_otras_actas": 4349,
+   "estricta": {
+    "n": 225,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 225,
+    "max_abs_dP": 0.7353142857142856,
+    "n_distintos": 225
+   },
+   "CONTROL_fecha": {
+    "n": 225,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "argentinadatos:senado:2623",
+   "era": "desde 2023",
+   "camara": "senado",
+   "fecha": "2026-02-12",
+   "votos_corrompidos": 34411,
+   "n_mismo_dia_otras_actas": 2386,
+   "n_misma_ley_otras_actas": 9027,
+   "estricta": {
+    "n": 72,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 72,
+    "max_abs_dP": 0.5089969565217392,
+    "n_distintos": 72
+   },
+   "CONTROL_fecha": {
+    "n": 72,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "argentinadatos:senado:2627",
+   "era": "desde 2023",
+   "camara": "senado",
+   "fecha": "2026-02-12",
+   "votos_corrompidos": 34411,
+   "n_mismo_dia_otras_actas": 2386,
+   "n_misma_ley_otras_actas": 9027,
+   "estricta": {
+    "n": 72,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 72,
+    "max_abs_dP": 0.5089969565217392,
+    "n_distintos": 72
+   },
+   "CONTROL_fecha": {
+    "n": 72,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "argentinadatos:senado:2639",
+   "era": "desde 2023",
+   "camara": "senado",
+   "fecha": "2026-02-12",
+   "votos_corrompidos": 34411,
+   "n_mismo_dia_otras_actas": 2386,
+   "n_misma_ley_otras_actas": 9027,
+   "estricta": {
+    "n": 72,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 72,
+    "max_abs_dP": 0.5089969565217392,
+    "n_distintos": 72
+   },
+   "CONTROL_fecha": {
+    "n": 72,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "argentinadatos:senado:2661",
+   "era": "desde 2023",
+   "camara": "senado",
+   "fecha": "2026-02-27",
+   "votos_corrompidos": 24212,
+   "n_mismo_dia_otras_actas": 1152,
+   "n_misma_ley_otras_actas": 833,
+   "estricta": {
+    "n": 71,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 71,
+    "max_abs_dP": 0.27533267605633804,
+    "n_distintos": 71
+   },
+   "CONTROL_fecha": {
+    "n": 71,
+    "max_abs_dP": 0.07729407407407407,
+    "n_distintos": 71
+   }
+  },
+  {
+   "acta_id": "argentinadatos:senado:2684",
+   "era": "desde 2023",
+   "camara": "senado",
+   "fecha": "2026-04-09",
+   "votos_corrompidos": 28653,
+   "n_mismo_dia_otras_actas": 658,
+   "n_misma_ley_otras_actas": 9027,
+   "estricta": {
+    "n": 72,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 72,
+    "max_abs_dP": 0.39777034559643243,
+    "n_distintos": 72
+   },
+   "CONTROL_fecha": {
+    "n": 72,
+    "max_abs_dP": 0.3753185507246376,
+    "n_distintos": 72
+   }
+  },
+  {
+   "acta_id": "argentinadatos:diputados:5928",
+   "era": "desde 2023",
+   "camara": "diputados",
+   "fecha": "2026-05-20",
+   "votos_corrompidos": 18248,
+   "n_mismo_dia_otras_actas": 3084,
+   "n_misma_ley_otras_actas": 0,
+   "estricta": {
+    "n": 238,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 238,
+    "max_abs_dP": 0.4838412698412698,
+    "n_distintos": 238
+   },
+   "CONTROL_fecha": {
+    "n": 238,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  },
+  {
+   "acta_id": "argentinadatos:diputados:5975",
+   "era": "desde 2023",
+   "camara": "diputados",
+   "fecha": "2026-08-27",
+   "votos_corrompidos": 6199,
+   "n_mismo_dia_otras_actas": 5428,
+   "n_misma_ley_otras_actas": 0,
+   "estricta": {
+    "n": 251,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   },
+   "CONTROL_dia_incluido": {
+    "n": 251,
+    "max_abs_dP": 0.28270949263502454,
+    "n_distintos": 251
+   },
+   "CONTROL_fecha": {
+    "n": 251,
+    "max_abs_dP": 0.0,
+    "n_distintos": 0
+   }
+  }
+ ]
+}

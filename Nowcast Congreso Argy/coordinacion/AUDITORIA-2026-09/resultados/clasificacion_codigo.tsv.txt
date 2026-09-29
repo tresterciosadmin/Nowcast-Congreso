@@ -1,0 +1,195 @@
+archivo,loc,categoria,en_alcance,importadores_no_test
+casos/nowcast_puertas_html.py,350,EN EL CAMINO (imports desde el panel),True,0
+coordinacion/AUDITORIA-2026-09/contraste_aprobacion.py,125,NO LO LLAMA NADIE (sin importadores no-test),False,0
+coordinacion/AUDITORIA-2026-09/control_independiente.py,194,NO LO LLAMA NADIE (sin importadores no-test),False,0
+coordinacion/AUDITORIA-2026-09/invariancia_al_futuro.py,98,NO LO LLAMA NADIE (sin importadores no-test),False,0
+datos/argentinadatos/src/explorar_campos.py,110,SÓLO MEDICIÓN/ESTIMACIÓN,False,0
+datos/argentinadatos/src/to_canonical.py,157,NO LO LLAMA NADIE (sin importadores no-test),False,0
+datos/argentinadatos/tests/test_padron_senado.py,133,TEST,False,0
+datos/bot_recoleccion/src/dae_senado.py,206,NO LO LLAMA NADIE (sin importadores no-test),False,0
+datos/bot_recoleccion/src/explorar_tp.py,28,SÓLO MEDICIÓN/ESTIMACIÓN,False,0
+datos/bot_recoleccion/src/tp_diputados.py,215,NO LO LLAMA NADIE (sin importadores no-test),False,0
+datos/bot_recoleccion/src/votaciones.py,174,NO LO LLAMA NADIE (sin importadores no-test),False,0
+datos/bot_recoleccion/tests/test_dae.py,33,TEST,False,0
+datos/bot_recoleccion/tests/test_tp.py,32,TEST,False,0
+datos/bot_recoleccion/tests/test_votaciones.py,56,TEST,False,0
+datos/canonica/src/alias_legislador.py,53,EN EL CAMINO (imports desde el panel),False,2
+datos/canonica/src/build.py,196,NO LO LLAMA NADIE (sin importadores no-test),False,0
+datos/canonica/src/entity_resolution.py,301,OTRO (importado sólo por medición/otros no alcanzables),False,3
+datos/canonica/src/run_pipeline.py,74,PIPELINE DE INSUMOS (REGENERAR),False,0
+datos/canonica/tests/test_actas_gemelas.py,116,TEST,False,0
+datos/canonica/tests/test_alias_legislador.py,70,TEST,False,0
+datos/canonica/tests/test_entity_resolution.py,85,TEST,False,0
+datos/ckan_diputados/src/to_canonical.py,60,NO LO LLAMA NADIE (sin importadores no-test),False,0
+datos/decada_votada/src/from_csv.py,67,NO LO LLAMA NADIE (sin importadores no-test),False,0
+datos/expedientes/src/actas_ley.py,162,EN EL CAMINO (imports desde el panel),False,1
+datos/expedientes/src/capitulos_nombre.py,184,OTRO (importado sólo por medición/otros no alcanzables),False,1
+datos/expedientes/src/construir_firmas.py,403,PIPELINE DE INSUMOS (REGENERAR),False,0
+datos/expedientes/src/enlace_senado.py,498,EN EL CAMINO (imports desde el panel),False,2
+datos/expedientes/src/explorar_ckan.py,72,SÓLO MEDICIÓN/ESTIMACIÓN,False,0
+datos/expedientes/src/giros_iniciales.py,145,PIPELINE DE INSUMOS (REGENERAR),False,0
+datos/expedientes/src/ingesta_ckan.py,160,PIPELINE DE INSUMOS (REGENERAR),False,0
+datos/expedientes/src/ingesta_od.py,230,PIPELINE DE INSUMOS (REGENERAR),False,1
+datos/expedientes/src/ingesta_od_senado.py,231,PIPELINE DE INSUMOS (REGENERAR),False,1
+datos/expedientes/src/od_url.py,153,PIPELINE DE INSUMOS (REGENERAR),False,1
+datos/expedientes/src/parser_od.py,538,PIPELINE DE INSUMOS (REGENERAR),False,1
+datos/expedientes/src/resolver_firmantes.py,176,EN EL CAMINO (imports desde el panel),False,3
+datos/expedientes/src/votacion_por_articulo.py,192,NO LO LLAMA NADIE (sin importadores no-test),False,0
+datos/expedientes/tests/test_actas_ley.py,67,TEST,False,0
+datos/expedientes/tests/test_capitulos_nombre.py,94,TEST,False,0
+datos/expedientes/tests/test_enlace_senado.py,342,TEST,False,0
+datos/expedientes/tests/test_od_url.py,152,TEST,False,0
+datos/expedientes/tests/test_parser_od.py,431,TEST,False,0
+datos/expedientes/tests/test_votacion_por_articulo.py,132,TEST,False,0
+datos/export/src/export_base.py,262,NO LO LLAMA NADIE (sin importadores no-test),False,0
+datos/export/tests/test_export.py,73,TEST,False,0
+datos/manual_2026/src/to_canonical.py,160,NO LO LLAMA NADIE (sin importadores no-test),False,0
+datos/manual_2026/tests/test_to_canonical.py,126,TEST,False,0
+datos/padron/src/bajar_nomina.py,223,OTRO (importado sólo por medición/otros no alcanzables),False,1
+datos/padron/src/ingesta_padron.py,205,OTRO (importado sólo por medición/otros no alcanzables),False,1
+datos/padron/src/padron_diputados_historico.py,316,NO LO LLAMA NADIE (sin importadores no-test),False,0
+datos/padron/src/padron_senado_historico.py,333,NO LO LLAMA NADIE (sin importadores no-test),False,0
+datos/padron/src/padron_vigente.py,155,EN EL CAMINO (imports desde el panel),False,1
+datos/padron/src/vigilar_padron.py,383,NO LO LLAMA NADIE (sin importadores no-test),False,0
+datos/padron/tests/test_ingesta_padron.py,82,TEST,False,0
+datos/padron/tests/test_padron_diputados_historico.py,136,TEST,False,0
+datos/padron/tests/test_padron_senado_historico.py,135,TEST,False,0
+datos/padron/tests/test_padron_vigente.py,131,TEST,False,0
+datos/padron/tests/test_vigilar_padron.py,122,TEST,False,0
+datos/proyectos/src/cuarentena.py,160,PIPELINE DE INSUMOS (REGENERAR),False,2
+datos/proyectos/src/migrar_ckan.py,243,PIPELINE DE INSUMOS (REGENERAR),False,0
+datos/proyectos/src/store.py,245,NO LO LLAMA NADIE (sin importadores no-test),False,0
+datos/proyectos/src/taxonomias_backup.py,155,PIPELINE DE INSUMOS (REGENERAR),False,1
+datos/proyectos/src/upsert_bot.py,264,PIPELINE DE INSUMOS (REGENERAR),False,1
+datos/proyectos/src/verificar.py,194,PIPELINE DE INSUMOS (REGENERAR),False,2
+datos/proyectos/tests/test_store.py,108,TEST,False,0
+datos/proyectos/tests/test_taxonomias_backup.py,133,TEST,False,0
+datos/proyectos/tests/test_verificar.py,133,TEST,False,0
+datos/seguimiento/src/giros.py,359,NO LO LLAMA NADIE (sin importadores no-test),False,0
+datos/seguimiento/tests/test_giros.py,64,TEST,False,0
+datos/senado/src/aplicar_bloques.py,139,NO LO LLAMA NADIE (sin importadores no-test),False,0
+datos/senado/src/bajar_anexos_wiki.py,42,NO LO LLAMA NADIE (sin importadores no-test),False,0
+datos/senado/src/padron_bloques.py,168,OTRO (importado sólo por medición/otros no alcanzables),False,1
+datos/senado/src/scrape_votaciones.py,371,NO LO LLAMA NADIE (sin importadores no-test),False,0
+datos/senado/tests/test_scrape.py,88,TEST,False,0
+datos/taxonomias/src/registro.py,265,OTRO (importado sólo por medición/otros no alcanzables),False,1
+datos/taxonomias/tests/test_registro.py,154,TEST,False,0
+definiciones.py,212,EN EL CAMINO (imports desde el panel),True,15
+docs/taxonomias/loader.py,78,EN EL CAMINO (imports desde el panel),False,2
+docs/taxonomias/test_loader.py,30,TEST,False,0
+evaluacion/baseline/src/baseline_canonico.py,73,SÓLO MEDICIÓN/ESTIMACIÓN,True,0
+evaluacion/baseline/src/baseline_voto_individual.py,713,EN EL CAMINO (imports desde el panel),True,12
+evaluacion/baseline/src/censo_detalle_paralelo.py,80,SÓLO MEDICIÓN/ESTIMACIÓN,True,0
+evaluacion/baseline/src/diagnostico_senado.py,188,SÓLO MEDICIÓN/ESTIMACIÓN,True,0
+evaluacion/baseline/src/fase0_control_temas.py,217,SÓLO MEDICIÓN/ESTIMACIÓN,True,0
+evaluacion/baseline/src/fase1_rec_por_tema.py,152,SÓLO MEDICIÓN/ESTIMACIÓN,True,1
+evaluacion/baseline/src/firma_tematica_desvio.py,96,SÓLO MEDICIÓN/ESTIMACIÓN,True,2
+evaluacion/baseline/src/firma_tematica_fase0_celdas.py,62,SÓLO MEDICIÓN/ESTIMACIÓN,True,0
+evaluacion/baseline/src/firma_tematica_fase1_2.py,267,SÓLO MEDICIÓN/ESTIMACIÓN,True,0
+evaluacion/baseline/src/medir_estabilidad_record_por_tema.py,262,SÓLO MEDICIÓN/ESTIMACIÓN,True,0
+evaluacion/baseline/src/medir_fuga_historia.py,124,SÓLO MEDICIÓN/ESTIMACIÓN,True,1
+evaluacion/baseline/src/medir_guard_era.py,163,SÓLO MEDICIÓN/ESTIMACIÓN,True,0
+evaluacion/baseline/src/medir_rec_por_tema.py,199,SÓLO MEDICIÓN/ESTIMACIÓN,True,0
+evaluacion/baseline/src/medir_record_por_tema_limpio.py,111,SÓLO MEDICIÓN/ESTIMACIÓN,True,0
+evaluacion/baseline/src/prueba1_pivotes_por_capitulo.py,272,SÓLO MEDICIÓN/ESTIMACIÓN,True,0
+evaluacion/baseline/src/prueba2_reconstruccion_por_rango.py,174,SÓLO MEDICIÓN/ESTIMACIÓN,True,0
+evaluacion/baseline/src/prueba3_cobertura_universo_vivo.py,133,SÓLO MEDICIÓN/ESTIMACIÓN,True,0
+evaluacion/baseline/src/record_por_origen.py,448,SÓLO MEDICIÓN/ESTIMACIÓN,True,1
+evaluacion/baseline/src/record_por_origen_brazos.py,344,SÓLO MEDICIÓN/ESTIMACIÓN,True,0
+evaluacion/baseline/src/resumen_censo_limpio.py,169,SÓLO MEDICIÓN/ESTIMACIÓN,True,0
+evaluacion/baseline/src/validar_leybases_por_capitulos.py,154,SÓLO MEDICIÓN/ESTIMACIÓN,True,0
+evaluacion/baseline/src/validar_piloto_capitulos.py,186,SÓLO MEDICIÓN/ESTIMACIÓN,True,0
+evaluacion/baseline/src/validar_piloto_titulos.py,161,SÓLO MEDICIÓN/ESTIMACIÓN,True,0
+evaluacion/baseline/tests/test_fase1_rec_por_tema.py,50,TEST,True,0
+evaluacion/baseline/tests/test_firma_tematica.py,61,TEST,True,0
+evaluacion/baseline/tests/test_guard_era.py,123,TEST,True,0
+evaluacion/baseline/tests/test_harness_es_el_motor.py,154,TEST,True,0
+evaluacion/baseline/tests/test_historia_sin_fuga.py,119,TEST,True,0
+evaluacion/baseline/tests/test_record_por_origen.py,100,TEST,True,0
+fase0/src/baseline_bloque.py,98,NO LO LLAMA NADIE (sin importadores no-test),False,0
+fase0/src/common.py,89,OTRO (importado sólo por medición/otros no alcanzables),False,2
+fase0/src/ingesta.py,55,NO LO LLAMA NADIE (sin importadores no-test),False,0
+modelo/agregador_institucional/src/agregador.py,453,EN EL CAMINO (imports desde el panel),True,5
+modelo/agregador_institucional/tests/test_agregador.py,226,TEST,True,0
+modelo/ensemble/src/backtest_cadena.py,463,SÓLO MEDICIÓN/ESTIMACIÓN,True,0
+modelo/ensemble/src/beta_dictamen.py,140,EN EL CAMINO (imports desde el panel),True,1
+modelo/ensemble/src/chequear_direccion_beta.py,67,SÓLO MEDICIÓN/ESTIMACIÓN,True,0
+modelo/ensemble/src/composicion_capitulos.py,125,OTRO (importado sólo por medición/otros no alcanzables),True,2
+modelo/ensemble/src/ensemble.py,348,EN EL CAMINO (imports desde el panel),True,10
+modelo/ensemble/src/estimar_beta_dictamen.py,481,EN EL CAMINO (imports desde el panel),True,3
+modelo/ensemble/src/estimar_epsilon_tau.py,255,SÓLO MEDICIÓN/ESTIMACIÓN,True,1
+modelo/ensemble/src/estimar_psi_arrastre.py,206,SÓLO MEDICIÓN/ESTIMACIÓN,True,0
+modelo/ensemble/src/estimar_theta_sobre_tablas.py,209,SÓLO MEDICIÓN/ESTIMACIÓN,True,1
+modelo/ensemble/src/medir_tau_limpio.py,115,SÓLO MEDICIÓN/ESTIMACIÓN,True,0
+modelo/ensemble/src/nowcast_puertas.py,881,EN EL CAMINO (imports desde el panel),True,11
+modelo/ensemble/src/puerta_a.py,385,EN EL CAMINO (imports desde el panel),True,1
+modelo/ensemble/src/puerta_d.py,202,EN EL CAMINO (imports desde el panel),True,4
+modelo/ensemble/src/sobre_tablas.py,109,EN EL CAMINO (imports desde el panel),True,1
+modelo/ensemble/src/validar_beta_dictamen_walkforward.py,132,SÓLO MEDICIÓN/ESTIMACIÓN,True,0
+modelo/ensemble/src/validar_sobre_tablas_walkforward.py,236,SÓLO MEDICIÓN/ESTIMACIÓN,True,0
+modelo/ensemble/tests/test_backtest_cadena.py,273,TEST,True,0
+modelo/ensemble/tests/test_beta_dictamen.py,94,TEST,True,0
+modelo/ensemble/tests/test_composicion_capitulos.py,131,TEST,True,0
+modelo/ensemble/tests/test_ensemble.py,207,TEST,True,0
+modelo/ensemble/tests/test_guardas_confianza.py,111,TEST,True,0
+modelo/ensemble/tests/test_incertidumbre_legislador.py,54,TEST,True,0
+modelo/ensemble/tests/test_nowcast_puertas.py,217,TEST,True,0
+modelo/ensemble/tests/test_puerta_a.py,151,TEST,True,0
+modelo/ensemble/tests/test_puerta_d.py,119,TEST,True,0
+modelo/ensemble/tests/test_record_por_tema.py,166,TEST,True,0
+modelo/ensemble/tests/test_sobre_tablas.py,77,TEST,True,0
+modelo/ensemble/tests/test_tema_auto.py,83,TEST,True,0
+modelo/ensemble/validar_condicionamiento_votos.py,117,SÓLO MEDICIÓN/ESTIMACIÓN,True,0
+modelo/voto_individual/src/disciplina.py,354,PIPELINE DE INSUMOS (REGENERAR),True,1
+modelo/voto_individual/tests/test_disciplina.py,160,TEST,True,0
+producto/dashboard/src/generar_mapa_modelo.py,482,NO LO LLAMA NADIE (sin importadores no-test),True,0
+rutas.py,162,EN EL CAMINO (imports desde el panel),True,35
+tests/test_bases_viajan.py,152,TEST,False,0
+tests/test_caracter_dictamen.py,100,TEST,False,0
+tests/test_definiciones_compartidas.py,368,TEST,False,0
+tests/test_fechas_validan.py,78,TEST,False,0
+tests/test_insumos_del_motor_viajan.py,124,TEST,False,0
+tests/test_raiz_del_repo_una_sola_copia.py,94,TEST,False,0
+tests/test_rutas.py,88,TEST,False,0
+tests/test_rutas_citadas_existen.py,99,TEST,False,0
+variables/asistencia_quorum/src/asistencia.py,87,NO LO LLAMA NADIE (sin importadores no-test),True,0
+variables/bloque/src/bloque.py,751,EN EL CAMINO (imports desde el panel),True,22
+variables/bloque/tests/test_bloque.py,111,TEST,True,0
+variables/bloque/tests/test_bloque_linaje_senado.py,77,TEST,True,0
+variables/bloque/tests/test_bloque_origen.py,92,TEST,True,0
+variables/bloque/tests/test_bloque_v2.py,126,TEST,True,0
+variables/bloque/tests/test_bloque_v3_multietiqueta.py,208,TEST,True,0
+variables/embudo/src/cohorte_dos_rutas.py,69,NO LO LLAMA NADIE (sin importadores no-test),True,0
+variables/embudo/src/embudo.py,655,OTRO (importado sólo por medición/otros no alcanzables),True,3
+variables/embudo/src/escenarios.py,139,NO LO LLAMA NADIE (sin importadores no-test),True,0
+variables/embudo/tests/test_embudo.py,107,TEST,True,0
+variables/embudo/tests/test_embudo_icg.py,82,TEST,True,0
+variables/legislador/src/ficha.py,251,PIPELINE DE INSUMOS (REGENERAR),True,0
+variables/legislador/tests/test_ficha.py,77,TEST,True,0
+variables/proyecto/src/agente_taxonomias.py,431,EN EL CAMINO (imports desde el panel),True,4
+variables/proyecto/src/bajar_autoridades_comisiones.py,55,NO LO LLAMA NADIE (sin importadores no-test),True,0
+variables/proyecto/src/comparar_vias_icg.py,259,PIPELINE DE INSUMOS (REGENERAR),True,0
+variables/proyecto/src/estimar_gamma.py,126,SÓLO MEDICIÓN/ESTIMACIÓN,True,0
+variables/proyecto/src/estimar_gamma_individual.py,202,PIPELINE DE INSUMOS (REGENERAR),True,0
+variables/proyecto/src/icg_contexto.py,224,NO LO LLAMA NADIE (sin importadores no-test),True,0
+variables/proyecto/src/ingesta_icg.py,388,NO LO LLAMA NADIE (sin importadores no-test),True,0
+variables/proyecto/src/modulador_icg.py,205,PIPELINE DE INSUMOS (REGENERAR),True,1
+variables/proyecto/src/origen_lider.py,399,PIPELINE DE INSUMOS (REGENERAR),True,1
+variables/proyecto/src/origen_por_acta.py,323,PIPELINE DE INSUMOS (REGENERAR),True,0
+variables/proyecto/src/pdf_text.py,84,EN EL CAMINO (imports desde el panel),True,1
+variables/proyecto/src/scrape_jefes_bloque.py,148,NO LO LLAMA NADIE (sin importadores no-test),True,0
+variables/proyecto/src/tema_por_acta.py,260,NO LO LLAMA NADIE (sin importadores no-test),True,0
+variables/proyecto/src/tema_por_capitulo.py,240,NO LO LLAMA NADIE (sin importadores no-test),True,0
+variables/proyecto/src/tema_por_proyecto.py,312,EN EL CAMINO (imports desde el panel),True,3
+variables/proyecto/tests/test_agente.py,157,TEST,True,0
+variables/proyecto/tests/test_icg_contexto.py,116,TEST,True,0
+variables/proyecto/tests/test_ingesta_icg.py,191,TEST,True,0
+variables/proyecto/tests/test_modulador_shrink.py,123,TEST,True,0
+variables/proyecto/tests/test_origen_lider.py,133,TEST,True,0
+variables/proyecto/tests/test_origen_por_acta.py,125,TEST,True,0
+variables/proyecto/tests/test_scrape_jefes.py,30,TEST,True,0
+variables/proyecto/tests/test_tema_por_acta.py,70,TEST,True,0
+variables/proyecto/tests/test_tema_por_capitulo.py,157,TEST,True,0
+variables/proyecto/tests/test_tema_por_proyecto.py,191,TEST,True,0
+verificar_dependencias.py,70,PIPELINE DE INSUMOS (REGENERAR),False,0
+verificar_regeneracion.py,245,PIPELINE DE INSUMOS (REGENERAR),False,0

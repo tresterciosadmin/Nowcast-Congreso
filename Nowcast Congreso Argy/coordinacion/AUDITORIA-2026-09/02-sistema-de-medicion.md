@@ -10,7 +10,7 @@
 | Skill por era (0,133 / 0,277 / 0,081 / 0,011 / **0,010**) | **CONFIABLE** | mismo motor y datos. La conclusión "en la era vigente no se distingue de la tasa base" **es lo que dicen los datos**: [−0,28; 0,26] con 312 leyes ([−0,22; 0,24] por fecha). |
 | Rama récord 0,164 (95,3%) | **CONFIABLE** | idem |
 | Rama sin récord −0,380 (4,7%) | **CON RESERVA** | el harness usa el desvío **del linaje**, no la ficha; el censo no ejercita el código de desvío de producción (efecto acotado en ≤ 0,002 de Brier, ver §4a) |
-| **P(aprobación) contra resultados** (skill 0,25 [0,19; 0,30], 5.831 actas) | **CON RESERVA** | medido por primera vez acá; condicionado a los presentes; ε₀ y τ se estimaron sobre el mismo panel; una configuración; malo en mayorías especiales |
+| **P(aprobación) contra resultados** (5.831 actas) | **NO SUPERA LA TASA BASE en mayoría simple** (corrección del 29-09) | el "skill 0,25" del pool es un efecto de composición: mezcla mayoría simple (98% aprobadas) con dos tercios y tres cuartos. **Dentro de la mayoría simple, por cámara:** Brier 0,026 contra 0,019 de una constante; AUC 0,73 en Diputados y 0,60 en el Senado; recalibrado fuera de muestra queda igual a la tasa base (`resultados/simple_por_camara.txt`). Condicionado a los presentes; medido por primera vez acá |
 | **Cobertura de la banda 63,6%** (sesgo −6,9 votos) | **CON RESERVA** | reproduce exacto (63,63%, sesgo 6,93). Es **condicional a los presentes** (`p_presente = 1`), actas con ≥ 20 votos, 1.000 simulaciones, una semilla, **sin IC** |
 | Banda "99,88%" (ADR-0025) | **NO CONFIABLE** | mide con un oráculo: `agregador.backtest` le da a la simulación la línea que cada bloque tuvo **en esa acta** |
 | Skill publicado anterior 0,1611 | **NO CONFIABLE** | `shift(1)` por fila, misma ley y mismo día; copia del récord sin origen |
@@ -18,7 +18,7 @@
 | Encoger vs cortar (+2,8% [1,8; 4,2]); `n ≥ 8` vs `n ≥ 1` (+0,5% [−0,01; 1,26]) | **CONFIABLE** | re-medidos limpios en ADR-0034 |
 | Guard de era | **CON RESERVA** | con el motor completo nadie lo midió encendido/apagado (`GUARD_ERA=0` deja sin récord todo lo anterior a 2023, no sirve). **Medido acá con el control independiente**, quitando sólo el corte por era: **+0,0028 de Brier a favor del guard [−0,0006; +0,0066]** (≈ 2%, incluye 0; sólo el Senado lo excluye: +0,0030 [0,0005; 0,0057]); **en la era vigente −0,0003 [−0,012; +0,010]**: no hace nada |
 | β (`F_i` 2,088, lealtad×jefe 1,750) | **NO CONFIABLE** | offset con fuga y sin guard/encoger/origen; con el offset limpio 2,05 y **1,29**; el walk-forward que lo prendió no se re-corrió; el censo no lo aplica |
-| ε₀ = 0,035, τ = 1,19 | **CON RESERVA** | estimados sobre el offset del espejo; limpio: ε₀ **0,055**, τ 1,197. El término sí mejora el log-loss contra resultados reales (Δ −0,036 [−0,055; −0,018]) |
+| ε₀ = 0,035, τ = 1,19 | **CON RESERVA** | estimados sobre el offset del espejo; limpio: ε₀ **0,055**, τ 1,197. Contra resultados reales mejora el log-loss **en el pool** (Δ −0,036 [−0,055; −0,018]), pero **en mayoría simple lo empeora** (0,129 contra 0,100 del clip; corrección del 29-09) |
 | ψ, θ, δ | **NO CONFIABLE** | offset contaminado, no re-medidos; ninguno está en el número (ψ ni siquiera está implementado) |
 | Presencia $\pi_i$ | **SIN MEDICIÓN** | el censo sólo evalúa votos emitidos |
 | Ficha de desvío `disciplina_individual.csv` | **NO CONFIABLE como walk-forward** | usa toda la historia (69 actas posteriores al 2026-06-01 en la canónica) |
@@ -177,6 +177,8 @@ Búsqueda por `grep` y AST en `modelo/`, `evaluacion/`, `variables/`, `datos/`, 
 | disputadas (≥10% en contra), skill | 0,281 [0,230; 0,330] | 0,163 [0,100; 0,223] |
 
 Δlog-loss (producción − sin) **−0,036 [−0,055; −0,018]** (mejora); ΔBrier −0,0018 [−0,005; +0,001] (no concluyente). **Calibración de producción:** subconfiado arriba (P 0,909 → real 0,969; P 0,967 → 0,990) y algo optimista abajo (P 0,373 → 0,298). **Por tipo de mayoría:** simple 5.394 actas, Brier **0,026** (98% aprobadas); **dos tercios 256 actas, Brier 0,303** (50% aprobadas, P media 0,68: peor que 0,25); tres cuartos 124 actas, 0,185; absoluta 54, 0,104. El resultado oficial coincide con el recontado de los votos en el 99,5% de las actas.
+
+> **Corrección posterior (29-09).** El "skill 0,25" y la mejora de ε₀+τη de esta sección valen **para el conjunto de actas mezclando tipos de mayoría**. Restringido a **mayoría simple** (5.394 actas, aprobadas 98%) el modelo tiene **Brier 0,0260 contra 0,0193 de una constante**, AUC 0,69 (Diputados 0,73; Senado 0,60), y **ε₀+τη empeora el log-loss** (0,129 contra 0,100). Detalle por cámara y disputadas en `resultados/simple_por_camara.txt` y en el informe §9.2.
 
 ## 9. Hipótesis de esta fase
 

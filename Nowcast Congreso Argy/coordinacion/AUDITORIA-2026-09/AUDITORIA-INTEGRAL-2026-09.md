@@ -58,7 +58,7 @@ $\mathrm{rec}_i$ = su récord en la **era**, proyectos del **mismo origen**, **`
 | 13 | **ε₀+τη** | **ON** | **sí** en el motor (0,98 → 0,61); **el titular del HTML no se movió** | justificación **NO CONFIABLE**; término **CON RESERVA** | cobertura **63,6%**; τ/ε₀ limpios 1,197 / 0,055 y **re-estimar baja la cobertura a 60,4%**; contra resultados mejora el log-loss |
 | 14-17 | ψ, θ, proximidad, asimetría ICG | sin código / descartado | no | NO CONFIABLE / nunca medido | ψ no está implementado |
 | 18 | récord por tema | OFF | no | "+11%" NO CONFIABLE; −2,12% CONFIABLE | — |
-| 19 | multietiqueta | OFF | no | **evidencia rota** | ESTADO-REAL dice "probablemente" ✅: el brazo `primaria` del harness **nunca pasaba `tema`** (`fa4c572`), el control era el tratamiento |
+| 19 | multietiqueta | OFF | no | **evidencia rota** | ESTADO-REAL dice "probablemente" ✅: el brazo `primaria` del harness **nunca pasaba `tema`** (`fa4c572`), el brazo `primaria` era idéntico a "sin tema" (el efecto de un tema simple nunca se midió) |
 | 20 | récord por origen heredado | inactivo | no | parcial | — |
 | — | **piso 0,02** *(no estaba)* | ON | sí | CON RESERVA | mejora el Brier individual (0,1391 → 0,1373) |
 | — | **guard de era** *(no estaba)* | ON | sí | **CON RESERVA** | medido acá (control independiente): ayuda ≈ 2% de Brier [−0,0006; +0,0066], **no hace nada en la era vigente** |
@@ -71,7 +71,7 @@ $\mathrm{rec}_i$ = su récord en la **era**, proyectos del **mismo origen**, **`
 
 Cronología y evidencia: `03-adr.md` §4. **Causas raíz, ordenadas por peso:**
 
-1. **Se medía con algo que sabía la respuesta, y nadie tenía un control independiente.** Tres mecanismos distintos, no uno: (a) el harness con `shift(1)` por fila y copia del récord, **desde su primer commit** (`2dbad10`, 06-09): 0,161 → 0,133; (b) el **oráculo** de `agregador.backtest` (línea de bloque observada): 99,88% → 63,6%; (c) el brazo `primaria` que nunca pasaba `tema`: el cierre de la línea de tema (0028) se hizo con un control idéntico al tratamiento. Más el `<=` del motor (0,326), que no afectó lo publicado.
+1. **Se medía con algo que sabía la respuesta, y nadie tenía un control independiente.** Tres mecanismos distintos, no uno: (a) el harness con `shift(1)` por fila y copia del récord, **desde su primer commit** (`2dbad10`, 06-09): 0,161 → 0,133; (b) el **oráculo** de `agregador.backtest` (línea de bloque observada): 99,88% → 63,6%; (c) el brazo `primaria` que nunca pasaba `tema`: el cierre de la línea de tema (0028) se hizo con un brazo `primaria` idéntico a "sin tema" (el efecto de un tema simple nunca se midió; las comparaciones multitema contra ninguno sí informan, pero con el harness con fuga). Más el `<=` del motor (0,326), que no afectó lo publicado.
 2. **La regla de método prescribía el idioma con fuga y no había un test de la propiedad.** FORMULA §IV.4 entró en el **mismo commit** que el código con fuga y dice "`shift(1)` + `expanding`". El primer test de la propiedad es del 28-09.
 3. **El proceso verificaba la presentación, no la medición.** Los tres commits que prendieron términos (`ec5fd05`, `64ff248`, `0a7a03f`) tocaron FORMULA, ESTADO, ADR, tablero y tests; cumplieron ADR-0015. Ninguna regla pedía re-correr la medición con el motor real ni un control independiente. El Nivel 2 ("qué supuesto se agrega sin querer") se llenó con descripciones del mecanismo; en un caso se usó para **sacar** la advertencia que debía frenar el cambio (`0a7a03f` borró de FORMULA "un término temático disputa como mucho el 4,6% restante"). Y **los controles "el número publicado no se movió (0,9801)" no tenían poder**: 0,9801 es el techo del clip.
 4. **Tres términos prendidos en 48 horas** (β 09-14, ε₀+τη 09-15, récord por tema 09-16), con el OK de Franco sobre la evidencia que presentó el mismo agente; 10 de los 12 ADR 0023-0034 los decidió Claude en sesión delegada.
@@ -170,3 +170,22 @@ Lista cerrada. Recomendación primero; costo entre paréntesis.
 - **El bot y los workflows** (`bot-diario.yml`, `icg-mensual.yml`, `padron-vivo.yml`) quedaron fuera de alcance salvo lo necesario para evaluar el monitoreo hacia adelante; **la dependencia del motor de datos del bot requiere otra ronda**.
 - **La calidad de la canónica** (hueco de Diputados 2020-23 que señala el lote A: 25 actas, 6.421 votos): fuera de alcance.
 - **El lote de la cadena 0012 → 0016 → 0025** lo hizo Opus al tercer intento (los dos primeros chocaron con el límite de la API, igual que la primera tanda de lotes de Sonnet). Verifiqué por mi cuenta sus dos hallazgos más fuertes (0,9801 = 0,99² y el titular por JavaScript) y el borrado de la advertencia en `0a7a03f`; el resto de sus filas figura con su fuente en `adr-fichas/lote_C.md`.
+
+## Anexo — Revisión independiente (refutación de las diez afirmaciones principales)
+
+Como se fijó en `00-preregistro.md`, al cierre un revisor (Sonnet, sólo lectura) que **no vio este informe** intentó refutar diez afirmaciones. **Ninguna quedó refutada; seis se confirmaron tal cual y cuatro con matices de alcance**, ya incorporados arriba. Detalle y evidencia en `refutacion-independiente.md`.
+
+| # | afirmación | veredicto | matiz del revisor |
+|---|---|---|---|
+| 1 | `puerta_a` con coeficientes en 0: `condicionar` es la identidad y se ejecuta en cada corrida | confirmada | el carácter no es código muerto: se muestra en el panel y alimenta `_via_sobre_tablas` (apagado); lo cierto es que no mueve la probabilidad |
+| 2 | piso 0,02 en `ensemble.py:361` que §I.00 no menciona | con matices | FORMULA **sí** lo trae en §I.4b y en la tabla de constantes, bajo el aviso de que I.1-I.4 son versiones anteriores |
+| 3 | el panel no pasa `proyecto_id`: β, `RECORD_POR_TEMA`, `TEMA_AUTO` no actúan | confirmada | β igual lee dos parquets de firmas (~125.820 filas en Diputados) para devolver `sin_dato` |
+| 4 | `Nowcast-Puertas.html` dice 0,9801, del 14-09, anterior a `64ff248` | confirmada | — |
+| 5 | los tres commits tocaron FORMULA, ADR, tablero y tests | confirmada | en `ec5fd05` el ADR es el 0016 ya existente |
+| 6 | FORMULA §IV.4 entró en `2dbad10` prescribiendo `shift(1)` + `expanding` | confirmada | — |
+| 7 | la rama `primaria` del harness nunca pasaba `tema` (`fa4c572`) | con matices | el bug siguió hasta `03c9340` (cierre de FASE 0) y se corrigió recién el 28-09; el JSON no es idéntico bit a bit (IC [−5e-05; 6e-05]); las comparaciones `union` y `ponderada_logit` contra `primaria` sí informan (esos brazos pasan `temas=`); **lo que no se midió es el efecto de un tema simple** |
+| 8 | `tablero_datos.js` `:253` (63,6%) y `:318` (99,88%) se contradicen | con matices | `:318` es un hito fechado 09-16 que nunca se marcó como superado |
+| 9 | `test_rutas` no puede fallar (`RAIZ` en el inventario) | confirmada | con `RAIZ` hay 80 rutas cruzadas y 0 huérfanas; sin `RAIZ` ni `RAIZ_GIT`, 14 |
+| 10 | dos commits cambian el default de `RECORD_POR_TEMA` y ningún test lo fija | con matices | `test_record_por_tema.py` ejerce la función, no la bandera; los defaults de `BETA_DICTAMEN`, `INCERTIDUMBRE_LEGISLADOR` y `TEMA_AUTO` sí están fijados |
+
+*Incidente del revisor:* un `Grep` con glob de exclusión mal armado le devolvió líneas sueltas de esta carpeta; declaró que no las usó como evidencia y no abrió ningún archivo de `coordinacion/AUDITORIA-2026-09/`.

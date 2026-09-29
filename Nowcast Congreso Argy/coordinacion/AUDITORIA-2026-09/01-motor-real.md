@@ -55,7 +55,7 @@ con $s_\ell$ = share del linaje (730 días, `<`, mismo origen y gobierno, encogi
 
 | | §I.00 dice | el código hace | conf. |
 |---|---|---|---|
-| Piso de desvío | no aparece | `P_i ∈ [0,02; 0,98]` **antes** de ε₀ (`ensemble.py:361`). En el censo, **23,2% de los votos tienen P_i>0,98** (el piso muerde) | V |
+| Piso de desvío | no aparece en §I.00 (sí en §I.4b, `:313,323`, y en la tabla de constantes, `:1924`, que la propia §I.00 declara como versiones anteriores) | `P_i ∈ [0,02; 0,98]` **antes** de ε₀ (`ensemble.py:361`). En el censo, **23,2% de los votos tienen P_i>0,98** (el piso muerde) | V |
 | Pasos A y C | "la cadena de puertas" (`nowcast_puertas.py:9-16`, ADR-0012) | son **identidad**; el número es exactamente `P_B × P_D` | V |
 | Origen | "condicionado por origen" | sólo si el llamador pasa `origen` (`:817-820`); si no, el récord es incondicional (~0,048 de skill, ver `02`) | V |
 | β | "si el proyecto tiene dictamen" | no actúa en el panel; en un proyecto real usa los coeficientes de `beta_dictamen.json`, estimados con el offset contaminado | V |

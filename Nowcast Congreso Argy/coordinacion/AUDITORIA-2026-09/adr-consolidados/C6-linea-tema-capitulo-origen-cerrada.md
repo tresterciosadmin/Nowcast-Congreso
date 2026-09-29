@@ -10,7 +10,7 @@
 
 | línea | ADR | resultado | medición |
 |---|---|---|---|
-| multietiqueta a nivel **bloque** (`union`, `ponderada`, `peor_tema`) | 0024, 0028 | ninguna regla se distingue de no condicionar por tema (Δ +0,0018 [−0,003; +0,011]); **el "control" era idéntico al tratamiento** (rama `primaria` sin `tema`, diferencia 0,0 exacta en 232 actas) | harness con `shift(1)`, cluster por acta, 232 actas de bloque (0,33% de los votos) |
+| multietiqueta a nivel **bloque** (`union`, `ponderada`, `peor_tema`) | 0024, 0028 | ninguna regla se distingue de no condicionar por tema (Δ +0,0018 [−0,003; +0,011]); **el brazo `primaria` era idéntico a "sin tema"** (rama sin `tema`, diferencia 0,0 exacta en 232 actas) | harness con `shift(1)`, cluster por acta, 232 actas de bloque (0,33% de los votos) |
 | **récord por tema** | 0026 | +11,06% con fuga → **−2,9%** con la misma metodología y historia estricta → **+2,1% de error** contra el motor [0,8; 3,5]; +6,4% donde actúa; Senado +20,5% | censo limpio (ADR-0034) |
 | composición por **capítulos** y votación por artículo | 0023, 0027, 0029, 0030 | sin resultado por capítulo (0 de 20 con dato real); sin consumidor en el número; el 9,8% de las leyes aprobadas pierde algún tramo (dato descriptivo) | conteos; ninguna medición de skill |
 | **firma temática** del desvío | 0032 | +0,015 [−0,03; 0,06] | IC por legislador (el ancho por ley sólo refuerza el nulo) |

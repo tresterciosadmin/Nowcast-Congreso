@@ -79,3 +79,16 @@ El prompt manda; estos desvíos lo hacen ejecutable sin romper su propia regla d
 | 8 | Se declara que este prompt **prevalece sobre `CLAUDE.md`** en esta ronda: no se anotó en `ESTADO-DEL-PROYECTO.md`, `tablero_datos.js` ni `TABLERO.md`, y no se reclamó módulo | la regla de trazabilidad de `CLAUDE.md` contradice "no se toca ningún documento existente" |
 | 9 | No se corrió nada que llame a la red ni a la API de LLM | hay 6 scripts en `variables/proyecto/src` que lo hacen (`agente_taxonomias.py`, etc.) |
 | 10 | Los lotes de lectura de ADR se hicieron con subagentes (Sonnet; Opus para la cadena 0012→0016→0025); **el límite de la API cortó la primera tanda** y hubo que rehacerla | el prompt lo permite; queda registrado |
+
+## 7. Cierre: los tests de la línea base, contra el final
+
+Re-corrido el 2026-09-29 14:4x, con todo lo de la auditoría ya escrito:
+
+| | al empezar | al terminar |
+|---|---|---|
+| `python -m pytest tests/ datos/proyectos/tests -q` | 40 pasan, 1 falla (`test_insumos_del_motor_viajan`) | **40 pasan, 1 falla (el mismo)** |
+| `git status --porcelain` fuera de `coordinacion/AUDITORIA-2026-09/` | `?? coordinacion/PROMPT-AUDITORIA-INTEGRAL.md` (la excepción acordada) | **idéntico** |
+| `git diff main..auditoria-2026-09` fuera de esa carpeta | — | **vacío** |
+
+Lo que queda en disco y **no viaja por git** (`Archivos_Borrar/`, gitignored): `repro/` (copia de `HEAD` de ~180 MB con el censo regenerado), `auditoria/` (logs, parquets intermedios, fichas de trabajo). Lo puede borrar Franco a mano cuando quiera; nada de lo versionado depende de eso. Los tres archivos versionados que las mediciones reescribirían (`baseline_voto_individual.json`, `censo_limpio_2026-09-28.json`, `tau_limpio_2026-09-28.json`) se regeneraron **sólo en la copia** y se compararon: idénticos.
+

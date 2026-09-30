@@ -2,13 +2,13 @@
 
 <!-- GENERADO por indexar.py. No editar: los cambios se pierden. -->
 <!-- La prosa vive en el README.md de cada modulo (seccion `Buscar aca si`). -->
-<!-- 2026-09-30 14:41 UTC · 175 archivos · 37,499 LOC -->
+<!-- 2026-09-30 16:01 UTC · 176 archivos · 37,789 LOC -->
 
 ## Como usar este archivo
 
 Es el unico archivo del proyecto que hace falta leer para empezar. Para ubicar algo concreto: `python3 .mapa/buscar.py "<termino>"` devuelve archivo y linea sin abrir nada. Recien despues abrir los archivos que salgan, y solo esos.
 
-Rama `main` — ultimo commit: 2026-09-30 bb2b9b7 Auditoría A7 (7/9): P0 documentos archivados, punteros vivos y README del archivo
+Rama `main` — ultimo commit: 2026-09-30 f384c08 Auditoría A9: pre-registro (qué se comprueba de los tres bots y con qué umbral), antes de medir · **hay cambios sin commitear**
 
 ## Donde buscar que
 
@@ -144,7 +144,7 @@ Rama `main` — ultimo commit: 2026-09-30 bb2b9b7 Auditoría A7 (7/9): P0 docume
 
 | Carpeta | Que es | Arch. | LOC | Bitacora |
 |---|---|---:|---:|---|
-| `modelo/ensemble/` _(src+tests)_ | La composicion final: el nowcast end-to-end de un proyecto. El punto de entrada vivo es `nowcast_puertas.py`, que corre la CADENA DE PUERTAS y devuelve un numero condicional a que las camaras voten. La formulacion v1 -P(llega al recinto) x P(mayoria dado recinto)- se dio de BAJA el 2026-08-22 (ADR-0012), junto con su backtest: `ensemble.componer` sigue ahi y levanta SystemExit; `backtest_cadena.py` se archivo en la auditoria 2026-09 (A7: `coordinacion/archivo/A7-poda-2026-09/`). Desde el 2026-09-30 (auditoria A5) `nowcast()` da numero SOLO para mayoria simple: con una mayoria especial devuelve `p_aprobacion = None` y `motivo_sin_numero`, sin simular. | 27 | 6,468 | **vencida** |
+| `modelo/ensemble/` _(src+tests)_ | La composicion final: el nowcast end-to-end de un proyecto. El punto de entrada vivo es `nowcast_puertas.py`, que corre la CADENA DE PUERTAS y devuelve un numero condicional a que las camaras voten. La formulacion v1 -P(llega al recinto) x P(mayoria dado recinto)- se dio de BAJA el 2026-08-22 (ADR-0012), junto con su backtest: los stubs de la v1 (`ensemble.componer` y compania) y `backtest_cadena.py` se eliminaron/archivaron en la auditoria 2026-09 (A7: su codigo esta en `coordinacion/archivo/A7-poda-2026-09/`). Desde el 2026-09-30 (auditoria A5) `nowcast()` da numero SOLO para mayoria simple: con una mayoria especial devuelve `p_aprobacion = None` y `motivo_sin_numero`, sin simular. | 27 | 6,409 | **vencida** |
 | `variables/proyecto/` _(src+tests)_ | Feature store por proyecto: tema/materia, origen (Ejecutivo/oficialismo/aliados/oposicion), jefe de bloque, mayoria requerida, texto, y el ICG como modulador de coyuntura. La postura del gobierno por acta se midio aca y su modulo se archivo el 2026-09-10 sin consumidor: la medicion quedo en el ADR-0021 y en ESTADO. | 23 | 5,160 | **vencida** |
 | `datos/expedientes/` _(src+tests)_ | Registro de todo lo PRESENTADO (no solo lo votado): titulo, autor, tipo, fecha y cadena de vida del expediente. Denominador del embudo y enlace acta -> expediente. | 17 | 4,922 | **vencida** |
 | `evaluacion/baseline/` _(src+tests)_ | El censo del motor sobre el voto individual. Desde el 28-09 (ADR-0034) el harness NO reimplementa nada del legislador: importa `record_legisladores`, `proyectar_postura` y `perfil_legislador` del motor y solo decide que votos existian (historia estricta: fecha anterior y OTRA ley). Un test lo compara contra `nowcast()` legislador por legislador. El baseline de BLOQUE -el ~0,99- se midio en `fase0/` y ahi quedo. | 13 | 2,749 | **vencida** |
@@ -153,12 +153,12 @@ Rama `main` — ultimo commit: 2026-09-30 bb2b9b7 Auditoría A7 (7/9): P0 docume
 | `variables/bloque/` _(src+tests)_ | Cohesion, tamano, postura y fracturas de cada bloque en el tiempo, y el proyector point-in-time que arma el escenario por bloque que consume el ensemble. | 6 | 1,581 | **vencida** |
 | `tests/` | Tests que no pertenecen a ningun modulo: los que verifican acuerdos ENTRE modulos (definiciones y rutas compartidas) y los que vigilan INVARIANTES del repo — que las bases y los insumos del motor viajen por git, que la regla del caracter del dictamen no se reimplemente, y que las rutas que el codigo nombra en sus docstrings existan. Cada modulo tiene sus propios tests en `<modulo>/tests/`. | 9 | 1,563 | **vencida** |
 | `variables/embudo/` _(src+tests)_ | Supervivencia del proyecto: presentado -> comision -> dictamen -> recinto -> sancion. Estima P(llega al recinto). OJO: eso era 'la mitad de P(aprobacion)' en la formulacion v1, que se dio de baja el 2026-08-22 (ADR-0012) justamente porque medir la mortandad en el cajon es agenda politica y se decidio no modelarla; hoy el numero publicado NO la multiplica. | 5 | 1,222 | ok |
+| `coordinacion/` _(AUDITORIA-2026-09)_ | Las bitacoras y el protocolo: que bloquea a otros, que se hizo, quien tomo que modulo y por que se decidio cada cosa. Aca NO hay codigo del producto. | 6 | 1,036 | **vencida** |
 | `datos/canonica/` _(src+tests)_ | La base propia y unica de votaciones nominales: todas las fuentes unificadas, deduplicadas y con entidades resueltas. Fuente de verdad de la que leen `variables/` y `modelo/`. | 7 | 1,032 | **vencida** |
 | `datos/senado/` _(src+tests)_ | Ingesta de votaciones nominales del Senado desde senado.gob.ar + reconstruccion del bloque historico contemporaneo a cada voto. Tapa el hueco 2015-2023. | 5 | 940 | ok |
 | `datos/bot_recoleccion/` _(src+tests)_ | El bot diario que trae lo nuevo de ambas camaras (proyectos con firmantes y giros, y votaciones) con upsert idempotente. Corre solo en GitHub Actions. | 7 | 880 | ok |
 | `./` | La raiz del proyecto: `CLAUDE.md`, `rutas.py`, `definiciones.py`, los scripts de regeneracion (`REGENERAR.ps1`, `verificar_*.py`) y este README. Los paneles HTML (tablero ejecutivo, mapa del modelo, panel de puertas) y sus `*_datos.js` se eliminaron en la auditoria 2026-09 (ítem A6): el estado vive en `coordinacion/`. | 4 | 827 | **vencida** |
 | `modelo/agregador_institucional/` _(src+tests)_ | Traduce posturas de bloque + asistencia en un resultado institucional: cuenta bancas, quorum, umbrales de mayoria y bandas. Mide la estructura, no la politica. | 2 | 757 | **vencida** |
-| `coordinacion/` _(AUDITORIA-2026-09)_ | Las bitacoras y el protocolo: que bloquea a otros, que se hizo, quien tomo que modulo y por que se decidio cada cosa. Aca NO hay codigo del producto. | 5 | 687 | **vencida** |
 | `modelo/voto_individual/` _(src+tests)_ | No predice el voto medio (eso lo resuelve la regla de bloque ~0,99): modela el DESVIO del legislador respecto de su bloque y detecta pivotes (ADR-0003). | 2 | 597 | ok |
 | `datos/seguimiento/` _(src+tests)_ | Dado un expediente ya conocido, baja su ficha oficial y extrae el estado de avance: giros, movimientos, fechas y PDF. Insumo del embudo. NO descubre proyectos nuevos. | 2 | 512 | ok |
 | `datos/taxonomias/` _(src+tests)_ | El registro unico de taxonomias asignadas: una fila por (objeto, taxonomia), en CSV versionado, consolidado desde todas las fuentes que existian sueltas. | 2 | 501 | **vencida** |
@@ -181,7 +181,7 @@ Rama `main` — ultimo commit: 2026-09-30 bb2b9b7 Auditoría A7 (7/9): P0 docume
 
 ## Inventario de datos
 
-187 archivos de datos · 356.0 MB · 187 viajan por git, **0 no**.
+188 archivos de datos · 356.0 MB · 188 viajan por git, **0 no**.
 
 Buscar uno sin abrir nada: `python .mapa/buscar.py --dato <termino>`. Columna **git**: `si` = esta versionado, o sea que quien clone lo tiene; `NO` = vive solo en el disco de quien lo genero, que es el modo de falla mas repetido de este repo (seis veces, ver `.gitignore`). **Escribe/Lee**: quien lo produce y quien lo consume, deducido del codigo; sin lector, sobra — sin escritor, no se regenera.
 
@@ -191,11 +191,12 @@ Buscar uno sin abrir nada: `python .mapa/buscar.py --dato <termino>`. Columna **
 | `coordinacion/AUDITORIA-2026-09/resultados/invariancia_al_futuro.json` | objeto: resumen, detalle | 77 KB | si | — | _(1 lo nombran)_ |
 | `coordinacion/AUDITORIA-2026-09/resultados/control_independiente.json` | objeto: independiente_por_AST, n_evaluad | 27 KB | si | — | _(1 lo nombran)_ |
 | `coordinacion/AUDITORIA-2026-09/resultados/cobertura_canonica.json` | 51 filas | 18 KB | si | `cobertura_canonica.py` | — |
+| `coordinacion/AUDITORIA-2026-09/resultados/verificar_bots.json` | objeto: punto_de_partida, head, eliminad | 11 KB | si | `verificar_bots.py` | — |
 | `coordinacion/AUDITORIA-2026-09/resultados/contraste_aprobacion.json` | objeto: detalle, n_sims, n_actas_simulad | 7 KB | si | — | _(1 lo nombran)_ |
 | `datos/bot_recoleccion/data/clean/tp_entradas.parquet` _BOT_TP_ENTRADAS_ | 3,824×11 | 515 KB | si | `tp_diputados.py` | `giros_iniciales.py`, `upsert_bot.py`, `verificar.py` |
 | `datos/bot_recoleccion/data/clean/dae_entradas.parquet` | 1,132×8 | 131 KB | si | `dae_senado.py`, `test_verificar.py` | `upsert_bot.py`, `verificar.py` |
-| `datos/bot_recoleccion/data/clean/votaciones_nuevas.parquet` | 578×11 | 38 KB | si | `votaciones.py` | — |
-| `datos/bot_recoleccion/data/estado_bot.json` | objeto: dae_normal, tp_diputados, actas_ | 21 KB | si | `dae_senado.py`, `tp_diputados.py` | — |
+| `datos/bot_recoleccion/data/clean/votaciones_nuevas.parquet` | 578×11 | 38 KB | si | `votaciones.py` | _(1 lo nombran)_ |
+| `datos/bot_recoleccion/data/estado_bot.json` | objeto: dae_normal, tp_diputados, actas_ | 21 KB | si | `dae_senado.py`, `tp_diputados.py` | _(1 lo nombran)_ |
 | `datos/canonica/data/clean/_decada_csv/votaciones-diputados.csv` | 383,744×4 | 4.9 MB | si | — | _(1 lo nombran)_ |
 | `datos/canonica/data/clean/votos_resuelto.parquet` _CANONICA_VOTOS_RESUELTO_ | 959,815×12 | 2.1 MB | si | `entity_resolution.py`, `asistencia.py` | `cobertura_canonica.py`, `control_independiente.py`, `export_base.py` +7 |
 | `datos/canonica/data/clean/_decada_csv/votaciones-senado.csv` | 144,792×4 | 1.8 MB | si | — | _(1 lo nombran)_ |
@@ -254,11 +255,11 @@ Buscar uno sin abrir nada: `python .mapa/buscar.py --dato <termino>`. Columna **
 | `datos/padron/data/padron_diputados.csv` _PADRON_DIPUTADOS_ | 1,454×12 | 260 KB | si | `test_ingesta_padron.py`, `test_ensemble.py` | `resolver_firmantes.py`, `to_canonical.py`, `comparar_vias_icg.py` |
 | `datos/padron/data/nomina_diputados.csv` | 1,454×6 | 103 KB | si | `test_ingesta_padron.py` | _(3 lo nombran)_ |
 | `datos/padron/data/padron_senado_historico.csv` _PADRON_SENADO_HISTORICO_ | 243×12 | 45 KB | si | `test_guardas_confianza.py`, `test_puerta_d.py` | `resolver_firmantes.py` |
-| `datos/padron/data/raw/nomina_senado.csv` | 72×15 | 16 KB | si | — | _(2 lo nombran)_ |
+| `datos/padron/data/raw/nomina_senado.csv` | 72×15 | 16 KB | si | — | _(3 lo nombran)_ |
 | `datos/padron/data/padron_senado.csv` _PADRON_SENADO_ | 72×12 | 13 KB | si | `test_bloque_linaje_senado.py` | `to_canonical.py`, `test_padron_senado.py`, `resolver_firmantes.py` +2 |
 | `datos/padron/data/gobernadores.csv` | 96×10 | 13 KB | si | — | — |
 | `datos/padron/data/senado_linaje_manual.csv` _PADRON_SENADO_LINAJE_MANUAL_ | 25×7 | 2 KB | si | `test_bloque_linaje_senado.py` | `padron_senado_historico.py`, `bloque.py` |
-| `datos/padron/data/estado_vigilancia.json` | objeto: diputados, senado | 445 B | si | — | _(1 lo nombran)_ |
+| `datos/padron/data/estado_vigilancia.json` | objeto: diputados, senado | 445 B | si | — | _(2 lo nombran)_ |
 | `datos/proyectos/data/proyectos.db` _PROYECTOS_DB_ | 610,403×6 | 87.3 MB | si | `schema.sql`, `store.py` | `verificar.py`, `test_store.py`, `tema_por_proyecto.py` |
 | `datos/proyectos/data/taxonomias.csv` | 3,339×6 | 327 KB | si | `taxonomias_backup.py` | `test_store.py` |
 | `datos/proyectos/data/cuarentena.db` _PROYECTOS_CUARENTENA_DB_ | 0×1 | 20 KB | si | — | `cuarentena.py` |
@@ -377,7 +378,7 @@ Buscar uno sin abrir nada: `python .mapa/buscar.py --dato <termino>`. Columna **
 
 **Lo que el inventario marca**
 
-- Tienen productor y **ningun consumidor** (47): `cobertura_canonica.json`, `votaciones_nuevas.parquet`, `estado_bot.json`, `argentinadatos_actas.parquet`, `argentinadatos_votos.parquet`, `ckan_diputados_actas.parquet`, `ckan_diputados_votos.parquet`, `manual_2026_actas.parquet` _+39_. Es lo esperable en un entregable para humanos; en un intermedio significa que sobra.
+- Tienen productor y **ningun consumidor** (48): `cobertura_canonica.json`, `verificar_bots.json`, `votaciones_nuevas.parquet`, `estado_bot.json`, `argentinadatos_actas.parquet`, `argentinadatos_votos.parquet`, `ckan_diputados_actas.parquet`, `ckan_diputados_votos.parquet` _+40_. Es lo esperable en un entregable para humanos; en un intermedio significa que sobra.
 - **Ningun archivo de codigo los nombra** (64, 161.7 MB): `record_por_origen_fase2_detalle_harness_2026-09-27.parquet`, `record_por_origen_fase2_detalle_estricta_2026-09-27.parquet`, `votaciones_2003-2007_Kirchner.xlsx`, `votaciones_2015-2019_Macri.xlsx`, `votaciones_2007-2011_CFK-1.xlsx`, `votaciones_2011-2015_CFK-2.xlsx`, `fase0_detalle_ponderada_logit.parquet`, `fase0_detalle_union.parquet` _+56_. Ojo: un output con nombre armado por f-string cae aca y esta vivo. Lo que hay que mirar de verdad son los pesados.
 
 ## Puntos de entrada
@@ -386,12 +387,12 @@ Buscar uno sin abrir nada: `python .mapa/buscar.py --dato <termino>`. Columna **
 - `coordinacion/AUDITORIA-2026-09/contraste_aprobacion.py`
 - `coordinacion/AUDITORIA-2026-09/control_independiente.py`
 - `coordinacion/AUDITORIA-2026-09/invariancia_al_futuro.py`
+- `coordinacion/AUDITORIA-2026-09/verificar_bots.py`
 - `datos/argentinadatos/src/explorar_campos.py`
 - `datos/argentinadatos/src/to_canonical.py`
 - `datos/argentinadatos/tests/test_padron_senado.py`
 - `datos/bot_recoleccion/src/dae_senado.py`
 - `datos/bot_recoleccion/src/tp_diputados.py`
-- `datos/bot_recoleccion/src/votaciones.py`
 
 ## Archivos centrales
 
@@ -404,7 +405,7 @@ Ordenados por cuantos otros archivos dependen de ellos. Tocar uno de arriba tien
 | `modelo/ensemble/src/nowcast_puertas.py` | 1020 | 16 | `_resolver_multietiqueta`, `_tema_auto`, `_bloque`, `era_de` |
 | `definiciones.py` | 261 | 15 | `periodo_parlamentario`, `gobierno_por_fecha`, `era_de`, `normalizar_mayoria_valor` |
 | `evaluacion/baseline/src/baseline_voto_individual.py` | 814 | 14 | `_norm_cond`, `_ContadorAvisos`, `perfil`, `_metricas` |
-| `modelo/ensemble/src/ensemble.py` | 413 | 8 | `_cargar_simulador`, `_cargar_proyector`, `componer`, `_root` |
+| `modelo/ensemble/src/ensemble.py` | 359 | 8 | `_cargar_simulador`, `_cargar_proyector`, `_root`, `_padron_csv` |
 | `modelo/ensemble/src/puerta_d.py` | 244 | 6 | `camara_revisora`, `_padron_de`, `_clip01`, `_logit` |
 | `modelo/agregador_institucional/src/agregador.py` | 496 | 5 | `umbral_aprobacion`, `_prob_conductas`, `simular_votacion`, `_linea_bloque_por_acta` |
 | `variables/embudo/src/embudo.py` | 730 | 4 | `cargar_icg`, `_mes_rezagado`, `cargar`, `cargar_sqlite` |
@@ -432,7 +433,7 @@ Ordenados por cuantos otros archivos dependen de ellos. Tocar uno de arriba tien
 Segun el historial de git. Si vas a cambiar uno, mira el otro.
 
 - `Nowcast Congreso Argy/coordinacion/EN-HUMANO.md` + `Nowcast Congreso Argy/coordinacion/ESTADO-DEL-PROYECTO.md` (56 commits)
-- `Nowcast Congreso Argy/.mapa/mapa.json` + `Nowcast Congreso Argy/MAPA.md` (51 commits)
+- `Nowcast Congreso Argy/.mapa/mapa.json` + `Nowcast Congreso Argy/MAPA.md` (52 commits)
 - `Nowcast Congreso Argy/coordinacion/ESTADO-DEL-PROYECTO.md` + `Nowcast Congreso Argy/tablero_datos.js` (50 commits)
 - `Nowcast Congreso Argy/coordinacion/EN-HUMANO.md` + `Nowcast Congreso Argy/tablero_datos.js` (47 commits)
 - `Nowcast Congreso Argy/.mapa/mapa.json` + `Nowcast Congreso Argy/coordinacion/ESTADO-DEL-PROYECTO.md` (33 commits)

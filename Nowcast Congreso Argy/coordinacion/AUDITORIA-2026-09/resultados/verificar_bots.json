@@ -1,0 +1,423 @@
+{
+ "punto_de_partida": "auditoria-punto-de-partida",
+ "head": "f384c08",
+ "eliminados_o_movidos_desde_el_punto_de_partida": 37,
+ "criterios": {
+  "1_sin_cambios": {
+   "ok": true,
+   "detalle": {
+    "bot-diario": {
+     "diff_vs_punto_de_partida": "(vacío)",
+     "on": "on:\n  schedule:\n    - cron: \"0 10 * * 1-6\"   # 07:00 Argentina, lunes a sábado\n  workflow_dispatch: {}       # botón manual",
+     "permissions": "permissions:\n  contents: write             # commitea lo que junta\n  issues: write               # y abre issues: fuente caída / canónica pendiente",
+     "tiene_pull_request": false
+    },
+    "padron-vivo": {
+     "diff_vs_punto_de_partida": "(vacío)",
+     "on": "on:\n  schedule:\n    - cron: \"0 11 * * 1\"      # lunes 08:00 ARG\n  workflow_dispatch:",
+     "permissions": "permissions:\n  contents: write\n  issues: write",
+     "tiene_pull_request": false
+    },
+    "icg-mensual": {
+     "diff_vs_punto_de_partida": "(vacío)",
+     "on": "on:\n  schedule:\n    - cron: \"0 12 5 * *\"      # día 5, 09:00 ARG\n  workflow_dispatch:\n    inputs:\n      modo:\n        description: \"ultimo = sólo el mes nuevo · serie = rebajar todo el histórico\"\n        required: false\n        default: ultimo\n        type: choice\n        options: [ultimo, serie]",
+     "permissions": "permissions:\n  contents: write\n  issues: write",
+     "tiene_pull_request": false
+    }
+   }
+  },
+  "2_rutas": {
+   "ok": true,
+   "detalle": {
+    "bot-diario": [
+     {
+      "ruta": "Nowcast Congreso Argy/datos/bot_recoleccion/data",
+      "roles": [
+       "commitea"
+      ],
+      "existe": true,
+      "viaja_por_git": true,
+      "eliminada_o_movida": null,
+      "FALLA": false
+     },
+     {
+      "ruta": "Nowcast Congreso Argy/datos/bot_recoleccion/src",
+      "roles": [
+       "lee_o_cita"
+      ],
+      "existe": true,
+      "viaja_por_git": true,
+      "eliminada_o_movida": null,
+      "FALLA": false
+     },
+     {
+      "ruta": "Nowcast Congreso Argy/datos/bot_recoleccion/src/dae_senado.py",
+      "roles": [
+       "entrada"
+      ],
+      "existe": true,
+      "viaja_por_git": true,
+      "eliminada_o_movida": null,
+      "FALLA": false
+     },
+     {
+      "ruta": "Nowcast Congreso Argy/datos/bot_recoleccion/src/requirements.txt",
+      "roles": [
+       "requirements"
+      ],
+      "existe": true,
+      "viaja_por_git": true,
+      "eliminada_o_movida": null,
+      "FALLA": false
+     },
+     {
+      "ruta": "Nowcast Congreso Argy/datos/bot_recoleccion/src/tp_diputados.py",
+      "roles": [
+       "entrada"
+      ],
+      "existe": true,
+      "viaja_por_git": true,
+      "eliminada_o_movida": null,
+      "FALLA": false
+     },
+     {
+      "ruta": "Nowcast Congreso Argy/datos/bot_recoleccion/src/votaciones.py",
+      "roles": [
+       "entrada"
+      ],
+      "existe": true,
+      "viaja_por_git": true,
+      "eliminada_o_movida": null,
+      "FALLA": false
+     },
+     {
+      "ruta": "Nowcast Congreso Argy/datos/canonica/src/run_pipeline.py",
+      "roles": [
+       "citada_en_aviso"
+      ],
+      "existe": true,
+      "viaja_por_git": true,
+      "eliminada_o_movida": null,
+      "FALLA": false
+     },
+     {
+      "ruta": "Nowcast Congreso Argy/datos/padron/src/vigilar_padron.py",
+      "roles": [
+       "citada_en_aviso"
+      ],
+      "existe": true,
+      "viaja_por_git": true,
+      "eliminada_o_movida": null,
+      "FALLA": false
+     }
+    ],
+    "padron-vivo": [
+     {
+      "ruta": "Nowcast Congreso Argy/datos/padron/data/estado_vigilancia.json",
+      "roles": [
+       "commitea"
+      ],
+      "existe": true,
+      "viaja_por_git": true,
+      "eliminada_o_movida": null,
+      "FALLA": false
+     },
+     {
+      "ruta": "Nowcast Congreso Argy/datos/padron/outputs/vigilancia_padron.md",
+      "roles": [
+       "commitea",
+       "lee_o_cita"
+      ],
+      "existe": true,
+      "viaja_por_git": true,
+      "eliminada_o_movida": null,
+      "FALLA": false
+     },
+     {
+      "ruta": "Nowcast Congreso Argy/datos/padron/src/vigilar_padron.py",
+      "roles": [
+       "entrada"
+      ],
+      "existe": true,
+      "viaja_por_git": true,
+      "eliminada_o_movida": null,
+      "FALLA": false
+     }
+    ],
+    "icg-mensual": [
+     {
+      "ruta": "Nowcast Congreso Argy/variables/proyecto/data/icg_mensual.csv",
+      "roles": [
+       "commitea",
+       "lee_o_cita"
+      ],
+      "existe": true,
+      "viaja_por_git": true,
+      "eliminada_o_movida": null,
+      "FALLA": false
+     },
+     {
+      "ruta": "Nowcast Congreso Argy/variables/proyecto/src/ingesta_icg.py",
+      "roles": [
+       "entrada"
+      ],
+      "existe": true,
+      "viaja_por_git": true,
+      "eliminada_o_movida": null,
+      "FALLA": false
+     }
+    ]
+   }
+  },
+  "3_imports": {
+   "ok": true,
+   "detalle": {
+    "bot-diario": {
+     "entradas": [
+      "datos/bot_recoleccion/src/dae_senado.py",
+      "datos/bot_recoleccion/src/tp_diputados.py",
+      "datos/bot_recoleccion/src/votaciones.py"
+     ],
+     "clausura": [
+      "datos/bot_recoleccion/src/dae_senado.py",
+      "datos/bot_recoleccion/src/tp_diputados.py",
+      "datos/bot_recoleccion/src/votaciones.py"
+     ],
+     "editados_desde_el_punto_de_partida": [],
+     "faltan": [],
+     "eliminados_en_la_clausura": [],
+     "terceros": [
+      "bs4",
+      "pandas",
+      "requests",
+      "urllib3"
+     ],
+     "opcionales_en_try": [
+      "tenacity"
+     ],
+     "terceros_sin_instalar": [],
+     "importacion_dinamica_en": []
+    },
+    "padron-vivo": {
+     "entradas": [
+      "datos/padron/src/vigilar_padron.py"
+     ],
+     "clausura": [
+      "datos/canonica/src/alias_legislador.py",
+      "datos/canonica/src/entity_resolution.py",
+      "datos/padron/src/bajar_nomina.py",
+      "datos/padron/src/ingesta_padron.py",
+      "datos/padron/src/vigilar_padron.py"
+     ],
+     "editados_desde_el_punto_de_partida": [],
+     "faltan": [],
+     "eliminados_en_la_clausura": [],
+     "terceros": [
+      "pandas",
+      "requests"
+     ],
+     "opcionales_en_try": [],
+     "terceros_sin_instalar": [],
+     "importacion_dinamica_en": []
+    },
+    "icg-mensual": {
+     "entradas": [
+      "variables/proyecto/src/ingesta_icg.py"
+     ],
+     "clausura": [
+      "variables/proyecto/src/ingesta_icg.py"
+     ],
+     "editados_desde_el_punto_de_partida": [],
+     "faltan": [],
+     "eliminados_en_la_clausura": [],
+     "terceros": [
+      "pandas",
+      "requests"
+     ],
+     "opcionales_en_try": [],
+     "terceros_sin_instalar": [],
+     "importacion_dinamica_en": []
+    }
+   }
+  },
+  "4_texto": {
+   "ok": true,
+   "detalle": {
+    "bot-diario": [],
+    "padron-vivo": [],
+    "icg-mensual": []
+   }
+  },
+  "5_insumos_y_lectores": {
+   "ok": true,
+   "detalle": [
+    {
+     "ruta": "datos/bot_recoleccion/data/clean/dae_entradas.parquet",
+     "existe": true,
+     "viaja_por_git": true,
+     "en_el_indice": true,
+     "escriben": [
+      "datos/bot_recoleccion/src/dae_senado.py",
+      "datos/proyectos/tests/test_verificar.py"
+     ],
+     "leen_o_mencionan": [
+      "coordinacion/AUDITORIA-2026-09/verificar_bots.py",
+      "datos/proyectos/src/upsert_bot.py",
+      "datos/proyectos/src/verificar.py"
+     ],
+     "lectores_que_no_existen": [],
+     "FALLA": false
+    },
+    {
+     "ruta": "datos/bot_recoleccion/data/clean/tp_entradas.parquet",
+     "existe": true,
+     "viaja_por_git": true,
+     "en_el_indice": true,
+     "escriben": [
+      "datos/bot_recoleccion/src/tp_diputados.py"
+     ],
+     "leen_o_mencionan": [
+      "coordinacion/AUDITORIA-2026-09/verificar_bots.py",
+      "datos/expedientes/src/giros_iniciales.py",
+      "datos/proyectos/src/upsert_bot.py",
+      "datos/proyectos/src/verificar.py"
+     ],
+     "lectores_que_no_existen": [],
+     "FALLA": false
+    },
+    {
+     "ruta": "datos/bot_recoleccion/data/clean/votaciones_nuevas.parquet",
+     "existe": true,
+     "viaja_por_git": true,
+     "en_el_indice": true,
+     "escriben": [
+      "datos/bot_recoleccion/src/votaciones.py"
+     ],
+     "leen_o_mencionan": [
+      "coordinacion/AUDITORIA-2026-09/verificar_bots.py"
+     ],
+     "lectores_que_no_existen": [],
+     "FALLA": false
+    },
+    {
+     "ruta": "datos/bot_recoleccion/data/estado_bot.json",
+     "existe": true,
+     "viaja_por_git": true,
+     "en_el_indice": true,
+     "escriben": [
+      "datos/bot_recoleccion/src/dae_senado.py",
+      "datos/bot_recoleccion/src/tp_diputados.py",
+      "datos/bot_recoleccion/src/votaciones.py"
+     ],
+     "leen_o_mencionan": [
+      "coordinacion/AUDITORIA-2026-09/verificar_bots.py"
+     ],
+     "lectores_que_no_existen": [],
+     "FALLA": false
+    },
+    {
+     "ruta": "datos/padron/data/estado_vigilancia.json",
+     "existe": true,
+     "viaja_por_git": true,
+     "en_el_indice": true,
+     "escriben": [],
+     "leen_o_mencionan": [
+      "coordinacion/AUDITORIA-2026-09/verificar_bots.py",
+      "datos/padron/src/vigilar_padron.py"
+     ],
+     "lectores_que_no_existen": [],
+     "FALLA": false
+    },
+    {
+     "ruta": "datos/padron/outputs/vigilancia_padron.md",
+     "existe": true,
+     "viaja_por_git": true,
+     "en_el_indice": false,
+     "escriben": null,
+     "leen_o_mencionan": null,
+     "lectores_que_no_existen": [],
+     "FALLA": false
+    },
+    {
+     "ruta": "variables/proyecto/data/icg_mensual.csv",
+     "existe": true,
+     "viaja_por_git": true,
+     "en_el_indice": true,
+     "escriben": [
+      "variables/embudo/src/embudo.py",
+      "variables/proyecto/tests/test_ingesta_icg.py"
+     ],
+     "leen_o_mencionan": [
+      "coordinacion/AUDITORIA-2026-09/verificar_bots.py",
+      "modelo/ensemble/tests/test_panel_regresion.py",
+      "variables/proyecto/src/icg_contexto.py",
+      "variables/proyecto/src/ingesta_icg.py"
+     ],
+     "lectores_que_no_existen": [],
+     "FALLA": false
+    },
+    {
+     "ruta": "datos/padron/data/padron_diputados.csv",
+     "existe": true,
+     "viaja_por_git": true,
+     "en_el_indice": true,
+     "escriben": [
+      "datos/padron/tests/test_ingesta_padron.py",
+      "modelo/ensemble/tests/test_ensemble.py"
+     ],
+     "leen_o_mencionan": [
+      "coordinacion/AUDITORIA-2026-09/verificar_bots.py",
+      "datos/expedientes/src/resolver_firmantes.py",
+      "datos/manual_2026/src/to_canonical.py",
+      "datos/padron/src/padron_senado_historico.py",
+      "datos/padron/src/padron_vigente.py",
+      "datos/padron/tests/test_padron_senado_historico.py",
+      "modelo/ensemble/src/puerta_d.py",
+      "modelo/ensemble/tests/test_puerta_d.py",
+      "tests/test_insumos_del_motor_viajan.py",
+      "variables/proyecto/src/comparar_vias_icg.py"
+     ],
+     "lectores_que_no_existen": [],
+     "FALLA": false
+    },
+    {
+     "ruta": "datos/padron/data/padron_senado.csv",
+     "existe": true,
+     "viaja_por_git": true,
+     "en_el_indice": true,
+     "escriben": [
+      "variables/bloque/tests/test_bloque_linaje_senado.py"
+     ],
+     "leen_o_mencionan": [
+      "COMMITEAR.ps1",
+      "coordinacion/AUDITORIA-2026-09/verificar_bots.py",
+      "datos/argentinadatos/src/to_canonical.py",
+      "datos/argentinadatos/tests/test_padron_senado.py",
+      "datos/expedientes/src/resolver_firmantes.py",
+      "datos/manual_2026/src/to_canonical.py",
+      "datos/padron/src/bajar_nomina.py",
+      "datos/padron/src/padron_senado_historico.py",
+      "datos/padron/src/padron_vigente.py",
+      "variables/bloque/src/bloque.py"
+     ],
+     "lectores_que_no_existen": [],
+     "FALLA": false
+    },
+    {
+     "ruta": "datos/padron/data/raw/nomina_senado.csv",
+     "existe": true,
+     "viaja_por_git": true,
+     "en_el_indice": true,
+     "escriben": [],
+     "leen_o_mencionan": [
+      "coordinacion/AUDITORIA-2026-09/verificar_bots.py",
+      "datos/padron/src/bajar_nomina.py",
+      "datos/padron/src/vigilar_padron.py"
+     ],
+     "lectores_que_no_existen": [],
+     "FALLA": false
+    }
+   ]
+  }
+ }
+}

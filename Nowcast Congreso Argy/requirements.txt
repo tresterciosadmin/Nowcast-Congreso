@@ -27,5 +27,7 @@ pypdf           # Ordenes del Dia: lectura primaria
 pdfminer.six    # Ordenes del Dia: respaldo cuando pypdf no saca texto
 statsmodels     # beta del dictamen, psi de arrastre, theta del sobre tablas
 scikit-learn    # SOLO variables/embudo (el test lo saltea si no esta)
+pytest          # la suite: tests.yml corre `python -m pytest`; sin esto el CI moria en el primer paso
+                # (A2, 29-09: verificado en un venv 3.11 limpio, `No module named pytest`)
 jsonschema      # datos/canonica/src/build.py valida el esquema de actas y votos. Faltaba: en un
                 # checkout limpio (el CI) test_actas_gemelas.py moria con ModuleNotFoundError (A2, 29-09)

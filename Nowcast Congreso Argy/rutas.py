@@ -122,6 +122,7 @@ PROYECTO_DATA = RAIZ / "variables" / "proyecto" / "data"
 PROYECTO_FEATURES = PROYECTO_DATA / "features_proyecto.parquet"
 PROYECTO_ORIGEN_POR_ACTA = PROYECTO_DATA / "origen_por_acta.parquet"
 PROYECTO_TEMA_POR_ACTA = PROYECTO_DATA / "tema_por_acta.parquet"
+PROYECTO_TEMA_POR_CAPITULO = PROYECTO_DATA / "tema_por_capitulo.parquet"   # lo lee evaluacion/ (pilotos de capitulos), no el motor
 PROYECTO_ICG_MENSUAL = PROYECTO_DATA / "icg_mensual.csv"
 PROYECTO_CURVA_CICLO = PROYECTO_DATA / "curva_ciclo_presidencial.csv"
 PROYECTO_JEFES_BLOQUE = PROYECTO_DATA / "jefes_bloque.csv"
@@ -178,6 +179,7 @@ GENERADOS = {
     "EXPORT_DATA",
     "LEGISLADOR_DATA", "ASISTENCIA_OUT",
     "PROYECTO_FEATURES", "PROYECTO_ORIGEN_POR_ACTA", "PROYECTO_TEMA_POR_ACTA",
+    "PROYECTO_TEMA_POR_CAPITULO",
     "EMBUDO_OUT", "VOTO_INDIVIDUAL_OUT", "DISCIPLINA_INDIVIDUAL", "DESVIOS_POR_VOTO",
     "AGREGADOR_OUT", "ENSEMBLE_OUT", "BASELINE_OUT",
     "MANUAL_2026_XLSX",            # lo mantiene Franco a mano, puede no estar en un clon

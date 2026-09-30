@@ -29,6 +29,7 @@ REQUERIDOS = {
     "pypdf": ("pypdf", "Ordenes del Dia, lectura primaria"),
     "pdfminer": ("pdfminer.six", "Ordenes del Dia, respaldo de texto"),
     "statsmodels": ("statsmodels", "beta del dictamen, psi, theta"),
+    "jsonschema": ("jsonschema", "validar el esquema de actas y votos (canonica/build.py)"),
 }
 OPCIONALES = {
     "sklearn": ("scikit-learn", "solo variables/embudo; su test se saltea si falta"),

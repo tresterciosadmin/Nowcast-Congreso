@@ -27,3 +27,5 @@ pypdf           # Ordenes del Dia: lectura primaria
 pdfminer.six    # Ordenes del Dia: respaldo cuando pypdf no saca texto
 statsmodels     # beta del dictamen, psi de arrastre, theta del sobre tablas
 scikit-learn    # SOLO variables/embudo (el test lo saltea si no esta)
+jsonschema      # datos/canonica/src/build.py valida el esquema de actas y votos. Faltaba: en un
+                # checkout limpio (el CI) test_actas_gemelas.py moria con ModuleNotFoundError (A2, 29-09)

@@ -5,7 +5,7 @@
 > Decisiones y su porqué: `AUDITORIA-INTEGRAL-2026-09.md` §9. Reglas del carril: §9.9. Definición numérica de "funcionando": §9.4.
 > Estados: `PENDIENTE` · `EN CURSO` · `HECHO` (con la evidencia: comando y salida, o sha del commit) · `DESCARTADO` (con el motivo escrito y la firma de Franco).
 
-**Última actualización:** 2026-09-30 — A1, A2 y A3 hechos (CI verde confirmado por Franco, también con los pines); A4, A5 y A6 hechos; próximo ítem: A7.
+**Última actualización:** 2026-09-30 — A1, A2 y A3 hechos (CI verde confirmado por Franco, también con los pines); A4, A5, A6 y A7 hechos; próximo ítem: A8.
 **Dónde se trabaja:** `main`, commits chicos (uno por corrección), con la suite en verde **antes** de cada commit; sin `git push` (lo hace Franco). Los bots empujan a `main`: no se les toca el permiso. Rama sólo si una corrección no puede dejar la suite en verde entre commits (vida corta: se mergea en la misma sesión).
 **Punto de partida (para deshacer):** el tag local `auditoria-punto-de-partida` marca `main` antes de la primera corrección.
 
@@ -19,7 +19,7 @@
 | **A4** | Escribir `coordinacion/QUE-SE-MIDE.md` desde el §9.4 (incluye d7: origen Senado sin publicar; y los límites: etiquetas de origen sin validar, presencia sin medir, cobertura de la canónica por año — d4-a) | Claude | archivo publicado; Franco lo lee | **HECHO** 2026-09-30: publicado (`coordinacion/QUE-SE-MIDE.md`) y **leído y aprobado por Franco** («está bien el documento»). Evidencia en «Evidencia de A4» |
 | **A5** | **Apagar las mayorías especiales** (decisión 9): `nowcast()` con `tipo_mayoria ≠ SIMPLE` devuelve sin número y con el motivo | Claude | test que lo fija; el resto del número no cambia (`max|ΔP| = 0` en simple) | **HECHO** 2026-09-30: `nowcast()` sin número para mayorías especiales; en SIMPLE `max\|ΔP\| = 0` sobre la salida completa (ver «Evidencia de A5») |
 | **A6** | **Eliminar HTML y panel** (decisiones 1 y 6; alcance según §9.1): los 3 HTML de producto, sus generadores y sus `.js` de datos; `REGENERAR.ps1` paso 8 → JSON de regresión; `verificar_regeneracion.py`; sacar `Senado_2002-03-05_muestra.html` y `premortem-report-…html`; **se quedan los 6 fixtures** de los tests de los bots; `comparar_vias_icg.py` pierde la salida HTML pero **se conserva** (ICG, ver D6). Antes de sacar cada archivo: copia a `Archivos_Borrar/` y `git rm`; se busca quién lo referencia | Claude | `git ls-files \| grep -i html` devuelve sólo los 6 fixtures; el JSON de regresión existe y un test lo compara con el motor; suite verde | **HECHO** 2026-09-30: `git ls-files \| grep -i html` devuelve sólo los 6 fixtures; JSON de regresión + test; suite verde (ver «Evidencia de A6») |
-| **A7** | **Poda P0 y P1** (decisión 10; ≈ 7.000 líneas). **Antes:** confirmar que nada de lo que se mueve pertenece a δ, θ, ψ, β ni al ICG (decisión 2 y ronda 2, punto 9 —ICG—, ver §9.1b del informe); `comparar_vias_icg.py` **sale de P0** | Claude | los criterios de salida del §5 del informe (`max|ΔP| = 0`, suite igual menos lo movido) | PENDIENTE |
+| **A7** | **Poda P0 y P1** (decisión 10; ≈ 7.000 líneas). **Antes:** confirmar que nada de lo que se mueve pertenece a δ, θ, ψ, β ni al ICG (decisión 2 y ronda 2, punto 9 —ICG—, ver §9.1b del informe); `comparar_vias_icg.py` **sale de P0** | Claude | los criterios de salida del §5 del informe (`max|ΔP| = 0`, suite igual menos lo movido) | **HECHO** 2026-09-30 con **dos excepciones documentadas** que quedan a decisión de Franco (ver «Evidencia de A7»): `max\|ΔP\| = 0`, suite igual menos lo movido |
 | **A8** | **Worktree y rama `suspicious-lalande`** (d9): rescatar `c916e0e` a una rama (`rescate-taxonomias`) y avisar a Franco para que borre el worktree y `Archivos_Borrar/repro/` | Claude + Franco | el commit queda a salvo; worktree y `repro/` eliminados por Franco | PENDIENTE |
 | **A9** | **Bots** (d10): comprobar que los tres workflows siguen sanos después de A6 y A7 (rutas, insumos); **no** activar protección de rama con "requerir PR" | Claude | los workflows corren sin cambios de permisos; Franco confirma en *Actions* | PENDIENTE |
 | **A10** | Actualizar `CLAUDE.md`: sacar la regla del TABLERO DE CONTROL y las referencias a los HTML y al mapa eliminados; **conservar** el bloque MODO AUDITORÍA | Claude | `tests/test_rutas_citadas_existen.py` y `tests/test_rutas.py` verdes | PENDIENTE |
@@ -256,6 +256,27 @@ Método obligatorio: estimar con datos **anteriores** a *t* y evaluar **después
 4. `.mapa/buscar.py --archivo <candidato>` y el grafo de imports: sólo tests, validaciones o candidatos entre sí.
 
 **Orden de los commits (uno por línea de ADR):** capítulos/pivotes/Senado (P1, ADR-0029/0030) → `composicion_capitulos`, `capitulos_nombre`, `tema_por_capitulo` (P0) → firma temática (ADR-0032) → estabilidad, fase 0 y `medir_rec` (ADR-0028/0031) → récord por origen (ADR-0033) → `backtest_cadena` → stubs de `ensemble.py` → documentos → índice y evidencia.
+
+### A7 — poda P0 y P1 (2026-09-30; commits `d6a46d6` (pre-registro) … `2d1b275`)
+
+**Qué se movió** (`git mv` a `coordinacion/archivo/A7-poda-2026-09/`, con sufijo `.archivado` en el código; nada sale de git; el README de esa carpeta dice qué es cada cosa y cómo restaurarla): 19 archivos de código (4.920 líneas), 6 tests (1.016 líneas) y 3 documentos. Por línea de ADR: capítulos/pivotes/Senado (7 scripts P1) · `composicion_capitulos`, `capitulos_nombre`, `tema_por_capitulo` (+ 3 tests) · firma temática (3 + test) · `medir_estabilidad_record_por_tema`, `fase0_control_temas`, `medir_rec_por_tema` · `record_por_origen` y `_brazos` (+ test) · `backtest_cadena` (+ test) · `CONECTAR-GIT.md`, `0009-BORRADOR`, `_wtest`. Los JSON de resultados no se movieron. **Total: 5.936 líneas de código y tests**, no las ≈ 7.000 del informe: la diferencia son las dos excepciones (≈ 300 líneas) y que esa estimación era gruesa. El índice del repo pasó de 200 archivos y 43.434 líneas a **175 y 37.499**; los scripts de test, de 64 a **58**.
+
+**Confirmación previa que exigía el plan (hecha antes de mover, en el pre-registro):** nada de lo movido pertenece a δ, θ, ψ, β ni al ICG — por nombre, por grafo de imports y por flujo de datos.
+
+**Medido (criterios pre-registrados en `d6a46d6`, motor real, valor anterior = código previo a A7):**
+
+| criterio | resultado |
+|---|---|
+| 1. los 9 casos SIMPLE del panel de A5, salida completa | **46.437 campos, 0 distintos, `max\|ΔP\| = 0`**; los 9 de mayoría especial siguen sin número y con motivo; el test del JSON de regresión pasa |
+| 2. porción del censo (actas 2026-05-01 a 2026-07-01, mismo código y variantes que `censo_detalle_paralelo.py`) | 8.882 votos y 51 actas antes y después, mismas filas; **las 6 columnas `p*` idénticas bit a bit** (`max\|d\| = 0`) |
+| 3. suite | PC: `pytest` 54 pasan y **58 scripts en 0** (64 − 6 movidos, como se fijó); árbol idéntico antes y después. Checkout limpio de `2d1b275`, Python 3.11 y pines: `pytest` 53 pasan + 1 se saltea y **58/58 scripts en 0**. Los 6 tests movidos ya no corren. Además `pytest` (54 verdes) en cada uno de los 9 commits |
+| 4. quién los usa | `buscar.py --archivo` y el grafo de imports: sólo tests, validaciones o candidatos entre sí. **Extra:** al correr el motor y el harness (y los 4 scripts de medición que siguen vivos) **se cargan 0 de los 19 módulos archivados** |
+
+**Dos excepciones — decisión de Franco:**
+1. **`fase1_rec_por_tema.py` (+ su test) NO se movió.** El informe decía «nadie lo importa» y no era cierto: `medir_record_por_tema_limpio.py` —la medición limpia de ADR-0034, la que sostiene «el récord por tema empeora el Brier 2,12%» de `QUE-SE-MIDE.md`— importa `K_SHRINK` y `_areas_de` de él. Para moverlo habría que copiar esas dos cosas al script vivo. **Propuesta:** dejarlo como está.
+2. **Los stubs «dados de baja» de `ensemble.py` NO se sacaron.** No son código muerto: el archivo dice «no se borraron a propósito» (quien llame a la API de la v1 recibe un `SystemExit` con el motivo y a dónde ir) y `test_ensemble.py` lo fija («falla si alguien las revive sin pasar por el ADR»). Sacarlos ahorra ≈ 40 líneas, exige tocar un archivo del motor y cambiar ese test. **Propuesta:** dejarlos. Si preferís sacarlos, se hace en un commit chico con la presentación de ADR-0015.
+
+**Otras observaciones (ninguna abre trabajo):** (a) el criterio (i) del informe (HTML del panel idéntico) ya no existe: lo reemplaza el JSON de regresión de A6. (b) La cita a un archivo movido dentro de un docstring de `.py` rompe `test_rutas_citadas_existen` (la regex toma `x.py` de `x.py.archivado` y no lo encuentra), así que las dos citas vivas (`agregador.py` y `rutas.py`) se reescribieron sin ruta. (c) `MAPA.md` sigue en «1 a mirar» de `verificar_regeneracion.py` (481 líneas contra 460): la poda no lo arregla porque lo agrandan las secciones del inventario y los README, no el código. (d) Siguen vivos varios scripts de medición cerrados que el informe no listaba (`medir_guard_era.py`, `medir_fuga_historia.py`, `medir_record_por_tema_limpio.py`, `censo_*`, `chequear_direccion_beta.py`…): entran en las fases C y D.
 
 ## Bitácora de alcance
 

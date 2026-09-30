@@ -5,7 +5,7 @@
 > Decisiones y su porqué: `AUDITORIA-INTEGRAL-2026-09.md` §9. Reglas del carril: §9.9. Definición numérica de "funcionando": §9.4.
 > Estados: `PENDIENTE` · `EN CURSO` · `HECHO` (con la evidencia: comando y salida, o sha del commit) · `DESCARTADO` (con el motivo escrito y la firma de Franco).
 
-**Última actualización:** 2026-09-30 — A1, A2 y A3 hechos (CI verde confirmado por Franco, también con los pines); A4 a A8 hechos; A9 hecho (Franco confirmó en *Actions*: los tres en verde); A10 hecho: **fase A completa** (evidencia de salida abajo); próximo: fase B, ítem B1, a la espera de que Franco vea la salida de la fase A.
+**Última actualización:** 2026-09-30 — A1, A2 y A3 hechos (CI verde confirmado por Franco, también con los pines); A4 a A8 hechos; A9 hecho (Franco confirmó en *Actions*: los tres en verde); A10 hecho: **fase A CERRADA por Franco el 2026-09-30** (evidencia de salida abajo); próximo: fase B, ítem B1, en conversación nueva (prompt en `PROMPT-NUEVA-CONVERSACION.md`).
 **Dónde se trabaja:** `main`, commits chicos (uno por corrección), con la suite en verde **antes** de cada commit; sin `git push` (lo hace Franco). Los bots empujan a `main`: no se les toca el permiso. Rama sólo si una corrección no puede dejar la suite en verde entre commits (vida corta: se mergea en la misma sesión).
 **Punto de partida (para deshacer):** el tag local `auditoria-punto-de-partida` marca `main` antes de la primera corrección.
 
@@ -358,7 +358,7 @@ Franco: **(1) «dejalo»** → `fase1_rec_por_tema.py` y su test **se quedan**. 
 | sólo los 6 fixtures HTML | `git ls-files "*.html"` → exactamente 6, todos en `tests/fixtures/` de `datos/bot_recoleccion` (2), `datos/seguimiento` (2) y `datos/senado` (2) |
 | CI en verde, confirmado por Franco | confirmado por Franco en *Actions* en las entregas de A2 a A8 («todo verde») y los tres bots en A9. Lo posterior —documentos, `verificar_bots.py` (no es un test) y `CLAUDE.md`— se ve en *Actions* tras el próximo `git push` |
 
-**La fase A está completa.** Lo estacionado que salió de ella (no se hace durante la auditoría): arreglo del parser del ICG (**D6 declara que la serie llega a 2026-07**) y los DAE 75 y 76; el arreglo de `rescate-taxonomias`; la decisión sobre `mapa_modelo_semantica.json` (ver `PENDIENTES-POST-AUDITORIA.md`).
+**La fase A está completa y Franco la dio por cerrada el 2026-09-30.** La conversación siguiente arranca de la fase B con el prompt de `PROMPT-NUEVA-CONVERSACION.md`. Lo estacionado que salió de ella (no se hace durante la auditoría): arreglo del parser del ICG (**D6 declara que la serie llega a 2026-07**) y los DAE 75 y 76; el arreglo de `rescate-taxonomias`; la decisión sobre `mapa_modelo_semantica.json` (ver `PENDIENTES-POST-AUDITORIA.md`).
 
 ## Bitácora de alcance
 

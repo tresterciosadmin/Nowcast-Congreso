@@ -1,4 +1,4 @@
-# Padrón vivo — 2026-09-28 18:17 UTC
+# Padrón vivo — 2026-09-30 17:16 UTC
 
 ## 🟡 Hay novedades en la composición
 
@@ -23,7 +23,7 @@
 
 ### SENADO
 - Bancas vigentes: **72** (esperadas 72) · padrón versionado: 72 · fuente: `archivo:raw_versionado`
-- 🟡 **padron_rancio** — nomina_senado.csv tiene 52 días y esta cámara no tiene bajador automático. Volver a exportarla a mano.
+- 🟡 **padron_rancio** — nomina_senado.csv tiene 54 días y esta cámara no tiene bajador automático. Volver a exportarla a mano.
 
 **Composición por linaje**
 

@@ -1,11 +1,14 @@
 """modelo/ensemble - la maquinaria compartida del roster y la simulación.
 
-⚠️ LA FORMULACIÓN v1 DE ESTE ARCHIVO ESTÁ DADA DE BAJA (2026-08-22, ADR-0012).
-   Era: P(aprobación) = P(llega al recinto) × P(mayoría | recinto).
-   `componer`, `_p_llega_de_embudo`, `nowcast_proyecto`, `nowcast_auto`,
-   `imprimir_tarjeta` y la CLI **levantan SystemExit con el motivo**. No se borraron a
-   propósito: quien las llame recibe una explicación y a dónde ir, en vez de un
-   ImportError sin contexto. El punto de entrada vivo es `nowcast_puertas.nowcast(...)`.
+⚠️ LA FORMULACIÓN v1 DE ESTE ARCHIVO SE DIO DE BAJA (2026-08-22, ADR-0012) Y SE ELIMINÓ
+   (2026-09-30, auditoría 2026-09, ítem A7, decisión de Franco).
+   Era: P(aprobación) = P(llega al recinto) × P(mayoría | recinto). Estaban `componer`,
+   `_p_llega_de_embudo`, `nowcast_proyecto`, `nowcast_auto`, `imprimir_tarjeta` y la CLI:
+   desde el 22-08 levantaban SystemExit con el motivo. Su código quedó guardado en la carpeta
+   coordinacion/archivo/A7-poda-2026-09/ (archivo ensemble_stubs_v1) y la v1 completa está en el
+   historial: git show 5044142:"Nowcast Congreso Argy/modelo/ensemble/src/ensemble.py".
+   `modelo/ensemble/tests/test_ensemble.py` falla si alguien las revive sin pasar por el ADR.
+   El punto de entrada vivo es `nowcast_puertas.nowcast(...)`.
 
 LO QUE SIGUE VIVO Y ES DE ACÁ: `roster_nominal` (el roster point-in-time, con la
 escalera de desvío y la foto completa de la cámara) y `simular_con_guardas` (el
@@ -89,26 +92,6 @@ def _cargar_proyector():
         return cargar_bloque, proyectar_postura, cargar_tema_por_acta
     except ImportError as e:
         raise RuntimeError(f"no pude importar proyectar_postura desde {blo}: {e}") from e
-
-
-# --------------------------------------------------------------------------- #
-# Composición (el corazón del ensemble)                                        #
-# --------------------------------------------------------------------------- #
-_BAJA_V1 = (
-    "La formulacion v1 -P(aprobacion) = P(llega al recinto) x P(mayoria | recinto)- se "
-    "dio de BAJA el 2026-08-22 (ADR-0012). `p_llega_recinto` media la mortandad en el "
-    "cajon: agenda politica, y se decidio no modelarla. El punto de entrada vivo es "
-    "`modelo/ensemble/src/nowcast_puertas.py` (funcion `nowcast`), que corre la cadena "
-    "de puertas y devuelve un numero CONDICIONAL a que las camaras voten, con el "
-    "desagregado por legislador. El codigo viejo NO esta en Archivos_Borrar: esa "
-    "carpeta no viaja por git y se vacio. Se recupera del historial, en el ultimo "
-    "commit antes de la baja:\n"
-    '  git show 5044142:"Nowcast Congreso Argy/modelo/ensemble/src/ensemble.py"')
-
-
-def componer(*args, **kwargs):
-    """DADA DE BAJA (2026-08-22) - era el corazon de la v1. Ver `_BAJA_V1`."""
-    raise SystemExit(_BAJA_V1)
 
 
 # --------------------------------------------------------------------------- #
@@ -299,11 +282,6 @@ def _resolver_proyecto_id(entrada: str, expedientes_path: Path | None = None) ->
     return pid
 
 
-def _p_llega_de_embudo(*args, **kwargs):
-    """DADA DE BAJA (2026-08-22) - leia p_llega_recinto del contrato del embudo. Ver `_BAJA_V1`."""
-    raise SystemExit(_BAJA_V1)
-
-
 # --------------------------------------------------------------------------- #
 # Nowcast                                                                      #
 # --------------------------------------------------------------------------- #
@@ -378,35 +356,3 @@ def simular_con_guardas(lineas, desvios, tipo_mayoria: str, camara: str, *,
     sim["desvio_min_aplicado"] = float(max(desvio_min, 0.0))
     sim["p_incertidumbre_aplicada"] = eps
     return sim
-
-
-def nowcast_proyecto(*args, **kwargs):
-    """DADA DE BAJA (2026-08-22) - exigia p_llega_recinto y sin el tiraba ValueError. Ver `_BAJA_V1`."""
-    raise SystemExit(_BAJA_V1)
-
-
-def nowcast_auto(*args, **kwargs):
-    """DADA DE BAJA (2026-08-22) - componia la cadena v1 con roster automatico. Ver `_BAJA_V1`."""
-    raise SystemExit(_BAJA_V1)
-
-
-def imprimir_tarjeta(*args, **kwargs):
-    """DADA DE BAJA (2026-08-22) - imprimia la tarjeta de la v1. Ver `_BAJA_V1`."""
-    raise SystemExit(_BAJA_V1)
-
-
-# --------------------------------------------------------------------------- #
-# CLI                                                                          #
-# --------------------------------------------------------------------------- #
-def _p_embudo_path() -> Path:
-    return Path(os.environ.get(
-        "P_EMBUDO", _root() / "variables" / "embudo" / "outputs" / "p_embudo.parquet"))
-
-
-def main(argv: list[str]) -> None:
-    """DADA DE BAJA (2026-08-22) - la CLI corria nowcast_auto. Ver `_BAJA_V1`."""
-    raise SystemExit(_BAJA_V1)
-
-
-if __name__ == "__main__":
-    main(sys.argv)

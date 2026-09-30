@@ -66,19 +66,14 @@ BLOQUES = [
 
 
 def main():
-    # --- la formulacion v1 esta DADA DE BAJA (2026-08-22, ADR-0012) ---
-    # No se borraron las funciones: levantan SystemExit con el motivo y a donde ir.
-    # Este bloque falla si alguien las revive sin pasar por el ADR.
-    for nombre in ('componer', '_p_llega_de_embudo', 'nowcast_proyecto',
-                   'nowcast_auto', 'imprimir_tarjeta', 'main'):
-        try:
-            getattr(E, nombre)([]) if nombre == 'main' else getattr(E, nombre)()
-            chk(False, f'{nombre} deberia estar dado de baja y no lo esta')
-        except SystemExit as e:
-            chk('ADR-0012' in str(e) and 'nowcast_puertas' in str(e),
-                f'{nombre}: dado de baja, y el mensaje dice el ADR y a donde ir')
-        except TypeError:
-            chk(False, f'{nombre} sigue con la firma vieja: no se dio de baja')
+    # --- la formulacion v1 esta ELIMINADA (dada de baja el 2026-08-22, ADR-0012; eliminada el
+    # 2026-09-30, auditoria A7, decision de Franco). Hasta entonces las funciones quedaban como
+    # stubs que levantaban SystemExit con el motivo. Este bloque falla si alguien las revive
+    # sin pasar por el ADR (su codigo esta guardado en coordinacion/archivo/A7-poda-2026-09/).
+    for nombre in ('componer', '_p_llega_de_embudo', 'nowcast_proyecto', 'nowcast_auto',
+                   'imprimir_tarjeta', 'main', '_BAJA_V1', '_p_embudo_path'):
+        chk(not hasattr(E, nombre),
+            f'{nombre}: la formulacion v1 esta eliminada y no tiene que volver sin pasar por el ADR')
 
     # --- roster nominal ---
     tmp = Path(tempfile.mkdtemp())

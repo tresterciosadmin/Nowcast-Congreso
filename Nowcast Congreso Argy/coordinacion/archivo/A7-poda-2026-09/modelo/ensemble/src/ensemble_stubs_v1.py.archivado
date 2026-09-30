@@ -1,0 +1,69 @@
+"""Stubs de la formulacion v1 ELIMINADOS de modelo/ensemble/src/ensemble.py (auditoria 2026-09, A7,
+decision de Franco, 2026-09-30). Estaban dados de baja desde el 2026-08-22 (ADR-0012): levantaban
+SystemExit con el motivo. Copia literal de lo que se saco, en el orden en que estaba en el archivo.
+Este archivo NO se importa (sufijo .archivado); es un registro. El codigo de la v1 completa esta en el
+historial: git show 5044142:"Nowcast Congreso Argy/modelo/ensemble/src/ensemble.py"."""
+
+# ===== 1. constante y `componer` (estaban entre `_cargar_proyector` y `_root`) =====
+
+# --------------------------------------------------------------------------- #
+# Composición (el corazón del ensemble)                                        #
+# --------------------------------------------------------------------------- #
+_BAJA_V1 = (
+    "La formulacion v1 -P(aprobacion) = P(llega al recinto) x P(mayoria | recinto)- se "
+    "dio de BAJA el 2026-08-22 (ADR-0012). `p_llega_recinto` media la mortandad en el "
+    "cajon: agenda politica, y se decidio no modelarla. El punto de entrada vivo es "
+    "`modelo/ensemble/src/nowcast_puertas.py` (funcion `nowcast`), que corre la cadena "
+    "de puertas y devuelve un numero CONDICIONAL a que las camaras voten, con el "
+    "desagregado por legislador. El codigo viejo NO esta en Archivos_Borrar: esa "
+    "carpeta no viaja por git y se vacio. Se recupera del historial, en el ultimo "
+    "commit antes de la baja:\n"
+    '  git show 5044142:"Nowcast Congreso Argy/modelo/ensemble/src/ensemble.py"')
+
+
+def componer(*args, **kwargs):
+    """DADA DE BAJA (2026-08-22) - era el corazon de la v1. Ver `_BAJA_V1`."""
+    raise SystemExit(_BAJA_V1)
+
+
+
+# ===== 2. `_p_llega_de_embudo` (despues de `_resolver_proyecto_id`) =====
+
+def _p_llega_de_embudo(*args, **kwargs):
+    """DADA DE BAJA (2026-08-22) - leia p_llega_recinto del contrato del embudo. Ver `_BAJA_V1`."""
+    raise SystemExit(_BAJA_V1)
+
+
+
+# ===== 3. al final del archivo: `nowcast_proyecto`, `nowcast_auto`, `imprimir_tarjeta` y la CLI =====
+
+def nowcast_proyecto(*args, **kwargs):
+    """DADA DE BAJA (2026-08-22) - exigia p_llega_recinto y sin el tiraba ValueError. Ver `_BAJA_V1`."""
+    raise SystemExit(_BAJA_V1)
+
+
+def nowcast_auto(*args, **kwargs):
+    """DADA DE BAJA (2026-08-22) - componia la cadena v1 con roster automatico. Ver `_BAJA_V1`."""
+    raise SystemExit(_BAJA_V1)
+
+
+def imprimir_tarjeta(*args, **kwargs):
+    """DADA DE BAJA (2026-08-22) - imprimia la tarjeta de la v1. Ver `_BAJA_V1`."""
+    raise SystemExit(_BAJA_V1)
+
+
+# --------------------------------------------------------------------------- #
+# CLI                                                                          #
+# --------------------------------------------------------------------------- #
+def _p_embudo_path() -> Path:
+    return Path(os.environ.get(
+        "P_EMBUDO", _root() / "variables" / "embudo" / "outputs" / "p_embudo.parquet"))
+
+
+def main(argv: list[str]) -> None:
+    """DADA DE BAJA (2026-08-22) - la CLI corria nowcast_auto. Ver `_BAJA_V1`."""
+    raise SystemExit(_BAJA_V1)
+
+
+if __name__ == "__main__":
+    main(sys.argv)

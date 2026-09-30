@@ -11,7 +11,7 @@ Une las dos piezas ya validadas del sistema en un solo número (con su descompos
 **Estado:** EN CURSO (v1: composición + nowcast por proyecto + tests)
 **Owner actual:** Claude+Valle (2026-07-12)
 
-**Resumen:** La composicion final: el nowcast end-to-end de un proyecto. El punto de entrada vivo es `nowcast_puertas.py`, que corre la CADENA DE PUERTAS y devuelve un numero condicional a que las camaras voten. La formulacion v1 -P(llega al recinto) x P(mayoria dado recinto)- se dio de BAJA el 2026-08-22 (ADR-0012), junto con su backtest: `ensemble.componer` sigue ahi y levanta SystemExit; `backtest_cadena.py` se archivo en la auditoria 2026-09 (A7: `coordinacion/archivo/A7-poda-2026-09/`). Desde el 2026-09-30 (auditoria A5) `nowcast()` da numero SOLO para mayoria simple: con una mayoria especial devuelve `p_aprobacion = None` y `motivo_sin_numero`, sin simular.
+**Resumen:** La composicion final: el nowcast end-to-end de un proyecto. El punto de entrada vivo es `nowcast_puertas.py`, que corre la CADENA DE PUERTAS y devuelve un numero condicional a que las camaras voten. La formulacion v1 -P(llega al recinto) x P(mayoria dado recinto)- se dio de BAJA el 2026-08-22 (ADR-0012), junto con su backtest: los stubs de la v1 (`ensemble.componer` y compania) y `backtest_cadena.py` se eliminaron/archivaron en la auditoria 2026-09 (A7: su codigo esta en `coordinacion/archivo/A7-poda-2026-09/`). Desde el 2026-09-30 (auditoria A5) `nowcast()` da numero SOLO para mayoria simple: con una mayoria especial devuelve `p_aprobacion = None` y `motivo_sin_numero`, sin simular.
 
 ## Buscar acá si
 
@@ -35,7 +35,7 @@ Une las dos piezas ya validadas del sistema en un solo número (con su descompos
 - **Entradas:**
   - `variables/embudo/outputs/p_embudo.parquet` → `p_llega_recinto` por `proyecto_id` (el embudo).
   - `modelo/agregador_institucional` → función reutilizable `simular_votacion` (P mayoría|recinto como distribución). *Se importa su función pública; no se toca su código.*
-- **Salida (contrato estable, `outputs/`):** `nowcast_<proyecto_id>.json` con los dos factores, P(aprobación) y la banda de votos. Función reutilizable: `nowcast_proyecto(proyecto_id, escenario, p_embudo_path)`.
+- **Salida (contrato estable, `outputs/`):** `nowcast_<proyecto_id>.json` con los dos factores, P(aprobación) y la banda de votos. Función reutilizable: `nowcast_proyecto(proyecto_id, escenario, p_embudo_path)` (**eliminada en A7**, 2026-09-30: era un stub de la v1; hoy es `nowcast_puertas.nowcast`).
 - **Gate de pase:** calibración de la cadena dentro de tolerancia — **parcial**: cada factor está validado por separado (embudo skill 0,34-0,39; agregador Brier 0,0089). La calibración de la cadena COMPLETA sobre proyectos NO votados espera la posición de bloque proyectada (ver simplificación).
 
 ## Cómo se usa

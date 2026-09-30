@@ -2,13 +2,13 @@
 
 <!-- GENERADO por indexar.py. No editar: los cambios se pierden. -->
 <!-- La prosa vive en el README.md de cada modulo (seccion `Buscar aca si`). -->
-<!-- 2026-09-30 13:59 UTC · 200 archivos · 43,434 LOC -->
+<!-- 2026-09-30 14:41 UTC · 175 archivos · 37,499 LOC -->
 
 ## Como usar este archivo
 
 Es el unico archivo del proyecto que hace falta leer para empezar. Para ubicar algo concreto: `python3 .mapa/buscar.py "<termino>"` devuelve archivo y linea sin abrir nada. Recien despues abrir los archivos que salgan, y solo esos.
 
-Rama `main` — ultimo commit: 2026-09-30 55ecda2 Auditoría A6 (5/5): comparar_vias_icg.py pierde la salida HTML y se conserva
+Rama `main` — ultimo commit: 2026-09-30 bb2b9b7 Auditoría A7 (7/9): P0 documentos archivados, punteros vivos y README del archivo
 
 ## Donde buscar que
 
@@ -85,7 +85,7 @@ Rama `main` — ultimo commit: 2026-09-30 55ecda2 Auditoría A6 (5/5): comparar_
 | la fuga del harness viejo (shift(1) por fila) y cuanto pesaba: `medir_fuga_historia.py` (0,161 -> 0,092 -> 0,074) | `evaluacion/baseline/` |
 | de donde salia el 11,06% de RECORD_POR_TEMA: `medir_record_por_tema_limpio.py` | `evaluacion/baseline/` |
 | que el harness mide al motor y no una copia: `tests/test_harness_es_el_motor.py` | `evaluacion/baseline/` |
-| el record por ORIGEN entre gobiernos (ADR-0033): `record_por_origen.py`, `record_por_origen_brazos.py` | `evaluacion/baseline/` |
+| el record por ORIGEN entre gobiernos (ADR-0033): **archivado en A7** (`coordinacion/archivo/A7-poda-2026-09/evaluacion/baseline/src/`); sus resultados siguen en `outputs/record_por_origen_*.json` | `evaluacion/baseline/` |
 | las reglas de combinacion de temas de la POSTURA (ADR-0024/0028): `--combinar-temas`, experimento cerrado | `evaluacion/baseline/` |
 | de donde sale el 0,99 del baseline de bloque, y por que el proyecto NO apunta a predecir la direccion del voto individual | `fase0/` |
 | el codigo original de ingesta, anterior a `datos/` | `fase0/` |
@@ -97,7 +97,7 @@ Rama `main` — ultimo commit: 2026-09-30 55ecda2 Auditoría A6 (5/5): comparar_
 | la alternativa al clip (ADR-0025, 16-09): `simular_votacion(..., epsilon0=.035, tau=1.19)` mueve la incertidumbre al LEGISLADOR (encogimiento afin + shock comun por simulacion). Apagado por defecto (`epsilon0=0, tau=0`), se prende con `INCERTIDUMBRE_LEGISLADOR=1` en `nowcast_puertas.py` | `modelo/agregador_institucional/` |
 | el numero final de P(sancion) de un proyecto | `modelo/ensemble/` |
 | por que un nowcast sale SIN numero (mayorias especiales apagadas, A5): `MAYORIAS_CON_NUMERO` en `nowcast_puertas.py` y `tests/test_mayorias_especiales_apagadas.py` | `modelo/ensemble/` |
-| el backtest de la cadena completa, Brier, skill o calibracion | `modelo/ensemble/` |
+| el backtest de la cadena completa, Brier, skill o calibracion (ARCHIVADO en A7; sus JSON siguen en `outputs/`) | `modelo/ensemble/` |
 | la Puerta D / camara revisora en el circuito bicameral | `modelo/ensemble/` |
 | P(mayoria) que da 0% o 100% (hay piso y techo por pedido de Valle) | `modelo/ensemble/` |
 | REVISION 25-08: multiplicar P_B x P_D supone INDEPENDENCIA entre camaras y es falsa; y `P(B|A)` es notacion enganosa (A y C son un corrimiento en logit, no un condicional bayesiano) | `modelo/ensemble/` |
@@ -144,10 +144,10 @@ Rama `main` — ultimo commit: 2026-09-30 55ecda2 Auditoría A6 (5/5): comparar_
 
 | Carpeta | Que es | Arch. | LOC | Bitacora |
 |---|---|---:|---:|---|
-| `modelo/ensemble/` _(src+tests)_ | La composicion final: el nowcast end-to-end de un proyecto. El punto de entrada vivo es `nowcast_puertas.py`, que corre la CADENA DE PUERTAS y devuelve un numero condicional a que las camaras voten. La formulacion v1 -P(llega al recinto) x P(mayoria dado recinto)- se dio de BAJA el 2026-08-22 (ADR-0012), junto con su backtest: `ensemble.componer` y `backtest_cadena.py` siguen ahi pero levantan SystemExit. Desde el 2026-09-30 (auditoria A5) `nowcast()` da numero SOLO para mayoria simple: con una mayoria especial devuelve `p_aprobacion = None` y `motivo_sin_numero`, sin simular. | 31 | 7,658 | **vencida** |
-| `evaluacion/baseline/` _(src+tests)_ | El censo del motor sobre el voto individual. Desde el 28-09 (ADR-0034) el harness NO reimplementa nada del legislador: importa `record_legisladores`, `proyectar_postura` y `perfil_legislador` del motor y solo decide que votos existian (historia estricta: fecha anterior y OTRA ley). Un test lo compara contra `nowcast()` legislador por legislador. El baseline de BLOQUE -el ~0,99- se midio en `fase0/` y ahi quedo. | 30 | 6,698 | **vencida** |
-| `variables/proyecto/` _(src+tests)_ | Feature store por proyecto: tema/materia, origen (Ejecutivo/oficialismo/aliados/oposicion), jefe de bloque, mayoria requerida, texto, y el ICG como modulador de coyuntura. La postura del gobierno por acta se midio aca y su modulo se archivo el 2026-09-10 sin consumidor: la medicion quedo en el ADR-0021 y en ESTADO. | 25 | 5,629 | **vencida** |
-| `datos/expedientes/` _(src+tests)_ | Registro de todo lo PRESENTADO (no solo lo votado): titulo, autor, tipo, fecha y cadena de vida del expediente. Denominador del embudo y enlace acta -> expediente. | 19 | 5,250 | **vencida** |
+| `modelo/ensemble/` _(src+tests)_ | La composicion final: el nowcast end-to-end de un proyecto. El punto de entrada vivo es `nowcast_puertas.py`, que corre la CADENA DE PUERTAS y devuelve un numero condicional a que las camaras voten. La formulacion v1 -P(llega al recinto) x P(mayoria dado recinto)- se dio de BAJA el 2026-08-22 (ADR-0012), junto con su backtest: `ensemble.componer` sigue ahi y levanta SystemExit; `backtest_cadena.py` se archivo en la auditoria 2026-09 (A7: `coordinacion/archivo/A7-poda-2026-09/`). Desde el 2026-09-30 (auditoria A5) `nowcast()` da numero SOLO para mayoria simple: con una mayoria especial devuelve `p_aprobacion = None` y `motivo_sin_numero`, sin simular. | 27 | 6,468 | **vencida** |
+| `variables/proyecto/` _(src+tests)_ | Feature store por proyecto: tema/materia, origen (Ejecutivo/oficialismo/aliados/oposicion), jefe de bloque, mayoria requerida, texto, y el ICG como modulador de coyuntura. La postura del gobierno por acta se midio aca y su modulo se archivo el 2026-09-10 sin consumidor: la medicion quedo en el ADR-0021 y en ESTADO. | 23 | 5,160 | **vencida** |
+| `datos/expedientes/` _(src+tests)_ | Registro de todo lo PRESENTADO (no solo lo votado): titulo, autor, tipo, fecha y cadena de vida del expediente. Denominador del embudo y enlace acta -> expediente. | 17 | 4,922 | **vencida** |
+| `evaluacion/baseline/` _(src+tests)_ | El censo del motor sobre el voto individual. Desde el 28-09 (ADR-0034) el harness NO reimplementa nada del legislador: importa `record_legisladores`, `proyectar_postura` y `perfil_legislador` del motor y solo decide que votos existian (historia estricta: fecha anterior y OTRA ley). Un test lo compara contra `nowcast()` legislador por legislador. El baseline de BLOQUE -el ~0,99- se midio en `fase0/` y ahi quedo. | 13 | 2,749 | **vencida** |
 | `datos/padron/` _(src+tests)_ | Padron OFICIAL de bancas a nivel LEGISLADOR: quien ocupa cada banca y en que ventana de mandato. Es la composicion real de la camara a una fecha (257 / 72). | 11 | 2,645 | ok |
 | `datos/proyectos/` _(src+tests)_ | Base de Proyectos de Ley (`proyectos.db`): una fila por proyecto identificado por denominador NNNN-X-AAAA. Fuente de verdad del universo de proyectos y denominador del embudo (ADR-0009). | 10 | 2,073 | ok |
 | `variables/bloque/` _(src+tests)_ | Cohesion, tamano, postura y fracturas de cada bloque en el tiempo, y el proyector point-in-time que arma el escenario por bloque que consume el ensemble. | 6 | 1,581 | **vencida** |
@@ -157,7 +157,7 @@ Rama `main` — ultimo commit: 2026-09-30 55ecda2 Auditoría A6 (5/5): comparar_
 | `datos/senado/` _(src+tests)_ | Ingesta de votaciones nominales del Senado desde senado.gob.ar + reconstruccion del bloque historico contemporaneo a cada voto. Tapa el hueco 2015-2023. | 5 | 940 | ok |
 | `datos/bot_recoleccion/` _(src+tests)_ | El bot diario que trae lo nuevo de ambas camaras (proyectos con firmantes y giros, y votaciones) con upsert idempotente. Corre solo en GitHub Actions. | 7 | 880 | ok |
 | `./` | La raiz del proyecto: `CLAUDE.md`, `rutas.py`, `definiciones.py`, los scripts de regeneracion (`REGENERAR.ps1`, `verificar_*.py`) y este README. Los paneles HTML (tablero ejecutivo, mapa del modelo, panel de puertas) y sus `*_datos.js` se eliminaron en la auditoria 2026-09 (ítem A6): el estado vive en `coordinacion/`. | 4 | 827 | **vencida** |
-| `modelo/agregador_institucional/` _(src+tests)_ | Traduce posturas de bloque + asistencia en un resultado institucional: cuenta bancas, quorum, umbrales de mayoria y bandas. Mide la estructura, no la politica. | 2 | 756 | **vencida** |
+| `modelo/agregador_institucional/` _(src+tests)_ | Traduce posturas de bloque + asistencia en un resultado institucional: cuenta bancas, quorum, umbrales de mayoria y bandas. Mide la estructura, no la politica. | 2 | 757 | **vencida** |
 | `coordinacion/` _(AUDITORIA-2026-09)_ | Las bitacoras y el protocolo: que bloquea a otros, que se hizo, quien tomo que modulo y por que se decidio cada cosa. Aca NO hay codigo del producto. | 5 | 687 | **vencida** |
 | `modelo/voto_individual/` _(src+tests)_ | No predice el voto medio (eso lo resuelve la regla de bloque ~0,99): modela el DESVIO del legislador respecto de su bloque y detecta pivotes (ADR-0003). | 2 | 597 | ok |
 | `datos/seguimiento/` _(src+tests)_ | Dado un expediente ya conocido, baja su ficha oficial y extrae el estado de avance: giros, movimientos, fechas y PDF. Insumo del embudo. NO descubre proyectos nuevos. | 2 | 512 | ok |
@@ -203,7 +203,7 @@ Buscar uno sin abrir nada: `python .mapa/buscar.py --dato <termino>`. Columna **
 | `datos/canonica/data/clean/_decada_csv/asuntos-senado.csv` | 2,011×19 | 1.0 MB | si | — | _(1 lo nombran)_ |
 | `datos/canonica/data/clean/_decada_csv/asuntos-diputados.csv` | 1,499×18 | 651 KB | si | — | _(1 lo nombran)_ |
 | `datos/canonica/data/clean/_sources/argentinadatos_votos.parquet` | 349,690×8 | 489 KB | si | `to_canonical.py` | — |
-| `datos/canonica/data/clean/actas_canonico.parquet` _CANONICA_ACTAS_ | 5,998×14 | 479 KB | si | `build.py`, `asistencia.py` | `cobertura_canonica.py`, `contraste_aprobacion.py`, `control_independiente.py` +14 |
+| `datos/canonica/data/clean/actas_canonico.parquet` _CANONICA_ACTAS_ | 5,998×14 | 479 KB | si | `build.py`, `asistencia.py` | `cobertura_canonica.py`, `contraste_aprobacion.py`, `control_independiente.py` +13 |
 | `datos/canonica/data/clean/_sources/decada_votada_actas.parquet` | 3,153×14 | 309 KB | si | — | — |
 | `datos/canonica/data/clean/_sources/decada_votada_votos.parquet` | 437,144×8 | 258 KB | si | — | — |
 | `datos/canonica/data/clean/_sources/ckan_diputados_votos.parquet` | 256,581×8 | 251 KB | si | `to_canonical.py` | — |
@@ -229,16 +229,16 @@ Buscar uno sin abrir nada: `python .mapa/buscar.py --dato <termino>`. Columna **
 | `datos/expedientes/data/clean/expedientes_movimientos.parquet` | 143,677×4 | 1.7 MB | si | `ingesta_ckan.py`, `migrar_ckan.py` | `giros_iniciales.py`, `verificar.py` |
 | `datos/expedientes/data/clean/expedientes_resultados.parquet` _EXPEDIENTES_RESULTADOS_ | 118,623×7 | 953 KB | si | `enlace_senado.py`, `ingesta_ckan.py` | `ingesta_od.py`, `origen_por_acta.py` |
 | `datos/expedientes/data/clean/dictamenes_firmas.parquet` _EXPEDIENTES_FIRMAS_ | 125,561×28 | 921 KB | si | `construir_firmas.py` | `verificar_regeneracion.py` |
-| `datos/expedientes/data/clean/acta_expediente_todas.parquet` _EXPEDIENTES_ACTA_EXP_TODAS_ | 5,043×13 | 424 KB | si | `enlace_senado.py`, `votacion_por_articulo.py` | `actas_ley.py`, `medir_rec_por_tema.py`, `tema_por_proyecto.py` +1 |
+| `datos/expedientes/data/clean/acta_expediente_todas.parquet` _EXPEDIENTES_ACTA_EXP_TODAS_ | 5,043×13 | 424 KB | si | `enlace_senado.py`, `votacion_por_articulo.py` | `actas_ley.py`, `tema_por_proyecto.py`, `verificar_regeneracion.py` |
 | `datos/expedientes/data/clean/expedientes_dictamenes.parquet` | 24,053×8 | 373 KB | si | `ingesta_ckan.py`, `migrar_ckan.py` | _(1 lo nombran)_ |
 | `datos/expedientes/data/clean/dictamenes_firmas_senado.parquet` _EXPEDIENTES_FIRMAS_SENADO_ | 18,256×30 | 208 KB | si | `construir_firmas.py` | _(4 lo nombran)_ |
-| `datos/expedientes/data/clean/votacion_por_articulo.parquet` | 2,361×13 | 168 KB | si | `votacion_por_articulo.py` | `prueba2_reconstruccion_por_rango.py`, `prueba3_cobertura_universo_vivo.py`, `validar_leybases_por_capitulos.py` +2 |
+| `datos/expedientes/data/clean/votacion_por_articulo.parquet` | 2,361×13 | 168 KB | si | `votacion_por_articulo.py` | — |
 | `datos/expedientes/data/clean/acta_expediente.parquet` _EXPEDIENTES_ACTA_EXP_ | 1,849×7 | 164 KB | si | `enlace_senado.py`, `ingesta_ckan.py` | `baseline_voto_individual.py`, `estimar_beta_dictamen.py`, `origen_por_acta.py` |
 | `datos/expedientes/data/clean/cadena_camaras.parquet` | 1,182×17 | 151 KB | si | `enlace_senado.py` | `estimar_psi_arrastre.py` |
 | `datos/expedientes/data/clean/dictamenes_comisiones.parquet` _EXPEDIENTES_DICTAMENES_COMISIONES_ | 10,031×8 | 88 KB | si | `construir_firmas.py` | — |
 | `datos/expedientes/data/clean/expedientes_leyes.parquet` | 1,347×7 | 38 KB | si | — | `origen_lider.py` |
 | `datos/expedientes/data/clean/giros_iniciales.parquet` | 4,070×4 | 31 KB | si | `giros_iniciales.py` | `embudo.py` |
-| `datos/expedientes/data/clean/capitulos_nombre.parquet` | 546×5 | 15 KB | si | `capitulos_nombre.py`, `tema_por_capitulo.py` | `prueba1_pivotes_por_capitulo.py`, `prueba2_reconstruccion_por_rango.py` |
+| `datos/expedientes/data/clean/capitulos_nombre.parquet` | 546×5 | 15 KB | si | — | — |
 | `datos/expedientes/data/clean/comisiones_integrantes.parquet` | 1,477×3 | 9 KB | si | — | `origen_lider.py` |
 | `datos/expedientes/data/clean/comisiones_autoridades.parquet` | 141×5 | 7 KB | si | — | `origen_lider.py` |
 | `datos/export/data/votaciones_2003-2007_Kirchner.xlsx` | 3 hoja(s) | 15.8 MB | si | — | — |
@@ -256,10 +256,10 @@ Buscar uno sin abrir nada: `python .mapa/buscar.py --dato <termino>`. Columna **
 | `datos/padron/data/padron_senado_historico.csv` _PADRON_SENADO_HISTORICO_ | 243×12 | 45 KB | si | `test_guardas_confianza.py`, `test_puerta_d.py` | `resolver_firmantes.py` |
 | `datos/padron/data/raw/nomina_senado.csv` | 72×15 | 16 KB | si | — | _(2 lo nombran)_ |
 | `datos/padron/data/padron_senado.csv` _PADRON_SENADO_ | 72×12 | 13 KB | si | `test_bloque_linaje_senado.py` | `to_canonical.py`, `test_padron_senado.py`, `resolver_firmantes.py` +2 |
-| `datos/padron/data/gobernadores.csv` | 96×10 | 13 KB | si | — | `test_firma_tematica.py` |
+| `datos/padron/data/gobernadores.csv` | 96×10 | 13 KB | si | — | — |
 | `datos/padron/data/senado_linaje_manual.csv` _PADRON_SENADO_LINAJE_MANUAL_ | 25×7 | 2 KB | si | `test_bloque_linaje_senado.py` | `padron_senado_historico.py`, `bloque.py` |
 | `datos/padron/data/estado_vigilancia.json` | objeto: diputados, senado | 445 B | si | — | _(1 lo nombran)_ |
-| `datos/proyectos/data/proyectos.db` _PROYECTOS_DB_ | 610,403×6 | 87.3 MB | si | `schema.sql`, `store.py` | `verificar.py`, `test_store.py`, `prueba3_cobertura_universo_vivo.py` +1 |
+| `datos/proyectos/data/proyectos.db` _PROYECTOS_DB_ | 610,403×6 | 87.3 MB | si | `schema.sql`, `store.py` | `verificar.py`, `test_store.py`, `tema_por_proyecto.py` |
 | `datos/proyectos/data/taxonomias.csv` | 3,339×6 | 327 KB | si | `taxonomias_backup.py` | `test_store.py` |
 | `datos/proyectos/data/cuarentena.db` _PROYECTOS_CUARENTENA_DB_ | 0×1 | 20 KB | si | — | `cuarentena.py` |
 | `datos/senado/data/clean/senado_actas.parquet` | 749×14 | 70 KB | si | `scrape_votaciones.py` | `aplicar_bloques.py`, `padron_bloques.py` |
@@ -267,34 +267,34 @@ Buscar uno sin abrir nada: `python .mapa/buscar.py --dato <termino>`. Columna **
 | `datos/senado/data/clean/senado_votos.parquet` | 53,910×8 | 39 KB | si | `aplicar_bloques.py`, `scrape_votaciones.py` | `padron_bloques.py` |
 | `datos/senado/data/padron_manual_2015_2017.csv` | 131×8 | 23 KB | si | `padron_bloques.py` | `to_canonical.py`, `aplicar_bloques.py` |
 | `datos/senado/data/_diag_sin_cobertura.csv` | 7×3 | 266 B | si | `aplicar_bloques.py` | — |
-| `datos/taxonomias/data/asignaciones.csv` | 10,111×8 | 842 KB | si | `registro.py` | `prueba3_cobertura_universo_vivo.py` |
+| `datos/taxonomias/data/asignaciones.csv` | 10,111×8 | 842 KB | si | `registro.py` | _(2 lo nombran)_ |
 | `docs/schemas/acta.schema.json` | objeto: $schema, $id, title, description | 2 KB | si | `build.py` | — |
 | `docs/schemas/voto.schema.json` | objeto: $schema, $id, title, description | 1 KB | si | `build.py` | — |
 | `docs/taxonomias/taxonomias.json` | objeto: schema_version, actualizado, not | 7 KB | si | — | `registro.py`, `loader.py` |
 | `evaluacion/baseline/outputs/record_por_origen_fase2_detalle_harness_2026-09-27.parquet` | 691,893×21 | 53.5 MB | si | — | — |
 | `evaluacion/baseline/outputs/censo_detalle_2026-09-28.parquet` | 691,845×40 | 35.2 MB | si | — | `cobertura_canonica.py` |
 | `evaluacion/baseline/outputs/record_por_origen_fase2_detalle_estricta_2026-09-27.parquet` | 691,893×21 | 32.8 MB | si | — | — |
-| `evaluacion/baseline/outputs/censo_detalle_2026-09-27.parquet` | 691,893×14 | 9.9 MB | si | — | _(5 lo nombran)_ |
+| `evaluacion/baseline/outputs/censo_detalle_2026-09-27.parquet` | 691,893×14 | 9.9 MB | si | — | _(4 lo nombran)_ |
 | `evaluacion/baseline/outputs/fase0_detalle_ponderada_logit.parquet` | 691,869×9 | 6.1 MB | si | — | — |
 | `evaluacion/baseline/outputs/fase0_detalle_union.parquet` | 691,869×9 | 6.1 MB | si | — | — |
 | `evaluacion/baseline/outputs/fase0_detalle_primaria.parquet` | 691,893×9 | 6.0 MB | si | — | — |
 | `evaluacion/baseline/outputs/fase0_detalle_sin_tema.parquet` | 691,460×9 | 6.0 MB | si | — | — |
 | `evaluacion/baseline/outputs/censo_estadisticos_2026-09-28.json` | objeto: formato, generado, generador, mo | 1.2 MB | si | — | _(1 lo nombran)_ |
-| `evaluacion/baseline/outputs/record_por_origen_fase0_1_2026-09-27.json` | objeto: k_shrink, umbral_lado, recambios | 131 KB | si | — | _(1 lo nombran)_ |
+| `evaluacion/baseline/outputs/record_por_origen_fase0_1_2026-09-27.json` | objeto: k_shrink, umbral_lado, recambios | 131 KB | si | — | — |
 | `evaluacion/baseline/outputs/record_por_origen_fase2_censo_estricta_2026-09-27.json` | objeto: n_votos, k, umbral_lado, min_act | 69 KB | si | — | — |
 | `evaluacion/baseline/outputs/record_por_origen_fase2_censo_harness_2026-09-27.json` | objeto: n_votos, k, umbral_lado, min_act | 69 KB | si | — | — |
-| `evaluacion/baseline/outputs/firma_tematica_fase1_2_2026-09-21.json` | objeto: k_shrink, filtro, FASE1, FASE1_c | 23 KB | si | `firma_tematica_fase1_2.py` | — |
+| `evaluacion/baseline/outputs/firma_tematica_fase1_2_2026-09-21.json` | objeto: k_shrink, filtro, FASE1, FASE1_c | 23 KB | si | — | — |
 | `evaluacion/baseline/outputs/censo_limpio_2026-09-28.json` | objeto: censo, n_votos, n_actas, n_leyes | 19 KB | si | — | _(1 lo nombran)_ |
-| `evaluacion/baseline/outputs/prueba1_pivotes_por_capitulo_2026-09-17.json` | objeto: proyecto_id, fecha_corte, rango_ | 13 KB | si | `prueba1_pivotes_por_capitulo.py` | — |
-| `evaluacion/baseline/outputs/medir_estabilidad_record_por_tema_2026-09-17.json` | objeto: k_shrink, umbrales_n, recambios, | 12 KB | si | `medir_estabilidad_record_por_tema.py` | — |
-| `evaluacion/baseline/outputs/prueba2_reconstruccion_por_rango_2026-09-17.json` | objeto: paso1_tramos_con_articulo_en_act | 10 KB | si | `prueba2_reconstruccion_por_rango.py` | — |
+| `evaluacion/baseline/outputs/prueba1_pivotes_por_capitulo_2026-09-17.json` | objeto: proyecto_id, fecha_corte, rango_ | 13 KB | si | — | — |
+| `evaluacion/baseline/outputs/medir_estabilidad_record_por_tema_2026-09-17.json` | objeto: k_shrink, umbrales_n, recambios, | 12 KB | si | — | — |
+| `evaluacion/baseline/outputs/prueba2_reconstruccion_por_rango_2026-09-17.json` | objeto: paso1_tramos_con_articulo_en_act | 10 KB | si | — | — |
 | `evaluacion/baseline/outputs/medir_record_por_tema_limpio_2026-09-28.json` | objeto: fila, estricta, n_comun, reprodu | 7 KB | si | — | _(1 lo nombran)_ |
-| `evaluacion/baseline/outputs/validacion_piloto_titulos_2026-09-16.json` | objeto: margen_walkforward_dias, flags,  | 7 KB | si | `validar_piloto_titulos.py` | — |
-| `evaluacion/baseline/outputs/fase0_control_temas_censo.json` | objeto: arms, n_boot, seed, muestra | 6 KB | si | `fase0_control_temas.py` | — |
+| `evaluacion/baseline/outputs/validacion_piloto_titulos_2026-09-16.json` | objeto: margen_walkforward_dias, flags,  | 7 KB | si | — | — |
+| `evaluacion/baseline/outputs/fase0_control_temas_censo.json` | objeto: arms, n_boot, seed, muestra | 6 KB | si | — | — |
 | `evaluacion/baseline/outputs/baseline_voto_individual.json` | objeto: columna, global, calibracion, po | 5 KB | si | `baseline_voto_individual.py` | `test_censo_estadisticos.py`, `verificar_regeneracion.py` |
-| `evaluacion/baseline/outputs/firma_tematica_fase0_celdas_2026-09-21.json` | objeto: por_filtro, cobertura_tema | 5 KB | si | `firma_tematica_fase0_celdas.py` | — |
+| `evaluacion/baseline/outputs/firma_tematica_fase0_celdas_2026-09-21.json` | objeto: por_filtro, cobertura_tema | 5 KB | si | — | — |
 | `evaluacion/baseline/outputs/guard_era_medicion.json` | objeto: _que_es, _n_votos, resultados, m | 5 KB | si | `medir_guard_era.py` | — |
-| `evaluacion/baseline/outputs/diagnostico_senado.json` | objeto: senado | 4 KB | si | `diagnostico_senado.py` | — |
+| `evaluacion/baseline/outputs/diagnostico_senado.json` | objeto: senado | 4 KB | si | — | — |
 | `evaluacion/baseline/outputs/baseline_combinar_temas_ponderada_2026-09-15.json` | objeto: n_actas_evaluadas, n_actas_salta | 4 KB | si | — | — |
 | `evaluacion/baseline/outputs/baseline_combinar_temas_primaria_2026-09-15.json` | objeto: n_actas_evaluadas, n_actas_salta | 4 KB | si | — | — |
 | `evaluacion/baseline/outputs/baseline_combinar_temas_peor_tema_2026-09-16.json` | objeto: n_actas_evaluadas, n_actas_salta | 4 KB | si | — | — |
@@ -305,10 +305,10 @@ Buscar uno sin abrir nada: `python .mapa/buscar.py --dato <termino>`. Columna **
 | `evaluacion/baseline/outputs/merge_ids_medicion_2026-09-04.json` | objeto: _que_es, _como_se_midio, _alias, | 4 KB | si | — | — |
 | `evaluacion/baseline/outputs/medir_fuga_historia_2026-09-28.json` | objeto: detalle, n_votos, votos_con_ley_ | 3 KB | si | — | _(1 lo nombran)_ |
 | `evaluacion/baseline/outputs/baseline_canonico.json` | objeto: n_votos_sustantivos, por_nivel,  | 2 KB | si | `baseline_canonico.py` | — |
-| `evaluacion/baseline/outputs/medir_rec_por_tema_2026-09-16.json` | objeto: cobertura_tema_por_acta, curva_s | 2 KB | si | `medir_rec_por_tema.py` | _(1 lo nombran)_ |
+| `evaluacion/baseline/outputs/medir_rec_por_tema_2026-09-16.json` | objeto: cobertura_tema_por_acta, curva_s | 2 KB | si | — | _(1 lo nombran)_ |
 | `evaluacion/baseline/outputs/fase1_rec_por_tema_censo.json` | objeto: camara_filtro, global_subconjunt | 2 KB | si | `fase1_rec_por_tema.py` | _(2 lo nombran)_ |
-| `evaluacion/baseline/outputs/prueba3_cobertura_universo_vivo_2026-09-17.json` | objeto: definicion_universo_vivo, n_univ | 2 KB | si | `prueba3_cobertura_universo_vivo.py` | — |
-| `evaluacion/baseline/outputs/validacion_leybases_capitulos_2026-09-16.json` | objeto: fecha_corte_walkforward, flags,  | 1020 B | si | `validar_leybases_por_capitulos.py` | — |
+| `evaluacion/baseline/outputs/prueba3_cobertura_universo_vivo_2026-09-17.json` | objeto: definicion_universo_vivo, n_univ | 2 KB | si | — | — |
+| `evaluacion/baseline/outputs/validacion_leybases_capitulos_2026-09-16.json` | objeto: fecha_corte_walkforward, flags,  | 1020 B | si | — | — |
 | `fase0/data/raw/detalle_129_137.csv` | 231,043×7 | 17.6 MB | si | — | `ingesta.py` |
 | `fase0/data/clean/detalle.parquet` | 231,043×7 | 1.4 MB | si | `ingesta.py` | `baseline_bloque.py` |
 | `fase0/data/raw/cabecera_129_137.csv` | 899×20 | 183 KB | si | — | `ingesta.py` |
@@ -345,7 +345,7 @@ Buscar uno sin abrir nada: `python .mapa/buscar.py --dato <termino>`. Columna **
 | `modelo/voto_individual/outputs/set_pivote.json` | objeto: definicion, min_votos, legislado | 1 KB | si | `disciplina.py` | — |
 | `producto/dashboard/data/mapa_modelo_semantica.json` | objeto: _comentario, version, meta, etap | 72 KB | si | — | — |
 | `variables/bloque/outputs/serie_bloque.parquet` | 304×9 | 16 KB | si | `COMMITEAR-2026-09-08.ps1`, `bloque.py` | _(2 lo nombran)_ |
-| `variables/embudo/outputs/p_embudo.parquet` | 42,141×5 | 432 KB | si | `embudo.py` | `backtest_cadena.py` |
+| `variables/embudo/outputs/p_embudo.parquet` | 42,141×5 | 432 KB | si | `embudo.py` | _(1 lo nombran)_ |
 | `variables/embudo/outputs/backtest_embudo.json` | objeto: sancionado, sancionado_sin_orige | 151 KB | si | `embudo.py` | — |
 | `variables/embudo/outputs/embudo_por_comision.csv` | 65×4 | 3 KB | si | `embudo.py` | — |
 | `variables/embudo/outputs/embudo_por_anio.csv` | 19×5 | 539 B | si | `embudo.py` | — |
@@ -359,12 +359,12 @@ Buscar uno sin abrir nada: `python .mapa/buscar.py --dato <termino>`. Columna **
 | `variables/legislador/data/legislador_periodo.parquet` | 5,285×10 | 157 KB | si | `export_base.py`, `ficha.py` | — |
 | `variables/legislador/data/legislador_anio.parquet` | 9,900×8 | 126 KB | si | `ficha.py` | — |
 | `variables/legislador/data/legislador_bloques.parquet` | 4,127×7 | 61 KB | si | `ficha.py` | `origen_lider.py`, `origen_por_acta.py` |
-| `variables/proyecto/data/features_proyecto.parquet` _PROYECTO_FEATURES_ | 41,871×10 | 328 KB | si | `origen_lider.py` | `backtest_cadena.py` |
+| `variables/proyecto/data/features_proyecto.parquet` _PROYECTO_FEATURES_ | 41,871×10 | 328 KB | si | `origen_lider.py` | _(3 lo nombran)_ |
 | `variables/proyecto/data/origen_por_acta.parquet` _PROYECTO_ORIGEN_POR_ACTA_ | 5,998×9 | 87 KB | si | `origen_por_acta.py` | `control_independiente.py`, `baseline_voto_individual.py`, `nowcast_puertas.py` +3 |
-| `variables/proyecto/data/tema_por_acta.parquet` _PROYECTO_TEMA_POR_ACTA_ | 3,083×8 | 78 KB | si | `tema_por_acta.py` | `registro.py`, `fase1_rec_por_tema.py`, `firma_tematica_desvio.py` +5 |
+| `variables/proyecto/data/tema_por_acta.parquet` _PROYECTO_TEMA_POR_ACTA_ | 3,083×8 | 78 KB | si | `tema_por_acta.py` | `registro.py`, `fase1_rec_por_tema.py`, `medir_record_por_tema_limpio.py` +1 |
 | `variables/proyecto/data/icg_contexto.parquet` | 297×18 | 34 KB | si | — | `estimar_gamma.py`, `estimar_gamma_individual.py`, `modulador_icg.py` |
 | `variables/proyecto/outputs/muestra_manual_taxonomias.csv` | 88×6 | 24 KB | si | — | _(1 lo nombran)_ |
-| `variables/proyecto/data/tema_por_capitulo.parquet` _PROYECTO_TEMA_POR_CAPITULO_ | 471×10 | 21 KB | si | `tema_por_capitulo.py` | `prueba1_pivotes_por_capitulo.py`, `validar_leybases_por_capitulos.py`, `validar_piloto_capitulos.py` +1 |
+| `variables/proyecto/data/tema_por_capitulo.parquet` _PROYECTO_TEMA_POR_CAPITULO_ | 471×10 | 21 KB | si | — | — |
 | `variables/proyecto/data/tema_por_capitulo_OBSOLETO_clave_sin_titulo_2026-09-16.parquet` | 437×9 | 18 KB | si | — | — |
 | `variables/proyecto/data/jefes_bloque.csv` _PROYECTO_JEFES_BLOQUE_ | 109×2 | 15 KB | si | `origen_lider.py` | `estimar_beta_dictamen.py` |
 | `variables/proyecto/data/icg_mensual.csv` _PROYECTO_ICG_MENSUAL_ | 297×5 | 11 KB | si | `embudo.py`, `test_ingesta_icg.py` | `icg_contexto.py` |
@@ -377,8 +377,8 @@ Buscar uno sin abrir nada: `python .mapa/buscar.py --dato <termino>`. Columna **
 
 **Lo que el inventario marca**
 
-- Tienen productor y **ningun consumidor** (54): `cobertura_canonica.json`, `votaciones_nuevas.parquet`, `estado_bot.json`, `argentinadatos_actas.parquet`, `argentinadatos_votos.parquet`, `ckan_diputados_actas.parquet`, `ckan_diputados_votos.parquet`, `manual_2026_actas.parquet` _+46_. Es lo esperable en un entregable para humanos; en un intermedio significa que sobra.
-- **Ningun archivo de codigo los nombra** (50, 161.4 MB): `record_por_origen_fase2_detalle_harness_2026-09-27.parquet`, `record_por_origen_fase2_detalle_estricta_2026-09-27.parquet`, `votaciones_2003-2007_Kirchner.xlsx`, `votaciones_2015-2019_Macri.xlsx`, `votaciones_2007-2011_CFK-1.xlsx`, `votaciones_2011-2015_CFK-2.xlsx`, `fase0_detalle_ponderada_logit.parquet`, `fase0_detalle_union.parquet` _+42_. Ojo: un output con nombre armado por f-string cae aca y esta vivo. Lo que hay que mirar de verdad son los pesados.
+- Tienen productor y **ningun consumidor** (47): `cobertura_canonica.json`, `votaciones_nuevas.parquet`, `estado_bot.json`, `argentinadatos_actas.parquet`, `argentinadatos_votos.parquet`, `ckan_diputados_actas.parquet`, `ckan_diputados_votos.parquet`, `manual_2026_actas.parquet` _+39_. Es lo esperable en un entregable para humanos; en un intermedio significa que sobra.
+- **Ningun archivo de codigo los nombra** (64, 161.7 MB): `record_por_origen_fase2_detalle_harness_2026-09-27.parquet`, `record_por_origen_fase2_detalle_estricta_2026-09-27.parquet`, `votaciones_2003-2007_Kirchner.xlsx`, `votaciones_2015-2019_Macri.xlsx`, `votaciones_2007-2011_CFK-1.xlsx`, `votaciones_2011-2015_CFK-2.xlsx`, `fase0_detalle_ponderada_logit.parquet`, `fase0_detalle_union.parquet` _+56_. Ojo: un output con nombre armado por f-string cae aca y esta vivo. Lo que hay que mirar de verdad son los pesados.
 
 ## Puntos de entrada
 
@@ -399,40 +399,40 @@ Ordenados por cuantos otros archivos dependen de ellos. Tocar uno de arriba tien
 
 | Archivo | LOC | Lo usan | Simbolos |
 |---|---:|---:|---|
-| `rutas.py` | 212 | 40 | `_env`, `inventario` |
-| `variables/bloque/src/bloque.py` | 842 | 29 | `_canon_linaje`, `_norm_nombre`, `_cargar_padron_linaje_senado`, `_enriquecer_linaje_senado` |
-| `modelo/ensemble/src/nowcast_puertas.py` | 1020 | 20 | `_resolver_multietiqueta`, `_tema_auto`, `_bloque`, `era_de` |
-| `definiciones.py` | 261 | 17 | `periodo_parlamentario`, `gobierno_por_fecha`, `era_de`, `normalizar_mayoria_valor` |
-| `evaluacion/baseline/src/baseline_voto_individual.py` | 814 | 16 | `_norm_cond`, `_ContadorAvisos`, `perfil`, `_metricas` |
-| `modelo/ensemble/src/ensemble.py` | 413 | 13 | `_cargar_simulador`, `_cargar_proyector`, `componer`, `_root` |
-| `modelo/agregador_institucional/src/agregador.py` | 495 | 7 | `umbral_aprobacion`, `_prob_conductas`, `simular_votacion`, `_linea_bloque_por_acta` |
-| `modelo/ensemble/src/puerta_d.py` | 244 | 7 | `camara_revisora`, `_padron_de`, `_clip01`, `_logit` |
-| `variables/embudo/src/embudo.py` | 730 | 6 | `cargar_icg`, `_mes_rezagado`, `cargar`, `cargar_sqlite` |
-| `variables/proyecto/src/agente_taxonomias.py` | 495 | 5 | `Asignacion`, `ResultadoClasificacion`, `_lista_y_reglas`, `construir_prompt` |
-| `variables/proyecto/src/tema_por_proyecto.py` | 355 | 4 | `cargar_crosswalk`, `_resolver_denominador`, `taxonomias_de`, `temas_de_proyecto` |
+| `rutas.py` | 212 | 28 | `_env`, `inventario` |
+| `variables/bloque/src/bloque.py` | 842 | 20 | `_canon_linaje`, `_norm_nombre`, `_cargar_padron_linaje_senado`, `_enriquecer_linaje_senado` |
+| `modelo/ensemble/src/nowcast_puertas.py` | 1020 | 16 | `_resolver_multietiqueta`, `_tema_auto`, `_bloque`, `era_de` |
+| `definiciones.py` | 261 | 15 | `periodo_parlamentario`, `gobierno_por_fecha`, `era_de`, `normalizar_mayoria_valor` |
+| `evaluacion/baseline/src/baseline_voto_individual.py` | 814 | 14 | `_norm_cond`, `_ContadorAvisos`, `perfil`, `_metricas` |
+| `modelo/ensemble/src/ensemble.py` | 413 | 8 | `_cargar_simulador`, `_cargar_proyector`, `componer`, `_root` |
+| `modelo/ensemble/src/puerta_d.py` | 244 | 6 | `camara_revisora`, `_padron_de`, `_clip01`, `_logit` |
+| `modelo/agregador_institucional/src/agregador.py` | 496 | 5 | `umbral_aprobacion`, `_prob_conductas`, `simular_votacion`, `_linea_bloque_por_acta` |
+| `variables/embudo/src/embudo.py` | 730 | 4 | `cargar_icg`, `_mes_rezagado`, `cargar`, `cargar_sqlite` |
 | `evaluacion/baseline/src/censo_estadisticos.py` | 350 | 4 | `skill_ic_desde_sumas`, `dif_brier_ic_desde_sumas`, `_sha16`, `_git_head` |
+| `datos/canonica/src/entity_resolution.py` | 327 | 4 | `_strip`, `_name_key`, `_leg_id`, `_aplicar_alias` |
+| `datos/expedientes/src/enlace_senado.py` | 590 | 3 | `_vacio`, `normalizar_expediente`, `expediente_en_titulo`, `od_en_titulo` |
 
 ## Flujo interno
 
-- `evaluacion/baseline/src/` → `./` (20)
-- `modelo/ensemble/tests/` → `modelo/ensemble/src/` (18)
-- `evaluacion/baseline/src/` → `variables/bloque/src/` (15)
-- `evaluacion/baseline/src/` → `modelo/ensemble/src/` (12)
+- `modelo/ensemble/tests/` → `modelo/ensemble/src/` (16)
 - `modelo/ensemble/src/` → `./` (12)
-- `variables/proyecto/tests/` → `variables/proyecto/src/` (11)
-- `evaluacion/baseline/tests/` → `evaluacion/baseline/src/` (9)
-- `datos/expedientes/tests/` → `datos/expedientes/src/` (6)
+- `variables/proyecto/tests/` → `variables/proyecto/src/` (10)
+- `evaluacion/baseline/src/` → `./` (7)
+- `evaluacion/baseline/src/` → `variables/bloque/src/` (6)
 - `modelo/ensemble/src/` → `variables/bloque/src/` (6)
-- `datos/expedientes/src/` → `./` (5)
+- `datos/expedientes/tests/` → `datos/expedientes/src/` (5)
 - `datos/padron/tests/` → `datos/padron/src/` (5)
 - `datos/proyectos/tests/` → `datos/proyectos/src/` (5)
+- `evaluacion/baseline/tests/` → `evaluacion/baseline/src/` (5)
+- `modelo/ensemble/src/` → `evaluacion/baseline/src/` (5)
+- `variables/bloque/tests/` → `variables/bloque/src/` (5)
 
 ## Se tocan juntos
 
 Segun el historial de git. Si vas a cambiar uno, mira el otro.
 
 - `Nowcast Congreso Argy/coordinacion/EN-HUMANO.md` + `Nowcast Congreso Argy/coordinacion/ESTADO-DEL-PROYECTO.md` (56 commits)
-- `Nowcast Congreso Argy/.mapa/mapa.json` + `Nowcast Congreso Argy/MAPA.md` (50 commits)
+- `Nowcast Congreso Argy/.mapa/mapa.json` + `Nowcast Congreso Argy/MAPA.md` (51 commits)
 - `Nowcast Congreso Argy/coordinacion/ESTADO-DEL-PROYECTO.md` + `Nowcast Congreso Argy/tablero_datos.js` (50 commits)
 - `Nowcast Congreso Argy/coordinacion/EN-HUMANO.md` + `Nowcast Congreso Argy/tablero_datos.js` (47 commits)
 - `Nowcast Congreso Argy/.mapa/mapa.json` + `Nowcast Congreso Argy/coordinacion/ESTADO-DEL-PROYECTO.md` (33 commits)

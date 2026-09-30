@@ -149,7 +149,7 @@ modulador_icg.py      -> aplica el ICG por legislador (se importa, no se corre)
 ```bash
 python variables/proyecto/src/icg_contexto.py --resumen
 python variables/proyecto/src/estimar_gamma_individual.py --umbral 0.20 --boot 200
-python variables/proyecto/src/comparar_vias_icg.py       # regenera el comparador
+python variables/proyecto/src/comparar_vias_icg.py       # NEUTRALIZADO (08-11); sin salida HTML desde A6 (2026-09-30)
 python variables/proyecto/tests/test_icg_contexto.py     # 20 chequeos
 ```
 

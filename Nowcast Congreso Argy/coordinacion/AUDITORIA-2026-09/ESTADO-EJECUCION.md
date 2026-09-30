@@ -238,6 +238,25 @@ Método obligatorio: estimar con datos **anteriores** a *t* y evaluar **después
 3. `MAPA.md` sigue en «1 a mirar» de `verificar_regeneracion.py` (481 líneas contra un presupuesto de 460; eran 472 al empezar la auditoría): lo agrandan los archivos nuevos de A2–A5, no las eliminaciones. Es el mismo control que ya figuraba en la línea base.
 4. **`CLAUDE.md`** todavía manda actualizar `tablero_datos.js` (regla del TABLERO DE CONTROL) y cita los HTML; el bloque MODO AUDITORÍA ya prevalece sobre eso. Se corrige en A10, como dice el plan.
 
+### A7 — pre-registro (2026-09-30, escrito ANTES de mover nada)
+
+**Qué se mueve.** P0 y P1 del §5 del informe, con estas precisiones que salieron del relevamiento:
+- **Método.** `git mv` a `coordinacion/archivo/A7-poda-2026-09/<ruta original>`, con el sufijo `.archivado` en el código, para que ni `pytest`, ni el bucle de scripts del CI, ni el indexador, ni `test_rutas*` lo tomen como código vivo; restaurar es `git mv` y quitar el sufijo. Los `.md` se mueven tal cual. **Nada sale de git** (Franco: sólo el HTML y el panel salen de git). Los JSON de resultados quedan en `evaluacion/baseline/outputs/` (evidencia que citan los ADR). Un `README.md` en la carpeta del archivo dice qué es cada cosa y cómo restaurarla.
+- **P0:** `composicion_capitulos`, `tema_por_capitulo`, `capitulos_nombre`, `backtest_cadena` (con sus 4 tests); los stubs «dados de baja» de `ensemble.py` (`componer`, `_p_llega_de_embudo`, `nowcast_proyecto`, `nowcast_auto`, `imprimir_tarjeta`, `main`, `_BAJA_V1`; `test_ensemble.py` los fija hoy y se ajusta); `CONECTAR-GIT.md`, `0009-BORRADOR-…md`, `_wtest`. Se **queda** `_cargar_proyector` (lo usa `puerta_d`).
+- **P1:** `prueba1/2/3`, `validar_leybases_por_capitulos`, `validar_piloto_capitulos`, `validar_piloto_titulos`, `diagnostico_senado`, `firma_tematica_desvio/fase0_celdas/fase1_2` (+ test), `medir_estabilidad_record_por_tema`, `fase0_control_temas`, `medir_rec_por_tema`, `record_por_origen` y `_brazos` (+ test).
+- **EXCEPCIÓN — NO se mueve:** `fase1_rec_por_tema.py` (+ `test_fase1_rec_por_tema.py`). `medir_record_por_tema_limpio.py` —la medición limpia de ADR-0034, cuyo resultado cita `QUE-SE-MIDE.md`— importa `K_SHRINK` y `_areas_de` de él; el informe decía «nadie los importa» y para éste no era cierto (regla 9: ante la duda, no se hace y se anota).
+- **«Rescatar `split_half` y el bootstrap» (P1):** el bootstrap por ley ya vive en `censo_estadisticos.py` (A2). `split_half` queda en el archivo (existe una versión en `record_por_origen` y otra en `firma_tematica_fase1_2`); **no se agrega código a módulos vivos** (regla 3) y su lugar se documenta en el README del archivo.
+
+**Confirmación que exige el plan, hecha antes de mover:** nada de lo que se mueve pertenece a δ, θ, ψ, β ni al ICG. (1) Por nombre (`beta_dictamen`, `sobre_tablas`, `estimar_psi/theta`, `icg`, `delta_caracter`, `condicionar`, `puerta_a`…): sólo `record_por_origen.py` los nombra, y es para **citar** dos veces el criterio de `estimar_psi_arrastre.py` en un docstring; no lo importa. (2) Ningún módulo del motor ni ningún estimador importa a un candidato (grafo de imports de todo el repo). (3) Ningún dato que escriban los candidatos lo lee algo fuera de ellos (`.mapa`): sólo quedan sus JSON de resultados, que no se mueven.
+
+**Panel y umbral (con el motor real; valor anterior = código previo a A7):**
+1. Los 9 casos SIMPLE del panel de A5 (referencia: la salida de A5, motor sin cambios desde entonces salvo docstrings): comparación completa, **0 campos distintos, `max|ΔP| = 0`**; y el test del JSON de regresión pasa.
+2. Una porción del censo (actas del 2026-05-01 al 2026-07-01, mismo código y mismas variantes que `censo_detalle_paralelo.py`): `p` y todas las `p__*` **idénticas voto a voto**, mismo número de votos y de actas (criterio (ii) del §5).
+3. Suite: `pytest` igual (54 pasan); scripts: los 64 de hoy **menos los 6 tests que se mueven** (`test_composicion_capitulos`, `test_backtest_cadena`, `test_capitulos_nombre`, `test_tema_por_capitulo`, `test_firma_tematica`, `test_record_por_origen`) = **58**, todos en 0. El único test que se modifica es `test_ensemble.py` (los stubs).
+4. `.mapa/buscar.py --archivo <candidato>` y el grafo de imports: sólo tests, validaciones o candidatos entre sí.
+
+**Orden de los commits (uno por línea de ADR):** capítulos/pivotes/Senado (P1, ADR-0029/0030) → `composicion_capitulos`, `capitulos_nombre`, `tema_por_capitulo` (P0) → firma temática (ADR-0032) → estabilidad, fase 0 y `medir_rec` (ADR-0028/0031) → récord por origen (ADR-0033) → `backtest_cadena` → stubs de `ensemble.py` → documentos → índice y evidencia.
+
 ## Bitácora de alcance
 
 Todo cambio de alcance se escribe **acá antes de ejecutarse**. Sólo Franco lo autoriza, con la frase `CAMBIO DE ALCANCE:`.

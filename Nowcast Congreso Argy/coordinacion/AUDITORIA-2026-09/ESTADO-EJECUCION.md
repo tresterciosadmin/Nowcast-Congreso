@@ -5,7 +5,7 @@
 > Decisiones y su porqué: `AUDITORIA-INTEGRAL-2026-09.md` §9. Reglas del carril: §9.9. Definición numérica de "funcionando": §9.4.
 > Estados: `PENDIENTE` · `EN CURSO` · `HECHO` (con la evidencia: comando y salida, o sha del commit) · `DESCARTADO` (con el motivo escrito y la firma de Franco).
 
-**Última actualización:** 2026-09-30 — A1, A2 y A3 hechos (CI verde confirmado por Franco, también con los pines); A4 a A8 hechos; A9 hecho (Franco confirmó en *Actions*: los tres en verde); A10 hecho: **fase A CERRADA por Franco el 2026-09-30** (evidencia de salida abajo); **fase B en curso (2026-09-30): B1 hecho** (evidencia abajo); B2 hecho (evidencia abajo); próximo: B3.
+**Última actualización:** 2026-09-30 — A1, A2 y A3 hechos (CI verde confirmado por Franco, también con los pines); A4 a A8 hechos; A9 hecho (Franco confirmó en *Actions*: los tres en verde); A10 hecho: **fase A CERRADA por Franco el 2026-09-30** (evidencia de salida abajo); **fase B en curso (2026-09-30): B1 hecho** (evidencia abajo); B2 hecho (evidencia abajo); B3 empezado (pre-registro escrito y commiteado antes de codificar).
 **Dónde se trabaja:** `main`, commits chicos (uno por corrección), con la suite en verde **antes** de cada commit; sin `git push` (lo hace Franco). Los bots empujan a `main`: no se les toca el permiso. Rama sólo si una corrección no puede dejar la suite en verde entre commits (vida corta: se mergea en la misma sesión).
 **Punto de partida (para deshacer):** el tag local `auditoria-punto-de-partida` marca `main` antes de la primera corrección.
 
@@ -32,7 +32,7 @@
 |---|---|---|---|
 | **B1** | Registro de parámetros **generado desde el código** + `test_defaults_fijados` | cambiar un default rompe un test | **HECHO** 2026-09-30: con `TAU_DEFAULT = 1.2` en el archivo real el test sale con código 1 (evidencia en «B1 — registro de parámetros y `test_defaults_fijados`»; commits `490f019`, `42f4a7b`, `2572863`) |
 | **B2** | `invariancia_al_futuro.py` como test de la suite | una fuga sintética (usar datos de la fecha) lo hace fallar | **HECHO** 2026-09-30: con la fuga puesta en el archivo real del harness (fecha o misma ley) el test sale con código 1 (evidencia en «B2 — `invariancia_al_futuro` como test de la suite»; commits `3ff5268`, `b90741a`) |
-| **B3** | `control_independiente.py` como test de regresión | el control reproduce 0,1335 y detecta el desvío | PENDIENTE |
+| **B3** | `control_independiente.py` como test de regresión | el control reproduce 0,1335 y detecta el desvío | **EN CURSO** (pre-registro: «B3 — pre-registro») |
 
 ## Fase C — Métrica de verdad y calibración declarada
 
@@ -492,6 +492,33 @@ Franco: **(1) «dejalo»** → `fase1_rec_por_tema.py` y su test **se quedan**. 
 **Límites (declarados en el docstring del test):** (1) es una prueba **determinística sobre una muestra fija** (semilla 7): una fuga que sólo toque actas fuera de la muestra pasa; para una revisión de fondo está el modo de la auditoría (`--por-era 30`, 150 actas, ≈ 17 min). (2) **La sensibilidad a la fuga por la misma ley es del 48 %**, no del 100 %: una fuga *más sutil* que la inyectada (que toque a menos legisladores) puede no moverse en las 8 actas. (3) No cubre dictámenes ni taxonomías posteriores (β, `TEMA_AUTO`, `RECORD_POR_TEMA` no entran al harness), la ficha de desvío (`disciplina_individual.csv`, toda la historia) ni la presencia. (4) Un gate **estadístico** no atrapa las fugas (MDE 0,052 a 500 leyes): esta prueba y el gate pareado de E3 son dos instrumentos distintos y hacen falta los dos.
 
 **Criterio de salida de B2: cumplido** — una fuga sintética (usar datos de la fecha o de la misma ley) pone el test en rojo, demostrado sobre el archivo real del harness; pasa en `HEAD`.
+
+### B3 — pre-registro (2026-09-30, escrito ANTES de codificar el test y de medir los criterios)
+
+**Estado de partida:** `HEAD` `f98ee51` (B2 cerrado), árbol limpio, suite 54 + 60 scripts en 0.
+
+**Qué es.** `control_independiente.py` (`coordinacion/AUDITORIA-2026-09/`, resultado en `resultados/control_independiente.json`): reimplementa, **desde el voto crudo y sin importar el motor ni el harness** (se verifica por AST), un puñado de predictores del voto emitido y los mide sobre los mismos votos del censo, con la misma métrica (skill contra la climatología de la muestra). Responde: ¿el motor le gana a un predictor trivial hecho aparte?, ¿un récord propio con fecha estricta y otra ley cae cerca del 0,13 (o sea que el 0,1333 no depende del harness)? y ¿este mismo código detecta una fuga si se la ponemos a propósito? Su resultado de la auditoría: récord encogido con origen **0,1335** (motor 0,1333); con fuga del mismo día **0,2039**; sin origen 0,048. Regla 5: cada invariante lleva su control positivo.
+
+**El problema de diseño (el que decide todo lo demás).** El control lee el **detalle del censo** (`censo_detalle_2026-09-28.parquet`, 37 MB, ignorado por git) para saber qué votos se evaluaron y a qué ley pertenecen. Un test de la suite **no puede depender de un archivo ignorado** (el CI no lo tiene). Lo que sí viaja por git: la canónica (`votos_resuelto`, `actas_canonico`), `origen_por_acta` y, desde A2, `censo_estadisticos_2026-09-28.json`, que trae por acta la **ley**, la fecha, la era, el `n`, el `Σy` y las sumas del motor (Σ(p−y)²). **Medí antes de fijar umbrales** (prueba de factibilidad, esta sesión, no es un criterio): con esos datos y el mismo código de predictores el récord encogido con origen da **0,1353** (contra 0,1335 con el detalle) y el control de fuga **0,2039** (igual). La diferencia: el harness descarta ≈ 0,7 % de los votos (696.792 reconstruidos contra 691.845; 714 actas con `n` distinto) y sin el detalle no se sabe cuáles. **Consecuencia honesta:** en el CI el control se reproduce **dentro de 0,002 de 0,1335 y contra su propia ancla**; **el 0,1335 exacto sólo se puede reproducir donde está el detalle** (la PC de Franco).
+
+**Qué se construye.** `git mv` de `coordinacion/AUDITORIA-2026-09/control_independiente.py` a `evaluacion/baseline/tests/test_control_independiente.py` (mismo historial; como B2). Sin argumentos corre el test; con `--detalle X --salida Y` conserva el modo de la auditoría (con el detalle, bootstrap de 2.000 réplicas, JSON). Dos cargadores: `cargar(detalle)` (el exacto, el de la auditoría) y `cargar_desde_git()` (el del CI, con la ley del JSON de A2). Los predictores y la métrica son **una sola copia**. El test calcula **puntos** (skill), no ICs: el bootstrap queda en el modo de la auditoría. La independencia se declara acotada: el control comparte con el harness **la agrupación de actas en leyes** (`ley_por_acta`, que llega por el JSON) y **las sumas del motor** (también del JSON); no comparte código.
+
+**Qué fija el test (umbrales fijados ahora):**
+1. **Independencia por AST, con su control positivo:** el archivo no importa `modelo`, `variables`, `evaluacion`, `definiciones`, `rutas`, `nowcast_puertas`, `baseline_voto_individual`, `ensemble`, `bloque` ni `agregador`; y el verificador **marca** tres textos sintéticos que sí los importan (`import nowcast_puertas`, `from rutas import RAIZ`, `from evaluacion.baseline.src import x`).
+2. **Reconstrucción exacta de lo que viaja por git:** 696.792 votos evaluados y 3.731 leyes (determinístico dados los archivos versionados).
+3. **Reproduce el 0,1335 (en el CI, acotado):** récord encogido con origen = **0,1353 ± 0,0005** (su ancla) y **|0,1353 − 0,1335| ≤ 0,005** (el publicado con el detalle). Motor recalculado desde las sumas del JSON = **0,1333 ± 0,0002**, y **|motor − independiente| ≤ 0,01** (el 0,1333 no es un artefacto del harness).
+4. **Control positivo de fuga:** el récord con fuga del mismo día da **al menos 0,05 más** que el limpio (hoy 0,2039 contra 0,1353: 0,069). Si el control no separa la fuga, el instrumento no puede ver fugas.
+5. **Detecta el desvío** (control positivo de la comparación): (a) una deriva sintética del motor —sus Σ(p−y)² del JSON multiplicadas por 0,88, que lo llevan a un skill ≈ 0,2— **se marca** (diferencia > 0,01), y sin tocar **no se marca**; (b) una deriva del lado independiente —el mismo predictor **sin origen** (skill ≈ 0,05)— **se marca** contra el ancla; (c) una deriva del parámetro —K del encogimiento 5 → 50— mueve el skill más de 0,01 y **se marca**. Las tres salen de una sola función de diagnóstico (`diagnosticar`) que el test y los sabotajes comparten.
+6. **El 0,1335 exacto, sólo donde hay detalle:** si `censo_detalle_2026-09-28.parquet` existe, `cargar(detalle)` reproduce **0,1335 ± 0,0001** (récord encogido con origen), el motor **0,1333 ± 0,0001** y el control de fuga **0,2039 ± 0,0002**. Si no existe, el chequeo dice **SALTEADO** y por qué (práctica del repo: lo que necesita un archivo que no viaja se saltea, no falla). Esta sección **no cuenta** para el criterio del CI; sí para el de la PC.
+
+**Criterios de salida (umbral: 0 fallas):**
+1. **Pasa en `HEAD`** con los seis puntos, en la PC (3.14) y en un **checkout limpio** (`git archive`, Python 3.11, pines; sin el detalle: la sección 6 se saltea, el resto pasa).
+2. **Detecta el desvío sobre el archivo real:** se edita en disco (a) `K = 5.0` → `50.0` y (b) se agrega `import rutas` al archivo del control; en cada caso el test **sale con código 1** y dice qué. Se revierte con `git checkout`.
+3. **Tiempo:** ≤ **3 minutos** en la PC; se informa el de 3.11. Si no entra, se reduce lo que se carga **antes** de commitear y se dice.
+4. **Suite:** `pytest` sigue en 54; los scripts pasan de 60 a **61, todos en 0**, árbol igual antes y después; el checkout limpio pasa.
+5. **El motor, el harness y el JSON de A2 no cambian:** `git diff` de `modelo/ variables/ definiciones.py rutas.py evaluacion/baseline/src evaluacion/baseline/outputs` vacío. El modo de la auditoría (`--detalle`) reproduce el resultado de la fase 2 (0,1335 y IC [0,0687; 0,1964]) — comprobado en esta PC, donde está el detalle.
+
+**Qué no hace:** no compara ICs en el test (los puntos bastan para detectar deriva; el bootstrap sigue en el modo de la auditoría); no sustituye a C1 (la métrica de verdad con IC, generada por un solo comando); no valida las etiquetas de origen (fuera del plan).
 
 ## Bitácora de alcance
 

@@ -34,7 +34,6 @@ Nowcast Legislativo Argentino: estima la probabilidad de sanción de proyectos d
 4. `coordinacion/PROTOCOLO-GIT.md` — cómo ramificar y mergear sin conflictos.
 5. **`MAPA.md`** (raíz) — el índice del repo, generado. Dice qué hay en cada módulo, qué archivos son centrales y quién consume a quién. **Leerlo antes de abrir cualquier archivo de código**, y usar `python3 .mapa/buscar.py "<termino>"` para ubicar algo sin escanear el repo. Desde el 08-09 el mapa trae además un **inventario de datos**: 140 archivos (parquet, csv, la base, los xlsx) con su forma, su peso, **si viajan por git** y quién los escribe y quién los lee. Antes de reconstruir una tabla, preguntar: `python3 .mapa/buscar.py --dato <termino>`. Ya pasó dos veces que se rehizo trabajo que existía en disco y no estaba indexado en ningún lado.
 6. El `README.md` del módulo que vayas a tocar (contrato de entradas/salidas).
-7. `TABLERO-CONTROL.html` (raíz) — el mapa ejecutivo; se actualiza vía `tablero_datos.js` (regla más abajo).
 
 ## Regla de oro anti-colisión: **un módulo, un dueño, una rama**
 - El repo está partido en módulos (`datos/`, `variables/<variable>/`, `modelo/`, etc.). Cada módulo es una unidad de trabajo independiente con un contrato de salida estable.
@@ -121,9 +120,6 @@ como inactivo: así no se pierde qué se sacó y por qué.
 
 **Por qué existe:** dos incidentes reales. (1) El equipo diagnosticó el linaje del Senado sobre un parquet anterior a un fix ya pusheado y construyó un corrector que no cambia ninguna fila. (2) Una fila mal curada metió 610 proyectos falsos en una señal del modelo. En ambos casos el aviso existía en la bitácora, pero enterrado entre entradas: **lo urgente necesita un lugar donde no se pueda no verlo.**
 
-## Regla del TABLERO DE CONTROL: **el mapa se actualiza en cada cambio**
-En la raíz vive `TABLERO-CONTROL.html` (se abre con doble click), el tablero ejecutivo que consolida el plan de la plataforma con el estado real. Su única fuente de datos es **`tablero_datos.js`** — ese archivo es OBLIGATORIO actualizarlo en el mismo PR que ESTADO y EN-HUMANO cuando cambia algo relevante: (1) fecha y autor, (2) el `estado` de lo que tocaste (modulos_plataforma / etapas / modulos_repo), (3) un hito nuevo arriba de todo en `hitos` (1-3 frases, en humano), (4) kpis/metricas si cambiaron los números. **NO edites `TABLERO-CONTROL.html`** (es el diseño, fijo). Estados válidos: HECHO | EN CURSO | PARCIAL | PENDIENTE | FUTURO | REPLANTEADO. Un PR que cambia el estado del proyecto y no actualiza el tablero no se mergea.
-
 ## Régimen de archivos descartables: **todo lo borrable va a `Archivos_Borrar/`**
 El entorno de Claude **no puede borrar archivos** (en la máquina de Franco, además, la carpeta está en OneDrive). Por eso, todo lo temporal o regenerable (cachés, descargas crudas, logs de validación, salidas intermedias, pruebas) se escribe en `Archivos_Borrar/` para que el dueño humano lo borre a mano. Nada ahí es fuente de verdad.
 
@@ -163,7 +159,7 @@ El entorno de Claude **no puede borrar archivos** (en la máquina de Franco, ade
 
 El sandbox donde corre Claude monta la carpeta con límites que **no se anuncian solos**. Cada uno ya produjo trabajo tirado:
 
-1. **La raíz del repo está UN NIVEL ARRIBA de lo que Claude ve.** Se monta `Nowcast-Congreso\Nowcast-Congreso\Nowcast Congreso Argy`, pero la raíz git es `Nowcast-Congreso\Nowcast-Congreso`. Consecuencias: **`.github/workflows/` vive en la raíz** (lo que se escriba en la subcarpeta GitHub no lo lee nunca) y las rutas dentro de un workflow llevan el prefijo `"Nowcast Congreso Argy/"` **entrecomillado** (tiene espacios). Además `git <cmd> tablero_datos.js` desde la subcarpeta falla: git lo ve root-relative.
+1. **La raíz del repo está UN NIVEL ARRIBA de lo que Claude ve.** Se monta `Nowcast-Congreso\Nowcast-Congreso\Nowcast Congreso Argy`, pero la raíz git es `Nowcast-Congreso\Nowcast-Congreso`. Consecuencias: **`.github/workflows/` vive en la raíz** (lo que se escriba en la subcarpeta GitHub no lo lee nunca) y las rutas dentro de un workflow llevan el prefijo `"Nowcast Congreso Argy/"` **entrecomillado** (tiene espacios). Además `git <cmd> <archivo>` desde la subcarpeta falla: git lo ve root-relative.
 2. **Los archivos que empiezan con punto: depende de la sesión, NO asumir.** El 04-08 `ls -a` no mostraba `.git` ni `.github`, y de ahí salieron un instructivo entero para "conectar git" (ya estaba conectado) y un workflow que duplicaba al bot diario que corría desde julio. **El 06-08 sí se veían** `.github`, `.gitignore`, `.env` y `.gitattributes` — el comportamiento del mount cambió entre sesiones sin avisar. `.git` sigue sin verse, pero por el punto 1: no está en esta carpeta, está un nivel arriba. **Moraleja, que es más fuerte que el síntoma:** no vale ni "no lo veo, no existe" ni "la sesión pasada no se veía, tampoco ahora". Se mira, y si no aparece algo que debería estar, se pregunta.
 3. **El mount trunca archivos grandes al leerlos**, y el read-modify-write propaga el corte. Verificar `wc -c` + `tail` antes de reescribir; en JS/JSON chequear balance de llaves después. **Ya dañó dos archivos en disco:** `CLAUDE.md` (detectado y reparado el 04-08) y `coordinacion/PLAN-DE-TRABAJO.md`, que quedó cortado a mitad de una palabra en "Mapa de paralelización" y recién se detectó el **06-08**. Si un archivo termina raro, sospechar de esto antes que de cualquier otra cosa.
 4. **~45 s por comando y los procesos en background no sobreviven** entre llamadas. Las corridas pesadas (pipelines, exports, backtests) se le pasan al humano listas para PowerShell, con lo que tiene que dar cada paso.
@@ -214,7 +210,6 @@ El estado vivo está, y sólo está, acá:
 | `coordinacion/ESTADO-DEL-PROYECTO.md` | bitácora técnica, entrada más reciente arriba |
 | `coordinacion/TABLERO.md` | qué módulo está tomado y por quién |
 | `coordinacion/EN-HUMANO.md` | lo mismo sin tecnicismos |
-| `TABLERO-CONTROL.html` + `tablero_datos.js` | mapa ejecutivo, KPIs e hitos |
 
 Lo único que no cambia y conviene tener presente al abrir el repo: **la Fase 0 está cerrada** y su resultado ordena todo lo demás — predecir la *dirección* del voto individual mirando al bloque acierta ≈0,99, así que ahí no hay negocio. La incertidumbre vive en **asistencia/quórum**, **embudo**, **posición de bloque** y las **10-20 bisagras** de las votaciones peleadas. El esquema canónico está en `docs/schemas` (schema_version=1) y la estrategia de datos en ADR-0002.
 

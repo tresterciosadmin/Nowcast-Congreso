@@ -5,7 +5,7 @@
 > Decisiones y su porqué: `AUDITORIA-INTEGRAL-2026-09.md` §9. Reglas del carril: §9.9. Definición numérica de "funcionando": §9.4.
 > Estados: `PENDIENTE` · `EN CURSO` · `HECHO` (con la evidencia: comando y salida, o sha del commit) · `DESCARTADO` (con el motivo escrito y la firma de Franco).
 
-**Última actualización:** 2026-09-30 — A1, A2 y A3 hechos (CI verde confirmado por Franco, también con los pines); A4 a A8 hechos; A9 hecho (Franco confirmó en *Actions*: los tres en verde); próximo ítem: A10.
+**Última actualización:** 2026-09-30 — A1, A2 y A3 hechos (CI verde confirmado por Franco, también con los pines); A4 a A8 hechos; A9 hecho (Franco confirmó en *Actions*: los tres en verde); A10 hecho: **fase A completa** (evidencia de salida abajo); próximo: fase B, ítem B1, a la espera de que Franco vea la salida de la fase A.
 **Dónde se trabaja:** `main`, commits chicos (uno por corrección), con la suite en verde **antes** de cada commit; sin `git push` (lo hace Franco). Los bots empujan a `main`: no se les toca el permiso. Rama sólo si una corrección no puede dejar la suite en verde entre commits (vida corta: se mergea en la misma sesión).
 **Punto de partida (para deshacer):** el tag local `auditoria-punto-de-partida` marca `main` antes de la primera corrección.
 
@@ -22,7 +22,7 @@
 | **A7** | **Poda P0 y P1** (decisión 10; ≈ 7.000 líneas). **Antes:** confirmar que nada de lo que se mueve pertenece a δ, θ, ψ, β ni al ICG (decisión 2 y ronda 2, punto 9 —ICG—, ver §9.1b del informe); `comparar_vias_icg.py` **sale de P0** | Claude | los criterios de salida del §5 del informe (`max|ΔP| = 0`, suite igual menos lo movido) | **HECHO** 2026-09-30 con **una excepción confirmada por Franco** (`fase1_rec_por_tema` se queda) y los stubs de `ensemble.py` **sacados por decisión suya** (ver «Evidencia de A7» y «Resolución de las excepciones»): `max\|ΔP\| = 0`, suite igual menos lo movido |
 | **A8** | **Worktree y rama `suspicious-lalande`** (d9): rescatar `c916e0e` a una rama (`rescate-taxonomias`) y avisar a Franco para que borre el worktree y `Archivos_Borrar/repro/` | Claude + Franco | el commit queda a salvo; worktree y `repro/` eliminados por Franco | **HECHO** 2026-09-30: el commit `c916e0e` está a salvo en `rescate-taxonomias`; **worktree y `Archivos_Borrar/repro/` eliminados por Franco y verificados** (ver «Evidencia de A8») |
 | **A9** | **Bots** (d10): comprobar que los tres workflows siguen sanos después de A6 y A7 (rutas, insumos); **no** activar protección de rama con "requerir PR" | Claude | los workflows corren sin cambios de permisos; Franco confirma en *Actions* | **HECHO** 2026-09-30 (los tres workflows en verde en *Actions*, confirmado por Franco) |
-| **A10** | Actualizar `CLAUDE.md`: sacar la regla del TABLERO DE CONTROL y las referencias a los HTML y al mapa eliminados; **conservar** el bloque MODO AUDITORÍA | Claude | `tests/test_rutas_citadas_existen.py` y `tests/test_rutas.py` verdes | PENDIENTE |
+| **A10** | Actualizar `CLAUDE.md`: sacar la regla del TABLERO DE CONTROL y las referencias a los HTML y al mapa eliminados; **conservar** el bloque MODO AUDITORÍA | Claude | `tests/test_rutas_citadas_existen.py` y `tests/test_rutas.py` verdes | **HECHO** 2026-09-30 (commit `edcc93e`; ver «A10 — `CLAUDE.md`» y «Salida de la fase A») |
 
 **Salida de la fase A:** suite igual o mejor que la línea base; `nowcast_puertas.py` corre; mayorías especiales devuelven sin número; sólo los 6 fixtures HTML; CI en verde confirmado por Franco.
 
@@ -337,6 +337,28 @@ Franco: **(1) «dejalo»** → `fase1_rec_por_tema.py` y su test **se quedan**. 
 **Lo que falta para cerrar A9 (de Franco):** en *Actions*, correr a mano (*Run workflow*) los tres y ver que terminan en verde; `bot-diario` y `padron-vivo` **commitean a `main`** si hay novedades (esperable: el DAE 77 y el reporte del padrón), así que antes del próximo `git push` local hay que hacer `git pull --rebase`. Si además se configura la regla de `main` del §9.6 d10 (sólo *Restrict deletions* y *Block force pushes*), **no** marcar *Require a pull request* ni *Require status checks*.
 
 **Cierre de A9 (2026-09-30, confirmado por Franco).** Franco corrió a mano los tres workflows en *Actions*: **los tres en verde**. La corrida de `padron-vivo` dejó el commit `998c8d8` («padrón vivo: limpio 2026-09-30»: sólo `estado_vigilancia.json` y `vigilancia_padron.md`), como se esperaba; `main` local se puso al día con `origin/main` por avance rápido (no había nada propio que perder). **Decisión de Franco sobre los dos hallazgos: «dejá esas mejoras para el final»** → siguen en `PENDIENTES-POST-AUDITORIA.md` y no se tocan durante la auditoría; **D6 tiene que declarar que la serie del ICG llega a 2026-07** (la página de UTDT ya trae hasta 2026-09).
+
+### A10 — `CLAUDE.md` (2026-09-30; commit `edcc93e`)
+
+**Criterios fijados antes de editar:** (1) fuera del bloque MODO AUDITORÍA, `CLAUDE.md` no nombra `TABLERO-CONTROL.html`, `tablero_datos.js`, `MAPA-MODELO`, `Nowcast-Puertas` ni «TABLERO DE CONTROL»; (2) el bloque MODO AUDITORÍA queda **idéntico byte a byte**; (3) el diff son sólo las piezas previstas; (4) `tests/test_rutas_citadas_existen.py` y `tests/test_rutas.py` verdes (el criterio del plan).
+
+**Qué se sacó** (24.319 → 23.295 bytes; 1 línea cambiada y 6 borradas): (a) el ítem 7 del «Orden de lectura obligatorio» (`TABLERO-CONTROL.html`); (b) la sección entera «Regla del TABLERO DE CONTROL»; (c) la fila `TABLERO-CONTROL.html + tablero_datos.js` de la tabla del estado vivo; (d) en «Límites del entorno», el ejemplo `git <cmd> tablero_datos.js` pasó a `git <cmd> <archivo>` (el resto de la frase, igual). **No se tocó** `TABLERO.md` (el tablero de tareas) ni su regla de reclamar módulos: es otra cosa y el bloque MODO AUDITORÍA la suspende mientras dure.
+
+**Medido:** (1) `grep` de esos nombres: **0 fuera del bloque** y 1 dentro (línea 9, «actualizar `tablero_datos.js`», en la lista de reglas que el bloque dice que prevalece sobre); (2) el script de edición compara el bloque antes y después y aborta si difiere: **idéntico**; (3) `git diff`: sólo esas cuatro piezas; (4) `test_rutas_citadas_existen` y `test_rutas`: **5 passed**; suite completa **54 passed**.
+
+**Dos observaciones, ninguna abre trabajo:** (a) la mención de `tablero_datos.js` dentro del bloque MODO AUDITORÍA no se toca (el plan manda conservarlo y sólo Franco lo retira): desaparece con el bloque al cerrar la auditoría. (b) Los dos tests del criterio miran docstrings y comentarios de `.py`, **no `CLAUDE.md`**: no detectarían una cita rota en este archivo, así que la verificación de (1) es el `grep`.
+
+### Salida de la fase A (2026-09-30, sobre `edcc93e`; comando y salida)
+
+| criterio de salida del plan | evidencia |
+|---|---|
+| suite igual o mejor que la línea base | `python -m pytest tests/ datos/proyectos/tests -q` → **54 passed** (línea base, `00-linea-base.md` §7: 40 pasan y 1 falla, `test_insumos_del_motor_viajan`). Los scripts `test_*.py`: **58 de 58 en 0** (los 64 del inicio menos los 6 que movió A7), árbol de trabajo idéntico antes y después |
+| `nowcast_puertas.py` corre | `python modelo/ensemble/src/nowcast_puertas.py diputados --fecha 2026-06-01 --origen EJECUTIVO` → exit 0, **P(APROBACIÓN) 61,3 %** (la salida de referencia que fija `test_panel_regresion`) |
+| mayorías especiales devuelven sin número | `python modelo/ensemble/tests/test_mayorias_especiales_apagadas.py` → **191/191 OK**; con `--tipo-mayoria "Dos tercios"` la salida es «SIN NÚMERO — P(aprobación) sólo se estima para mayoría simple. Este proyecto pide DOS_TERCIOS…» |
+| sólo los 6 fixtures HTML | `git ls-files "*.html"` → exactamente 6, todos en `tests/fixtures/` de `datos/bot_recoleccion` (2), `datos/seguimiento` (2) y `datos/senado` (2) |
+| CI en verde, confirmado por Franco | confirmado por Franco en *Actions* en las entregas de A2 a A8 («todo verde») y los tres bots en A9. Lo posterior —documentos, `verificar_bots.py` (no es un test) y `CLAUDE.md`— se ve en *Actions* tras el próximo `git push` |
+
+**La fase A está completa.** Lo estacionado que salió de ella (no se hace durante la auditoría): arreglo del parser del ICG (**D6 declara que la serie llega a 2026-07**) y los DAE 75 y 76; el arreglo de `rescate-taxonomias`; la decisión sobre `mapa_modelo_semantica.json` (ver `PENDIENTES-POST-AUDITORIA.md`).
 
 ## Bitácora de alcance
 

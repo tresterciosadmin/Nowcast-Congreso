@@ -264,7 +264,7 @@ if (EnRango 5) {
   # y tampoco estaban. Se vio en el cierre de la limpieza -- la canonica quedo del
   # 10-09 y estas dos salidas eran del 20-08 y del 08-08:
   #   - disciplina_individual.csv lo leen agregador.py, estimar_gamma_individual.py
-  #     y comparar_vias_icg.py. Es un insumo del panel de puertas.
+  #     y comparar_vias_icg.py. Es un insumo del motor (`nowcast_puertas`).
   #   - serie_bloque.parquet es la serie de cohesion y postura por bloque.
   # Van DESPUES de origen_por_acta porque bloque.py lo lee.
   Correr 5 "disciplina"        @("modelo\voto_individual\src\disciplina.py")
@@ -287,9 +287,14 @@ if (EnRango 7) {
 }
 
 if (EnRango 8) {
-  Titulo 8 "Panel de puertas + reindexar el mapa" "5"
-  Correr 8 "panel" @("casos\nowcast_puertas_html.py", "diputados", "--fecha", "2026-06-01",
-                     "--origen", "EJECUTIVO")
+  Titulo 8 "Panel de regresion (JSON) + reindexar el mapa" "5"
+  # El panel HTML (Nowcast-Puertas.html) se elimino en la auditoria 2026-09 (A6). Queda su
+  # numero, guardado como JSON: modelo\ensemble\tests\test_panel_regresion.py corre el motor con
+  # los mismos argumentos y exige que de EXACTAMENTE esto. Si el numero cambio a proposito,
+  # este paso regenera el JSON y su diff en git es la evidencia de cuanto se movio.
+  Correr 8 "panel-regresion" @("modelo\ensemble\src\nowcast_puertas.py", "diputados",
+                               "--fecha", "2026-06-01", "--origen", "EJECUTIVO",
+                               "--json", "modelo\ensemble\outputs\panel_regresion.json")
   Correr 8 "mapa" @(".mapa\indexar.py", ".")
 }
 

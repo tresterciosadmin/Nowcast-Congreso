@@ -197,20 +197,18 @@ else:
     except Exception as e:  # noqa: BLE001
         check(False, "baseline ilegible", str(e))
 
-# ── 6. el panel ────────────────────────────────────────────────────────────
-linea("\n6. PANEL DE PUERTAS — un solo umbral")
-f = RAIZ / "Nowcast-Puertas.html"
+# ── 6. el panel de regresion ───────────────────────────────────────────────
+# (el panel HTML se elimino en la auditoria 2026-09, A6: queda su numero, como JSON)
+linea("\n6. PANEL DE REGRESION — el numero del motor, guardado")
+f = RAIZ / "modelo/ensemble/outputs/panel_regresion.json"
 if not f.exists():
-    check(False, "falta Nowcast-Puertas.html", "lo escribe el paso 8")
+    check(False, "falta panel_regresion.json", "lo escribe el paso 8")
 else:
-    h = f.read_text(encoding="utf-8", errors="ignore")
-    i = h.find("const DATA = ")
-    dat = {}
-    if i >= 0:
-        try:
-            dat = json.loads(h[i + len("const DATA = "): h.index("\n", i)].rstrip(";"))
-        except Exception:  # noqa: BLE001
-            pass
+    try:
+        dat = json.loads(f.read_text(encoding="utf-8"))
+    except Exception as e:  # noqa: BLE001
+        dat = {}
+        check(False, "panel_regresion.json ilegible", str(e))
     c = (dat.get("camaras") or {}).get("origen") or {}
     check("umbral_mayoria_absoluta" in c,
           "el payload trae el umbral con el nombre que dice lo que es",
@@ -219,8 +217,9 @@ else:
           f"{c.get('afirmativos_esperados')} | P(aprob)={dat.get('p_aprobacion')}")
     if c.get("umbral_simulado") and c.get("afirmativos_esperados"):
         margen = round(c["afirmativos_esperados"] - c["umbral_simulado"], 1)
-        linea(f"         margen que se muestra ahora (contra el umbral simulado): {margen:+}")
-        linea("         (el 04-09 daba +28,4 en origen y +9,9 en revisora)")
+        linea(f"         margen contra el umbral simulado: {margen:+}")
+    linea("         (que el motor de hoy de EXACTAMENTE esto lo exige "
+          "modelo/ensemble/tests/test_panel_regresion.py)")
 
 # ── 7. el mapa ─────────────────────────────────────────────────────────────
 linea("\n7. MAPA")

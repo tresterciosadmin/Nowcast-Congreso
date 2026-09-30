@@ -2,13 +2,13 @@
 
 <!-- GENERADO por indexar.py. No editar: los cambios se pierden. -->
 <!-- La prosa vive en el README.md de cada modulo (seccion `Buscar aca si`). -->
-<!-- 2026-09-30 18:48 UTC · 179 archivos · 39,039 LOC -->
+<!-- 2026-09-30 22:29 UTC · 179 archivos · 39,243 LOC -->
 
 ## Como usar este archivo
 
 Es el unico archivo del proyecto que hace falta leer para empezar. Para ubicar algo concreto: `python3 .mapa/buscar.py "<termino>"` devuelve archivo y linea sin abrir nada. Recien despues abrir los archivos que salgan, y solo esos.
 
-Rama `main` — ultimo commit: 2026-09-30 42f4a7b Auditoría B1 (etapa 1): registro de parámetros generado desde el código y test_defaults_fijados · **hay cambios sin commitear**
+Rama `main` — ultimo commit: 2026-09-30 3ff5268 Auditoría B2: pre-registro de la invariancia al futuro como test de la suite · **hay cambios sin commitear**
 
 ## Donde buscar que
 
@@ -148,15 +148,15 @@ Rama `main` — ultimo commit: 2026-09-30 42f4a7b Auditoría B1 (etapa 1): regis
 | `modelo/ensemble/` _(src+tests)_ | La composicion final: el nowcast end-to-end de un proyecto. El punto de entrada vivo es `nowcast_puertas.py`, que corre la CADENA DE PUERTAS y devuelve un numero condicional a que las camaras voten. La formulacion v1 -P(llega al recinto) x P(mayoria dado recinto)- se dio de BAJA el 2026-08-22 (ADR-0012), junto con su backtest: los stubs de la v1 (`ensemble.componer` y compania) y `backtest_cadena.py` se eliminaron/archivaron en la auditoria 2026-09 (A7: su codigo esta en `coordinacion/archivo/A7-poda-2026-09/`). Desde el 2026-09-30 (auditoria A5) `nowcast()` da numero SOLO para mayoria simple: con una mayoria especial devuelve `p_aprobacion = None` y `motivo_sin_numero`, sin simular. | 30 | 7,659 | **vencida** |
 | `variables/proyecto/` _(src+tests)_ | Feature store por proyecto: tema/materia, origen (Ejecutivo/oficialismo/aliados/oposicion), jefe de bloque, mayoria requerida, texto, y el ICG como modulador de coyuntura. La postura del gobierno por acta se midio aca y su modulo se archivo el 2026-09-10 sin consumidor: la medicion quedo en el ADR-0021 y en ESTADO. | 23 | 5,160 | **vencida** |
 | `datos/expedientes/` _(src+tests)_ | Registro de todo lo PRESENTADO (no solo lo votado): titulo, autor, tipo, fecha y cadena de vida del expediente. Denominador del embudo y enlace acta -> expediente. | 17 | 4,922 | **vencida** |
-| `evaluacion/baseline/` _(src+tests)_ | El censo del motor sobre el voto individual. Desde el 28-09 (ADR-0034) el harness NO reimplementa nada del legislador: importa `record_legisladores`, `proyectar_postura` y `perfil_legislador` del motor y solo decide que votos existian (historia estricta: fecha anterior y OTRA ley). Un test lo compara contra `nowcast()` legislador por legislador. El baseline de BLOQUE -el ~0,99- se midio en `fase0/` y ahi quedo. | 13 | 2,749 | **vencida** |
+| `evaluacion/baseline/` _(src+tests)_ | El censo del motor sobre el voto individual. Desde el 28-09 (ADR-0034) el harness NO reimplementa nada del legislador: importa `record_legisladores`, `proyectar_postura` y `perfil_legislador` del motor y solo decide que votos existian (historia estricta: fecha anterior y OTRA ley). Un test lo compara contra `nowcast()` legislador por legislador. El baseline de BLOQUE -el ~0,99- se midio en `fase0/` y ahi quedo. | 14 | 3,072 | **vencida** |
 | `datos/padron/` _(src+tests)_ | Padron OFICIAL de bancas a nivel LEGISLADOR: quien ocupa cada banca y en que ventana de mandato. Es la composicion real de la camara a una fecha (257 / 72). | 11 | 2,645 | ok |
 | `datos/proyectos/` _(src+tests)_ | Base de Proyectos de Ley (`proyectos.db`): una fila por proyecto identificado por denominador NNNN-X-AAAA. Fuente de verdad del universo de proyectos y denominador del embudo (ADR-0009). | 10 | 2,073 | ok |
 | `variables/bloque/` _(src+tests)_ | Cohesion, tamano, postura y fracturas de cada bloque en el tiempo, y el proyector point-in-time que arma el escenario por bloque que consume el ensemble. | 6 | 1,581 | **vencida** |
 | `tests/` | Tests que no pertenecen a ningun modulo: los que verifican acuerdos ENTRE modulos (definiciones y rutas compartidas) y los que vigilan INVARIANTES del repo — que las bases y los insumos del motor viajen por git, que la regla del caracter del dictamen no se reimplemente, y que las rutas que el codigo nombra en sus docstrings existan. Cada modulo tiene sus propios tests en `<modulo>/tests/`. | 9 | 1,563 | **vencida** |
 | `variables/embudo/` _(src+tests)_ | Supervivencia del proyecto: presentado -> comision -> dictamen -> recinto -> sancion. Estima P(llega al recinto). OJO: eso era 'la mitad de P(aprobacion)' en la formulacion v1, que se dio de baja el 2026-08-22 (ADR-0012) justamente porque medir la mortandad en el cajon es agenda politica y se decidio no modelarla; hoy el numero publicado NO la multiplica. | 5 | 1,222 | ok |
-| `coordinacion/` _(AUDITORIA-2026-09)_ | Las bitacoras y el protocolo: que bloquea a otros, que se hizo, quien tomo que modulo y por que se decidio cada cosa. Aca NO hay codigo del producto. | 6 | 1,036 | **vencida** |
 | `datos/canonica/` _(src+tests)_ | La base propia y unica de votaciones nominales: todas las fuentes unificadas, deduplicadas y con entidades resueltas. Fuente de verdad de la que leen `variables/` y `modelo/`. | 7 | 1,032 | **vencida** |
 | `datos/senado/` _(src+tests)_ | Ingesta de votaciones nominales del Senado desde senado.gob.ar + reconstruccion del bloque historico contemporaneo a cada voto. Tapa el hueco 2015-2023. | 5 | 940 | ok |
+| `coordinacion/` _(AUDITORIA-2026-09)_ | Las bitacoras y el protocolo: que bloquea a otros, que se hizo, quien tomo que modulo y por que se decidio cada cosa. Aca NO hay codigo del producto. | 5 | 917 | **vencida** |
 | `datos/bot_recoleccion/` _(src+tests)_ | El bot diario que trae lo nuevo de ambas camaras (proyectos con firmantes y giros, y votaciones) con upsert idempotente. Corre solo en GitHub Actions. | 7 | 880 | ok |
 | `./` | La raiz del proyecto: `CLAUDE.md`, `rutas.py`, `definiciones.py`, los scripts de regeneracion (`REGENERAR.ps1`, `verificar_*.py`) y este README. Los paneles HTML (tablero ejecutivo, mapa del modelo, panel de puertas) y sus `*_datos.js` se eliminaron en la auditoria 2026-09 (ítem A6): el estado vive en `coordinacion/`. | 4 | 827 | **vencida** |
 | `modelo/agregador_institucional/` _(src+tests)_ | Traduce posturas de bloque + asistencia en un resultado institucional: cuenta bancas, quorum, umbrales de mayoria y bandas. Mide la estructura, no la politica. | 2 | 757 | **vencida** |
@@ -388,13 +388,13 @@ Buscar uno sin abrir nada: `python .mapa/buscar.py --dato <termino>`. Columna **
 - `coordinacion/AUDITORIA-2026-09/cobertura_canonica.py`
 - `coordinacion/AUDITORIA-2026-09/contraste_aprobacion.py`
 - `coordinacion/AUDITORIA-2026-09/control_independiente.py`
-- `coordinacion/AUDITORIA-2026-09/invariancia_al_futuro.py`
 - `coordinacion/AUDITORIA-2026-09/verificar_bots.py`
 - `datos/argentinadatos/src/explorar_campos.py`
 - `datos/argentinadatos/src/to_canonical.py`
 - `datos/argentinadatos/tests/test_padron_senado.py`
 - `datos/bot_recoleccion/src/dae_senado.py`
 - `datos/bot_recoleccion/src/tp_diputados.py`
+- `datos/bot_recoleccion/src/votaciones.py`
 
 ## Archivos centrales
 
@@ -402,7 +402,7 @@ Ordenados por cuantos otros archivos dependen de ellos. Tocar uno de arriba tien
 
 | Archivo | LOC | Lo usan | Simbolos |
 |---|---:|---:|---|
-| `rutas.py` | 212 | 30 | `_env`, `inventario` |
+| `rutas.py` | 212 | 31 | `_env`, `inventario` |
 | `variables/bloque/src/bloque.py` | 842 | 20 | `_canon_linaje`, `_norm_nombre`, `_cargar_padron_linaje_senado`, `_enriquecer_linaje_senado` |
 | `modelo/ensemble/src/nowcast_puertas.py` | 1020 | 17 | `_resolver_multietiqueta`, `_tema_auto`, `_bloque`, `era_de` |
 | `definiciones.py` | 261 | 15 | `periodo_parlamentario`, `gobierno_por_fecha`, `era_de`, `normalizar_mayoria_valor` |
@@ -422,11 +422,11 @@ Ordenados por cuantos otros archivos dependen de ellos. Tocar uno de arriba tien
 - `variables/proyecto/tests/` → `variables/proyecto/src/` (10)
 - `evaluacion/baseline/src/` → `./` (7)
 - `evaluacion/baseline/src/` → `variables/bloque/src/` (6)
+- `evaluacion/baseline/tests/` → `evaluacion/baseline/src/` (6)
 - `modelo/ensemble/src/` → `variables/bloque/src/` (6)
 - `datos/expedientes/tests/` → `datos/expedientes/src/` (5)
 - `datos/padron/tests/` → `datos/padron/src/` (5)
 - `datos/proyectos/tests/` → `datos/proyectos/src/` (5)
-- `evaluacion/baseline/tests/` → `evaluacion/baseline/src/` (5)
 - `modelo/ensemble/src/` → `evaluacion/baseline/src/` (5)
 - `variables/bloque/tests/` → `variables/bloque/src/` (5)
 
@@ -434,8 +434,8 @@ Ordenados por cuantos otros archivos dependen de ellos. Tocar uno de arriba tien
 
 Segun el historial de git. Si vas a cambiar uno, mira el otro.
 
+- `Nowcast Congreso Argy/.mapa/mapa.json` + `Nowcast Congreso Argy/MAPA.md` (56 commits)
 - `Nowcast Congreso Argy/coordinacion/EN-HUMANO.md` + `Nowcast Congreso Argy/coordinacion/ESTADO-DEL-PROYECTO.md` (56 commits)
-- `Nowcast Congreso Argy/.mapa/mapa.json` + `Nowcast Congreso Argy/MAPA.md` (55 commits)
 - `Nowcast Congreso Argy/coordinacion/ESTADO-DEL-PROYECTO.md` + `Nowcast Congreso Argy/tablero_datos.js` (50 commits)
 - `Nowcast Congreso Argy/coordinacion/EN-HUMANO.md` + `Nowcast Congreso Argy/tablero_datos.js` (47 commits)
 - `Nowcast Congreso Argy/.mapa/mapa.json` + `Nowcast Congreso Argy/coordinacion/ESTADO-DEL-PROYECTO.md` (33 commits)

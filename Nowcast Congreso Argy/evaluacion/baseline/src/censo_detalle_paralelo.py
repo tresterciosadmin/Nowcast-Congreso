@@ -12,6 +12,9 @@ Desde el 28-09 (ADR-0034) calcula varias variantes en la misma pasada: la princi
 arreglo de la fuga y para medir RECORD_POR_TEMA con el harness limpio.
 
     python evaluacion/baseline/src/censo_detalle_paralelo.py --procesos 7
+
+Al terminar deja, junto al parquet, `censo_estadisticos_*.json` (lo que SÍ viaja por git;
+ver `censo_estadisticos.py`).
 """
 from __future__ import annotations
 
@@ -89,6 +92,10 @@ def main(argv=None) -> int:
     d.to_parquet(out, index=False)
     logging.info("-> %s: %d votos, %d actas, %.1f min", out, len(d), d["acta_id"].nunique(),
                  (time.time() - t0) / 60)
+    # El detalle no viaja por git; sus estadisticos sí (auditoría A2). Se regeneran acá para
+    # que nadie deje el JSON viejo respecto del parquet (tests/test_censo_estadisticos.py).
+    from censo_estadisticos import generar_y_escribir
+    logging.info("-> %s", generar_y_escribir(out))
     return 0
 
 

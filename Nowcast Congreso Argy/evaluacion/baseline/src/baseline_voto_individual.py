@@ -98,6 +98,9 @@ sys.path.insert(0, str(next(d for d in Path(__file__).resolve().parents
 from rutas import RAIZ as REPO  # noqa: E402
 from rutas import PROYECTO_ORIGEN_POR_ACTA  # noqa: E402
 from definiciones import caracter_de_dictamen, era_de  # noqa: E402
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from censo_estadisticos import (dif_brier_ic_desde_sumas,  # noqa: E402
+                                skill_ic_desde_sumas)
 sys.path.insert(0, str(REPO / "variables" / "bloque" / "src"))
 sys.path.insert(0, str(REPO / "modelo" / "ensemble" / "src"))
 import nowcast_puertas as NP  # noqa: E402
@@ -401,22 +404,16 @@ def cargar_confianza_por_area(repo: Path = REPO) -> dict:
 
 def skill_ic_por_ley(p, y, ley, n_boot: int = 300, seed: int = 7) -> list[float]:
     """IC 95% del skill re-muestreando LEYES enteras (bootstrap de Poisson, ADR-0032).
-    La climatología se recalcula en cada réplica con la tasa base de esa réplica."""
+    La climatología se recalcula en cada réplica con la tasa base de esa réplica.
+    El bootstrap en sí vive en `censo_estadisticos.skill_ic_desde_sumas` (una sola copia:
+    el mismo cálculo sale de los estadísticos por acta que viajan por git)."""
     p, y = np.asarray(p, float), np.asarray(y, float)
     _, cod = np.unique(np.asarray(ley).astype(str), return_inverse=True)
     k = int(cod.max()) + 1
     se = np.bincount(cod, (p - y) ** 2, k)
     sy = np.bincount(cod, y, k)
     n = np.bincount(cod, minlength=k).astype(float)
-    W = np.random.default_rng(seed).poisson(1.0, (n_boot, k)).astype(float)
-    N, SY, SE = W @ n, W @ sy, W @ se
-    with np.errstate(divide="ignore", invalid="ignore"):
-        base = SY / N
-        s = 1 - (SE / N) / (base - base ** 2)  # y binaria: brier de climatología = b(1-b)
-    s = s[np.isfinite(s)]                      # réplicas vacías o sin varianza (pocas leyes)
-    if len(s) < n_boot // 2:
-        return [None, None]
-    return [round(float(np.percentile(s, 2.5)), 4), round(float(np.percentile(s, 97.5)), 4)]
+    return skill_ic_desde_sumas(se, sy, n, n_boot, seed)
 
 
 def dif_brier_ic_por_ley(p1, p0, y, ley, n_boot: int = 300, seed: int = 7) -> dict:
@@ -427,14 +424,8 @@ def dif_brier_ic_por_ley(p1, p0, y, ley, n_boot: int = 300, seed: int = 7) -> di
     k = int(cod.max()) + 1
     d = np.bincount(cod, e1 - e0, k)
     b0 = np.bincount(cod, e0, k)
-    W = np.random.default_rng(seed).poisson(1.0, (n_boot, k)).astype(float)
-    with np.errstate(divide="ignore", invalid="ignore"):
-        rel = (W @ d) / (W @ b0)
-    rel = rel[np.isfinite(rel)]
-    return {"dBrier": round(float((e1 - e0).mean()), 6),
-            "dBrier_rel_%": round(100 * float((e1 - e0).sum() / e0.sum()), 2),
-            "ic95_rel_%_ley": [round(100 * float(np.percentile(rel, 2.5)), 2),
-                               round(100 * float(np.percentile(rel, 97.5)), 2)]}
+    n = np.bincount(cod, minlength=k).astype(float)
+    return dif_brier_ic_desde_sumas(d, b0, n, n_boot, seed)
 
 
 ERA_BINS = [pd.Timestamp("1990-01-01"), pd.Timestamp("2011-12-10"), pd.Timestamp("2015-12-10"),

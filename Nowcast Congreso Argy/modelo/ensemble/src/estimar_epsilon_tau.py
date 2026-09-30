@@ -44,9 +44,18 @@ menos residuo: tau salia SUBESTIMADO. Ahora el default es `--panel censo`: el P_
 MOTOR voto a voto, tal como lo deja `censo_detalle_paralelo.py` (historia estricta).
 `--panel harness_viejo` queda solo para reproducir el 1,197 / 1,190 anteriores.
 
+DE DONDE LEE EL CENSO (auditoria 2026-09, A2). El detalle voto a voto (37 MB) esta
+ignorado por git: vive en un solo disco. Por defecto este script lee
+`censo_estadisticos_*.json` (`evaluacion/baseline/src/censo_estadisticos.py`), que SI
+viaja por git y trae, por acta, n, A, Σp y Σp² (alcanzan para tau con cualquier eps0) y
+la curva de Brier y log-loss sobre la grilla de eps0. Da lo mismo que el detalle
+(`tests/test_censo_estadisticos.py` lo fija). `--detalle X.parquet` fuerza el camino
+voto a voto; es el que verifica al otro. Otra grilla u otra perdida piden el detalle.
+
 Uso:
-    python modelo/ensemble/src/estimar_epsilon_tau.py                      # censo limpio
-    python modelo/ensemble/src/estimar_epsilon_tau.py --columna p__dia_incluido__tema
+    python modelo/ensemble/src/estimar_epsilon_tau.py                      # censo limpio (JSON)
+    python modelo/ensemble/src/estimar_epsilon_tau.py --columna estricta__general
+    python modelo/ensemble/src/estimar_epsilon_tau.py --detalle <censo_detalle.parquet>
     python modelo/ensemble/src/estimar_epsilon_tau.py --panel harness_viejo --muestra 2500
 """
 from __future__ import annotations
@@ -75,6 +84,7 @@ sys.path.insert(0, str(next(d for d in Path(__file__).resolve().parents
 from rutas import RAIZ as REPO  # noqa: E402
 sys.path.insert(0, str(REPO / "variables" / "bloque" / "src"))
 sys.path.insert(0, str(REPO / "evaluacion" / "baseline" / "src"))
+import censo_estadisticos as CE  # noqa: E402
 
 
 def panel(muestra: int = 0, seed: int = 7, camara: str = "") -> pd.DataFrame:
@@ -147,13 +157,11 @@ def panel(muestra: int = 0, seed: int = 7, camara: str = "") -> pd.DataFrame:
     return d
 
 
-CENSO = "evaluacion/baseline/outputs/censo_detalle_2026-09-28.parquet"
-
-
-def panel_censo(ruta=None, columna: str = "p", camara: str = "") -> pd.DataFrame:
-    """(acta_id, camara, fecha, p_motor, y) desde el detalle del censo: el P_i que
-    calcula el MOTOR (`baseline_voto_individual`, que lo importa), no una copia."""
-    d = pd.read_parquet(Path(ruta) if ruta else REPO / CENSO)
+def panel_censo(ruta, columna: str = "p", camara: str = "") -> pd.DataFrame:
+    """(acta_id, camara, fecha, p_motor, y) desde el detalle voto a voto del censo: el P_i
+    que calcula el MOTOR (`baseline_voto_individual`, que lo importa), no una copia.
+    `ruta` es obligatoria: el detalle no viaja por git (ver el docstring del modulo)."""
+    d = pd.read_parquet(Path(ruta))
     if columna not in d.columns:
         raise KeyError(f"el censo no tiene la columna {columna!r}; hay "
                        f"{[c for c in d.columns if c.startswith('p')]}")
@@ -184,12 +192,17 @@ def estimar_epsilon(d: pd.DataFrame) -> dict:
     el motor no esta tan lejos en promedio pero si demasiado seguro.
     """
     p, y = d["p_motor"].values, d["y"].values
-    grid = np.round(np.arange(0.0, 0.301, 0.005), 3)
-    filas = []
-    for e in grid:
-        pe = e + (1 - 2 * e) * p
-        filas.append({"eps0": float(e), "brier": _brier(pe, y), "logloss": _logloss(pe, y)})
-    g = pd.DataFrame(filas)
+    grid = CE.GRILLA_EPS
+    brier = [_brier(e + (1 - 2 * e) * p, y) for e in grid]
+    logloss = [_logloss(e + (1 - 2 * e) * p, y) for e in grid]
+    return estimar_epsilon_curvas(grid, brier, logloss)
+
+
+def estimar_epsilon_curvas(grid, brier, logloss) -> dict:
+    """El optimo de eps0 a partir de las CURVAS (Brier y log-loss medios por cada eps0 de la
+    grilla). Es lo que comparten el camino voto a voto y el de los estadisticos por git."""
+    g = pd.DataFrame({"eps0": np.asarray(grid, float), "brier": np.asarray(brier, float),
+                      "logloss": np.asarray(logloss, float)})
     mb = g.loc[g.brier.idxmin()]
     ml = g.loc[g.logloss.idxmin()]
     base = g[g.eps0 == 0.0].iloc[0]
@@ -214,6 +227,26 @@ def estimar_tau(d: pd.DataFrame, eps0: float = 0.0) -> dict:
     dd = d.assign(_p=p, _v=p * (1 - p))
     g = dd.groupby("acta_id").agg(A=("y", "sum"), S1=("_p", "sum"),
                                   S=("_v", "sum"), n=("y", "size"))
+    return _tau_desde_actas(g)
+
+
+def estimar_tau_actas(a: pd.DataFrame, eps0: float = 0.0) -> dict:
+    """tau^2 a partir de los agregados POR ACTA (n, A = Σy, Σp, Σp²), sin voto a voto.
+
+    Con p~ = e + (1-2e)p (afin), Σp~ = e·n + (1-2e)·Σp y Σp~² = n·e² + 2e(1-2e)·Σp +
+    (1-2e)²·Σp²; y S = Σp~(1-p~) = Σp~ - Σp~². Da lo mismo que `estimar_tau` sobre el
+    detalle (`tests/test_censo_estadisticos.py`) porque comparten `_tau_desde_actas`."""
+    e, c = float(eps0), 1.0 - 2.0 * float(eps0)
+    n, sp, sp2 = (a[k].to_numpy(float) for k in ("n", "sp", "sp2"))
+    s1 = e * n + c * sp
+    s = s1 - (n * e * e + 2 * e * c * sp + c * c * sp2)
+    g = pd.DataFrame({"A": a["A"].to_numpy(float), "S1": s1, "S": s, "n": a["n"].to_numpy()},
+                     index=pd.Index(a["acta_id"].to_numpy(), name="acta_id"))
+    return _tau_desde_actas(g)
+
+
+def _tau_desde_actas(g: pd.DataFrame) -> dict:
+    """El estimador, sobre el agregado por acta g (A, S1, S, n)."""
     g = g[g.n >= 20]
     if len(g) < 30:
         return {"error": f"muestra chica para tau: {len(g)} actas"}
@@ -261,6 +294,31 @@ def estimar_tau(d: pd.DataFrame, eps0: float = 0.0) -> dict:
     }
 
 
+def _resultado_desde_estadisticos(est: dict, columna: str, camara: str) -> dict:
+    """Lo mismo que arma `main` desde el detalle, pero desde los estadisticos versionados."""
+    a = CE.tabla_actas(est)
+    en_corte = a["camara"].eq(camara) if camara else a["camara"].notna()
+
+    def eps(cam):
+        return estimar_epsilon_curvas(*CE.curvas_epsilon(est, columna, cam or None)[:3])
+
+    def tau(e0, cam):
+        return estimar_tau_actas(CE.panel_actas(est, columna, cam or None, a), e0)
+
+    e = eps(camara)
+    return {
+        "n_votos": int(a.loc[en_corte, "n"].sum()),
+        "n_actas": int(en_corte.sum()),
+        "epsilon": e,
+        "tau_sin_epsilon": tau(0.0, camara),
+        "tau_con_epsilon": tau(e["eps0_optimo_logloss"], camara),
+        "por_camara": {c: {"epsilon": eps(c), "tau": tau(0.0, c)}
+                       for c in sorted(a["camara"].unique()) if not camara or c == camara},
+        "_avisos": {"panel": "censo_estadisticos", "variante": CE.variante(est, columna),
+                    "generado": est.get("generado"), "fuente": est.get("fuente")},
+    }
+
+
 def main(argv):
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("--muestra", type=int, default=0)
@@ -270,28 +328,38 @@ def main(argv):
     ap.add_argument("--panel", choices=["censo", "harness_viejo"], default="censo",
                     help="censo (default) = P_i del motor, historia estricta; "
                          "harness_viejo = la copia con fuga que se usó hasta el 28-09")
-    ap.add_argument("--detalle", default=None, help="parquet del censo (default: CENSO)")
-    ap.add_argument("--columna", default="p", help="qué variante del censo usar como offset")
+    ap.add_argument("--detalle", default=None,
+                    help="parquet del censo voto a voto: fuerza ese camino en vez del JSON "
+                         "de estadisticos versionado")
+    ap.add_argument("--estadisticos", default=None,
+                    help="JSON de estadisticos (default: el del censo del 28-09)")
+    ap.add_argument("--columna", default="p",
+                    help="que variante del censo usar como offset: `p` (= estricta__tema, "
+                         "RECORD_POR_TEMA prendido al generarse el censo), estricta__general "
+                         "(el motor de hoy) o, con --detalle, cualquier columna del parquet")
     args = ap.parse_args(argv)
 
     logging.basicConfig(level=logging.INFO, stream=sys.stdout,
                         format="%(levelname)s %(name)s: %(message)s")
-    if args.panel == "censo":
-        d = panel_censo(args.detalle, args.columna, args.camara)
+    if args.panel == "censo" and not args.detalle:
+        res = _resultado_desde_estadisticos(CE.cargar(args.estadisticos), args.columna,
+                                            args.camara)
+        res["_args"] = vars(args)
     else:
-        d = panel(args.muestra, args.seed, args.camara)
-    if d.empty:
-        raise SystemExit("panel vacio")
-    eps = estimar_epsilon(d)
-    res = {
-        "n_votos": int(len(d)), "n_actas": int(d.acta_id.nunique()),
-        "epsilon": eps,
-        "tau_sin_epsilon": estimar_tau(d, 0.0),
-        "tau_con_epsilon": estimar_tau(d, eps["eps0_optimo_logloss"]),
-        "por_camara": {c: {"epsilon": estimar_epsilon(g), "tau": estimar_tau(g, 0.0)}
-                       for c, g in d.groupby("camara")},
-        "_avisos": d.attrs.get("avisos", {}), "_args": vars(args),
-    }
+        d = (panel_censo(args.detalle, args.columna, args.camara) if args.panel == "censo"
+             else panel(args.muestra, args.seed, args.camara))
+        if d.empty:
+            raise SystemExit("panel vacio")
+        eps = estimar_epsilon(d)
+        res = {
+            "n_votos": int(len(d)), "n_actas": int(d.acta_id.nunique()),
+            "epsilon": eps,
+            "tau_sin_epsilon": estimar_tau(d, 0.0),
+            "tau_con_epsilon": estimar_tau(d, eps["eps0_optimo_logloss"]),
+            "por_camara": {c: {"epsilon": estimar_epsilon(g), "tau": estimar_tau(g, 0.0)}
+                           for c, g in d.groupby("camara")},
+            "_avisos": d.attrs.get("avisos", {}), "_args": vars(args),
+        }
     out = Path(args.salida) if args.salida else (
         REPO / "modelo/ensemble/outputs/epsilon_tau.json")
     out.parent.mkdir(parents=True, exist_ok=True)

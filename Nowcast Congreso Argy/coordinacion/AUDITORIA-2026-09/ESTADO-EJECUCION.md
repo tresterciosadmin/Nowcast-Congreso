@@ -5,7 +5,7 @@
 > Decisiones y su porqué: `AUDITORIA-INTEGRAL-2026-09.md` §9. Reglas del carril: §9.9. Definición numérica de "funcionando": §9.4.
 > Estados: `PENDIENTE` · `EN CURSO` · `HECHO` (con la evidencia: comando y salida, o sha del commit) · `DESCARTADO` (con el motivo escrito y la firma de Franco).
 
-**Última actualización:** 2026-09-30 — A1, A2 y A3 hechos (CI verde confirmado por Franco, también con los pines); A4 a A8 hechos; A9 hecho (Franco confirmó en *Actions*: los tres en verde); A10 hecho: **fase A CERRADA por Franco el 2026-09-30** (evidencia de salida abajo); próximo: fase B, ítem B1, en conversación nueva (prompt en `PROMPT-NUEVA-CONVERSACION.md`).
+**Última actualización:** 2026-09-30 — A1, A2 y A3 hechos (CI verde confirmado por Franco, también con los pines); A4 a A8 hechos; A9 hecho (Franco confirmó en *Actions*: los tres en verde); A10 hecho: **fase A CERRADA por Franco el 2026-09-30** (evidencia de salida abajo); **fase B en curso (2026-09-30): B1 empezado** (pre-registro escrito y commiteado antes de codificar).
 **Dónde se trabaja:** `main`, commits chicos (uno por corrección), con la suite en verde **antes** de cada commit; sin `git push` (lo hace Franco). Los bots empujan a `main`: no se les toca el permiso. Rama sólo si una corrección no puede dejar la suite en verde entre commits (vida corta: se mergea en la misma sesión).
 **Punto de partida (para deshacer):** el tag local `auditoria-punto-de-partida` marca `main` antes de la primera corrección.
 
@@ -30,7 +30,7 @@
 
 | ítem | qué | criterio de salida | estado |
 |---|---|---|---|
-| **B1** | Registro de parámetros **generado desde el código** + `test_defaults_fijados` | cambiar un default rompe un test | PENDIENTE |
+| **B1** | Registro de parámetros **generado desde el código** + `test_defaults_fijados` | cambiar un default rompe un test | **EN CURSO** (pre-registro: «B1 — pre-registro») |
 | **B2** | `invariancia_al_futuro.py` como test de la suite | una fuga sintética (usar datos de la fecha) lo hace fallar | PENDIENTE |
 | **B3** | `control_independiente.py` como test de regresión | el control reproduce 0,1335 y detecta el desvío | PENDIENTE |
 
@@ -359,6 +359,46 @@ Franco: **(1) «dejalo»** → `fase1_rec_por_tema.py` y su test **se quedan**. 
 | CI en verde, confirmado por Franco | confirmado por Franco en *Actions* en las entregas de A2 a A8 («todo verde») y los tres bots en A9. Lo posterior —documentos, `verificar_bots.py` (no es un test) y `CLAUDE.md`— se ve en *Actions* tras el próximo `git push` |
 
 **La fase A está completa y Franco la dio por cerrada el 2026-09-30.** La conversación siguiente arranca de la fase B con el prompt de `PROMPT-NUEVA-CONVERSACION.md`. Lo estacionado que salió de ella (no se hace durante la auditoría): arreglo del parser del ICG (**D6 declara que la serie llega a 2026-07**) y los DAE 75 y 76; el arreglo de `rescate-taxonomias`; la decisión sobre `mapa_modelo_semantica.json` (ver `PENDIENTES-POST-AUDITORIA.md`).
+
+### B1 — pre-registro (2026-09-30, escrito ANTES de escribir código y de medir)
+
+**Estado de partida, verificado hoy:** `HEAD` `e2b097b`, `main`, `git status` limpio; `python -m pytest tests/ datos/proyectos/tests -q` → **54 pasan** (16 s). Coincide con lo que dice este archivo.
+
+**Qué se construye** (todo dentro de `modelo/ensemble/`; ningún archivo existente del motor se toca):
+1. `src/registro_parametros.py` — extrae el registro **desde el código** (AST) y lo compara con el guardado.
+2. `outputs/registro_parametros.json` — el registro generado (viaja por git; JSON, no `.csv`/`.parquet`).
+3. `tests/test_defaults_fijados.py` — la regla 8 hecha test, con su control positivo (regla 5).
+4. *(etapa 2)* `src/perturbar_panel.py` — mide `afecta_panel` perturbando cada parámetro y corriendo el motor real.
+
+**Versión elegida: AST + perturbación, en dos commits sucesivos.** La etapa 1 (AST + test) **cierra por sí sola el criterio de salida** («cambiar un default rompe un test»); la etapa 2 agrega `afecta_panel`. *Por qué no sólo AST:* (a) la clausura estática de imports desde `nowcast_puertas.py` es una **sobreaproximación** (22 archivos; medido: en una corrida real se cargan 14; `baseline_voto_individual`, `censo_estadisticos` y `agente_taxonomias` no se cargan) y de ≈ 140 candidatos sólo unos pocos mueven el número; sin `afecta_panel` el registro pone a ε₀ y τ en el mismo plano que `HTTP_TIMEOUT`; (b) la definición de «Afecta» del §5.3 **es** una perturbación, y de ella depende qué parámetros necesitan tipo E/M/P; (c) la fase D usa el registro para decidir qué re-estimar y en qué orden; (d) cuesta ≈ 20 min de cómputo **una vez**, fuera del CI. Si la etapa 2 resultara inviable, B1 queda cerrado con la etapa 1 y se dice.
+
+**Qué es un «parámetro»** (definición operativa del §5.3), dentro de la **clausura** de archivos locales alcanzables por `import` desde `nowcast_puertas.py` (incluidos los imports dentro de funciones; sin tests, `Archivos_Borrar/` ni `coordinacion/archivo/`):
+- **`entorno`**: toda lectura de variable de entorno (`os.environ.get`, `os.environ[...]`, `os.getenv`, `rutas._env`), con su **default efectivo** (la expresión evaluada con el entorno vacío; si no es evaluable —p. ej. una ruta— se guarda sólo el texto).
+- **`constante`**: asignación de módulo con nombre en MAYÚSCULAS y valor literal (número, booleano, texto ≤ 120 caracteres, tupla/lista/conjunto/dict de literales); los textos que son rutas de datos van a `archivo_derivado`.
+- **`default_funcion`**: default numérico de un argumento de función.
+- **`archivo_derivado`**: toda referencia literal a un archivo de datos (`.parquet .csv .json .db .xlsx`) y todo nombre que el código importa de `rutas`; para los dos JSON de coeficientes estimados (`beta_dictamen.json`, `theta_sobre_tablas.json`) se fija además el **sha256** del contenido (con saltos de línea normalizados: el repo tiene `text=auto`).
+- **Fuera del registro, declarado:** los números dentro del cuerpo de las funciones (constantes «mágicas» sin nombre) y los parámetros de los *generadores* de archivos derivados (p. ej. `MIN_VOTOS` de `disciplina.py`): de ellos queda el sha256 del archivo estimado, no el parámetro.
+
+**Qué fija el test:** por parámetro, `(id, clase, entorno, default efectivo, texto de la expresión)`; que no aparezca ni desaparezca ninguno; el conjunto de referencias a archivos derivados; y el sha256 de los dos JSON. **Se ignoran** la línea (cambia con cualquier edición) y todo campo de medición (`afecta_panel`). Si el código difiere, el test dice qué parámetro, qué valor guardado, cuál hay, y el comando para regenerar.
+
+**Criterios de la etapa 1 (umbral: 0 fallas en cada uno, fijados antes de mirar):**
+1. **Idempotencia:** regenerar el registro desde `HEAD` dos veces da bytes idénticos, y coincide con el guardado.
+2. **Cobertura y verdad:** están todos los términos que el informe nombra (`EPSILON0`, `TAU`, `EPSILON0_DEFAULT`, `TAU_DEFAULT`, `INCERTIDUMBRE_LEGISLADOR`, `RECORD_POR_TEMA`, `SHRINK_RECORD`, `K_SHRINK_RECORD`, `MIN_HIST_INDIVIDUAL`, `MIN_HIST_ANTERIOR`, `GUARD_ERA`, `ERA_FIJA`, `BETA_DICTAMEN`, `TEMA_AUTO`, `COMBINAR_TEMAS`, `SOBRE_TABLAS`, `DESVIO_MIN_INDIVIDUAL` —el piso 0,02—, `MIN_VOTOS_FICHA`, `DIAS_VENTANA_VIVA`); y para **todo** parámetro de clase `entorno` o `constante`, el valor efectivo del registro coincide con el atributo del módulo importado con el entorno limpio (**0 distintos**).
+3. **Cambiar un default rompe el test** (control positivo, regla 5): sobre el código real, modificado en memoria, el test **detecta los 7**: (i) `TAU_DEFAULT` 1,19 → 1,2 (el ejemplo del plan); (ii) `EPSILON0_DEFAULT`; (iii) una bandera invertida (`GUARD_ERA`: `!= "0"` → `== "0"`); (iv) una constante borrada; (v) una constante nueva; (vi) un default numérico de función; (vii) una lectura de entorno nueva. Y **no** se rompe ante lo que no es un parámetro: cambiar un comentario o correr una línea. Una vez, además, se edita el archivo real (`TAU_DEFAULT = 1.2`), se corre el test, falla, y se revierte con `git checkout` (la evidencia del criterio del plan).
+4. **Suite:** `pytest` sigue en 54; los scripts `test_*.py` pasan de 58 a 59, todos en 0; checkout limpio (`git archive`) con Python 3.11 y los pines: el test nuevo pasa ahí.
+5. **El motor no cambia:** `git diff` de `modelo/ variables/ definiciones.py rutas.py` sin archivos existentes modificados (sólo archivos nuevos) y `test_panel_regresion` pasa (`max|ΔP| = 0`).
+
+*Informativo, no decide:* el JSON lista los **nombres con varios defaults** (la trampa de la regla 8: `MIN_HIST_INDIVIDUAL` 1 contra 8, `epsilon0` 0,0 contra 0,035, `n_sims` 2000 contra 400, `reparto_desvio` 0,5 contra 1,0…).
+
+**Etapa 2 — perturbación (qué y con qué umbral):**
+- **Panel: 3 casos**, `n_sims = 2000`, `seed = 0`: **P1** Diputados, 2026-06-01, `EJECUTIVO`, hipotético (el panel de regresión); **P2** el mismo con `proyecto_id = HCDN279791` (ejercita las puertas A y C y β); **P3** Senado, 2019-06-01, `OPOSICION`, hipotético (otra cámara de origen y **otra era**: con el gobierno vigente el guard de era no se ve, `QUE-SE-MIDE.md` ya lo dice).
+- **Alternativa de cada parámetro** (fijada ahora): booleano o bandera → el opuesto; número *x* → {2*x*, *x*/2} (los enteros con `//`; si 0 < *x* ≤ 1 el doble se acota a 1 y se descarta si iguala a *x*; si *x* = 0, la alternativa es 1 o 0,1); categóricos de entorno → una lista escrita a mano en el script (`COMBINAR_TEMAS`: `union`). Los contenedores y textos (tuplas, dicts, fechas, nombres) **no se perturban**: se marcan `no_perturbable` con el motivo. Los parámetros de módulos que **no se cargan** en el panel se marcan `afecta_panel = false, motivo = módulo no cargado`.
+- **Procedimiento:** un proceso por perturbación (el módulo se importa con el literal **reescrito en el AST** antes de ejecutarse, o con la variable de entorno puesta), 6 a la vez; comparo **todos** los campos numéricos de la salida contra la corrida base.
+- **Umbral:** *afecta* = `max|Δ| > 1e-9` en algún campo de algún caso con alguna alternativa (se guardan `afecta_p_aprobacion`, `afecta_campos`, el caso y la alternativa que lo mueve). Un proceso que falla se guarda como `error`, no como «no afecta».
+- **Controles positivos** (mismo criterio escrito antes de correr): `TAU`, `EPSILON0`, `nowcast.n_sims` **afectan**; `GUARD_ERA` afecta **en P3 y no en P1 ni P2**; un parámetro que el llamador siempre pisa (`simular_con_guardas(epsilon0=…)`, default 0,0 contra el 0,035 que pasa `nowcast`) **no afecta**. Si algún control sale al revés, **la medición está mal** y no se publica hasta entenderlo.
+- **Límite que se escribe en el registro:** `afecta_panel = false` quiere decir «no mueve estos 3 casos», no «no afecta nunca» (un umbral que el panel no cruza, o una rama de otro proyecto, no se ven).
+
+**Qué B1 NO hace:** no asigna tipo E/M/P ni «medición que lo respalda» a cada parámetro (eso se anota en la fase D, donde se mide cada uno; el registro deja los campos para que D sepa cuáles anotar y el gate de E3 los exija); no agrega ni cambia ningún término, bandera o default; no toca ningún archivo existente del motor; no cambia el CI.
 
 ## Bitácora de alcance
 

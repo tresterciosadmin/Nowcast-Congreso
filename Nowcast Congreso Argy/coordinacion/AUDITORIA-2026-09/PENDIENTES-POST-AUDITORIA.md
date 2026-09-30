@@ -16,3 +16,5 @@
 ` (Python `text=True`) y git no las reconoce; en Linux anda. Efecto: la columna "viaja por git" de `MAPA.md` y de `mapa.json` es siempre verdadera en esta PC. No afecta a `test_insumos_del_motor_viajan` (consulta git en vivo) | hallazgo en A2 | arreglo de una línea (`newline="
 "` o `input=` en bytes); fuera del plan |
 | 2026-09-29 | **`datos/proyectos/src/verificar.py:_abrir()` copia la base a un temporal de NOMBRE FIJO** (`<temp>/proyectos_verif.db`): dos corridas de la suite a la vez (dos entornos, o un CI con matriz) se pisan la copia y `test_verificar.py` falla con `database disk image is malformed`. Se vio corriendo tres entornos en paralelo en A3. Arreglo: `tempfile.mkdtemp()` como ya hace el test | hallazgo en A3 | no afecta al CI (una sola corrida por vez); fuera del plan |
+| 2026-09-30 | **Auditar por qué 51 actas con afirmativos y negativos no entran al censo** (33 de la Década Votada y 18 de argentinadatos; 142 en total quedan afuera, 91 con motivo claro) | hallazgo en A4 | ver `QUE-SE-MIDE.md` §3.3; el script `cobertura_canonica.py` ya las lista con su motivo |
+

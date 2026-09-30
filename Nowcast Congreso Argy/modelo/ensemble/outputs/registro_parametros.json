@@ -1,0 +1,2710 @@
+{
+ "formato": 1,
+ "generado_por": "python modelo/ensemble/src/registro_parametros.py --escribir",
+ "entrada": "modelo/ensemble/src/nowcast_puertas.py",
+ "que_es_un_parametro": "Toda variable de entorno, constante numérica o archivo derivado que lee el camino de nowcast() (05-consolidacion-y-anclaje.md §5.3). Clases: entorno, constante, default_funcion, archivo_derivado. El test fija (clase, entorno, default, evaluable, expresion); la línea y afecta_panel no.",
+ "limites": [
+  "No incluye los números dentro del cuerpo de las funciones (constantes sin nombre).",
+  "No incluye los parámetros de los generadores de los archivos derivados; de los coeficientes estimados (β, θ) se fija el sha256 del archivo.",
+  "La clausura es una sobreaproximación (incluye lo que sólo se importa con una bandera prendida): `afecta_panel` dice cuáles mueven el número."
+ ],
+ "medicion_afecta_panel": null,
+ "clausura": [
+  "datos/canonica/src/alias_legislador.py",
+  "datos/expedientes/src/actas_ley.py",
+  "datos/expedientes/src/enlace_senado.py",
+  "datos/expedientes/src/resolver_firmantes.py",
+  "datos/padron/src/padron_vigente.py",
+  "definiciones.py",
+  "docs/taxonomias/loader.py",
+  "evaluacion/baseline/src/baseline_voto_individual.py",
+  "evaluacion/baseline/src/censo_estadisticos.py",
+  "modelo/agregador_institucional/src/agregador.py",
+  "modelo/ensemble/src/beta_dictamen.py",
+  "modelo/ensemble/src/ensemble.py",
+  "modelo/ensemble/src/estimar_beta_dictamen.py",
+  "modelo/ensemble/src/nowcast_puertas.py",
+  "modelo/ensemble/src/puerta_a.py",
+  "modelo/ensemble/src/puerta_d.py",
+  "modelo/ensemble/src/sobre_tablas.py",
+  "rutas.py",
+  "variables/bloque/src/bloque.py",
+  "variables/proyecto/src/agente_taxonomias.py",
+  "variables/proyecto/src/pdf_text.py",
+  "variables/proyecto/src/tema_por_proyecto.py"
+ ],
+ "parametros": [
+  {
+   "id": "datos/expedientes/src/actas_ley.py::TIPOS_LEY",
+   "clase": "constante",
+   "archivo": "datos/expedientes/src/actas_ley.py",
+   "nombre": "TIPOS_LEY",
+   "linea": 48,
+   "entorno": null,
+   "asignado_a": "TIPOS_LEY",
+   "default": [
+    "LEY",
+    "MENSAJE Y PROYECTO DE LEY",
+    "MENSAJE"
+   ],
+   "evaluable": true,
+   "expresion": "(\"LEY\", \"MENSAJE Y PROYECTO DE LEY\", \"MENSAJE\")",
+   "afecta_panel": null
+  },
+  {
+   "id": "datos/expedientes/src/enlace_senado.py::PREFIJOS_CRUCE",
+   "clase": "constante",
+   "archivo": "datos/expedientes/src/enlace_senado.py",
+   "nombre": "PREFIJOS_CRUCE",
+   "linea": 90,
+   "entorno": null,
+   "asignado_a": "PREFIJOS_CRUCE",
+   "default": [
+    "CD"
+   ],
+   "evaluable": true,
+   "expresion": "{\"CD\"}",
+   "afecta_panel": null
+  },
+  {
+   "id": "datos/expedientes/src/resolver_firmantes.py::PARTICULAS",
+   "clase": "constante",
+   "archivo": "datos/expedientes/src/resolver_firmantes.py",
+   "nombre": "PARTICULAS",
+   "linea": 63,
+   "entorno": null,
+   "asignado_a": "PARTICULAS",
+   "default": [
+    "DA",
+    "DE",
+    "DEL",
+    "DI",
+    "DOS",
+    "LA",
+    "LAS",
+    "LOS",
+    "SAN",
+    "VAN",
+    "VON",
+    "Y"
+   ],
+   "evaluable": true,
+   "expresion": "{\"DE\", \"DEL\", \"LA\", \"LAS\", \"LOS\", \"Y\", \"DA\", \"DI\", \"DOS\", \"VON\", \"VAN\", \"SAN\"}",
+   "afecta_panel": null
+  },
+  {
+   "id": "datos/expedientes/src/resolver_firmantes.py::MESES",
+   "clase": "constante",
+   "archivo": "datos/expedientes/src/resolver_firmantes.py",
+   "nombre": "MESES",
+   "linea": 65,
+   "entorno": null,
+   "asignado_a": "MESES",
+   "default": {
+    "enero": 1,
+    "febrero": 2,
+    "marzo": 3,
+    "abril": 4,
+    "mayo": 5,
+    "junio": 6,
+    "julio": 7,
+    "agosto": 8,
+    "septiembre": 9,
+    "setiembre": 9,
+    "octubre": 10,
+    "noviembre": 11,
+    "diciembre": 12
+   },
+   "evaluable": true,
+   "expresion": "{\"enero\": 1, \"febrero\": 2, \"marzo\": 3, \"abril\": 4, \"mayo\": 5, \"junio\": 6, \"julio\": 7, \"agosto\": 8, \"septiembre\": 9, \"setiembre\": 9, \"octubre\": 10, \"noviembre\": 11, \"diciembre\": 12}",
+   "afecta_panel": null
+  },
+  {
+   "id": "datos/padron/src/padron_vigente.py::BANCAS",
+   "clase": "constante",
+   "archivo": "datos/padron/src/padron_vigente.py",
+   "nombre": "BANCAS",
+   "linea": 76,
+   "entorno": null,
+   "asignado_a": "BANCAS",
+   "default": {
+    "diputados": 257,
+    "senado": 72
+   },
+   "evaluable": true,
+   "expresion": "{\"diputados\": 257, \"senado\": 72}",
+   "afecta_panel": null
+  },
+  {
+   "id": "definiciones.py::BANCAS",
+   "clase": "constante",
+   "archivo": "definiciones.py",
+   "nombre": "BANCAS",
+   "linea": 89,
+   "entorno": null,
+   "asignado_a": "BANCAS",
+   "default": {
+    "diputados": 257,
+    "senado": 72
+   },
+   "evaluable": true,
+   "expresion": "{\"diputados\": 257, \"senado\": 72}",
+   "afecta_panel": null
+  },
+  {
+   "id": "definiciones.py::GOBIERNOS",
+   "clase": "constante",
+   "archivo": "definiciones.py",
+   "nombre": "GOBIERNOS",
+   "linea": 149,
+   "entorno": null,
+   "asignado_a": "GOBIERNOS",
+   "default": [
+    [
+     "KIRCHNER",
+     "1900-01-01",
+     "2015-12-10"
+    ],
+    [
+     "MACRI",
+     "2015-12-10",
+     "2019-12-10"
+    ],
+    [
+     "AF",
+     "2019-12-10",
+     "2023-12-10"
+    ],
+    [
+     "MILEI",
+     "2023-12-10",
+     "2100-01-01"
+    ]
+   ],
+   "evaluable": true,
+   "expresion": "( (\"KIRCHNER\", \"1900-01-01\", \"2015-12-10\"), # Nestor / CFK (\"MACRI\", \"2015-12-10\", \"2019-12-10\"), # Cambiemos (\"AF\", \"2019-12-10\", \"2023-12-10\"), # Frente de Todos (\"MILEI\", \"2023-12-10\", \"2100-01-01\"), # La Libertad Avanza )",
+   "afecta_panel": null
+  },
+  {
+   "id": "definiciones.py::MAYORIAS",
+   "clase": "constante",
+   "archivo": "definiciones.py",
+   "nombre": "MAYORIAS",
+   "linea": 189,
+   "entorno": null,
+   "asignado_a": "MAYORIAS",
+   "default": [
+    "SIMPLE",
+    "ABSOLUTA",
+    "DOS_TERCIOS",
+    "DOS_TERCIOS_CUERPO",
+    "TRES_CUARTOS"
+   ],
+   "evaluable": true,
+   "expresion": "(\"SIMPLE\", \"ABSOLUTA\", \"DOS_TERCIOS\", \"DOS_TERCIOS_CUERPO\", \"TRES_CUARTOS\")",
+   "afecta_panel": null
+  },
+  {
+   "id": "definiciones.py::CARACTERES_DICTAMEN",
+   "clase": "constante",
+   "archivo": "definiciones.py",
+   "nombre": "CARACTERES_DICTAMEN",
+   "linea": 221,
+   "entorno": null,
+   "asignado_a": "CARACTERES_DICTAMEN",
+   "default": [
+    "DISPUTADO",
+    "solo_minoria",
+    "mayoria",
+    "UNICO"
+   ],
+   "evaluable": true,
+   "expresion": "(\"DISPUTADO\", \"solo_minoria\", \"mayoria\", \"UNICO\")",
+   "afecta_panel": null
+  },
+  {
+   "id": "evaluacion/baseline/src/baseline_voto_individual.py::VENTANA_DIAS",
+   "clase": "constante",
+   "archivo": "evaluacion/baseline/src/baseline_voto_individual.py",
+   "nombre": "VENTANA_DIAS",
+   "linea": 71,
+   "entorno": null,
+   "asignado_a": "VENTANA_DIAS",
+   "default": 730,
+   "evaluable": true,
+   "expresion": "730",
+   "afecta_panel": null
+  },
+  {
+   "id": "evaluacion/baseline/src/baseline_voto_individual.py::K_SHRINK",
+   "clase": "constante",
+   "archivo": "evaluacion/baseline/src/baseline_voto_individual.py",
+   "nombre": "K_SHRINK",
+   "linea": 72,
+   "entorno": null,
+   "asignado_a": "K_SHRINK",
+   "default": 5.0,
+   "evaluable": true,
+   "expresion": "5.0",
+   "afecta_panel": null
+  },
+  {
+   "id": "evaluacion/baseline/src/baseline_voto_individual.py::HISTORIAS",
+   "clase": "constante",
+   "archivo": "evaluacion/baseline/src/baseline_voto_individual.py",
+   "nombre": "HISTORIAS",
+   "linea": 90,
+   "entorno": null,
+   "asignado_a": "HISTORIAS",
+   "default": [
+    "estricta",
+    "fecha",
+    "dia_incluido"
+   ],
+   "evaluable": true,
+   "expresion": "(\"estricta\", \"fecha\", \"dia_incluido\")",
+   "afecta_panel": null
+  },
+  {
+   "id": "evaluacion/baseline/src/baseline_voto_individual.py::HISTORIA_DEFAULT",
+   "clase": "constante",
+   "archivo": "evaluacion/baseline/src/baseline_voto_individual.py",
+   "nombre": "HISTORIA_DEFAULT",
+   "linea": 91,
+   "entorno": null,
+   "asignado_a": "HISTORIA_DEFAULT",
+   "default": "estricta",
+   "evaluable": true,
+   "expresion": "\"estricta\"",
+   "afecta_panel": null
+  },
+  {
+   "id": "evaluacion/baseline/src/baseline_voto_individual.py::_VACIOS",
+   "clase": "constante",
+   "archivo": "evaluacion/baseline/src/baseline_voto_individual.py",
+   "nombre": "_VACIOS",
+   "linea": 112,
+   "entorno": null,
+   "asignado_a": "_VACIOS",
+   "default": [
+    "",
+    "DESCONOCIDO",
+    "NAN",
+    "NONE",
+    "S/D",
+    "SIN DATO"
+   ],
+   "evaluable": true,
+   "expresion": "{\"\", \"NAN\", \"NONE\", \"DESCONOCIDO\", \"SIN DATO\", \"S/D\"}",
+   "afecta_panel": null
+  },
+  {
+   "id": "evaluacion/baseline/src/baseline_voto_individual.py::perfil(n_emitidos)",
+   "clase": "default_funcion",
+   "archivo": "evaluacion/baseline/src/baseline_voto_individual.py",
+   "nombre": "n_emitidos",
+   "linea": 161,
+   "entorno": null,
+   "asignado_a": null,
+   "default": 0,
+   "evaluable": true,
+   "expresion": "0",
+   "afecta_panel": null
+  },
+  {
+   "id": "evaluacion/baseline/src/baseline_voto_individual.py::_calibracion(bins)",
+   "clase": "default_funcion",
+   "archivo": "evaluacion/baseline/src/baseline_voto_individual.py",
+   "nombre": "bins",
+   "linea": 200,
+   "entorno": null,
+   "asignado_a": null,
+   "default": 10,
+   "evaluable": true,
+   "expresion": "10",
+   "afecta_panel": null
+  },
+  {
+   "id": "evaluacion/baseline/src/baseline_voto_individual.py::_AUX_PREFIX",
+   "clase": "constante",
+   "archivo": "evaluacion/baseline/src/baseline_voto_individual.py",
+   "nombre": "_AUX_PREFIX",
+   "linea": 351,
+   "entorno": null,
+   "asignado_a": "_AUX_PREFIX",
+   "default": "AUX",
+   "evaluable": true,
+   "expresion": "\"AUX\"",
+   "afecta_panel": null
+  },
+  {
+   "id": "evaluacion/baseline/src/baseline_voto_individual.py::skill_ic_por_ley(n_boot)",
+   "clase": "default_funcion",
+   "archivo": "evaluacion/baseline/src/baseline_voto_individual.py",
+   "nombre": "n_boot",
+   "linea": 405,
+   "entorno": null,
+   "asignado_a": null,
+   "default": 300,
+   "evaluable": true,
+   "expresion": "300",
+   "afecta_panel": null
+  },
+  {
+   "id": "evaluacion/baseline/src/baseline_voto_individual.py::skill_ic_por_ley(seed)",
+   "clase": "default_funcion",
+   "archivo": "evaluacion/baseline/src/baseline_voto_individual.py",
+   "nombre": "seed",
+   "linea": 405,
+   "entorno": null,
+   "asignado_a": null,
+   "default": 7,
+   "evaluable": true,
+   "expresion": "7",
+   "afecta_panel": null
+  },
+  {
+   "id": "evaluacion/baseline/src/baseline_voto_individual.py::dif_brier_ic_por_ley(n_boot)",
+   "clase": "default_funcion",
+   "archivo": "evaluacion/baseline/src/baseline_voto_individual.py",
+   "nombre": "n_boot",
+   "linea": 419,
+   "entorno": null,
+   "asignado_a": null,
+   "default": 300,
+   "evaluable": true,
+   "expresion": "300",
+   "afecta_panel": null
+  },
+  {
+   "id": "evaluacion/baseline/src/baseline_voto_individual.py::dif_brier_ic_por_ley(seed)",
+   "clase": "default_funcion",
+   "archivo": "evaluacion/baseline/src/baseline_voto_individual.py",
+   "nombre": "seed",
+   "linea": 419,
+   "entorno": null,
+   "asignado_a": null,
+   "default": 7,
+   "evaluable": true,
+   "expresion": "7",
+   "afecta_panel": null
+  },
+  {
+   "id": "evaluacion/baseline/src/baseline_voto_individual.py::ERA_LABELS",
+   "clase": "constante",
+   "archivo": "evaluacion/baseline/src/baseline_voto_individual.py",
+   "nombre": "ERA_LABELS",
+   "linea": 433,
+   "entorno": null,
+   "asignado_a": "ERA_LABELS",
+   "default": [
+    "hasta 2011",
+    "2011-2015",
+    "2015-2019",
+    "2019-2023",
+    "desde 2023"
+   ],
+   "evaluable": true,
+   "expresion": "[\"hasta 2011\", \"2011-2015\", \"2015-2019\", \"2019-2023\", \"desde 2023\"]",
+   "afecta_panel": null
+  },
+  {
+   "id": "evaluacion/baseline/src/baseline_voto_individual.py::correr(muestra)",
+   "clase": "default_funcion",
+   "archivo": "evaluacion/baseline/src/baseline_voto_individual.py",
+   "nombre": "muestra",
+   "linea": 612,
+   "entorno": null,
+   "asignado_a": null,
+   "default": 0,
+   "evaluable": true,
+   "expresion": "0",
+   "afecta_panel": null
+  },
+  {
+   "id": "evaluacion/baseline/src/baseline_voto_individual.py::correr(seed)",
+   "clase": "default_funcion",
+   "archivo": "evaluacion/baseline/src/baseline_voto_individual.py",
+   "nombre": "seed",
+   "linea": 612,
+   "entorno": null,
+   "asignado_a": null,
+   "default": 7,
+   "evaluable": true,
+   "expresion": "7",
+   "afecta_panel": null
+  },
+  {
+   "id": "evaluacion/baseline/src/censo_estadisticos.py::FORMATO",
+   "clase": "constante",
+   "archivo": "evaluacion/baseline/src/censo_estadisticos.py",
+   "nombre": "FORMATO",
+   "linea": 48,
+   "entorno": null,
+   "asignado_a": "FORMATO",
+   "default": 1,
+   "evaluable": true,
+   "expresion": "1",
+   "afecta_panel": null
+  },
+  {
+   "id": "evaluacion/baseline/src/censo_estadisticos.py::VARIANTES_POR_DEFECTO",
+   "clase": "constante",
+   "archivo": "evaluacion/baseline/src/censo_estadisticos.py",
+   "nombre": "VARIANTES_POR_DEFECTO",
+   "linea": 52,
+   "entorno": null,
+   "asignado_a": "VARIANTES_POR_DEFECTO",
+   "default": [
+    "estricta__general",
+    "estricta__tema"
+   ],
+   "evaluable": true,
+   "expresion": "(\"estricta__general\", \"estricta__tema\")",
+   "afecta_panel": null
+  },
+  {
+   "id": "evaluacion/baseline/src/censo_estadisticos.py::ALIAS_P",
+   "clase": "constante",
+   "archivo": "evaluacion/baseline/src/censo_estadisticos.py",
+   "nombre": "ALIAS_P",
+   "linea": 56,
+   "entorno": null,
+   "asignado_a": "ALIAS_P",
+   "default": "estricta__tema",
+   "evaluable": true,
+   "expresion": "\"estricta__tema\"",
+   "afecta_panel": null
+  },
+  {
+   "id": "evaluacion/baseline/src/censo_estadisticos.py::_CLIP",
+   "clase": "constante",
+   "archivo": "evaluacion/baseline/src/censo_estadisticos.py",
+   "nombre": "_CLIP",
+   "linea": 60,
+   "entorno": null,
+   "asignado_a": "_CLIP",
+   "default": 1e-09,
+   "evaluable": true,
+   "expresion": "1e-9",
+   "afecta_panel": null
+  },
+  {
+   "id": "evaluacion/baseline/src/censo_estadisticos.py::skill_ic_desde_sumas(n_boot)",
+   "clase": "default_funcion",
+   "archivo": "evaluacion/baseline/src/censo_estadisticos.py",
+   "nombre": "n_boot",
+   "linea": 67,
+   "entorno": null,
+   "asignado_a": null,
+   "default": 300,
+   "evaluable": true,
+   "expresion": "300",
+   "afecta_panel": null
+  },
+  {
+   "id": "evaluacion/baseline/src/censo_estadisticos.py::skill_ic_desde_sumas(seed)",
+   "clase": "default_funcion",
+   "archivo": "evaluacion/baseline/src/censo_estadisticos.py",
+   "nombre": "seed",
+   "linea": 67,
+   "entorno": null,
+   "asignado_a": null,
+   "default": 7,
+   "evaluable": true,
+   "expresion": "7",
+   "afecta_panel": null
+  },
+  {
+   "id": "evaluacion/baseline/src/censo_estadisticos.py::dif_brier_ic_desde_sumas(n_boot)",
+   "clase": "default_funcion",
+   "archivo": "evaluacion/baseline/src/censo_estadisticos.py",
+   "nombre": "n_boot",
+   "linea": 84,
+   "entorno": null,
+   "asignado_a": null,
+   "default": 300,
+   "evaluable": true,
+   "expresion": "300",
+   "afecta_panel": null
+  },
+  {
+   "id": "evaluacion/baseline/src/censo_estadisticos.py::dif_brier_ic_desde_sumas(seed)",
+   "clase": "default_funcion",
+   "archivo": "evaluacion/baseline/src/censo_estadisticos.py",
+   "nombre": "seed",
+   "linea": 84,
+   "entorno": null,
+   "asignado_a": null,
+   "default": 7,
+   "evaluable": true,
+   "expresion": "7",
+   "afecta_panel": null
+  },
+  {
+   "id": "evaluacion/baseline/src/censo_estadisticos.py::skill(n_boot)",
+   "clase": "default_funcion",
+   "archivo": "evaluacion/baseline/src/censo_estadisticos.py",
+   "nombre": "n_boot",
+   "linea": 287,
+   "entorno": null,
+   "asignado_a": null,
+   "default": 300,
+   "evaluable": true,
+   "expresion": "300",
+   "afecta_panel": null
+  },
+  {
+   "id": "evaluacion/baseline/src/censo_estadisticos.py::skill(seed)",
+   "clase": "default_funcion",
+   "archivo": "evaluacion/baseline/src/censo_estadisticos.py",
+   "nombre": "seed",
+   "linea": 287,
+   "entorno": null,
+   "asignado_a": null,
+   "default": 7,
+   "evaluable": true,
+   "expresion": "7",
+   "afecta_panel": null
+  },
+  {
+   "id": "evaluacion/baseline/src/censo_estadisticos.py::dif_brier(n_boot)",
+   "clase": "default_funcion",
+   "archivo": "evaluacion/baseline/src/censo_estadisticos.py",
+   "nombre": "n_boot",
+   "linea": 301,
+   "entorno": null,
+   "asignado_a": null,
+   "default": 300,
+   "evaluable": true,
+   "expresion": "300",
+   "afecta_panel": null
+  },
+  {
+   "id": "evaluacion/baseline/src/censo_estadisticos.py::dif_brier(seed)",
+   "clase": "default_funcion",
+   "archivo": "evaluacion/baseline/src/censo_estadisticos.py",
+   "nombre": "seed",
+   "linea": 301,
+   "entorno": null,
+   "asignado_a": null,
+   "default": 7,
+   "evaluable": true,
+   "expresion": "7",
+   "afecta_panel": null
+  },
+  {
+   "id": "modelo/agregador_institucional/src/agregador.py::CONDUCTAS",
+   "clase": "constante",
+   "archivo": "modelo/agregador_institucional/src/agregador.py",
+   "nombre": "CONDUCTAS",
+   "linea": 66,
+   "entorno": null,
+   "asignado_a": "CONDUCTAS",
+   "default": [
+    "AFIRMATIVO",
+    "NEGATIVO",
+    "NO_ACOMPANA"
+   ],
+   "evaluable": true,
+   "expresion": "(\"AFIRMATIVO\", \"NEGATIVO\", \"NO_ACOMPANA\")",
+   "afecta_panel": null
+  },
+  {
+   "id": "modelo/agregador_institucional/src/agregador.py::ENV:QUORUM_ABSTENCIONES",
+   "clase": "entorno",
+   "archivo": "modelo/agregador_institucional/src/agregador.py",
+   "nombre": "QUORUM_CUENTA_ABSTENCIONES",
+   "linea": 102,
+   "entorno": "QUORUM_ABSTENCIONES",
+   "asignado_a": "QUORUM_CUENTA_ABSTENCIONES",
+   "default": false,
+   "evaluable": true,
+   "expresion": "os.environ.get(\"QUORUM_ABSTENCIONES\") == \"1\"",
+   "afecta_panel": null
+  },
+  {
+   "id": "modelo/agregador_institucional/src/agregador.py::SUST",
+   "clase": "constante",
+   "archivo": "modelo/agregador_institucional/src/agregador.py",
+   "nombre": "SUST",
+   "linea": 103,
+   "entorno": null,
+   "asignado_a": "SUST",
+   "default": [
+    "AFIRMATIVO",
+    "NEGATIVO"
+   ],
+   "evaluable": true,
+   "expresion": "(\"AFIRMATIVO\", \"NEGATIVO\")",
+   "afecta_panel": null
+  },
+  {
+   "id": "modelo/agregador_institucional/src/agregador.py::_prob_conductas(reparto_desvio)",
+   "clase": "default_funcion",
+   "archivo": "modelo/agregador_institucional/src/agregador.py",
+   "nombre": "reparto_desvio",
+   "linea": 126,
+   "entorno": null,
+   "asignado_a": null,
+   "default": 0.5,
+   "evaluable": true,
+   "expresion": "0.5",
+   "afecta_panel": null
+  },
+  {
+   "id": "modelo/agregador_institucional/src/agregador.py::simular_votacion(epsilon0)",
+   "clase": "default_funcion",
+   "archivo": "modelo/agregador_institucional/src/agregador.py",
+   "nombre": "epsilon0",
+   "linea": 142,
+   "entorno": null,
+   "asignado_a": null,
+   "default": 0.0,
+   "evaluable": true,
+   "expresion": "0.0",
+   "afecta_panel": null
+  },
+  {
+   "id": "modelo/agregador_institucional/src/agregador.py::simular_votacion(n_sims)",
+   "clase": "default_funcion",
+   "archivo": "modelo/agregador_institucional/src/agregador.py",
+   "nombre": "n_sims",
+   "linea": 142,
+   "entorno": null,
+   "asignado_a": null,
+   "default": 400,
+   "evaluable": true,
+   "expresion": "400",
+   "afecta_panel": null
+  },
+  {
+   "id": "modelo/agregador_institucional/src/agregador.py::simular_votacion(reparto_desvio)",
+   "clase": "default_funcion",
+   "archivo": "modelo/agregador_institucional/src/agregador.py",
+   "nombre": "reparto_desvio",
+   "linea": 142,
+   "entorno": null,
+   "asignado_a": null,
+   "default": 0.5,
+   "evaluable": true,
+   "expresion": "0.5",
+   "afecta_panel": null
+  },
+  {
+   "id": "modelo/agregador_institucional/src/agregador.py::simular_votacion(seed)",
+   "clase": "default_funcion",
+   "archivo": "modelo/agregador_institucional/src/agregador.py",
+   "nombre": "seed",
+   "linea": 142,
+   "entorno": null,
+   "asignado_a": null,
+   "default": 0,
+   "evaluable": true,
+   "expresion": "0",
+   "afecta_panel": null
+  },
+  {
+   "id": "modelo/agregador_institucional/src/agregador.py::simular_votacion(tau)",
+   "clase": "default_funcion",
+   "archivo": "modelo/agregador_institucional/src/agregador.py",
+   "nombre": "tau",
+   "linea": 142,
+   "entorno": null,
+   "asignado_a": null,
+   "default": 0.0,
+   "evaluable": true,
+   "expresion": "0.0",
+   "afecta_panel": null
+  },
+  {
+   "id": "modelo/agregador_institucional/src/agregador.py::backtest(epsilon0)",
+   "clase": "default_funcion",
+   "archivo": "modelo/agregador_institucional/src/agregador.py",
+   "nombre": "epsilon0",
+   "linea": 339,
+   "entorno": null,
+   "asignado_a": null,
+   "default": 0.0,
+   "evaluable": true,
+   "expresion": "0.0",
+   "afecta_panel": null
+  },
+  {
+   "id": "modelo/agregador_institucional/src/agregador.py::backtest(reparto_desvio)",
+   "clase": "default_funcion",
+   "archivo": "modelo/agregador_institucional/src/agregador.py",
+   "nombre": "reparto_desvio",
+   "linea": 339,
+   "entorno": null,
+   "asignado_a": null,
+   "default": 0.5,
+   "evaluable": true,
+   "expresion": "0.5",
+   "afecta_panel": null
+  },
+  {
+   "id": "modelo/agregador_institucional/src/agregador.py::backtest(seed)",
+   "clase": "default_funcion",
+   "archivo": "modelo/agregador_institucional/src/agregador.py",
+   "nombre": "seed",
+   "linea": 339,
+   "entorno": null,
+   "asignado_a": null,
+   "default": 0,
+   "evaluable": true,
+   "expresion": "0",
+   "afecta_panel": null
+  },
+  {
+   "id": "modelo/agregador_institucional/src/agregador.py::backtest(tau)",
+   "clase": "default_funcion",
+   "archivo": "modelo/agregador_institucional/src/agregador.py",
+   "nombre": "tau",
+   "linea": 339,
+   "entorno": null,
+   "asignado_a": null,
+   "default": 0.0,
+   "evaluable": true,
+   "expresion": "0.0",
+   "afecta_panel": null
+  },
+  {
+   "id": "modelo/agregador_institucional/src/agregador.py::ENV:CANON",
+   "clase": "entorno",
+   "archivo": "modelo/agregador_institucional/src/agregador.py",
+   "nombre": "CANON",
+   "linea": 459,
+   "entorno": "CANON",
+   "asignado_a": null,
+   "default": null,
+   "evaluable": false,
+   "expresion": "os.environ.get(\"CANON\", root / \"datos\" / \"canonica\" / \"data\" / \"clean\")",
+   "afecta_panel": null
+  },
+  {
+   "id": "modelo/agregador_institucional/src/agregador.py::ENV:DISC",
+   "clase": "entorno",
+   "archivo": "modelo/agregador_institucional/src/agregador.py",
+   "nombre": "DISC",
+   "linea": 460,
+   "entorno": "DISC",
+   "asignado_a": null,
+   "default": null,
+   "evaluable": false,
+   "expresion": "os.environ.get(\"DISC\", root / \"modelo\" / \"voto_individual\" / \"outputs\")",
+   "afecta_panel": null
+  },
+  {
+   "id": "modelo/agregador_institucional/src/agregador.py::ENV:OUT",
+   "clase": "entorno",
+   "archivo": "modelo/agregador_institucional/src/agregador.py",
+   "nombre": "OUT",
+   "linea": 461,
+   "entorno": "OUT",
+   "asignado_a": null,
+   "default": null,
+   "evaluable": false,
+   "expresion": "os.environ.get(\"OUT\", here.parents[1] / \"outputs\")",
+   "afecta_panel": null
+  },
+  {
+   "id": "modelo/agregador_institucional/src/agregador.py::ENV:N_SIMS",
+   "clase": "entorno",
+   "archivo": "modelo/agregador_institucional/src/agregador.py",
+   "nombre": "N_SIMS",
+   "linea": 463,
+   "entorno": "N_SIMS",
+   "asignado_a": null,
+   "default": "400",
+   "evaluable": true,
+   "expresion": "os.environ.get(\"N_SIMS\", \"400\")",
+   "afecta_panel": null
+  },
+  {
+   "id": "modelo/agregador_institucional/src/agregador.py::ENV:ASIST",
+   "clase": "entorno",
+   "archivo": "modelo/agregador_institucional/src/agregador.py",
+   "nombre": "ASIST",
+   "linea": 466,
+   "entorno": "ASIST",
+   "asignado_a": null,
+   "default": null,
+   "evaluable": true,
+   "expresion": "os.environ.get(\"ASIST\")",
+   "afecta_panel": null
+  },
+  {
+   "id": "modelo/agregador_institucional/src/agregador.py::ENV:MAX_ACTAS",
+   "clase": "entorno",
+   "archivo": "modelo/agregador_institucional/src/agregador.py",
+   "nombre": "MAX_ACTAS",
+   "linea": 468,
+   "entorno": "MAX_ACTAS",
+   "asignado_a": null,
+   "default": null,
+   "evaluable": true,
+   "expresion": "os.environ[\"MAX_ACTAS\"]",
+   "afecta_panel": null
+  },
+  {
+   "id": "modelo/agregador_institucional/src/agregador.py::ENV:MAX_ACTAS#2",
+   "clase": "entorno",
+   "archivo": "modelo/agregador_institucional/src/agregador.py",
+   "nombre": "MAX_ACTAS",
+   "linea": 468,
+   "entorno": "MAX_ACTAS",
+   "asignado_a": null,
+   "default": null,
+   "evaluable": true,
+   "expresion": "os.environ.get(\"MAX_ACTAS\")",
+   "afecta_panel": null
+  },
+  {
+   "id": "modelo/agregador_institucional/src/agregador.py::ENV:SIN_RUIDO",
+   "clase": "entorno",
+   "archivo": "modelo/agregador_institucional/src/agregador.py",
+   "nombre": "SIN_RUIDO",
+   "linea": 469,
+   "entorno": "SIN_RUIDO",
+   "asignado_a": null,
+   "default": null,
+   "evaluable": true,
+   "expresion": "os.environ.get(\"SIN_RUIDO\")",
+   "afecta_panel": null
+  },
+  {
+   "id": "modelo/agregador_institucional/src/agregador.py::ENV:EPSILON0",
+   "clase": "entorno",
+   "archivo": "modelo/agregador_institucional/src/agregador.py",
+   "nombre": "EPSILON0",
+   "linea": 472,
+   "entorno": "EPSILON0",
+   "asignado_a": null,
+   "default": "0",
+   "evaluable": true,
+   "expresion": "os.environ.get(\"EPSILON0\", \"0\")",
+   "afecta_panel": null
+  },
+  {
+   "id": "modelo/agregador_institucional/src/agregador.py::ENV:TAU",
+   "clase": "entorno",
+   "archivo": "modelo/agregador_institucional/src/agregador.py",
+   "nombre": "TAU",
+   "linea": 473,
+   "entorno": "TAU",
+   "asignado_a": null,
+   "default": "0",
+   "evaluable": true,
+   "expresion": "os.environ.get(\"TAU\", \"0\")",
+   "afecta_panel": null
+  },
+  {
+   "id": "modelo/ensemble/src/beta_dictamen.py::ENV:BETA_DICTAMEN",
+   "clase": "entorno",
+   "archivo": "modelo/ensemble/src/beta_dictamen.py",
+   "nombre": "BETA_DICTAMEN",
+   "linea": 71,
+   "entorno": "BETA_DICTAMEN",
+   "asignado_a": "BETA_DICTAMEN",
+   "default": true,
+   "evaluable": true,
+   "expresion": "os.environ.get(\"BETA_DICTAMEN\", \"1\") != \"0\"",
+   "afecta_panel": null
+  },
+  {
+   "id": "modelo/ensemble/src/beta_dictamen.py::TERMINOS",
+   "clase": "constante",
+   "archivo": "modelo/ensemble/src/beta_dictamen.py",
+   "nombre": "TERMINOS",
+   "linea": 75,
+   "entorno": null,
+   "asignado_a": "TERMINOS",
+   "default": [
+    "F_i",
+    "lealtad_x_jefe"
+   ],
+   "evaluable": true,
+   "expresion": "(\"F_i\", \"lealtad_x_jefe\")",
+   "afecta_panel": null
+  },
+  {
+   "id": "modelo/ensemble/src/ensemble.py::CONDUCTAS",
+   "clase": "constante",
+   "archivo": "modelo/ensemble/src/ensemble.py",
+   "nombre": "CONDUCTAS",
+   "linea": 57,
+   "entorno": null,
+   "asignado_a": "CONDUCTAS",
+   "default": [
+    "AFIRMATIVO",
+    "NEGATIVO",
+    "NO_ACOMPANA"
+   ],
+   "evaluable": true,
+   "expresion": "{\"AFIRMATIVO\", \"NEGATIVO\", \"NO_ACOMPANA\"}",
+   "afecta_panel": null
+  },
+  {
+   "id": "modelo/ensemble/src/ensemble.py::ENV:MIN_VOTOS_FICHA",
+   "clase": "entorno",
+   "archivo": "modelo/ensemble/src/ensemble.py",
+   "nombre": "MIN_VOTOS_FICHA",
+   "linea": 60,
+   "entorno": "MIN_VOTOS_FICHA",
+   "asignado_a": "MIN_VOTOS_FICHA",
+   "default": 20,
+   "evaluable": true,
+   "expresion": "int(os.environ.get(\"MIN_VOTOS_FICHA\", \"20\"))",
+   "afecta_panel": null
+  },
+  {
+   "id": "modelo/ensemble/src/ensemble.py::DESVIO_NEUTRO",
+   "clase": "constante",
+   "archivo": "modelo/ensemble/src/ensemble.py",
+   "nombre": "DESVIO_NEUTRO",
+   "linea": 62,
+   "entorno": null,
+   "asignado_a": "DESVIO_NEUTRO",
+   "default": 0.15,
+   "evaluable": true,
+   "expresion": "0.15",
+   "afecta_panel": null
+  },
+  {
+   "id": "modelo/ensemble/src/ensemble.py::ENV:PADRON_DIR",
+   "clase": "entorno",
+   "archivo": "modelo/ensemble/src/ensemble.py",
+   "nombre": "PADRON_DIR",
+   "linea": 106,
+   "entorno": "PADRON_DIR",
+   "asignado_a": null,
+   "default": null,
+   "evaluable": false,
+   "expresion": "os.environ.get( \"PADRON_DIR\", _root() / \"datos\" / \"padron\" / \"data\")",
+   "afecta_panel": null
+  },
+  {
+   "id": "modelo/ensemble/src/ensemble.py::ENV:DISCIPLINA",
+   "clase": "entorno",
+   "archivo": "modelo/ensemble/src/ensemble.py",
+   "nombre": "DISCIPLINA",
+   "linea": 112,
+   "entorno": "DISCIPLINA",
+   "asignado_a": null,
+   "default": null,
+   "evaluable": false,
+   "expresion": "os.environ.get( \"DISCIPLINA\", _root() / \"modelo\" / \"voto_individual\" / \"outputs\" / \"disciplina_individual.csv\")",
+   "afecta_panel": null
+  },
+  {
+   "id": "modelo/ensemble/src/ensemble.py::ENV:EXPEDIENTES",
+   "clase": "entorno",
+   "archivo": "modelo/ensemble/src/ensemble.py",
+   "nombre": "EXPEDIENTES",
+   "linea": 254,
+   "entorno": "EXPEDIENTES",
+   "asignado_a": null,
+   "default": null,
+   "evaluable": false,
+   "expresion": "os.environ.get( \"EXPEDIENTES\", _root() / \"datos\" / \"expedientes\" / \"data\" / \"clean\" / \"expedientes.parquet\")",
+   "afecta_panel": null
+  },
+  {
+   "id": "modelo/ensemble/src/ensemble.py::DESVIO_MIN_INDIVIDUAL",
+   "clase": "constante",
+   "archivo": "modelo/ensemble/src/ensemble.py",
+   "nombre": "DESVIO_MIN_INDIVIDUAL",
+   "linea": 296,
+   "entorno": null,
+   "asignado_a": "DESVIO_MIN_INDIVIDUAL",
+   "default": 0.02,
+   "evaluable": true,
+   "expresion": "0.02",
+   "afecta_panel": null
+  },
+  {
+   "id": "modelo/ensemble/src/ensemble.py::P_INCERTIDUMBRE",
+   "clase": "constante",
+   "archivo": "modelo/ensemble/src/ensemble.py",
+   "nombre": "P_INCERTIDUMBRE",
+   "linea": 297,
+   "entorno": null,
+   "asignado_a": "P_INCERTIDUMBRE",
+   "default": 0.01,
+   "evaluable": true,
+   "expresion": "0.01",
+   "afecta_panel": null
+  },
+  {
+   "id": "modelo/ensemble/src/ensemble.py::simular_con_guardas(epsilon0)",
+   "clase": "default_funcion",
+   "archivo": "modelo/ensemble/src/ensemble.py",
+   "nombre": "epsilon0",
+   "linea": 300,
+   "entorno": null,
+   "asignado_a": null,
+   "default": 0.0,
+   "evaluable": true,
+   "expresion": "0.0",
+   "afecta_panel": null
+  },
+  {
+   "id": "modelo/ensemble/src/ensemble.py::simular_con_guardas(n_sims)",
+   "clase": "default_funcion",
+   "archivo": "modelo/ensemble/src/ensemble.py",
+   "nombre": "n_sims",
+   "linea": 300,
+   "entorno": null,
+   "asignado_a": null,
+   "default": 2000,
+   "evaluable": true,
+   "expresion": "2000",
+   "afecta_panel": null
+  },
+  {
+   "id": "modelo/ensemble/src/ensemble.py::simular_con_guardas(reparto_desvio)",
+   "clase": "default_funcion",
+   "archivo": "modelo/ensemble/src/ensemble.py",
+   "nombre": "reparto_desvio",
+   "linea": 300,
+   "entorno": null,
+   "asignado_a": null,
+   "default": 0.5,
+   "evaluable": true,
+   "expresion": "0.5",
+   "afecta_panel": null
+  },
+  {
+   "id": "modelo/ensemble/src/ensemble.py::simular_con_guardas(seed)",
+   "clase": "default_funcion",
+   "archivo": "modelo/ensemble/src/ensemble.py",
+   "nombre": "seed",
+   "linea": 300,
+   "entorno": null,
+   "asignado_a": null,
+   "default": 0,
+   "evaluable": true,
+   "expresion": "0",
+   "afecta_panel": null
+  },
+  {
+   "id": "modelo/ensemble/src/ensemble.py::simular_con_guardas(tau)",
+   "clase": "default_funcion",
+   "archivo": "modelo/ensemble/src/ensemble.py",
+   "nombre": "tau",
+   "linea": 300,
+   "entorno": null,
+   "asignado_a": null,
+   "default": 0.0,
+   "evaluable": true,
+   "expresion": "0.0",
+   "afecta_panel": null
+  },
+  {
+   "id": "modelo/ensemble/src/estimar_beta_dictamen.py::MIN_HIST_INDIVIDUAL",
+   "clase": "constante",
+   "archivo": "modelo/ensemble/src/estimar_beta_dictamen.py",
+   "nombre": "MIN_HIST_INDIVIDUAL",
+   "linea": 81,
+   "entorno": null,
+   "asignado_a": "MIN_HIST_INDIVIDUAL",
+   "default": 8,
+   "evaluable": true,
+   "expresion": "8",
+   "afecta_panel": null
+  },
+  {
+   "id": "modelo/ensemble/src/estimar_beta_dictamen.py::MIN_CLUSTERS_CONFIABLE",
+   "clase": "constante",
+   "archivo": "modelo/ensemble/src/estimar_beta_dictamen.py",
+   "nombre": "MIN_CLUSTERS_CONFIABLE",
+   "linea": 85,
+   "entorno": null,
+   "asignado_a": "MIN_CLUSTERS_CONFIABLE",
+   "default": 20,
+   "evaluable": true,
+   "expresion": "20",
+   "afecta_panel": null
+  },
+  {
+   "id": "modelo/ensemble/src/estimar_beta_dictamen.py::VENTANA_DIAS",
+   "clase": "constante",
+   "archivo": "modelo/ensemble/src/estimar_beta_dictamen.py",
+   "nombre": "VENTANA_DIAS",
+   "linea": 86,
+   "entorno": null,
+   "asignado_a": "VENTANA_DIAS",
+   "default": 730,
+   "evaluable": true,
+   "expresion": "730",
+   "afecta_panel": null
+  },
+  {
+   "id": "modelo/ensemble/src/estimar_beta_dictamen.py::K_SHRINK",
+   "clase": "constante",
+   "archivo": "modelo/ensemble/src/estimar_beta_dictamen.py",
+   "nombre": "K_SHRINK",
+   "linea": 87,
+   "entorno": null,
+   "asignado_a": "K_SHRINK",
+   "default": 5.0,
+   "evaluable": true,
+   "expresion": "5.0",
+   "afecta_panel": null
+  },
+  {
+   "id": "modelo/ensemble/src/estimar_beta_dictamen.py::BANCAS",
+   "clase": "constante",
+   "archivo": "modelo/ensemble/src/estimar_beta_dictamen.py",
+   "nombre": "BANCAS",
+   "linea": 88,
+   "entorno": null,
+   "asignado_a": "BANCAS",
+   "default": {
+    "diputados": 257,
+    "senado": 72
+   },
+   "evaluable": true,
+   "expresion": "{\"diputados\": 257, \"senado\": 72}",
+   "afecta_panel": null
+  },
+  {
+   "id": "modelo/ensemble/src/estimar_beta_dictamen.py::_logit(eps)",
+   "clase": "default_funcion",
+   "archivo": "modelo/ensemble/src/estimar_beta_dictamen.py",
+   "nombre": "eps",
+   "linea": 115,
+   "entorno": null,
+   "asignado_a": null,
+   "default": 0.0001,
+   "evaluable": true,
+   "expresion": "1e-4",
+   "afecta_panel": null
+  },
+  {
+   "id": "modelo/ensemble/src/estimar_beta_dictamen.py::construir_panel(muestra)",
+   "clase": "default_funcion",
+   "archivo": "modelo/ensemble/src/estimar_beta_dictamen.py",
+   "nombre": "muestra",
+   "linea": 269,
+   "entorno": null,
+   "asignado_a": null,
+   "default": 0,
+   "evaluable": true,
+   "expresion": "0",
+   "afecta_panel": null
+  },
+  {
+   "id": "modelo/ensemble/src/estimar_beta_dictamen.py::construir_panel(seed)",
+   "clase": "default_funcion",
+   "archivo": "modelo/ensemble/src/estimar_beta_dictamen.py",
+   "nombre": "seed",
+   "linea": 269,
+   "entorno": null,
+   "asignado_a": null,
+   "default": 7,
+   "evaluable": true,
+   "expresion": "7",
+   "afecta_panel": null
+  },
+  {
+   "id": "modelo/ensemble/src/nowcast_puertas.py::MAYORIAS_CON_NUMERO",
+   "clase": "constante",
+   "archivo": "modelo/ensemble/src/nowcast_puertas.py",
+   "nombre": "MAYORIAS_CON_NUMERO",
+   "linea": 63,
+   "entorno": null,
+   "asignado_a": "MAYORIAS_CON_NUMERO",
+   "default": [
+    "SIMPLE"
+   ],
+   "evaluable": true,
+   "expresion": "(\"SIMPLE\",)",
+   "afecta_panel": null
+  },
+  {
+   "id": "modelo/ensemble/src/nowcast_puertas.py::DESVIO_BISAGRA",
+   "clase": "constante",
+   "archivo": "modelo/ensemble/src/nowcast_puertas.py",
+   "nombre": "DESVIO_BISAGRA",
+   "linea": 81,
+   "entorno": null,
+   "asignado_a": "DESVIO_BISAGRA",
+   "default": 0.2,
+   "evaluable": true,
+   "expresion": "0.20",
+   "afecta_panel": null
+  },
+  {
+   "id": "modelo/ensemble/src/nowcast_puertas.py::INCERTIDUMBRE_INCOGNITA",
+   "clase": "constante",
+   "archivo": "modelo/ensemble/src/nowcast_puertas.py",
+   "nombre": "INCERTIDUMBRE_INCOGNITA",
+   "linea": 85,
+   "entorno": null,
+   "asignado_a": "INCERTIDUMBRE_INCOGNITA",
+   "default": 0.35,
+   "evaluable": true,
+   "expresion": "0.35",
+   "afecta_panel": null
+  },
+  {
+   "id": "modelo/ensemble/src/nowcast_puertas.py::PRESENCIA_MINIMA",
+   "clase": "constante",
+   "archivo": "modelo/ensemble/src/nowcast_puertas.py",
+   "nombre": "PRESENCIA_MINIMA",
+   "linea": 88,
+   "entorno": null,
+   "asignado_a": "PRESENCIA_MINIMA",
+   "default": 0.15,
+   "evaluable": true,
+   "expresion": "0.15",
+   "afecta_panel": null
+  },
+  {
+   "id": "modelo/ensemble/src/nowcast_puertas.py::REPARTO_DESVIO",
+   "clase": "constante",
+   "archivo": "modelo/ensemble/src/nowcast_puertas.py",
+   "nombre": "REPARTO_DESVIO",
+   "linea": 91,
+   "entorno": null,
+   "asignado_a": "REPARTO_DESVIO",
+   "default": 1.0,
+   "evaluable": true,
+   "expresion": "1.0",
+   "afecta_panel": null
+  },
+  {
+   "id": "modelo/ensemble/src/nowcast_puertas.py::MIN_HIST_INDIVIDUAL",
+   "clase": "constante",
+   "archivo": "modelo/ensemble/src/nowcast_puertas.py",
+   "nombre": "MIN_HIST_INDIVIDUAL",
+   "linea": 112,
+   "entorno": null,
+   "asignado_a": "MIN_HIST_INDIVIDUAL",
+   "default": 1,
+   "evaluable": true,
+   "expresion": "1",
+   "afecta_panel": null
+  },
+  {
+   "id": "modelo/ensemble/src/nowcast_puertas.py::MIN_HIST_ANTERIOR",
+   "clase": "constante",
+   "archivo": "modelo/ensemble/src/nowcast_puertas.py",
+   "nombre": "MIN_HIST_ANTERIOR",
+   "linea": 113,
+   "entorno": null,
+   "asignado_a": "MIN_HIST_ANTERIOR",
+   "default": 8,
+   "evaluable": true,
+   "expresion": "8",
+   "afecta_panel": null
+  },
+  {
+   "id": "modelo/ensemble/src/nowcast_puertas.py::ENV:GUARD_ERA",
+   "clase": "entorno",
+   "archivo": "modelo/ensemble/src/nowcast_puertas.py",
+   "nombre": "GUARD_ERA",
+   "linea": 134,
+   "entorno": "GUARD_ERA",
+   "asignado_a": "GUARD_ERA",
+   "default": true,
+   "evaluable": true,
+   "expresion": "os.environ.get(\"GUARD_ERA\", \"1\") != \"0\"",
+   "afecta_panel": null
+  },
+  {
+   "id": "modelo/ensemble/src/nowcast_puertas.py::ERA_FIJA",
+   "clase": "constante",
+   "archivo": "modelo/ensemble/src/nowcast_puertas.py",
+   "nombre": "ERA_FIJA",
+   "linea": 136,
+   "entorno": null,
+   "asignado_a": "ERA_FIJA",
+   "default": "2023-12-10",
+   "evaluable": true,
+   "expresion": "\"2023-12-10\"",
+   "afecta_panel": null
+  },
+  {
+   "id": "modelo/ensemble/src/nowcast_puertas.py::K_SHRINK_RECORD",
+   "clase": "constante",
+   "archivo": "modelo/ensemble/src/nowcast_puertas.py",
+   "nombre": "K_SHRINK_RECORD",
+   "linea": 145,
+   "entorno": null,
+   "asignado_a": "K_SHRINK_RECORD",
+   "default": 5.0,
+   "evaluable": true,
+   "expresion": "5.0",
+   "afecta_panel": null
+  },
+  {
+   "id": "modelo/ensemble/src/nowcast_puertas.py::ENV:SHRINK_RECORD",
+   "clase": "entorno",
+   "archivo": "modelo/ensemble/src/nowcast_puertas.py",
+   "nombre": "SHRINK_RECORD",
+   "linea": 146,
+   "entorno": "SHRINK_RECORD",
+   "asignado_a": "SHRINK_RECORD",
+   "default": true,
+   "evaluable": true,
+   "expresion": "os.environ.get(\"SHRINK_RECORD\", \"1\") != \"0\"",
+   "afecta_panel": null
+  },
+  {
+   "id": "modelo/ensemble/src/nowcast_puertas.py::ENV:TEMA_AUTO",
+   "clase": "entorno",
+   "archivo": "modelo/ensemble/src/nowcast_puertas.py",
+   "nombre": "TEMA_AUTO",
+   "linea": 170,
+   "entorno": "TEMA_AUTO",
+   "asignado_a": "TEMA_AUTO",
+   "default": false,
+   "evaluable": true,
+   "expresion": "os.environ.get(\"TEMA_AUTO\", \"0\") != \"0\"",
+   "afecta_panel": null
+  },
+  {
+   "id": "modelo/ensemble/src/nowcast_puertas.py::ENV:COMBINAR_TEMAS",
+   "clase": "entorno",
+   "archivo": "modelo/ensemble/src/nowcast_puertas.py",
+   "nombre": "COMBINAR_TEMAS",
+   "linea": 176,
+   "entorno": "COMBINAR_TEMAS",
+   "asignado_a": "COMBINAR_TEMAS",
+   "default": "primaria",
+   "evaluable": true,
+   "expresion": "os.environ.get(\"COMBINAR_TEMAS\", \"primaria\")",
+   "afecta_panel": null
+  },
+  {
+   "id": "modelo/ensemble/src/nowcast_puertas.py::EPSILON0_DEFAULT",
+   "clase": "constante",
+   "archivo": "modelo/ensemble/src/nowcast_puertas.py",
+   "nombre": "EPSILON0_DEFAULT",
+   "linea": 207,
+   "entorno": null,
+   "asignado_a": "EPSILON0_DEFAULT",
+   "default": 0.035,
+   "evaluable": true,
+   "expresion": "0.035",
+   "afecta_panel": null
+  },
+  {
+   "id": "modelo/ensemble/src/nowcast_puertas.py::TAU_DEFAULT",
+   "clase": "constante",
+   "archivo": "modelo/ensemble/src/nowcast_puertas.py",
+   "nombre": "TAU_DEFAULT",
+   "linea": 208,
+   "entorno": null,
+   "asignado_a": "TAU_DEFAULT",
+   "default": 1.19,
+   "evaluable": true,
+   "expresion": "1.19",
+   "afecta_panel": null
+  },
+  {
+   "id": "modelo/ensemble/src/nowcast_puertas.py::ENV:INCERTIDUMBRE_LEGISLADOR",
+   "clase": "entorno",
+   "archivo": "modelo/ensemble/src/nowcast_puertas.py",
+   "nombre": "INCERTIDUMBRE_LEGISLADOR",
+   "linea": 209,
+   "entorno": "INCERTIDUMBRE_LEGISLADOR",
+   "asignado_a": "INCERTIDUMBRE_LEGISLADOR",
+   "default": true,
+   "evaluable": true,
+   "expresion": "os.environ.get(\"INCERTIDUMBRE_LEGISLADOR\", \"1\") != \"0\"",
+   "afecta_panel": null
+  },
+  {
+   "id": "modelo/ensemble/src/nowcast_puertas.py::ENV:EPSILON0",
+   "clase": "entorno",
+   "archivo": "modelo/ensemble/src/nowcast_puertas.py",
+   "nombre": "EPSILON0",
+   "linea": 210,
+   "entorno": "EPSILON0",
+   "asignado_a": "EPSILON0",
+   "default": 0.035,
+   "evaluable": true,
+   "expresion": "float(os.environ.get(\"EPSILON0\", EPSILON0_DEFAULT))",
+   "afecta_panel": null
+  },
+  {
+   "id": "modelo/ensemble/src/nowcast_puertas.py::ENV:TAU",
+   "clase": "entorno",
+   "archivo": "modelo/ensemble/src/nowcast_puertas.py",
+   "nombre": "TAU",
+   "linea": 211,
+   "entorno": "TAU",
+   "asignado_a": "TAU",
+   "default": 1.19,
+   "evaluable": true,
+   "expresion": "float(os.environ.get(\"TAU\", TAU_DEFAULT))",
+   "afecta_panel": null
+  },
+  {
+   "id": "modelo/ensemble/src/nowcast_puertas.py::ENV:RECORD_POR_TEMA",
+   "clase": "entorno",
+   "archivo": "modelo/ensemble/src/nowcast_puertas.py",
+   "nombre": "RECORD_POR_TEMA",
+   "linea": 234,
+   "entorno": "RECORD_POR_TEMA",
+   "asignado_a": "RECORD_POR_TEMA",
+   "default": false,
+   "evaluable": true,
+   "expresion": "os.environ.get(\"RECORD_POR_TEMA\", \"0\") != \"0\"",
+   "afecta_panel": null
+  },
+  {
+   "id": "modelo/ensemble/src/nowcast_puertas.py::_AUX_PREFIX_RECORD",
+   "clase": "constante",
+   "archivo": "modelo/ensemble/src/nowcast_puertas.py",
+   "nombre": "_AUX_PREFIX_RECORD",
+   "linea": 383,
+   "entorno": null,
+   "asignado_a": "_AUX_PREFIX_RECORD",
+   "default": "AUX",
+   "evaluable": true,
+   "expresion": "\"AUX\"",
+   "afecta_panel": null
+  },
+  {
+   "id": "modelo/ensemble/src/nowcast_puertas.py::alineacion_individual_por_area._salir(n_real)",
+   "clase": "default_funcion",
+   "archivo": "modelo/ensemble/src/nowcast_puertas.py",
+   "nombre": "n_real",
+   "linea": 443,
+   "entorno": null,
+   "asignado_a": null,
+   "default": 0,
+   "evaluable": true,
+   "expresion": "0",
+   "afecta_panel": null
+  },
+  {
+   "id": "modelo/ensemble/src/nowcast_puertas.py::perfil_legislador(n_emitidos)",
+   "clase": "default_funcion",
+   "archivo": "modelo/ensemble/src/nowcast_puertas.py",
+   "nombre": "n_emitidos",
+   "linea": 543,
+   "entorno": null,
+   "asignado_a": null,
+   "default": 0,
+   "evaluable": true,
+   "expresion": "0",
+   "afecta_panel": null
+  },
+  {
+   "id": "modelo/ensemble/src/nowcast_puertas.py::perfil_legislador(presencia)",
+   "clase": "default_funcion",
+   "archivo": "modelo/ensemble/src/nowcast_puertas.py",
+   "nombre": "presencia",
+   "linea": 543,
+   "entorno": null,
+   "asignado_a": null,
+   "default": 1.0,
+   "evaluable": true,
+   "expresion": "1.0",
+   "afecta_panel": null
+  },
+  {
+   "id": "modelo/ensemble/src/nowcast_puertas.py::nowcast(n_sims)",
+   "clase": "default_funcion",
+   "archivo": "modelo/ensemble/src/nowcast_puertas.py",
+   "nombre": "n_sims",
+   "linea": 790,
+   "entorno": null,
+   "asignado_a": null,
+   "default": 2000,
+   "evaluable": true,
+   "expresion": "2000",
+   "afecta_panel": null
+  },
+  {
+   "id": "modelo/ensemble/src/nowcast_puertas.py::nowcast(seed)",
+   "clase": "default_funcion",
+   "archivo": "modelo/ensemble/src/nowcast_puertas.py",
+   "nombre": "seed",
+   "linea": 790,
+   "entorno": null,
+   "asignado_a": null,
+   "default": 0,
+   "evaluable": true,
+   "expresion": "0",
+   "afecta_panel": null
+  },
+  {
+   "id": "modelo/ensemble/src/puerta_a.py::ESTADOS",
+   "clase": "constante",
+   "archivo": "modelo/ensemble/src/puerta_a.py",
+   "nombre": "ESTADOS",
+   "linea": 88,
+   "entorno": null,
+   "asignado_a": "ESTADOS",
+   "default": [
+    "con_caracter",
+    "sin_dictamen",
+    "sin_dato"
+   ],
+   "evaluable": true,
+   "expresion": "(\"con_caracter\", \"sin_dictamen\", \"sin_dato\")",
+   "afecta_panel": null
+  },
+  {
+   "id": "modelo/ensemble/src/puerta_a.py::DIAS_VENTANA_VIVA",
+   "clase": "constante",
+   "archivo": "modelo/ensemble/src/puerta_a.py",
+   "nombre": "DIAS_VENTANA_VIVA",
+   "linea": 94,
+   "entorno": null,
+   "asignado_a": "DIAS_VENTANA_VIVA",
+   "default": 730,
+   "evaluable": true,
+   "expresion": "730",
+   "afecta_panel": null
+  },
+  {
+   "id": "modelo/ensemble/src/puerta_a.py::COEF_POR_DEFECTO",
+   "clase": "constante",
+   "archivo": "modelo/ensemble/src/puerta_a.py",
+   "nombre": "COEF_POR_DEFECTO",
+   "linea": 101,
+   "entorno": null,
+   "asignado_a": "COEF_POR_DEFECTO",
+   "default": {
+    "minoria": 0.0,
+    "disidencia_parcial": 0.0,
+    "disidencia_total": 0.0,
+    "dos_comisiones": 0.0,
+    "por_linaje": 0.0
+   },
+   "evaluable": true,
+   "expresion": "{ \"minoria\": 0.0, # existe un dictamen de minoría enfrentado \"disidencia_parcial\": 0.0, \"disidencia_total\": 0.0, \"dos_comisiones\": 0.0, # firmado por dos comisiones = acuerdo más ancho \"por_linaje\": 0.0, # por cada linaje distinto que acompaña }",
+   "afecta_panel": null
+  },
+  {
+   "id": "modelo/ensemble/src/puerta_d.py::ajuste_paso_origen(factor_encogimiento)",
+   "clase": "default_funcion",
+   "archivo": "modelo/ensemble/src/puerta_d.py",
+   "nombre": "factor_encogimiento",
+   "linea": 75,
+   "entorno": null,
+   "asignado_a": null,
+   "default": 1.0,
+   "evaluable": true,
+   "expresion": "1.0",
+   "afecta_panel": null
+  },
+  {
+   "id": "modelo/ensemble/src/puerta_d.py::p_voto_revisora(delta)",
+   "clase": "default_funcion",
+   "archivo": "modelo/ensemble/src/puerta_d.py",
+   "nombre": "delta",
+   "linea": 118,
+   "entorno": null,
+   "asignado_a": null,
+   "default": 0.0,
+   "evaluable": true,
+   "expresion": "0.0",
+   "afecta_panel": null
+  },
+  {
+   "id": "modelo/ensemble/src/puerta_d.py::p_voto_revisora(epsilon0)",
+   "clase": "default_funcion",
+   "archivo": "modelo/ensemble/src/puerta_d.py",
+   "nombre": "epsilon0",
+   "linea": 118,
+   "entorno": null,
+   "asignado_a": null,
+   "default": 0.0,
+   "evaluable": true,
+   "expresion": "0.0",
+   "afecta_panel": null
+  },
+  {
+   "id": "modelo/ensemble/src/puerta_d.py::p_voto_revisora(factor_encogimiento)",
+   "clase": "default_funcion",
+   "archivo": "modelo/ensemble/src/puerta_d.py",
+   "nombre": "factor_encogimiento",
+   "linea": 118,
+   "entorno": null,
+   "asignado_a": null,
+   "default": 0.0,
+   "evaluable": true,
+   "expresion": "0.0",
+   "afecta_panel": null
+  },
+  {
+   "id": "modelo/ensemble/src/puerta_d.py::p_voto_revisora(n_sims)",
+   "clase": "default_funcion",
+   "archivo": "modelo/ensemble/src/puerta_d.py",
+   "nombre": "n_sims",
+   "linea": 118,
+   "entorno": null,
+   "asignado_a": null,
+   "default": 400,
+   "evaluable": true,
+   "expresion": "400",
+   "afecta_panel": null
+  },
+  {
+   "id": "modelo/ensemble/src/puerta_d.py::p_voto_revisora(reparto_desvio)",
+   "clase": "default_funcion",
+   "archivo": "modelo/ensemble/src/puerta_d.py",
+   "nombre": "reparto_desvio",
+   "linea": 118,
+   "entorno": null,
+   "asignado_a": null,
+   "default": 0.5,
+   "evaluable": true,
+   "expresion": "0.5",
+   "afecta_panel": null
+  },
+  {
+   "id": "modelo/ensemble/src/puerta_d.py::p_voto_revisora(seed)",
+   "clase": "default_funcion",
+   "archivo": "modelo/ensemble/src/puerta_d.py",
+   "nombre": "seed",
+   "linea": 118,
+   "entorno": null,
+   "asignado_a": null,
+   "default": 0,
+   "evaluable": true,
+   "expresion": "0",
+   "afecta_panel": null
+  },
+  {
+   "id": "modelo/ensemble/src/puerta_d.py::p_voto_revisora(tau)",
+   "clase": "default_funcion",
+   "archivo": "modelo/ensemble/src/puerta_d.py",
+   "nombre": "tau",
+   "linea": 118,
+   "entorno": null,
+   "asignado_a": null,
+   "default": 0.0,
+   "evaluable": true,
+   "expresion": "0.0",
+   "afecta_panel": null
+  },
+  {
+   "id": "modelo/ensemble/src/sobre_tablas.py::ENV:SOBRE_TABLAS",
+   "clase": "entorno",
+   "archivo": "modelo/ensemble/src/sobre_tablas.py",
+   "nombre": "SOBRE_TABLAS",
+   "linea": 72,
+   "entorno": "SOBRE_TABLAS",
+   "asignado_a": "SOBRE_TABLAS",
+   "default": false,
+   "evaluable": true,
+   "expresion": "os.environ.get(\"SOBRE_TABLAS\", \"0\") != \"0\"",
+   "afecta_panel": null
+  },
+  {
+   "id": "modelo/ensemble/src/sobre_tablas.py::P_MINIMO_SIGNIFICATIVO",
+   "clase": "constante",
+   "archivo": "modelo/ensemble/src/sobre_tablas.py",
+   "nombre": "P_MINIMO_SIGNIFICATIVO",
+   "linea": 80,
+   "entorno": null,
+   "asignado_a": "P_MINIMO_SIGNIFICATIVO",
+   "default": 0.05,
+   "evaluable": true,
+   "expresion": "0.05",
+   "afecta_panel": null
+  },
+  {
+   "id": "modelo/ensemble/src/sobre_tablas.py::_logit(eps)",
+   "clase": "default_funcion",
+   "archivo": "modelo/ensemble/src/sobre_tablas.py",
+   "nombre": "eps",
+   "linea": 116,
+   "entorno": null,
+   "asignado_a": null,
+   "default": 1e-06,
+   "evaluable": true,
+   "expresion": "1e-6",
+   "afecta_panel": null
+  },
+  {
+   "id": "rutas.py::ENV:CANON",
+   "clase": "entorno",
+   "archivo": "rutas.py",
+   "nombre": "CANONICA_CLEAN",
+   "linea": 70,
+   "entorno": "CANON",
+   "asignado_a": "CANONICA_CLEAN",
+   "default": null,
+   "evaluable": false,
+   "expresion": "_env(\"CANON\", CANONICA / \"data\" / \"clean\")",
+   "afecta_panel": null
+  },
+  {
+   "id": "rutas.py::ENV:EXP_CLEAN",
+   "clase": "entorno",
+   "archivo": "rutas.py",
+   "nombre": "EXPEDIENTES_CLEAN",
+   "linea": 75,
+   "entorno": "EXP_CLEAN",
+   "asignado_a": "EXPEDIENTES_CLEAN",
+   "default": null,
+   "evaluable": false,
+   "expresion": "_env(\"EXP_CLEAN\", RAIZ / \"datos\" / \"expedientes\" / \"data\" / \"clean\")",
+   "afecta_panel": null
+  },
+  {
+   "id": "rutas.py::ENV:PROYECTOS_DB",
+   "clase": "entorno",
+   "archivo": "rutas.py",
+   "nombre": "PROYECTOS_DB",
+   "linea": 94,
+   "entorno": "PROYECTOS_DB",
+   "asignado_a": "PROYECTOS_DB",
+   "default": null,
+   "evaluable": false,
+   "expresion": "_env(\"PROYECTOS_DB\", RAIZ / \"datos\" / \"proyectos\" / \"data\" / \"proyectos.db\")",
+   "afecta_panel": null
+  },
+  {
+   "id": "rutas.py::ENV:SCHEMAS",
+   "clase": "entorno",
+   "archivo": "rutas.py",
+   "nombre": "SCHEMAS",
+   "linea": 149,
+   "entorno": "SCHEMAS",
+   "asignado_a": "SCHEMAS",
+   "default": null,
+   "evaluable": false,
+   "expresion": "_env(\"SCHEMAS\", RAIZ / \"docs\" / \"schemas\")",
+   "afecta_panel": null
+  },
+  {
+   "id": "variables/bloque/src/bloque.py::CONDUCTA_MAP",
+   "clase": "constante",
+   "archivo": "variables/bloque/src/bloque.py",
+   "nombre": "CONDUCTA_MAP",
+   "linea": 44,
+   "entorno": null,
+   "asignado_a": "CONDUCTA_MAP",
+   "default": {
+    "AFIRMATIVO": "AFIRMATIVO",
+    "NEGATIVO": "NEGATIVO",
+    "ABSTENCION": "NO_ACOMPANA",
+    "AUSENTE": "NO_ACOMPANA"
+   },
+   "evaluable": true,
+   "expresion": "{ \"AFIRMATIVO\": \"AFIRMATIVO\", \"NEGATIVO\": \"NEGATIVO\", \"ABSTENCION\": \"NO_ACOMPANA\", \"AUSENTE\": \"NO_ACOMPANA\", }",
+   "afecta_panel": null
+  },
+  {
+   "id": "variables/bloque/src/bloque.py::SUSTANTIVAS",
+   "clase": "constante",
+   "archivo": "variables/bloque/src/bloque.py",
+   "nombre": "SUSTANTIVAS",
+   "linea": 50,
+   "entorno": null,
+   "asignado_a": "SUSTANTIVAS",
+   "default": [
+    "AFIRMATIVO",
+    "NEGATIVO"
+   ],
+   "evaluable": true,
+   "expresion": "(\"AFIRMATIVO\", \"NEGATIVO\")",
+   "afecta_panel": null
+  },
+  {
+   "id": "variables/bloque/src/bloque.py::_LINAJE_GENERICO",
+   "clase": "constante",
+   "archivo": "variables/bloque/src/bloque.py",
+   "nombre": "_LINAJE_GENERICO",
+   "linea": 66,
+   "entorno": null,
+   "asignado_a": "_LINAJE_GENERICO",
+   "default": [
+    "",
+    "NAN",
+    "NONE",
+    "OTRO / PROVINCIAL",
+    "OTRO",
+    "SIN BLOQUE"
+   ],
+   "evaluable": true,
+   "expresion": "{\"\", \"OTRO / PROVINCIAL\", \"SIN BLOQUE\", \"OTRO\", \"NONE\", \"NAN\"}",
+   "afecta_panel": null
+  },
+  {
+   "id": "variables/bloque/src/bloque.py::_LINAJES_CANON",
+   "clase": "constante",
+   "archivo": "variables/bloque/src/bloque.py",
+   "nombre": "_LINAJES_CANON",
+   "linea": 71,
+   "entorno": null,
+   "asignado_a": "_LINAJES_CANON",
+   "default": [
+    "COALICION CIVICA",
+    "FRENTE RENOVADOR (massismo)",
+    "FdT-UxP (kirchnerismo)",
+    "IZQUIERDA",
+    "LA LIBERTAD AVANZA",
+    "OTRO / PROVINCIAL",
+    "PERONISMO FEDERAL",
+    "PRO",
+    "PROGRESISMO",
+    "RADICALISMO"
+   ],
+   "evaluable": true,
+   "expresion": "{ \"FdT-UxP (kirchnerismo)\", \"OTRO / PROVINCIAL\", \"RADICALISMO\", \"PERONISMO FEDERAL\", \"PRO\", \"COALICION CIVICA\", \"PROGRESISMO\", \"FRENTE RENOVADOR (massismo)\", \"LA LIBERTAD AVANZA\", \"IZQUIERDA\", }",
+   "afecta_panel": null
+  },
+  {
+   "id": "variables/bloque/src/bloque.py::metricas_acta_bloque(min_emit)",
+   "clase": "default_funcion",
+   "archivo": "variables/bloque/src/bloque.py",
+   "nombre": "min_emit",
+   "linea": 275,
+   "entorno": null,
+   "asignado_a": null,
+   "default": 3,
+   "evaluable": true,
+   "expresion": "3",
+   "afecta_panel": null
+  },
+  {
+   "id": "variables/bloque/src/bloque.py::_AUX_PREFIX",
+   "clase": "constante",
+   "archivo": "variables/bloque/src/bloque.py",
+   "nombre": "_AUX_PREFIX",
+   "linea": 402,
+   "entorno": null,
+   "asignado_a": "_AUX_PREFIX",
+   "default": "AUX",
+   "evaluable": true,
+   "expresion": "\"AUX\"",
+   "afecta_panel": null
+  },
+  {
+   "id": "variables/bloque/src/bloque.py::proyectar_postura(k_shrink)",
+   "clase": "default_funcion",
+   "archivo": "variables/bloque/src/bloque.py",
+   "nombre": "k_shrink",
+   "linea": 480,
+   "entorno": null,
+   "asignado_a": null,
+   "default": 5.0,
+   "evaluable": true,
+   "expresion": "5.0",
+   "afecta_panel": null
+  },
+  {
+   "id": "variables/bloque/src/bloque.py::proyectar_postura(min_actas)",
+   "clase": "default_funcion",
+   "archivo": "variables/bloque/src/bloque.py",
+   "nombre": "min_actas",
+   "linea": 480,
+   "entorno": null,
+   "asignado_a": null,
+   "default": 3,
+   "evaluable": true,
+   "expresion": "3",
+   "afecta_panel": null
+  },
+  {
+   "id": "variables/bloque/src/bloque.py::proyectar_postura(ventana_dias)",
+   "clase": "default_funcion",
+   "archivo": "variables/bloque/src/bloque.py",
+   "nombre": "ventana_dias",
+   "linea": 480,
+   "entorno": null,
+   "asignado_a": null,
+   "default": 730,
+   "evaluable": true,
+   "expresion": "730",
+   "afecta_panel": null
+  },
+  {
+   "id": "variables/proyecto/src/agente_taxonomias.py::ENV:TAXO_MODEL",
+   "clase": "entorno",
+   "archivo": "variables/proyecto/src/agente_taxonomias.py",
+   "nombre": "MODELO_DEFAULT",
+   "linea": 61,
+   "entorno": "TAXO_MODEL",
+   "asignado_a": "MODELO_DEFAULT",
+   "default": "claude-haiku-4-5-20251001",
+   "evaluable": true,
+   "expresion": "os.environ.get(\"TAXO_MODEL\", \"claude-haiku-4-5-20251001\")",
+   "afecta_panel": null
+  },
+  {
+   "id": "variables/proyecto/src/agente_taxonomias.py::ENV:TAXO_MODEL_OCR",
+   "clase": "entorno",
+   "archivo": "variables/proyecto/src/agente_taxonomias.py",
+   "nombre": "MODELO_OCR",
+   "linea": 65,
+   "entorno": "TAXO_MODEL_OCR",
+   "asignado_a": "MODELO_OCR",
+   "default": null,
+   "evaluable": false,
+   "expresion": "os.environ.get(\"TAXO_MODEL_OCR\", MODELO_DEFAULT)",
+   "afecta_panel": null
+  },
+  {
+   "id": "variables/proyecto/src/agente_taxonomias.py::llamar_claude(max_tokens)",
+   "clase": "default_funcion",
+   "archivo": "variables/proyecto/src/agente_taxonomias.py",
+   "nombre": "max_tokens",
+   "linea": 162,
+   "entorno": null,
+   "asignado_a": null,
+   "default": 1024,
+   "evaluable": true,
+   "expresion": "1024",
+   "afecta_panel": null
+  },
+  {
+   "id": "variables/proyecto/src/agente_taxonomias.py::ENV:ANTHROPIC_API_KEY",
+   "clase": "entorno",
+   "archivo": "variables/proyecto/src/agente_taxonomias.py",
+   "nombre": "ANTHROPIC_API_KEY",
+   "linea": 167,
+   "entorno": "ANTHROPIC_API_KEY",
+   "asignado_a": null,
+   "default": null,
+   "evaluable": true,
+   "expresion": "os.environ.get(\"ANTHROPIC_API_KEY\")",
+   "afecta_panel": null
+  },
+  {
+   "id": "variables/proyecto/src/agente_taxonomias.py::llamar_claude_pdf(max_tokens)",
+   "clase": "default_funcion",
+   "archivo": "variables/proyecto/src/agente_taxonomias.py",
+   "nombre": "max_tokens",
+   "linea": 183,
+   "entorno": null,
+   "asignado_a": null,
+   "default": 1024,
+   "evaluable": true,
+   "expresion": "1024",
+   "afecta_panel": null
+  },
+  {
+   "id": "variables/proyecto/src/agente_taxonomias.py::ENV:ANTHROPIC_API_KEY#2",
+   "clase": "entorno",
+   "archivo": "variables/proyecto/src/agente_taxonomias.py",
+   "nombre": "ANTHROPIC_API_KEY",
+   "linea": 190,
+   "entorno": "ANTHROPIC_API_KEY",
+   "asignado_a": null,
+   "default": null,
+   "evaluable": true,
+   "expresion": "os.environ.get(\"ANTHROPIC_API_KEY\")",
+   "afecta_panel": null
+  },
+  {
+   "id": "variables/proyecto/src/pdf_text.py::UA",
+   "clase": "constante",
+   "archivo": "variables/proyecto/src/pdf_text.py",
+   "nombre": "UA",
+   "linea": 31,
+   "entorno": null,
+   "asignado_a": "UA",
+   "default": "Mozilla/5.0 (compatible; NowcastCongreso/1.0; +investigacion legislativa)",
+   "evaluable": true,
+   "expresion": "\"Mozilla/5.0 (compatible; NowcastCongreso/1.0; +investigacion legislativa)\"",
+   "afecta_panel": null
+  },
+  {
+   "id": "variables/proyecto/src/pdf_text.py::HTTP_TIMEOUT",
+   "clase": "constante",
+   "archivo": "variables/proyecto/src/pdf_text.py",
+   "nombre": "HTTP_TIMEOUT",
+   "linea": 32,
+   "entorno": null,
+   "asignado_a": "HTTP_TIMEOUT",
+   "default": 30,
+   "evaluable": true,
+   "expresion": "30",
+   "afecta_panel": null
+  },
+  {
+   "id": "variables/proyecto/src/pdf_text.py::MIN_CHARS_TEXTO",
+   "clase": "constante",
+   "archivo": "variables/proyecto/src/pdf_text.py",
+   "nombre": "MIN_CHARS_TEXTO",
+   "linea": 34,
+   "entorno": null,
+   "asignado_a": "MIN_CHARS_TEXTO",
+   "default": 200,
+   "evaluable": true,
+   "expresion": "200",
+   "afecta_panel": null
+  },
+  {
+   "id": "variables/proyecto/src/pdf_text.py::recortar_para_prompt(max_chars)",
+   "clase": "default_funcion",
+   "archivo": "variables/proyecto/src/pdf_text.py",
+   "nombre": "max_chars",
+   "linea": 101,
+   "entorno": null,
+   "asignado_a": null,
+   "default": 18000,
+   "evaluable": true,
+   "expresion": "18000",
+   "afecta_panel": null
+  },
+  {
+   "id": "variables/proyecto/src/tema_por_proyecto.py::_AUX_PREFIX",
+   "clase": "constante",
+   "archivo": "variables/proyecto/src/tema_por_proyecto.py",
+   "nombre": "_AUX_PREFIX",
+   "linea": 94,
+   "entorno": null,
+   "asignado_a": "_AUX_PREFIX",
+   "default": "AUX",
+   "evaluable": true,
+   "expresion": "\"AUX\"",
+   "afecta_panel": null
+  },
+  {
+   "id": "variables/proyecto/src/tema_por_proyecto.py::clasificar_por_titulo(checkpoint_cada)",
+   "clase": "default_funcion",
+   "archivo": "variables/proyecto/src/tema_por_proyecto.py",
+   "nombre": "checkpoint_cada",
+   "linea": 223,
+   "entorno": null,
+   "asignado_a": null,
+   "default": 25,
+   "evaluable": true,
+   "expresion": "25",
+   "afecta_panel": null
+  }
+ ],
+ "archivos_derivados": [
+  {
+   "archivo": "datos/canonica/src/alias_legislador.py",
+   "ref": "alias_legislador_id.csv",
+   "tipo": "literal",
+   "linea": 38
+  },
+  {
+   "archivo": "datos/expedientes/src/actas_ley.py",
+   "ref": "acta_expediente_todas.parquet",
+   "tipo": "literal",
+   "linea": 137
+  },
+  {
+   "archivo": "datos/expedientes/src/actas_ley.py",
+   "ref": "expedientes.parquet",
+   "tipo": "literal",
+   "linea": 138
+  },
+  {
+   "archivo": "datos/expedientes/src/enlace_senado.py",
+   "ref": "acta_expediente_todas.parquet",
+   "tipo": "literal",
+   "linea": 579
+  },
+  {
+   "archivo": "datos/expedientes/src/enlace_senado.py",
+   "ref": "actas_canonico.parquet",
+   "tipo": "literal",
+   "linea": 85
+  },
+  {
+   "archivo": "datos/expedientes/src/enlace_senado.py",
+   "ref": "cadena_camaras.parquet",
+   "tipo": "literal",
+   "linea": 580
+  },
+  {
+   "archivo": "datos/expedientes/src/enlace_senado.py",
+   "ref": "expedientes.parquet",
+   "tipo": "literal",
+   "linea": 553
+  },
+  {
+   "archivo": "datos/expedientes/src/enlace_senado.py",
+   "ref": "expedientes_resultados.parquet",
+   "tipo": "literal",
+   "linea": 559
+  },
+  {
+   "archivo": "datos/expedientes/src/resolver_firmantes.py",
+   "ref": "rutas.PADRON_DIPUTADOS",
+   "tipo": "rutas",
+   "linea": 60
+  },
+  {
+   "archivo": "datos/expedientes/src/resolver_firmantes.py",
+   "ref": "rutas.PADRON_DIPUTADOS_HISTORICO",
+   "tipo": "rutas",
+   "linea": 60
+  },
+  {
+   "archivo": "datos/expedientes/src/resolver_firmantes.py",
+   "ref": "rutas.PADRON_SENADO",
+   "tipo": "rutas",
+   "linea": 60
+  },
+  {
+   "archivo": "datos/expedientes/src/resolver_firmantes.py",
+   "ref": "rutas.PADRON_SENADO_HISTORICO",
+   "tipo": "rutas",
+   "linea": 60
+  },
+  {
+   "archivo": "datos/padron/src/padron_vigente.py",
+   "ref": "rutas.PADRON_DIPUTADOS",
+   "tipo": "rutas",
+   "linea": 68
+  },
+  {
+   "archivo": "datos/padron/src/padron_vigente.py",
+   "ref": "rutas.PADRON_DIPUTADOS_HISTORICO",
+   "tipo": "rutas",
+   "linea": 68
+  },
+  {
+   "archivo": "datos/padron/src/padron_vigente.py",
+   "ref": "rutas.PADRON_SENADO",
+   "tipo": "rutas",
+   "linea": 68
+  },
+  {
+   "archivo": "datos/padron/src/padron_vigente.py",
+   "ref": "rutas.PADRON_SENADO_HISTORICO",
+   "tipo": "rutas",
+   "linea": 68
+  },
+  {
+   "archivo": "docs/taxonomias/loader.py",
+   "ref": "taxonomias.json",
+   "tipo": "literal",
+   "linea": 20
+  },
+  {
+   "archivo": "evaluacion/baseline/src/baseline_voto_individual.py",
+   "ref": "datos/expedientes/data/clean/acta_expediente.parquet",
+   "tipo": "literal",
+   "linea": 260
+  },
+  {
+   "archivo": "evaluacion/baseline/src/baseline_voto_individual.py",
+   "ref": "datos/expedientes/data/clean/acta_expediente_todas.parquet",
+   "tipo": "literal",
+   "linea": 208
+  },
+  {
+   "archivo": "evaluacion/baseline/src/baseline_voto_individual.py",
+   "ref": "datos/expedientes/data/clean/dictamenes_firmas.parquet",
+   "tipo": "literal",
+   "linea": 209
+  },
+  {
+   "archivo": "evaluacion/baseline/src/baseline_voto_individual.py",
+   "ref": "datos/expedientes/data/clean/dictamenes_firmas_senado.parquet",
+   "tipo": "literal",
+   "linea": 210
+  },
+  {
+   "archivo": "evaluacion/baseline/src/baseline_voto_individual.py",
+   "ref": "datos/expedientes/data/clean/expedientes.parquet",
+   "tipo": "literal",
+   "linea": 261
+  },
+  {
+   "archivo": "evaluacion/baseline/src/baseline_voto_individual.py",
+   "ref": "datos/taxonomias/data/asignaciones.csv",
+   "tipo": "literal",
+   "linea": 376
+  },
+  {
+   "archivo": "evaluacion/baseline/src/baseline_voto_individual.py",
+   "ref": "evaluacion/baseline/outputs/baseline_voto_individual.json",
+   "tipo": "literal",
+   "linea": 792
+  },
+  {
+   "archivo": "evaluacion/baseline/src/baseline_voto_individual.py",
+   "ref": "variables/proyecto/data/origen_por_acta.parquet",
+   "tipo": "literal",
+   "linea": 272
+  },
+  {
+   "archivo": "evaluacion/baseline/src/baseline_voto_individual.py",
+   "ref": "variables/proyecto/data/tema_por_acta.parquet",
+   "tipo": "literal",
+   "linea": 273
+  },
+  {
+   "archivo": "evaluacion/baseline/src/baseline_voto_individual.py",
+   "ref": "rutas.PROYECTO_ORIGEN_POR_ACTA",
+   "tipo": "rutas",
+   "linea": 99
+  },
+  {
+   "archivo": "evaluacion/baseline/src/censo_estadisticos.py",
+   "ref": ".json",
+   "tipo": "literal",
+   "linea": 222
+  },
+  {
+   "archivo": "evaluacion/baseline/src/censo_estadisticos.py",
+   "ref": "evaluacion/baseline/outputs/censo_detalle_2026-09-28.parquet",
+   "tipo": "literal",
+   "linea": 45
+  },
+  {
+   "archivo": "evaluacion/baseline/src/censo_estadisticos.py",
+   "ref": "evaluacion/baseline/outputs/censo_estadisticos_2026-09-28.json",
+   "tipo": "literal",
+   "linea": 46
+  },
+  {
+   "archivo": "modelo/agregador_institucional/src/agregador.py",
+   "ref": "actas_canonico.parquet",
+   "tipo": "literal",
+   "linea": 360
+  },
+  {
+   "archivo": "modelo/agregador_institucional/src/agregador.py",
+   "ref": "backtest_agregador{}.json",
+   "tipo": "literal",
+   "linea": 477
+  },
+  {
+   "archivo": "modelo/agregador_institucional/src/agregador.py",
+   "ref": "backtest_detalle{}.csv",
+   "tipo": "literal",
+   "linea": 479
+  },
+  {
+   "archivo": "modelo/agregador_institucional/src/agregador.py",
+   "ref": "disciplina_individual.csv",
+   "tipo": "literal",
+   "linea": 362
+  },
+  {
+   "archivo": "modelo/agregador_institucional/src/agregador.py",
+   "ref": "presentismo_legislador.csv",
+   "tipo": "literal",
+   "linea": 375
+  },
+  {
+   "archivo": "modelo/agregador_institucional/src/agregador.py",
+   "ref": "votos_resuelto.parquet",
+   "tipo": "literal",
+   "linea": 359
+  },
+  {
+   "archivo": "modelo/ensemble/src/beta_dictamen.py",
+   "ref": "beta_dictamen.json",
+   "tipo": "literal",
+   "linea": 73
+  },
+  {
+   "archivo": "modelo/ensemble/src/ensemble.py",
+   "ref": "disciplina_individual.csv",
+   "tipo": "literal",
+   "linea": 114
+  },
+  {
+   "archivo": "modelo/ensemble/src/ensemble.py",
+   "ref": "expedientes.parquet",
+   "tipo": "literal",
+   "linea": 256
+  },
+  {
+   "archivo": "modelo/ensemble/src/ensemble.py",
+   "ref": "padron_{}.csv",
+   "tipo": "literal",
+   "linea": 108
+  },
+  {
+   "archivo": "modelo/ensemble/src/estimar_beta_dictamen.py",
+   "ref": "datos/expedientes/data/clean/acta_expediente.parquet",
+   "tipo": "literal",
+   "linea": 205
+  },
+  {
+   "archivo": "modelo/ensemble/src/estimar_beta_dictamen.py",
+   "ref": "datos/expedientes/data/clean/acta_expediente_todas.parquet",
+   "tipo": "literal",
+   "linea": 124
+  },
+  {
+   "archivo": "modelo/ensemble/src/estimar_beta_dictamen.py",
+   "ref": "datos/expedientes/data/clean/dictamenes_firmas.parquet",
+   "tipo": "literal",
+   "linea": 125
+  },
+  {
+   "archivo": "modelo/ensemble/src/estimar_beta_dictamen.py",
+   "ref": "datos/expedientes/data/clean/dictamenes_firmas_senado.parquet",
+   "tipo": "literal",
+   "linea": 126
+  },
+  {
+   "archivo": "modelo/ensemble/src/estimar_beta_dictamen.py",
+   "ref": "datos/expedientes/data/clean/expedientes.parquet",
+   "tipo": "literal",
+   "linea": 206
+  },
+  {
+   "archivo": "modelo/ensemble/src/estimar_beta_dictamen.py",
+   "ref": "jefes_bloque.csv",
+   "tipo": "literal",
+   "linea": 241
+  },
+  {
+   "archivo": "modelo/ensemble/src/estimar_beta_dictamen.py",
+   "ref": "jefes_bloque_oficial.csv",
+   "tipo": "literal",
+   "linea": 241
+  },
+  {
+   "archivo": "modelo/ensemble/src/estimar_beta_dictamen.py",
+   "ref": "modelo/ensemble/outputs/beta_dictamen.json",
+   "tipo": "literal",
+   "linea": 554
+  },
+  {
+   "archivo": "modelo/ensemble/src/nowcast_puertas.py",
+   "ref": "rutas.CANONICA_CLEAN",
+   "tipo": "rutas",
+   "linea": 51
+  },
+  {
+   "archivo": "modelo/ensemble/src/nowcast_puertas.py",
+   "ref": "rutas.PROYECTO_ORIGEN_POR_ACTA",
+   "tipo": "rutas",
+   "linea": 51
+  },
+  {
+   "archivo": "modelo/ensemble/src/puerta_a.py",
+   "ref": "rutas.EXPEDIENTES_FIRMAS",
+   "tipo": "rutas",
+   "linea": 79
+  },
+  {
+   "archivo": "modelo/ensemble/src/puerta_a.py",
+   "ref": "rutas.EXPEDIENTES_FIRMAS_SENADO",
+   "tipo": "rutas",
+   "linea": 79
+  },
+  {
+   "archivo": "modelo/ensemble/src/puerta_a.py",
+   "ref": "rutas.EXPEDIENTES_RESULTADOS",
+   "tipo": "rutas",
+   "linea": 79
+  },
+  {
+   "archivo": "modelo/ensemble/src/puerta_d.py",
+   "ref": "padron_diputados.csv",
+   "tipo": "literal",
+   "linea": 40
+  },
+  {
+   "archivo": "modelo/ensemble/src/puerta_d.py",
+   "ref": "padron_senado_historico.csv",
+   "tipo": "literal",
+   "linea": 39
+  },
+  {
+   "archivo": "modelo/ensemble/src/sobre_tablas.py",
+   "ref": "theta_sobre_tablas.json",
+   "tipo": "literal",
+   "linea": 74
+  },
+  {
+   "archivo": "variables/bloque/src/bloque.py",
+   "ref": "actas_canonico.parquet",
+   "tipo": "literal",
+   "linea": 228
+  },
+  {
+   "archivo": "variables/bloque/src/bloque.py",
+   "ref": "origen_por_acta.parquet",
+   "tipo": "literal",
+   "linea": 460
+  },
+  {
+   "archivo": "variables/bloque/src/bloque.py",
+   "ref": "padron_senado.csv",
+   "tipo": "literal",
+   "linea": 130
+  },
+  {
+   "archivo": "variables/bloque/src/bloque.py",
+   "ref": "padron_{}.csv",
+   "tipo": "literal",
+   "linea": 335
+  },
+  {
+   "archivo": "variables/bloque/src/bloque.py",
+   "ref": "senado_linaje_manual.csv",
+   "tipo": "literal",
+   "linea": 139
+  },
+  {
+   "archivo": "variables/bloque/src/bloque.py",
+   "ref": "tema_por_acta.parquet",
+   "tipo": "literal",
+   "linea": 452
+  },
+  {
+   "archivo": "variables/bloque/src/bloque.py",
+   "ref": "variables/bloque/outputs/serie_bloque.parquet",
+   "tipo": "literal",
+   "linea": 53
+  },
+  {
+   "archivo": "variables/bloque/src/bloque.py",
+   "ref": "votos_resuelto.parquet",
+   "tipo": "literal",
+   "linea": 227
+  },
+  {
+   "archivo": "variables/proyecto/src/tema_por_proyecto.py",
+   "ref": "NNNN-X-AAAA, el de proyectos.db",
+   "tipo": "literal",
+   "linea": 312
+  },
+  {
+   "archivo": "variables/proyecto/src/tema_por_proyecto.py",
+   "ref": "acta_expediente_todas.parquet",
+   "tipo": "literal",
+   "linea": 194
+  },
+  {
+   "archivo": "variables/proyecto/src/tema_por_proyecto.py",
+   "ref": "expedientes.parquet",
+   "tipo": "literal",
+   "linea": 92
+  },
+  {
+   "archivo": "variables/proyecto/src/tema_por_proyecto.py",
+   "ref": "proyectos.db",
+   "tipo": "literal",
+   "linea": 91
+  }
+ ],
+ "estimados_fijados": {
+  "modelo/ensemble/outputs/beta_dictamen.json": {
+   "sha256": "fca95d379c0172691bf9253326059afc25923fe8c8bb2375b6c3c04da1e3d623"
+  },
+  "modelo/ensemble/outputs/theta_sobre_tablas.json": {
+   "sha256": "d2e5cc4cc1dedda9382b81f4badd2fa622927deea76e0c3cc39b562810b11ebf"
+  }
+ },
+ "nombres_con_varios_defaults": [
+  {
+   "nombre": "eps",
+   "valores": [
+    {
+     "id": "modelo/ensemble/src/estimar_beta_dictamen.py::_logit(eps)",
+     "default": 0.0001
+    },
+    {
+     "id": "modelo/ensemble/src/sobre_tablas.py::_logit(eps)",
+     "default": 1e-06
+    }
+   ]
+  },
+  {
+   "nombre": "epsilon0",
+   "valores": [
+    {
+     "id": "modelo/agregador_institucional/src/agregador.py::simular_votacion(epsilon0)",
+     "default": 0.0
+    },
+    {
+     "id": "modelo/agregador_institucional/src/agregador.py::backtest(epsilon0)",
+     "default": 0.0
+    },
+    {
+     "id": "modelo/agregador_institucional/src/agregador.py::ENV:EPSILON0",
+     "default": "0"
+    },
+    {
+     "id": "modelo/ensemble/src/ensemble.py::simular_con_guardas(epsilon0)",
+     "default": 0.0
+    },
+    {
+     "id": "modelo/ensemble/src/nowcast_puertas.py::ENV:EPSILON0",
+     "default": 0.035
+    },
+    {
+     "id": "modelo/ensemble/src/puerta_d.py::p_voto_revisora(epsilon0)",
+     "default": 0.0
+    }
+   ]
+  },
+  {
+   "nombre": "factor_encogimiento",
+   "valores": [
+    {
+     "id": "modelo/ensemble/src/puerta_d.py::ajuste_paso_origen(factor_encogimiento)",
+     "default": 1.0
+    },
+    {
+     "id": "modelo/ensemble/src/puerta_d.py::p_voto_revisora(factor_encogimiento)",
+     "default": 0.0
+    }
+   ]
+  },
+  {
+   "nombre": "min_hist_individual",
+   "valores": [
+    {
+     "id": "modelo/ensemble/src/estimar_beta_dictamen.py::MIN_HIST_INDIVIDUAL",
+     "default": 8
+    },
+    {
+     "id": "modelo/ensemble/src/nowcast_puertas.py::MIN_HIST_INDIVIDUAL",
+     "default": 1
+    }
+   ]
+  },
+  {
+   "nombre": "n_sims",
+   "valores": [
+    {
+     "id": "modelo/agregador_institucional/src/agregador.py::simular_votacion(n_sims)",
+     "default": 400
+    },
+    {
+     "id": "modelo/agregador_institucional/src/agregador.py::ENV:N_SIMS",
+     "default": "400"
+    },
+    {
+     "id": "modelo/ensemble/src/ensemble.py::simular_con_guardas(n_sims)",
+     "default": 2000
+    },
+    {
+     "id": "modelo/ensemble/src/nowcast_puertas.py::nowcast(n_sims)",
+     "default": 2000
+    },
+    {
+     "id": "modelo/ensemble/src/puerta_d.py::p_voto_revisora(n_sims)",
+     "default": 400
+    }
+   ]
+  },
+  {
+   "nombre": "reparto_desvio",
+   "valores": [
+    {
+     "id": "modelo/agregador_institucional/src/agregador.py::_prob_conductas(reparto_desvio)",
+     "default": 0.5
+    },
+    {
+     "id": "modelo/agregador_institucional/src/agregador.py::simular_votacion(reparto_desvio)",
+     "default": 0.5
+    },
+    {
+     "id": "modelo/agregador_institucional/src/agregador.py::backtest(reparto_desvio)",
+     "default": 0.5
+    },
+    {
+     "id": "modelo/ensemble/src/ensemble.py::simular_con_guardas(reparto_desvio)",
+     "default": 0.5
+    },
+    {
+     "id": "modelo/ensemble/src/nowcast_puertas.py::REPARTO_DESVIO",
+     "default": 1.0
+    },
+    {
+     "id": "modelo/ensemble/src/puerta_d.py::p_voto_revisora(reparto_desvio)",
+     "default": 0.5
+    }
+   ]
+  },
+  {
+   "nombre": "seed",
+   "valores": [
+    {
+     "id": "evaluacion/baseline/src/baseline_voto_individual.py::skill_ic_por_ley(seed)",
+     "default": 7
+    },
+    {
+     "id": "evaluacion/baseline/src/baseline_voto_individual.py::dif_brier_ic_por_ley(seed)",
+     "default": 7
+    },
+    {
+     "id": "evaluacion/baseline/src/baseline_voto_individual.py::correr(seed)",
+     "default": 7
+    },
+    {
+     "id": "evaluacion/baseline/src/censo_estadisticos.py::skill_ic_desde_sumas(seed)",
+     "default": 7
+    },
+    {
+     "id": "evaluacion/baseline/src/censo_estadisticos.py::dif_brier_ic_desde_sumas(seed)",
+     "default": 7
+    },
+    {
+     "id": "evaluacion/baseline/src/censo_estadisticos.py::skill(seed)",
+     "default": 7
+    },
+    {
+     "id": "evaluacion/baseline/src/censo_estadisticos.py::dif_brier(seed)",
+     "default": 7
+    },
+    {
+     "id": "modelo/agregador_institucional/src/agregador.py::simular_votacion(seed)",
+     "default": 0
+    },
+    {
+     "id": "modelo/agregador_institucional/src/agregador.py::backtest(seed)",
+     "default": 0
+    },
+    {
+     "id": "modelo/ensemble/src/ensemble.py::simular_con_guardas(seed)",
+     "default": 0
+    },
+    {
+     "id": "modelo/ensemble/src/estimar_beta_dictamen.py::construir_panel(seed)",
+     "default": 7
+    },
+    {
+     "id": "modelo/ensemble/src/nowcast_puertas.py::nowcast(seed)",
+     "default": 0
+    },
+    {
+     "id": "modelo/ensemble/src/puerta_d.py::p_voto_revisora(seed)",
+     "default": 0
+    }
+   ]
+  },
+  {
+   "nombre": "tau",
+   "valores": [
+    {
+     "id": "modelo/agregador_institucional/src/agregador.py::simular_votacion(tau)",
+     "default": 0.0
+    },
+    {
+     "id": "modelo/agregador_institucional/src/agregador.py::backtest(tau)",
+     "default": 0.0
+    },
+    {
+     "id": "modelo/agregador_institucional/src/agregador.py::ENV:TAU",
+     "default": "0"
+    },
+    {
+     "id": "modelo/ensemble/src/ensemble.py::simular_con_guardas(tau)",
+     "default": 0.0
+    },
+    {
+     "id": "modelo/ensemble/src/nowcast_puertas.py::ENV:TAU",
+     "default": 1.19
+    },
+    {
+     "id": "modelo/ensemble/src/puerta_d.py::p_voto_revisora(tau)",
+     "default": 0.0
+    }
+   ]
+  }
+ ]
+}

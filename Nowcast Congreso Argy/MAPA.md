@@ -2,13 +2,13 @@
 
 <!-- GENERADO por indexar.py. No editar: los cambios se pierden. -->
 <!-- La prosa vive en el README.md de cada modulo (seccion `Buscar aca si`). -->
-<!-- 2026-09-30 17:20 UTC · 176 archivos · 37,789 LOC -->
+<!-- 2026-09-30 17:49 UTC · 178 archivos · 38,522 LOC -->
 
 ## Como usar este archivo
 
 Es el unico archivo del proyecto que hace falta leer para empezar. Para ubicar algo concreto: `python3 .mapa/buscar.py "<termino>"` devuelve archivo y linea sin abrir nada. Recien despues abrir los archivos que salgan, y solo esos.
 
-Rama `main` — ultimo commit: 2026-09-30 eeb42f4 Auditoría A9: cerrado (los tres workflows en verde en Actions, confirmado por Franco) · **hay cambios sin commitear**
+Rama `main` — ultimo commit: 2026-09-30 490f019 Auditoría B1: pre-registro del registro de parámetros y de test_defaults_fijados · **hay cambios sin commitear**
 
 ## Donde buscar que
 
@@ -144,7 +144,7 @@ Rama `main` — ultimo commit: 2026-09-30 eeb42f4 Auditoría A9: cerrado (los tr
 
 | Carpeta | Que es | Arch. | LOC | Bitacora |
 |---|---|---:|---:|---|
-| `modelo/ensemble/` _(src+tests)_ | La composicion final: el nowcast end-to-end de un proyecto. El punto de entrada vivo es `nowcast_puertas.py`, que corre la CADENA DE PUERTAS y devuelve un numero condicional a que las camaras voten. La formulacion v1 -P(llega al recinto) x P(mayoria dado recinto)- se dio de BAJA el 2026-08-22 (ADR-0012), junto con su backtest: los stubs de la v1 (`ensemble.componer` y compania) y `backtest_cadena.py` se eliminaron/archivaron en la auditoria 2026-09 (A7: su codigo esta en `coordinacion/archivo/A7-poda-2026-09/`). Desde el 2026-09-30 (auditoria A5) `nowcast()` da numero SOLO para mayoria simple: con una mayoria especial devuelve `p_aprobacion = None` y `motivo_sin_numero`, sin simular. | 27 | 6,409 | **vencida** |
+| `modelo/ensemble/` _(src+tests)_ | La composicion final: el nowcast end-to-end de un proyecto. El punto de entrada vivo es `nowcast_puertas.py`, que corre la CADENA DE PUERTAS y devuelve un numero condicional a que las camaras voten. La formulacion v1 -P(llega al recinto) x P(mayoria dado recinto)- se dio de BAJA el 2026-08-22 (ADR-0012), junto con su backtest: los stubs de la v1 (`ensemble.componer` y compania) y `backtest_cadena.py` se eliminaron/archivaron en la auditoria 2026-09 (A7: su codigo esta en `coordinacion/archivo/A7-poda-2026-09/`). Desde el 2026-09-30 (auditoria A5) `nowcast()` da numero SOLO para mayoria simple: con una mayoria especial devuelve `p_aprobacion = None` y `motivo_sin_numero`, sin simular. | 29 | 7,142 | **vencida** |
 | `variables/proyecto/` _(src+tests)_ | Feature store por proyecto: tema/materia, origen (Ejecutivo/oficialismo/aliados/oposicion), jefe de bloque, mayoria requerida, texto, y el ICG como modulador de coyuntura. La postura del gobierno por acta se midio aca y su modulo se archivo el 2026-09-10 sin consumidor: la medicion quedo en el ADR-0021 y en ESTADO. | 23 | 5,160 | **vencida** |
 | `datos/expedientes/` _(src+tests)_ | Registro de todo lo PRESENTADO (no solo lo votado): titulo, autor, tipo, fecha y cadena de vida del expediente. Denominador del embudo y enlace acta -> expediente. | 17 | 4,922 | **vencida** |
 | `evaluacion/baseline/` _(src+tests)_ | El censo del motor sobre el voto individual. Desde el 28-09 (ADR-0034) el harness NO reimplementa nada del legislador: importa `record_legisladores`, `proyectar_postura` y `perfil_legislador` del motor y solo decide que votos existian (historia estricta: fecha anterior y OTRA ley). Un test lo compara contra `nowcast()` legislador por legislador. El baseline de BLOQUE -el ~0,99- se midio en `fase0/` y ahi quedo. | 13 | 2,749 | **vencida** |
@@ -181,7 +181,7 @@ Rama `main` — ultimo commit: 2026-09-30 eeb42f4 Auditoría A9: cerrado (los tr
 
 ## Inventario de datos
 
-188 archivos de datos · 356.0 MB · 188 viajan por git, **0 no**.
+189 archivos de datos · 356.1 MB · 189 viajan por git, **0 no**.
 
 Buscar uno sin abrir nada: `python .mapa/buscar.py --dato <termino>`. Columna **git**: `si` = esta versionado, o sea que quien clone lo tiene; `NO` = vive solo en el disco de quien lo genero, que es el modo de falla mas repetido de este repo (seis veces, ver `.gitignore`). **Escribe/Lee**: quien lo produce y quien lo consume, deducido del codigo; sin lector, sobra — sin escritor, no se regenera.
 
@@ -321,6 +321,7 @@ Buscar uno sin abrir nada: `python .mapa/buscar.py --dato <termino>`. Columna **
 | `modelo/agregador_institucional/outputs/backtest_agregador.json` | objeto: n_actas, brier, brier_baseline_t | 1 KB | si | — | — |
 | `modelo/agregador_institucional/outputs/backtest_agregador_dir_presentes.json` | objeto: n_actas, brier, brier_baseline_t | 1 KB | si | — | — |
 | `modelo/ensemble/outputs/panel_regresion.json` | objeto: proyecto_id, fecha, camara_orige | 199 KB | si | `test_panel_regresion.py` | `verificar_regeneracion.py` |
+| `modelo/ensemble/outputs/registro_parametros.json` | objeto: formato, generado_por, entrada,  | 72 KB | si | `registro_parametros.py` | _(1 lo nombran)_ |
 | `modelo/ensemble/outputs/validacion_sobre_tablas_walkforward_corte50.json` | objeto: resumen, detalle | 36 KB | si | — | — |
 | `modelo/ensemble/outputs/validacion_sobre_tablas_walkforward.json` | objeto: resumen, detalle | 25 KB | si | `validar_sobre_tablas_walkforward.py` | — |
 | `modelo/ensemble/outputs/beta_dictamen.json` | objeto: M0_crudo, M1_offset, M2_offset_t | 6 KB | si | `estimar_beta_dictamen.py` | `verificar_regeneracion.py` |
@@ -337,7 +338,7 @@ Buscar uno sin abrir nada: `python .mapa/buscar.py --dato <termino>`. Columna **
 | `modelo/ensemble/outputs/nowcast_HIPOTETICO-ECON-PE.json` | objeto: proyecto_id, proyecto_id_interno | 2 KB | si | — | — |
 | `modelo/ensemble/outputs/backtest_cadena.json` | objeto: n_evaluados, tasa_base_sancion,  | 2 KB | si | — | — |
 | `modelo/ensemble/outputs/backtest_cadena_fina.json` | objeto: n_evaluados, version, tasa_base_ | 2 KB | si | — | — |
-| `modelo/ensemble/outputs/theta_sobre_tablas.json` | objeto: A_theta_vs_resto, B_solo_sobre_t | 1 KB | si | `estimar_theta_sobre_tablas.py` | _(2 lo nombran)_ |
+| `modelo/ensemble/outputs/theta_sobre_tablas.json` | objeto: A_theta_vs_resto, B_solo_sobre_t | 1 KB | si | `estimar_theta_sobre_tablas.py` | _(3 lo nombran)_ |
 | `modelo/ensemble/outputs/chequeo_direccion_beta_2026-09-28.json` | objeto: n_panel, n_comun, produccion_M6_ | 1001 B | si | — | _(1 lo nombran)_ |
 | `modelo/voto_individual/outputs/desvios_por_voto.parquet` _DESVIOS_POR_VOTO_ | 900,572×6 | 1.2 MB | si | `disciplina.py` | `export_base.py` |
 | `modelo/voto_individual/outputs/disciplina_por_anio.csv` | 9,302×7 | 636 KB | si | `disciplina.py`, `ficha.py` | — |
@@ -378,7 +379,7 @@ Buscar uno sin abrir nada: `python .mapa/buscar.py --dato <termino>`. Columna **
 
 **Lo que el inventario marca**
 
-- Tienen productor y **ningun consumidor** (48): `cobertura_canonica.json`, `verificar_bots.json`, `votaciones_nuevas.parquet`, `estado_bot.json`, `argentinadatos_actas.parquet`, `argentinadatos_votos.parquet`, `ckan_diputados_actas.parquet`, `ckan_diputados_votos.parquet` _+40_. Es lo esperable en un entregable para humanos; en un intermedio significa que sobra.
+- Tienen productor y **ningun consumidor** (49): `cobertura_canonica.json`, `verificar_bots.json`, `votaciones_nuevas.parquet`, `estado_bot.json`, `argentinadatos_actas.parquet`, `argentinadatos_votos.parquet`, `ckan_diputados_actas.parquet`, `ckan_diputados_votos.parquet` _+41_. Es lo esperable en un entregable para humanos; en un intermedio significa que sobra.
 - **Ningun archivo de codigo los nombra** (64, 161.7 MB): `record_por_origen_fase2_detalle_harness_2026-09-27.parquet`, `record_por_origen_fase2_detalle_estricta_2026-09-27.parquet`, `votaciones_2003-2007_Kirchner.xlsx`, `votaciones_2015-2019_Macri.xlsx`, `votaciones_2007-2011_CFK-1.xlsx`, `votaciones_2011-2015_CFK-2.xlsx`, `fase0_detalle_ponderada_logit.parquet`, `fase0_detalle_union.parquet` _+56_. Ojo: un output con nombre armado por f-string cae aca y esta vivo. Lo que hay que mirar de verdad son los pesados.
 
 ## Puntos de entrada
@@ -400,7 +401,7 @@ Ordenados por cuantos otros archivos dependen de ellos. Tocar uno de arriba tien
 
 | Archivo | LOC | Lo usan | Simbolos |
 |---|---:|---:|---|
-| `rutas.py` | 212 | 28 | `_env`, `inventario` |
+| `rutas.py` | 212 | 29 | `_env`, `inventario` |
 | `variables/bloque/src/bloque.py` | 842 | 20 | `_canon_linaje`, `_norm_nombre`, `_cargar_padron_linaje_senado`, `_enriquecer_linaje_senado` |
 | `modelo/ensemble/src/nowcast_puertas.py` | 1020 | 16 | `_resolver_multietiqueta`, `_tema_auto`, `_bloque`, `era_de` |
 | `definiciones.py` | 261 | 15 | `periodo_parlamentario`, `gobierno_por_fecha`, `era_de`, `normalizar_mayoria_valor` |
@@ -415,8 +416,8 @@ Ordenados por cuantos otros archivos dependen de ellos. Tocar uno de arriba tien
 
 ## Flujo interno
 
-- `modelo/ensemble/tests/` → `modelo/ensemble/src/` (16)
-- `modelo/ensemble/src/` → `./` (12)
+- `modelo/ensemble/tests/` → `modelo/ensemble/src/` (17)
+- `modelo/ensemble/src/` → `./` (13)
 - `variables/proyecto/tests/` → `variables/proyecto/src/` (10)
 - `evaluacion/baseline/src/` → `./` (7)
 - `evaluacion/baseline/src/` → `variables/bloque/src/` (6)
@@ -433,7 +434,7 @@ Ordenados por cuantos otros archivos dependen de ellos. Tocar uno de arriba tien
 Segun el historial de git. Si vas a cambiar uno, mira el otro.
 
 - `Nowcast Congreso Argy/coordinacion/EN-HUMANO.md` + `Nowcast Congreso Argy/coordinacion/ESTADO-DEL-PROYECTO.md` (56 commits)
-- `Nowcast Congreso Argy/.mapa/mapa.json` + `Nowcast Congreso Argy/MAPA.md` (53 commits)
+- `Nowcast Congreso Argy/.mapa/mapa.json` + `Nowcast Congreso Argy/MAPA.md` (54 commits)
 - `Nowcast Congreso Argy/coordinacion/ESTADO-DEL-PROYECTO.md` + `Nowcast Congreso Argy/tablero_datos.js` (50 commits)
 - `Nowcast Congreso Argy/coordinacion/EN-HUMANO.md` + `Nowcast Congreso Argy/tablero_datos.js` (47 commits)
 - `Nowcast Congreso Argy/.mapa/mapa.json` + `Nowcast Congreso Argy/coordinacion/ESTADO-DEL-PROYECTO.md` (33 commits)
@@ -462,6 +463,7 @@ Segun el historial de git. Si vas a cambiar uno, mira el otro.
 
 - `ANTHROPIC_API_KEY` — `variables/proyecto/src/agente_taxonomias.py`
 - `ASIST` — `modelo/agregador_institucional/src/agregador.py`
+- `BANDERA_NUEVA` — `modelo/ensemble/tests/test_defaults_fijados.py`
 - `BETA_DICTAMEN` — `modelo/ensemble/src/beta_dictamen.py`, `modelo/ensemble/tests/test_beta_dictamen.py`
 - `BORRAR` — `datos/canonica/src/entity_resolution.py`
 - `CACHE` — `datos/expedientes/src/ingesta_ckan.py`, `datos/senado/src/scrape_votaciones.py`
@@ -474,7 +476,6 @@ Segun el historial de git. Si vas a cambiar uno, mira el otro.
 - `DISC` — `modelo/agregador_institucional/src/agregador.py`
 - `DISCIPLINA` — `modelo/ensemble/src/ensemble.py`
 - `EMBUDO_FUENTE` — `variables/embudo/src/embudo.py`
-- `EPSILON0` — `modelo/agregador_institucional/src/agregador.py`, `modelo/ensemble/src/nowcast_puertas.py`
 
 ## Frescura
 

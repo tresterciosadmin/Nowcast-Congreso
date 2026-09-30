@@ -11,13 +11,13 @@ Une las dos piezas ya validadas del sistema en un solo número (con su descompos
 **Estado:** EN CURSO (v1: composición + nowcast por proyecto + tests)
 **Owner actual:** Claude+Valle (2026-07-12)
 
-**Resumen:** La composicion final: el nowcast end-to-end de un proyecto. El punto de entrada vivo es `nowcast_puertas.py`, que corre la CADENA DE PUERTAS y devuelve un numero condicional a que las camaras voten. La formulacion v1 -P(llega al recinto) x P(mayoria dado recinto)- se dio de BAJA el 2026-08-22 (ADR-0012), junto con su backtest: `ensemble.componer` y `backtest_cadena.py` siguen ahi pero levantan SystemExit. Desde el 2026-09-30 (auditoria A5) `nowcast()` da numero SOLO para mayoria simple: con una mayoria especial devuelve `p_aprobacion = None` y `motivo_sin_numero`, sin simular.
+**Resumen:** La composicion final: el nowcast end-to-end de un proyecto. El punto de entrada vivo es `nowcast_puertas.py`, que corre la CADENA DE PUERTAS y devuelve un numero condicional a que las camaras voten. La formulacion v1 -P(llega al recinto) x P(mayoria dado recinto)- se dio de BAJA el 2026-08-22 (ADR-0012), junto con su backtest: `ensemble.componer` sigue ahi y levanta SystemExit; `backtest_cadena.py` se archivo en la auditoria 2026-09 (A7: `coordinacion/archivo/A7-poda-2026-09/`). Desde el 2026-09-30 (auditoria A5) `nowcast()` da numero SOLO para mayoria simple: con una mayoria especial devuelve `p_aprobacion = None` y `motivo_sin_numero`, sin simular.
 
 ## Buscar acá si
 
 - el numero final de P(sancion) de un proyecto
 - por que un nowcast sale SIN numero (mayorias especiales apagadas, A5): `MAYORIAS_CON_NUMERO` en `nowcast_puertas.py` y `tests/test_mayorias_especiales_apagadas.py`
-- el backtest de la cadena completa, Brier, skill o calibracion
+- el backtest de la cadena completa, Brier, skill o calibracion (ARCHIVADO en A7; sus JSON siguen en `outputs/`)
 - la Puerta D / camara revisora en el circuito bicameral
 - P(mayoria) que da 0% o 100% (hay piso y techo por pedido de Valle)
 - REVISION 25-08: multiplicar P_B x P_D supone INDEPENDENCIA entre camaras y es falsa; y `P(B|A)` es notacion enganosa (A y C son un corrimiento en logit, no un condicional bayesiano)
@@ -69,6 +69,7 @@ La **postura de cada bloque** es un dato de entrada (elegida a mano / observada)
 - el nowcast de un proyecto NO votado usa la postura que le pongas → la calibración de la cadena completa depende de esa proyección futura.
 
 ## Backtest de la cadena completa (`src/backtest_cadena.py`, opción B — 2026-08-13)
+> ⛔ **ARCHIVADO el 2026-09-30 (auditoría, A7):** el script y su test se movieron a `coordinacion/archivo/A7-poda-2026-09/modelo/ensemble/` (con el sufijo `.archivado`; ver el README de esa carpeta). Estaba neutralizado desde el 22-08 (ADR-0012). Lo que sigue es historia.
 Mide la calibración del end-to-end contra la realidad: sobre la cohorte **madura** y
 etiquetada del embudo (`construir_cohorte` + `cohorte_madura`, label `sancionado`),
 compone `p_llega` (embudo) × `p_mayoría` (`nowcast_auto`, postura proyectada point-in-time

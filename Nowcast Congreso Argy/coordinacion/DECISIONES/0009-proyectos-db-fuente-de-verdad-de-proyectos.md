@@ -3,7 +3,7 @@
 **Fecha:** 2026-08-07 · **Estado:** ACEPTADO (vigente)
 **Decisor:** Valle · **Registra:** Claude
 **Origen:** `URGENTE.md` ítem 1 — el bot recolecta proyectos y ningún módulo los carga.
-**Reemplaza:** el borrador de dos opciones del mismo día (`0009-BORRADOR-…`, ya neutralizado).
+**Reemplaza:** el borrador de dos opciones del mismo día (`0009-BORRADOR-…`, ya neutralizado y archivado en A7).
 
 ---
 

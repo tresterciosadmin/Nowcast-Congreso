@@ -56,7 +56,7 @@ walk-forward, ventana 730 días.
 
 ## Por qué esta vara y no las anteriores
 
-`backtest_cadena` está neutralizado (ADR-0012) y `backtest_agregador` mide contra "¿se
+`backtest_cadena` está neutralizado (ADR-0012) y archivado (A7) y `backtest_agregador` mide contra "¿se
 aprobó el acta?" con tasa base 95,15% — 4.542 de 4.890 actas en el bin superior. Un Brier
 lindo sobre una variable casi constante no distingue un motor bueno de uno mediocre.
 **El voto individual tiene 22,5% de negativos** y es el nivel donde la doctrina (ADR-0016)

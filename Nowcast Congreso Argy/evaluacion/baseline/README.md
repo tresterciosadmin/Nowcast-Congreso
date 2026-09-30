@@ -18,7 +18,7 @@
 - la fuga del harness viejo (shift(1) por fila) y cuanto pesaba: `medir_fuga_historia.py` (0,161 -> 0,092 -> 0,074)
 - de donde salia el 11,06% de RECORD_POR_TEMA: `medir_record_por_tema_limpio.py`
 - que el harness mide al motor y no una copia: `tests/test_harness_es_el_motor.py`
-- el record por ORIGEN entre gobiernos (ADR-0033): `record_por_origen.py`, `record_por_origen_brazos.py`
+- el record por ORIGEN entre gobiernos (ADR-0033): **archivado en A7** (`coordinacion/archivo/A7-poda-2026-09/evaluacion/baseline/src/`); sus resultados siguen en `outputs/record_por_origen_*.json`
 - las reglas de combinacion de temas de la POSTURA (ADR-0024/0028): `--combinar-temas`, experimento cerrado
 
 <!-- Las dos cosas de arriba las levanta `.mapa/indexar.py` al MAPA.md de la
@@ -39,7 +39,7 @@ y contaba como historia los votos del mismo dia (`shift(1)` por fila). Ahora:
 | que votos existian | el harness: `--historia estricta` (default), `fecha`, `dia_incluido` (el `<=` viejo del motor) |
 
 `perfil()` queda como delegacion al motor para los `estimar_*.py` viejos. Esos scripts y
-`medir_guard_era.py`, `fase1_rec_por_tema.py`, `medir_rec_por_tema.py`, `diagnostico_senado.py`
+`medir_guard_era.py` y `fase1_rec_por_tema.py` (`medir_rec_por_tema.py` y `diagnostico_senado.py` se archivaron en A7)
 todavia arman su propio record con `shift(1)`: estan marcados en el codigo como espejos viejos.
 
 ## Contrato

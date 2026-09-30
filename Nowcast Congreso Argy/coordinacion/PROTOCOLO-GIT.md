@@ -44,7 +44,7 @@ Ver `.gitignore`: datos crudos/limpios (`data/raw`, `data/clean`, `*.parquet`, `
 Acá había un instructivo de `git init` / `git remote add` para el primer setup.
 **Se sacó el 2026-08-06** porque ya no aplica y porque el 04-08 esa idea —"esto
 todavía no está conectado"— generó un documento entero equivocado
-(`CONECTAR-GIT.md`). Un instructivo de inicialización que sobrevive al proyecto
+(`CONECTAR-GIT.md`, archivado en A7). Un instructivo de inicialización que sobrevive al proyecto
 inicializado es una invitación a repetir el error.
 
 Un colaborador nuevo **clona**, no inicializa:

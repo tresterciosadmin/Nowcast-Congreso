@@ -62,7 +62,7 @@ ser factor — es exactamente la mortandad de agenda que decidimos no modelar.
 `p_sancion` **no se toca y tampoco entra**: ya contiene A, B, C y D adentro y su lugar
 es la **baseline** del backtest. `factor_revisora_empirico` queda **fuera del número
 publicado** (contiene C y D juntas: meterlo con D simulada cuenta dos veces lo mismo)
-y sobrevive sólo como vara alternativa en `backtest_cadena.py`.
+y sobrevive sólo como vara alternativa en `backtest_cadena.py` (archivado en A7).
 
 **El costo, que va en la interfaz y no en un README:** sin `p_llega_recinto`, para un
 proyecto **sin dictamen** el modelo ya no dice «tiene 4% de ser ley porque el 96% muere

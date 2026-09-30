@@ -11,6 +11,8 @@
 | 2026-09-29 | **Investigar y rellenar el hueco de Diputados 2020-23** (25 actas, 6.421 votos) y otros de la canónica (d4-b) | recomendación (d) | la *medición y declaración* de la cobertura por año (d4-a) sí está en A4 |
 | 2026-09-29 | **Protección de `main` con "requerir PR + CI"**, permitiendo que los bots la salten (deploy key, token de un administrador o GitHub App) (d10) | pregunta de Franco ("¿cómo hacemos eso?") | mientras tanto los bots empujan directo; ver §9.6 d10 |
 | 2026-09-29 | Poda P3-P7 del §5 (ramas dormidas, banderas de 14 a ≤ 4, desacople de estimadores) — **P4 y P5 hay que reformularlas** con la decisión 2 (no reemplazar ni archivar δ, β) | informe §5 | esperan a la métrica de verdad (C1) |
-| 2026-09-29 | **`.mapa/indexar.py` marca `viaja: True` para TODO en Windows**: le pasa las rutas a `git check-ignore --stdin` con `
+| 2026-09-29 | **`.mapa/indexar.py` marca `viaja: True` para TODO en Windows**: le pasa las rutas a `git check-ignore --stdin` con `
+
 ` (Python `text=True`) y git no las reconoce; en Linux anda. Efecto: la columna "viaja por git" de `MAPA.md` y de `mapa.json` es siempre verdadera en esta PC. No afecta a `test_insumos_del_motor_viajan` (consulta git en vivo) | hallazgo en A2 | arreglo de una línea (`newline="
 "` o `input=` en bytes); fuera del plan |
+| 2026-09-29 | **`datos/proyectos/src/verificar.py:_abrir()` copia la base a un temporal de NOMBRE FIJO** (`<temp>/proyectos_verif.db`): dos corridas de la suite a la vez (dos entornos, o un CI con matriz) se pisan la copia y `test_verificar.py` falla con `database disk image is malformed`. Se vio corriendo tres entornos en paralelo en A3. Arreglo: `tempfile.mkdtemp()` como ya hace el test | hallazgo en A3 | no afecta al CI (una sola corrida por vez); fuera del plan |

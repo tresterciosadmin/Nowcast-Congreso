@@ -9,25 +9,37 @@
 # `pip` no esta en el PATH y `python` si, que es el mismo binario que usa REGENERAR.ps1.
 # Si `python -m pip` tampoco anda, falta el modulo:  python -m ensurepip --upgrade
 #
-# Sin version fijada a proposito: no hay entorno reproducible declarado en el repo y
-# fijar versiones acá sin uno seria dar una garantia que no existe. Lo que esta lista
-# resuelve es "que hay que tener instalado", que era lo que faltaba.
+# VERSIONES FIJADAS (auditoria 2026-09, A3, 29-09-2026). Hasta ahora la lista era libre y el
+# CI (Python 3.11) y la PC de Franco (Python 3.14) instalaban versiones distintas de todo.
+# Los pines son los que ya tenia la PC de Franco, salvo scipy: la 1.18.1 de la PC no existe
+# para Python 3.11 (el maximo es 1.17.1), asi que se fija la 1.17.1, que instala en 3.11 y en
+# 3.14. Comprobado: con estos 14 pines, 3.11 y 3.14 resuelven los MISMOS 44 paquetes
+# (los transitivos quedan libres), todos con rueda para Linux/cp311 (la plataforma del CI), y
+# la suite y la salida completa del motor dan IGUAL (0 diferencias) en 3.11, en 3.14 y en la
+# PC de Franco (coordinacion/AUDITORIA-2026-09/ESTADO-EJECUCION.md, "Evidencia de A3").
+#
+# NO hace falta reinstalar en la PC de Franco: su scipy 1.18.1 da lo mismo que la 1.17.1 en la
+# suite y en esa huella. LIMITE: la huella no incluye las re-estimaciones con statsmodels
+# (beta, psi, theta): la fase D las corre con este entorno. Para actualizar un pin: cambiarlo,
+# correr la suite en 3.11 y en 3.14 y comparar la huella otra vez. Los bots NO usan este
+# archivo (tienen sus propias listas).
 #
 # Como se chequea rapido lo que falta:
 #     python verificar_dependencias.py
 
-pandas          # toda la capa de datos
-numpy           # simulacion y metricas
-pyarrow         # backend de parquet
-requests        # scrapers (CKAN, argentinadatos, senado.gob.ar, HCDN)
-tenacity        # reintentos de esos scrapers
-beautifulsoup4  # parseo del HTML del Senado y de HCDN
-openpyxl        # el Excel curado a mano (datos/manual_2026) y los export
-pypdf           # Ordenes del Dia: lectura primaria
-pdfminer.six    # Ordenes del Dia: respaldo cuando pypdf no saca texto
-statsmodels     # beta del dictamen, psi de arrastre, theta del sobre tablas
-scikit-learn    # SOLO variables/embudo (el test lo saltea si no esta)
-pytest          # la suite: tests.yml corre `python -m pytest`; sin esto el CI moria en el primer paso
-                # (A2, 29-09: verificado en un venv 3.11 limpio, `No module named pytest`)
-jsonschema      # datos/canonica/src/build.py valida el esquema de actas y votos. Faltaba: en un
-                # checkout limpio (el CI) test_actas_gemelas.py moria con ModuleNotFoundError (A2, 29-09)
+pandas==3.0.2           # toda la capa de datos
+numpy==2.4.4            # simulacion y metricas
+pyarrow==24.0.0         # backend de parquet
+requests==2.33.1        # scrapers (CKAN, argentinadatos, senado.gob.ar, HCDN)
+tenacity==9.1.4         # reintentos de esos scrapers
+beautifulsoup4==4.14.3  # parseo del HTML del Senado y de HCDN
+openpyxl==3.1.5         # el Excel curado a mano (datos/manual_2026) y los export
+pypdf==6.14.2           # Ordenes del Dia: lectura primaria
+pdfminer.six==20251230  # Ordenes del Dia: respaldo cuando pypdf no saca texto
+statsmodels==0.15.0     # beta del dictamen, psi de arrastre, theta del sobre tablas
+scikit-learn==1.9.0     # SOLO variables/embudo (el test lo saltea si no esta)
+scipy==1.17.1           # lo trae statsmodels; ademas lo importa coordinacion/AUDITORIA-2026-09/simple_por_camara.py
+pytest==9.0.2           # la suite: tests.yml corre `python -m pytest`; sin esto el CI moria en el primer paso
+                        # (A2, 29-09: verificado en un venv 3.11 limpio, `No module named pytest`)
+jsonschema==4.26.0      # datos/canonica/src/build.py valida el esquema de actas y votos. Faltaba: en un
+                        # checkout limpio (el CI) test_actas_gemelas.py moria con ModuleNotFoundError (A2, 29-09)

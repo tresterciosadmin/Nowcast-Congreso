@@ -186,7 +186,8 @@ def simular_votacion(
       y `n_sims` (y `epsilon0`/`tau` > 0 en las dos) dibujan el MISMO `eta` —es el
       PRIMER draw del rng, antes de cualquier otro muestreo— así que sus `aprob_por_sim`
       quedan alineados sim a sim y se pueden combinar (AND/OR/promedio ponderado) sin
-      volver a simular nada. Ver `modelo/ensemble/src/composicion_capitulos.py`.
+      volver a simular nada. Ver `composicion_capitulos` (archivado en la auditoría 2026-09, A7:
+      carpeta coordinacion/archivo/A7-poda-2026-09/).
     Devuelve dict con p_aprobacion, afirm_medio, afirm_std, banda (p5,p50,p95), etc.
     """
     n = len(lineas)

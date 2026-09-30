@@ -65,7 +65,7 @@ quien toca el motor actualiza este archivo en el mismo commit.
 | 2 | $d_i$ — desvío / lealtad | si la persona sigue a su bloque | ✅ **corre** |
 | 3 | $\pi_i$ — presencia | si aparece a votar | ✅ **corre** |
 | 4 | $\text{rec}_i$ — récord propio | historial individual ($n_i\ge1$) en la era, condicionado por el origen del proyecto, encogido hacia el bloque | ✅ **corre** — **número publicado desde el 28-09: skill 0,1333** [0,057; 0,198] (IC re-muestreando leyes), era vigente **0,010** [−0,26; 0,25], sobre el censo con el harness que importa el motor e historia estricta (§II.5, ADR-0034). **El 0,1611 anterior estaba inflado por fuga.** El encogimiento sigue ganando con el harness limpio (cortar sin encoger: +2,8% de Brier); el umbral n≥1 vs n≥8 queda en el borde (+0,5%, IC [−0,01; 1,26]) |
-| 5 | umbrales y quórum | reglas del cuerpo | ✅ **corre** |
+| 5 | umbrales y quórum | reglas del cuerpo | ✅ **corre en mayoría simple** · ⛔ **APAGADO para mayorías especiales desde el 30-09-2026 (auditoría 2026-09, A5, decisión 9):** `nowcast()` con `tipo_mayoria` ≠ SIMPLE devuelve `p_aprobacion = None` y `motivo_sin_numero`, sin simular. Contra resultados oficiales el modelo rinde peor que una moneda en dos tercios (Brier 0,30, 256 actas) y peor que una constante en tres cuartos (0,19) y absoluta (0,10): `coordinacion/QUE-SE-MIDE.md`. El término **no se borró**: los umbrales de §I.2b siguen implementados y los usan las mediciones |
 | 6 | Monte Carlo (2.000 sims) | agrega votos a probabilidad | ✅ **corre** |
 | 7 | $\varepsilon$ — clip de confianza | recorta $P_c$ a $[0{,}01;0{,}99]$ | 🔴 **corre pero está mal** (§II.1) |
 | 8 | $\text{Pres}_j$ — quórum | ignora las abstenciones | 🔲 **arreglado 04-09, tras bandera apagada** (§II.2); hoy Δ=0,0000 |
@@ -185,6 +185,10 @@ $$u_{j} = \begin{cases}
 
 El $+1$ de la simple es el **ADR-0013**: antes era $E_j/2$ con comparación $\ge$, y **un
 empate aprobaba**.
+
+> ⛔ **30-09-2026 (A5): sólo la primera fila —la simple— produce un número publicado.** Las otras cuatro
+> siguen definidas y en `agregador.umbral_aprobacion` (las usan `contraste_aprobacion.py`, `composicion_capitulos`
+> y los tests), pero `nowcast()` ya no las evalúa: devuelve sin número. Término **inactivo**, no borrado.
 
 **Archivo:** `modelo/agregador_institucional/src/agregador.py`
 

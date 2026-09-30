@@ -11,11 +11,12 @@ Une las dos piezas ya validadas del sistema en un solo número (con su descompos
 **Estado:** EN CURSO (v1: composición + nowcast por proyecto + tests)
 **Owner actual:** Claude+Valle (2026-07-12)
 
-**Resumen:** La composicion final: el nowcast end-to-end de un proyecto. El punto de entrada vivo es `nowcast_puertas.py`, que corre la CADENA DE PUERTAS y devuelve un numero condicional a que las camaras voten. La formulacion v1 -P(llega al recinto) x P(mayoria dado recinto)- se dio de BAJA el 2026-08-22 (ADR-0012), junto con su backtest: `ensemble.componer` y `backtest_cadena.py` siguen ahi pero levantan SystemExit.
+**Resumen:** La composicion final: el nowcast end-to-end de un proyecto. El punto de entrada vivo es `nowcast_puertas.py`, que corre la CADENA DE PUERTAS y devuelve un numero condicional a que las camaras voten. La formulacion v1 -P(llega al recinto) x P(mayoria dado recinto)- se dio de BAJA el 2026-08-22 (ADR-0012), junto con su backtest: `ensemble.componer` y `backtest_cadena.py` siguen ahi pero levantan SystemExit. Desde el 2026-09-30 (auditoria A5) `nowcast()` da numero SOLO para mayoria simple: con una mayoria especial devuelve `p_aprobacion = None` y `motivo_sin_numero`, sin simular.
 
 ## Buscar acá si
 
 - el numero final de P(sancion) de un proyecto
+- por que un nowcast sale SIN numero (mayorias especiales apagadas, A5): `MAYORIAS_CON_NUMERO` en `nowcast_puertas.py` y `tests/test_mayorias_especiales_apagadas.py`
 - el backtest de la cadena completa, Brier, skill o calibracion
 - la Puerta D / camara revisora en el circuito bicameral
 - P(mayoria) que da 0% o 100% (hay piso y techo por pedido de Valle)

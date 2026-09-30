@@ -49,8 +49,23 @@ logger = logging.getLogger("nowcast_puertas")
 sys.path.insert(0, str(next(d for d in Path(__file__).resolve().parents
                             if (d / "rutas.py").is_file())))
 from rutas import CANONICA_CLEAN, PROYECTO_ORIGEN_POR_ACTA, RAIZ  # noqa: E402
+from definiciones import normalizar_mayoria_valor  # noqa: E402
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+
+# MAYORÍAS ESPECIALES APAGADAS (auditoría 2026-09, ítem A5, decisión 9 de Franco).
+# `nowcast()` sólo da número para mayoría SIMPLE. Con dos tercios el modelo tiene Brier 0,30
+# contra el resultado oficial (256 actas; una moneda da 0,25), con tres cuartos 0,19 y con
+# absoluta 0,10 (una constante da 0,07): coordinacion/QUE-SE-MIDE.md. Para esos tipos devuelve
+# `p_aprobacion = None` y este motivo, SIN correr la simulación. No se borró nada: el umbral
+# de cada tipo sigue en `agregador.umbral_aprobacion` (lo usan las mediciones y los tests) y
+# el término queda en `FORMULA-COMPLETA.md`, marcado como inactivo.
+MAYORIAS_CON_NUMERO = ("SIMPLE",)
+MOTIVO_MAYORIA_ESPECIAL = (
+    "P(aprobación) sólo se estima para mayoría simple. Este proyecto pide {tipo}: el modelo "
+    "no está validado para ese tipo de mayoría (contra los resultados oficiales rinde peor que "
+    "una moneda en dos tercios; ver coordinacion/QUE-SE-MIDE.md). Apagado en la auditoría "
+    "2026-09 (decisión 9); vuelve cuando se modele.")
 
 # EL TABLERO SALE DEL MISMO CÁLCULO QUE EL NÚMERO. Esto no es un detalle: la primera
 # versión clasificaba a cada legislador por su récord individual mientras B y D salían
@@ -781,6 +796,11 @@ def nowcast(camara_origen: str, fecha=None, *, proyecto_id: str | None = None,
     `proyecto_id` es OPCIONAL: sin él, el proyecto es hipotético y A y C quedan
     `sin_dato` —el condicionante se encoge a 0—, que es exactamente lo que
     corresponde para algo que todavía no pasó por comisión.
+
+    **Sólo mayoría simple** (auditoría 2026-09, A5): si `tipo_mayoria` se normaliza (con
+    `definiciones.normalizar_mayoria_valor`, la misma regla de todo el repo) a algo distinto de
+    SIMPLE, devuelve `p_aprobacion = None` y `motivo_sin_numero`, sin simular. Lo que esa
+    normalización manda a SIMPLE (incluido `None` y el texto no reconocido) se calcula como siempre.
     """
     from ensemble import roster_nominal, simular_con_guardas
     from puerta_a import cargar_caracter, caracter_de, condicionar
@@ -791,6 +811,21 @@ def nowcast(camara_origen: str, fecha=None, *, proyecto_id: str | None = None,
         raise ValueError(f"fecha inválida: {fecha!r}")
     cam_o = str(camara_origen).strip().lower()
     cam_r = camara_revisora(cam_o)
+
+    # MAYORÍAS ESPECIALES: sin número, y ANTES de cargar nada (que la guarda no pueda
+    # quedar detrás de un cálculo que sí corre).
+    tipo_norm = normalizar_mayoria_valor(tipo_mayoria)
+    if tipo_norm not in MAYORIAS_CON_NUMERO:
+        return {
+            "proyecto_id": proyecto_id or "(hipotético)",
+            "fecha": str(F.date()),
+            "camara_origen": cam_o, "camara_revisora": cam_r,
+            "tipo_mayoria": tipo_mayoria, "origen": origen, "tema": tema,
+            "p_aprobacion": None,
+            "motivo_sin_numero": MOTIVO_MAYORIA_ESPECIAL.format(tipo=tipo_norm),
+            "condicional_a": None,
+            "pasos": [], "camaras": {}, "record_por_tema": {"activo": False},
+        }
 
     # TEMA AUTOMÁTICO (TEMA_AUTO=1, apagado por defecto — ver el bloque de arriba).
     # Sólo actúa si el llamador NO pasó `tema` a mano: lo manual siempre gana.
@@ -921,6 +956,10 @@ def imprimir(nc: dict) -> None:
     print(f"  NOWCAST POR PUERTAS — {nc['proyecto_id']}  ({nc['fecha']})")
     print(f"  origen: {nc['camara_origen']}  ->  revisora: {nc['camara_revisora']}")
     print("=" * 66)
+    if nc["p_aprobacion"] is None:
+        print(f"  SIN NÚMERO — {nc['motivo_sin_numero']}")
+        print("=" * 66)
+        return
     for p in nc["pasos"]:
         if p["naturaleza"] == "observado":
             extra = f"{p['n_firmantes']} firmantes" if p["estado"] == "con_caracter" else ""

@@ -2,13 +2,13 @@
 
 <!-- GENERADO por indexar.py. No editar: los cambios se pierden. -->
 <!-- La prosa vive en el README.md de cada modulo (seccion `Buscar aca si`). -->
-<!-- 2026-09-30 17:49 UTC · 178 archivos · 38,522 LOC -->
+<!-- 2026-09-30 18:48 UTC · 179 archivos · 39,039 LOC -->
 
 ## Como usar este archivo
 
 Es el unico archivo del proyecto que hace falta leer para empezar. Para ubicar algo concreto: `python3 .mapa/buscar.py "<termino>"` devuelve archivo y linea sin abrir nada. Recien despues abrir los archivos que salgan, y solo esos.
 
-Rama `main` — ultimo commit: 2026-09-30 490f019 Auditoría B1: pre-registro del registro de parámetros y de test_defaults_fijados · **hay cambios sin commitear**
+Rama `main` — ultimo commit: 2026-09-30 42f4a7b Auditoría B1 (etapa 1): registro de parámetros generado desde el código y test_defaults_fijados · **hay cambios sin commitear**
 
 ## Donde buscar que
 
@@ -106,6 +106,7 @@ Rama `main` — ultimo commit: 2026-09-30 490f019 Auditoría B1: pre-registro de
 | Diputados dejó de titular "sobre tablas" en 2020 y desde 2024 usa "HABILITACIÓN DEL TRATAMIENTO..." (mismo mecanismo, otro nombre) — matching corregido en `estimar_theta_sobre_tablas.py` | `modelo/ensemble/` |
 | diferencia entre la BANDA (p5-p95, agregada) y los PIVOTES (P individual en [0,35;0,65]) | `modelo/ensemble/` |
 | el dictamen POR LEGISLADOR (quién firmó, si firmó su jefe): `beta_dictamen.py`, PRENDIDA por defecto desde el 14-09 (`BETA_DICTAMEN=0` apaga; validada walk-forward) | `modelo/ensemble/` |
+| qué parámetros tiene el motor, con qué default y cuáles mueven el número (auditoría B1): el registro generado desde el código `outputs/registro_parametros.json` (`src/registro_parametros.py`; `src/perturbar_panel.py` mide `afecta_panel`) y `tests/test_defaults_fijados.py`, que falla si un default cambia sin regenerarlo | `modelo/ensemble/` |
 | quien se desvia de su bloque, discolos, bisagras o pivotes | `modelo/voto_individual/` |
 | separar INDISCIPLINA de AUSENTISMO (son dos tasas distintas) | `modelo/voto_individual/` |
 | el indice de disciplina por legislador y por periodo; presidentes de camara excluidos | `modelo/voto_individual/` |
@@ -144,7 +145,7 @@ Rama `main` — ultimo commit: 2026-09-30 490f019 Auditoría B1: pre-registro de
 
 | Carpeta | Que es | Arch. | LOC | Bitacora |
 |---|---|---:|---:|---|
-| `modelo/ensemble/` _(src+tests)_ | La composicion final: el nowcast end-to-end de un proyecto. El punto de entrada vivo es `nowcast_puertas.py`, que corre la CADENA DE PUERTAS y devuelve un numero condicional a que las camaras voten. La formulacion v1 -P(llega al recinto) x P(mayoria dado recinto)- se dio de BAJA el 2026-08-22 (ADR-0012), junto con su backtest: los stubs de la v1 (`ensemble.componer` y compania) y `backtest_cadena.py` se eliminaron/archivaron en la auditoria 2026-09 (A7: su codigo esta en `coordinacion/archivo/A7-poda-2026-09/`). Desde el 2026-09-30 (auditoria A5) `nowcast()` da numero SOLO para mayoria simple: con una mayoria especial devuelve `p_aprobacion = None` y `motivo_sin_numero`, sin simular. | 29 | 7,142 | **vencida** |
+| `modelo/ensemble/` _(src+tests)_ | La composicion final: el nowcast end-to-end de un proyecto. El punto de entrada vivo es `nowcast_puertas.py`, que corre la CADENA DE PUERTAS y devuelve un numero condicional a que las camaras voten. La formulacion v1 -P(llega al recinto) x P(mayoria dado recinto)- se dio de BAJA el 2026-08-22 (ADR-0012), junto con su backtest: los stubs de la v1 (`ensemble.componer` y compania) y `backtest_cadena.py` se eliminaron/archivaron en la auditoria 2026-09 (A7: su codigo esta en `coordinacion/archivo/A7-poda-2026-09/`). Desde el 2026-09-30 (auditoria A5) `nowcast()` da numero SOLO para mayoria simple: con una mayoria especial devuelve `p_aprobacion = None` y `motivo_sin_numero`, sin simular. | 30 | 7,659 | **vencida** |
 | `variables/proyecto/` _(src+tests)_ | Feature store por proyecto: tema/materia, origen (Ejecutivo/oficialismo/aliados/oposicion), jefe de bloque, mayoria requerida, texto, y el ICG como modulador de coyuntura. La postura del gobierno por acta se midio aca y su modulo se archivo el 2026-09-10 sin consumidor: la medicion quedo en el ADR-0021 y en ESTADO. | 23 | 5,160 | **vencida** |
 | `datos/expedientes/` _(src+tests)_ | Registro de todo lo PRESENTADO (no solo lo votado): titulo, autor, tipo, fecha y cadena de vida del expediente. Denominador del embudo y enlace acta -> expediente. | 17 | 4,922 | **vencida** |
 | `evaluacion/baseline/` _(src+tests)_ | El censo del motor sobre el voto individual. Desde el 28-09 (ADR-0034) el harness NO reimplementa nada del legislador: importa `record_legisladores`, `proyectar_postura` y `perfil_legislador` del motor y solo decide que votos existian (historia estricta: fecha anterior y OTRA ley). Un test lo compara contra `nowcast()` legislador por legislador. El baseline de BLOQUE -el ~0,99- se midio en `fase0/` y ahi quedo. | 13 | 2,749 | **vencida** |
@@ -181,7 +182,7 @@ Rama `main` — ultimo commit: 2026-09-30 490f019 Auditoría B1: pre-registro de
 
 ## Inventario de datos
 
-189 archivos de datos · 356.1 MB · 189 viajan por git, **0 no**.
+189 archivos de datos · 356.2 MB · 189 viajan por git, **0 no**.
 
 Buscar uno sin abrir nada: `python .mapa/buscar.py --dato <termino>`. Columna **git**: `si` = esta versionado, o sea que quien clone lo tiene; `NO` = vive solo en el disco de quien lo genero, que es el modo de falla mas repetido de este repo (seis veces, ver `.gitignore`). **Escribe/Lee**: quien lo produce y quien lo consume, deducido del codigo; sin lector, sobra — sin escritor, no se regenera.
 
@@ -320,8 +321,8 @@ Buscar uno sin abrir nada: `python .mapa/buscar.py --dato <termino>`. Columna **
 | `modelo/agregador_institucional/outputs/backtest_agregador_asistencia.json` | objeto: n_actas, brier, brier_baseline_t | 1 KB | si | — | — |
 | `modelo/agregador_institucional/outputs/backtest_agregador.json` | objeto: n_actas, brier, brier_baseline_t | 1 KB | si | — | — |
 | `modelo/agregador_institucional/outputs/backtest_agregador_dir_presentes.json` | objeto: n_actas, brier, brier_baseline_t | 1 KB | si | — | — |
-| `modelo/ensemble/outputs/panel_regresion.json` | objeto: proyecto_id, fecha, camara_orige | 199 KB | si | `test_panel_regresion.py` | `verificar_regeneracion.py` |
-| `modelo/ensemble/outputs/registro_parametros.json` | objeto: formato, generado_por, entrada,  | 72 KB | si | `registro_parametros.py` | _(1 lo nombran)_ |
+| `modelo/ensemble/outputs/panel_regresion.json` | objeto: proyecto_id, fecha, camara_orige | 199 KB | si | `test_panel_regresion.py` | `perturbar_panel.py`, `verificar_regeneracion.py` |
+| `modelo/ensemble/outputs/registro_parametros.json` | objeto: formato, generado_por, entrada,  | 128 KB | si | `registro_parametros.py` | _(1 lo nombran)_ |
 | `modelo/ensemble/outputs/validacion_sobre_tablas_walkforward_corte50.json` | objeto: resumen, detalle | 36 KB | si | — | — |
 | `modelo/ensemble/outputs/validacion_sobre_tablas_walkforward.json` | objeto: resumen, detalle | 25 KB | si | `validar_sobre_tablas_walkforward.py` | — |
 | `modelo/ensemble/outputs/beta_dictamen.json` | objeto: M0_crudo, M1_offset, M2_offset_t | 6 KB | si | `estimar_beta_dictamen.py` | `verificar_regeneracion.py` |
@@ -401,9 +402,9 @@ Ordenados por cuantos otros archivos dependen de ellos. Tocar uno de arriba tien
 
 | Archivo | LOC | Lo usan | Simbolos |
 |---|---:|---:|---|
-| `rutas.py` | 212 | 29 | `_env`, `inventario` |
+| `rutas.py` | 212 | 30 | `_env`, `inventario` |
 | `variables/bloque/src/bloque.py` | 842 | 20 | `_canon_linaje`, `_norm_nombre`, `_cargar_padron_linaje_senado`, `_enriquecer_linaje_senado` |
-| `modelo/ensemble/src/nowcast_puertas.py` | 1020 | 16 | `_resolver_multietiqueta`, `_tema_auto`, `_bloque`, `era_de` |
+| `modelo/ensemble/src/nowcast_puertas.py` | 1020 | 17 | `_resolver_multietiqueta`, `_tema_auto`, `_bloque`, `era_de` |
 | `definiciones.py` | 261 | 15 | `periodo_parlamentario`, `gobierno_por_fecha`, `era_de`, `normalizar_mayoria_valor` |
 | `evaluacion/baseline/src/baseline_voto_individual.py` | 814 | 14 | `_norm_cond`, `_ContadorAvisos`, `perfil`, `_metricas` |
 | `modelo/ensemble/src/ensemble.py` | 359 | 8 | `_cargar_simulador`, `_cargar_proyector`, `_root`, `_padron_csv` |
@@ -416,8 +417,8 @@ Ordenados por cuantos otros archivos dependen de ellos. Tocar uno de arriba tien
 
 ## Flujo interno
 
-- `modelo/ensemble/tests/` → `modelo/ensemble/src/` (17)
-- `modelo/ensemble/src/` → `./` (13)
+- `modelo/ensemble/tests/` → `modelo/ensemble/src/` (18)
+- `modelo/ensemble/src/` → `./` (14)
 - `variables/proyecto/tests/` → `variables/proyecto/src/` (10)
 - `evaluacion/baseline/src/` → `./` (7)
 - `evaluacion/baseline/src/` → `variables/bloque/src/` (6)
@@ -434,7 +435,7 @@ Ordenados por cuantos otros archivos dependen de ellos. Tocar uno de arriba tien
 Segun el historial de git. Si vas a cambiar uno, mira el otro.
 
 - `Nowcast Congreso Argy/coordinacion/EN-HUMANO.md` + `Nowcast Congreso Argy/coordinacion/ESTADO-DEL-PROYECTO.md` (56 commits)
-- `Nowcast Congreso Argy/.mapa/mapa.json` + `Nowcast Congreso Argy/MAPA.md` (54 commits)
+- `Nowcast Congreso Argy/.mapa/mapa.json` + `Nowcast Congreso Argy/MAPA.md` (55 commits)
 - `Nowcast Congreso Argy/coordinacion/ESTADO-DEL-PROYECTO.md` + `Nowcast Congreso Argy/tablero_datos.js` (50 commits)
 - `Nowcast Congreso Argy/coordinacion/EN-HUMANO.md` + `Nowcast Congreso Argy/tablero_datos.js` (47 commits)
 - `Nowcast Congreso Argy/.mapa/mapa.json` + `Nowcast Congreso Argy/coordinacion/ESTADO-DEL-PROYECTO.md` (33 commits)

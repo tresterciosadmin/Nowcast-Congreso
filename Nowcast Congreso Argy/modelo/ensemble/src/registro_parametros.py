@@ -370,6 +370,12 @@ def _sha256_texto(ruta: Path) -> str:
     return hashlib.sha256(ruta.read_bytes().replace(b"\r\n", b"\n")).hexdigest()
 
 
+def sha_fuentes(fuentes: dict[str, str]) -> dict[str, str]:
+    """sha256 del texto de cada archivo (saltos de línea normalizados): con qué código se hizo una medición."""
+    return {rel: hashlib.sha256(x.replace("\r\n", "\n").encode("utf-8")).hexdigest()
+            for rel, x in fuentes.items()}
+
+
 def _estimados(raiz: Path) -> dict:
     out = {}
     for nombre in ESTIMADOS:

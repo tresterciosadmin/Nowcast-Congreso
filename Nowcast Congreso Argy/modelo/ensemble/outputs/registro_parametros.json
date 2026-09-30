@@ -8,7 +8,171 @@
   "No incluye los parámetros de los generadores de los archivos derivados; de los coeficientes estimados (β, θ) se fija el sha256 del archivo.",
   "La clausura es una sobreaproximación (incluye lo que sólo se importa con una bandera prendida): `afecta_panel` dice cuáles mueven el número."
  ],
- "medicion_afecta_panel": null,
+ "medicion_afecta_panel": {
+  "fecha": "2026-09-30",
+  "git_head": "42f4a7bebaed08fc68c1803d8f3040aa910615d6",
+  "fuentes_sha256": {
+   "datos/canonica/src/alias_legislador.py": "37af4b7a651869f1b24d513ed2a7c33a6502badc19eac7a5a074b62f5b837878",
+   "datos/expedientes/src/actas_ley.py": "8c6d0489b1f74013a7fcc51ae80ec77babf31d183b212c7cdd1db141b9d5b459",
+   "datos/expedientes/src/enlace_senado.py": "9b07006f6a05d51257b119edd3be345cc4618243ef3020c6db27ae88dd6b8fac",
+   "datos/expedientes/src/resolver_firmantes.py": "70864a315083e9432c3014668542b2f53fc00ed88c5eff0bf4cdd6fd6275c72e",
+   "datos/padron/src/padron_vigente.py": "3a1c437499ca10a45ba97c8c23163f1623e6e254601ef485c99539e967064260",
+   "definiciones.py": "0d619b4e45a7e251f2df28fbf7a59df36871b1401e116abdafb946aa759ed519",
+   "docs/taxonomias/loader.py": "b29731c33746df99d4a88c7539545d8e9c67c9baeeae5ee7949275b281bd36bb",
+   "evaluacion/baseline/src/baseline_voto_individual.py": "300c9524e76cc651b6576e11e3b35afc18aa6b44bbd8740b464d4b53c87830c8",
+   "evaluacion/baseline/src/censo_estadisticos.py": "4380cabfd505589f33268704005e41020267455122b7a5bfe1089da457da27aa",
+   "modelo/agregador_institucional/src/agregador.py": "14e4cd81b4789a7e947a62a1e480497379eb9bdf7bc5b1d8c932d19295d5fb49",
+   "modelo/ensemble/src/beta_dictamen.py": "d4323891abf1a3f1fa7e45f6340134b632d7c9d4c2c010627af9e5303de50b66",
+   "modelo/ensemble/src/ensemble.py": "d9ef9253a8c46bacc6f39c8ace59020bd626db83c9d483f417aab9a9c6f657e5",
+   "modelo/ensemble/src/estimar_beta_dictamen.py": "2535c48a1f099cd8185c31688b9a9af3f0ea179df536b5f3ff359f66082cdfb7",
+   "modelo/ensemble/src/nowcast_puertas.py": "c97f73b80c87a749c7d8ce9369207f49ce50c92210aa07cedb91bb78b93ec414",
+   "modelo/ensemble/src/puerta_a.py": "3e13da8651ff42ccf0933444cd999e0a474d8c426626ea2f884f2c7e1ef2d2f8",
+   "modelo/ensemble/src/puerta_d.py": "6c6215158baeebf602004420978a95b73d2ca37416c714bea6289d5d762110b6",
+   "modelo/ensemble/src/sobre_tablas.py": "1e3efff6e0fdfb0f85935198a9dbcf9ad00dec5e50e8c8a964b21d5294334754",
+   "rutas.py": "42bec83bff868054fede64748f4181d85ca920daf6a69b0692821d0b4c6db27f",
+   "variables/bloque/src/bloque.py": "4d17386ddcdf0b31db58630cbd4492cbaf7da1da6bb3db5a7cde28e14e1c3e0d",
+   "variables/proyecto/src/agente_taxonomias.py": "69172108b289523522a0edaa818941dd8bcca9dce05f2afbc3a0eb37625d9a56",
+   "variables/proyecto/src/pdf_text.py": "0d209c6443144596a364589cf3a434177026339b1c7f05e352e9bedd03781a25",
+   "variables/proyecto/src/tema_por_proyecto.py": "430a39215c0847d94a1c77cb956ec82101e86b91f0df8b116c80f3e46c130034"
+  },
+  "python": "3.14.3",
+  "comando": "python modelo/ensemble/src/perturbar_panel.py --medir",
+  "casos": {
+   "P1": {
+    "camara_origen": "diputados",
+    "fecha": "2026-06-01",
+    "origen": "EJECUTIVO"
+   },
+   "P2": {
+    "camara_origen": "diputados",
+    "fecha": "2026-06-01",
+    "proyecto_id": "HCDN279791",
+    "origen": "EJECUTIVO"
+   },
+   "P3": {
+    "camara_origen": "senado",
+    "fecha": "2019-06-01",
+    "origen": "OPOSICION"
+   }
+  },
+  "umbral": 1e-09,
+  "p_aprobacion_base": {
+   "P1": 0.6132,
+   "P2": 0.6362,
+   "P3": 0.7497
+  },
+  "modulos_cargados": [
+   "datos/canonica/src/alias_legislador.py",
+   "datos/expedientes/src/resolver_firmantes.py",
+   "datos/padron/src/padron_vigente.py",
+   "definiciones.py",
+   "modelo/agregador_institucional/src/agregador.py",
+   "modelo/ensemble/src/beta_dictamen.py",
+   "modelo/ensemble/src/ensemble.py",
+   "modelo/ensemble/src/estimar_beta_dictamen.py",
+   "modelo/ensemble/src/nowcast_puertas.py",
+   "modelo/ensemble/src/puerta_a.py",
+   "modelo/ensemble/src/puerta_d.py",
+   "modelo/ensemble/src/sobre_tablas.py",
+   "rutas.py",
+   "variables/bloque/src/bloque.py"
+  ],
+  "n_corridas": 309,
+  "estado_de_las_puertas": {
+   "P1": {
+    "A": "sin_dato",
+    "via_B": "normal",
+    "C": "sin_dato",
+    "via_D": "normal"
+   },
+   "P2": {
+    "A": "con_caracter",
+    "via_B": "normal",
+    "C": "con_caracter",
+    "via_D": "normal"
+   },
+   "P3": {
+    "A": "sin_dato",
+    "via_B": "normal",
+    "C": "sin_dato",
+    "via_D": "normal"
+   }
+  },
+  "controles": [
+   {
+    "control": "la base de P1 reproduce panel_regresion.json campo por campo",
+    "esperado": true,
+    "observado": true,
+    "ok": true
+   },
+   {
+    "control": "modelo/ensemble/src/nowcast_puertas.py::ENV:TAU afecta",
+    "esperado": true,
+    "observado": true,
+    "ok": true
+   },
+   {
+    "control": "modelo/ensemble/src/nowcast_puertas.py::TAU_DEFAULT afecta",
+    "esperado": true,
+    "observado": true,
+    "ok": true
+   },
+   {
+    "control": "modelo/ensemble/src/nowcast_puertas.py::ENV:EPSILON0 afecta",
+    "esperado": true,
+    "observado": true,
+    "ok": true
+   },
+   {
+    "control": "modelo/ensemble/src/nowcast_puertas.py::EPSILON0_DEFAULT afecta",
+    "esperado": true,
+    "observado": true,
+    "ok": true
+   },
+   {
+    "control": "modelo/ensemble/src/nowcast_puertas.py::nowcast(n_sims) afecta",
+    "esperado": true,
+    "observado": true,
+    "ok": true
+   },
+   {
+    "control": "modelo/ensemble/src/ensemble.py::simular_con_guardas(epsilon0) afecta",
+    "esperado": false,
+    "observado": false,
+    "ok": true
+   },
+   {
+    "control": "modelo/ensemble/src/puerta_d.py::p_voto_revisora(epsilon0) afecta",
+    "esperado": false,
+    "observado": false,
+    "ok": true
+   },
+   {
+    "control": "GUARD_ERA afecta en P1",
+    "esperado": false,
+    "observado": false,
+    "ok": true
+   },
+   {
+    "control": "GUARD_ERA afecta en P2",
+    "esperado": false,
+    "observado": false,
+    "ok": true
+   },
+   {
+    "control": "GUARD_ERA afecta en P3",
+    "esperado": true,
+    "observado": true,
+    "ok": true
+   }
+  ],
+  "resumen": {
+   "afecta": 22,
+   "no_afecta": 85,
+   "sin_medir": 39
+  },
+  "limite": "`afecta = false` dice «no mueve estos 3 casos» (n_sims 2000, seed 0), no «no afecta nunca». (1) Se perturba de a UN parámetro: no se ven las interacciones (`COMBINAR_TEMAS` sólo importa con `TEMA_AUTO`; `p_voto_revisora(delta)` queda anulado mientras `factor_encogimiento` sea 0, y hoy `nowcast()` no lo pasa: el gancho de δ no está conectado). (2) El panel no ejercita el estado `sin_dictamen` de las puertas A y C (ver `estado_de_las_puertas`): lo que sólo actúa ahí, como la vía `SOBRE_TABLAS`, sale `false` sin que se haya probado. (3) Los defaults que nowcast() pisa siempre salen `false` y es correcto: están muertos. (4) `max_abs_dif` es el máximo sobre CUALQUIER campo numérico de la salida (incluye conteos de legisladores), no sólo probabilidades; `afecta_p_aprobacion` dice si movió la probabilidad final."
+ },
  "clausura": [
   "datos/canonica/src/alias_legislador.py",
   "datos/expedientes/src/actas_ley.py",
@@ -49,7 +213,10 @@
    ],
    "evaluable": true,
    "expresion": "(\"LEY\", \"MENSAJE Y PROYECTO DE LEY\", \"MENSAJE\")",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": false,
+    "motivo": "no se perturba: módulo no cargado en el panel"
+   }
   },
   {
    "id": "datos/expedientes/src/enlace_senado.py::PREFIJOS_CRUCE",
@@ -64,7 +231,10 @@
    ],
    "evaluable": true,
    "expresion": "{\"CD\"}",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": false,
+    "motivo": "no se perturba: módulo no cargado en el panel"
+   }
   },
   {
    "id": "datos/expedientes/src/resolver_firmantes.py::PARTICULAS",
@@ -90,7 +260,10 @@
    ],
    "evaluable": true,
    "expresion": "{\"DE\", \"DEL\", \"LA\", \"LAS\", \"LOS\", \"Y\", \"DA\", \"DI\", \"DOS\", \"VON\", \"VAN\", \"SAN\"}",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": null,
+    "motivo": "no perturbable: texto, fecha o contenedor (estructural)"
+   }
   },
   {
    "id": "datos/expedientes/src/resolver_firmantes.py::MESES",
@@ -117,7 +290,10 @@
    },
    "evaluable": true,
    "expresion": "{\"enero\": 1, \"febrero\": 2, \"marzo\": 3, \"abril\": 4, \"mayo\": 5, \"junio\": 6, \"julio\": 7, \"agosto\": 8, \"septiembre\": 9, \"setiembre\": 9, \"octubre\": 10, \"noviembre\": 11, \"diciembre\": 12}",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": null,
+    "motivo": "no perturbable: texto, fecha o contenedor (estructural)"
+   }
   },
   {
    "id": "datos/padron/src/padron_vigente.py::BANCAS",
@@ -133,7 +309,10 @@
    },
    "evaluable": true,
    "expresion": "{\"diputados\": 257, \"senado\": 72}",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": null,
+    "motivo": "no perturbable: texto, fecha o contenedor (estructural)"
+   }
   },
   {
    "id": "definiciones.py::BANCAS",
@@ -149,7 +328,10 @@
    },
    "evaluable": true,
    "expresion": "{\"diputados\": 257, \"senado\": 72}",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": null,
+    "motivo": "no perturbable: texto, fecha o contenedor (estructural)"
+   }
   },
   {
    "id": "definiciones.py::GOBIERNOS",
@@ -183,7 +365,10 @@
    ],
    "evaluable": true,
    "expresion": "( (\"KIRCHNER\", \"1900-01-01\", \"2015-12-10\"), # Nestor / CFK (\"MACRI\", \"2015-12-10\", \"2019-12-10\"), # Cambiemos (\"AF\", \"2019-12-10\", \"2023-12-10\"), # Frente de Todos (\"MILEI\", \"2023-12-10\", \"2100-01-01\"), # La Libertad Avanza )",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": null,
+    "motivo": "no perturbable: texto, fecha o contenedor (estructural)"
+   }
   },
   {
    "id": "definiciones.py::MAYORIAS",
@@ -202,7 +387,10 @@
    ],
    "evaluable": true,
    "expresion": "(\"SIMPLE\", \"ABSOLUTA\", \"DOS_TERCIOS\", \"DOS_TERCIOS_CUERPO\", \"TRES_CUARTOS\")",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": null,
+    "motivo": "no perturbable: texto, fecha o contenedor (estructural)"
+   }
   },
   {
    "id": "definiciones.py::CARACTERES_DICTAMEN",
@@ -220,7 +408,10 @@
    ],
    "evaluable": true,
    "expresion": "(\"DISPUTADO\", \"solo_minoria\", \"mayoria\", \"UNICO\")",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": null,
+    "motivo": "no perturbable: texto, fecha o contenedor (estructural)"
+   }
   },
   {
    "id": "evaluacion/baseline/src/baseline_voto_individual.py::VENTANA_DIAS",
@@ -233,7 +424,10 @@
    "default": 730,
    "evaluable": true,
    "expresion": "730",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": false,
+    "motivo": "no se perturba: módulo no cargado en el panel"
+   }
   },
   {
    "id": "evaluacion/baseline/src/baseline_voto_individual.py::K_SHRINK",
@@ -246,7 +440,10 @@
    "default": 5.0,
    "evaluable": true,
    "expresion": "5.0",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": false,
+    "motivo": "no se perturba: módulo no cargado en el panel"
+   }
   },
   {
    "id": "evaluacion/baseline/src/baseline_voto_individual.py::HISTORIAS",
@@ -263,7 +460,10 @@
    ],
    "evaluable": true,
    "expresion": "(\"estricta\", \"fecha\", \"dia_incluido\")",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": false,
+    "motivo": "no se perturba: módulo no cargado en el panel"
+   }
   },
   {
    "id": "evaluacion/baseline/src/baseline_voto_individual.py::HISTORIA_DEFAULT",
@@ -276,7 +476,10 @@
    "default": "estricta",
    "evaluable": true,
    "expresion": "\"estricta\"",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": false,
+    "motivo": "no se perturba: módulo no cargado en el panel"
+   }
   },
   {
    "id": "evaluacion/baseline/src/baseline_voto_individual.py::_VACIOS",
@@ -296,7 +499,10 @@
    ],
    "evaluable": true,
    "expresion": "{\"\", \"NAN\", \"NONE\", \"DESCONOCIDO\", \"SIN DATO\", \"S/D\"}",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": false,
+    "motivo": "no se perturba: módulo no cargado en el panel"
+   }
   },
   {
    "id": "evaluacion/baseline/src/baseline_voto_individual.py::perfil(n_emitidos)",
@@ -309,7 +515,10 @@
    "default": 0,
    "evaluable": true,
    "expresion": "0",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": false,
+    "motivo": "no se perturba: módulo no cargado en el panel"
+   }
   },
   {
    "id": "evaluacion/baseline/src/baseline_voto_individual.py::_calibracion(bins)",
@@ -322,7 +531,10 @@
    "default": 10,
    "evaluable": true,
    "expresion": "10",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": false,
+    "motivo": "no se perturba: módulo no cargado en el panel"
+   }
   },
   {
    "id": "evaluacion/baseline/src/baseline_voto_individual.py::_AUX_PREFIX",
@@ -335,7 +547,10 @@
    "default": "AUX",
    "evaluable": true,
    "expresion": "\"AUX\"",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": false,
+    "motivo": "no se perturba: módulo no cargado en el panel"
+   }
   },
   {
    "id": "evaluacion/baseline/src/baseline_voto_individual.py::skill_ic_por_ley(n_boot)",
@@ -348,7 +563,10 @@
    "default": 300,
    "evaluable": true,
    "expresion": "300",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": false,
+    "motivo": "no se perturba: módulo no cargado en el panel"
+   }
   },
   {
    "id": "evaluacion/baseline/src/baseline_voto_individual.py::skill_ic_por_ley(seed)",
@@ -361,7 +579,10 @@
    "default": 7,
    "evaluable": true,
    "expresion": "7",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": false,
+    "motivo": "no se perturba: módulo no cargado en el panel"
+   }
   },
   {
    "id": "evaluacion/baseline/src/baseline_voto_individual.py::dif_brier_ic_por_ley(n_boot)",
@@ -374,7 +595,10 @@
    "default": 300,
    "evaluable": true,
    "expresion": "300",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": false,
+    "motivo": "no se perturba: módulo no cargado en el panel"
+   }
   },
   {
    "id": "evaluacion/baseline/src/baseline_voto_individual.py::dif_brier_ic_por_ley(seed)",
@@ -387,7 +611,10 @@
    "default": 7,
    "evaluable": true,
    "expresion": "7",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": false,
+    "motivo": "no se perturba: módulo no cargado en el panel"
+   }
   },
   {
    "id": "evaluacion/baseline/src/baseline_voto_individual.py::ERA_LABELS",
@@ -406,7 +633,10 @@
    ],
    "evaluable": true,
    "expresion": "[\"hasta 2011\", \"2011-2015\", \"2015-2019\", \"2019-2023\", \"desde 2023\"]",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": false,
+    "motivo": "no se perturba: módulo no cargado en el panel"
+   }
   },
   {
    "id": "evaluacion/baseline/src/baseline_voto_individual.py::correr(muestra)",
@@ -419,7 +649,10 @@
    "default": 0,
    "evaluable": true,
    "expresion": "0",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": false,
+    "motivo": "no se perturba: módulo no cargado en el panel"
+   }
   },
   {
    "id": "evaluacion/baseline/src/baseline_voto_individual.py::correr(seed)",
@@ -432,7 +665,10 @@
    "default": 7,
    "evaluable": true,
    "expresion": "7",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": false,
+    "motivo": "no se perturba: módulo no cargado en el panel"
+   }
   },
   {
    "id": "evaluacion/baseline/src/censo_estadisticos.py::FORMATO",
@@ -445,7 +681,10 @@
    "default": 1,
    "evaluable": true,
    "expresion": "1",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": false,
+    "motivo": "no se perturba: módulo no cargado en el panel"
+   }
   },
   {
    "id": "evaluacion/baseline/src/censo_estadisticos.py::VARIANTES_POR_DEFECTO",
@@ -461,7 +700,10 @@
    ],
    "evaluable": true,
    "expresion": "(\"estricta__general\", \"estricta__tema\")",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": false,
+    "motivo": "no se perturba: módulo no cargado en el panel"
+   }
   },
   {
    "id": "evaluacion/baseline/src/censo_estadisticos.py::ALIAS_P",
@@ -474,7 +716,10 @@
    "default": "estricta__tema",
    "evaluable": true,
    "expresion": "\"estricta__tema\"",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": false,
+    "motivo": "no se perturba: módulo no cargado en el panel"
+   }
   },
   {
    "id": "evaluacion/baseline/src/censo_estadisticos.py::_CLIP",
@@ -487,7 +732,10 @@
    "default": 1e-09,
    "evaluable": true,
    "expresion": "1e-9",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": false,
+    "motivo": "no se perturba: módulo no cargado en el panel"
+   }
   },
   {
    "id": "evaluacion/baseline/src/censo_estadisticos.py::skill_ic_desde_sumas(n_boot)",
@@ -500,7 +748,10 @@
    "default": 300,
    "evaluable": true,
    "expresion": "300",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": false,
+    "motivo": "no se perturba: módulo no cargado en el panel"
+   }
   },
   {
    "id": "evaluacion/baseline/src/censo_estadisticos.py::skill_ic_desde_sumas(seed)",
@@ -513,7 +764,10 @@
    "default": 7,
    "evaluable": true,
    "expresion": "7",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": false,
+    "motivo": "no se perturba: módulo no cargado en el panel"
+   }
   },
   {
    "id": "evaluacion/baseline/src/censo_estadisticos.py::dif_brier_ic_desde_sumas(n_boot)",
@@ -526,7 +780,10 @@
    "default": 300,
    "evaluable": true,
    "expresion": "300",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": false,
+    "motivo": "no se perturba: módulo no cargado en el panel"
+   }
   },
   {
    "id": "evaluacion/baseline/src/censo_estadisticos.py::dif_brier_ic_desde_sumas(seed)",
@@ -539,7 +796,10 @@
    "default": 7,
    "evaluable": true,
    "expresion": "7",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": false,
+    "motivo": "no se perturba: módulo no cargado en el panel"
+   }
   },
   {
    "id": "evaluacion/baseline/src/censo_estadisticos.py::skill(n_boot)",
@@ -552,7 +812,10 @@
    "default": 300,
    "evaluable": true,
    "expresion": "300",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": false,
+    "motivo": "no se perturba: módulo no cargado en el panel"
+   }
   },
   {
    "id": "evaluacion/baseline/src/censo_estadisticos.py::skill(seed)",
@@ -565,7 +828,10 @@
    "default": 7,
    "evaluable": true,
    "expresion": "7",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": false,
+    "motivo": "no se perturba: módulo no cargado en el panel"
+   }
   },
   {
    "id": "evaluacion/baseline/src/censo_estadisticos.py::dif_brier(n_boot)",
@@ -578,7 +844,10 @@
    "default": 300,
    "evaluable": true,
    "expresion": "300",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": false,
+    "motivo": "no se perturba: módulo no cargado en el panel"
+   }
   },
   {
    "id": "evaluacion/baseline/src/censo_estadisticos.py::dif_brier(seed)",
@@ -591,7 +860,10 @@
    "default": 7,
    "evaluable": true,
    "expresion": "7",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": false,
+    "motivo": "no se perturba: módulo no cargado en el panel"
+   }
   },
   {
    "id": "modelo/agregador_institucional/src/agregador.py::CONDUCTAS",
@@ -608,7 +880,10 @@
    ],
    "evaluable": true,
    "expresion": "(\"AFIRMATIVO\", \"NEGATIVO\", \"NO_ACOMPANA\")",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": null,
+    "motivo": "no perturbable: texto, fecha o contenedor (estructural)"
+   }
   },
   {
    "id": "modelo/agregador_institucional/src/agregador.py::ENV:QUORUM_ABSTENCIONES",
@@ -621,7 +896,40 @@
    "default": false,
    "evaluable": true,
    "expresion": "os.environ.get(\"QUORUM_ABSTENCIONES\") == \"1\"",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": false,
+    "afecta_p_aprobacion": false,
+    "max_abs_dif": 0.0,
+    "alternativas": [
+     true
+    ],
+    "por_caso": {
+     "P1": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P2": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P3": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     }
+    }
+   }
   },
   {
    "id": "modelo/agregador_institucional/src/agregador.py::SUST",
@@ -637,7 +945,10 @@
    ],
    "evaluable": true,
    "expresion": "(\"AFIRMATIVO\", \"NEGATIVO\")",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": null,
+    "motivo": "no perturbable: texto, fecha o contenedor (estructural)"
+   }
   },
   {
    "id": "modelo/agregador_institucional/src/agregador.py::_prob_conductas(reparto_desvio)",
@@ -650,7 +961,41 @@
    "default": 0.5,
    "evaluable": true,
    "expresion": "0.5",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": false,
+    "afecta_p_aprobacion": false,
+    "max_abs_dif": 0.0,
+    "alternativas": [
+     1.0,
+     0.25
+    ],
+    "por_caso": {
+     "P1": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P2": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P3": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     }
+    }
+   }
   },
   {
    "id": "modelo/agregador_institucional/src/agregador.py::simular_votacion(epsilon0)",
@@ -663,7 +1008,40 @@
    "default": 0.0,
    "evaluable": true,
    "expresion": "0.0",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": false,
+    "afecta_p_aprobacion": false,
+    "max_abs_dif": 0.0,
+    "alternativas": [
+     0.1
+    ],
+    "por_caso": {
+     "P1": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P2": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P3": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     }
+    }
+   }
   },
   {
    "id": "modelo/agregador_institucional/src/agregador.py::simular_votacion(n_sims)",
@@ -676,7 +1054,41 @@
    "default": 400,
    "evaluable": true,
    "expresion": "400",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": false,
+    "afecta_p_aprobacion": false,
+    "max_abs_dif": 0.0,
+    "alternativas": [
+     800,
+     200
+    ],
+    "por_caso": {
+     "P1": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P2": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P3": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     }
+    }
+   }
   },
   {
    "id": "modelo/agregador_institucional/src/agregador.py::simular_votacion(reparto_desvio)",
@@ -689,7 +1101,41 @@
    "default": 0.5,
    "evaluable": true,
    "expresion": "0.5",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": false,
+    "afecta_p_aprobacion": false,
+    "max_abs_dif": 0.0,
+    "alternativas": [
+     1.0,
+     0.25
+    ],
+    "por_caso": {
+     "P1": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P2": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P3": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     }
+    }
+   }
   },
   {
    "id": "modelo/agregador_institucional/src/agregador.py::simular_votacion(seed)",
@@ -702,7 +1148,40 @@
    "default": 0,
    "evaluable": true,
    "expresion": "0",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": false,
+    "afecta_p_aprobacion": false,
+    "max_abs_dif": 0.0,
+    "alternativas": [
+     1
+    ],
+    "por_caso": {
+     "P1": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P2": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P3": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     }
+    }
+   }
   },
   {
    "id": "modelo/agregador_institucional/src/agregador.py::simular_votacion(tau)",
@@ -715,7 +1194,40 @@
    "default": 0.0,
    "evaluable": true,
    "expresion": "0.0",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": false,
+    "afecta_p_aprobacion": false,
+    "max_abs_dif": 0.0,
+    "alternativas": [
+     0.1
+    ],
+    "por_caso": {
+     "P1": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P2": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P3": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     }
+    }
+   }
   },
   {
    "id": "modelo/agregador_institucional/src/agregador.py::backtest(epsilon0)",
@@ -728,7 +1240,40 @@
    "default": 0.0,
    "evaluable": true,
    "expresion": "0.0",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": false,
+    "afecta_p_aprobacion": false,
+    "max_abs_dif": 0.0,
+    "alternativas": [
+     0.1
+    ],
+    "por_caso": {
+     "P1": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P2": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P3": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     }
+    }
+   }
   },
   {
    "id": "modelo/agregador_institucional/src/agregador.py::backtest(reparto_desvio)",
@@ -741,7 +1286,41 @@
    "default": 0.5,
    "evaluable": true,
    "expresion": "0.5",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": false,
+    "afecta_p_aprobacion": false,
+    "max_abs_dif": 0.0,
+    "alternativas": [
+     1.0,
+     0.25
+    ],
+    "por_caso": {
+     "P1": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P2": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P3": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     }
+    }
+   }
   },
   {
    "id": "modelo/agregador_institucional/src/agregador.py::backtest(seed)",
@@ -754,7 +1333,40 @@
    "default": 0,
    "evaluable": true,
    "expresion": "0",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": false,
+    "afecta_p_aprobacion": false,
+    "max_abs_dif": 0.0,
+    "alternativas": [
+     1
+    ],
+    "por_caso": {
+     "P1": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P2": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P3": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     }
+    }
+   }
   },
   {
    "id": "modelo/agregador_institucional/src/agregador.py::backtest(tau)",
@@ -767,7 +1379,40 @@
    "default": 0.0,
    "evaluable": true,
    "expresion": "0.0",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": false,
+    "afecta_p_aprobacion": false,
+    "max_abs_dif": 0.0,
+    "alternativas": [
+     0.1
+    ],
+    "por_caso": {
+     "P1": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P2": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P3": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     }
+    }
+   }
   },
   {
    "id": "modelo/agregador_institucional/src/agregador.py::ENV:CANON",
@@ -780,7 +1425,10 @@
    "default": null,
    "evaluable": false,
    "expresion": "os.environ.get(\"CANON\", root / \"datos\" / \"canonica\" / \"data\" / \"clean\")",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": null,
+    "motivo": "no perturbable: sin default evaluable (una ruta, una clave o no hay default)"
+   }
   },
   {
    "id": "modelo/agregador_institucional/src/agregador.py::ENV:DISC",
@@ -793,7 +1441,10 @@
    "default": null,
    "evaluable": false,
    "expresion": "os.environ.get(\"DISC\", root / \"modelo\" / \"voto_individual\" / \"outputs\")",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": null,
+    "motivo": "no perturbable: sin default evaluable (una ruta, una clave o no hay default)"
+   }
   },
   {
    "id": "modelo/agregador_institucional/src/agregador.py::ENV:OUT",
@@ -806,7 +1457,10 @@
    "default": null,
    "evaluable": false,
    "expresion": "os.environ.get(\"OUT\", here.parents[1] / \"outputs\")",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": null,
+    "motivo": "no perturbable: sin default evaluable (una ruta, una clave o no hay default)"
+   }
   },
   {
    "id": "modelo/agregador_institucional/src/agregador.py::ENV:N_SIMS",
@@ -819,7 +1473,10 @@
    "default": "400",
    "evaluable": true,
    "expresion": "os.environ.get(\"N_SIMS\", \"400\")",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": null,
+    "motivo": "no perturbable: texto"
+   }
   },
   {
    "id": "modelo/agregador_institucional/src/agregador.py::ENV:ASIST",
@@ -832,7 +1489,10 @@
    "default": null,
    "evaluable": true,
    "expresion": "os.environ.get(\"ASIST\")",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": null,
+    "motivo": "no perturbable: sin default evaluable (una ruta, una clave o no hay default)"
+   }
   },
   {
    "id": "modelo/agregador_institucional/src/agregador.py::ENV:MAX_ACTAS",
@@ -845,7 +1505,10 @@
    "default": null,
    "evaluable": true,
    "expresion": "os.environ[\"MAX_ACTAS\"]",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": null,
+    "motivo": "no perturbable: sin default evaluable (una ruta, una clave o no hay default)"
+   }
   },
   {
    "id": "modelo/agregador_institucional/src/agregador.py::ENV:MAX_ACTAS#2",
@@ -858,7 +1521,10 @@
    "default": null,
    "evaluable": true,
    "expresion": "os.environ.get(\"MAX_ACTAS\")",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": null,
+    "motivo": "no perturbable: sin default evaluable (una ruta, una clave o no hay default)"
+   }
   },
   {
    "id": "modelo/agregador_institucional/src/agregador.py::ENV:SIN_RUIDO",
@@ -871,7 +1537,10 @@
    "default": null,
    "evaluable": true,
    "expresion": "os.environ.get(\"SIN_RUIDO\")",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": null,
+    "motivo": "no perturbable: sin default evaluable (una ruta, una clave o no hay default)"
+   }
   },
   {
    "id": "modelo/agregador_institucional/src/agregador.py::ENV:EPSILON0",
@@ -884,7 +1553,10 @@
    "default": "0",
    "evaluable": true,
    "expresion": "os.environ.get(\"EPSILON0\", \"0\")",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": null,
+    "motivo": "no perturbable: texto"
+   }
   },
   {
    "id": "modelo/agregador_institucional/src/agregador.py::ENV:TAU",
@@ -897,7 +1569,10 @@
    "default": "0",
    "evaluable": true,
    "expresion": "os.environ.get(\"TAU\", \"0\")",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": null,
+    "motivo": "no perturbable: texto"
+   }
   },
   {
    "id": "modelo/ensemble/src/beta_dictamen.py::ENV:BETA_DICTAMEN",
@@ -910,7 +1585,40 @@
    "default": true,
    "evaluable": true,
    "expresion": "os.environ.get(\"BETA_DICTAMEN\", \"1\") != \"0\"",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": true,
+    "afecta_p_aprobacion": true,
+    "max_abs_dif": 3,
+    "alternativas": [
+     false
+    ],
+    "por_caso": {
+     "P1": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P2": {
+      "afecta": true,
+      "max_abs_dif": 3,
+      "alt_que_mueve": false,
+      "no_numericos": 42,
+      "estructura": 12,
+      "error": null
+     },
+     "P3": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     }
+    }
+   }
   },
   {
    "id": "modelo/ensemble/src/beta_dictamen.py::TERMINOS",
@@ -926,7 +1634,10 @@
    ],
    "evaluable": true,
    "expresion": "(\"F_i\", \"lealtad_x_jefe\")",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": null,
+    "motivo": "no perturbable: texto, fecha o contenedor (estructural)"
+   }
   },
   {
    "id": "modelo/ensemble/src/ensemble.py::CONDUCTAS",
@@ -943,7 +1654,10 @@
    ],
    "evaluable": true,
    "expresion": "{\"AFIRMATIVO\", \"NEGATIVO\", \"NO_ACOMPANA\"}",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": null,
+    "motivo": "no perturbable: texto, fecha o contenedor (estructural)"
+   }
   },
   {
    "id": "modelo/ensemble/src/ensemble.py::ENV:MIN_VOTOS_FICHA",
@@ -956,7 +1670,41 @@
    "default": 20,
    "evaluable": true,
    "expresion": "int(os.environ.get(\"MIN_VOTOS_FICHA\", \"20\"))",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": true,
+    "afecta_p_aprobacion": false,
+    "max_abs_dif": 0.1711,
+    "alternativas": [
+     40,
+     10
+    ],
+    "por_caso": {
+     "P1": {
+      "afecta": true,
+      "max_abs_dif": 0.0215,
+      "alt_que_mueve": 10,
+      "no_numericos": 2,
+      "estructura": 0,
+      "error": null
+     },
+     "P2": {
+      "afecta": true,
+      "max_abs_dif": 0.0215,
+      "alt_que_mueve": 10,
+      "no_numericos": 2,
+      "estructura": 0,
+      "error": null
+     },
+     "P3": {
+      "afecta": true,
+      "max_abs_dif": 0.1711,
+      "alt_que_mueve": 10,
+      "no_numericos": 19,
+      "estructura": 0,
+      "error": null
+     }
+    }
+   }
   },
   {
    "id": "modelo/ensemble/src/ensemble.py::DESVIO_NEUTRO",
@@ -969,7 +1717,41 @@
    "default": 0.15,
    "evaluable": true,
    "expresion": "0.15",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": false,
+    "afecta_p_aprobacion": false,
+    "max_abs_dif": 0.0,
+    "alternativas": [
+     0.3,
+     0.075
+    ],
+    "por_caso": {
+     "P1": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P2": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P3": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     }
+    }
+   }
   },
   {
    "id": "modelo/ensemble/src/ensemble.py::ENV:PADRON_DIR",
@@ -982,7 +1764,10 @@
    "default": null,
    "evaluable": false,
    "expresion": "os.environ.get( \"PADRON_DIR\", _root() / \"datos\" / \"padron\" / \"data\")",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": null,
+    "motivo": "no perturbable: sin default evaluable (una ruta, una clave o no hay default)"
+   }
   },
   {
    "id": "modelo/ensemble/src/ensemble.py::ENV:DISCIPLINA",
@@ -995,7 +1780,10 @@
    "default": null,
    "evaluable": false,
    "expresion": "os.environ.get( \"DISCIPLINA\", _root() / \"modelo\" / \"voto_individual\" / \"outputs\" / \"disciplina_individual.csv\")",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": null,
+    "motivo": "no perturbable: sin default evaluable (una ruta, una clave o no hay default)"
+   }
   },
   {
    "id": "modelo/ensemble/src/ensemble.py::ENV:EXPEDIENTES",
@@ -1008,7 +1796,10 @@
    "default": null,
    "evaluable": false,
    "expresion": "os.environ.get( \"EXPEDIENTES\", _root() / \"datos\" / \"expedientes\" / \"data\" / \"clean\" / \"expedientes.parquet\")",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": null,
+    "motivo": "no perturbable: sin default evaluable (una ruta, una clave o no hay default)"
+   }
   },
   {
    "id": "modelo/ensemble/src/ensemble.py::DESVIO_MIN_INDIVIDUAL",
@@ -1021,7 +1812,41 @@
    "default": 0.02,
    "evaluable": true,
    "expresion": "0.02",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": true,
+    "afecta_p_aprobacion": true,
+    "max_abs_dif": 8.0,
+    "alternativas": [
+     0.04,
+     0.01
+    ],
+    "por_caso": {
+     "P1": {
+      "afecta": true,
+      "max_abs_dif": 8.0,
+      "alt_que_mueve": 0.04,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P2": {
+      "afecta": true,
+      "max_abs_dif": 8.0,
+      "alt_que_mueve": 0.04,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P3": {
+      "afecta": true,
+      "max_abs_dif": 0.39999999999997726,
+      "alt_que_mueve": 0.04,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     }
+    }
+   }
   },
   {
    "id": "modelo/ensemble/src/ensemble.py::P_INCERTIDUMBRE",
@@ -1034,7 +1859,41 @@
    "default": 0.01,
    "evaluable": true,
    "expresion": "0.01",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": false,
+    "afecta_p_aprobacion": false,
+    "max_abs_dif": 0.0,
+    "alternativas": [
+     0.02,
+     0.005
+    ],
+    "por_caso": {
+     "P1": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P2": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P3": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     }
+    }
+   }
   },
   {
    "id": "modelo/ensemble/src/ensemble.py::simular_con_guardas(epsilon0)",
@@ -1047,7 +1906,40 @@
    "default": 0.0,
    "evaluable": true,
    "expresion": "0.0",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": false,
+    "afecta_p_aprobacion": false,
+    "max_abs_dif": 0.0,
+    "alternativas": [
+     0.1
+    ],
+    "por_caso": {
+     "P1": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P2": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P3": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     }
+    }
+   }
   },
   {
    "id": "modelo/ensemble/src/ensemble.py::simular_con_guardas(n_sims)",
@@ -1060,7 +1952,41 @@
    "default": 2000,
    "evaluable": true,
    "expresion": "2000",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": false,
+    "afecta_p_aprobacion": false,
+    "max_abs_dif": 0.0,
+    "alternativas": [
+     4000,
+     1000
+    ],
+    "por_caso": {
+     "P1": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P2": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P3": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     }
+    }
+   }
   },
   {
    "id": "modelo/ensemble/src/ensemble.py::simular_con_guardas(reparto_desvio)",
@@ -1073,7 +1999,41 @@
    "default": 0.5,
    "evaluable": true,
    "expresion": "0.5",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": false,
+    "afecta_p_aprobacion": false,
+    "max_abs_dif": 0.0,
+    "alternativas": [
+     1.0,
+     0.25
+    ],
+    "por_caso": {
+     "P1": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P2": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P3": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     }
+    }
+   }
   },
   {
    "id": "modelo/ensemble/src/ensemble.py::simular_con_guardas(seed)",
@@ -1086,7 +2046,40 @@
    "default": 0,
    "evaluable": true,
    "expresion": "0",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": false,
+    "afecta_p_aprobacion": false,
+    "max_abs_dif": 0.0,
+    "alternativas": [
+     1
+    ],
+    "por_caso": {
+     "P1": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P2": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P3": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     }
+    }
+   }
   },
   {
    "id": "modelo/ensemble/src/ensemble.py::simular_con_guardas(tau)",
@@ -1099,7 +2092,40 @@
    "default": 0.0,
    "evaluable": true,
    "expresion": "0.0",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": false,
+    "afecta_p_aprobacion": false,
+    "max_abs_dif": 0.0,
+    "alternativas": [
+     0.1
+    ],
+    "por_caso": {
+     "P1": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P2": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P3": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     }
+    }
+   }
   },
   {
    "id": "modelo/ensemble/src/estimar_beta_dictamen.py::MIN_HIST_INDIVIDUAL",
@@ -1112,7 +2138,41 @@
    "default": 8,
    "evaluable": true,
    "expresion": "8",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": false,
+    "afecta_p_aprobacion": false,
+    "max_abs_dif": 0.0,
+    "alternativas": [
+     16,
+     4
+    ],
+    "por_caso": {
+     "P1": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P2": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P3": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     }
+    }
+   }
   },
   {
    "id": "modelo/ensemble/src/estimar_beta_dictamen.py::MIN_CLUSTERS_CONFIABLE",
@@ -1125,7 +2185,41 @@
    "default": 20,
    "evaluable": true,
    "expresion": "20",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": false,
+    "afecta_p_aprobacion": false,
+    "max_abs_dif": 0.0,
+    "alternativas": [
+     40,
+     10
+    ],
+    "por_caso": {
+     "P1": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P2": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P3": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     }
+    }
+   }
   },
   {
    "id": "modelo/ensemble/src/estimar_beta_dictamen.py::VENTANA_DIAS",
@@ -1138,7 +2232,41 @@
    "default": 730,
    "evaluable": true,
    "expresion": "730",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": false,
+    "afecta_p_aprobacion": false,
+    "max_abs_dif": 0.0,
+    "alternativas": [
+     1460,
+     365
+    ],
+    "por_caso": {
+     "P1": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P2": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P3": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     }
+    }
+   }
   },
   {
    "id": "modelo/ensemble/src/estimar_beta_dictamen.py::K_SHRINK",
@@ -1151,7 +2279,41 @@
    "default": 5.0,
    "evaluable": true,
    "expresion": "5.0",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": false,
+    "afecta_p_aprobacion": false,
+    "max_abs_dif": 0.0,
+    "alternativas": [
+     10.0,
+     2.5
+    ],
+    "por_caso": {
+     "P1": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P2": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P3": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     }
+    }
+   }
   },
   {
    "id": "modelo/ensemble/src/estimar_beta_dictamen.py::BANCAS",
@@ -1167,7 +2329,10 @@
    },
    "evaluable": true,
    "expresion": "{\"diputados\": 257, \"senado\": 72}",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": null,
+    "motivo": "no perturbable: texto, fecha o contenedor (estructural)"
+   }
   },
   {
    "id": "modelo/ensemble/src/estimar_beta_dictamen.py::_logit(eps)",
@@ -1180,7 +2345,41 @@
    "default": 0.0001,
    "evaluable": true,
    "expresion": "1e-4",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": false,
+    "afecta_p_aprobacion": false,
+    "max_abs_dif": 0.0,
+    "alternativas": [
+     0.0002,
+     5e-05
+    ],
+    "por_caso": {
+     "P1": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P2": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P3": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     }
+    }
+   }
   },
   {
    "id": "modelo/ensemble/src/estimar_beta_dictamen.py::construir_panel(muestra)",
@@ -1193,7 +2392,40 @@
    "default": 0,
    "evaluable": true,
    "expresion": "0",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": false,
+    "afecta_p_aprobacion": false,
+    "max_abs_dif": 0.0,
+    "alternativas": [
+     1
+    ],
+    "por_caso": {
+     "P1": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P2": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P3": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     }
+    }
+   }
   },
   {
    "id": "modelo/ensemble/src/estimar_beta_dictamen.py::construir_panel(seed)",
@@ -1206,7 +2438,41 @@
    "default": 7,
    "evaluable": true,
    "expresion": "7",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": false,
+    "afecta_p_aprobacion": false,
+    "max_abs_dif": 0.0,
+    "alternativas": [
+     14,
+     3
+    ],
+    "por_caso": {
+     "P1": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P2": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P3": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     }
+    }
+   }
   },
   {
    "id": "modelo/ensemble/src/nowcast_puertas.py::MAYORIAS_CON_NUMERO",
@@ -1221,7 +2487,10 @@
    ],
    "evaluable": true,
    "expresion": "(\"SIMPLE\",)",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": null,
+    "motivo": "no perturbable: texto, fecha o contenedor (estructural)"
+   }
   },
   {
    "id": "modelo/ensemble/src/nowcast_puertas.py::DESVIO_BISAGRA",
@@ -1234,7 +2503,41 @@
    "default": 0.2,
    "evaluable": true,
    "expresion": "0.20",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": true,
+    "afecta_p_aprobacion": false,
+    "max_abs_dif": 0.2,
+    "alternativas": [
+     0.4,
+     0.1
+    ],
+    "por_caso": {
+     "P1": {
+      "afecta": true,
+      "max_abs_dif": 0.2,
+      "alt_que_mueve": 0.4,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P2": {
+      "afecta": true,
+      "max_abs_dif": 0.2,
+      "alt_que_mueve": 0.4,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P3": {
+      "afecta": true,
+      "max_abs_dif": 0.2,
+      "alt_que_mueve": 0.4,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     }
+    }
+   }
   },
   {
    "id": "modelo/ensemble/src/nowcast_puertas.py::INCERTIDUMBRE_INCOGNITA",
@@ -1247,7 +2550,41 @@
    "default": 0.35,
    "evaluable": true,
    "expresion": "0.35",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": true,
+    "afecta_p_aprobacion": false,
+    "max_abs_dif": 163,
+    "alternativas": [
+     0.7,
+     0.175
+    ],
+    "por_caso": {
+     "P1": {
+      "afecta": true,
+      "max_abs_dif": 36,
+      "alt_que_mueve": 0.175,
+      "no_numericos": 62,
+      "estructura": 108,
+      "error": null
+     },
+     "P2": {
+      "afecta": true,
+      "max_abs_dif": 36,
+      "alt_que_mueve": 0.175,
+      "no_numericos": 63,
+      "estructura": 108,
+      "error": null
+     },
+     "P3": {
+      "afecta": true,
+      "max_abs_dif": 163,
+      "alt_que_mueve": 0.7,
+      "no_numericos": 225,
+      "estructura": 0,
+      "error": null
+     }
+    }
+   }
   },
   {
    "id": "modelo/ensemble/src/nowcast_puertas.py::PRESENCIA_MINIMA",
@@ -1260,7 +2597,41 @@
    "default": 0.15,
    "evaluable": true,
    "expresion": "0.15",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": true,
+    "afecta_p_aprobacion": false,
+    "max_abs_dif": 4,
+    "alternativas": [
+     0.3,
+     0.075
+    ],
+    "por_caso": {
+     "P1": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P2": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P3": {
+      "afecta": true,
+      "max_abs_dif": 4,
+      "alt_que_mueve": 0.3,
+      "no_numericos": 4,
+      "estructura": 0,
+      "error": null
+     }
+    }
+   }
   },
   {
    "id": "modelo/ensemble/src/nowcast_puertas.py::REPARTO_DESVIO",
@@ -1273,7 +2644,40 @@
    "default": 1.0,
    "evaluable": true,
    "expresion": "1.0",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": true,
+    "afecta_p_aprobacion": true,
+    "max_abs_dif": 15.400000000000006,
+    "alternativas": [
+     0.5
+    ],
+    "por_caso": {
+     "P1": {
+      "afecta": true,
+      "max_abs_dif": 14.0,
+      "alt_que_mueve": 0.5,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P2": {
+      "afecta": true,
+      "max_abs_dif": 14.0,
+      "alt_que_mueve": 0.5,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P3": {
+      "afecta": true,
+      "max_abs_dif": 15.400000000000006,
+      "alt_que_mueve": 0.5,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     }
+    }
+   }
   },
   {
    "id": "modelo/ensemble/src/nowcast_puertas.py::MIN_HIST_INDIVIDUAL",
@@ -1286,7 +2690,41 @@
    "default": 1,
    "evaluable": true,
    "expresion": "1",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": true,
+    "afecta_p_aprobacion": false,
+    "max_abs_dif": 0.0857,
+    "alternativas": [
+     2,
+     0
+    ],
+    "por_caso": {
+     "P1": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P2": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P3": {
+      "afecta": true,
+      "max_abs_dif": 0.0857,
+      "alt_que_mueve": 2,
+      "no_numericos": 1,
+      "estructura": 0,
+      "error": null
+     }
+    }
+   }
   },
   {
    "id": "modelo/ensemble/src/nowcast_puertas.py::MIN_HIST_ANTERIOR",
@@ -1299,7 +2737,41 @@
    "default": 8,
    "evaluable": true,
    "expresion": "8",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": false,
+    "afecta_p_aprobacion": false,
+    "max_abs_dif": 0.0,
+    "alternativas": [
+     16,
+     4
+    ],
+    "por_caso": {
+     "P1": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P2": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P3": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     }
+    }
+   }
   },
   {
    "id": "modelo/ensemble/src/nowcast_puertas.py::ENV:GUARD_ERA",
@@ -1312,7 +2784,40 @@
    "default": true,
    "evaluable": true,
    "expresion": "os.environ.get(\"GUARD_ERA\", \"1\") != \"0\"",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": true,
+    "afecta_p_aprobacion": true,
+    "max_abs_dif": 221,
+    "alternativas": [
+     false
+    ],
+    "por_caso": {
+     "P1": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P2": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P3": {
+      "afecta": true,
+      "max_abs_dif": 221,
+      "alt_que_mueve": false,
+      "no_numericos": 825,
+      "estructura": 60,
+      "error": null
+     }
+    }
+   }
   },
   {
    "id": "modelo/ensemble/src/nowcast_puertas.py::ERA_FIJA",
@@ -1325,7 +2830,10 @@
    "default": "2023-12-10",
    "evaluable": true,
    "expresion": "\"2023-12-10\"",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": null,
+    "motivo": "no perturbable: texto, fecha o contenedor (estructural)"
+   }
   },
   {
    "id": "modelo/ensemble/src/nowcast_puertas.py::K_SHRINK_RECORD",
@@ -1338,7 +2846,41 @@
    "default": 5.0,
    "evaluable": true,
    "expresion": "5.0",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": true,
+    "afecta_p_aprobacion": true,
+    "max_abs_dif": 2,
+    "alternativas": [
+     10.0,
+     2.5
+    ],
+    "por_caso": {
+     "P1": {
+      "afecta": true,
+      "max_abs_dif": 1.0,
+      "alt_que_mueve": 10.0,
+      "no_numericos": 21,
+      "estructura": 0,
+      "error": null
+     },
+     "P2": {
+      "afecta": true,
+      "max_abs_dif": 1.0,
+      "alt_que_mueve": 10.0,
+      "no_numericos": 33,
+      "estructura": 0,
+      "error": null
+     },
+     "P3": {
+      "afecta": true,
+      "max_abs_dif": 2,
+      "alt_que_mueve": 2.5,
+      "no_numericos": 61,
+      "estructura": 0,
+      "error": null
+     }
+    }
+   }
   },
   {
    "id": "modelo/ensemble/src/nowcast_puertas.py::ENV:SHRINK_RECORD",
@@ -1351,7 +2893,40 @@
    "default": true,
    "evaluable": true,
    "expresion": "os.environ.get(\"SHRINK_RECORD\", \"1\") != \"0\"",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": true,
+    "afecta_p_aprobacion": true,
+    "max_abs_dif": 2,
+    "alternativas": [
+     false
+    ],
+    "por_caso": {
+     "P1": {
+      "afecta": true,
+      "max_abs_dif": 0.6000000000000227,
+      "alt_que_mueve": false,
+      "no_numericos": 334,
+      "estructura": 0,
+      "error": null
+     },
+     "P2": {
+      "afecta": true,
+      "max_abs_dif": 1.0,
+      "alt_que_mueve": false,
+      "no_numericos": 340,
+      "estructura": 0,
+      "error": null
+     },
+     "P3": {
+      "afecta": true,
+      "max_abs_dif": 2,
+      "alt_que_mueve": false,
+      "no_numericos": 378,
+      "estructura": 0,
+      "error": null
+     }
+    }
+   }
   },
   {
    "id": "modelo/ensemble/src/nowcast_puertas.py::ENV:TEMA_AUTO",
@@ -1364,7 +2939,40 @@
    "default": false,
    "evaluable": true,
    "expresion": "os.environ.get(\"TEMA_AUTO\", \"0\") != \"0\"",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": true,
+    "afecta_p_aprobacion": true,
+    "max_abs_dif": 3,
+    "alternativas": [
+     true
+    ],
+    "por_caso": {
+     "P1": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P2": {
+      "afecta": true,
+      "max_abs_dif": 3,
+      "alt_que_mueve": true,
+      "no_numericos": 45,
+      "estructura": 24,
+      "error": null
+     },
+     "P3": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     }
+    }
+   }
   },
   {
    "id": "modelo/ensemble/src/nowcast_puertas.py::ENV:COMBINAR_TEMAS",
@@ -1377,7 +2985,40 @@
    "default": "primaria",
    "evaluable": true,
    "expresion": "os.environ.get(\"COMBINAR_TEMAS\", \"primaria\")",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": false,
+    "afecta_p_aprobacion": false,
+    "max_abs_dif": 0.0,
+    "alternativas": [
+     "union"
+    ],
+    "por_caso": {
+     "P1": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P2": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P3": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     }
+    }
+   }
   },
   {
    "id": "modelo/ensemble/src/nowcast_puertas.py::EPSILON0_DEFAULT",
@@ -1390,7 +3031,41 @@
    "default": 0.035,
    "evaluable": true,
    "expresion": "0.035",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": true,
+    "afecta_p_aprobacion": true,
+    "max_abs_dif": 15.0,
+    "alternativas": [
+     0.07,
+     0.0175
+    ],
+    "por_caso": {
+     "P1": {
+      "afecta": true,
+      "max_abs_dif": 15.0,
+      "alt_que_mueve": 0.07,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P2": {
+      "afecta": true,
+      "max_abs_dif": 14.0,
+      "alt_que_mueve": 0.07,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P3": {
+      "afecta": true,
+      "max_abs_dif": 6.0,
+      "alt_que_mueve": 0.07,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     }
+    }
+   }
   },
   {
    "id": "modelo/ensemble/src/nowcast_puertas.py::TAU_DEFAULT",
@@ -1403,7 +3078,41 @@
    "default": 1.19,
    "evaluable": true,
    "expresion": "1.19",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": true,
+    "afecta_p_aprobacion": true,
+    "max_abs_dif": 63.0,
+    "alternativas": [
+     2.38,
+     0.595
+    ],
+    "por_caso": {
+     "P1": {
+      "afecta": true,
+      "max_abs_dif": 62.0,
+      "alt_que_mueve": 2.38,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P2": {
+      "afecta": true,
+      "max_abs_dif": 63.0,
+      "alt_que_mueve": 2.38,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P3": {
+      "afecta": true,
+      "max_abs_dif": 51.0,
+      "alt_que_mueve": 2.38,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     }
+    }
+   }
   },
   {
    "id": "modelo/ensemble/src/nowcast_puertas.py::ENV:INCERTIDUMBRE_LEGISLADOR",
@@ -1416,7 +3125,40 @@
    "default": true,
    "evaluable": true,
    "expresion": "os.environ.get(\"INCERTIDUMBRE_LEGISLADOR\", \"1\") != \"0\"",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": true,
+    "afecta_p_aprobacion": true,
+    "max_abs_dif": 70.0,
+    "alternativas": [
+     false
+    ],
+    "por_caso": {
+     "P1": {
+      "afecta": true,
+      "max_abs_dif": 48.0,
+      "alt_que_mueve": false,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P2": {
+      "afecta": true,
+      "max_abs_dif": 48.0,
+      "alt_que_mueve": false,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P3": {
+      "afecta": true,
+      "max_abs_dif": 70.0,
+      "alt_que_mueve": false,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     }
+    }
+   }
   },
   {
    "id": "modelo/ensemble/src/nowcast_puertas.py::ENV:EPSILON0",
@@ -1429,7 +3171,41 @@
    "default": 0.035,
    "evaluable": true,
    "expresion": "float(os.environ.get(\"EPSILON0\", EPSILON0_DEFAULT))",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": true,
+    "afecta_p_aprobacion": true,
+    "max_abs_dif": 15.0,
+    "alternativas": [
+     0.07,
+     0.0175
+    ],
+    "por_caso": {
+     "P1": {
+      "afecta": true,
+      "max_abs_dif": 15.0,
+      "alt_que_mueve": 0.07,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P2": {
+      "afecta": true,
+      "max_abs_dif": 14.0,
+      "alt_que_mueve": 0.07,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P3": {
+      "afecta": true,
+      "max_abs_dif": 6.0,
+      "alt_que_mueve": 0.07,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     }
+    }
+   }
   },
   {
    "id": "modelo/ensemble/src/nowcast_puertas.py::ENV:TAU",
@@ -1442,7 +3218,41 @@
    "default": 1.19,
    "evaluable": true,
    "expresion": "float(os.environ.get(\"TAU\", TAU_DEFAULT))",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": true,
+    "afecta_p_aprobacion": true,
+    "max_abs_dif": 63.0,
+    "alternativas": [
+     2.38,
+     0.595
+    ],
+    "por_caso": {
+     "P1": {
+      "afecta": true,
+      "max_abs_dif": 62.0,
+      "alt_que_mueve": 2.38,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P2": {
+      "afecta": true,
+      "max_abs_dif": 63.0,
+      "alt_que_mueve": 2.38,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P3": {
+      "afecta": true,
+      "max_abs_dif": 51.0,
+      "alt_que_mueve": 2.38,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     }
+    }
+   }
   },
   {
    "id": "modelo/ensemble/src/nowcast_puertas.py::ENV:RECORD_POR_TEMA",
@@ -1455,7 +3265,40 @@
    "default": false,
    "evaluable": true,
    "expresion": "os.environ.get(\"RECORD_POR_TEMA\", \"0\") != \"0\"",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": true,
+    "afecta_p_aprobacion": true,
+    "max_abs_dif": 18,
+    "alternativas": [
+     true
+    ],
+    "por_caso": {
+     "P1": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P2": {
+      "afecta": true,
+      "max_abs_dif": 18,
+      "alt_que_mueve": true,
+      "no_numericos": 58,
+      "estructura": 131,
+      "error": null
+     },
+     "P3": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     }
+    }
+   }
   },
   {
    "id": "modelo/ensemble/src/nowcast_puertas.py::_AUX_PREFIX_RECORD",
@@ -1468,7 +3311,10 @@
    "default": "AUX",
    "evaluable": true,
    "expresion": "\"AUX\"",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": null,
+    "motivo": "no perturbable: texto, fecha o contenedor (estructural)"
+   }
   },
   {
    "id": "modelo/ensemble/src/nowcast_puertas.py::alineacion_individual_por_area._salir(n_real)",
@@ -1481,7 +3327,40 @@
    "default": 0,
    "evaluable": true,
    "expresion": "0",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": false,
+    "afecta_p_aprobacion": false,
+    "max_abs_dif": 0.0,
+    "alternativas": [
+     1
+    ],
+    "por_caso": {
+     "P1": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P2": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P3": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     }
+    }
+   }
   },
   {
    "id": "modelo/ensemble/src/nowcast_puertas.py::perfil_legislador(n_emitidos)",
@@ -1494,7 +3373,40 @@
    "default": 0,
    "evaluable": true,
    "expresion": "0",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": false,
+    "afecta_p_aprobacion": false,
+    "max_abs_dif": 0.0,
+    "alternativas": [
+     1
+    ],
+    "por_caso": {
+     "P1": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P2": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P3": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     }
+    }
+   }
   },
   {
    "id": "modelo/ensemble/src/nowcast_puertas.py::perfil_legislador(presencia)",
@@ -1507,7 +3419,40 @@
    "default": 1.0,
    "evaluable": true,
    "expresion": "1.0",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": false,
+    "afecta_p_aprobacion": false,
+    "max_abs_dif": 0.0,
+    "alternativas": [
+     0.5
+    ],
+    "por_caso": {
+     "P1": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P2": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P3": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     }
+    }
+   }
   },
   {
    "id": "modelo/ensemble/src/nowcast_puertas.py::nowcast(n_sims)",
@@ -1520,7 +3465,41 @@
    "default": 2000,
    "evaluable": true,
    "expresion": "2000",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": true,
+    "afecta_p_aprobacion": true,
+    "max_abs_dif": 4.0,
+    "alternativas": [
+     4000,
+     1000
+    ],
+    "por_caso": {
+     "P1": {
+      "afecta": true,
+      "max_abs_dif": 3.0,
+      "alt_que_mueve": 1000,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P2": {
+      "afecta": true,
+      "max_abs_dif": 4.0,
+      "alt_que_mueve": 1000,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P3": {
+      "afecta": true,
+      "max_abs_dif": 3.0,
+      "alt_que_mueve": 1000,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     }
+    }
+   }
   },
   {
    "id": "modelo/ensemble/src/nowcast_puertas.py::nowcast(seed)",
@@ -1533,7 +3512,40 @@
    "default": 0,
    "evaluable": true,
    "expresion": "0",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": true,
+    "afecta_p_aprobacion": true,
+    "max_abs_dif": 2.0,
+    "alternativas": [
+     1
+    ],
+    "por_caso": {
+     "P1": {
+      "afecta": true,
+      "max_abs_dif": 2.0,
+      "alt_que_mueve": 1,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P2": {
+      "afecta": true,
+      "max_abs_dif": 2.0,
+      "alt_que_mueve": 1,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P3": {
+      "afecta": true,
+      "max_abs_dif": 2.0,
+      "alt_que_mueve": 1,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     }
+    }
+   }
   },
   {
    "id": "modelo/ensemble/src/puerta_a.py::ESTADOS",
@@ -1550,7 +3562,10 @@
    ],
    "evaluable": true,
    "expresion": "(\"con_caracter\", \"sin_dictamen\", \"sin_dato\")",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": null,
+    "motivo": "no perturbable: texto, fecha o contenedor (estructural)"
+   }
   },
   {
    "id": "modelo/ensemble/src/puerta_a.py::DIAS_VENTANA_VIVA",
@@ -1563,7 +3578,41 @@
    "default": 730,
    "evaluable": true,
    "expresion": "730",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": false,
+    "afecta_p_aprobacion": false,
+    "max_abs_dif": 0.0,
+    "alternativas": [
+     1460,
+     365
+    ],
+    "por_caso": {
+     "P1": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P2": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P3": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     }
+    }
+   }
   },
   {
    "id": "modelo/ensemble/src/puerta_a.py::COEF_POR_DEFECTO",
@@ -1582,7 +3631,10 @@
    },
    "evaluable": true,
    "expresion": "{ \"minoria\": 0.0, # existe un dictamen de minoría enfrentado \"disidencia_parcial\": 0.0, \"disidencia_total\": 0.0, \"dos_comisiones\": 0.0, # firmado por dos comisiones = acuerdo más ancho \"por_linaje\": 0.0, # por cada linaje distinto que acompaña }",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": null,
+    "motivo": "no perturbable: texto, fecha o contenedor (estructural)"
+   }
   },
   {
    "id": "modelo/ensemble/src/puerta_d.py::ajuste_paso_origen(factor_encogimiento)",
@@ -1595,7 +3647,40 @@
    "default": 1.0,
    "evaluable": true,
    "expresion": "1.0",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": false,
+    "afecta_p_aprobacion": false,
+    "max_abs_dif": 0.0,
+    "alternativas": [
+     0.5
+    ],
+    "por_caso": {
+     "P1": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P2": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P3": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     }
+    }
+   }
   },
   {
    "id": "modelo/ensemble/src/puerta_d.py::p_voto_revisora(delta)",
@@ -1608,7 +3693,40 @@
    "default": 0.0,
    "evaluable": true,
    "expresion": "0.0",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": false,
+    "afecta_p_aprobacion": false,
+    "max_abs_dif": 0.0,
+    "alternativas": [
+     0.1
+    ],
+    "por_caso": {
+     "P1": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P2": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P3": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     }
+    }
+   }
   },
   {
    "id": "modelo/ensemble/src/puerta_d.py::p_voto_revisora(epsilon0)",
@@ -1621,7 +3739,40 @@
    "default": 0.0,
    "evaluable": true,
    "expresion": "0.0",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": false,
+    "afecta_p_aprobacion": false,
+    "max_abs_dif": 0.0,
+    "alternativas": [
+     0.1
+    ],
+    "por_caso": {
+     "P1": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P2": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P3": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     }
+    }
+   }
   },
   {
    "id": "modelo/ensemble/src/puerta_d.py::p_voto_revisora(factor_encogimiento)",
@@ -1634,7 +3785,40 @@
    "default": 0.0,
    "evaluable": true,
    "expresion": "0.0",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": false,
+    "afecta_p_aprobacion": false,
+    "max_abs_dif": 0.0,
+    "alternativas": [
+     0.1
+    ],
+    "por_caso": {
+     "P1": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P2": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P3": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     }
+    }
+   }
   },
   {
    "id": "modelo/ensemble/src/puerta_d.py::p_voto_revisora(n_sims)",
@@ -1647,7 +3831,41 @@
    "default": 400,
    "evaluable": true,
    "expresion": "400",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": false,
+    "afecta_p_aprobacion": false,
+    "max_abs_dif": 0.0,
+    "alternativas": [
+     800,
+     200
+    ],
+    "por_caso": {
+     "P1": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P2": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P3": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     }
+    }
+   }
   },
   {
    "id": "modelo/ensemble/src/puerta_d.py::p_voto_revisora(reparto_desvio)",
@@ -1660,7 +3878,41 @@
    "default": 0.5,
    "evaluable": true,
    "expresion": "0.5",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": false,
+    "afecta_p_aprobacion": false,
+    "max_abs_dif": 0.0,
+    "alternativas": [
+     1.0,
+     0.25
+    ],
+    "por_caso": {
+     "P1": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P2": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P3": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     }
+    }
+   }
   },
   {
    "id": "modelo/ensemble/src/puerta_d.py::p_voto_revisora(seed)",
@@ -1673,7 +3925,40 @@
    "default": 0,
    "evaluable": true,
    "expresion": "0",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": false,
+    "afecta_p_aprobacion": false,
+    "max_abs_dif": 0.0,
+    "alternativas": [
+     1
+    ],
+    "por_caso": {
+     "P1": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P2": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P3": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     }
+    }
+   }
   },
   {
    "id": "modelo/ensemble/src/puerta_d.py::p_voto_revisora(tau)",
@@ -1686,7 +3971,40 @@
    "default": 0.0,
    "evaluable": true,
    "expresion": "0.0",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": false,
+    "afecta_p_aprobacion": false,
+    "max_abs_dif": 0.0,
+    "alternativas": [
+     0.1
+    ],
+    "por_caso": {
+     "P1": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P2": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P3": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     }
+    }
+   }
   },
   {
    "id": "modelo/ensemble/src/sobre_tablas.py::ENV:SOBRE_TABLAS",
@@ -1699,7 +4017,40 @@
    "default": false,
    "evaluable": true,
    "expresion": "os.environ.get(\"SOBRE_TABLAS\", \"0\") != \"0\"",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": false,
+    "afecta_p_aprobacion": false,
+    "max_abs_dif": 0.0,
+    "alternativas": [
+     true
+    ],
+    "por_caso": {
+     "P1": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P2": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P3": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     }
+    }
+   }
   },
   {
    "id": "modelo/ensemble/src/sobre_tablas.py::P_MINIMO_SIGNIFICATIVO",
@@ -1712,7 +4063,41 @@
    "default": 0.05,
    "evaluable": true,
    "expresion": "0.05",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": false,
+    "afecta_p_aprobacion": false,
+    "max_abs_dif": 0.0,
+    "alternativas": [
+     0.1,
+     0.025
+    ],
+    "por_caso": {
+     "P1": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P2": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P3": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     }
+    }
+   }
   },
   {
    "id": "modelo/ensemble/src/sobre_tablas.py::_logit(eps)",
@@ -1725,7 +4110,41 @@
    "default": 1e-06,
    "evaluable": true,
    "expresion": "1e-6",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": false,
+    "afecta_p_aprobacion": false,
+    "max_abs_dif": 0.0,
+    "alternativas": [
+     2e-06,
+     5e-07
+    ],
+    "por_caso": {
+     "P1": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P2": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P3": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     }
+    }
+   }
   },
   {
    "id": "rutas.py::ENV:CANON",
@@ -1738,7 +4157,10 @@
    "default": null,
    "evaluable": false,
    "expresion": "_env(\"CANON\", CANONICA / \"data\" / \"clean\")",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": null,
+    "motivo": "no perturbable: sin default evaluable (una ruta, una clave o no hay default)"
+   }
   },
   {
    "id": "rutas.py::ENV:EXP_CLEAN",
@@ -1751,7 +4173,10 @@
    "default": null,
    "evaluable": false,
    "expresion": "_env(\"EXP_CLEAN\", RAIZ / \"datos\" / \"expedientes\" / \"data\" / \"clean\")",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": null,
+    "motivo": "no perturbable: sin default evaluable (una ruta, una clave o no hay default)"
+   }
   },
   {
    "id": "rutas.py::ENV:PROYECTOS_DB",
@@ -1764,7 +4189,10 @@
    "default": null,
    "evaluable": false,
    "expresion": "_env(\"PROYECTOS_DB\", RAIZ / \"datos\" / \"proyectos\" / \"data\" / \"proyectos.db\")",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": null,
+    "motivo": "no perturbable: sin default evaluable (una ruta, una clave o no hay default)"
+   }
   },
   {
    "id": "rutas.py::ENV:SCHEMAS",
@@ -1777,7 +4205,10 @@
    "default": null,
    "evaluable": false,
    "expresion": "_env(\"SCHEMAS\", RAIZ / \"docs\" / \"schemas\")",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": null,
+    "motivo": "no perturbable: sin default evaluable (una ruta, una clave o no hay default)"
+   }
   },
   {
    "id": "variables/bloque/src/bloque.py::CONDUCTA_MAP",
@@ -1795,7 +4226,10 @@
    },
    "evaluable": true,
    "expresion": "{ \"AFIRMATIVO\": \"AFIRMATIVO\", \"NEGATIVO\": \"NEGATIVO\", \"ABSTENCION\": \"NO_ACOMPANA\", \"AUSENTE\": \"NO_ACOMPANA\", }",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": null,
+    "motivo": "no perturbable: texto, fecha o contenedor (estructural)"
+   }
   },
   {
    "id": "variables/bloque/src/bloque.py::SUSTANTIVAS",
@@ -1811,7 +4245,10 @@
    ],
    "evaluable": true,
    "expresion": "(\"AFIRMATIVO\", \"NEGATIVO\")",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": null,
+    "motivo": "no perturbable: texto, fecha o contenedor (estructural)"
+   }
   },
   {
    "id": "variables/bloque/src/bloque.py::_LINAJE_GENERICO",
@@ -1831,7 +4268,10 @@
    ],
    "evaluable": true,
    "expresion": "{\"\", \"OTRO / PROVINCIAL\", \"SIN BLOQUE\", \"OTRO\", \"NONE\", \"NAN\"}",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": null,
+    "motivo": "no perturbable: texto, fecha o contenedor (estructural)"
+   }
   },
   {
    "id": "variables/bloque/src/bloque.py::_LINAJES_CANON",
@@ -1855,7 +4295,10 @@
    ],
    "evaluable": true,
    "expresion": "{ \"FdT-UxP (kirchnerismo)\", \"OTRO / PROVINCIAL\", \"RADICALISMO\", \"PERONISMO FEDERAL\", \"PRO\", \"COALICION CIVICA\", \"PROGRESISMO\", \"FRENTE RENOVADOR (massismo)\", \"LA LIBERTAD AVANZA\", \"IZQUIERDA\", }",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": null,
+    "motivo": "no perturbable: texto, fecha o contenedor (estructural)"
+   }
   },
   {
    "id": "variables/bloque/src/bloque.py::metricas_acta_bloque(min_emit)",
@@ -1868,7 +4311,41 @@
    "default": 3,
    "evaluable": true,
    "expresion": "3",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": false,
+    "afecta_p_aprobacion": false,
+    "max_abs_dif": 0.0,
+    "alternativas": [
+     6,
+     1
+    ],
+    "por_caso": {
+     "P1": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P2": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P3": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     }
+    }
+   }
   },
   {
    "id": "variables/bloque/src/bloque.py::_AUX_PREFIX",
@@ -1881,7 +4358,10 @@
    "default": "AUX",
    "evaluable": true,
    "expresion": "\"AUX\"",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": null,
+    "motivo": "no perturbable: texto, fecha o contenedor (estructural)"
+   }
   },
   {
    "id": "variables/bloque/src/bloque.py::proyectar_postura(k_shrink)",
@@ -1894,7 +4374,41 @@
    "default": 5.0,
    "evaluable": true,
    "expresion": "5.0",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": true,
+    "afecta_p_aprobacion": true,
+    "max_abs_dif": 1.0,
+    "alternativas": [
+     10.0,
+     2.5
+    ],
+    "por_caso": {
+     "P1": {
+      "afecta": true,
+      "max_abs_dif": 1.0,
+      "alt_que_mueve": 10.0,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P2": {
+      "afecta": true,
+      "max_abs_dif": 0.10000000000002274,
+      "alt_que_mueve": 2.5,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P3": {
+      "afecta": true,
+      "max_abs_dif": 1.0,
+      "alt_que_mueve": 2.5,
+      "no_numericos": 12,
+      "estructura": 0,
+      "error": null
+     }
+    }
+   }
   },
   {
    "id": "variables/bloque/src/bloque.py::proyectar_postura(min_actas)",
@@ -1907,7 +4421,41 @@
    "default": 3,
    "evaluable": true,
    "expresion": "3",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": false,
+    "afecta_p_aprobacion": false,
+    "max_abs_dif": 0.0,
+    "alternativas": [
+     6,
+     1
+    ],
+    "por_caso": {
+     "P1": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P2": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P3": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     }
+    }
+   }
   },
   {
    "id": "variables/bloque/src/bloque.py::proyectar_postura(ventana_dias)",
@@ -1920,7 +4468,41 @@
    "default": 730,
    "evaluable": true,
    "expresion": "730",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": true,
+    "afecta_p_aprobacion": true,
+    "max_abs_dif": 15,
+    "alternativas": [
+     1460,
+     365
+    ],
+    "por_caso": {
+     "P1": {
+      "afecta": true,
+      "max_abs_dif": 1.0,
+      "alt_que_mueve": 365,
+      "no_numericos": 4,
+      "estructura": 0,
+      "error": null
+     },
+     "P2": {
+      "afecta": true,
+      "max_abs_dif": 1.0,
+      "alt_que_mueve": 1460,
+      "no_numericos": 9,
+      "estructura": 0,
+      "error": null
+     },
+     "P3": {
+      "afecta": true,
+      "max_abs_dif": 15,
+      "alt_que_mueve": 365,
+      "no_numericos": 90,
+      "estructura": 0,
+      "error": null
+     }
+    }
+   }
   },
   {
    "id": "variables/proyecto/src/agente_taxonomias.py::ENV:TAXO_MODEL",
@@ -1933,7 +4515,10 @@
    "default": "claude-haiku-4-5-20251001",
    "evaluable": true,
    "expresion": "os.environ.get(\"TAXO_MODEL\", \"claude-haiku-4-5-20251001\")",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": false,
+    "motivo": "no se perturba: módulo no cargado en el panel"
+   }
   },
   {
    "id": "variables/proyecto/src/agente_taxonomias.py::ENV:TAXO_MODEL_OCR",
@@ -1946,7 +4531,10 @@
    "default": null,
    "evaluable": false,
    "expresion": "os.environ.get(\"TAXO_MODEL_OCR\", MODELO_DEFAULT)",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": false,
+    "motivo": "no se perturba: módulo no cargado en el panel"
+   }
   },
   {
    "id": "variables/proyecto/src/agente_taxonomias.py::llamar_claude(max_tokens)",
@@ -1959,7 +4547,10 @@
    "default": 1024,
    "evaluable": true,
    "expresion": "1024",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": false,
+    "motivo": "no se perturba: módulo no cargado en el panel"
+   }
   },
   {
    "id": "variables/proyecto/src/agente_taxonomias.py::ENV:ANTHROPIC_API_KEY",
@@ -1972,7 +4563,10 @@
    "default": null,
    "evaluable": true,
    "expresion": "os.environ.get(\"ANTHROPIC_API_KEY\")",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": false,
+    "motivo": "no se perturba: módulo no cargado en el panel"
+   }
   },
   {
    "id": "variables/proyecto/src/agente_taxonomias.py::llamar_claude_pdf(max_tokens)",
@@ -1985,7 +4579,10 @@
    "default": 1024,
    "evaluable": true,
    "expresion": "1024",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": false,
+    "motivo": "no se perturba: módulo no cargado en el panel"
+   }
   },
   {
    "id": "variables/proyecto/src/agente_taxonomias.py::ENV:ANTHROPIC_API_KEY#2",
@@ -1998,7 +4595,10 @@
    "default": null,
    "evaluable": true,
    "expresion": "os.environ.get(\"ANTHROPIC_API_KEY\")",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": false,
+    "motivo": "no se perturba: módulo no cargado en el panel"
+   }
   },
   {
    "id": "variables/proyecto/src/pdf_text.py::UA",
@@ -2011,7 +4611,10 @@
    "default": "Mozilla/5.0 (compatible; NowcastCongreso/1.0; +investigacion legislativa)",
    "evaluable": true,
    "expresion": "\"Mozilla/5.0 (compatible; NowcastCongreso/1.0; +investigacion legislativa)\"",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": false,
+    "motivo": "no se perturba: módulo no cargado en el panel"
+   }
   },
   {
    "id": "variables/proyecto/src/pdf_text.py::HTTP_TIMEOUT",
@@ -2024,7 +4627,10 @@
    "default": 30,
    "evaluable": true,
    "expresion": "30",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": false,
+    "motivo": "no se perturba: módulo no cargado en el panel"
+   }
   },
   {
    "id": "variables/proyecto/src/pdf_text.py::MIN_CHARS_TEXTO",
@@ -2037,7 +4643,10 @@
    "default": 200,
    "evaluable": true,
    "expresion": "200",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": false,
+    "motivo": "no se perturba: módulo no cargado en el panel"
+   }
   },
   {
    "id": "variables/proyecto/src/pdf_text.py::recortar_para_prompt(max_chars)",
@@ -2050,7 +4659,10 @@
    "default": 18000,
    "evaluable": true,
    "expresion": "18000",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": false,
+    "motivo": "no se perturba: módulo no cargado en el panel"
+   }
   },
   {
    "id": "variables/proyecto/src/tema_por_proyecto.py::_AUX_PREFIX",
@@ -2063,7 +4675,10 @@
    "default": "AUX",
    "evaluable": true,
    "expresion": "\"AUX\"",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": false,
+    "motivo": "no se perturba: módulo no cargado en el panel"
+   }
   },
   {
    "id": "variables/proyecto/src/tema_por_proyecto.py::clasificar_por_titulo(checkpoint_cada)",
@@ -2076,7 +4691,10 @@
    "default": 25,
    "evaluable": true,
    "expresion": "25",
-   "afecta_panel": null
+   "afecta_panel": {
+    "afecta": false,
+    "motivo": "no se perturba: módulo no cargado en el panel"
+   }
   }
  ],
  "archivos_derivados": [

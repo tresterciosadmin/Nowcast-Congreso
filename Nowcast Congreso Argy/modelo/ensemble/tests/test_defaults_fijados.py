@@ -20,6 +20,11 @@ entorno nueva, un archivo de datos nuevo— y exige que CADA UNO aparezca como d
 parámetro (un comentario, una línea corrida, un docstring) no la produzca. Si un sabotaje ya no se puede
 aplicar (porque el texto que buscaba cambió), falla fuerte: un control que no se aplica no controla nada.
 
+LA MEDICIÓN `afecta_panel` (sección 5). Qué parámetros MUEVEN el número lo mide `perturbar_panel.py` con el motor
+real (≈ 1 hora, por eso no corre acá): se guarda en el mismo registro. Este test sólo comprueba que la medición
+existe, que sus controles positivos dieron bien y que ningún parámetro quedó sin medir; y AVISA (no rompe) si los
+archivos del camino cambiaron desde que se midió.
+
     python modelo/ensemble/tests/test_defaults_fijados.py
 """
 from __future__ import annotations
@@ -192,6 +197,63 @@ corrida[rel_np] = "# un comentario nuevo\n\n\n" + fuentes[rel_np].replace(
     "TAU_DEFAULT = 1.19", "TAU_DEFAULT = 1.19  # mismo valor, otro comentario")
 check(not detecta(corrida), "un comentario y líneas corridas NO son un cambio de parámetro y el test se rompió igual")
 print("  no se rompe  un comentario, una línea en blanco y líneas corridas")
+
+# ── 5. la medición `afecta_panel` (etapa 2 de B1) ────────────────────────────────────────────────
+print("\n5. la medición `afecta_panel`: está, sus controles dieron bien y se dice si quedó vieja")
+med = guardado.get("medicion_afecta_panel")
+check(med is not None, "falta `medicion_afecta_panel`: python modelo/ensemble/src/perturbar_panel.py --medir")
+if med:
+    check(med["controles"] and all(c["ok"] for c in med["controles"]),
+          f"algún control positivo de la medición dio al revés: {[c for c in med['controles'] if not c['ok']]}")
+    sin = [p["id"] for p in guardado["parametros"] if not isinstance(p.get("afecta_panel"), dict)]
+    check(not sin, f"parámetros sin `afecta_panel` (se agregaron sin medir; corré perturbar_panel.py --medir): {sin[:5]}")
+    sin_motivo = [p["id"] for p in guardado["parametros"]
+                  if isinstance(p.get("afecta_panel"), dict) and p["afecta_panel"]["afecta"] is None
+                  and not p["afecta_panel"].get("motivo") and not p["afecta_panel"].get("errores")]
+    check(not sin_motivo, f"`afecta = null` tiene que traer el motivo: {sin_motivo[:5]}")
+    # ¿Cambió el código desde la medición? Informativo (no rompe): un default cambiado rompe la sección 2; esto avisa
+    # que los módulos que la medición midió ya no son los de hoy y conviene repetirla antes de citar `afecta_panel`.
+    hoy = R.sha_fuentes(fuentes)
+    cambiados = sorted(r for r, h in med["fuentes_sha256"].items() if hoy.get(r) != h)
+    res = med["resumen"]
+    print(f"  medido el {med['fecha']} sobre {med['git_head'][:7] if med.get('git_head') else '?'} · "
+          f"{res['afecta']} afectan, {res['no_afecta']} no, {res['sin_medir']} sin medir · "
+          f"{len(med['controles'])} controles positivos OK")
+    if cambiados:
+        print(f"  AVISO (no rompe): {len(cambiados)} archivos del camino cambiaron desde la medición: "
+              f"{[Path(c).name for c in cambiados][:6]}; repetir `perturbar_panel.py --medir` antes de citar `afecta_panel`.")
+
+# ── 6. la maquinaria de la medición (sin correr el motor) ─────────────────────────────────────────
+print("\n6. la maquinaria de `perturbar_panel.py`: alternativas, umbral y reescritura del AST")
+import perturbar_panel as PP  # noqa: E402
+
+check(PP.alternativas(True) == [False] and PP.alternativas(False) == [True], "la alternativa de un booleano es el opuesto")
+check(PP.alternativas(20) == [40, 10] and PP.alternativas(1) == [2, 0] and PP.alternativas(0) == [1],
+      f"enteros: {PP.alternativas(20)}, {PP.alternativas(1)}, {PP.alternativas(0)}")
+check(PP.alternativas(1.19) == [2.38, 0.595], f"un real: {PP.alternativas(1.19)}")
+check(PP.alternativas(0.6) == [1.0, 0.3], f"una probabilidad acota el doble a 1: {PP.alternativas(0.6)}")
+check(PP.alternativas(1.0) == [0.5] and PP.alternativas(0.0) == [0.1], "x = 1 descarta el doble; x = 0 prueba 0,1")
+check(PP.alternativas("texto") == [] and PP.alternativas(None) == [], "un texto o None no se perturba")
+base = {"/p": 0.5, "/n": 3, "/texto": "a", "/x[0]": 1.0}
+check(not PP.comparar(base, dict(base))["afecta"], "salida idéntica: no afecta")
+check(not PP.comparar(base, {**base, "/p": 0.5 + 5e-10})["afecta"], "una diferencia bajo el umbral (1e-9) no cuenta")
+check(PP.comparar(base, {**base, "/p": 0.5 + 2e-9})["afecta"], "una diferencia sobre el umbral cuenta")
+check(PP.comparar(base, {**base, "/texto": "b"})["afecta"], "cambiar un texto cuenta")
+check(PP.comparar(base, {k: v for k, v in base.items() if k != "/n"})["afecta"], "perder un campo cuenta")
+fuente = "X = 1\nY = 2.5\n\ndef f(a, b=2, *, c=3.0):\n    return a, b, c\n"
+for clase, nombre, linea, alt, leer in [("constante", "X", 1, 5, lambda m: m["X"]),
+                                        ("default_funcion", "b", 4, 9, lambda m: m["f"](0)[1]),
+                                        ("default_funcion", "c", 4, 7.5, lambda m: m["f"](0)[2])]:
+    espacio: dict = {}
+    exec(compile(PP._reescritor({"clase": clase, "nombre": nombre, "linea": linea, "id": nombre}, alt)(fuente),
+                 "<prueba>", "exec"), espacio)
+    check(leer(espacio) == alt, f"la reescritura de {clase} {nombre} no dejó {alt}: {leer(espacio)}")
+    check(espacio["Y"] == 2.5, f"la reescritura de {nombre} tocó otra cosa")
+try:
+    PP._reescritor({"clase": "constante", "nombre": "NO_ESTA", "linea": 99, "id": "x"}, 1)(fuente)
+    check(False, "reescribir un literal que no existe tiene que fallar fuerte, no pasar en silencio")
+except RuntimeError:
+    check(True, "")
 
 print(f"\n{corridos - len(fallos)}/{corridos} OK")
 if fallos:

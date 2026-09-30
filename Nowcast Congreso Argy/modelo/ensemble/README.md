@@ -26,6 +26,7 @@ Une las dos piezas ya validadas del sistema en un solo número (con su descompos
 - Diputados dejó de titular "sobre tablas" en 2020 y desde 2024 usa "HABILITACIÓN DEL TRATAMIENTO..." (mismo mecanismo, otro nombre) — matching corregido en `estimar_theta_sobre_tablas.py`
 - diferencia entre la BANDA (p5-p95, agregada) y los PIVOTES (P individual en [0,35;0,65])
 - el dictamen POR LEGISLADOR (quién firmó, si firmó su jefe): `beta_dictamen.py`, PRENDIDA por defecto desde el 14-09 (`BETA_DICTAMEN=0` apaga; validada walk-forward)
+- qué parámetros tiene el motor, con qué default y cuáles mueven el número (auditoría B1): el registro generado desde el código `outputs/registro_parametros.json` (`src/registro_parametros.py`; `src/perturbar_panel.py` mide `afecta_panel`) y `tests/test_defaults_fijados.py`, que falla si un default cambia sin regenerarlo
 
 <!-- Las dos cosas de arriba las levanta `.mapa/indexar.py` al MAPA.md de la
      raiz: el `Resumen:` va a la columna "Que es" y las pistas al router
@@ -297,8 +298,19 @@ python modelo/ensemble/tests/test_guardas_confianza.py   # 14 chequeos; falla co
 python modelo/ensemble/tests/test_puerta_a.py            # 31 chequeos; incluye la guarda point-in-time
 python modelo/ensemble/tests/test_backtest_cadena.py     # 53 chequeos offline, dos backends de dtype
 python modelo/ensemble/tests/test_beta_dictamen.py       # 16 chequeos; el dictamen por legislador, bandera apagada por defecto
+python modelo/ensemble/tests/test_panel_regresion.py    # el motor da EXACTAMENTE `outputs/panel_regresion.json` (A6)
+python modelo/ensemble/tests/test_defaults_fijados.py    # los defaults del código = `outputs/registro_parametros.json` (B1, regla 8); con sabotajes
 python modelo/ensemble/src/validar_beta_dictamen_walkforward.py  # backtest: entrena viejo, mide sobre lo nuevo nunca visto
 ```
+
+## Registro de parámetros (auditoría 2026-09, ítem B1)
+`outputs/registro_parametros.json` lista, **generado por AST desde el código** (los 22 archivos que alcanza `nowcast_puertas.py`),
+toda variable de entorno (con su default efectivo), constante con nombre y default numérico de función, los archivos de datos que
+el camino referencia y el sha256 de los coeficientes estimados (β y θ). `tests/test_defaults_fijados.py` lo compara con el código:
+cambiar un default, invertir una bandera o agregar/sacar un parámetro lo pone en rojo. Un cambio **a propósito** se regenera con
+`python modelo/ensemble/src/registro_parametros.py --escribir` y se commitea citando la medición (regla 8). `afecta_panel` (cuáles
+parámetros mueven el número sobre un panel de 3 casos) lo mide `python modelo/ensemble/src/perturbar_panel.py --medir` (≈ 1 hora,
+fuera del CI). No incluye los números sin nombre dentro de las funciones ni los parámetros de los generadores de los archivos derivados.
 
 ## Pendientes / v2
 - **Posición de bloque proyectada por tema** (desbloquea la calibración de la cadena completa y el nowcast automático sin escenario a mano). Depende de `variables/proyecto` (tema) + un módulo de posición de bloque.

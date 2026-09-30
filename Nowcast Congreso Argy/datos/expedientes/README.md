@@ -99,7 +99,7 @@ completos + giros, diario. **Es el candidato natural a próximo claim.**
 ## Cómo trabajar acá
 1. Reclamá este módulo en `coordinacion/TABLERO.md`.
 2. Rama `feat/expedientes-<desc>`. No toques otros módulos; consumí contratos.
-3. Todo avance → entrada en ESTADO + EN-HUMANO + `tablero_datos.js`.
+3. Todo avance → entrada en ESTADO + EN-HUMANO (`tablero_datos.js` se eliminó en la auditoría 2026-09, A6).
 
 ## Convenciones de código
 Resiliencia obligatoria: errores específicos, backoff en red, parsing

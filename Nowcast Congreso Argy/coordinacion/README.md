@@ -26,7 +26,7 @@
 
 ## Trampas
 
-- **Las cuatro bitacoras se mueven JUNTAS** (ESTADO + EN-HUMANO + TABLERO + `tablero_datos.js` en la raiz). Un cambio que toca el estado y mueve solo una deja el repo inconsistente.
+- **Las bitacoras se mueven JUNTAS** (ESTADO + EN-HUMANO + TABLERO; el cuarto elemento, `tablero_datos.js` en la raiz, se elimino en la auditoria 2026-09, A6). Un cambio que toca el estado y mueve solo una deja el repo inconsistente.
 - **El disco manda sobre las cuatro.** Antes de repetir una cifra que leiste aca, abri el archivo o el parquet. La auditoria del 06-08-2026 encontro la canonica con tres cifras distintas en circulacion.
 - **`URGENTE.md` no lleva seccion de "resueltos".** El 04-08 se dejo una y adentro quedo enterrado un pendiente vivo durante dos dias.
 - `ESTADO-DEL-PROYECTO.md` pesa ~360 KB: **no reescribirlo entero**, el mount lo trunca y el read-modify-write propaga el corte.

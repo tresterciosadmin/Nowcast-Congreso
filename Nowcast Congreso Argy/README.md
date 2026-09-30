@@ -4,11 +4,12 @@
 
 Sistema que estima la probabilidad de sanción de proyectos de ley en el Congreso argentino.
 
-**Resumen:** La raiz del proyecto: los paneles que se abren con doble clic, el tablero ejecutivo y su unica fuente de datos (`tablero_datos.js`).
+**Resumen:** La raiz del proyecto: `CLAUDE.md`, `rutas.py`, `definiciones.py`, los scripts de regeneracion (`REGENERAR.ps1`, `verificar_*.py`) y este README. Los paneles HTML (tablero ejecutivo, mapa del modelo, panel de puertas) y sus `*_datos.js` se eliminaron en la auditoria 2026-09 (ítem A6): el estado vive en `coordinacion/`.
 
 ## Buscar acá si
 
-- el tablero ejecutivo, los KPIs, los hitos o el estado de una pieza de la plataforma (`TABLERO-CONTROL.html`; se edita SOLO `tablero_datos.js`)
+- por que ya no hay tableros ni paneles HTML, y donde se ve el numero del motor (`modelo/ensemble/outputs/panel_regresion.json`; `python modelo/ensemble/src/nowcast_puertas.py ...`)
+- el estado del proyecto y de la auditoria (`coordinacion/AUDITORIA-2026-09/ESTADO-EJECUCION.md`, `coordinacion/QUE-SE-MIDE.md`)
 - por donde empezar a leer el repo
 - que significa "periodo parlamentario", que mayoria exige un proyecto o cuantas bancas tiene una camara (`definiciones.py`)
 
@@ -37,7 +38,7 @@ se actualizan ahí** — no en `MAPA.md`, que se sobreescribe.
 
 ## Empezar acá (lectura obligatoria)
 0. 🔴 **`coordinacion/URGENTE.md`** — SIEMPRE primero: lo que bloquea a otros. Si hay algo, se resuelve antes de empezar.
-0b. **`TABLERO-CONTROL.html`** — el tablero ejecutivo del proyecto (doble click, se abre en el navegador): plan completo de la plataforma + estado real de cada pieza. Se actualiza editando SOLO `tablero_datos.js` (regla en CLAUDE.md).
+0b. ~~`TABLERO-CONTROL.html`~~ — **eliminado el 2026-09-30 (auditoría, A6)**, junto con `tablero_datos.js`. El estado del proyecto vive en `coordinacion/` (arrancá por `coordinacion/AUDITORIA-2026-09/ESTADO-EJECUCION.md` mientras dure la auditoría).
 1. **`CLAUDE.md`** — bootstrap para trabajar en paralelo sin pisarse.
 2. **`coordinacion/ESTADO-DEL-PROYECTO.md`** — qué se hizo hasta ahora (documento vivo).
 3. **`coordinacion/PLAN-DE-TRABAJO.md`** — qué hacer y cómo, por módulo y fase.
@@ -66,13 +67,17 @@ Fase 0 cerrada: el baseline de bloque predice la dirección del voto individual 
 En `docs/contexto/`: `INSTRUCTIVO-MAESTRO.md`, `Nowcast-Congreso_viabilidad_y_plan.md`, `Nowcast-Congreso_informe_validacion.docx`, el premortem validado y los documentos de diseño v2.1 (referencia histórica).
 
 
-## Los paneles (doble clic)
+## Los paneles HTML (eliminados el 2026-09-30, auditoría A6)
 
-| Archivo | Para qué |
-|---|---|
-| `TABLERO-CONTROL.html` | mapa ejecutivo del proyecto — se alimenta de `tablero_datos.js` |
-| ~~`Nowcast-Puertas.html`~~ | **eliminado el 2026-09-30 (auditoría, A6).** El número del motor sale por consola con `python modelo/ensemble/src/nowcast_puertas.py diputados --fecha 2026-06-01 --origen EJECUTIVO [--json ruta]`; su versión guardada es `modelo/ensemble/outputs/panel_regresion.json` (lo compara con el motor `modelo/ensemble/tests/test_panel_regresion.py`) |
-| `MAPA-MODELO.html` | el mapa navegable de la maquinaria del cálculo: qué script produce qué dato hasta llegar a P(sanción) — lo genera `producto/dashboard/src/generar_mapa_modelo.py` |
+Los tres paneles que se abrían con doble clic **ya no existen** (decisiones 1 y 6 de Franco: esta
+es una etapa de puesta en marcha operativa y lo que hay que mostrar es cuánto se mide de verdad,
+no un panel; ver `coordinacion/QUE-SE-MIDE.md`). Se recuperan con `git log -- <ruta>`.
+
+| Eliminado | Qué era | Qué lo reemplaza |
+|---|---|---|
+| `TABLERO-CONTROL.html` + `tablero_datos.js` | mapa ejecutivo: plan y avance | `coordinacion/AUDITORIA-2026-09/ESTADO-EJECUCION.md` (mientras dure la auditoría) y `coordinacion/ESTADO-DEL-PROYECTO.md` |
+| `Nowcast-Puertas.html` + `casos/nowcast_puertas_html.py` | el nowcast de un proyecto | consola: `python modelo/ensemble/src/nowcast_puertas.py diputados --fecha 2026-06-01 --origen EJECUTIVO [--json ruta]`; guardado en `modelo/ensemble/outputs/panel_regresion.json` (lo compara con el motor `modelo/ensemble/tests/test_panel_regresion.py`) |
+| `MAPA-MODELO.html` + `mapa_modelo_datos.js` + `producto/dashboard/src/generar_mapa_modelo.py` | la maquinaria del cálculo | `MAPA.md` (generado) y `coordinacion/FORMULA-COMPLETA.md` |
 
 Los paneles de coyuntura (`PANEL-NOWCAST/MOVIL/COYUNTURA.html`) y el
 `COMPARADOR-ICG.html` salieron de la sesión del 04-08-2026 y **se dieron de baja el

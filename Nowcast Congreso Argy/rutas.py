@@ -156,8 +156,8 @@ EN_HUMANO = COORDINACION / "EN-HUMANO.md"
 TABLERO = COORDINACION / "TABLERO.md"
 DECISIONES = COORDINACION / "DECISIONES"
 
-TABLERO_DATOS_JS = RAIZ / "tablero_datos.js"
-TABLERO_CONTROL_HTML = RAIZ / "TABLERO-CONTROL.html"
+# (TABLERO_DATOS_JS y TABLERO_CONTROL_HTML se eliminaron el 2026-09-30, auditoria A6: el tablero
+#  HTML y su fuente de datos ya no existen; nadie en el codigo las usaba.)
 
 # Semilla historica de un solo uso (ADR-0002). Material de terceros.
 SEMILLA_DECADA_VOTADA_ZIP = (RAIZ / "Aportes sobre dataset congreso" /

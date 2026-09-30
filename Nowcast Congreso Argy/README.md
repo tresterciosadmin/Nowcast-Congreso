@@ -64,7 +64,7 @@ Cada carpeta de módulo tiene su `README.md` con el contrato (entradas, salida, 
 Fase 0 cerrada: el baseline de bloque predice la dirección del voto individual ≈ 0,99; el valor del producto está en **asistencia/quórum**, **embudo** y **posición de bloque**. Detalle en `coordinacion/ESTADO-DEL-PROYECTO.md`.
 
 ## Contexto de negocio y metodología
-En `docs/contexto/`: `INSTRUCTIVO-MAESTRO.md`, `Nowcast-Congreso_viabilidad_y_plan.md`, `Nowcast-Congreso_informe_validacion.docx`, el premortem validado y los documentos de diseño v2.1 (referencia histórica).
+En `docs/contexto/`: `INSTRUCTIVO-MAESTRO.md`, `Nowcast-Congreso_viabilidad_y_plan.md`, `Nowcast-Congreso_informe_validacion.docx`, la transcripción del premortem validado (`premortem-transcript-20260625-validado.md`; su HTML se eliminó en la auditoría A6) y los documentos de diseño v2.1 (referencia histórica).
 
 
 ## Los paneles HTML (eliminados el 2026-09-30, auditoría A6)

@@ -1,7 +1,7 @@
 # Nowcast-Congreso — Viabilidad técnica, atractivo y plan de implementación
 
 > Estudio inicial. Sistema B2B que estima la **probabilidad de que un proyecto de ley sea aprobado** por el Congreso argentino, agregando la **probabilidad individual de voto de cada legislador** en función de los atributos del proyecto. Arranque local (Python + notebooks), proyección a nube.
-> Fecha: 25-jun-2026. Acompaña al premortem (`premortem-report-20260625.html`).
+> Fecha: 25-jun-2026. Acompaña al premortem (`premortem-report-20260625.html`; el HTML validado se eliminó de git el 2026-09-30, auditoría A6: el texto sigue en `premortem-transcript-20260625-validado.md`).
 
 ---
 

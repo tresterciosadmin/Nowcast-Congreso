@@ -5,7 +5,7 @@
 > Decisiones y su porqué: `AUDITORIA-INTEGRAL-2026-09.md` §9. Reglas del carril: §9.9. Definición numérica de "funcionando": §9.4.
 > Estados: `PENDIENTE` · `EN CURSO` · `HECHO` (con la evidencia: comando y salida, o sha del commit) · `DESCARTADO` (con el motivo escrito y la firma de Franco).
 
-**Última actualización:** 2026-09-30 — A1, A2 y A3 hechos (CI verde confirmado por Franco, también con los pines); A4 a A8 hechos; A9 hecho (Franco confirmó en *Actions*: los tres en verde); A10 hecho: **fase A CERRADA por Franco el 2026-09-30** (evidencia de salida abajo); **fase B en curso (2026-09-30): B1 hecho** (evidencia abajo); próximo: B2.
+**Última actualización:** 2026-09-30 — A1, A2 y A3 hechos (CI verde confirmado por Franco, también con los pines); A4 a A8 hechos; A9 hecho (Franco confirmó en *Actions*: los tres en verde); A10 hecho: **fase A CERRADA por Franco el 2026-09-30** (evidencia de salida abajo); **fase B en curso (2026-09-30): B1 hecho** (evidencia abajo); B2 empezado (pre-registro escrito y commiteado antes de codificar).
 **Dónde se trabaja:** `main`, commits chicos (uno por corrección), con la suite en verde **antes** de cada commit; sin `git push` (lo hace Franco). Los bots empujan a `main`: no se les toca el permiso. Rama sólo si una corrección no puede dejar la suite en verde entre commits (vida corta: se mergea en la misma sesión).
 **Punto de partida (para deshacer):** el tag local `auditoria-punto-de-partida` marca `main` antes de la primera corrección.
 
@@ -31,7 +31,7 @@
 | ítem | qué | criterio de salida | estado |
 |---|---|---|---|
 | **B1** | Registro de parámetros **generado desde el código** + `test_defaults_fijados` | cambiar un default rompe un test | **HECHO** 2026-09-30: con `TAU_DEFAULT = 1.2` en el archivo real el test sale con código 1 (evidencia en «B1 — registro de parámetros y `test_defaults_fijados`»; commits `490f019`, `42f4a7b`, `2572863`) |
-| **B2** | `invariancia_al_futuro.py` como test de la suite | una fuga sintética (usar datos de la fecha) lo hace fallar | PENDIENTE |
+| **B2** | `invariancia_al_futuro.py` como test de la suite | una fuga sintética (usar datos de la fecha) lo hace fallar | **EN CURSO** (pre-registro: «B2 — pre-registro») |
 | **B3** | `control_independiente.py` como test de regresión | el control reproduce 0,1335 y detecta el desvío | PENDIENTE |
 
 ## Fase C — Métrica de verdad y calibración declarada
@@ -442,6 +442,31 @@ Franco: **(1) «dejalo»** → `fase1_rec_por_tema.py` y su test **se quedan**. 
 **Límites (declarados en el registro y en el docstring):** (1) `afecta = false` dice «no mueve estos 3 casos», no «no afecta nunca»; (2) se perturba de a un parámetro: no hay interacciones (`COMBINAR_TEMAS` sólo importa con `TEMA_AUTO`; `delta` con `factor_encogimiento`); (3) **no están** los números sin nombre dentro de las funciones ni los parámetros de los *generadores* de los archivos derivados (p. ej. `MIN_VOTOS` de `disciplina.py`: de ellos se fija el sha256 del archivo estimado, no el parámetro); (4) `max_abs_dif` es el máximo sobre cualquier campo numérico (incluye conteos de legisladores), no una probabilidad; (5) el sha256 de los coeficientes estimados viene de archivos que viajan por git, pero **`disciplina_individual.csv` (la ficha de desvío) no se fija**: es un archivo derivado regenerable y no un coeficiente. (6) **B1 no asigna tipo E/M/P ni «medición que lo respalda» a cada parámetro**: se anota en la fase D, parámetro por parámetro, y el gate de E3 lo exigirá; `afecta_panel` dice cuáles son (22). La medición se repite con `python modelo/ensemble/src/perturbar_panel.py --medir` (≈ 40 min, fuera del CI); `test_defaults_fijados` **avisa** (no rompe) si los archivos del camino cambiaron desde que se midió.
 
 **Criterio de salida de B1: cumplido** — cambiar un default rompe un test, demostrado sobre el archivo real.
+
+### B2 — pre-registro (2026-09-30, escrito ANTES de codificar y de medir)
+
+**Estado de partida:** `HEAD` `ad4050a` (B1 cerrado), árbol limpio, suite 54 + 59 scripts en 0.
+
+**Qué es.** La prueba de **invariancia al futuro** (la regla 2 del borrador de reglas): si el motor y el harness no ven el futuro ni la misma ley, **corromper en memoria todo voto de fecha ≥ la del acta y todo voto de su misma ley no puede mover ninguna P_i** (cada voto corrompido cambia SIEMPRE de conducta). Es una prueba metamórfica sobre actas **reales**; no depende de cómo se implementó el corte sino de que no se filtre nada. Hoy es un script de la auditoría (`coordinacion/AUDITORIA-2026-09/invariancia_al_futuro.py`, 150 actas, ≈ 17 min, su resultado en `resultados/`); la pieza 3 del anclaje y el borrador C5 lo ubican en `evaluacion/baseline/tests/`.
+
+**Qué se construye.** `git mv` del script a `evaluacion/baseline/tests/test_invariancia_al_futuro.py` (mismo historial) y se lo convierte en test de la suite. Sin argumentos corre la **versión rápida** (la del CI); con `--por-era N --salida X` conserva el modo de la auditoría (la muestra grande y el JSON). Los dos comparten las mismas funciones (`corromper`, `comparar`): una sola copia. El JSON de `resultados/` (evidencia de la fase 2) no se toca. Las citas del archivo viejo en los documentos históricos no se reescriben; se corrige la del docstring.
+
+**El diseño del test (decidido ahora por tiempo y poder de detección).** Muestra **determinística** (`random_state = 7`) de actas reales con voto emitido, posteriores a la ventana de 730 días de historia, estratificada por era y cámara:
+- **Prueba principal, `historia = "estricta"` (el motor de hoy): 10 actas** (1 de Diputados y 1 del Senado por cada una de las 5 eras). Umbral: `max|ΔP_i| ≤ 1e-12` en todas.
+- **Anti-vacuidad:** ninguna acta con postura no proyectable (`None`); en cada acta se comparan legisladores (> 0) y se corrompen votos (> 0); en total se comparan ≥ 1.500 P_i. Un test que compara nada pasa por la razón equivocada.
+- **Control positivo 1 — fuga por la FECHA, inyectada en el harness real:** se reemplaza `Contexto._hasta` por «fecha + 1 día» (el corte que dejaba ver el día de la sesión) y se corre la misma prueba sobre **4 actas que tienen otras actas el mismo día**. Umbral: **las 4** tienen que mover alguna P_i (en la auditoría el corte viejo se detectó en 144 de 144).
+- **Control positivo 2 — fuga por la MISMA LEY, inyectada en el harness real:** se reemplaza `Contexto._sin_ley` por «no excluye nada» y se corre sobre **8 actas que tienen una acta anterior de su misma ley**. Umbral: **al menos 1** mueve alguna P_i (la sensibilidad medida en la auditoría fue del 48%: la probabilidad de 0 en 8 es ≈ 0,5%). Se informa cuántas detecta realmente.
+- **Las fugas se sacan:** los parches van en `try/finally`; después de cada control se repite la prueba estricta sobre 2 actas y tiene que volver a dar `ΔP = 0` (que el control no contaminó al resto).
+- Se eligen las actas de cada control por una regla fija (las primeras de la muestra ordenada por fecha y `acta_id` que cumplen la condición), no por el resultado.
+
+**Criterios de salida (umbral: 0 fallas):**
+1. **Pasa en `HEAD`:** el test sale con 0, y los números de arriba se cumplen.
+2. **Una fuga sintética lo pone en rojo, sobre el archivo real:** se edita en disco `Contexto._hasta` del harness (`estricta` ve hasta «fecha + 1 día»), se corre el test → sale con código 1 y dice en qué actas; se revierte con `git checkout`. Lo mismo con `_sin_ley` (que no excluya la ley).
+3. **Tiempo:** el test rápido tarda **≤ 4 minutos** en esta PC (Python 3.14); se informa el tiempo real y el de un checkout limpio con Python 3.11. Si no entra, se reduce la muestra **antes** de commitear y se dice.
+4. **Suite:** `pytest` sigue en 54; los scripts pasan de 59 a **60, todos en 0**, y el árbol queda igual antes y después; checkout limpio (`git archive`, Python 3.11, pines): el test nuevo pasa ahí (no depende de ningún archivo ignorado).
+5. **El motor y el harness no cambian:** `git diff` de `modelo/ variables/ definiciones.py rutas.py evaluacion/baseline/src` vacío. El modo de la auditoría (`--por-era 30`) sigue reproduciendo su resultado de la fase 2 en una muestra chica (p. ej. `--por-era 4`: `max|ΔP| = 0` en `estricta`).
+
+**Qué no cubre (queda escrito en el test, como en el script):** dictámenes ni taxonomías posteriores (β, `TEMA_AUTO`, `RECORD_POR_TEMA` no entran al harness), la ficha de desvío (`disciplina_individual.csv`, toda la historia) ni la presencia. Un gate **estadístico** no atrapa las fugas (MDE 0,052 a 500 leyes, §5.3): para eso está esta prueba determinística; las dos son necesarias.
 
 ## Bitácora de alcance
 

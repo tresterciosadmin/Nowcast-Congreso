@@ -5,7 +5,7 @@
 > Decisiones y su porqué: `AUDITORIA-INTEGRAL-2026-09.md` §9. Reglas del carril: §9.9. Definición numérica de "funcionando": §9.4.
 > Estados: `PENDIENTE` · `EN CURSO` · `HECHO` (con la evidencia: comando y salida, o sha del commit) · `DESCARTADO` (con el motivo escrito y la firma de Franco).
 
-**Última actualización:** 2026-09-30 — A1, A2 y A3 hechos (CI verde confirmado por Franco, también con los pines); A4 publicado, a la espera de la lectura de Franco; próximo ítem: A5.
+**Última actualización:** 2026-09-30 — A1, A2 y A3 hechos (CI verde confirmado por Franco, también con los pines); A4 hecho (aprobado por Franco); A5 en curso.
 **Dónde se trabaja:** `main`, commits chicos (uno por corrección), con la suite en verde **antes** de cada commit; sin `git push` (lo hace Franco). Los bots empujan a `main`: no se les toca el permiso. Rama sólo si una corrección no puede dejar la suite en verde entre commits (vida corta: se mergea en la misma sesión).
 **Punto de partida (para deshacer):** el tag local `auditoria-punto-de-partida` marca `main` antes de la primera corrección.
 
@@ -16,7 +16,7 @@
 | **A1** | Verificar el arranque: `git status`, rama `main`, y correr la suite; el resultado debe coincidir con `00-linea-base.md` (§7) | Claude | mismo resultado que la línea base (el único rojo esperado es `test_insumos_del_motor_viajan`) | **HECHO** 2026-09-29 sobre `d0e4897` (evidencia en la sección «Evidencia de A1», abajo) |
 | **A2** | **CI en verde** (decisión 11, opción 1): guardar en git los estadísticos por ley (JSON, no `.parquet`/`.csv`: están ignorados) que alcanzan para recalcular skill, IC, τ y ε₀; re-apuntar los consumidores; que `test_insumos_del_motor_viajan` pase | Claude | test verde en local; **Franco confirma en la pestaña *Actions* de GitHub** (d5) | **HECHO** 2026-09-29: verificado en local (simulación del CI) y **confirmado por Franco en *Actions*** («corrió perfecto»). Evidencia en «Evidencia de A2» (commits `51212bc`, `e944a3c`, `55ca0b8`) |
 | **A3** | **Paridad de versiones** (d6): correr la suite en Python 3.11 (el del CI) y fijar versiones; documentar la de esta PC (3.14 / pandas 3.0) | Claude | resultados iguales en ambas | **HECHO** 2026-09-29: 0 diferencias entre 3.11, 3.14 y la PC (ver «Evidencia de A3»). **Franco confirmó en *Actions* (30-09) que sigue todo verde con los pines instalados** |
-| **A4** | Escribir `coordinacion/QUE-SE-MIDE.md` desde el §9.4 (incluye d7: origen Senado sin publicar; y los límites: etiquetas de origen sin validar, presencia sin medir, cobertura de la canónica por año — d4-a) | Claude | archivo publicado; Franco lo lee | **EN CURSO — publicado (`coordinacion/QUE-SE-MIDE.md`); falta que Franco lo lea y lo dé por bueno.** Evidencia en «Evidencia de A4» |
+| **A4** | Escribir `coordinacion/QUE-SE-MIDE.md` desde el §9.4 (incluye d7: origen Senado sin publicar; y los límites: etiquetas de origen sin validar, presencia sin medir, cobertura de la canónica por año — d4-a) | Claude | archivo publicado; Franco lo lee | **HECHO** 2026-09-30: publicado (`coordinacion/QUE-SE-MIDE.md`) y **leído y aprobado por Franco** («está bien el documento»). Evidencia en «Evidencia de A4» |
 | **A5** | **Apagar las mayorías especiales** (decisión 9): `nowcast()` con `tipo_mayoria ≠ SIMPLE` devuelve sin número y con el motivo | Claude | test que lo fija; el resto del número no cambia (`max|ΔP| = 0` en simple) | PENDIENTE |
 | **A6** | **Eliminar HTML y panel** (decisiones 1 y 6; alcance según §9.1): los 3 HTML de producto, sus generadores y sus `.js` de datos; `REGENERAR.ps1` paso 8 → JSON de regresión; `verificar_regeneracion.py`; sacar `Senado_2002-03-05_muestra.html` y `premortem-report-…html`; **se quedan los 6 fixtures** de los tests de los bots; `comparar_vias_icg.py` pierde la salida HTML pero **se conserva** (ICG, ver D6). Antes de sacar cada archivo: copia a `Archivos_Borrar/` y `git rm`; se busca quién lo referencia | Claude | `git ls-files \| grep -i html` devuelve sólo los 6 fixtures; el JSON de regresión existe y un test lo compara con el motor; suite verde | PENDIENTE |
 | **A7** | **Poda P0 y P1** (decisión 10; ≈ 7.000 líneas). **Antes:** confirmar que nada de lo que se mueve pertenece a δ, θ, ψ, β ni al ICG (decisión 2 y ronda 2, punto 9 —ICG—, ver §9.1b del informe); `comparar_vias_icg.py` **sale de P0** | Claude | los criterios de salida del §5 del informe (`max|ΔP| = 0`, suite igual menos lo movido) | PENDIENTE |
@@ -184,7 +184,17 @@ Método obligatorio: estimar con datos **anteriores** a *t* y evaluar **después
 3. «3.731 leyes» incluye una unidad por cada acta sin ley identificable (el 15,3% de los votos); ahora está dicho en el documento.
 4. La cifra «−2,12%» del récord por tema es «mejora relativa»: en palabras, **empeora el Brier 2,12% [0,84; 3,48]**. El documento lo dice en palabras.
 
-**Pendiente de Franco:** leer `QUE-SE-MIDE.md` (criterio de salida del ítem). En particular, la tabla del §2 («funciona»): son tus 5 condiciones de §9.4, validadas o corregidas por vos.
+**Franco leyó el documento y lo aprobó sin cambios (2026-09-30).**
+
+### A5 — pre-registro (2026-09-30, escrito ANTES de medir)
+
+**Qué cambia (decisión 9):** `nowcast()` con un `tipo_mayoria` que `definiciones.normalizar_mayoria_valor` lleva a algo distinto de `SIMPLE` (`ABSOLUTA`, `DOS_TERCIOS`, `DOS_TERCIOS_CUERPO`, `TRES_CUARTOS`, o el texto que se normalice a ellos) devuelve `p_aprobacion = None` y `motivo_sin_numero`, **sin correr la simulación** (la guarda va antes de cargar nada). Lo que la normalización manda a `SIMPLE` (incluidos `None` y texto no reconocido) sigue calculándose como hoy. No se tocan `simular_con_guardas`, `simular_votacion`, `agregador` ni `composicion_capitulos`: los usan las mediciones (`contraste_aprobacion.py` evalúa mayorías especiales contra resultados) y los tests.
+
+**Panel de comparación, con el motor real y los defaults (`n_sims = 2000`, `seed = 0`), corrido sobre el código de `HEAD` (valor anterior) y sobre el código nuevo:**
+- 9 casos `SIMPLE`: Diputados y Senado como origen a 2026-06-01 con origen EJECUTIVO; Diputados 2024-06-01 sin origen; Senado 2024-06-01 con origen OPOSICION; `tipo_mayoria="simple"` (minúscula) y `tipo_mayoria=None` (ambos = SIMPLE); dos con `proyecto_id` real (`HCDN274473` a 2024-06-01 y `HCDN279791` a 2026-06-01, para ejercitar las puertas A y C) y uno con el Senado como origen y el segundo proyecto.
+- 9 casos de mayoría especial: Diputados y Senado como origen × {`ABSOLUTA`, `DOS_TERCIOS`, `DOS_TERCIOS_CUERPO`, `TRES_CUARTOS`} a 2026-06-01, origen EJECUTIVO, más el texto crudo `"dos tercios"`.
+
+**Qué decide (umbral):** (1) en los 9 casos `SIMPLE`, la salida completa —todos los campos, no sólo la probabilidad— es **idéntica** al valor anterior: `max|ΔP| = 0` y 0 campos distintos; (2) en los 9 de mayoría especial, `p_aprobacion` es `None` con motivo y el valor anterior era un número (queda registrado); (3) el test nuevo falla si se le quita la guarda (sabotaje en memoria) y no puede pasar si la simulación llega a correr (se le sustituye por una que rompe).
 
 ## Bitácora de alcance
 

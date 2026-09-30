@@ -198,7 +198,8 @@ mueve hacia "no acompaña".
 
 **✅ PRENDIDA POR DEFECTO desde el 14-09-2026** (`BETA_DICTAMEN=0` para apagar;
 Franco: "dale, prendelo"). Corrido el panel publicado
-(`casos/nowcast_puertas_html.py diputados --fecha 2026-06-01 --origen EJECUTIVO`):
+(`casos/nowcast_puertas_html.py diputados --fecha 2026-06-01 --origen EJECUTIVO`, eliminado en A6;
+hoy es `nowcast_puertas.py` con los mismos argumentos, guardado en `outputs/panel_regresion.json`):
 salió byte a byte idéntico — es un proyecto hipotético, sin `proyecto_id` no hay
 dictamen que leer. P(aprobación) = 0,9801 sin moverse. Detalle completo en
 `coordinacion/FORMULA-COMPLETA.md` §III.A.2 y ADR-0016 (enmienda 14-09).

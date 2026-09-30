@@ -1116,7 +1116,8 @@ quien mostró señal (firma propia o de su jefe), no un empeoramiento.
 
 **✅ PRENDIDO el 14-09-2026 (Franco: "dale, prendelo y corré el panel completo").**
 `BETA_DICTAMEN` pasa a estar prendida por defecto (`BETA_DICTAMEN=0` apaga).
-Corrido el panel publicado (`casos/nowcast_puertas_html.py diputados --fecha
+Corrido el panel publicado (el panel HTML `casos/nowcast_puertas_html.py`, eliminado en A6, hoy
+`nowcast_puertas.py diputados --fecha
 2026-06-01 --origen EJECUTIVO`, paso 8 de `REGENERAR.ps1`): salió **byte a byte
 idéntico** al de antes de prender — es un proyecto hipotético, sin `proyecto_id`
 no hay dictamen que leer. Suite completa 41/41, `test_nowcast_puertas.py` 49/49,

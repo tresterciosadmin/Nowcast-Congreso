@@ -42,9 +42,9 @@ la diferencia entre las dos es chica y las dos generalizan.)
 
 PRENDIDA POR DEFECTO desde el 14-09-2026 (decisión de Franco, tras el backtest
 walk-forward de arriba): `BETA_DICTAMEN=0` para apagarla (o pasar `activo=False`).
-Medido antes de prender: el panel publicado (`casos/nowcast_puertas_html.py
-diputados --fecha 2026-06-01 --origen EJECUTIVO`, el que corre
-`REGENERAR.ps1` paso 8) es un proyecto HIPOTÉTICO — sin `proyecto_id` no hay
+Medido antes de prender: el panel publicado (el panel HTML de puertas, eliminado en la
+auditoría 2026-09; hoy `nowcast_puertas.py diputados --fecha 2026-06-01 --origen EJECUTIVO`,
+el que corre `REGENERAR.ps1` paso 8) es un proyecto HIPOTÉTICO — sin `proyecto_id` no hay
 dictamen que leer, así que `contexto_de` nunca se llama y P **no se mueve** por
 este cambio. Donde sí pega es en proyectos reales con dictamen ya leído (ver
 FORMULA-COMPLETA.md §III.A.2): ahí corre F_i/lealtad_x_jefe.

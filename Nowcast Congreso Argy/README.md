@@ -71,7 +71,7 @@ En `docs/contexto/`: `INSTRUCTIVO-MAESTRO.md`, `Nowcast-Congreso_viabilidad_y_pl
 | Archivo | Para qué |
 |---|---|
 | `TABLERO-CONTROL.html` | mapa ejecutivo del proyecto — se alimenta de `tablero_datos.js` |
-| `Nowcast-Puertas.html` | el nowcast vivo de un proyecto (P(sanción) condicional, cadena de puertas A-B-C-D con desagregado por legislador) — lo genera `casos/nowcast_puertas_html.py`, ver su README |
+| ~~`Nowcast-Puertas.html`~~ | **eliminado el 2026-09-30 (auditoría, A6).** El número del motor sale por consola con `python modelo/ensemble/src/nowcast_puertas.py diputados --fecha 2026-06-01 --origen EJECUTIVO [--json ruta]`; su versión guardada es `modelo/ensemble/outputs/panel_regresion.json` (lo compara con el motor `modelo/ensemble/tests/test_panel_regresion.py`) |
 | `MAPA-MODELO.html` | el mapa navegable de la maquinaria del cálculo: qué script produce qué dato hasta llegar a P(sanción) — lo genera `producto/dashboard/src/generar_mapa_modelo.py` |
 
 Los paneles de coyuntura (`PANEL-NOWCAST/MOVIL/COYUNTURA.html`) y el
@@ -82,5 +82,6 @@ el 2026-09-14 (los de PANEL-NOWCAST ya se habían borrado el 09-10).
 
 `Nowcast-Ganancias-bicameral.html` también sigue en la raíz con cifras viejas: lo
 producía un generador de `casos/` neutralizado el 22-08 (mecanismo propio, desfasado
-del modelo). **No lo uses** — el vivo es `Nowcast-Puertas.html`. Detalle en
+del modelo). **No lo uses**: el panel de puertas que lo reemplazó también se eliminó
+(A6, 2026-09-30); el número vivo sale de `modelo/ensemble/src/nowcast_puertas.py`. Detalle en
 `casos/README.md`.

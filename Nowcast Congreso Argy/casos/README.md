@@ -2,14 +2,14 @@
 
 <!-- huella: bfe7ad62580e -->
 
-**Resumen:** Aplicaciones del nowcast a un caso real (una ley concreta): el panel de puertas en HTML. Consume los contratos de `modelo/` y `variables/`; no define modelo propio. Quedo UN generador: los otros dos -bicameral y proyeccion hipotetica- estaban neutralizados desde agosto y se archivaron el 2026-09-10.
+**Resumen:** Casos reales del nowcast (una ley concreta), escritos a mano: hoy, el caso testigo de la ley de lobby con su scoring. Consume los contratos de `modelo/` y `variables/`; no define modelo propio. **Ya no hay generadores:** el último, `nowcast_puertas_html.py` (el panel de puertas en HTML), se eliminó en la auditoría 2026-09 (A6); los otros dos —bicameral y proyección hipotética— estaban neutralizados desde agosto y se archivaron el 2026-09-10.
 
-**Estado:** EN CURSO (el generador vivo, `nowcast_puertas_html.py`, se corre en cada regeneracion completa — ver `REGENERAR.ps1` paso 8). Los dos generadores neutralizados quedan documentados, no se tocan mas.
+**Estado:** sin generadores (2026-09-30). El número de un proyecto sale de `modelo/ensemble/src/nowcast_puertas.py` (consola o `--json`); su versión guardada es `modelo/ensemble/outputs/panel_regresion.json`.
 **Owner actual:** — (sin reclamar)
 
 ## Buscar acá si
 
-- el informe o el HTML de una ley concreta (Ganancias, lobby, ...), y el generador de los paneles que estan en la RAIZ
+- el informe de una ley concreta (Ganancias, lobby, ...)
 - proyectar un proyecto por las DOS camaras (origen + revisora): eso lo hace `modelo/ensemble/src/puerta_d.py`, no esta carpeta
 - por que un caso da un numero distinto al del ensemble
 
@@ -17,13 +17,10 @@
 
 | Archivo | Que es |
 |---|---|
-| `nowcast_bicameral_html.py` | genera el informe HTML bicameral de un proyecto |
-| `proyeccion_hipotetica_bicameral.py` | ⛔ **NEUTRALIZADO 2026-08-25.** Era la TERCERA formulacion del numero: umbral de mayoria ABSOLUTA en vez de simple, y el share del bloque sin componer con el desvio. Su `main` levanta `SystemExit`; el cuerpo viejo quedo como `_main_original` por si se rehace sobre `nowcast_puertas`. |
-| `2026-07-31_ley-de-lobby.md` / `.json` | el caso testigo de la ley de lobby, con su scoring |
+| `2026-07-31_ley-de-lobby.md` / `_scoring.json` | el caso testigo de la ley de lobby, con su scoring |
 
 ## Trampas
 
-- Los HTML que estos scripts producen **quedan en la raiz del repo**, no acá ni en `producto/dashboard/`. Es deuda conocida, no un descuido: `TABLERO-CONTROL.html` se abre con doble clic desde la raiz y esta citado en CLAUDE.md y en varias entradas de ESTADO.
-- Estos informes usan `proyectar_postura` **condicionado por el origen del proyecto**. Si un caso viejo da otro numero, mira si no estaba usando `proyectar_lineas_alineacion` (promediaba todo).
-- **Dos de los tres generadores de esta carpeta estan neutralizados** (`nowcast_bicameral_html.py` el 22-08, `proyeccion_hipotetica_bicameral.py` el 25-08). No es limpieza: cada uno calculaba el acompañamiento con mecanismo propio y quedo desfasado del modelo sin que nada fallara. **El unico vivo es `nowcast_puertas_html.py`**, que consume `modelo/ensemble/src/nowcast_puertas.py` en vez de calcular. Si vas a agregar un caso nuevo, copia ESE — no los otros dos.
-- Los HTML que produjeron los neutralizados **siguen en la raiz con las cifras viejas adentro** (`Nowcast-Ganancias-bicameral.html`). El que vale es `Nowcast-Puertas.html`.
+- Estos informes usaban `proyectar_postura` **condicionado por el origen del proyecto**. Si un caso viejo da otro numero, mira si no estaba usando `proyectar_lineas_alineacion` (promediaba todo).
+- Los generadores que hubo acá calculaban el acompañamiento con mecanismo propio y quedaron desfasados del modelo sin que nada fallara (los dos neutralizados el 22-08 y el 25-08). Por eso no se rehacen: el número se consume de `nowcast_puertas.nowcast()`.
+- El panel HTML eliminado se recupera con `git log -- casos/nowcast_puertas_html.py` (y `Nowcast-Puertas.html`).

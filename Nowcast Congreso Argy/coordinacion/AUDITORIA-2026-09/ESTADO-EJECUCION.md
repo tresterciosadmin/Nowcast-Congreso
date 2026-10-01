@@ -5,7 +5,7 @@
 > Decisiones y su porqué: `AUDITORIA-INTEGRAL-2026-09.md` §9. Reglas del carril: §9.9. Definición numérica de "funcionando": §9.4.
 > Estados: `PENDIENTE` · `EN CURSO` · `HECHO` (con la evidencia: comando y salida, o sha del commit) · `DESCARTADO` (con el motivo escrito y la firma de Franco).
 
-**Última actualización:** 2026-09-30 — A1, A2 y A3 hechos (CI verde confirmado por Franco, también con los pines); A4 a A8 hechos; A9 hecho (Franco confirmó en *Actions*: los tres en verde); A10 hecho: **fase A CERRADA por Franco el 2026-09-30** (evidencia de salida abajo); **fase B en curso (2026-09-30): B1 hecho** (evidencia abajo); B2 hecho (evidencia abajo); B3 hecho: **fase B COMPLETA** (evidencia de salida en «Salida de la fase B»); **fase C en curso: C1 hecho** (2026-09-30, confirmado en *Actions* el 2026-10-01; evidencia en «C1 — la métrica de verdad con un solo comando»); **C2 hecho** (2026-10-01; evidencia en «C2 — la calibración declarada, por cámara y en mayoría simple»); **C3 hecho: fase C COMPLETA** (evidencia de salida en «Salida de la fase C»); próximo: fase D, en conversación nueva (prompt en `PROMPT-NUEVA-CONVERSACION.md`), cuando Franco la autorice.
+**Última actualización:** 2026-09-30 — A1, A2 y A3 hechos (CI verde confirmado por Franco, también con los pines); A4 a A8 hechos; A9 hecho (Franco confirmó en *Actions*: los tres en verde); A10 hecho: **fase A CERRADA por Franco el 2026-09-30** (evidencia de salida abajo); **fase B en curso (2026-09-30): B1 hecho** (evidencia abajo); B2 hecho (evidencia abajo); B3 hecho: **fase B COMPLETA** (evidencia de salida en «Salida de la fase B»); **fase C en curso: C1 hecho** (2026-09-30, confirmado en *Actions* el 2026-10-01; evidencia en «C1 — la métrica de verdad con un solo comando»); **C2 hecho** (2026-10-01; evidencia en «C2 — la calibración declarada, por cámara y en mayoría simple»); **C3 hecho: fase C COMPLETA** (evidencia de salida en «Salida de la fase C»); **fase C confirmada en *Actions* por Franco (2026-10-01), que decidió: el guard de era se resuelve en D1 y el principal de la fase D es Opus** (ver «Decisiones de Franco al cierre de la fase C»); próximo: fase D, en conversación nueva (prompt en `PROMPT-NUEVA-CONVERSACION.md`).
 **Dónde se trabaja:** `main`, commits chicos (uno por corrección), con la suite en verde **antes** de cada commit; sin `git push` (lo hace Franco). Los bots empujan a `main`: no se les toca el permiso. Rama sólo si una corrección no puede dejar la suite en verde entre commits (vida corta: se mergea en la misma sesión).
 **Punto de partida (para deshacer):** el tag local `auditoria-punto-de-partida` marca `main` antes de la primera corrección.
 
@@ -50,7 +50,7 @@ Método obligatorio: estimar con datos **anteriores** a *t* y evaluar **después
 
 | ítem | qué | estado |
 |---|---|---|
-| **D1** | Parámetros de $P_i$: `k_shrink` del récord y de la postura, ventana de 730 días, `MIN_HIST`, `MIN_VOTOS_FICHA`, granularidad del origen, guard de era | PENDIENTE |
+| **D1** | Parámetros de $P_i$: `k_shrink` del récord y de la postura, ventana de 730 días, `MIN_HIST`, `MIN_VOTOS_FICHA`, granularidad del origen, guard de era. **Decisión de Franco (2026-10-01): el guard de era se resuelve acá**, con el brazo y el veredicto de C3 («no se distingue») como insumo | PENDIENTE |
 | **D2** | Piso 0,02, ε₀ y τ | PENDIENTE |
 | **D3** | β y δ (sobre el offset de D1) | PENDIENTE |
 | **D4** | θ y ψ (corregirlos y re-estimarlos) | PENDIENTE |
@@ -703,7 +703,7 @@ Rechazadas en mayoría simple: **106**, P mediana 0,911, **79 con P > 0,8**. Seg
 | **5. lo nuevo, medido** | el IC pareado de Δ por cámara y la cobertura por cámara con su IC (tablas de arriba) y el veredicto de los objetivos 2 y 3 |
 | **6. no pisa** | **cumple:** con `--salida evaluacion/baseline/outputs/baseline_voto_individual.json` código **3** (con y sin `--reemplazar`) y el sha256 no cambia; sobre la calibración versionada sin `--reemplazar`, 3; `--simular` sobre el JSON por acta versionado, 3, y sobre uno ajeno con `--reemplazar`, 3 (sin simular nada); sobre un archivo propio con `--reemplazar`, 0; sobre uno ajeno, 3 |
 | **7. test que lo fija, y que puede fallar, sobre el archivo real** | **cumple:** pasa 106/106 (5 s). Con `SEMILLA` 7 → 8: **código 1**, 15 fallas («defaults del IC: 2000 réplicas, semilla 8», los IC de Δ distintos de su ancla); con `N_BOOT` 2000 → 300: **código 1**, 15 fallas; con la P de producción × 0,9 en el JSON por acta real: **código 1**, 19 fallas (la tabla del §9.2 no se reproduce, «`confiabilidad`… no sale del JSON por acta», «el JSON por acta cambió y la calibración no se regeneró»). Los tres revertidos con `git checkout` (árbol limpio, el test vuelve a dar 106/106) |
-| **8. suite** | **cumple:** **PC (3.14):** `pytest tests/ datos/proyectos/tests` → 54 pasan; los `test_*.py` como scripts → **63 corridos, 0 fallaron** (62 + el nuevo); árbol idéntico antes y después. **Checkout limpio de `1369560`** (`git archive`, Python 3.11.0, venv nuevo con los pines): `pytest` → 53 pasan + 1 se saltea; **63 scripts, 0 fallaron**, y `test_calibracion_declarada.py` da 106/106 en 5 s **sin el detalle del censo**. Falta la confirmación de Franco en *Actions* tras su `git push` |
+| **8. suite** | **cumple:** **PC (3.14):** `pytest tests/ datos/proyectos/tests` → 54 pasan; los `test_*.py` como scripts → **63 corridos, 0 fallaron** (62 + el nuevo); árbol idéntico antes y después. **Checkout limpio de `1369560`** (`git archive`, Python 3.11.0, venv nuevo con los pines): `pytest` → 53 pasan + 1 se saltea; **63 scripts, 0 fallaron**, y `test_calibracion_declarada.py` da 106/106 en 5 s **sin el detalle del censo**. **Franco confirmó en *Actions* que está todo verde (2026-10-01)** |
 | **9. nada más cambia** | **cumple:** el `git diff` de la nota de arriba, vacío; sólo hay archivos nuevos, `MAPA.md`/`mapa.json` reindexados y las notas de documentación |
 
 **Desvíos y observaciones (ninguno cambia una conclusión):**
@@ -785,7 +785,7 @@ Sobre los **votos que el corte realmente cambia** (116.317, el 16,8% de todos; s
 | **3. el censo del brazo es lo que dice ser** | **cumple** (ver «Los controles del brazo») |
 | **4. el veredicto, con la regla fijada** | **NO SE DISTINGUE** (tabla de arriba); bandera sin tocar |
 | **5. test de la suite, y que puede fallar** | **cumple:** pasa 41/41 (4 s). Sobre los archivos reales, con `SEMILLA` 7 → 8: **código 1**, 12 fallas; `N_BOOT` 2000 → 300: **código 1**, 12 fallas; con el brazo alterado (Σ(p−y)² × 1,01 en 3.986 actas anteriores a 2015-12-10) en los estadísticos reales: **código 1**, 6 fallas («antes de 2015-12-10 el brazo NO es idéntico al motor (se: max\|Δ\| = 1,45)»). Sobre el **harness real**: con el brazo que no se aplica (`GUARD_ERA` queda en `True`): **código 1** («sin corte por era el récord acumula las 12 sesiones: {leg:a: 4}…»); sin la restauración del `finally`: **código 1** (con traceback: el estado filtrado hace que el siguiente brazo se niegue). Todos revertidos con `git checkout`; los dos tests vuelven a 37/37 y 41/41 |
-| **6. suite** | **cumple:** **PC (3.14):** `pytest tests/ datos/proyectos/tests` → 54 pasan; los `test_*.py` como scripts → **64 corridos, 0 fallaron** (63 + `test_guard_era_sin_corte`); árbol idéntico antes y después. **Checkout limpio de `955cdcf`** (`git archive`, Python 3.11.0, venv con los pines): `pytest` → 53 pasan + 1 se saltea; **64 scripts, 0 fallaron**, y los tests de C1 (73/73), C2 (106/106) y C3 (41/41) pasan **sin el detalle del censo**. Falta la confirmación de Franco en *Actions* tras su `git push` |
+| **6. suite** | **cumple:** **PC (3.14):** `pytest tests/ datos/proyectos/tests` → 54 pasan; los `test_*.py` como scripts → **64 corridos, 0 fallaron** (63 + `test_guard_era_sin_corte`); árbol idéntico antes y después. **Checkout limpio de `955cdcf`** (`git archive`, Python 3.11.0, venv con los pines): `pytest` → 53 pasan + 1 se saltea; **64 scripts, 0 fallaron**, y los tests de C1 (73/73), C2 (106/106) y C3 (41/41) pasan **sin el detalle del censo**. **Franco confirmó en *Actions* que está todo verde (2026-10-01)** |
 | **7. nada más cambia** | **cumple:** `git diff 6bdcdbc HEAD -- modelo variables definiciones.py rutas.py evaluacion/baseline/src/{censo_detalle_paralelo,censo_estadisticos,metrica_de_verdad,calibracion_declarada}.py` → **vacío**; el de `baseline_voto_individual.py` es sólo el cableado de `era_desde` (+48 líneas, −15 de reindentado en `record()`) |
 
 **Desvíos y observaciones:**
@@ -812,7 +812,18 @@ Sobre los **votos que el corte realmente cambia** (116.317, el 16,8% de todos; s
 
 **Quedan hechos el paso 3 del anclaje** (`05` §5.3: métrica de verdad y calibración declarada) **y el brazo del guard de era** (decisión 7). **Lo que C no hace, y queda para D y E:** no corrige nada del motor (D), no implementa el gate «cobertura observada − declarada > 5 pp = rojo» (E3), no mide la presencia ni valida el origen (fuera del plan).
 
-**La fase C está completa a la espera de la decisión de Franco.** El prompt de la fase D está en `PROMPT-NUEVA-CONVERSACION.md`; **dos decisiones suyas lo condicionan** (qué hacer con el guard de era y con qué modelo se trabaja la fase D).
+**La fase C está completa y confirmada en *Actions* por Franco (2026-10-01); sus dos decisiones están en «Decisiones de Franco al cierre de la fase C».** El prompt de la fase D está en `PROMPT-NUEVA-CONVERSACION.md`.
+
+### Decisiones de Franco al cierre de la fase C (2026-10-01)
+
+Franco confirmó en *Actions* que **C1, C2 y C3 están en verde** y tomó las dos decisiones que condicionaban la fase D:
+
+| # | decisión | qué implica | dónde se aplica |
+|---|---|---|---|
+| **1** | **El guard de era se resuelve en D1** (después de ver el veredicto «no se distingue» de C3) | No es un cambio de alcance: el guard ya estaba en D1 (decisión 7). El brazo `era_desde` y el veredicto de C3 (primario +3,0% [−2,9; +9,7]; era vigente −3,7% [−7,7; +3,5]) son el **insumo**, no la decisión; **la bandera sigue prendida hasta que D1 decida con su propia medición**, con IC pareado contra el valor de hoy y el veredicto revisado por el revisor ciego (regla 6) | D1 |
+| **2** | **El modelo principal de la fase D es Opus** (lo sube Franco al abrir la conversación nueva) | Es lo que recomendó la regla de C3 (el IC del primario incluía 0) y lo que dice el §9.10 («subir el principal si hay que decidir sobre resultados ambiguos»). **La regla 6 sigue valiendo:** Claude no valida su propio veredicto; el revisor ciego de cada veredicto es otro agente que no vio la conclusión | fase D |
+
+**Hallazgo fuera del plan (anotado en `PENDIENTES-POST-AUDITORIA.md`, no se arregló):** al intentar el `git pull` de los commits del bot, GitHub Desktop y la consola fallan en esta carpeta (OneDrive) con `unable to unlink 'Nowcast Congreso Argy': Directory not empty`; `git checkout` y `git restore` sí andan. El merge del 2026-10-01 se hizo con `git` de bajo nivel (`a283639`; receta en el prompt de la fase D). Causa sin identificar.
 
 ## Bitácora de alcance
 

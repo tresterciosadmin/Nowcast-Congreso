@@ -12,6 +12,7 @@
 ## Buscar acá si
 
 - el numero publicado del motor (skill del voto individual) y como se reproduce: `censo_detalle_paralelo.py` + `resumen_censo_limpio.py`
+- la **metrica de verdad** (skill por era y camara con IC por ley de 2.000 replicas, DBrier pareado, procedencia y certificado de que el motor de hoy da esas P_i), con UN comando que no pisa ningun numero versionado: `src/metrica_de_verdad.py` -> `outputs/metrica_de_verdad.json` (`tests/test_metrica_de_verdad.py`; auditoria C1)
 - los estadisticos del censo que SI viajan por git (skill + IC por ley, tau, eps0) y como se regeneran: `censo_estadisticos.py` -> `outputs/censo_estadisticos_*.json` (el detalle voto a voto es un parquet ignorado; `tests/test_censo_estadisticos.py`)
 - la regla del EXPEDIENTE: que cuenta como historia de un voto, y como se agrupan actas en leyes (`ley_por_acta`, `historia=estricta`)
 - IC que re-muestrean leyes, no actas (`skill_ic_por_ley`, `dif_brier_ic_por_ley`)

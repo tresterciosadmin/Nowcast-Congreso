@@ -114,6 +114,7 @@ De las 142 actas de la canónica que no entran al censo: 54 no tienen votos indi
 ```
 python -m pytest tests/ datos/proyectos/tests -q                          # la suite (CI)
 python evaluacion/baseline/src/censo_estadisticos.py                      # el JSON de estadísticos, desde el detalle del censo
+python evaluacion/baseline/src/metrica_de_verdad.py                       # la métrica de verdad (C1): skill por era y cámara, IC por ley con 2.000 réplicas, ΔBrier pareado; escribe outputs/metrica_de_verdad.json y no pisa nada. Con --verificar-motor 60 certifica (en la PC) que el motor de hoy da esas P_i
 python modelo/ensemble/src/estimar_epsilon_tau.py --columna estricta__general   # ε₀ y τ del motor de hoy (sin el parquet)
 python modelo/ensemble/src/nowcast_puertas.py diputados --fecha 2026-06-01 --origen EJECUTIVO --json salida.json
 python coordinacion/AUDITORIA-2026-09/cobertura_canonica.py               # la tabla del límite 3

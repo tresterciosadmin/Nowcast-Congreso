@@ -2,13 +2,13 @@
 
 <!-- GENERADO por indexar.py. No editar: los cambios se pierden. -->
 <!-- La prosa vive en el README.md de cada modulo (seccion `Buscar aca si`). -->
-<!-- 2026-10-01 00:01 UTC · 181 archivos · 39,951 LOC -->
+<!-- 2026-10-01 00:44 UTC · 181 archivos · 39,951 LOC -->
 
 ## Como usar este archivo
 
 Es el unico archivo del proyecto que hace falta leer para empezar. Para ubicar algo concreto: `python3 .mapa/buscar.py "<termino>"` devuelve archivo y linea sin abrir nada. Recien despues abrir los archivos que salgan, y solo esos.
 
-Rama `main` — ultimo commit: 2026-09-30 407edc4 Auditoría C1: metrica_de_verdad.py, el skill con IC por ley (2.000 réplicas) por era y cámara, con procedencia y sin pisar números versionados · **hay cambios sin commitear**
+Rama `main` — ultimo commit: 2026-09-30 e182613 Auditoría C1: metrica_de_verdad.json versionado (con certificado de vigencia del motor) y su test de regresión · **hay cambios sin commitear**
 
 ## Donde buscar que
 
@@ -79,6 +79,7 @@ Rama `main` — ultimo commit: 2026-09-30 407edc4 Auditoría C1: metrica_de_verd
 | el prompt con el que se clasifica un proyecto: esta en `variables/proyecto/src/agente_taxonomias.py`, no aca | `docs/taxonomias/` |
 | un id de taxonomia duplicado o mal escrito (`loader.py` lo detecta) | `docs/taxonomias/` |
 | el numero publicado del motor (skill del voto individual) y como se reproduce: `censo_detalle_paralelo.py` + `resumen_censo_limpio.py` | `evaluacion/baseline/` |
+| la **metrica de verdad** (skill por era y camara con IC por ley de 2.000 replicas, DBrier pareado, procedencia y certificado de que el motor de hoy da esas P_i), con UN comando que no pisa ningun numero versionado: `src/metrica_de_verdad.py` -> `outputs/metrica_de_verdad.json` (`tests/test_metrica_de_verdad.py`; auditoria C1) | `evaluacion/baseline/` |
 | los estadisticos del censo que SI viajan por git (skill + IC por ley, tau, eps0) y como se regeneran: `censo_estadisticos.py` -> `outputs/censo_estadisticos_*.json` (el detalle voto a voto es un parquet ignorado; `tests/test_censo_estadisticos.py`) | `evaluacion/baseline/` |
 | la regla del EXPEDIENTE: que cuenta como historia de un voto, y como se agrupan actas en leyes (`ley_por_acta`, `historia=estricta`) | `evaluacion/baseline/` |
 | IC que re-muestrean leyes, no actas (`skill_ic_por_ley`, `dif_brier_ic_por_ley`) | `evaluacion/baseline/` |
@@ -435,7 +436,7 @@ Ordenados por cuantos otros archivos dependen de ellos. Tocar uno de arriba tien
 
 Segun el historial de git. Si vas a cambiar uno, mira el otro.
 
-- `Nowcast Congreso Argy/.mapa/mapa.json` + `Nowcast Congreso Argy/MAPA.md` (59 commits)
+- `Nowcast Congreso Argy/.mapa/mapa.json` + `Nowcast Congreso Argy/MAPA.md` (60 commits)
 - `Nowcast Congreso Argy/coordinacion/EN-HUMANO.md` + `Nowcast Congreso Argy/coordinacion/ESTADO-DEL-PROYECTO.md` (56 commits)
 - `Nowcast Congreso Argy/coordinacion/ESTADO-DEL-PROYECTO.md` + `Nowcast Congreso Argy/tablero_datos.js` (50 commits)
 - `Nowcast Congreso Argy/coordinacion/EN-HUMANO.md` + `Nowcast Congreso Argy/tablero_datos.js` (47 commits)

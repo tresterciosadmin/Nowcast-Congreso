@@ -5,7 +5,7 @@
 > Decisiones y su porqué: `AUDITORIA-INTEGRAL-2026-09.md` §9. Reglas del carril: §9.9. Definición numérica de "funcionando": §9.4.
 > Estados: `PENDIENTE` · `EN CURSO` · `HECHO` (con la evidencia: comando y salida, o sha del commit) · `DESCARTADO` (con el motivo escrito y la firma de Franco).
 
-**Última actualización:** 2026-09-30 — A1, A2 y A3 hechos (CI verde confirmado por Franco, también con los pines); A4 a A8 hechos; A9 hecho (Franco confirmó en *Actions*: los tres en verde); A10 hecho: **fase A CERRADA por Franco el 2026-09-30** (evidencia de salida abajo); **fase B en curso (2026-09-30): B1 hecho** (evidencia abajo); B2 hecho (evidencia abajo); B3 hecho: **fase B COMPLETA** (evidencia de salida en «Salida de la fase B»); próximo: fase C, ítem C1, en conversación nueva (prompt en `PROMPT-NUEVA-CONVERSACION.md`), cuando Franco la autorice.
+**Última actualización:** 2026-09-30 — A1, A2 y A3 hechos (CI verde confirmado por Franco, también con los pines); A4 a A8 hechos; A9 hecho (Franco confirmó en *Actions*: los tres en verde); A10 hecho: **fase A CERRADA por Franco el 2026-09-30** (evidencia de salida abajo); **fase B en curso (2026-09-30): B1 hecho** (evidencia abajo); B2 hecho (evidencia abajo); B3 hecho: **fase B COMPLETA** (evidencia de salida en «Salida de la fase B»); **fase C en curso (2026-09-30): C1 hecho** (evidencia en «C1 — la métrica de verdad con un solo comando»); próximo: C2.
 **Dónde se trabaja:** `main`, commits chicos (uno por corrección), con la suite en verde **antes** de cada commit; sin `git push` (lo hace Franco). Los bots empujan a `main`: no se les toca el permiso. Rama sólo si una corrección no puede dejar la suite en verde entre commits (vida corta: se mergea en la misma sesión).
 **Punto de partida (para deshacer):** el tag local `auditoria-punto-de-partida` marca `main` antes de la primera corrección.
 
@@ -38,7 +38,7 @@
 
 | ítem | qué | criterio de salida | estado |
 |---|---|---|---|
-| **C1** | Skill por ley con IC pareado, **generado por un solo comando** (paso 3 del anclaje) | reproduce 0,1333 [0,059; 0,200] | **EN CURSO** (pre-registro abajo: «C1 — pre-registro») |
+| **C1** | Skill por ley con IC pareado, **generado por un solo comando** (paso 3 del anclaje) | reproduce 0,1333 [0,059; 0,200] | **HECHO** 2026-09-30: el comando da 0,1333 [0,0605; 0,1982] con 2.000 réplicas (exacto con 300: [0,0574; 0,1979]) por era y cámara, con certificado del motor y sin pisar nada (evidencia en «C1 — la métrica de verdad con un solo comando»; commits `da773a2`, `407edc4`, `e182613`) |
 | **C2** | Calibración declarada: cobertura de la banda y Brier contra la constante **por cámara, en mayoría simple** | reproduce la tabla del §9.2 | PENDIENTE |
 | **C3** | Brazo "sin corte por era" con el motor completo (decisión 7) | veredicto medido; decide Franco | PENDIENTE |
 
@@ -586,6 +586,52 @@ Franco: **(1) «dejalo»** → `fase1_rec_por_tema.py` y su test **se quedan**. 
 10. **Nada más cambia:** `git diff` de `modelo/ variables/ definiciones.py rutas.py evaluacion/baseline/src/baseline_voto_individual.py evaluacion/baseline/src/censo_estadisticos.py evaluacion/baseline/src/censo_detalle_paralelo.py` vacío (sólo hay archivos nuevos y el reindexado de `MAPA.md`).
 
 **Qué no hace:** no mide calidad de P(aprobación) (es C2); no toca ningún término del motor; no resuelve que el IC de la era vigente (±0,255) no alcance al objetivo 1 del §9.4 (eso lo dirá la métrica, no la arregla); no valida las etiquetas de origen; no reemplaza el gate pareado (E3).
+
+### C1 — la métrica de verdad con un solo comando (2026-09-30; pre-registro `da773a2`, código `407edc4`, JSON y test `e182613`)
+
+**Qué se hizo.** `evaluacion/baseline/src/metrica_de_verdad.py` (archivo nuevo, 306 líneas): un solo comando que, **sin argumentos**, lee los estadísticos por acta de A2 (git), calcula el skill del motor de hoy (`estricta__general`) con IC 95% re-muestreando leyes (**2.000 réplicas**, semilla 7) en global, las 5 eras, las 2 cámaras y un control de muestra (sin los votos sin ley), más el ΔBrier **pareado** de `estricta__tema` (RECORD_POR_TEMA prendido) contra el motor de hoy en cada corte, y escribe `evaluacion/baseline/outputs/metrica_de_verdad.json` (versionado; 9 s). Con `--verificar-motor N` re-corre el harness con el motor de hoy sobre N actas estratificadas y lo compara voto a voto con el detalle del censo (sólo en la PC). **No pisa nada:** si el destino existe falla (salida 3) salvo `--reemplazar`, y aun con `--reemplazar` se niega a escribir sobre un archivo que no lleve su marca `generador`. Test: `evaluacion/baseline/tests/test_metrica_de_verdad.py` (73 comprobaciones, 12 s, corre en el CI sin el detalle). No cambia ningún término del motor; `git diff e04b6b3 HEAD -- modelo variables definiciones.py rutas.py evaluacion/baseline/src/{baseline_voto_individual,censo_estadisticos,censo_detalle_paralelo}.py` → **vacío**.
+
+**Lo que da** (`python evaluacion/baseline/src/metrica_de_verdad.py --verificar-motor 60`; 2.000 réplicas, semilla 7; el ΔBrier es «`estricta__tema` − motor», positivo = la alternativa es peor):
+
+| corte | votos | leyes | skill [IC 95% por ley] | ΔBrier de la alternativa con récord por tema |
+|---|---:|---:|---|---|
+| global | 691.845 | 3.731 | **0,1333 [0,0605; 0,1982]** | +2,12% [0,89; 3,41] |
+| hasta 2011 | 318.335 | 2.017 | 0,1331 [0,0709; 0,1936] | +5,30% [3,84; 6,75] |
+| 2011-2015 | 115.967 | 679 | 0,2770 [0,1876; 0,3570] | −0,21% [−5,57; 4,89] |
+| 2015-2019 | 126.454 | 505 | 0,0808 [−0,0465; 0,2066] | −0,77% [−4,70; 2,89] |
+| 2019-2023 | 25.755 | 246 | 0,0113 [−0,2303; 0,1035] | −0,28% [−1,87; 0,92] |
+| **desde 2023 (vigente)** | 105.334 | 312 | **0,0100 [−0,2827; 0,2647]** | +0,97% [0,12; 2,39] |
+| Diputados | 531.905 | 1.915 | 0,1261 [0,0420; 0,2052] | +1,28% [−0,12; 2,61] |
+| Senado | 159.940 | 2.101 | 0,1077 [0,0594; 0,1557] | +6,53% [4,75; 8,61] |
+| global sin votos sin ley (control) | 585.822 | 2.944 | 0,1664 [0,0807; 0,2449] | +2,63% [1,04; 4,30] |
+
+**Certificado de vigencia del motor** (`vigencia_del_motor` del JSON, `--verificar-motor 60`, 2,7 min): 60 actas (6 por cada una de las 10 celdas era × cámara, semilla 7), **7.298 votos comparados, max|ΔP_i| = 0, 0 votos en un lado y no en el otro**, motor `407edc4` — el motor de hoy da, voto a voto, las P_i de `p__estricta__general` del censo del 28-09. Sensibilidad (el certificado puede fallar): con `SHRINK_RECORD=0` en el entorno, sobre 10 actas, **NO VIGENTE: 1.224 de 1.274 votos difieren, max|ΔP| = 0,72**.
+
+**Criterios pre-registrados (umbral: 0 fallas):**
+
+| criterio | resultado |
+|---|---|
+| **1. continuidad exacta** (300 réplicas, semilla 7, contra `baseline_voto_individual.json`) | **cumple:** global 0,1333 [0,0574; 0,1979] y, en las 5 eras y las 2 cámaras, skill, IC y leyes **idénticos** (y el mismo cálculo que `censo_estadisticos.skill` en los 8 cortes estándar) |
+| **2. con 2.000 réplicas el IC global reproduce el del control** (±0,010) | **cumple:** [0,0605; 0,1982] contra el del control [0,0586; 0,1996] (diferencias 0,0019 y 0,0014) y contra el del plan [0,059; 0,200] (0,0015 y 0,0018). **No coincide a tres decimales y no podía:** ver el desvío 1 |
+| **3. ΔBrier pareado** (300 réplicas, global) | **cumple:** +2,12% [0,84; 3,48] (el número de A2) |
+| **4. control de muestra** (300 réplicas) | **cumple:** 585.822 votos, 2.944 leyes, 0,166 [0,084; 0,252] (0,1664 [0,0842; 0,2521]) |
+| **5. no pisa** | **cumple:** con `--salida evaluacion/baseline/outputs/baseline_voto_individual.json` el comando sale con código **3** (con y sin `--reemplazar`) y el sha256 del archivo no cambia; sobre la métrica versionada sin `--reemplazar`, 3; sobre un archivo propio con `--reemplazar`, 0; sobre un JSON ajeno con `--reemplazar`, 3 |
+| **6. vigencia del motor** (`--verificar-motor 60`) | **cumple:** 7.298 votos, max\|ΔP\| = 0, 0 votos de un solo lado; 2,7 min (≤ 15) |
+| **7. test que lo fija, y que puede fallar, sobre el archivo real** | **cumple:** pasa 73/73 (12 s). Con `SEMILLA` 7 → 8 en `metrica_de_verdad.py`: **código 1**, «la semilla por defecto es 8, no la 7 del harness»; con `N_BOOT` 2000 → 300: **código 1**, «el default de réplicas es 300: la pieza 1 pide ≥ 2.000»; con todo Σ(p−y)² del JSON de estadísticos × 1,01: **código 1**, **25 fallas**: la continuidad de los 8 cortes («skill 0,1247 ≠ publicado 0,1333», IC distinto), el ΔBrier (+1,11% en vez de +2,12%), el control de muestra (0,158 en vez de 0,166), la regeneración del JSON versionado y el sha256 del JSON de estadísticos. Los tres revertidos con `git checkout` (`cmp` idéntico al original) |
+| **8. tiempo** | comando sin `--verificar-motor` **9 s** (≤ 60); test **12–13 s** (≤ 60) |
+| **9. suite** | **cumple:** **PC (3.14):** `pytest tests/ datos/proyectos/tests` → 54 pasan; los `test_*.py` como scripts → **62 corridos, 0 fallaron** (61 + el nuevo); árbol idéntico antes y después (`git status --porcelain`). **Checkout limpio de `e182613`** (`git archive`, Python 3.11.0, venv nuevo con los pines): `pytest` → 53 pasan + 1 se saltea (el test de frescura, que necesita el detalle); **62 scripts, 0 fallaron**, y `test_metrica_de_verdad.py` da 73/73 en 11 s **sin el detalle del censo**. Falta la confirmación de Franco en *Actions* tras su `git push` |
+| **10. nada más cambia** | **cumple:** `git diff` de los archivos del motor y del harness → vacío; sólo hay archivos nuevos, `MAPA.md`/`mapa.json` reindexados, una línea en el README del módulo y en `QUE-SE-MIDE.md` §5, y una en `PENDIENTES-POST-AUDITORIA.md` |
+
+**Desvíos y observaciones (ninguno cambia una conclusión; el 1 hay que leerlo):**
+1. **El «[0,059; 0,200]» del plan no se puede reproducir a tres decimales con el bootstrap del harness.** Es un sorteo del bootstrap: con 2.000 réplicas los extremos tienen un error de Monte Carlo (desvío 0,0023 el inferior y 0,0014 el superior, medido con 20 semillas) y el control usa **otra semilla (11) y otro orden de las leyes** que el harness. Lo que se reproduce es el punto (0,1333, exacto) y el IC dentro de ese ruido; **la continuidad exacta es la del criterio 1**. Desde ahora el número que se cita es **0,1333 [0,061; 0,198] con 2.000 réplicas** (o [0,057; 0,198] con las 300 del harness: la misma cosa).
+2. **El IC de la era vigente es más ancho de lo que decía `QUE-SE-MIDE.md`:** con 2.000 réplicas es **[−0,283; 0,265] (±0,274)**; con las 300 de antes daba ±0,255. Es ruido de Monte Carlo sobre colas pesadas (312 leyes); no cambia la conclusión (objetivo 1 del §9.4, ±0,10: no se cumple) pero la cifra para citar es la de 2.000 réplicas. Se actualiza en `QUE-SE-MIDE.md` al cerrar la fase C.
+3. **El `motor_sha` del JSON de A2 (`5b0510a`) no es el del censo** (es el `HEAD` del día en que se escribió el JSON): quedó rotulado así en `metrica_de_verdad.json` y es lo que el certificado de vigencia viene a cubrir.
+4. **La primera versión del test no habría detectado `SEMILLA` 7 → 8**: pasaba la semilla explícita a `medir` y sólo el criterio 2 (laxo) usaba el default. Lo vi **antes de correr la demostración** y agregué dos chequeos (el default es la semilla del harness; el JSON versionado se generó con los defaults de hoy). Sin esos dos, la demostración (a) habría salido con código 0.
+5. **Agregué sin estar pre-registrado**: la corrida de 10 actas del certificado (para medir el tiempo, 1 min) y su sabotaje con `SHRINK_RECORD=0` (que demuestra que el certificado puede fallar); ninguna cambia un criterio.
+
+**Límites (declarados en el docstring y en el JSON):** (1) **el certificado de vigencia es una muestra**: 60 de 5.856 actas (1,0%), 7.298 de 691.845 votos, estratificada por era y cámara; detecta un cambio general del motor (el de `SHRINK_RECORD=0` movió el 96% de los votos de la muestra) pero **no uno muy localizado**; la certificación completa es regenerar el censo (43 min). (2) El comando sólo reproduce lo que está en los estadísticos de A2 (variantes `estricta__general` y `estricta__tema`): otra variante exige regenerar el censo. (3) Con 2.000 réplicas los extremos del IC siguen con ruido de ≈ ±0,002. (4) La independencia respecto del control no cambió: el comando y el control comparten los estadísticos de A2 (la agrupación en leyes y las sumas del motor). (5) `motor_modificado_sin_commitear` sólo cuenta archivos **rastreados** del motor (no los nuevos sin `git add`). (6) **`resumen_censo_limpio.py` sigue pisando `baseline_voto_individual.json`** (anotado en `PENDIENTES-POST-AUDITORIA.md`; no se tocó). (7) La métrica no mide la calidad de P(aprobación): eso es C2.
+
+**Criterio de salida de C1: cumplido** — el comando reproduce 0,1333 (exacto) y el IC (exacto con 300 réplicas; dentro del ruido de Monte Carlo con 2.000), por era y por cámara, con fecha, procedencia y certificado del motor, sin pisar ningún número versionado.
 
 ## Bitácora de alcance
 

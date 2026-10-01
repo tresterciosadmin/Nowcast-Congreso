@@ -1,0 +1,341 @@
+{
+ "formato": 1,
+ "generador": "evaluacion/baseline/src/medir_sin_corte_por_era.py",
+ "generado": "2026-10-01",
+ "metodo": {
+  "n_boot": 2000,
+  "semilla": 7,
+  "era_desde_del_brazo": "1900-01-01",
+  "unidad_de_remuestreo": "ley (bootstrap de Poisson, ADR-0032)",
+  "dif_brier_pareado": "(Brier sin corte − Brier con corte) / Brier con corte; positivo = el guard ayuda",
+  "primario": "actas desde 2015-12-10 (donde el guard corta)",
+  "control": "antes de 2015-12-10 el guard no corta: el brazo es idéntico al motor y Δ ≡ 0",
+  "alcance": "un solo brazo, el récord; la postura de bloque conserva su propio corte"
+ },
+ "procedencia": {
+  "head_sha_al_correr": "67cdb75",
+  "motor_modificado_sin_commitear": [],
+  "comando": [
+   "medir_sin_corte_por_era.py",
+   "--censo"
+  ],
+  "estadisticos": {
+   "ruta": "evaluacion/baseline/outputs/censo_estadisticos_sin_corte_era_2026-10-01.json",
+   "sha256_lf": "ad1dfb7b8a7bb32f201808e58b171b300759afb9efaf5c45a137cc4d438df426",
+   "escrito_el": "2026-10-01",
+   "motor_head_sha_al_escribirlo": "67cdb75",
+   "fuente": {
+    "n_votos": 691845,
+    "n_actas": 5856,
+    "n_leyes": 3731,
+    "detalle": "evaluacion/baseline/outputs/censo_detalle_sin_corte_era_2026-10-01.parquet",
+    "detalle_sha256_16": "37f23c69bc38c5ba",
+    "detalle_base": "evaluacion/baseline/outputs/censo_detalle_2026-09-28.parquet",
+    "detalle_base_sha256_16": "7ee19ed89396f92c",
+    "era_desde_del_brazo": "1900-01-01"
+   },
+   "variantes": {
+    "estricta__general": "p__estricta__general",
+    "estricta__sin_corte_era": "p__estricta__sin_corte_era"
+   }
+  }
+ },
+ "dif_brier_pareado": {
+  "primario__desde_2015-12-10": {
+   "dBrier": 0.005467,
+   "dBrier_rel_%": 3.0,
+   "ic95_rel_%_ley": [
+    -2.94,
+    9.67
+   ],
+   "n_votos": 257543,
+   "n_leyes": 1055
+  },
+  "control__antes_de_2015-12-10": {
+   "dBrier": 0.0,
+   "dBrier_rel_%": 0.0,
+   "ic95_rel_%_ley": [
+    0.0,
+    0.0
+   ],
+   "n_votos": 434302,
+   "n_leyes": 2684
+  },
+  "secundario__global": {
+   "dBrier": 0.002035,
+   "dBrier_rel_%": 1.46,
+   "ic95_rel_%_ley": [
+    -1.4,
+    4.69
+   ],
+   "n_votos": 691845,
+   "n_leyes": 3731
+  },
+  "secundario__era=2015-2019": {
+   "dBrier": 0.013994,
+   "dBrier_rel_%": 8.95,
+   "ic95_rel_%_ley": [
+    -0.66,
+    19.53
+   ],
+   "n_votos": 126454,
+   "n_leyes": 505
+  },
+  "secundario__era=2019-2023": {
+   "dBrier": 0.019207,
+   "dBrier_rel_%": 12.91,
+   "ic95_rel_%_ley": [
+    -4.72,
+    21.12
+   ],
+   "n_votos": 25755,
+   "n_leyes": 246
+  },
+  "secundario__era=desde 2023": {
+   "dBrier": -0.008129,
+   "dBrier_rel_%": -3.68,
+   "ic95_rel_%_ley": [
+    -7.72,
+    3.45
+   ],
+   "n_votos": 105334,
+   "n_leyes": 312
+  },
+  "secundario__desde_2015-12-10 & camara=diputados": {
+   "dBrier": 0.005385,
+   "dBrier_rel_%": 2.7,
+   "ic95_rel_%_ley": [
+    -3.65,
+    10.59
+   ],
+   "n_votos": 204123,
+   "n_leyes": 540
+  },
+  "secundario__desde_2015-12-10 & camara=senado": {
+   "dBrier": 0.005784,
+   "dBrier_rel_%": 4.99,
+   "ic95_rel_%_ley": [
+    1.4,
+    8.99
+   ],
+   "n_votos": 53420,
+   "n_leyes": 592
+  }
+ },
+ "skill": {
+  "primario__desde_2015-12-10": {
+   "con_corte": {
+    "skill": 0.0602,
+    "skill_ic95_ley": [
+     -0.0848,
+     0.1935
+    ],
+    "n_votos": 257543,
+    "n_leyes": 1055
+   },
+   "sin_corte": {
+    "skill": 0.0319,
+    "skill_ic95_ley": [
+     -0.0767,
+     0.1462
+    ],
+    "n_votos": 257543,
+    "n_leyes": 1055
+   }
+  },
+  "control__antes_de_2015-12-10": {
+   "con_corte": {
+    "skill": 0.1718,
+    "skill_ic95_ley": [
+     0.1216,
+     0.2211
+    ],
+    "n_votos": 434302,
+    "n_leyes": 2684
+   },
+   "sin_corte": {
+    "skill": 0.1718,
+    "skill_ic95_ley": [
+     0.1216,
+     0.2211
+    ],
+    "n_votos": 434302,
+    "n_leyes": 2684
+   }
+  },
+  "secundario__global": {
+   "con_corte": {
+    "skill": 0.1333,
+    "skill_ic95_ley": [
+     0.0605,
+     0.1982
+    ],
+    "n_votos": 691845,
+    "n_leyes": 3731
+   },
+   "sin_corte": {
+    "skill": 0.1207,
+    "skill_ic95_ley": [
+     0.0621,
+     0.1768
+    ],
+    "n_votos": 691845,
+    "n_leyes": 3731
+   }
+  },
+  "secundario__era=2015-2019": {
+   "con_corte": {
+    "skill": 0.0808,
+    "skill_ic95_ley": [
+     -0.0465,
+     0.2066
+    ],
+    "n_votos": 126454,
+    "n_leyes": 505
+   },
+   "sin_corte": {
+    "skill": -0.0015,
+    "skill_ic95_ley": [
+     -0.0998,
+     0.0851
+    ],
+    "n_votos": 126454,
+    "n_leyes": 505
+   }
+  },
+  "secundario__era=2019-2023": {
+   "con_corte": {
+    "skill": 0.0113,
+    "skill_ic95_ley": [
+     -0.2303,
+     0.1035
+    ],
+    "n_votos": 25755,
+    "n_leyes": 246
+   },
+   "sin_corte": {
+    "skill": -0.1164,
+    "skill_ic95_ley": [
+     -0.2349,
+     0.0241
+    ],
+    "n_votos": 25755,
+    "n_leyes": 246
+   }
+  },
+  "secundario__era=desde 2023": {
+   "con_corte": {
+    "skill": 0.01,
+    "skill_ic95_ley": [
+     -0.2827,
+     0.2647
+    ],
+    "n_votos": 105334,
+    "n_leyes": 312
+   },
+   "sin_corte": {
+    "skill": 0.0464,
+    "skill_ic95_ley": [
+     -0.1922,
+     0.2421
+    ],
+    "n_votos": 105334,
+    "n_leyes": 312
+   }
+  },
+  "secundario__desde_2015-12-10 & camara=diputados": {
+   "con_corte": {
+    "skill": 0.035,
+    "skill_ic95_ley": [
+     -0.1304,
+     0.1859
+    ],
+    "n_votos": 204123,
+    "n_leyes": 540
+   },
+   "sin_corte": {
+    "skill": 0.0089,
+    "skill_ic95_ley": [
+     -0.1207,
+     0.1421
+    ],
+    "n_votos": 204123,
+    "n_leyes": 540
+   }
+  },
+  "secundario__desde_2015-12-10 & camara=senado": {
+   "con_corte": {
+    "skill": 0.1022,
+    "skill_ic95_ley": [
+     -0.0086,
+     0.2
+    ],
+    "n_votos": 53420,
+    "n_leyes": 592
+   },
+   "sin_corte": {
+    "skill": 0.0574,
+    "skill_ic95_ley": [
+     -0.0304,
+     0.1348
+    ],
+    "n_votos": 53420,
+    "n_leyes": 592
+   }
+  }
+ },
+ "veredicto": {
+  "primario": {
+   "dBrier": 0.005467,
+   "dBrier_rel_%": 3.0,
+   "ic95_rel_%_ley": [
+    -2.94,
+    9.67
+   ],
+   "n_votos": 257543,
+   "n_leyes": 1055
+  },
+  "resultado": "NO_SE_DISTINGUE",
+  "recomendacion": "dejar el guard como está (la bandera no se mueve sin evidencia) y subir el modelo principal a Opus para este veredicto (§9.10): el IC del primario incluye 0",
+  "recomendar_opus": true,
+  "decide": "Franco",
+  "la_bandera_se_toca": false
+ },
+ "pc_solo": {
+  "controles_del_brazo": {
+   "votos": 691845,
+   "mismo_conjunto_de_votos": true,
+   "y_y_ley_identicos": true,
+   "antes_de_2015-12-10": {
+    "votos": 434302,
+    "max_abs_dp": 0.0,
+    "votos_distintos": 0
+   },
+   "desde_2015-12-10": {
+    "votos": 257543,
+    "max_abs_dp": 0.9000943134535366,
+    "votos_distintos": 116317,
+    "fraccion_distintos": 0.4516
+   },
+   "n_prev_brazo_menor_que_el_motor": 0,
+   "n_prev_distinto_antes_de_2015-12-10": 0,
+   "n_prev_mayor_desde_2015-12-10": 119176,
+   "postura_share_max_abs_dif": 0.0,
+   "postura_desvio_max_abs_dif": 0.0,
+   "cumple": true,
+   "sumas_del_motor_iguales_a_las_de_A2": true
+  },
+  "efecto_en_los_votos_que_el_corte_toca": {
+   "dBrier": 0.012106,
+   "dBrier_rel_%": 6.88,
+   "ic95_rel_%_ley": [
+    -6.99,
+    21.05
+   ],
+   "votos_que_toca": 116317,
+   "fraccion_de_los_votos": 0.1681,
+   "n_leyes": 1008
+  },
+  "minutos": 13.6
+ }
+}

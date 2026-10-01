@@ -1,0 +1,397 @@
+{
+ "formato": 1,
+ "generador": "evaluacion/baseline/src/calibracion_declarada.py",
+ "generado": "2026-10-01",
+ "metodo": {
+  "n_boot": 2000,
+  "semilla": 7,
+  "semilla_recalibracion": 3,
+  "unidad_de_remuestreo": "ley (bootstrap de Poisson, ADR-0032)",
+  "mayoria_simple": "tipo normalizado SIMPLE (lo desconocido cuenta como simple) con resultado oficial afirmativo/negativo; la banda usa todas las actas SIMPLE",
+  "constante": "tasa base del subconjunto (recalculada en cada réplica del bootstrap)",
+  "disputada": "min(afirmativos, votantes − afirmativos) / votantes >= 0,10",
+  "modelo_menos_constante": "Brier(modelo, P recortada a [1e-4, 1−1e-4]) − Brier(constante); negativo = el modelo le gana a la constante",
+  "banda": "el recuento real de afirmativos (entre los que votaron) cae en [p5, p95] simulado",
+  "declarada": 0.9
+ },
+ "procedencia": {
+  "head_sha_al_correr": "9e463aa",
+  "motor_modificado_sin_commitear": [],
+  "comando": [
+   "calibracion_declarada.py"
+  ],
+  "actas": {
+   "ruta": "evaluacion/baseline/outputs/calibracion_actas_2026-09-28.json",
+   "sha256_lf": "421884c30288fb33f79966e33ac6e3b1ba697b1747b6a104bf2d16114de49a49",
+   "escrito_el": "2026-10-01",
+   "motor_head_sha_al_simular": "fb72af0",
+   "parametros": {
+    "epsilon0": 0.035,
+    "tau": 1.19,
+    "reparto_desvio": 1.0,
+    "desvio_min_individual": 0.02,
+    "p_incertidumbre": 0.01,
+    "quorum_cuenta_abstenciones": false,
+    "n_sims_p_aprobacion": 2000,
+    "n_sims_banda": 1000,
+    "semilla_simulacion": 0,
+    "p_presente": 1.0
+   },
+   "fuente": {
+    "detalle": "evaluacion/baseline/outputs/censo_detalle_2026-09-28.parquet",
+    "detalle_sha256_16": "7ee19ed89396f92c",
+    "columna_p": "p__estricta__general",
+    "n_actas": 5852,
+    "poblacion": "actas de >= 20 votos emitidos del censo, en el orden del detalle"
+   }
+  }
+ },
+ "tabla_simple": {
+  "diputados": {
+   "todas": {
+    "n": 2543,
+    "tasa_base": 0.9752,
+    "brier_constante": 0.0242,
+    "brier_modelo": 0.0357,
+    "auc": 0.732,
+    "brier_recalibrado_cv": 0.0236,
+    "brier_sin_eps0_tau": 0.0244,
+    "logloss_modelo": 0.1658,
+    "logloss_sin_eps0_tau": 0.1241,
+    "modelo_menos_constante": {
+     "delta": 0.01154,
+     "ic95_ley": [
+      0.00793,
+      0.01576
+     ],
+     "delta_rel_%": 47.77,
+     "ic95_rel_%_ley": [
+      26.6,
+      85.99
+     ],
+     "n_leyes": 1656
+    }
+   },
+   "disputadas": {
+    "n": 1314,
+    "tasa_base": 0.9528,
+    "brier_constante": 0.045,
+    "brier_modelo": 0.0576,
+    "auc": 0.648,
+    "brier_recalibrado_cv": 0.0447,
+    "brier_sin_eps0_tau": 0.0472,
+    "logloss_modelo": 0.2333,
+    "logloss_sin_eps0_tau": 0.2307,
+    "modelo_menos_constante": {
+     "delta": 0.01265,
+     "ic95_ley": [
+      0.00679,
+      0.01889
+     ],
+     "delta_rel_%": 28.14,
+     "ic95_rel_%_ley": [
+      12.61,
+      53.53
+     ],
+     "n_leyes": 640
+    }
+   }
+  },
+  "senado": {
+   "todas": {
+    "n": 2851,
+    "tasa_base": 0.9849,
+    "brier_constante": 0.0149,
+    "brier_modelo": 0.0174,
+    "auc": 0.6,
+    "brier_recalibrado_cv": 0.0149,
+    "brier_sin_eps0_tau": 0.0149,
+    "logloss_modelo": 0.097,
+    "logloss_sin_eps0_tau": 0.0794,
+    "modelo_menos_constante": {
+     "delta": 0.00258,
+     "ic95_ley": [
+      0.00154,
+      0.00376
+     ],
+     "delta_rel_%": 17.36,
+     "ic95_rel_%_ley": [
+      8.74,
+      31.07
+     ],
+     "n_leyes": 2012
+    }
+   },
+   "disputadas": {
+    "n": 885,
+    "tasa_base": 0.9525,
+    "brier_constante": 0.0452,
+    "brier_modelo": 0.0485,
+    "auc": 0.562,
+    "brier_recalibrado_cv": 0.0457,
+    "brier_sin_eps0_tau": 0.0466,
+    "logloss_modelo": 0.2031,
+    "logloss_sin_eps0_tau": 0.2281,
+    "modelo_menos_constante": {
+     "delta": 0.00328,
+     "ic95_ley": [
+      0.00043,
+      0.00678
+     ],
+     "delta_rel_%": 7.25,
+     "ic95_rel_%_ley": [
+      0.99,
+      17.29
+     ],
+     "n_leyes": 485
+    }
+   }
+  },
+  "ambas": {
+   "todas": {
+    "n": 5394,
+    "tasa_base": 0.9803,
+    "brier_constante": 0.0193,
+    "brier_modelo": 0.026,
+    "auc": 0.687,
+    "brier_recalibrado_cv": null,
+    "brier_sin_eps0_tau": 0.0194,
+    "logloss_modelo": 0.1294,
+    "logloss_sin_eps0_tau": 0.1004,
+    "modelo_menos_constante": {
+     "delta": 0.00678,
+     "ic95_ley": [
+      0.0048,
+      0.00899
+     ],
+     "delta_rel_%": 35.2,
+     "ic95_rel_%_ley": [
+      21.38,
+      54.19
+     ],
+     "n_leyes": 3402
+    }
+   }
+  },
+  "rechazadas_en_simple": {
+   "n": 106,
+   "p_mediana": 0.911,
+   "n_con_p_mayor_0_8": 79
+  }
+ },
+ "confiabilidad": {
+  "diputados": {
+   "clases": [
+    {
+     "clase": "[0.00,0.05)",
+     "n": 0,
+     "p_medio": null,
+     "frec_real": null
+    },
+    {
+     "clase": "[0.05,0.20)",
+     "n": 0,
+     "p_medio": null,
+     "frec_real": null
+    },
+    {
+     "clase": "[0.20,0.50)",
+     "n": 2,
+     "p_medio": 0.3865,
+     "frec_real": 0.5
+    },
+    {
+     "clase": "[0.50,0.80)",
+     "n": 386,
+     "p_medio": 0.7169,
+     "frec_real": 0.9352
+    },
+    {
+     "clase": "[0.80,0.95)",
+     "n": 1669,
+     "p_medio": 0.9019,
+     "frec_real": 0.979
+    },
+    {
+     "clase": "[0.95,1.00)",
+     "n": 486,
+     "p_medio": 0.9698,
+     "frec_real": 0.9959
+    }
+   ],
+   "p_mayor_0_95_y_rechazada": 2,
+   "p_menor_0_05_y_aprobada": 0
+  },
+  "senado": {
+   "clases": [
+    {
+     "clase": "[0.00,0.05)",
+     "n": 0,
+     "p_medio": null,
+     "frec_real": null
+    },
+    {
+     "clase": "[0.05,0.20)",
+     "n": 0,
+     "p_medio": null,
+     "frec_real": null
+    },
+    {
+     "clase": "[0.20,0.50)",
+     "n": 0,
+     "p_medio": null,
+     "frec_real": null
+    },
+    {
+     "clase": "[0.50,0.80)",
+     "n": 82,
+     "p_medio": 0.7605,
+     "frec_real": 0.9878
+    },
+    {
+     "clase": "[0.80,0.95)",
+     "n": 851,
+     "p_medio": 0.9281,
+     "frec_real": 0.9741
+    },
+    {
+     "clase": "[0.95,1.00)",
+     "n": 1918,
+     "p_medio": 0.9662,
+     "frec_real": 0.9896
+    }
+   ],
+   "p_mayor_0_95_y_rechazada": 19,
+   "p_menor_0_05_y_aprobada": 0
+  }
+ },
+ "banda": {
+  "todas_las_actas": {
+   "ambas": {
+    "n_actas": 5852,
+    "cobertura_banda_90": 0.6364,
+    "ic95_ley": [
+     0.6148,
+     0.658
+    ],
+    "observada_menos_declarada_pp": -26.4,
+    "ic95_pp": [
+     -28.5,
+     -24.2
+    ],
+    "ancho_mediano_votos": 40.0,
+    "sesgo_medio_votos": 6.93,
+    "n_leyes": 3728
+   },
+   "diputados": {
+    "n_actas": 2858,
+    "cobertura_banda_90": 0.6039,
+    "ic95_ley": [
+     0.5692,
+     0.6385
+    ],
+    "observada_menos_declarada_pp": -29.6,
+    "ic95_pp": [
+     -33.1,
+     -26.2
+    ],
+    "ancho_mediano_votos": 88.1,
+    "sesgo_medio_votos": 10.53,
+    "n_leyes": 1915
+   },
+   "senado": {
+    "n_actas": 2994,
+    "cobertura_banda_90": 0.6673,
+    "ic95_ley": [
+     0.6432,
+     0.6903
+    ],
+    "observada_menos_declarada_pp": -23.3,
+    "ic95_pp": [
+     -25.7,
+     -21.0
+    ],
+    "ancho_mediano_votos": 23.0,
+    "sesgo_medio_votos": 3.49,
+    "n_leyes": 2098
+   }
+  },
+  "mayoria_simple": {
+   "ambas": {
+    "n_actas": 5414,
+    "cobertura_banda_90": 0.6289,
+    "ic95_ley": [
+     0.6056,
+     0.6521
+    ],
+    "observada_menos_declarada_pp": -27.1,
+    "ic95_pp": [
+     -29.4,
+     -24.8
+    ],
+    "ancho_mediano_votos": 34.5,
+    "sesgo_medio_votos": 8.29,
+    "n_leyes": 3407
+   },
+   "diputados": {
+    "n_actas": 2547,
+    "cobertura_banda_90": 0.585,
+    "ic95_ley": [
+     0.5434,
+     0.6226
+    ],
+    "observada_menos_declarada_pp": -31.5,
+    "ic95_pp": [
+     -35.7,
+     -27.7
+    ],
+    "ancho_mediano_votos": 87.0,
+    "sesgo_medio_votos": 13.56,
+    "n_leyes": 1659
+   },
+   "senado": {
+    "n_actas": 2867,
+    "cobertura_banda_90": 0.6679,
+    "ic95_ley": [
+     0.6428,
+     0.6925
+    ],
+    "observada_menos_declarada_pp": -23.2,
+    "ic95_pp": [
+     -25.7,
+     -20.7
+    ],
+    "ancho_mediano_votos": 23.0,
+    "sesgo_medio_votos": 3.6,
+    "n_leyes": 2016
+   }
+  }
+ },
+ "objetivos_9_4": {
+  "3_brier_menor_que_la_constante_con_ic_pareado_que_excluya_0": {
+   "diputados": {
+    "delta": 0.01154,
+    "extremo_superior_ic": 0.01576,
+    "cumple": false
+   },
+   "senado": {
+    "delta": 0.00258,
+    "extremo_superior_ic": 0.00376,
+    "cumple": false
+   },
+   "cumple": false
+  },
+  "2_cobertura_85_95_con_asistencia_real": {
+   "diputados": {
+    "cobertura": 0.585,
+    "en_85_95": false
+   },
+   "senado": {
+    "cobertura": 0.6679,
+    "en_85_95": false
+   },
+   "en_85_95": false,
+   "nota": "medida con p_presente = 1 (sin asistencia real): aunque cayera en el rango, el objetivo exige asistencia real"
+  }
+ }
+}

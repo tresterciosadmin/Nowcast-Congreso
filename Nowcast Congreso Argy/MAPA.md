@@ -2,13 +2,13 @@
 
 <!-- GENERADO por indexar.py. No editar: los cambios se pierden. -->
 <!-- La prosa vive en el README.md de cada modulo (seccion `Buscar aca si`). -->
-<!-- 2026-10-01 13:59 UTC · 183 archivos · 40,604 LOC -->
+<!-- 2026-10-01 14:15 UTC · 183 archivos · 40,604 LOC -->
 
 ## Como usar este archivo
 
 Es el unico archivo del proyecto que hace falta leer para empezar. Para ubicar algo concreto: `python3 .mapa/buscar.py "<termino>"` devuelve archivo y linea sin abrir nada. Recien despues abrir los archivos que salgan, y solo esos.
 
-Rama `main` — ultimo commit: 2026-10-01 9e463aa Auditoría C2: calibracion_declarada.py, la tabla del §9.2 con IC pareado del Brier contra la constante y la cobertura de la banda, por cámara y en mayoría simple · **hay cambios sin commitear**
+Rama `main` — ultimo commit: 2026-10-01 1369560 Auditoría C2: calibracion_declarada.json y el JSON por acta versionados, con su test de regresión · **hay cambios sin commitear**
 
 ## Donde buscar que
 
@@ -80,6 +80,7 @@ Rama `main` — ultimo commit: 2026-10-01 9e463aa Auditoría C2: calibracion_dec
 | un id de taxonomia duplicado o mal escrito (`loader.py` lo detecta) | `docs/taxonomias/` |
 | el numero publicado del motor (skill del voto individual) y como se reproduce: `censo_detalle_paralelo.py` + `resumen_censo_limpio.py` | `evaluacion/baseline/` |
 | la **metrica de verdad** (skill por era y camara con IC por ley de 2.000 replicas, DBrier pareado, procedencia y certificado de que el motor de hoy da esas P_i), con UN comando que no pisa ningun numero versionado: `src/metrica_de_verdad.py` -> `outputs/metrica_de_verdad.json` (`tests/test_metrica_de_verdad.py`; auditoria C1) | `evaluacion/baseline/` |
+| la **calibracion declarada** de P(aprobacion) y de la banda, en mayoria simple y por camara (Brier contra una constante con IC pareado, AUC, recalibrado, cobertura de la banda al 90%), desde un JSON por acta que viaja por git, con UN comando que no pisa ningun numero versionado: `src/calibracion_declarada.py` -> `outputs/calibracion_declarada.json` (`--simular` regenera el JSON por acta con el motor de hoy, 6 min; `tests/test_calibracion_declarada.py`; auditoria C2) | `evaluacion/baseline/` |
 | los estadisticos del censo que SI viajan por git (skill + IC por ley, tau, eps0) y como se regeneran: `censo_estadisticos.py` -> `outputs/censo_estadisticos_*.json` (el detalle voto a voto es un parquet ignorado; `tests/test_censo_estadisticos.py`) | `evaluacion/baseline/` |
 | la regla del EXPEDIENTE: que cuenta como historia de un voto, y como se agrupan actas en leyes (`ley_por_acta`, `historia=estricta`) | `evaluacion/baseline/` |
 | IC que re-muestrean leyes, no actas (`skill_ic_por_ley`, `dif_brier_ic_por_ley`) | `evaluacion/baseline/` |
@@ -283,7 +284,7 @@ Buscar uno sin abrir nada: `python .mapa/buscar.py --dato <termino>`. Columna **
 | `evaluacion/baseline/outputs/fase0_detalle_primaria.parquet` | 691,893×9 | 6.0 MB | si | — | — |
 | `evaluacion/baseline/outputs/fase0_detalle_sin_tema.parquet` | 691,460×9 | 6.0 MB | si | — | — |
 | `evaluacion/baseline/outputs/censo_estadisticos_2026-09-28.json` | objeto: formato, generado, generador, mo | 1.2 MB | si | — | _(2 lo nombran)_ |
-| `evaluacion/baseline/outputs/calibracion_actas_2026-09-28.json` | objeto: formato, generador, generado, mo | 729 KB | si | — | _(1 lo nombran)_ |
+| `evaluacion/baseline/outputs/calibracion_actas_2026-09-28.json` | objeto: formato, generador, generado, mo | 734 KB | si | — | _(1 lo nombran)_ |
 | `evaluacion/baseline/outputs/record_por_origen_fase0_1_2026-09-27.json` | objeto: k_shrink, umbral_lado, recambios | 131 KB | si | — | — |
 | `evaluacion/baseline/outputs/record_por_origen_fase2_censo_estricta_2026-09-27.json` | objeto: n_votos, k, umbral_lado, min_act | 69 KB | si | — | — |
 | `evaluacion/baseline/outputs/record_por_origen_fase2_censo_harness_2026-09-27.json` | objeto: n_votos, k, umbral_lado, min_act | 69 KB | si | — | — |
@@ -438,7 +439,7 @@ Ordenados por cuantos otros archivos dependen de ellos. Tocar uno de arriba tien
 
 Segun el historial de git. Si vas a cambiar uno, mira el otro.
 
-- `Nowcast Congreso Argy/.mapa/mapa.json` + `Nowcast Congreso Argy/MAPA.md` (62 commits)
+- `Nowcast Congreso Argy/.mapa/mapa.json` + `Nowcast Congreso Argy/MAPA.md` (63 commits)
 - `Nowcast Congreso Argy/coordinacion/EN-HUMANO.md` + `Nowcast Congreso Argy/coordinacion/ESTADO-DEL-PROYECTO.md` (56 commits)
 - `Nowcast Congreso Argy/coordinacion/ESTADO-DEL-PROYECTO.md` + `Nowcast Congreso Argy/tablero_datos.js` (50 commits)
 - `Nowcast Congreso Argy/coordinacion/EN-HUMANO.md` + `Nowcast Congreso Argy/tablero_datos.js` (47 commits)

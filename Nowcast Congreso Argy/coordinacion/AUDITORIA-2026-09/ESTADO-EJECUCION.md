@@ -5,7 +5,7 @@
 > Decisiones y su porqué: `AUDITORIA-INTEGRAL-2026-09.md` §9. Reglas del carril: §9.9. Definición numérica de "funcionando": §9.4.
 > Estados: `PENDIENTE` · `EN CURSO` · `HECHO` (con la evidencia: comando y salida, o sha del commit) · `DESCARTADO` (con el motivo escrito y la firma de Franco).
 
-**Última actualización:** 2026-09-30 — A1, A2 y A3 hechos (CI verde confirmado por Franco, también con los pines); A4 a A8 hechos; A9 hecho (Franco confirmó en *Actions*: los tres en verde); A10 hecho: **fase A CERRADA por Franco el 2026-09-30** (evidencia de salida abajo); **fase B en curso (2026-09-30): B1 hecho** (evidencia abajo); B2 hecho (evidencia abajo); B3 hecho: **fase B COMPLETA** (evidencia de salida en «Salida de la fase B»); **fase C en curso: C1 hecho** (2026-09-30, confirmado en *Actions* el 2026-10-01; evidencia en «C1 — la métrica de verdad con un solo comando»); **C2 en curso** (2026-10-01; pre-registro «C2 — pre-registro»).
+**Última actualización:** 2026-09-30 — A1, A2 y A3 hechos (CI verde confirmado por Franco, también con los pines); A4 a A8 hechos; A9 hecho (Franco confirmó en *Actions*: los tres en verde); A10 hecho: **fase A CERRADA por Franco el 2026-09-30** (evidencia de salida abajo); **fase B en curso (2026-09-30): B1 hecho** (evidencia abajo); B2 hecho (evidencia abajo); B3 hecho: **fase B COMPLETA** (evidencia de salida en «Salida de la fase B»); **fase C en curso: C1 hecho** (2026-09-30, confirmado en *Actions* el 2026-10-01; evidencia en «C1 — la métrica de verdad con un solo comando»); **C2 hecho** (2026-10-01; evidencia en «C2 — la calibración declarada, por cámara y en mayoría simple»); próximo: C3.
 **Dónde se trabaja:** `main`, commits chicos (uno por corrección), con la suite en verde **antes** de cada commit; sin `git push` (lo hace Franco). Los bots empujan a `main`: no se les toca el permiso. Rama sólo si una corrección no puede dejar la suite en verde entre commits (vida corta: se mergea en la misma sesión).
 **Punto de partida (para deshacer):** el tag local `auditoria-punto-de-partida` marca `main` antes de la primera corrección.
 
@@ -39,7 +39,7 @@
 | ítem | qué | criterio de salida | estado |
 |---|---|---|---|
 | **C1** | Skill por ley con IC pareado, **generado por un solo comando** (paso 3 del anclaje) | reproduce 0,1333 [0,059; 0,200] | **HECHO** 2026-09-30: el comando da 0,1333 [0,0605; 0,1982] con 2.000 réplicas (exacto con 300: [0,0574; 0,1979]) por era y cámara, con certificado del motor y sin pisar nada (evidencia en «C1 — la métrica de verdad con un solo comando»; commits `da773a2`, `407edc4`, `e182613`) |
-| **C2** | Calibración declarada: cobertura de la banda y Brier contra la constante **por cámara, en mayoría simple** | reproduce la tabla del §9.2 | **EN CURSO** (pre-registro: «C2 — pre-registro») |
+| **C2** | Calibración declarada: cobertura de la banda y Brier contra la constante **por cámara, en mayoría simple** | reproduce la tabla del §9.2 | **HECHO** 2026-10-01: la tabla del §9.2 se reproduce (acta por acta contra el oráculo) y el 63,6% (exacto en su población); el IC pareado del Brier contra la constante **excluye 0 del lado malo en las dos cámaras** (Dip +0,0115 [+0,0079; +0,0158], Sen +0,0026 [+0,0015; +0,0038]); cobertura por cámara 58,5% y 66,8% (evidencia en «C2 — la calibración declarada…»; commits `fb72af0`, `9e463aa`, `1369560`) |
 | **C3** | Brazo "sin corte por era" con el motor completo (decisión 7) | veredicto medido; decide Franco | PENDIENTE |
 
 *(La validación de las etiquetas de origen —decisión 8— **no está en esta tabla**: se hace más adelante y con una persona. Ver `PENDIENTES-POST-AUDITORIA.md`; queda declarada como límite en `QUE-SE-MIDE.md`.)*
@@ -664,6 +664,58 @@ Franco: **(1) «dejalo»** → `fase1_rec_por_tema.py` y su test **se quedan**. 
 **Límites que se declaran de antemano:** la constante es la tasa base **de la muestra** (una vara dura: conoce lo que el motor tiene que adivinar); «disputada» se define con el margen ya votado, así que **no es un subconjunto pronosticable** de antemano; la banda y P(aprobación) están **condicionadas a los presentes**; una semilla y 1.000 simulaciones por acta para la banda (el ruido de Monte Carlo de la cobertura no se mide acá); AUC sin IC; el resultado de un acta no es la sanción de una ley.
 
 **Qué no hace:** no cambia ningún término (ε₀, τ, ψ… se re-estiman en la fase D); no decide si el modelo «funciona» (el veredicto numérico es el del §9.4, y lo declara Franco); no toca las mayorías especiales.
+
+### C2 — la calibración declarada, por cámara y en mayoría simple (2026-10-01; pre-registro `fb72af0`, código `9e463aa`, JSON y test `1369560`)
+
+**Qué se hizo.** `evaluacion/baseline/src/calibracion_declarada.py` (archivo nuevo, 428 líneas) calcula, desde un **JSON por acta que viaja por git** (`outputs/calibracion_actas_2026-09-28.json`, 5.852 actas, 0,75 MB), la tabla del §9.2 (Brier del modelo contra el de una constante, AUC, Brier recalibrado fuera de muestra, Brier y log-loss sin ε₀+τη), el **IC pareado** de Δ = Brier(modelo) − Brier(constante) re-muestreando leyes (2.000 réplicas, semilla 7), la tabla de confiabilidad, las «seguras y equivocadas» y la **cobertura de la banda al 90%** con su IC, y escribe `outputs/calibracion_declarada.json` (versionado; 7 s). Con `--simular` (la PC, **6,1 min**) re-corre `ensemble.simular_con_guardas` sobre las P_i del censo con ε₀, τ y `reparto_desvio` **explícitos** y regenera el JSON por acta. Misma protección que en C1: el destino que existe se rechaza (salida 3) y aun con `--reemplazar` no se pisa un archivo sin su marca `generador`. Test: `evaluacion/baseline/tests/test_calibracion_declarada.py` (106 comprobaciones, 4–5 s, corre en el CI sin el detalle). **No cambia ningún término del motor**; `git diff 4f422d6 HEAD -- modelo variables definiciones.py rutas.py evaluacion/baseline/src/{baseline_voto_individual,censo_estadisticos,censo_detalle_paralelo,metrica_de_verdad}.py modelo/ensemble/src/medir_tau_limpio.py coordinacion/AUDITORIA-2026-09/{contraste_aprobacion,simple_por_camara}.py` → **vacío**.
+
+**Lo que da** (`python evaluacion/baseline/src/calibracion_declarada.py`; Δ = Brier del modelo − Brier de la constante; **positivo = el modelo es peor que la constante**):
+
+| cámara | subconjunto | actas | tasa base | Brier const. | Brier modelo | AUC | recalibrado | **Δ [IC 95% por ley]** | Δ relativo |
+|---|---|---:|---:|---:|---:|---:|---:|---|---|
+| Diputados | todas | 2.543 | 0,975 | 0,0242 | 0,0357 | 0,732 | 0,0236 | **+0,0115 [+0,0079; +0,0158]** | +47,8% [26,6; 86,0] |
+| Diputados | disputadas | 1.314 | 0,953 | 0,0450 | 0,0576 | 0,648 | 0,0447 | +0,0127 [+0,0068; +0,0189] | +28,1% [12,6; 53,5] |
+| Senado | todas | 2.851 | 0,985 | 0,0149 | 0,0174 | 0,600 | 0,0149 | **+0,0026 [+0,0015; +0,0038]** | +17,4% [8,7; 31,1] |
+| Senado | disputadas | 885 | 0,953 | 0,0452 | 0,0485 | 0,562 | 0,0457 | +0,0033 [+0,0004; +0,0068] | +7,3% [1,0; 17,3] |
+| ambas | todas | 5.394 | 0,980 | 0,0193 | 0,0260 | 0,687 | — | +0,0068 [+0,0048; +0,0090] | +35,2% [21,4; 54,2] |
+
+Rechazadas en mayoría simple: **106**, P mediana 0,911, **79 con P > 0,8**. Seguras y equivocadas (P > 0,95 y rechazada): Diputados 2, **Senado 19**; (P < 0,05 y aprobada): 0 y 0. Confiabilidad: el modelo es **subconfiado en todas las clases** (P media 0,72 → aprobada 93,5% en Diputados; 0,76 → 98,8% en el Senado).
+
+**Cobertura de la banda declarada al 90%** (recuento de afirmativos; `p_presente = 1`; IC re-muestreando leyes):
+
+| población | actas | cobertura [IC 95%] | observada − declarada | ancho mediano | sesgo (real − simulado) |
+|---|---:|---|---|---:|---:|
+| todas las actas (la del 63,6%) | 5.852 | **0,6364 [0,6148; 0,6580]** | −26,4 pp | 40,0 | +6,93 votos |
+| mayoría simple, ambas | 5.414 | 0,6289 [0,6056; 0,6521] | −27,1 pp | 34,5 | +8,29 |
+| mayoría simple, **Diputados** | 2.547 | **0,5850 [0,5434; 0,6226]** | −31,5 pp | 87,0 | +13,56 |
+| mayoría simple, **Senado** | 2.867 | **0,6679 [0,6428; 0,6925]** | −23,2 pp | 23,0 | +3,60 |
+
+**Veredicto de los objetivos del §9.4 (con la regla fijada antes de medir):** **objetivo 3 — NO se cumple en ninguna de las dos cámaras**, y no es que «no se distinga»: el extremo **inferior** del IC de Δ es positivo en las dos (en Diputados +0,0079, en el Senado +0,0015; también en las disputadas), o sea que **el modelo es significativamente peor que una constante**. **Objetivo 2 — no se cumple** (58,5% y 66,8%, fuera de 85–95%; además medido sin asistencia real).
+
+**Criterios pre-registrados (umbral: 0 fallas):**
+
+| criterio | resultado |
+|---|---|
+| **1. precondición P1 y P2** | **cumple.** P1: `contraste_aprobacion.py` (6 min) + `simple_por_camara.py` sobre el parquet regenerado → los 4 renglones y «ambas» **idénticos** a `resultados/simple_por_camara.txt` (la única diferencia son avisos de pandas por `rng.shuffle` sobre un `ArrowStringArray`, que el script viejo ya emitía). P2: `medir_tau_limpio.cobertura` **llamada sola** sobre la población original (5.851 actas) → `{n 5851, cobertura 0,6363, ancho 40,0, sesgo 6,93}`, **igual** a `tau_limpio_2026-09-28.json` (2,5 min) |
+| **2. el port reproduce el oráculo acta por acta** | **cumple:** sobre las 5.852 actas (mismo conjunto, mismo orden, mismos `camara`, `ley`, votantes, afirmativos, tipo y resultado oficial) y las 5.414 de mayoría simple, **max\|Δp\| = 0** en la P de producción y en la sin ε₀+τη contra el parquet que regeneró `contraste_aprobacion.py` |
+| **3. la tabla del §9.2 desde el JSON nuevo** | **cumple:** los 4 renglones y «ambas» (n, tasa base, Brier de la constante, del modelo y sin ε₀+τη, log-loss, AUC y recalibrado) y las rechazadas (106 · 0,911 · 79) coinciden con la tabla; el recalibrado, a ±0,00015 (en esta PC, exacto) |
+| **4. la banda** | **cumple.** (a) `medir_tau_limpio.cobertura` aplicada a **la misma población de 5.852 actas** da **{5852, 0,6364, 40,0, +6,93}**, idéntico al port. (b) **Población limpia contra la original: 0,6364 contra 0,6363 (+0,01 pp)**; la diferencia es 1 acta de más y 168 votos que el cruce con el censo del 27-09 había dejado afuera: no mueve nada |
+| **5. lo nuevo, medido** | el IC pareado de Δ por cámara y la cobertura por cámara con su IC (tablas de arriba) y el veredicto de los objetivos 2 y 3 |
+| **6. no pisa** | **cumple:** con `--salida evaluacion/baseline/outputs/baseline_voto_individual.json` código **3** (con y sin `--reemplazar`) y el sha256 no cambia; sobre la calibración versionada sin `--reemplazar`, 3; `--simular` sobre el JSON por acta versionado, 3, y sobre uno ajeno con `--reemplazar`, 3 (sin simular nada); sobre un archivo propio con `--reemplazar`, 0; sobre uno ajeno, 3 |
+| **7. test que lo fija, y que puede fallar, sobre el archivo real** | **cumple:** pasa 106/106 (5 s). Con `SEMILLA` 7 → 8: **código 1**, 15 fallas («defaults del IC: 2000 réplicas, semilla 8», los IC de Δ distintos de su ancla); con `N_BOOT` 2000 → 300: **código 1**, 15 fallas; con la P de producción × 0,9 en el JSON por acta real: **código 1**, 19 fallas (la tabla del §9.2 no se reproduce, «`confiabilidad`… no sale del JSON por acta», «el JSON por acta cambió y la calibración no se regeneró»). Los tres revertidos con `git checkout` (árbol limpio, el test vuelve a dar 106/106) |
+| **8. suite** | **cumple:** **PC (3.14):** `pytest tests/ datos/proyectos/tests` → 54 pasan; los `test_*.py` como scripts → **63 corridos, 0 fallaron** (62 + el nuevo); árbol idéntico antes y después. **Checkout limpio de `1369560`** (`git archive`, Python 3.11.0, venv nuevo con los pines): `pytest` → 53 pasan + 1 se saltea; **63 scripts, 0 fallaron**, y `test_calibracion_declarada.py` da 106/106 en 5 s **sin el detalle del censo**. Falta la confirmación de Franco en *Actions* tras su `git push` |
+| **9. nada más cambia** | **cumple:** el `git diff` de la nota de arriba, vacío; sólo hay archivos nuevos, `MAPA.md`/`mapa.json` reindexados y las notas de documentación |
+
+**Desvíos y observaciones (ninguno cambia una conclusión):**
+1. **Un descubrimiento sobre el método, no sobre el motor:** `rng.shuffle(leyes)` en `simple_por_camara.py` se hace sobre un `ArrowStringArray` (pandas 3.0), que pandas avisa que «no está garantizado» que se comporte bien. Comprobé que da **la misma permutación, sin duplicados**, que con un array de numpy de objetos; el port usa el de numpy (`np.array(..., dtype=object)`), robusto a la versión de pandas. El recalibrado reproduce igual.
+2. **La población de la cobertura cambió de 5.851 a 5.852 actas** respecto de la del 63,6% (el cruce con el censo del 27-09 perdía 1 acta y 168 votos): se midió y no mueve el número (criterio 4b). La cobertura **por cámara en mayoría simple es una población nueva**: ni el §9.2 ni `QUE-SE-MIDE.md` la daban.
+3. **La cobertura de Diputados (58,5%) es peor que la del conjunto (63,6%)** y la del Senado (66,8%) mejor, porque el sesgo es mayor (+13,6 votos contra +3,6) y la banda, aunque mucho más ancha en votos (87 contra 23), no lo compensa: el recuento real queda **siempre por encima** del simulado, en las dos cámaras. Es lo mismo que decía el 63,6% («6,9 votos por debajo»), ahora desagregado.
+4. **El Δ «disputadas» del Senado casi toca 0** (extremo inferior +0,0004): es el único corte donde la evidencia de que el modelo es peor que la constante es débil; las otras tres filas la excluyen con holgura.
+5. **Agregado sin estar pre-registrado:** la tabla de confiabilidad y las «seguras y equivocadas» (están en el JSON; salen de los mismos datos y las nombra la pieza 2) y el cambio del `shuffle` del punto 1; ninguno entra en un criterio. Los criterios no cambiaron.
+
+**Límites (declarados de antemano y en el docstring):** (1) **la constante es la tasa base de la muestra** (una vara dura: conoce lo que el motor tiene que adivinar; una constante conocida de antemano sería una vara menos dura); (2) **«disputada» se define con el margen ya votado**, así que no es un subconjunto que se pueda pronosticar; (3) la banda y P(aprobación) están **condicionadas a los presentes** (`p_presente = 1`); (4) **una semilla y 1.000 simulaciones por acta** para la banda: el ruido de Monte Carlo de la cobertura no se midió (el IC re-muestrea leyes, no simulaciones); (5) **AUC sin IC**; (6) el resultado de un acta no es la sanción de una ley; (7) **`medir_tau_limpio.py` sigue pisando `tau_limpio_2026-09-28.json`** cuando se corre su `main()` (anotado en `PENDIENTES-POST-AUDITORIA.md`; no se tocó); (8) el JSON por acta fija el motor **al 2026-10-01** (`motor_head_sha_al_simular` `fb72af0`, parámetros y entorno registrados): cualquier cambio del motor exige `--simular` otra vez (6 min), y el test detecta un cambio de **parámetros** respecto del registro, no un cambio de código; (9) la regla «cobertura observada − declarada > 5 pp = rojo» de la pieza 2 **no se implementó**: hoy daría rojo (−26,4 pp) y es del gate de la fase E.
+
+**Criterio de salida de C2: cumplido** — el comando reproduce la tabla del §9.2 (exacto, acta por acta contra el oráculo) y el 63,6% (exacto en su población original, 0,6364 en la limpia), y calcula lo que faltaba: el IC pareado del Brier contra la constante por cámara.
 
 ## Bitácora de alcance
 

@@ -61,6 +61,7 @@ import argparse
 import json
 import logging
 import sys
+from contextlib import contextmanager
 from pathlib import Path
 
 import numpy as np
@@ -433,6 +434,25 @@ ERA_BINS = [pd.Timestamp("1990-01-01"), pd.Timestamp("2011-12-10"), pd.Timestamp
 ERA_LABELS = ["hasta 2011", "2011-2015", "2015-2019", "2019-2023", "desde 2023"]
 
 
+@contextmanager
+def _sin_corte_por_era(era_desde: str | None):
+    """BRAZO «sin corte por era» (auditoría C3, decisión 7 de Franco). Con `era_desde` dado, el récord individual
+    acumula desde esa fecha en vez de desde el arranque de la era del acta. El motor NO se toca: se usa la rama que
+    el harness ya tenía para el guard apagado (`GUARD_ERA` en falso → `_base` devuelve la cámara entera) y se cambia
+    `ERA_FIJA`, la fecha desde la que el motor filtra con el guard apagado. Se restaura SIEMPRE (try/finally).
+    OJO: es estado de módulo; cada trabajador del censo paralelo (`spawn`) lo aplica por su cuenta porque el
+    parámetro viaja como argumento. No cambia la postura de bloque (su corte propio queda igual)."""
+    if era_desde is None:
+        yield
+        return
+    anteriores = (NP.GUARD_ERA, NP.ERA_FIJA)
+    NP.GUARD_ERA, NP.ERA_FIJA = False, str(era_desde)
+    try:
+        yield
+    finally:
+        NP.GUARD_ERA, NP.ERA_FIJA = anteriores
+
+
 class Contexto:
     """Todo lo que el harness le pasa al motor, cargado una vez.
 
@@ -442,7 +462,10 @@ class Contexto:
     pasarle todo — con el guard de era apagado se le pasa la cámara entera."""
 
     def __init__(self, votos: pd.DataFrame, leyes: dict, origen_map: dict, cond,
-                 conf_area: dict, combinar_temas: str | None = None):
+                 conf_area: dict, combinar_temas: str | None = None, era_desde: str | None = None):
+        if era_desde is not None and not NP.GUARD_ERA:
+            raise ValueError("`era_desde` (brazo sin corte por era) necesita GUARD_ERA prendido: con GUARD_ERA=0 en el "
+                             "entorno el motor ya fija la fecha en ERA_FIJA y el brazo mediría otra cosa")
         if NP.TEMA_AUTO and combinar_temas is None:
             raise NotImplementedError(
                 "TEMA_AUTO está prendido y el harness no reproduce cómo el motor resuelve "
@@ -464,20 +487,21 @@ class Contexto:
                          if cond is not None and len(cond) else {})
         self.conf_area = conf_area
         self.combinar_temas = combinar_temas
+        self.era_desde = era_desde        # None = el motor de hoy; una fecha = el récord acumula desde ahí
         self._fecha_cache = None
         self._rec: dict = {}
         self._post: dict = {}
         self.avisos = {"record_sin_votos_en_la_era": 0, "postura_saltada": 0}
 
     @classmethod
-    def desde_repo(cls, combinar_temas: str | None = None, votos=None) -> "Contexto":
+    def desde_repo(cls, combinar_temas: str | None = None, votos=None, era_desde: str | None = None) -> "Contexto":
         from bloque import cargar as cargar_bloque, cargar_tema_por_acta
         votos = cargar_bloque() if votos is None else votos
         cond = cargar_tema_por_acta()
         opa = pd.read_parquet(PROYECTO_ORIGEN_POR_ACTA)            # lo mismo que `nowcast`
         origen_map = dict(zip(opa["acta_id"].astype(str), opa["origen"]))
         return cls(votos, ley_por_acta(REPO), origen_map, cond, cargar_confianza_por_area(),
-                   combinar_temas)
+                   combinar_temas, era_desde)
 
     # ── lo que decide el harness: qué votos existían ──
     def _base(self, camara: str, hasta: pd.Timestamp) -> pd.DataFrame:
@@ -518,13 +542,14 @@ class Contexto:
         k = (camara, historia, ley if historia == "estricta" else None, origen,
              tuple(areas) if (usar_tema and areas) else None)
         if k not in self._rec:
-            base = self._sin_ley(self._base(camara, hasta), ley, historia)
-            if base.empty:
-                self.avisos["record_sin_votos_en_la_era"] += 1
-            cond = self.cond if NP.necesita_cond_por_acta(None, origen, None,
-                                                          areas if usar_tema else None) else None
-            ind, _ = NP.record_legisladores(base, hasta, origen, self.origen_map, areas,
-                                            cond, record_por_tema=usar_tema)
+            with _sin_corte_por_era(self.era_desde):
+                base = self._sin_ley(self._base(camara, hasta), ley, historia)
+                if base.empty:
+                    self.avisos["record_sin_votos_en_la_era"] += 1
+                cond = self.cond if NP.necesita_cond_por_acta(None, origen, None,
+                                                              areas if usar_tema else None) else None
+                ind, _ = NP.record_legisladores(base, hasta, origen, self.origen_map, areas,
+                                                cond, record_por_tema=usar_tema)
             self._rec[k] = ind
         return self._rec[k]
 
@@ -612,7 +637,8 @@ def _nombre(historia: str, record_por_tema) -> str:
 def correr(camara_filtro: str = "", muestra: int = 0, seed: int = 7, desde: str = "",
            hasta: str = "", historia: str = HISTORIA_DEFAULT, record_por_tema=None,
            variantes_extra: tuple = (), combinar_temas: str | None = None,
-           devolver_detalle: bool = False, contexto: Contexto | None = None):
+           devolver_detalle: bool = False, contexto: Contexto | None = None,
+           era_desde: str | None = None):
     """El censo: P_i del motor contra el voto real, para cada voto emitido.
 
     `historia`/`record_por_tema` definen la variante PRINCIPAL (columna `p`, y el
@@ -623,7 +649,9 @@ def correr(camara_filtro: str = "", muestra: int = 0, seed: int = 7, desde: str 
 
     `desde`/`hasta` (exclusivo) recortan QUÉ actas se evalúan, no la historia: partir
     el censo por fechas da el mismo detalle (`censo_detalle_paralelo.py`)."""
-    ctx = contexto or Contexto.desde_repo(combinar_temas)
+    if contexto is not None and era_desde is not None and contexto.era_desde != era_desde:
+        raise ValueError("`era_desde` y `contexto.era_desde` no coinciden")
+    ctx = contexto or Contexto.desde_repo(combinar_temas, era_desde=era_desde)
     logger.info("ley_por_acta: %.1f%% de los votos sin ley conocida (ahí el corte por "
                 "expediente no ve nada: cada acta es su propia ley)",
                 100 * ctx.frac_votos_sin_ley)
@@ -708,7 +736,7 @@ def correr(camara_filtro: str = "", muestra: int = 0, seed: int = 7, desde: str 
         "motor": {"GUARD_ERA": NP.GUARD_ERA, "SHRINK_RECORD": NP.SHRINK_RECORD,
                   "RECORD_POR_TEMA": NP.RECORD_POR_TEMA, "TEMA_AUTO": NP.TEMA_AUTO,
                   "MIN_HIST_INDIVIDUAL": NP.MIN_HIST_INDIVIDUAL,
-                  "K_SHRINK_RECORD": NP.K_SHRINK_RECORD},
+                  "K_SHRINK_RECORD": NP.K_SHRINK_RECORD, "era_desde": ctx.era_desde},
         "combinar_temas_postura": combinar_temas or "(el del motor: sin tema)",
     })
     if devolver_detalle:
@@ -772,6 +800,9 @@ def main(argv):
                              "sin_tema", "ponderada_logit"],
                     help="tema de la POSTURA. Sin esto, lo que hace el motor (TEMA_AUTO "
                          "apagado: sin tema). Los modos son los experimentos de ADR-0024/0028")
+    ap.add_argument("--era-desde", default=None,
+                    help="BRAZO sin corte por era (auditoría C3): el récord individual acumula desde esta fecha, "
+                         "ej. 1900-01-01, en vez de desde el arranque de la era. Exige --salida (no pisa el publicado)")
     ap.add_argument("--verbose", action="store_true",
                     help="mostrar los avisos de `bloque` uno por uno (por defecto se cuentan)")
     ap.add_argument("--salida", default=None)
@@ -780,13 +811,15 @@ def main(argv):
     logging.basicConfig(level=logging.INFO, stream=sys.stdout,
                         format="%(levelname)s %(name)s: %(message)s")
     silenciar_avisos_del_motor(args.verbose)
+    if args.era_desde and not args.salida:
+        ap.error("--era-desde es un brazo experimental: pasar --salida para no pisar el número publicado")
     rpt = {"motor": None, "si": True, "no": False}[args.record_por_tema]
     res = correr(args.camara, args.muestra, args.seed, args.desde, historia=args.historia,
-                 record_por_tema=rpt, combinar_temas=args.combinar_temas)
+                 record_por_tema=rpt, combinar_temas=args.combinar_temas, era_desde=args.era_desde)
     res["_args"] = {"camara": args.camara or "ambas", "muestra": args.muestra,
                     "desde": args.desde or None, "historia": args.historia,
                     "record_por_tema": args.record_por_tema,
-                    "combinar_temas": args.combinar_temas}
+                    "combinar_temas": args.combinar_temas, "era_desde": args.era_desde}
 
     out = Path(args.salida) if args.salida else (
         REPO / "evaluacion/baseline/outputs/baseline_voto_individual.json")

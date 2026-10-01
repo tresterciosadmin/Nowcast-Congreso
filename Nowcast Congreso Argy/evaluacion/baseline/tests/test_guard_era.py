@@ -18,6 +18,10 @@ Lo que fija, y por que cada cosa:
    original tarda minutos. Un atajo que no se verifica es un resultado inventado, asi
    que se compara contra la version lenta fila por fila.
 5. **`eras_de` (una vez por fecha distinta) es identico a mapear fila por fila.**
+6. **El brazo `era_desde` del harness (auditoria C3, "sin corte por era")**: con `era_desde` igual a la era de la
+   fecha reproduce al guard (control positivo); con 1900-01-01 el record acumula toda la historia (nunca menos,
+   en 2024 mas); en 2018 (era de Macri, con votos de 2018 solamente antes de la fecha) coinciden; el estado del
+   motor (`GUARD_ERA`, `ERA_FIJA`) se restaura siempre, tambien si el motor falla; y se niega con GUARD_ERA apagado.
 
     python evaluacion/baseline/tests/test_guard_era.py
 """
@@ -133,6 +137,55 @@ primeros = d.groupby(["legislador_id", "_era"], sort=False).head(1).index
 check(bool(m.loc[primeros].isna().all()),
       "el primer voto de cada (legislador, era) tiene que quedar sin record")
 check(bool((cnt.loc[primeros] == 0).all()), "y con n = 0")
+
+print("el BRAZO `era_desde` del harness (auditoría C3): sin corte por era, sin tocar el motor")
+import baseline_voto_individual as BV  # noqa: E402
+
+
+def _n_emit(ctx, hasta):
+    ind = ctx.record("diputados", pd.Timestamp(hasta), "acta:zzz", None, None, "estricta", False)
+    return {k[1]: x[3] for k, x in ind.items()}
+
+
+LEYES = {f"a{i}": f"ley{i}" for i in range(len(fechas))}   # una ley por acta
+estado0 = (NP.GUARD_ERA, NP.ERA_FIJA)
+hoy = _n_emit(BV.Contexto(v, LEYES, {}, None, {}), "2024-12-31")
+ig = _n_emit(BV.Contexto(v, LEYES, {}, None, {}, era_desde=NP.era_de("2024-12-31")), "2024-12-31")
+sin = _n_emit(BV.Contexto(v, LEYES, {}, None, {}, era_desde="1900-01-01"), "2024-12-31")
+check(hoy == {"leg:a": 4, "leg:b": 4}, f"con el guard, en 2024 sólo cuentan las 4 sesiones de la era vigente: {hoy}")
+check(ig == hoy, f"CONTROL POSITIVO: era_desde = la era de la fecha tiene que reproducir al guard: {ig} contra {hoy}")
+check(sin == {"leg:a": 12, "leg:b": 12}, f"sin corte por era el récord acumula las 12 sesiones: {sin}")
+check(all(sin[k] >= hoy[k] for k in hoy) and any(sin[k] > hoy[k] for k in hoy),
+      "el brazo no puede tener menos historia que el guard, y en 2024 tiene que tener más")
+hoy18 = _n_emit(BV.Contexto(v, LEYES, {}, None, {}), "2018-12-31")
+sin18 = _n_emit(BV.Contexto(v, LEYES, {}, None, {}, era_desde="1900-01-01"), "2018-12-31")
+check(hoy18 == {"leg:a": 4, "leg:b": 4},
+      f"con el guard, en 2018 sólo cuentan las 4 sesiones de la era de Macri: {hoy18}")
+check(sin18 == {"leg:a": 4, "leg:b": 4},
+      f"sin corte, en 2018 el récord acumula las 4 sesiones de la era de Macri (el brazo recorta por `hasta`): {sin18}")
+check((NP.GUARD_ERA, NP.ERA_FIJA) == estado0, "el brazo dejó cambiado GUARD_ERA o ERA_FIJA")
+_orig = NP.record_legisladores
+try:
+    def _roto(*a, **k):
+        raise RuntimeError("falla simulada del motor")
+    NP.record_legisladores = _roto
+    try:
+        _n_emit(BV.Contexto(v, LEYES, {}, None, {}, era_desde="1900-01-01"), "2024-12-31")
+        check(False, "la falla simulada del motor no se propagó")
+    except RuntimeError:
+        pass
+finally:
+    NP.record_legisladores = _orig
+check((NP.GUARD_ERA, NP.ERA_FIJA) == estado0, "tras una excepción del motor el brazo no restauró GUARD_ERA / ERA_FIJA")
+try:
+    NP.GUARD_ERA = False
+    BV.Contexto(v, LEYES, {}, None, {}, era_desde="1900-01-01")
+    check(False, "el brazo aceptó correr con GUARD_ERA apagado")
+except ValueError:
+    pass
+finally:
+    NP.GUARD_ERA = estado0[0]
+check((NP.GUARD_ERA, NP.ERA_FIJA) == estado0, "el estado del motor cambió al final del test")
 
 print(f"\n{corridos - len(fallos)}/{corridos} OK")
 if fallos:

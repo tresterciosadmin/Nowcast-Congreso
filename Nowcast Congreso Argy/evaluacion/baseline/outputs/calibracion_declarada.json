@@ -1,7 +1,7 @@
 {
  "formato": 1,
  "generador": "evaluacion/baseline/src/calibracion_declarada.py",
- "generado": "2026-10-01",
+ "generado": "2026-10-02",
  "metodo": {
   "n_boot": 2000,
   "semilla": 7,
@@ -15,16 +15,22 @@
   "declarada": 0.9
  },
  "procedencia": {
-  "head_sha_al_correr": "9e463aa",
-  "motor_modificado_sin_commitear": [],
+  "head_sha_al_correr": "2fb23c4",
+  "motor_modificado_sin_commitear": [
+   "\"Nowcast Congreso Argy/evaluacion/baseline/src/calibracion_declarada.py\"",
+   "\"Nowcast Congreso Argy/evaluacion/baseline/src/censo_estadisticos.py\"",
+   "\"Nowcast Congreso Argy/evaluacion/baseline/src/medir_sin_corte_por_era.py\""
+  ],
   "comando": [
-   "calibracion_declarada.py"
+   "calibracion_declarada.py",
+   "--simular",
+   "--reemplazar"
   ],
   "actas": {
-   "ruta": "evaluacion/baseline/outputs/calibracion_actas_2026-09-28.json",
-   "sha256_lf": "421884c30288fb33f79966e33ac6e3b1ba697b1747b6a104bf2d16114de49a49",
-   "escrito_el": "2026-10-01",
-   "motor_head_sha_al_simular": "fb72af0",
+   "ruta": "evaluacion/baseline/outputs/calibracion_actas_2026-10-02.json",
+   "sha256_lf": "736dd595710c4fd42519220e4192b06bcb11ffdb051d528a8da07ce4f16d921e",
+   "escrito_el": "2026-10-02",
+   "motor_head_sha_al_simular": "2fb23c4",
    "parametros": {
     "epsilon0": 0.035,
     "tau": 1.19,
@@ -38,8 +44,8 @@
     "p_presente": 1.0
    },
    "fuente": {
-    "detalle": "evaluacion/baseline/outputs/censo_detalle_2026-09-28.parquet",
-    "detalle_sha256_16": "7ee19ed89396f92c",
+    "detalle": "evaluacion/baseline/outputs/censo_detalle_2026-10-02.parquet",
+    "detalle_sha256_16": "566657546ba110f1",
     "columna_p": "p__estricta__general",
     "n_actas": 5852,
     "poblacion": "actas de >= 20 votos emitidos del censo, en el orden del detalle"
@@ -53,21 +59,21 @@
     "tasa_base": 0.9752,
     "brier_constante": 0.0242,
     "brier_modelo": 0.0357,
-    "auc": 0.732,
+    "auc": 0.731,
     "brier_recalibrado_cv": 0.0236,
     "brier_sin_eps0_tau": 0.0244,
     "logloss_modelo": 0.1658,
     "logloss_sin_eps0_tau": 0.1241,
     "modelo_menos_constante": {
-     "delta": 0.01154,
+     "delta": 0.01151,
      "ic95_ley": [
-      0.00793,
-      0.01576
+      0.0079,
+      0.01573
      ],
-     "delta_rel_%": 47.77,
+     "delta_rel_%": 47.64,
      "ic95_rel_%_ley": [
-      26.6,
-      85.99
+      26.47,
+      85.62
      ],
      "n_leyes": 1656
     }
@@ -77,21 +83,21 @@
     "tasa_base": 0.9528,
     "brier_constante": 0.045,
     "brier_modelo": 0.0576,
-    "auc": 0.648,
+    "auc": 0.647,
     "brier_recalibrado_cv": 0.0447,
     "brier_sin_eps0_tau": 0.0472,
     "logloss_modelo": 0.2333,
     "logloss_sin_eps0_tau": 0.2307,
     "modelo_menos_constante": {
-     "delta": 0.01265,
+     "delta": 0.01266,
      "ic95_ley": [
-      0.00679,
-      0.01889
+      0.00683,
+      0.0189
      ],
-     "delta_rel_%": 28.14,
+     "delta_rel_%": 28.16,
      "ic95_rel_%_ley": [
-      12.61,
-      53.53
+      12.65,
+      53.57
      ],
      "n_leyes": 640
     }
@@ -103,10 +109,10 @@
     "tasa_base": 0.9849,
     "brier_constante": 0.0149,
     "brier_modelo": 0.0174,
-    "auc": 0.6,
+    "auc": 0.598,
     "brier_recalibrado_cv": 0.0149,
     "brier_sin_eps0_tau": 0.0149,
-    "logloss_modelo": 0.097,
+    "logloss_modelo": 0.0971,
     "logloss_sin_eps0_tau": 0.0794,
     "modelo_menos_constante": {
      "delta": 0.00258,
@@ -117,7 +123,7 @@
      "delta_rel_%": 17.36,
      "ic95_rel_%_ley": [
       8.74,
-      31.07
+      31.06
      ],
      "n_leyes": 2012
     }
@@ -127,21 +133,21 @@
     "tasa_base": 0.9525,
     "brier_constante": 0.0452,
     "brier_modelo": 0.0485,
-    "auc": 0.562,
+    "auc": 0.56,
     "brier_recalibrado_cv": 0.0457,
     "brier_sin_eps0_tau": 0.0466,
     "logloss_modelo": 0.2031,
     "logloss_sin_eps0_tau": 0.2281,
     "modelo_menos_constante": {
-     "delta": 0.00328,
+     "delta": 0.00327,
      "ic95_ley": [
-      0.00043,
-      0.00678
+      0.00042,
+      0.00679
      ],
-     "delta_rel_%": 7.25,
+     "delta_rel_%": 7.23,
      "ic95_rel_%_ley": [
-      0.99,
-      17.29
+      1.0,
+      17.25
      ],
      "n_leyes": 485
     }
@@ -153,21 +159,21 @@
     "tasa_base": 0.9803,
     "brier_constante": 0.0193,
     "brier_modelo": 0.026,
-    "auc": 0.687,
+    "auc": 0.686,
     "brier_recalibrado_cv": null,
     "brier_sin_eps0_tau": 0.0194,
-    "logloss_modelo": 0.1294,
+    "logloss_modelo": 0.1295,
     "logloss_sin_eps0_tau": 0.1004,
     "modelo_menos_constante": {
-     "delta": 0.00678,
+     "delta": 0.00677,
      "ic95_ley": [
-      0.0048,
-      0.00899
+      0.00479,
+      0.00897
      ],
-     "delta_rel_%": 35.2,
+     "delta_rel_%": 35.12,
      "ic95_rel_%_ley": [
-      21.38,
-      54.19
+      21.37,
+      54.06
      ],
      "n_leyes": 3402
     }
@@ -197,25 +203,25 @@
     {
      "clase": "[0.20,0.50)",
      "n": 2,
-     "p_medio": 0.3865,
+     "p_medio": 0.388,
      "frec_real": 0.5
     },
     {
      "clase": "[0.50,0.80)",
-     "n": 386,
-     "p_medio": 0.7169,
-     "frec_real": 0.9352
+     "n": 383,
+     "p_medio": 0.717,
+     "frec_real": 0.9347
     },
     {
      "clase": "[0.80,0.95)",
-     "n": 1669,
-     "p_medio": 0.9019,
-     "frec_real": 0.979
+     "n": 1673,
+     "p_medio": 0.9017,
+     "frec_real": 0.9791
     },
     {
      "clase": "[0.95,1.00)",
-     "n": 486,
-     "p_medio": 0.9698,
+     "n": 485,
+     "p_medio": 0.9699,
      "frec_real": 0.9959
     }
    ],
@@ -245,19 +251,19 @@
     {
      "clase": "[0.50,0.80)",
      "n": 82,
-     "p_medio": 0.7605,
+     "p_medio": 0.7602,
      "frec_real": 0.9878
     },
     {
      "clase": "[0.80,0.95)",
-     "n": 851,
-     "p_medio": 0.9281,
-     "frec_real": 0.9741
+     "n": 855,
+     "p_medio": 0.9283,
+     "frec_real": 0.9743
     },
     {
      "clase": "[0.95,1.00)",
-     "n": 1918,
-     "p_medio": 0.9662,
+     "n": 1914,
+     "p_medio": 0.9661,
      "frec_real": 0.9896
     }
    ],
@@ -269,18 +275,18 @@
   "todas_las_actas": {
    "ambas": {
     "n_actas": 5852,
-    "cobertura_banda_90": 0.6364,
+    "cobertura_banda_90": 0.6329,
     "ic95_ley": [
-     0.6148,
-     0.658
+     0.6114,
+     0.6542
     ],
-    "observada_menos_declarada_pp": -26.4,
+    "observada_menos_declarada_pp": -26.7,
     "ic95_pp": [
-     -28.5,
-     -24.2
+     -28.9,
+     -24.6
     ],
     "ancho_mediano_votos": 40.0,
-    "sesgo_medio_votos": 6.93,
+    "sesgo_medio_votos": 6.94,
     "n_leyes": 3728
    },
    "diputados": {
@@ -301,36 +307,36 @@
    },
    "senado": {
     "n_actas": 2994,
-    "cobertura_banda_90": 0.6673,
+    "cobertura_banda_90": 0.6607,
     "ic95_ley": [
-     0.6432,
-     0.6903
+     0.6356,
+     0.684
     ],
-    "observada_menos_declarada_pp": -23.3,
+    "observada_menos_declarada_pp": -23.9,
     "ic95_pp": [
-     -25.7,
-     -21.0
+     -26.4,
+     -21.6
     ],
     "ancho_mediano_votos": 23.0,
-    "sesgo_medio_votos": 3.49,
+    "sesgo_medio_votos": 3.5,
     "n_leyes": 2098
    }
   },
   "mayoria_simple": {
    "ambas": {
     "n_actas": 5414,
-    "cobertura_banda_90": 0.6289,
+    "cobertura_banda_90": 0.6252,
     "ic95_ley": [
-     0.6056,
-     0.6521
+     0.6017,
+     0.6484
     ],
-    "observada_menos_declarada_pp": -27.1,
+    "observada_menos_declarada_pp": -27.5,
     "ic95_pp": [
-     -29.4,
-     -24.8
+     -29.8,
+     -25.2
     ],
-    "ancho_mediano_votos": 34.5,
-    "sesgo_medio_votos": 8.29,
+    "ancho_mediano_votos": 35.0,
+    "sesgo_medio_votos": 8.3,
     "n_leyes": 3407
    },
    "diputados": {
@@ -346,23 +352,23 @@
      -27.7
     ],
     "ancho_mediano_votos": 87.0,
-    "sesgo_medio_votos": 13.56,
+    "sesgo_medio_votos": 13.57,
     "n_leyes": 1659
    },
    "senado": {
     "n_actas": 2867,
-    "cobertura_banda_90": 0.6679,
+    "cobertura_banda_90": 0.661,
     "ic95_ley": [
-     0.6428,
-     0.6925
+     0.6354,
+     0.6855
     ],
-    "observada_menos_declarada_pp": -23.2,
+    "observada_menos_declarada_pp": -23.9,
     "ic95_pp": [
-     -25.7,
-     -20.7
+     -26.5,
+     -21.5
     ],
     "ancho_mediano_votos": 23.0,
-    "sesgo_medio_votos": 3.6,
+    "sesgo_medio_votos": 3.62,
     "n_leyes": 2016
    }
   }
@@ -370,8 +376,8 @@
  "objetivos_9_4": {
   "3_brier_menor_que_la_constante_con_ic_pareado_que_excluya_0": {
    "diputados": {
-    "delta": 0.01154,
-    "extremo_superior_ic": 0.01576,
+    "delta": 0.01151,
+    "extremo_superior_ic": 0.01573,
     "cumple": false
    },
    "senado": {
@@ -387,7 +393,7 @@
     "en_85_95": false
    },
    "senado": {
-    "cobertura": 0.6679,
+    "cobertura": 0.661,
     "en_85_95": false
    },
    "en_85_95": false,

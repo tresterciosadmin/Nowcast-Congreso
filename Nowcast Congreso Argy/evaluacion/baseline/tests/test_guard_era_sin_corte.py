@@ -15,9 +15,13 @@ QUÉ FIJA (el criterio 5 del pre-registro de C3 en `coordinacion/AUDITORIA-2026-
 Y un control que puede fallar (regla 5): un brazo alterado antes de 2015 rompe el control 1; un brazo sin ningún efecto
 da Δ ≡ 0; otra semilla del bootstrap no reproduce el ancla.
 
-No lee el detalle del censo (no viaja por git): corre en el CI. Las anclas son las de la medición de C3
-(`medir_sin_corte_por_era.py --censo`, 2.000 réplicas, semilla 7); si la fase D cambia el motor hay que regenerar el
-censo del brazo y re-anclar a propósito, citando la medición.
+  0. EL VEREDICTO DE C3, conservado: desde los estadísticos del brazo de C3 (`R.ESTADISTICOS_C3`, sobre el censo del 28-09,
+     que siguen en git y no se pisan), los controles contra ESE censo y las anclas y el resultado de C3.
+
+No lee el detalle del censo (no viaja por git): corre en el CI. Las anclas de 0 son las de la medición de C3; las de 1 a 5,
+las del brazo re-corrido sobre el censo del motor de HOY (auditoría D1.0, censo del 2026-10-02, con la ficha de desvío al
+día; `medir_sin_corte_por_era.py --censo`, 2.000 réplicas, semilla 7), fijadas DESPUÉS de medir. Si la fase D vuelve a
+cambiar el motor hay que regenerar el censo del brazo y re-anclar a propósito, citando la medición.
 
     python evaluacion/baseline/tests/test_guard_era_sin_corte.py
 """
@@ -44,12 +48,14 @@ import metrica_de_verdad as MV  # noqa: E402
 
 PUBLICADO = RAIZ / "evaluacion" / "baseline" / "outputs" / "baseline_voto_individual.json"
 VERSIONADA = RAIZ / R.SALIDA
-ESTADISTICOS = RAIZ / R.ESTADISTICOS
-A2 = RAIZ / ce.ESTADISTICOS
+ESTADISTICOS = RAIZ / R.ESTADISTICOS                 # el brazo sobre el motor de hoy (1 a 5)
+A2 = RAIZ / ce.ESTADISTICOS                           # el censo del motor de hoy
+ESTADISTICOS_C3 = RAIZ / R.ESTADISTICOS_C3            # el brazo de C3 (0)
+A2_C3 = RAIZ / ce.ESTADISTICOS_2026_09_28             # el censo del 28-09
 
 # ── el veredicto de C3, fijado DESPUÉS de medir (`medir_sin_corte_por_era.py --censo`; 2.000 réplicas, semilla 7) ──
 # corte → (ΔBrier relativo %, extremo inferior, extremo superior, votos, leyes); positivo = el guard ayuda
-ANCLA = {
+ANCLA_C3 = {
     "primario__desde_2015-12-10": (3.0, -2.94, 9.67, 257543, 1055),
     "control__antes_de_2015-12-10": (0.0, 0.0, 0.0, 434302, 2684),
     "secundario__global": (1.46, -1.4, 4.69, 691845, 3731),
@@ -58,6 +64,18 @@ ANCLA = {
     "secundario__era=desde 2023": (-3.68, -7.72, 3.45, 105334, 312),
     "secundario__desde_2015-12-10 & camara=diputados": (2.7, -3.65, 10.59, 204123, 540),
     "secundario__desde_2015-12-10 & camara=senado": (4.99, 1.4, 8.99, 53420, 592),
+}
+RESULTADO_C3 = "NO_SE_DISTINGUE"
+# ── el brazo sobre el motor de hoy (D1.0), fijado DESPUÉS de medir; mismo formato ──
+ANCLA = {
+    "primario__desde_2015-12-10": (3.23, -2.33, 9.72, 257543, 1055),
+    "control__antes_de_2015-12-10": (0.0, 0.0, 0.0, 434302, 2684),
+    "secundario__global": (1.57, -1.14, 4.68, 691845, 3731),
+    "secundario__era=2015-2019": (8.91, -0.69, 19.49, 126454, 505),
+    "secundario__era=2019-2023": (12.94, -5.03, 21.45, 25755, 246),
+    "secundario__era=desde 2023": (-3.23, -7.04, 3.35, 105334, 312),
+    "secundario__desde_2015-12-10 & camara=diputados": (2.99, -3.21, 10.69, 204123, 540),
+    "secundario__desde_2015-12-10 & camara=senado": (4.8, 1.22, 8.82, 53420, 592),
 }
 RESULTADO = "NO_SE_DISTINGUE"
 
@@ -71,11 +89,11 @@ def _sha(p: Path) -> str:
     return hashlib.sha256(p.read_bytes()).hexdigest()
 
 
-def controles_en_estadisticos(est: dict) -> list[str]:
+def controles_en_estadisticos(est: dict, a2_ruta: Path = A2) -> list[str]:
     """Los controles del brazo que se pueden verificar sin el voto a voto. Devuelve las violaciones (vacío = en orden).
     Es la ÚNICA función que decide «el brazo está mal cableado»: el test y las derivas sintéticas la comparten."""
     import pandas as pd
-    a, a2 = ce.tabla_actas(est), ce.tabla_actas(ce.cargar(A2))
+    a, a2 = ce.tabla_actas(est), ce.tabla_actas(ce.cargar(a2_ruta))
     mal = []
     if list(a["acta_id"]) != list(a2["acta_id"]) or not (a["n"].to_numpy() == a2["n"].to_numpy()).all() \
             or not (a["sy"].to_numpy() == a2["sy"].to_numpy()).all():
@@ -103,6 +121,15 @@ def test(fallos: list[str]) -> int:
             print(f"  FALLA: {msg}")
 
     t0 = time.time()
+    print("0. el veredicto de C3, conservado (brazo sobre el censo del 28-09)")
+    est_c3 = ce.cargar(ESTADISTICOS_C3)
+    mal = controles_en_estadisticos(est_c3, A2_C3)
+    check(not mal, "controles del brazo de C3: " + "; ".join(mal))
+    res_c3 = R.veredicto(est_c3)
+    for corte, ref in ANCLA_C3.items():
+        x = res_c3["dif_brier_pareado"][corte]
+        check((x["dBrier_rel_%"], *x["ic95_rel_%_ley"], x["n_votos"], x["n_leyes"]) == ref, f"C3 {corte}: ≠ ancla {ref}")
+    check(res_c3["veredicto"]["resultado"] == RESULTADO_C3, f"el veredicto de C3 es {res_c3['veredicto']['resultado']}")
     est = ce.cargar(ESTADISTICOS)
     res = R.veredicto(est)       # los defaults de verdad: 2.000 réplicas, semilla 7
 
@@ -110,12 +137,13 @@ def test(fallos: list[str]) -> int:
     mal = controles_en_estadisticos(est)
     check(not mal, "controles del brazo: " + "; ".join(mal))
     check(est["fuente"]["n_votos"] == 691_845 and est["fuente"]["n_actas"] == 5_856,
-          f"el panel no es el del censo del 28-09: {est['fuente']}")
+          f"el panel no tiene los votos y actas de siempre: {est['fuente']}")
     check(est["fuente"].get("era_desde_del_brazo") == R.ERA_DESDE, "el brazo no se generó con era_desde = 1900-01-01")
     check(R.N_BOOT >= 2000 and R.SEMILLA == 7, f"defaults del IC: {R.N_BOOT} réplicas, semilla {R.SEMILLA}")
 
     print("\n2. el veredicto, anclado")
     d = res["dif_brier_pareado"]
+    check(bool(ANCLA) and RESULTADO is not None, "faltan las anclas del brazo sobre el motor de hoy (fijarlas citando la medición)")
     for corte, (rel, lo, hi, nv, nl) in ANCLA.items():
         x = d[corte]
         check((x["dBrier_rel_%"], *x["ic95_rel_%_ley"], x["n_votos"], x["n_leyes"]) == (rel, lo, hi, nv, nl),
@@ -134,7 +162,7 @@ def test(fallos: list[str]) -> int:
     print(f"  primario: {p['dBrier_rel_%']:+.2f}% {p['ic95_rel_%_ley']} ({p['n_leyes']} leyes) → {res['veredicto']['resultado']}")
 
     print("\n3. no pisa ningún número versionado")
-    versionados = [q for q in (PUBLICADO, VERSIONADA, ESTADISTICOS) if q.is_file()]
+    versionados = [q for q in (PUBLICADO, VERSIONADA, ESTADISTICOS, ESTADISTICOS_C3) if q.is_file()]
     antes = {q: _sha(q) for q in versionados}
     check(_cmd(["--salida", str(PUBLICADO)]) == 3, "escribió (o no rechazó) sobre baseline_voto_individual.json")
     check(_cmd(["--salida", str(PUBLICADO), "--reemplazar"]) == 3, "con --reemplazar no rechazó un archivo ajeno")

@@ -678,7 +678,7 @@
    "clase": "constante",
    "archivo": "evaluacion/baseline/src/censo_estadisticos.py",
    "nombre": "FORMATO",
-   "linea": 48,
+   "linea": 53,
    "entorno": null,
    "asignado_a": "FORMATO",
    "default": 1,
@@ -694,7 +694,7 @@
    "clase": "constante",
    "archivo": "evaluacion/baseline/src/censo_estadisticos.py",
    "nombre": "VARIANTES_POR_DEFECTO",
-   "linea": 52,
+   "linea": 57,
    "entorno": null,
    "asignado_a": "VARIANTES_POR_DEFECTO",
    "default": [
@@ -709,27 +709,11 @@
    }
   },
   {
-   "id": "evaluacion/baseline/src/censo_estadisticos.py::ALIAS_P",
-   "clase": "constante",
-   "archivo": "evaluacion/baseline/src/censo_estadisticos.py",
-   "nombre": "ALIAS_P",
-   "linea": 56,
-   "entorno": null,
-   "asignado_a": "ALIAS_P",
-   "default": "estricta__tema",
-   "evaluable": true,
-   "expresion": "\"estricta__tema\"",
-   "afecta_panel": {
-    "afecta": false,
-    "motivo": "no se perturba: módulo no cargado en el panel"
-   }
-  },
-  {
    "id": "evaluacion/baseline/src/censo_estadisticos.py::_CLIP",
    "clase": "constante",
    "archivo": "evaluacion/baseline/src/censo_estadisticos.py",
    "nombre": "_CLIP",
-   "linea": 60,
+   "linea": 66,
    "entorno": null,
    "asignado_a": "_CLIP",
    "default": 1e-09,
@@ -745,7 +729,7 @@
    "clase": "default_funcion",
    "archivo": "evaluacion/baseline/src/censo_estadisticos.py",
    "nombre": "n_boot",
-   "linea": 67,
+   "linea": 73,
    "entorno": null,
    "asignado_a": null,
    "default": 300,
@@ -761,7 +745,7 @@
    "clase": "default_funcion",
    "archivo": "evaluacion/baseline/src/censo_estadisticos.py",
    "nombre": "seed",
-   "linea": 67,
+   "linea": 73,
    "entorno": null,
    "asignado_a": null,
    "default": 7,
@@ -777,7 +761,7 @@
    "clase": "default_funcion",
    "archivo": "evaluacion/baseline/src/censo_estadisticos.py",
    "nombre": "n_boot",
-   "linea": 84,
+   "linea": 90,
    "entorno": null,
    "asignado_a": null,
    "default": 300,
@@ -793,7 +777,7 @@
    "clase": "default_funcion",
    "archivo": "evaluacion/baseline/src/censo_estadisticos.py",
    "nombre": "seed",
-   "linea": 84,
+   "linea": 90,
    "entorno": null,
    "asignado_a": null,
    "default": 7,
@@ -809,7 +793,7 @@
    "clase": "default_funcion",
    "archivo": "evaluacion/baseline/src/censo_estadisticos.py",
    "nombre": "n_boot",
-   "linea": 287,
+   "linea": 304,
    "entorno": null,
    "asignado_a": null,
    "default": 300,
@@ -825,7 +809,7 @@
    "clase": "default_funcion",
    "archivo": "evaluacion/baseline/src/censo_estadisticos.py",
    "nombre": "seed",
-   "linea": 287,
+   "linea": 304,
    "entorno": null,
    "asignado_a": null,
    "default": 7,
@@ -841,7 +825,7 @@
    "clase": "default_funcion",
    "archivo": "evaluacion/baseline/src/censo_estadisticos.py",
    "nombre": "n_boot",
-   "linea": 301,
+   "linea": 318,
    "entorno": null,
    "asignado_a": null,
    "default": 300,
@@ -857,7 +841,7 @@
    "clase": "default_funcion",
    "archivo": "evaluacion/baseline/src/censo_estadisticos.py",
    "nombre": "seed",
-   "linea": 301,
+   "linea": 318,
    "entorno": null,
    "asignado_a": null,
    "default": 7,
@@ -5198,19 +5182,31 @@
    "archivo": "evaluacion/baseline/src/censo_estadisticos.py",
    "ref": ".json",
    "tipo": "literal",
-   "linea": 222
+   "linea": 239
   },
   {
    "archivo": "evaluacion/baseline/src/censo_estadisticos.py",
    "ref": "evaluacion/baseline/outputs/censo_detalle_2026-09-28.parquet",
    "tipo": "literal",
-   "linea": 45
+   "linea": 50
+  },
+  {
+   "archivo": "evaluacion/baseline/src/censo_estadisticos.py",
+   "ref": "evaluacion/baseline/outputs/censo_detalle_2026-10-02.parquet",
+   "tipo": "literal",
+   "linea": 46
   },
   {
    "archivo": "evaluacion/baseline/src/censo_estadisticos.py",
    "ref": "evaluacion/baseline/outputs/censo_estadisticos_2026-09-28.json",
    "tipo": "literal",
-   "linea": 46
+   "linea": 51
+  },
+  {
+   "archivo": "evaluacion/baseline/src/censo_estadisticos.py",
+   "ref": "evaluacion/baseline/outputs/censo_estadisticos_2026-10-02.json",
+   "tipo": "literal",
+   "linea": 47
   },
   {
    "archivo": "modelo/agregador_institucional/src/agregador.py",

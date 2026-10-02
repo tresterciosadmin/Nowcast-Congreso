@@ -52,8 +52,11 @@ import metrica_de_verdad as MV  # noqa: E402
 GENERADOR = "evaluacion/baseline/src/medir_sin_corte_por_era.py"
 ERA_DESDE = "1900-01-01"             # el récord acumula desde acá: nada se corta por era
 BASE, ARM = "estricta__general", "estricta__sin_corte_era"
-DETALLE_ARM = Path(ce.DETALLE).with_name("censo_detalle_sin_corte_era_2026-10-01.parquet")   # ignorado por git
-ESTADISTICOS = Path(ce.ESTADISTICOS).with_name("censo_estadisticos_sin_corte_era_2026-10-01.json")
+# El brazo sobre el motor de HOY (auditoría D1.0: re-corrido sobre el censo del 2026-10-02, con la ficha al día) y
+# el de C3 (sobre el censo del 28-09: su veredicto queda en git como evidencia; no se pisa).
+DETALLE_ARM = Path(ce.DETALLE).with_name("censo_detalle_sin_corte_era_2026-10-02.parquet")   # ignorado por git
+ESTADISTICOS = Path(ce.ESTADISTICOS).with_name("censo_estadisticos_sin_corte_era_2026-10-02.json")
+ESTADISTICOS_C3 = Path(ce.ESTADISTICOS).with_name("censo_estadisticos_sin_corte_era_2026-10-01.json")
 SALIDA = Path(ce.ESTADISTICOS).with_name("guard_era_sin_corte.json")
 PRIMARIO_DESDE = "2015-12-10"        # el primer recambio donde el guard corta (KIRCHNER arranca en 1900)
 N_BOOT, SEMILLA = 2000, 7
@@ -202,12 +205,27 @@ def efecto_en_lo_que_toca(m: pd.DataFrame, n_boot: int = N_BOOT, seed: int = SEM
     return r
 
 
+def leer_base(detalle_base: Path) -> pd.DataFrame:
+    """Las columnas de la variante del motor (`estricta__general`) en el censo de base. En el censo del 28-09 esa
+    variante era una extra (columnas `*__estricta__general`); desde el del 2026-10-02 (auditoría D1.0, RECORD_POR_TEMA
+    apagado) es la PRINCIPAL: sus columnas no llevan sufijo y sólo `p` tiene el alias `p__estricta__general`. Se usan las
+    de la principal sólo si `p` es idéntica a `p__estricta__general` (si no, falla)."""
+    import pyarrow.parquet as pq
+    hay = set(pq.ParquetFile(detalle_base).schema_arrow.names)
+    comunes = ["acta_id", "legislador", "fecha", "camara", "y", "ley", "p__estricta__general"]
+    extra = ["n_prev", "share", "desvio"]
+    if all(f"{c}__estricta__general" in hay for c in extra):
+        return pd.read_parquet(detalle_base, columns=comunes + [f"{c}__estricta__general" for c in extra])
+    b = pd.read_parquet(detalle_base, columns=comunes + ["p"] + extra)
+    if not np.array_equal(b["p"].to_numpy(), b["p__estricta__general"].to_numpy()):
+        raise ValueError(f"{detalle_base.name}: no trae las columnas de `estricta__general` y su principal no es esa variante")
+    return b.drop(columns="p").rename(columns={c: f"{c}__estricta__general" for c in extra})
+
+
 def correr_censo(args, raw: list) -> int:
     t0 = time.time()
-    base_cols = ["acta_id", "legislador", "fecha", "camara", "y", "ley", "p__estricta__general",
-                 "n_prev__estricta__general", "share__estricta__general", "desvio__estricta__general"]
     detalle_base = REPO / ce.DETALLE
-    base = pd.read_parquet(detalle_base, columns=base_cols)
+    base = leer_base(detalle_base)
     print("censo del brazo (era_desde =", ERA_DESDE, ") …", flush=True)
     arm = censo_del_brazo(args.procesos, args.tramos)
     DETALLE_ARM_ABS = REPO / DETALLE_ARM

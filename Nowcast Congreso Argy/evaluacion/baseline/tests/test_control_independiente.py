@@ -13,7 +13,7 @@ DE LA AUDITORÍA AL TEST. Sin argumentos corre el TEST (lo que corre el CI, ≈ 
 el modo de la fase 2 (el detalle del censo, el bootstrap de 2.000 réplicas y el JSON).
 
 EL PROBLEMA QUE RESUELVE EL CARGADOR `cargar_desde_git`. El control exacto lee el detalle del censo
-(`censo_detalle_2026-09-28.parquet`, 37 MB, IGNORADO por git) para saber qué votos se evaluaron. Un test de la suite
+(`censo_detalle_*.parquet`, ≈ 40 MB, IGNORADO por git) para saber qué votos se evaluaron. Un test de la suite
 no puede depender de un archivo que el CI no tiene. Con lo que SÍ viaja por git —la canónica, `origen_por_acta` y
 el JSON de estadísticos de A2, que trae por acta la ley, el `n`, el Σy y las sumas del motor— se reconstruyen 696.792
 votos contra los 691.845 del censo (el harness descarta ≈ 0,7% y sin el detalle no se sabe cuáles), y el récord
@@ -41,8 +41,10 @@ import pandas as pd
 RAIZ = Path(__file__).resolve().parents[3]
 CLEAN = RAIZ / "datos" / "canonica" / "data" / "clean"
 ORIGEN = RAIZ / "variables" / "proyecto" / "data" / "origen_por_acta.parquet"
-DETALLE = RAIZ / "evaluacion" / "baseline" / "outputs" / "censo_detalle_2026-09-28.parquet"
-ESTADISTICOS = RAIZ / "evaluacion" / "baseline" / "outputs" / "censo_estadisticos_2026-09-28.json"
+# El censo del motor de hoy (re-anclado a propósito en D1.0 de la auditoría: la ficha de desvío al día; antes, el
+# del 28-09). El control no depende del motor: sus anclas no cambian; la del motor sí (ANCLA_MOTOR).
+DETALLE = RAIZ / "evaluacion" / "baseline" / "outputs" / "censo_detalle_2026-10-02.parquet"
+ESTADISTICOS = RAIZ / "evaluacion" / "baseline" / "outputs" / "censo_estadisticos_2026-10-02.json"
 SALIDA = RAIZ / "Archivos_Borrar" / "auditoria" / "control_independiente.json"
 
 ERAS = pd.to_datetime(["1990-01-01", "2011-12-10", "2015-12-10", "2019-12-10", "2023-12-10", "2030-01-01"])
@@ -60,7 +62,8 @@ ANCLA_GIT = 0.1353         # el control sobre lo que viaja por git (696.792 voto
 TOL_ANCLA_GIT = 0.0005
 PUBLICADO = 0.1335         # el control exacto, con el detalle del censo (auditoría, 691.845 votos)
 TOL_PUBLICADO = 0.005      # lo que puede separar a la reconstrucción del exacto
-ANCLA_MOTOR = 0.1333       # el motor de hoy, recalculado desde las sumas del JSON
+ANCLA_MOTOR = 0.1336       # el motor de hoy, recalculado desde las sumas del JSON (0,1333 hasta D1.0: medido el
+                           # 2026-10-02 sobre el censo nuevo, ESTADO-EJECUCION.md D1.0)
 TOL_ANCLA_MOTOR = 0.0002
 TOL_MOTOR_CONTROL = 0.01   # cuánto pueden separarse el motor y el control independiente
 SEPARACION_FUGA = 0.05     # cuánto más tiene que dar el récord con fuga que el limpio
@@ -361,7 +364,7 @@ def test(fallos: list[str]) -> int:
         print(f"  exacto: control {ex[PRINCIPAL]:.4f}, motor {motor_ex:.4f}, fuga "
               f"{ex['CONTROL_POSITIVO_record_con_fuga_del_mismo_dia']:.4f}")
     else:
-        print("  SALTEADO: no está el detalle del censo (`censo_detalle_2026-09-28.parquet`, 37 MB, no viaja por git). "
+        print(f"  SALTEADO: no está el detalle del censo ({DETALLE.name}, no viaja por git). "
               "Se regenera con `censo_detalle_paralelo.py` (43 min); el 0,1335 exacto se reproduce donde exista.")
 
     print(f"\n{corridos - len(fallos)}/{corridos} OK  ({time.time() - t0:.0f} s)")

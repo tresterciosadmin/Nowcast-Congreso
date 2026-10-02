@@ -42,18 +42,24 @@ sys.path.insert(0, str(next(d for d in Path(__file__).resolve().parents
                             if (d / "rutas.py").is_file())))
 from rutas import RAIZ as REPO  # noqa: E402
 
-DETALLE = "evaluacion/baseline/outputs/censo_detalle_2026-09-28.parquet"
-ESTADISTICOS = "evaluacion/baseline/outputs/censo_estadisticos_2026-09-28.json"
+# El censo del motor de HOY (auditoría 2026-09, D1.0: la ficha de desvío al día; re-anclado a propósito).
+DETALLE = "evaluacion/baseline/outputs/censo_detalle_2026-10-02.parquet"
+ESTADISTICOS = "evaluacion/baseline/outputs/censo_estadisticos_2026-10-02.json"
+# El censo del 28-09 (motor antes de la fase D): sus estadísticos siguen en git y son la CONTINUIDAD con lo
+# publicado (0,1333 y la tabla del §9.2). No se pisan: los tests que prueban esa continuidad los nombran acá.
+DETALLE_2026_09_28 = "evaluacion/baseline/outputs/censo_detalle_2026-09-28.parquet"
+ESTADISTICOS_2026_09_28 = "evaluacion/baseline/outputs/censo_estadisticos_2026-09-28.json"
 
 FORMATO = 1
 # Variantes que se guardan: el motor de hoy (RECORD_POR_TEMA apagado) y la que tenía prendida
 # el censo al generarse. Las otras del censo (`fecha__tema`, `dia_incluido__*`) sirven para
 # descomponer la fuga del 28-09 (ADR-0034) y se piden con --variantes.
 VARIANTES_POR_DEFECTO = ("estricta__general", "estricta__tema")
-# La columna `p` del censo del 28-09 es la variante principal: historia estricta con
-# RECORD_POR_TEMA según su bandera EN ESE MOMENTO (prendida) → igual a `p__estricta__tema`.
-# `generar` lo VERIFICA; si un censo futuro no lo cumple, falla en vez de aliasar mal.
-ALIAS_P = "estricta__tema"
+# La columna `p` del censo es la variante principal: historia estricta con RECORD_POR_TEMA según su
+# bandera EN ESE MOMENTO. En el censo del 28-09 estaba prendida (`p` = `p__estricta__tema`); desde el
+# del 2026-10-02 (D1.0) está apagada (`p` = `p__estricta__general`). Por eso el alias ya no es una
+# constante: `generar` lo DEDUCE (la variante guardada cuya columna es idéntica a `p`) y, si ninguna lo
+# es, falla en vez de aliasar mal (`_alias_de_p`).
 
 # La grilla de `estimar_epsilon_tau.estimar_epsilon`: una sola copia.
 GRILLA_EPS = np.round(np.arange(0.0, 0.301, 0.005), 3)
@@ -127,6 +133,19 @@ def _curvas_epsilon(p: np.ndarray, y: np.ndarray) -> tuple[list, list]:
     return brier, logloss
 
 
+def _alias_de_p(d: pd.DataFrame, cols: dict) -> str | None:
+    """La variante guardada cuya columna es IDÉNTICA a `p` (None si el detalle no trae `p`). Si `p` no coincide
+    con ninguna, falla: un alias falso haría que «p» quiera decir otra cosa en el JSON."""
+    if "p" not in d.columns:
+        return None
+    p = d["p"].to_numpy()
+    iguales = [v for v, c in cols.items() if np.array_equal(p, d[c].to_numpy())]
+    if not iguales:
+        raise ValueError("`p` no es igual a ninguna de las variantes guardadas "
+                         f"{sorted(cols)}: revisar el alias antes de guardar")
+    return iguales[0]
+
+
 def generar(d: pd.DataFrame, variantes=VARIANTES_POR_DEFECTO, detalle: str | Path | None = None,
             era_bins=None, era_labels=None) -> dict:
     """Estadísticos a partir del detalle voto a voto `d` (columnas: acta_id, fecha, camara,
@@ -146,9 +165,7 @@ def generar(d: pd.DataFrame, variantes=VARIANTES_POR_DEFECTO, detalle: str | Pat
     if faltan:
         raise KeyError(f"el detalle no tiene {faltan}; hay "
                        f"{[c for c in d.columns if c == 'p' or c.startswith('p__')]}")
-    if "p" in d.columns and ALIAS_P in cols and not np.array_equal(
-            d["p"].to_numpy(), d[cols[ALIAS_P]].to_numpy()):
-        raise ValueError(f"`p` ya no es igual a p__{ALIAS_P}: revisar el alias antes de guardar")
+    alias_p = _alias_de_p(d, cols)
 
     y = d["y"].to_numpy(float)
     g = pd.DataFrame({"acta_id": d["acta_id"].to_numpy(), "y": y})
@@ -192,7 +209,7 @@ def generar(d: pd.DataFrame, variantes=VARIANTES_POR_DEFECTO, detalle: str | Pat
         "formato": FORMATO, "generado": date.today().isoformat(),
         "generador": "evaluacion/baseline/src/censo_estadisticos.py", "motor_sha": _git_head(),
         "fuente": fuente,
-        "variantes": cols, "alias": {"p": ALIAS_P if ALIAS_P in cols else None},
+        "variantes": cols, "alias": {"p": alias_p},
         "actas": {"columnas": orden, "filas": filas},
         "epsilon": eps,
     }

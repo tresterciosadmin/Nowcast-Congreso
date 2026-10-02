@@ -30,7 +30,7 @@
 ## Contrato
 - **Entradas:** `datos/canonica/data/clean/{votos_resuelto,actas_canonico}.parquet`
 - **Salida (contrato estable):** en `outputs/`:
-  - `disciplina_individual.csv` — índice por legislador (tasas global / disputadas / tramo reciente), calculado con TODA la historia: es la ficha de hoy. **Desde el 2026-10-01 el motor no lo lee** (usa la ficha al día, `FichaAlDia`, sobre la canónica); lo siguen leyendo `agregador.backtest`, `variables/legislador` y los estimadores del ICG
+  - `disciplina_individual.csv` — índice por legislador (tasas global / disputadas / tramo reciente), calculado con TODA la historia: es la ficha de hoy. **Desde el 2026-10-02 (auditoría D1.0) el motor no lo lee** (usa la ficha al día, `FichaAlDia`, sobre la canónica); lo siguen leyendo `agregador.backtest`, `variables/legislador` y los estimadores del ICG
   - `disciplina_por_periodo.csv` — legislador × período parlamentario × cámara (la unidad de análisis)
   - `disciplina_por_anio.csv` — legislador × año
   - `desvios_por_voto.parquet` — una fila por VOTO (conducta, línea, método, desvío): contrato para la columna `desvio` de datos/export

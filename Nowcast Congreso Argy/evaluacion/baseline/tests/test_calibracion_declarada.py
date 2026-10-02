@@ -19,8 +19,14 @@ QUÉ FIJA (los criterios 3, 4, 6 y 7 del pre-registro de C2 en `coordinacion/AUD
 Y un control que puede fallar (regla 5): una P de producción alterada, otra semilla del bootstrap o un default de
 réplicas distinto NO reproducen lo anclado.
 
-No lee el detalle del censo (37 MB, no viaja por git) ni simula nada: corre en el CI. Cuando la fase D cambie el motor
-hay que regenerar (`calibracion_declarada.py --simular`, ≈ 15 min) y re-anclar a propósito, citando la medición.
+  6. EL VALOR VIGENTE (auditoría D1.0): con el JSON por acta del motor de HOY (`C.ACTAS`), el Δ de cada cámara y la
+     cobertura de la banda son los de la medición (`ANCLA_DELTA_VIGENTE`, `ANCLA_BANDA_VIGENTE`, fijadas DESPUÉS de medir).
+
+No lee el detalle del censo (37 MB, no viaja por git) ni simula nada: corre en el CI. La tabla del §9.2 y las anclas de C2
+(1, 2 y 4) se comprueban sobre el JSON por acta del 28-09 (`C.ACTAS_2026_09_28`, que sigue en git y no se pisa): es la
+continuidad. El JSON versionado (5) y el valor vigente (6) son los del motor de hoy: cuando la fase D cambie el motor hay
+que regenerar (`calibracion_declarada.py --simular`) y re-anclar a propósito, citando la medición (la primera vez, en
+D1.0: la ficha de desvío al día).
 
     python evaluacion/baseline/tests/test_calibracion_declarada.py
 """
@@ -43,7 +49,8 @@ import metrica_de_verdad as MV  # noqa: E402
 
 PUBLICADO = RAIZ / "evaluacion" / "baseline" / "outputs" / "baseline_voto_individual.json"
 VERSIONADA = RAIZ / C.SALIDA
-ACTAS = RAIZ / C.ACTAS
+ACTAS = RAIZ / C.ACTAS                          # el motor de hoy (5 y 6)
+ACTAS_C2 = RAIZ / C.ACTAS_2026_09_28           # el de C2: la tabla del §9.2 y sus anclas (1, 2 y 4)
 REGISTRO = RAIZ / "modelo" / "ensemble" / "outputs" / "registro_parametros.json"
 
 # ── la tabla del §9.2 (`coordinacion/AUDITORIA-2026-09/resultados/simple_por_camara.txt`) ───────────────────────
@@ -62,6 +69,21 @@ ANCLA_DELTA = {       # (cámara, subconjunto) → (Δ, extremo inferior del IC,
     ("diputados", "disputadas"): (0.01265, 0.00679, 0.01889),
     ("senado", "todas"): (0.00258, 0.00154, 0.00376),
     ("senado", "disputadas"): (0.00328, 0.00043, 0.00678),
+}
+# El motor de hoy, fijado DESPUÉS de medir (D1.0, `calibracion_declarada.py --simular` sobre el censo del 2026-10-02).
+ANCLA_DELTA_VIGENTE = {
+    ('diputados', 'todas'): (0.01151, 0.0079, 0.01573),
+    ('diputados', 'disputadas'): (0.01266, 0.00683, 0.0189),
+    ('senado', 'todas'): (0.00258, 0.00154, 0.00376),
+    ('senado', 'disputadas'): (0.00327, 0.00042, 0.00679),
+}
+ANCLA_BANDA_VIGENTE = {
+    ('todas_las_actas', 'ambas'): (5852, 0.6329, 0.6114, 0.6542, 40.0, 6.94),
+    ('todas_las_actas', 'diputados'): (2858, 0.6039, 0.5692, 0.6385, 88.1, 10.53),
+    ('todas_las_actas', 'senado'): (2994, 0.6607, 0.6356, 0.684, 23.0, 3.5),
+    ('mayoria_simple', 'ambas'): (5414, 0.6252, 0.6017, 0.6484, 35.0, 8.3),
+    ('mayoria_simple', 'diputados'): (2547, 0.585, 0.5434, 0.6226, 87.0, 13.57),
+    ('mayoria_simple', 'senado'): (2867, 0.661, 0.6354, 0.6855, 23.0, 3.62),
 }
 ANCLA_BANDA = {       # (población, cámara) → (n_actas, cobertura, extremo inferior, extremo superior, ancho mediano, sesgo)
     ("todas_las_actas", "ambas"): (5852, 0.6364, 0.6148, 0.658, 40.0, 6.93),
@@ -97,9 +119,11 @@ def test(fallos: list[str]) -> int:
             print(f"  FALLA: {msg}")
 
     t0 = time.time()
-    est, a = C.cargar_actas(ACTAS)
+    est, a = C.cargar_actas(ACTAS_C2)        # 1, 2 y 4: el JSON por acta de C2 (censo del 28-09)
     res = C.medir(a)       # los defaults de verdad: 2.000 réplicas, semilla 7
     t = res["tabla_simple"]
+    est_hoy, a_hoy = C.cargar_actas(ACTAS)   # 5 y 6: el motor de hoy
+    res_hoy = C.medir(a_hoy)
 
     print("1. la tabla del §9.2 desde el JSON por acta")
     check(C.N_BOOT >= 2000 and C.SEMILLA == 7, f"defaults del IC: {C.N_BOOT} réplicas, semilla {C.SEMILLA}")
@@ -150,7 +174,7 @@ def test(fallos: list[str]) -> int:
           f" · banda {todas['cobertura_banda_90']} {todas['ic95_ley']}")
 
     print("\n3. no pisa ningún número versionado")
-    versionados = [p for p in (PUBLICADO, VERSIONADA, ACTAS) if p.is_file()]
+    versionados = [p for p in (PUBLICADO, VERSIONADA, ACTAS, ACTAS_C2) if p.is_file()]
     antes = {p: _sha(p) for p in versionados}
     check(_cmd(["--salida", str(PUBLICADO)]) == 3, "escribió (o no rechazó) sobre baseline_voto_individual.json")
     check(_cmd(["--salida", str(PUBLICADO), "--reemplazar"]) == 3, "con --reemplazar no rechazó un archivo ajeno")
@@ -191,12 +215,12 @@ def test(fallos: list[str]) -> int:
         check((v["metodo"]["n_boot"], v["metodo"]["semilla"]) == (C.N_BOOT, C.SEMILLA),
               "el JSON versionado se generó con otros defaults que los del comando de hoy: regenerar")
         for k in ("tabla_simple", "confiabilidad", "banda", "objetivos_9_4"):
-            check(v[k] == res[k], f"`{k}` del JSON versionado no sale del JSON por acta de git: regenerar")
+            check(v[k] == res_hoy[k], f"`{k}` del JSON versionado no sale del JSON por acta de git: regenerar")
         pr = v["procedencia"]
         check(pr["actas"]["sha256_lf"] == MV._sha256_lf(ACTAS), "el JSON por acta cambió y la calibración no se regeneró")
         check(bool(pr.get("head_sha_al_correr")) and bool(pr.get("comando")), "procedencia sin HEAD o comando")
         check(bool(v.get("generado")), "falta la fecha")
-    par = est["parametros"]
+    par = est_hoy["parametros"]
     reg = {(p["archivo"], p["nombre"]): p["default"] for p in json.loads(REGISTRO.read_text(encoding="utf-8"))["parametros"]}
     NPS, ENS, AGR = ("modelo/ensemble/src/nowcast_puertas.py", "modelo/ensemble/src/ensemble.py",
                      "modelo/agregador_institucional/src/agregador.py")
@@ -204,7 +228,21 @@ def test(fallos: list[str]) -> int:
                                   "desvio_min_individual": (ENS, "DESVIO_MIN_INDIVIDUAL"), "p_incertidumbre": (ENS, "P_INCERTIDUMBRE"),
                                   "quorum_cuenta_abstenciones": (AGR, "QUORUM_CUENTA_ABSTENCIONES")}.items():
         check(par[clave] == reg[(arch, nombre)], f"se simuló con {clave} = {par[clave]}, el registro dice {reg[(arch, nombre)]}: regenerar")
-    check(est["fuente"]["n_actas"] == len(a) == 5852, f"actas: {len(a)}")
+    check(est["fuente"]["n_actas"] == len(a) == 5852, f"actas de C2: {len(a)}")
+    check(est_hoy["fuente"]["n_actas"] == len(a_hoy) == 5852, f"actas del motor de hoy: {len(a_hoy)}")
+
+    print("\n6. el valor vigente: el motor de hoy (D1.0)")
+    th = res_hoy["tabla_simple"]
+    check(bool(ANCLA_DELTA_VIGENTE) and bool(ANCLA_BANDA_VIGENTE), "faltan las anclas del valor vigente (fijarlas citando la medición)")
+    for (cam, sub), ref in ANCLA_DELTA_VIGENTE.items():
+        d = th[cam][sub]["modelo_menos_constante"]
+        check((d["delta"], *d["ic95_ley"]) == ref, f"vigente {cam} {sub}: Δ e IC {(d['delta'], *d['ic95_ley'])} ≠ ancla {ref}")
+    for (pob, cam), ref in ANCLA_BANDA_VIGENTE.items():
+        c = res_hoy["banda"][pob][cam]
+        valor = (c["n_actas"], c["cobertura_banda_90"], *c["ic95_ley"], c["ancho_mediano_votos"], c["sesgo_medio_votos"])
+        check(valor == ref, f"vigente banda {pob}/{cam}: {valor} ≠ ancla {ref}")
+    print(f"  Δ Diputados {th['diputados']['todas']['modelo_menos_constante']['delta']:+.5f} · Senado "
+          f"{th['senado']['todas']['modelo_menos_constante']['delta']:+.5f} · banda {res_hoy['banda']['todas_las_actas']['ambas']['cobertura_banda_90']}")
 
     print(f"\n{corridos - len(fallos)}/{corridos} OK  ({time.time() - t0:.0f} s)")
     return corridos

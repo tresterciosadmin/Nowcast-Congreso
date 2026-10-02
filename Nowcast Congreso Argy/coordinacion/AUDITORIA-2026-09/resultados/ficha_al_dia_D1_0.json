@@ -1,0 +1,227 @@
+{
+ "censo_nuevo": "censo_detalle_2026-10-02.parquet",
+ "censo_viejo": "censo_detalle_2026-09-28.parquet",
+ "pares_nuevo": 691845,
+ "pares_viejo": 691845,
+ "solo_en_uno": 0,
+ "por_variante": {
+  "estricta__general": {
+   "max_abs_dp_rama_record": 0.0,
+   "votos_rama_bloque": 32312,
+   "votos_que_cambian": 11821,
+   "votos_que_cambian_fuera_de_la_rama_de_bloque": 0,
+   "max_abs_dp": 0.9974
+  },
+  "estricta__tema": {
+   "max_abs_dp_rama_record": 0.0,
+   "votos_rama_bloque": 32312,
+   "votos_que_cambian": 11821,
+   "votos_que_cambian_fuera_de_la_rama_de_bloque": 0,
+   "max_abs_dp": 0.9974
+  },
+  "fecha__tema": {
+   "max_abs_dp_rama_record": 0.0,
+   "votos_rama_bloque": 20111,
+   "votos_que_cambian": 8186,
+   "votos_que_cambian_fuera_de_la_rama_de_bloque": 0,
+   "max_abs_dp": 0.9974
+  },
+  "dia_incluido__tema": {
+   "max_abs_dp_rama_record": 0.0,
+   "votos_rama_bloque": 0,
+   "votos_que_cambian": 0,
+   "votos_que_cambian_fuera_de_la_rama_de_bloque": 0,
+   "max_abs_dp": 0.0
+  },
+  "dia_incluido__general": {
+   "max_abs_dp_rama_record": 0.0,
+   "votos_rama_bloque": 0,
+   "votos_que_cambian": 0,
+   "votos_que_cambian_fuera_de_la_rama_de_bloque": 0,
+   "max_abs_dp": 0.0
+  }
+ },
+ "recalculo_desde_columnas_max_abs_dp": 0.0,
+ "dbrier_oos": {
+  "rama_de_bloque": {
+   "votos": 28568,
+   "leyes": 811,
+   "por_ley": {
+    "dBrier": -0.002399,
+    "dBrier_rel_%": -0.79,
+    "ic95_rel_%_ley": [
+     -1.63,
+     2.89
+    ]
+   },
+   "por_mes": {
+    "dBrier": -0.002399,
+    "dBrier_rel_%": -0.79,
+    "ic95_rel_%_ley": [
+     -1.67,
+     2.65
+    ]
+   }
+  },
+  "global": {
+   "votos": 576270,
+   "leyes": 2966,
+   "por_ley": {
+    "dBrier": -0.000119,
+    "dBrier_rel_%": -0.08,
+    "ic95_rel_%_ley": [
+     -0.37,
+     0.11
+    ]
+   },
+   "por_mes": {
+    "dBrier": -0.000119,
+    "dBrier_rel_%": -0.08,
+    "ic95_rel_%_ley": [
+     -0.33,
+     0.1
+    ]
+   }
+  },
+  "rama_de_bloque_diputados": {
+   "votos": 24935,
+   "leyes": 571,
+   "por_ley": {
+    "dBrier": -0.00365,
+    "dBrier_rel_%": -1.1,
+    "ic95_rel_%_ley": [
+     -1.76,
+     2.41
+    ]
+   },
+   "por_mes": {
+    "dBrier": -0.00365,
+    "dBrier_rel_%": -1.1,
+    "ic95_rel_%_ley": [
+     -1.87,
+     2.24
+    ]
+   }
+  },
+  "rama_de_bloque_senado": {
+   "votos": 3633,
+   "leyes": 275,
+   "por_ley": {
+    "dBrier": 0.006192,
+    "dBrier_rel_%": 5.42,
+    "ic95_rel_%_ley": [
+     2.81,
+     8.98
+    ]
+   },
+   "por_mes": {
+    "dBrier": 0.006192,
+    "dBrier_rel_%": 5.42,
+    "ic95_rel_%_ley": [
+     2.52,
+     9.97
+    ]
+   }
+  },
+  "rama_de_bloque_era=hasta 2011": {
+   "votos": 3385,
+   "leyes": 303,
+   "por_ley": {
+    "dBrier": 0.004605,
+    "dBrier_rel_%": 3.4,
+    "ic95_rel_%_ley": [
+     0.19,
+     10.73
+    ]
+   },
+   "por_mes": {
+    "dBrier": 0.004605,
+    "dBrier_rel_%": 3.4,
+    "ic95_rel_%_ley": [
+     -0.75,
+     21.97
+    ]
+   }
+  },
+  "rama_de_bloque_era=2011-2015": {
+   "votos": 2394,
+   "leyes": 132,
+   "por_ley": {
+    "dBrier": -0.001138,
+    "dBrier_rel_%": -0.98,
+    "ic95_rel_%_ley": [
+     -4.32,
+     1.25
+    ]
+   },
+   "por_mes": {
+    "dBrier": -0.001138,
+    "dBrier_rel_%": -0.98,
+    "ic95_rel_%_ley": [
+     -9.51,
+     2.08
+    ]
+   }
+  },
+  "rama_de_bloque_era=2015-2019": {
+   "votos": 3799,
+   "leyes": 176,
+   "por_ley": {
+    "dBrier": 0.005485,
+    "dBrier_rel_%": 2.75,
+    "ic95_rel_%_ley": [
+     0.99,
+     6.0
+    ]
+   },
+   "por_mes": {
+    "dBrier": 0.005485,
+    "dBrier_rel_%": 2.75,
+    "ic95_rel_%_ley": [
+     1.9,
+     9.62
+    ]
+   }
+  },
+  "rama_de_bloque_era=2019-2023": {
+   "votos": 1958,
+   "leyes": 78,
+   "por_ley": {
+    "dBrier": -0.000421,
+    "dBrier_rel_%": -0.27,
+    "ic95_rel_%_ley": [
+     -3.66,
+     7.83
+    ]
+   },
+   "por_mes": {
+    "dBrier": -0.000421,
+    "dBrier_rel_%": -0.27,
+    "ic95_rel_%_ley": [
+     -2.44,
+     9.01
+    ]
+   }
+  },
+  "rama_de_bloque_era=desde 2023": {
+   "votos": 17032,
+   "leyes": 123,
+   "por_ley": {
+    "dBrier": -0.005953,
+    "dBrier_rel_%": -1.46,
+    "ic95_rel_%_ley": [
+     -1.93,
+     2.81
+    ]
+   },
+   "por_mes": {
+    "dBrier": -0.005953,
+    "dBrier_rel_%": -1.46,
+    "ic95_rel_%_ley": [
+     -2.08,
+     2.99
+    ]
+   }
+  }
+ }
+}

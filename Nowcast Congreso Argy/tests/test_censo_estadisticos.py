@@ -14,6 +14,11 @@ cosas, y las tres corren en un checkout limpio (sin el detalle):
 3. **Frescura** (sólo donde existe el detalle): el JSON corresponde al parquet que hay en
    disco (mismo sha256). Si alguien regenera el censo y no los estadísticos, falla.
 
+Desde D1.0 de la auditoría (2026-10-02) hay dos JSON versionados: el del censo del 28-09
+(`CE.ESTADISTICOS_2026_09_28`), que es el que publicó lo que fija el punto 2 y se conserva
+como continuidad, y el del motor de hoy (`CE.ESTADISTICOS`, la ficha de desvío al día), cuyo
+ε₀ y τ quedan anclados en `ESPERADO_HOY` (fijado DESPUÉS de medir, citando la medición).
+
     python -m pytest tests/test_censo_estadisticos.py -q
 """
 from __future__ import annotations
@@ -164,7 +169,7 @@ def test_lo_versionado_reproduce_el_skill_publicado():
     pub = json.loads((rutas.BASELINE_OUT / "baseline_voto_individual.json")
                      .read_text(encoding="utf-8"))
     assert pub["variante"] == "p__estricta__general", "cambió la variante publicada"
-    est = CE.cargar()
+    est = CE.cargar(RAIZ / CE.ESTADISTICOS_2026_09_28)      # el censo que lo publicó
     a = CE.tabla_actas(est)
     g = pub["global"]
     got = CE.skill(est, "estricta__general", "global", a=a)
@@ -185,8 +190,20 @@ def test_epsilon_y_tau_se_recalculan_sin_el_detalle():
     offset con el que se corrió por defecto, RECORD_POR_TEMA prendido) ε₀ = 0,05 y τ = 1,2249.
     Ver `URGENTE.md` (U2) y ADR-0034. Si una re-estimación de la fase D cambia el censo,
     este test se actualiza junto con el JSON: es la barandilla de que nadie lo cambió sin ver."""
-    est = CE.cargar()
-    esperado = {"estricta__general": (0.055, 1.197, 1.1521), "p": (0.05, 1.2249, 1.1734)}
+    for ruta, esperado in ((RAIZ / CE.ESTADISTICOS_2026_09_28,
+                            {"estricta__general": (0.055, 1.197, 1.1521), "p": (0.05, 1.2249, 1.1734)}),
+                           (RAIZ / CE.ESTADISTICOS, ESPERADO_HOY)):
+        assert esperado, f"falta el ancla de ε₀ y τ de {ruta.name} (fijarla citando la medición)"
+        _eps_tau(CE.cargar(ruta), esperado)
+
+
+# El motor de hoy (D1.0: la ficha de desvío al día), fijado DESPUÉS de medir: (ε₀ log-loss, τ sin ε₀, τ con ε₀).
+# Medido el 2026-10-02 sobre `censo_estadisticos_2026-10-02.json` (ESTADO-EJECUCION.md, D1.0): ε₀ igual que el
+# 28-09 (0,055); τ 1,197 → 1,201. En este censo `p` es la variante del motor (RECORD_POR_TEMA apagado).
+ESPERADO_HOY = {"estricta__general": (0.055, 1.201, 1.1535), "p": (0.055, 1.201, 1.1535)}
+
+
+def _eps_tau(est, esperado):
     for col, (e0, tau0, tau_e) in esperado.items():
         r = EET._resultado_desde_estadisticos(est, col, "")
         assert r["n_votos"] == est["fuente"]["n_votos"] and r["n_actas"] == est["fuente"]["n_actas"]

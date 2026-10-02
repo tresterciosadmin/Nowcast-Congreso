@@ -21,9 +21,14 @@ QUÉ FIJA (los criterios 1 a 5 y 7 del pre-registro de C1 en `coordinacion/AUDIT
      escribe con `--verificar-motor` en la PC, donde está el detalle del censo).
 Y un control que puede fallar (regla 5): un Σ(p−y)² alterado en 1%, o otra semilla, NO reproducen lo publicado.
 
-No lee el detalle del censo (37 MB, no viaja por git): corre en el CI. Las anclas son las de los archivos de
-`baseline_voto_individual.json` y `control_independiente.json`; cuando la fase D regenere el censo hay que
-re-anclarlas a propósito, citando la medición.
+  8. EL VALOR VIGENTE (auditoría D1.0): con los estadísticos del censo del motor de HOY (`ce.ESTADISTICOS`), el skill
+     global y su IC con los defaults son los de la medición de D1.0 (`ANCLA_VIGENTE`, fijada DESPUÉS de medir).
+
+No lee el detalle del censo (37 MB, no viaja por git): corre en el CI. Las anclas de 1 a 4 y 6 son las de
+`baseline_voto_individual.json` y `control_independiente.json`, que publicó el censo del 28-09: se comprueban sobre los
+estadísticos de ESE censo (`ce.ESTADISTICOS_2026_09_28`, que siguen en git y no se pisan) —es la continuidad: el método
+reproduce lo publicado—. Las de 7 y 8 son las del motor de hoy y se re-anclan a propósito, citando la medición, cada
+vez que la fase D cambia el motor (la primera vez, en D1.0: la ficha de desvío al día).
 
     python evaluacion/baseline/tests/test_metrica_de_verdad.py
 """
@@ -48,11 +53,15 @@ import metrica_de_verdad as M  # noqa: E402
 PUBLICADO = RAIZ / "evaluacion" / "baseline" / "outputs" / "baseline_voto_individual.json"
 CONTROL = RAIZ / "coordinacion" / "AUDITORIA-2026-09" / "resultados" / "control_independiente.json"
 VERSIONADA = RAIZ / M.SALIDA
-ESTADISTICOS = RAIZ / ce.ESTADISTICOS
+ESTADISTICOS = RAIZ / ce.ESTADISTICOS                       # el censo del motor de hoy (7 y 8)
+ESTADISTICOS_PUBLICADO = RAIZ / ce.ESTADISTICOS_2026_09_28  # el censo que publicó lo de 1 a 4 (continuidad)
 
 TOL_IC_2000 = 0.010          # tres desvíos de la diferencia entre dos sorteos del bootstrap (pre-registro de C1)
 PLAN = (0.059, 0.200)        # el criterio del plan para C1 (informe §9.4)
 CONTINUIDAD = {"global": 0.1333}
+# El motor de hoy, fijado DESPUÉS de medir (D1.0, `metrica_de_verdad.py --verificar-motor 60` sobre el censo del
+# 2026-10-02; 2.000 réplicas, semilla 7): skill global e IC por ley.
+ANCLA_VIGENTE = {"global": (0.1336, 0.0624, 0.1975)}   # (skill, extremo inferior, extremo superior)
 
 
 def _cmd(argv: list) -> int:
@@ -83,7 +92,8 @@ def test(fallos: list[str]) -> int:
             print(f"  FALLA: {msg}")
 
     t0 = time.time()
-    est = ce.cargar(ESTADISTICOS)
+    est = ce.cargar(ESTADISTICOS_PUBLICADO)       # 1 a 4 y 6: la continuidad con lo publicado (censo del 28-09)
+    hoy = ce.cargar(ESTADISTICOS)                 # 7 y 8: el motor de hoy
     pub = json.loads(PUBLICADO.read_text(encoding="utf-8"))
     ctl = json.loads(CONTROL.read_text(encoding="utf-8"))
 
@@ -170,16 +180,14 @@ def test(fallos: list[str]) -> int:
         check((meto["variante"], meto["contra"], meto["n_boot"], meto["semilla"]) == (
             M.VARIANTE, M.CONTRA, M.N_BOOT, M.SEMILLA),
               "el JSON versionado se generó con otros valores por defecto que los del comando de hoy: regenerar")
-        mismos = (meto["variante"], meto["contra"], meto["n_boot"], meto["semilla"]) == (
-            M.VARIANTE, M.CONTRA, M.N_BOOT, M.SEMILLA)
-        reg = m2000 if mismos else M.medir(est, meto["variante"], meto["contra"], meto["n_boot"], meto["semilla"])
+        reg = M.medir(hoy, meto["variante"], meto["contra"], meto["n_boot"], meto["semilla"])
         check(v["skill"] == reg["skill"], "el skill del JSON versionado no sale de los estadísticos de git: regenerar")
         check(v["dif_brier_pareado"] == reg["dif_brier_pareado"],
               "el ΔBrier pareado del JSON versionado no sale de los estadísticos de git: regenerar")
         pr = v["procedencia"]
         check(pr["estadisticos"]["sha256_lf"] == M._sha256_lf(ESTADISTICOS),
               "el JSON de estadísticos cambió y la métrica no se regeneró (sha256 distinto)")
-        check(pr["estadisticos"]["censo"] == est["fuente"], "la fuente del censo citada no es la del JSON de estadísticos")
+        check(pr["estadisticos"]["censo"] == hoy["fuente"], "la fuente del censo citada no es la del JSON de estadísticos")
         for campo in ("head_sha_al_correr", "comando"):
             check(bool(pr.get(campo)), f"procedencia sin {campo}")
         for campo in ("escrito_el", "motor_sha_al_escribirlo", "nota_motor_sha", "sha256_lf", "ruta"):
@@ -193,6 +201,15 @@ def test(fallos: list[str]) -> int:
                   and vig["votos_solo_en_el_motor_de_hoy"] == 0, "el certificado de vigencia no cumple su umbral")
             print(f"  certificado: {vig['actas']} actas, {vig['votos_comparados']} votos, max|ΔP| = {vig['max_abs_dP']:.3g}, "
                   f"motor {vig['motor_head_sha']}")
+
+    print("\n8. el valor vigente: el motor de hoy (D1.0)")
+    check(ESTADISTICOS != ESTADISTICOS_PUBLICADO, "los estadísticos de hoy son los del 28-09: falta el censo del motor de hoy")
+    gh = M.medir(hoy)["skill"]["global"]
+    ref = ANCLA_VIGENTE["global"]
+    check(ref is not None, "falta el ancla del valor vigente (fijarla citando la medición)")
+    if ref is not None:
+        check((gh["skill"], *gh["skill_ic95_ley"]) == ref, f"motor de hoy {gh['skill']} {gh['skill_ic95_ley']} ≠ ancla {ref}")
+    print(f"  global {gh['skill']} {gh['skill_ic95_ley']} ({gh['n_votos']} votos, {gh['n_leyes']} leyes)")
 
     print(f"\n{corridos - len(fallos)}/{corridos} OK  ({time.time() - t0:.0f} s)")
     return corridos

@@ -50,7 +50,10 @@ import censo_estadisticos as ce  # noqa: E402
 import metrica_de_verdad as MV  # noqa: E402
 
 GENERADOR = "evaluacion/baseline/src/calibracion_declarada.py"
-ACTAS = Path(ce.ESTADISTICOS).with_name("calibracion_actas_2026-09-28.json")
+# El JSON por acta del motor de HOY (auditoría D1.0, censo del 2026-10-02; re-anclado a propósito) y el del
+# 28-09 (el de C2: reproduce la tabla del §9.2 y queda en git como continuidad; no se pisa).
+ACTAS = Path(ce.ESTADISTICOS).with_name("calibracion_actas_2026-10-02.json")
+ACTAS_2026_09_28 = Path(ce.ESTADISTICOS).with_name("calibracion_actas_2026-09-28.json")
 SALIDA = Path(ce.ESTADISTICOS).with_name("calibracion_declarada.json")
 FORMATO = 1
 COL = "p__estricta__general"          # las P_i del motor de hoy en el censo

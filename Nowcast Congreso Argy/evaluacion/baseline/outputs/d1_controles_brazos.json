@@ -1,0 +1,101 @@
+{
+ "formato": 1,
+ "generador": "evaluacion/baseline/src/medir_d1_parametros_pi.py",
+ "generado": "2026-10-02",
+ "a_rama_por_defecto": {
+  "vigente": true,
+  "umbral": 1e-09,
+  "semilla": 7,
+  "actas": 60,
+  "por_celda": 6,
+  "celdas": 10,
+  "votos_comparados": 7298,
+  "max_abs_dP": 0.0,
+  "votos_con_diferencia": 0,
+  "votos_solo_en_el_detalle": 0,
+  "votos_solo_en_el_motor_de_hoy": 0,
+  "actas_con_postura_no_proyectable": 0,
+  "peores": [],
+  "motor_head_sha": "88afe26",
+  "comparado_contra": "p__estricta__general del detalle del censo",
+  "detalle": "censo_detalle_2026-10-02.parquet",
+  "minutos": 1.1
+ },
+ "muestra": {
+  "actas": 60,
+  "votos_v0": 7298,
+  "harness_v0_contra_censo": {
+   "comparados": 7298,
+   "solo_en_uno": 0,
+   "max_abs_dp": 0.0,
+   "distintos": 0
+  }
+ },
+ "b_v0_explicito": {
+  "comparados": 7298,
+  "solo_en_uno": 0,
+  "max_abs_dp": 0.0,
+  "distintos": 0
+ },
+ "b_v0_explicito_por_anio": {
+  "comparados": 7298,
+  "solo_en_uno": 0,
+  "max_abs_dp": 0.0,
+  "distintos": 0
+ },
+ "c_anti_vacuidad": {
+  "{\"k_postura\": 10.0}": {
+   "comparados": 7298,
+   "solo_en_uno": 0,
+   "max_abs_dp": 0.06040000000000001,
+   "distintos": 4650
+  },
+  "{\"ventana_postura\": 365}": {
+   "comparados": 7298,
+   "solo_en_uno": 0,
+   "max_abs_dp": 0.5807399999999999,
+   "distintos": 6363
+  },
+  "{\"origen\": \"lado\"}": {
+   "comparados": 7298,
+   "solo_en_uno": 0,
+   "max_abs_dp": 0.5782041666666667,
+   "distintos": 2419
+  }
+ },
+ "d_recalculo": {
+  "K_SHRINK_RECORD=20.0": {
+   "comparados": 7298,
+   "solo_en_uno": 0,
+   "max_abs_dp": 0.0,
+   "distintos": 0,
+   "p_i_que_el_valor_mueve": 6406,
+   "p_i_de_bloque_que_mueve": 0
+  },
+  "MIN_HIST_INDIVIDUAL=8": {
+   "comparados": 7298,
+   "solo_en_uno": 0,
+   "max_abs_dp": 0.0,
+   "distintos": 0,
+   "p_i_que_el_valor_mueve": 1779,
+   "p_i_de_bloque_que_mueve": 1779
+  },
+  "MIN_VOTOS_FICHA=80": {
+   "comparados": 7298,
+   "solo_en_uno": 0,
+   "max_abs_dp": 0.0,
+   "distintos": 0,
+   "p_i_que_el_valor_mueve": 26,
+   "p_i_de_bloque_que_mueve": 26
+  }
+ },
+ "lado_de_igual_a_origen_lado": true,
+ "cumple": {
+  "a": true,
+  "b": true,
+  "c": true,
+  "d": true,
+  "lado": true
+ },
+ "minutos": 7.1
+}

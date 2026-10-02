@@ -40,6 +40,10 @@ QUÉ CORRE SIN ARGUMENTOS (lo que corre el CI; ≈ 2 minutos). Muestra DETERMIN�
      ve ahí (la primera versión de esta sección NO la detectaba sobre el archivo real). Se suman, por regla fija, 3
      actas con acta anterior de su ley en las que algún votante de la rama de bloque votó antes esa ley (recorridas en
      el orden de la semilla 7), y sobre ellas al menos 1 tiene que mover alguna P_i.
+  6. SOBRE UN BRAZO (auditoría D1): con `--brazo '<json>'` todo lo anterior corre con ese brazo del harness
+     (`baseline_voto_individual.CLAVES_BRAZO`) y el contexto corrompido lleva el mismo brazo. Piso anti-vacuidad: se
+     suman, por regla fija, 3 actas de origen del lado del gobierno (semilla 7) y en la muestra el brazo tiene que dar
+     distinto que el motor de hoy en alguna P_i (si no, la prueba no dice nada del brazo).
 Regla 5 (`REGLAS-borrador.md`): un control tiene que poder fallar. Las secciones 2 y 3 son ese control: si el
 harness dejara de ver la fecha o la ley como lo hace el corte estricto, la sección 1 se pone en rojo; y si la
 prueba dejara de poder ver una fuga, las secciones 2 o 3 se ponen en rojo. Las actas de cada control se eligen por
@@ -204,7 +208,8 @@ def verificar(ctx0: Contexto, muestra: pd.DataFrame, por_acta: dict, historia: s
         base = ctx0.p_legisladores(r.acta_id, r.camara, f, votantes, historia, False)
         vc, n_cor = corromper(v, f, r.ley)
         dc, m_desv = corromper_desvios(ctx0, f, r.ley)
-        ctx1 = Contexto(vc, ctx0.ley_de_acta, ctx0.origen_map, ctx0.cond, ctx0.conf_area, desvios=dc)
+        ctx1 = Contexto(vc, ctx0.ley_de_acta, ctx0.origen_map, ctx0.cond, ctx0.conf_area, desvios=dc,
+                        brazo=ctx0.brazo)   # D1: el contexto corrompido lleva el mismo brazo
         n, mx, nd = comparar(base, ctx1.p_legisladores(r.acta_id, r.camara, f, votantes, historia, False))
         # D1.0: cuántas P_i de la rama de bloque (donde actúa la ficha) se comparan, y cuántas filas de la ficha de
         # esos legisladores se corrompieron
@@ -266,7 +271,8 @@ def fuga_por_la_misma_ley():
 
 
 # ═════════════════════════════════════════════════════════════════════════ el test
-def test(fallos: list[str]) -> int:
+def test(fallos: list[str], brazo: dict | None = None) -> int:
+    """`brazo` (auditoría D1): la misma prueba sobre un brazo del harness (`baseline_voto_individual.CLAVES_BRAZO`)."""
     corridos = 0
 
     def check(cond: bool, msg: str) -> None:
@@ -278,9 +284,10 @@ def test(fallos: list[str]) -> int:
 
     t0 = time.time()
     silenciar_avisos_del_motor()
-    ctx0 = Contexto.desde_repo()
+    ctx0 = Contexto.desde_repo(brazo=brazo)
     actas, por_acta = tabla_de_actas(ctx0)
-    print(f"contexto cargado en {time.time() - t0:.0f} s; {len(actas)} actas evaluables")
+    print(f"contexto cargado en {time.time() - t0:.0f} s; {len(actas)} actas evaluables"
+          + (f"; BRAZO {ctx0.brazo}" if ctx0.brazo else ""))
 
     # 1. la prueba principal: las estratificadas y las actas donde cada fuga es observable
     print("\n1. historia ESTRICTA (el motor de hoy): corromper el futuro y la misma ley no mueve ninguna P_i")
@@ -292,7 +299,13 @@ def test(fallos: list[str]) -> int:
     sel_ley = muestra_de(actas[actas["ley_con_acta_anterior"]], N_CONTROL_LEY)
     sel_ficha = primeras_de_cada_recambio(actas)
     sel_ficha_ley = actas_con_ley_en_la_ficha(ctx0, actas, por_acta)
-    todas = (pd.concat([principal, sel_fecha, sel_ley, sel_ficha, sel_ficha_ley]).drop_duplicates("acta_id")
+    sel_brazo = actas.iloc[:0]
+    if brazo:
+        # D1, piso anti-vacuidad: actas donde el brazo puede actuar (origen del lado del gobierno: ahí actúan k y
+        # ventana de la postura y el origen por lado), por regla fija
+        gob = actas["acta_id"].astype(str).map(ctx0.origen_map).isin(["EJECUTIVO", "OFICIALISMO", "ALIADOS"])
+        sel_brazo = muestra_de(actas[gob.values], 3)
+    todas = (pd.concat([principal, sel_fecha, sel_ley, sel_ficha, sel_ficha_ley, sel_brazo]).drop_duplicates("acta_id")
              .sort_values(["fecha", "acta_id"]))
     print(f"  {len(principal)} estratificadas + {len(sel_fecha)} con otras actas el mismo día + {len(sel_ley)} con "
           f"acta anterior de su ley + {len(sel_ficha)} primeras de un recambio + {len(sel_ficha_ley)} con la ley en la "
@@ -319,6 +332,19 @@ def test(fallos: list[str]) -> int:
           "corrompidas")
     check(n_bloque > 0 and n_desv > 0, "la prueba no compara ninguna P_i de la rama de bloque o no corrompe su "
           f"ficha ({n_bloque} P_i, {n_desv} filas): la ficha al día no se está probando")
+    if brazo:
+        # D1: la prueba sólo dice algo del brazo si en la muestra el brazo da distinto que el motor de hoy
+        ctx_v0 = Contexto(ctx0.votos, ctx0.ley_de_acta, ctx0.origen_map, ctx0.cond, ctx0.conf_area,
+                          desvios=ctx0.desvios)
+        n_dif = 0
+        for r in todas.itertuples():
+            votantes = por_acta[r.acta_id][["legislador_id", "bloque_linaje"]]
+            f = pd.Timestamp(r.fecha)
+            n_dif += comparar(ctx0.p_legisladores(r.acta_id, r.camara, f, votantes, "estricta", False),
+                              ctx_v0.p_legisladores(r.acta_id, r.camara, f, votantes, "estricta", False))[2]
+        _vaciar(ctx0)
+        print(f"  brazo: {len(sel_brazo)} actas sumadas por regla fija; {n_dif} P_i de la muestra distintas del motor de hoy")
+        check(n_dif > 0, "el brazo da idéntico al motor de hoy en toda la muestra: la prueba no dice nada del brazo")
 
     # 2. control positivo: fuga por la fecha
     print("\n2. CONTROL POSITIVO — fuga por la FECHA inyectada en `Contexto._hasta`: la prueba la tiene que ver")
@@ -428,12 +454,13 @@ def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description="Invariancia al futuro: el test rápido (sin argumentos) o el modo de la auditoría.")
     ap.add_argument("--por-era", type=int, default=0, help="modo de la auditoría: N actas por era (30 = 150 actas)")
     ap.add_argument("--salida", default=str(SALIDA))
+    ap.add_argument("--brazo", default=None, help='auditoría D1: la prueba sobre un brazo, en JSON (p. ej. \'{"k_postura": 10}\')')
     a = ap.parse_args(argv)
     logging.basicConfig(level=logging.WARNING)
     if a.por_era:
         return auditoria(a.por_era, Path(a.salida))
     fallos: list[str] = []
-    test(fallos)
+    test(fallos, json.loads(a.brazo) if a.brazo else None)
     if fallos:
         print(f"\n{len(fallos)} FALLAS:")
         for f in fallos:

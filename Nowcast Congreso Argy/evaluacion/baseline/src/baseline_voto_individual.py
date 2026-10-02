@@ -444,6 +444,51 @@ ERA_BINS = [pd.Timestamp("1990-01-01"), pd.Timestamp("2011-12-10"), pd.Timestamp
 ERA_LABELS = ["hasta 2011", "2011-2015", "2015-2019", "2019-2023", "desde 2023"]
 
 
+# BRAZOS DEL HARNESS (auditoría 2026-09, fase D, ítem D1: el punto 7 del protocolo). Un brazo cambia un parámetro
+# de P_i SIN tocar el motor y viaja como ARGUMENTO (el censo paralelo usa `spawn`). Es la plantilla `era_desde` de C3
+# generalizada a un solo mecanismo: un dict con estas claves; la que falta (o `brazo=None`) es el motor de hoy. Cada
+# valor puede ser uno solo o uno POR AÑO DEL ACTA ({año: valor}: la confirmación conjunta del protocolo).
+#   era_desde        el récord acumula desde esa fecha en vez de cortar por era (C3)
+#   k_postura        `proyectar_postura(k_shrink=…)`   (el motor: el default de la función, 5,0)
+#   ventana_postura  `proyectar_postura(ventana_dias=…)` (el motor: 730)
+#   origen           "fino" (el motor: las 4 clases) | "lado" (GOBIERNO/OPOSICION, para el récord y la postura)
+CLAVES_BRAZO = ("era_desde", "k_postura", "ventana_postura", "origen")
+# `origen_lado` de `origen_por_acta` es exactamente esto (lo comprueba el runner de D1 contra el parquet)
+LADO_DE = {"EJECUTIVO": "GOBIERNO", "OFICIALISMO": "GOBIERNO", "ALIADOS": "GOBIERNO", "OPOSICION": "OPOSICION"}
+
+
+def normalizar_brazo(brazo: dict | None, era_desde=None) -> dict:
+    """El brazo como dict sin claves vacías; los valores por año, con el año entero. `era_desde` (el argumento de C3)
+    se suma al brazo; si el brazo trae otra, falla."""
+    b = {}
+    for k, v in (brazo or {}).items():
+        if k not in CLAVES_BRAZO:
+            raise ValueError(f"clave de brazo desconocida: {k!r} (esperaba {CLAVES_BRAZO})")
+        if v is None:
+            continue
+        b[k] = {int(a): x for a, x in v.items()} if isinstance(v, dict) else v
+    if era_desde is not None:
+        if "era_desde" in b and b["era_desde"] != era_desde:
+            raise ValueError("`era_desde` y `brazo['era_desde']` no coinciden")
+        b["era_desde"] = era_desde
+    for o in (b["origen"].values() if isinstance(b.get("origen"), dict) else [b.get("origen")]):
+        if o is not None and o not in ("fino", "lado"):
+            raise ValueError(f"origen del brazo: 'fino' o 'lado', no {o!r}")
+    return b
+
+
+def valor_del_brazo(brazo: dict, clave: str, fecha):
+    """El valor de `clave` para un acta de `fecha` (None = el del motor). Un valor por año sin el año del acta falla:
+    un brazo por año tiene que cubrir todos los años que evalúa."""
+    v = brazo.get(clave)
+    if isinstance(v, dict):
+        anio = pd.Timestamp(fecha).year
+        if anio not in v:
+            raise KeyError(f"el brazo no trae {clave} para {anio}")
+        return v[anio]
+    return v
+
+
 @contextmanager
 def _sin_corte_por_era(era_desde: str | None):
     """BRAZO «sin corte por era» (auditoría C3, decisión 7 de Franco). Con `era_desde` dado, el récord individual
@@ -473,7 +518,9 @@ class Contexto:
 
     def __init__(self, votos: pd.DataFrame, leyes: dict, origen_map: dict, cond,
                  conf_area: dict, combinar_temas: str | None = None, era_desde: str | None = None,
-                 desvios: pd.DataFrame | None = None):
+                 desvios: pd.DataFrame | None = None, brazo: dict | None = None):
+        self.brazo = normalizar_brazo(brazo, era_desde)
+        era_desde = self.brazo.get("era_desde")
         if era_desde is not None and not NP.GUARD_ERA:
             raise ValueError("`era_desde` (brazo sin corte por era) necesita GUARD_ERA prendido: con GUARD_ERA=0 en el "
                              "entorno el motor ya fija la fecha en ERA_FIJA y el brazo mediría otra cosa")
@@ -493,12 +540,14 @@ class Contexto:
         self.por_cam_era = {k: g for k, g in v.groupby([v["camara"], eras], sort=False)}
         self.ley_de_acta = dict(zip(v["acta_id"], v["_ley"]))
         self.origen_map = origen_map
+        # el mismo mapa por lado (brazo `origen="lado"`); el desconocido sigue sin condicionar
+        self.origen_lado_map = {a: LADO_DE.get(_norm_cond(o)) for a, o in origen_map.items()}
         self.cond = cond
         self.cond_map = (cond.set_index(cond.columns[0]).to_dict("index")
                          if cond is not None and len(cond) else {})
         self.conf_area = conf_area
         self.combinar_temas = combinar_temas
-        self.era_desde = era_desde        # None = el motor de hoy; una fecha = el récord acumula desde ahí
+        self.era_desde = era_desde        # None = el motor de hoy; una fecha (o una por año) = el récord acumula desde ahí
         # LA FICHA AL DÍA (D1.0): la tabla de desvíos por voto de `disciplina.py`. Sin tabla
         # (contextos sintéticos de los tests), la escalera cae al desvío del linaje para todos,
         # que es lo que hace el motor con un legislador sin ficha.
@@ -511,14 +560,15 @@ class Contexto:
         self.avisos = {"record_sin_votos_en_la_era": 0, "postura_saltada": 0}
 
     @classmethod
-    def desde_repo(cls, combinar_temas: str | None = None, votos=None, era_desde: str | None = None) -> "Contexto":
+    def desde_repo(cls, combinar_temas: str | None = None, votos=None, era_desde: str | None = None,
+                   brazo: dict | None = None) -> "Contexto":
         from bloque import cargar as cargar_bloque, cargar_tema_por_acta
         votos = cargar_bloque() if votos is None else votos
         cond = cargar_tema_por_acta()
         opa = pd.read_parquet(PROYECTO_ORIGEN_POR_ACTA)            # lo mismo que `nowcast`
         origen_map = dict(zip(opa["acta_id"].astype(str), opa["origen"]))
         return cls(votos, ley_por_acta(REPO), origen_map, cond, cargar_confianza_por_area(),
-                   combinar_temas, era_desde, desvios=tabla_desvios_al_dia(CANONICA_CLEAN))
+                   combinar_temas, era_desde, desvios=tabla_desvios_al_dia(CANONICA_CLEAN), brazo=brazo)
 
     # ── lo que decide el harness: qué votos existían ──
     def _base(self, camara: str, hasta: pd.Timestamp) -> pd.DataFrame:
@@ -575,20 +625,27 @@ class Contexto:
                 cache[x] = nuevas.get(x)
         return cache
 
+    def _granularidad(self, fecha) -> str:
+        return valor_del_brazo(self.brazo, "origen", fecha) or "fino"
+
     def record(self, camara, fecha, ley, origen, areas, historia, record_por_tema):
+        """`origen` ya viene en la granularidad del brazo (fino o lado): el mapa de origen se elige igual."""
         self._vaciar_si_cambia(fecha)
         hasta = self._hasta(fecha, historia)
         usar_tema = NP.RECORD_POR_TEMA if record_por_tema is None else bool(record_por_tema)
+        gran = self._granularidad(fecha)
+        era_desde = valor_del_brazo(self.brazo, "era_desde", fecha)
         k = (camara, historia, ley if historia == "estricta" else None, origen,
-             tuple(areas) if (usar_tema and areas) else None)
+             tuple(areas) if (usar_tema and areas) else None, gran, era_desde)
         if k not in self._rec:
-            with _sin_corte_por_era(self.era_desde):
+            with _sin_corte_por_era(era_desde):
                 base = self._sin_ley(self._base(camara, hasta), ley, historia)
                 if base.empty:
                     self.avisos["record_sin_votos_en_la_era"] += 1
                 cond = self.cond if NP.necesita_cond_por_acta(None, origen, None,
                                                               areas if usar_tema else None) else None
-                ind, _ = NP.record_legisladores(base, hasta, origen, self.origen_map, areas,
+                omap = self.origen_lado_map if gran == "lado" else self.origen_map
+                ind, _ = NP.record_legisladores(base, hasta, origen, omap, areas,
                                                 cond, record_por_tema=usar_tema)
             self._rec[k] = ind
         return self._rec[k]
@@ -604,14 +661,21 @@ class Contexto:
         estricta = historia == "estricta"
         usa_cond = NP.necesita_cond_por_acta(kwargs.get("tema"), origen, kwargs.get("temas"),
                                             areas_ind)
-        k = (camara, estricta, ley if estricta else None, origen, usa_cond, clave_tema)
+        # el brazo (D1): sólo se pasan los parámetros que el brazo fija; sin brazo, los defaults de la función
+        param = {}
+        for clave, arg in (("k_postura", "k_shrink"), ("ventana_postura", "ventana_dias")):
+            x = valor_del_brazo(self.brazo, clave, fecha)
+            if x is not None:
+                param[arg] = x
+        k = (camara, estricta, ley if estricta else None, origen, usa_cond, clave_tema,
+             tuple(sorted(param.items())))
         if k not in self._post:
             v = self._sin_ley(self.por_cam.get(camara, self.votos.iloc[:0]), ley,
                               "estricta" if estricta else "fecha")
             try:
                 post = proyectar_postura(v, fecha, camara, origen=origen,
                                          cond_por_acta=self.cond if usa_cond else None,
-                                         **kwargs)
+                                         **kwargs, **param)
                 self._post[k] = {p["bloque"]: p for p in post}
             except (ValueError, KeyError) as e:
                 logger.debug("postura %s %s saltada: %s", camara, fecha.date(), e)
@@ -651,6 +715,8 @@ class Contexto:
         fecha = pd.Timestamp(fecha)
         ley = self.ley_de_acta.get(acta_id, "acta:" + acta_id)
         origen = _norm_cond(self.origen_map.get(acta_id))
+        if origen is not None and self._granularidad(fecha) == "lado":   # brazo de D1: récord y postura, juntos
+            origen = LADO_DE[origen]
         usar_tema = NP.RECORD_POR_TEMA if record_por_tema is None else bool(record_por_tema)
         areas = self.areas_del_acta(acta_id) if usar_tema else None
         post = self.postura(camara, fecha, ley, origen, areas, historia, acta_id)
@@ -683,7 +749,7 @@ def correr(camara_filtro: str = "", muestra: int = 0, seed: int = 7, desde: str 
            hasta: str = "", historia: str = HISTORIA_DEFAULT, record_por_tema=None,
            variantes_extra: tuple = (), combinar_temas: str | None = None,
            devolver_detalle: bool = False, contexto: Contexto | None = None,
-           era_desde: str | None = None):
+           era_desde: str | None = None, brazo: dict | None = None):
     """El censo: P_i del motor contra el voto real, para cada voto emitido.
 
     `historia`/`record_por_tema` definen la variante PRINCIPAL (columna `p`, y el
@@ -693,10 +759,15 @@ def correr(camara_filtro: str = "", muestra: int = 0, seed: int = 7, desde: str 
     sigue a la bandera del motor.
 
     `desde`/`hasta` (exclusivo) recortan QUÉ actas se evalúan, no la historia: partir
-    el censo por fechas da el mismo detalle (`censo_detalle_paralelo.py`)."""
+    el censo por fechas da el mismo detalle (`censo_detalle_paralelo.py`).
+
+    `brazo` (y `era_desde`, su clave de C3): un parámetro de P_i cambiado en el HARNESS, sin
+    tocar el motor (ver `CLAVES_BRAZO`); `None` = el motor de hoy."""
     if contexto is not None and era_desde is not None and contexto.era_desde != era_desde:
         raise ValueError("`era_desde` y `contexto.era_desde` no coinciden")
-    ctx = contexto or Contexto.desde_repo(combinar_temas, era_desde=era_desde)
+    if contexto is not None and brazo is not None and contexto.brazo != normalizar_brazo(brazo, era_desde):
+        raise ValueError("`brazo` y `contexto.brazo` no coinciden")
+    ctx = contexto or Contexto.desde_repo(combinar_temas, era_desde=era_desde, brazo=brazo)
     logger.info("ley_por_acta: %.1f%% de los votos sin ley conocida (ahí el corte por "
                 "expediente no ve nada: cada acta es su propia ley)",
                 100 * ctx.frac_votos_sin_ley)
@@ -784,7 +855,9 @@ def correr(camara_filtro: str = "", muestra: int = 0, seed: int = 7, desde: str 
         "motor": {"GUARD_ERA": NP.GUARD_ERA, "SHRINK_RECORD": NP.SHRINK_RECORD,
                   "RECORD_POR_TEMA": NP.RECORD_POR_TEMA, "TEMA_AUTO": NP.TEMA_AUTO,
                   "MIN_HIST_INDIVIDUAL": NP.MIN_HIST_INDIVIDUAL,
-                  "K_SHRINK_RECORD": NP.K_SHRINK_RECORD, "era_desde": ctx.era_desde},
+                  "K_SHRINK_RECORD": NP.K_SHRINK_RECORD, "era_desde": ctx.era_desde,
+                  "brazo": {k: ({str(a): x for a, x in v.items()} if isinstance(v, dict) else v)
+                            for k, v in ctx.brazo.items()}},
         "combinar_temas_postura": combinar_temas or "(el del motor: sin tema)",
     })
     if devolver_detalle:

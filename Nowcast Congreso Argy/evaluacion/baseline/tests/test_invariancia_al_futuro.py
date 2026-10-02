@@ -35,7 +35,11 @@ QUÉ CORRE SIN ARGUMENTOS (lo que corre el CI; ≈ 2 minutos). Muestra DETERMIN�
      tiene récord en la era y TODOS van a la rama de bloque, donde la ficha decide el desvío. Guarda anti-vacuidad:
      se comparan P_i de la rama de bloque y la corrupción toca filas de la ficha de esos legisladores. CONTROL
      POSITIVO 3 — fuga SÓLO en la ficha, inyectada en el harness real: `Contexto._ficha_corte` ve el día del acta y
-     no excluye la ley; sobre esas 3 actas, al menos 1 tiene que mover alguna P_i.
+     no excluye la ley; sobre esas 3 actas, al menos 1 tiene que mover alguna P_i. CONTROL POSITIVO 4 — la ficha NO
+     EXCLUYE LA LEY (y nada más): en las actas de un recambio ninguna ley tiene votos anteriores, así que esa fuga no se
+     ve ahí (la primera versión de esta sección NO la detectaba sobre el archivo real). Se suman, por regla fija, 3
+     actas con acta anterior de su ley en las que algún votante de la rama de bloque votó antes esa ley (recorridas en
+     el orden de la semilla 7), y sobre ellas al menos 1 tiene que mover alguna P_i.
 Regla 5 (`REGLAS-borrador.md`): un control tiene que poder fallar. Las secciones 2 y 3 son ese control: si el
 harness dejara de ver la fecha o la ley como lo hace el corte estricto, la sección 1 se pone en rojo; y si la
 prueba dejara de poder ver una fuga, las secciones 2 o 3 se ponen en rojo. Las actas de cada control se eligen por
@@ -156,6 +160,33 @@ def primeras_de_cada_recambio(actas: pd.DataFrame) -> pd.DataFrame:
     return pd.concat([dip[dip["fecha"] >= pd.Timestamp(r)].head(1) for r in RECAMBIOS]).sort_values(["fecha", "acta_id"])
 
 
+def actas_con_ley_en_la_ficha(ctx: Contexto, actas: pd.DataFrame, por_acta: dict, n: int = 3,
+                              tope: int = 400) -> pd.DataFrame:
+    """D1.0: actas con acta anterior de su ley en las que algún votante de la RAMA DE BLOQUE (la que usa la ficha) votó
+    antes esa misma ley: ahí, y sólo ahí, una ficha que no excluye la ley mueve P_i. Regla fija: las candidatas se
+    recorren en el orden de la semilla 7 y se toman las primeras `n` que cumplen (mira la estructura, no el resultado de
+    la prueba)."""
+    d = ctx.desvios
+    acta = d["acta_id"].astype(str)
+    ley_fila = acta.map(ctx.ley_de_acta)
+    ley_fila = ley_fila.where(ley_fila.notna(), "acta:" + acta)
+    cand = actas[actas["ley_con_acta_anterior"]].sort_values(["fecha", "acta_id"]).sample(frac=1, random_state=SEMILLA)
+    elegidas = []
+    for r in cand.head(tope).itertuples():
+        f = pd.Timestamp(r.fecha)
+        votantes = por_acta[r.acta_id][["legislador_id", "bloque_linaje"]]
+        previos = set(d.loc[(ley_fila == r.ley).values & (d["fecha"] < f).values, "legislador_id"].astype(str))
+        if not set(votantes["legislador_id"].astype(str)) & previos:
+            continue
+        base = ctx.p_legisladores(r.acta_id, r.camara, f, votantes, "estricta", False)
+        if {str(k) for k, x in (base or {}).items() if x[1] == "bloque"} & previos:
+            elegidas.append(r.Index)
+        if len(elegidas) == n:
+            break
+    _vaciar(ctx)
+    return actas.loc[elegidas].sort_values(["fecha", "acta_id"])
+
+
 def muestra_de(elegibles: pd.DataFrame, n: int) -> pd.DataFrame:
     """`n` actas de las que cumplen una condición, con semilla fija: la regla no mira el resultado."""
     return elegibles.sort_values(["fecha", "acta_id"]).sample(min(len(elegibles), n), random_state=SEMILLA) \
@@ -213,6 +244,17 @@ def fuga_en_la_ficha():
 
 
 @contextmanager
+def fuga_ley_en_la_ficha():
+    """D1.0: la ficha de desvío corta bien por fecha pero NO excluye la ley del acta."""
+    original = Contexto.__dict__["_ficha_corte"]
+    Contexto._ficha_corte = staticmethod(lambda fecha, ley, historia: (Contexto._hasta(fecha, historia), None))
+    try:
+        yield
+    finally:
+        Contexto._ficha_corte = original
+
+
+@contextmanager
 def fuga_por_la_misma_ley():
     """No se excluye la ley del acta: la historia trae los artículos anteriores de la MISMA ley."""
     original = Contexto.__dict__["_sin_ley"]
@@ -249,10 +291,12 @@ def test(fallos: list[str]) -> int:
     sel_fecha = muestra_de(actas[actas["otras_el_mismo_dia"]], N_CONTROL_FECHA)
     sel_ley = muestra_de(actas[actas["ley_con_acta_anterior"]], N_CONTROL_LEY)
     sel_ficha = primeras_de_cada_recambio(actas)
-    todas = (pd.concat([principal, sel_fecha, sel_ley, sel_ficha]).drop_duplicates("acta_id")
+    sel_ficha_ley = actas_con_ley_en_la_ficha(ctx0, actas, por_acta)
+    todas = (pd.concat([principal, sel_fecha, sel_ley, sel_ficha, sel_ficha_ley]).drop_duplicates("acta_id")
              .sort_values(["fecha", "acta_id"]))
     print(f"  {len(principal)} estratificadas + {len(sel_fecha)} con otras actas el mismo día + {len(sel_ley)} con "
-          f"acta anterior de su ley + {len(sel_ficha)} primeras de un recambio = {len(todas)} actas distintas")
+          f"acta anterior de su ley + {len(sel_ficha)} primeras de un recambio + {len(sel_ficha_ley)} con la ley en la "
+          f"ficha de la rama de bloque = {len(todas)} actas distintas")
     filas = verificar(ctx0, todas, por_acta, "estricta", "estricta")
     movidas = [f for f in filas if f["n_distintos"] > 0]
     check(not movidas, "LA HISTORIA ESTRICTA VE EL FUTURO O LA MISMA LEY: corromperlos mueve P_i en "
@@ -311,6 +355,18 @@ def test(fallos: list[str]) -> int:
           f"la fuga en la FICHA no se detectó en ninguna de {len(filas)} actas: la prueba no puede ver la ficha")
     print(f"  detectada en {detectadas} de {len(filas)} actas "
           f"(max|dP| {max(f['max_abs_dP'] for f in filas):.3g})")
+
+    # 3c. control positivo: la ficha no excluye la ley (y nada más)
+    print("\n3c. CONTROL POSITIVO — la ficha de desvío NO EXCLUYE LA LEY (`Contexto._ficha_corte` sin la ley)")
+    check(len(sel_ficha_ley) == 3, f"la regla encontró {len(sel_ficha_ley)} actas con la ley en la ficha, no 3")
+    _vaciar(ctx0)
+    with fuga_ley_en_la_ficha():
+        filas = verificar(ctx0, sel_ficha_ley, por_acta, "estricta", "fuga de la ley en la ficha")
+    _vaciar(ctx0)
+    detectadas = sum(1 for f in filas if f["n_distintos"] > 0)
+    check(detectadas >= 1, f"la fuga de la LEY en la ficha no se detectó en ninguna de {len(filas)} actas")
+    print(f"  detectada en {detectadas} de {len(filas)} actas "
+          f"(max|dP| {max([f['max_abs_dP'] for f in filas] or [0]):.3g})")
 
     # 4. las fugas se sacaron
     print("\n4. las fugas se sacaron: la prueba estricta vuelve a dar cero")

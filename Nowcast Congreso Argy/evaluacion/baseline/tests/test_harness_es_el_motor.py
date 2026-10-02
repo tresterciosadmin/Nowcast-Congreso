@@ -7,10 +7,14 @@ condicionaba el récord por origen y el harness no (0,19 contra −0,03 desde 20
 harness contaba votos del mismo día. Estos tests fallan si vuelve a pasar.
 
 1. **Contra `nowcast()` real, legislador por legislador.** Un acta real de Diputados, de
-   origen EJECUTIVO, que es la PRIMERA votación de su ley en la cámara (así excluir la
-   ley no cambia nada y el harness tiene que dar exactamente lo del motor). Para cada
-   legislador con récord en la era y el mismo linaje en el padrón, la `p_si_vota` del
-   harness tiene que ser la de `nowcast()` (que la redondea a 4 decimales).
+   origen EJECUTIVO, que es la PRIMERA votación de su ley en CUALQUIER cámara (así excluir
+   la ley no cambia nada —tampoco en la ficha de desvío, que es de las dos cámaras— y el
+   harness tiene que dar exactamente lo del motor). Para cada legislador con el mismo
+   linaje en el padrón, la `p_si_vota` del harness tiene que ser la de `nowcast()` (que la
+   redondea a 4 decimales): los que tienen récord en la era **y, desde D1.0 (auditoría
+   2026-09), también los de la rama de bloque**, cuyo desvío sale de la ficha AL DÍA en los
+   dos lados. Hasta el 2026-10-01 la rama de bloque no se comparaba (el harness ponía el
+   desvío del linaje y el motor el de la ficha con toda la historia).
 2. **El caché no filtra entre leyes.** Dos actas del mismo día, de leyes distintas, con
    historia de las dos leyes en fechas anteriores: cada una ve la otra ley y no la suya.
 3. **El récord por tema del harness es el del motor** sobre la historia sin la ley.
@@ -137,7 +141,7 @@ if ctx_r is not None:
     a = a[(a["camara"] == "diputados") & (a["fecha"] >= "2024-06-01")]
     a = a[a["acta_id"].map(ctx_r.origen_map) == "EJECUTIVO"]
     a["ley"] = a["acta_id"].map(ctx_r.ley_de_acta)
-    primera = v[v["camara"] == "diputados"].groupby("_ley")["fecha"].min()
+    primera = v.groupby("_ley")["fecha"].min()      # en cualquier cámara (D1.0)
     a = a[a["fecha"] == a["ley"].map(primera)].sort_values(["fecha", "acta_id"])
     check(not a.empty, "no encontré un acta EJECUTIVO que sea la primera de su ley")
     if not a.empty:
@@ -149,17 +153,21 @@ if ctx_r is not None:
         nc = NP.nowcast("diputados", F, origen="EJECUTIVO", n_sims=50)
         leg = {r["legislador_id"]: r for r in nc["camaras"]["origen"]["legisladores"]}
         lin_voto = dict(zip(sub["legislador_id"], sub["bloque_linaje"]))
-        comparados, distintos = 0, []
+        comparados, de_bloque, distintos = 0, 0, []
         for lid, (p, fuente, *_rest) in h.items():
             r = leg.get(lid)
-            if r is None or r["n_emitidos"] < 1 or r["bloque"] != lin_voto.get(lid):
+            if r is None or r["bloque"] != lin_voto.get(lid):
                 continue
             comparados += 1
+            de_bloque += int(r["n_emitidos"] < NP.MIN_HIST_INDIVIDUAL)
             if abs(round(p, 4) - r["p_si_vota"]) > 1e-4 + 1e-9:
-                distintos.append((lid, round(p, 4), r["p_si_vota"]))
-        print(f"   comparados {comparados} legisladores; distintos {len(distintos)}")
+                distintos.append((lid, round(p, 4), r["p_si_vota"], fuente))
+        print(f"   comparados {comparados} legisladores ({de_bloque} de la rama de bloque); "
+              f"distintos {len(distintos)}")
         check(comparados >= 100, f"muy pocos legisladores comparables ({comparados}): el test "
               "no prueba nada")
+        check(de_bloque >= 1, "ningún legislador de la rama de bloque en el acta: la ficha al "
+              "día no se está comparando (D1.0)")
         check(not distintos, f"el harness y nowcast() difieren en {len(distintos)}: {distintos[:5]}")
 logging.disable(logging.NOTSET)
 

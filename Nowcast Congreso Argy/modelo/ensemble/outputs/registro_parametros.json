@@ -9,8 +9,8 @@
   "La clausura es una sobreaproximación (incluye lo que sólo se importa con una bandera prendida): `afecta_panel` dice cuáles mueven el número."
  ],
  "medicion_afecta_panel": {
-  "fecha": "2026-09-30",
-  "git_head": "42f4a7bebaed08fc68c1803d8f3040aa910615d6",
+  "fecha": "2026-10-02",
+  "git_head": "ff5e28185effe711e1125551faf1324210bd47a6",
   "fuentes_sha256": {
    "datos/canonica/src/alias_legislador.py": "37af4b7a651869f1b24d513ed2a7c33a6502badc19eac7a5a074b62f5b837878",
    "datos/expedientes/src/actas_ley.py": "8c6d0489b1f74013a7fcc51ae80ec77babf31d183b212c7cdd1db141b9d5b459",
@@ -19,16 +19,17 @@
    "datos/padron/src/padron_vigente.py": "3a1c437499ca10a45ba97c8c23163f1623e6e254601ef485c99539e967064260",
    "definiciones.py": "0d619b4e45a7e251f2df28fbf7a59df36871b1401e116abdafb946aa759ed519",
    "docs/taxonomias/loader.py": "b29731c33746df99d4a88c7539545d8e9c67c9baeeae5ee7949275b281bd36bb",
-   "evaluacion/baseline/src/baseline_voto_individual.py": "300c9524e76cc651b6576e11e3b35afc18aa6b44bbd8740b464d4b53c87830c8",
+   "evaluacion/baseline/src/baseline_voto_individual.py": "5971aad45a2dccf9fd59861b511e23dce8d00519e89c5f0b237ca89b38a66f3a",
    "evaluacion/baseline/src/censo_estadisticos.py": "4380cabfd505589f33268704005e41020267455122b7a5bfe1089da457da27aa",
    "modelo/agregador_institucional/src/agregador.py": "14e4cd81b4789a7e947a62a1e480497379eb9bdf7bc5b1d8c932d19295d5fb49",
    "modelo/ensemble/src/beta_dictamen.py": "d4323891abf1a3f1fa7e45f6340134b632d7c9d4c2c010627af9e5303de50b66",
-   "modelo/ensemble/src/ensemble.py": "d9ef9253a8c46bacc6f39c8ace59020bd626db83c9d483f417aab9a9c6f657e5",
+   "modelo/ensemble/src/ensemble.py": "ac42dc75dd5e7a8f9faab5332489227eac97a61c22ac9c38acdaa4be6b7c479a",
    "modelo/ensemble/src/estimar_beta_dictamen.py": "2535c48a1f099cd8185c31688b9a9af3f0ea179df536b5f3ff359f66082cdfb7",
    "modelo/ensemble/src/nowcast_puertas.py": "c97f73b80c87a749c7d8ce9369207f49ce50c92210aa07cedb91bb78b93ec414",
    "modelo/ensemble/src/puerta_a.py": "3e13da8651ff42ccf0933444cd999e0a474d8c426626ea2f884f2c7e1ef2d2f8",
    "modelo/ensemble/src/puerta_d.py": "6c6215158baeebf602004420978a95b73d2ca37416c714bea6289d5d762110b6",
    "modelo/ensemble/src/sobre_tablas.py": "1e3efff6e0fdfb0f85935198a9dbcf9ad00dec5e50e8c8a964b21d5294334754",
+   "modelo/voto_individual/src/disciplina.py": "0523f997e1ead0b3ae38e09f58bb8bcf82093faf996c0bdc60a3ac2e39645fc9",
    "rutas.py": "42bec83bff868054fede64748f4181d85ca920daf6a69b0692821d0b4c6db27f",
    "variables/bloque/src/bloque.py": "4d17386ddcdf0b31db58630cbd4492cbaf7da1da6bb3db5a7cde28e14e1c3e0d",
    "variables/proyecto/src/agente_taxonomias.py": "69172108b289523522a0edaa818941dd8bcca9dce05f2afbc3a0eb37625d9a56",
@@ -59,7 +60,7 @@
   "p_aprobacion_base": {
    "P1": 0.6132,
    "P2": 0.6362,
-   "P3": 0.7497
+   "P3": 0.7501
   },
   "modulos_cargados": [
    "datos/canonica/src/alias_legislador.py",
@@ -74,10 +75,11 @@
    "modelo/ensemble/src/puerta_a.py",
    "modelo/ensemble/src/puerta_d.py",
    "modelo/ensemble/src/sobre_tablas.py",
+   "modelo/voto_individual/src/disciplina.py",
    "rutas.py",
    "variables/bloque/src/bloque.py"
   ],
-  "n_corridas": 309,
+  "n_corridas": 315,
   "estado_de_las_puertas": {
    "P1": {
     "A": "sin_dato",
@@ -168,8 +170,8 @@
   ],
   "resumen": {
    "afecta": 22,
-   "no_afecta": 85,
-   "sin_medir": 39
+   "no_afecta": 84,
+   "sin_medir": 53
   },
   "limite": "`afecta = false` dice «no mueve estos 3 casos» (n_sims 2000, seed 0), no «no afecta nunca». (1) Se perturba de a UN parámetro: no se ven las interacciones (`COMBINAR_TEMAS` sólo importa con `TEMA_AUTO`; `p_voto_revisora(delta)` queda anulado mientras `factor_encogimiento` sea 0, y hoy `nowcast()` no lo pasa: el gancho de δ no está conectado). (2) El panel no ejercita el estado `sin_dictamen` de las puertas A y C (ver `estado_de_las_puertas`): lo que sólo actúa ahí, como la vía `SOBRE_TABLAS`, sale `false` sin que se haya probado. (3) Los defaults que nowcast() pisa siempre salen `false` y es correcto: están muertos. (4) `max_abs_dif` es el máximo sobre CUALQUIER campo numérico de la salida (incluye conteos de legisladores), no sólo probabilidades; `afecta_p_aprobacion` dice si movió la probabilidad final."
  },
@@ -191,6 +193,7 @@
   "modelo/ensemble/src/puerta_a.py",
   "modelo/ensemble/src/puerta_d.py",
   "modelo/ensemble/src/sobre_tablas.py",
+  "modelo/voto_individual/src/disciplina.py",
   "rutas.py",
   "variables/bloque/src/bloque.py",
   "variables/proyecto/src/agente_taxonomias.py",
@@ -418,7 +421,7 @@
    "clase": "constante",
    "archivo": "evaluacion/baseline/src/baseline_voto_individual.py",
    "nombre": "VENTANA_DIAS",
-   "linea": 71,
+   "linea": 72,
    "entorno": null,
    "asignado_a": "VENTANA_DIAS",
    "default": 730,
@@ -434,7 +437,7 @@
    "clase": "constante",
    "archivo": "evaluacion/baseline/src/baseline_voto_individual.py",
    "nombre": "K_SHRINK",
-   "linea": 72,
+   "linea": 73,
    "entorno": null,
    "asignado_a": "K_SHRINK",
    "default": 5.0,
@@ -450,7 +453,7 @@
    "clase": "constante",
    "archivo": "evaluacion/baseline/src/baseline_voto_individual.py",
    "nombre": "HISTORIAS",
-   "linea": 90,
+   "linea": 91,
    "entorno": null,
    "asignado_a": "HISTORIAS",
    "default": [
@@ -470,7 +473,7 @@
    "clase": "constante",
    "archivo": "evaluacion/baseline/src/baseline_voto_individual.py",
    "nombre": "HISTORIA_DEFAULT",
-   "linea": 91,
+   "linea": 92,
    "entorno": null,
    "asignado_a": "HISTORIA_DEFAULT",
    "default": "estricta",
@@ -486,7 +489,7 @@
    "clase": "constante",
    "archivo": "evaluacion/baseline/src/baseline_voto_individual.py",
    "nombre": "_VACIOS",
-   "linea": 112,
+   "linea": 121,
    "entorno": null,
    "asignado_a": "_VACIOS",
    "default": [
@@ -509,7 +512,7 @@
    "clase": "default_funcion",
    "archivo": "evaluacion/baseline/src/baseline_voto_individual.py",
    "nombre": "n_emitidos",
-   "linea": 161,
+   "linea": 170,
    "entorno": null,
    "asignado_a": null,
    "default": 0,
@@ -525,7 +528,7 @@
    "clase": "default_funcion",
    "archivo": "evaluacion/baseline/src/baseline_voto_individual.py",
    "nombre": "bins",
-   "linea": 200,
+   "linea": 209,
    "entorno": null,
    "asignado_a": null,
    "default": 10,
@@ -541,7 +544,7 @@
    "clase": "constante",
    "archivo": "evaluacion/baseline/src/baseline_voto_individual.py",
    "nombre": "_AUX_PREFIX",
-   "linea": 351,
+   "linea": 360,
    "entorno": null,
    "asignado_a": "_AUX_PREFIX",
    "default": "AUX",
@@ -557,7 +560,7 @@
    "clase": "default_funcion",
    "archivo": "evaluacion/baseline/src/baseline_voto_individual.py",
    "nombre": "n_boot",
-   "linea": 405,
+   "linea": 414,
    "entorno": null,
    "asignado_a": null,
    "default": 300,
@@ -573,7 +576,7 @@
    "clase": "default_funcion",
    "archivo": "evaluacion/baseline/src/baseline_voto_individual.py",
    "nombre": "seed",
-   "linea": 405,
+   "linea": 414,
    "entorno": null,
    "asignado_a": null,
    "default": 7,
@@ -589,7 +592,7 @@
    "clase": "default_funcion",
    "archivo": "evaluacion/baseline/src/baseline_voto_individual.py",
    "nombre": "n_boot",
-   "linea": 419,
+   "linea": 428,
    "entorno": null,
    "asignado_a": null,
    "default": 300,
@@ -605,7 +608,7 @@
    "clase": "default_funcion",
    "archivo": "evaluacion/baseline/src/baseline_voto_individual.py",
    "nombre": "seed",
-   "linea": 419,
+   "linea": 428,
    "entorno": null,
    "asignado_a": null,
    "default": 7,
@@ -621,7 +624,7 @@
    "clase": "constante",
    "archivo": "evaluacion/baseline/src/baseline_voto_individual.py",
    "nombre": "ERA_LABELS",
-   "linea": 433,
+   "linea": 442,
    "entorno": null,
    "asignado_a": "ERA_LABELS",
    "default": [
@@ -643,7 +646,7 @@
    "clase": "default_funcion",
    "archivo": "evaluacion/baseline/src/baseline_voto_individual.py",
    "nombre": "muestra",
-   "linea": 612,
+   "linea": 680,
    "entorno": null,
    "asignado_a": null,
    "default": 0,
@@ -659,7 +662,7 @@
    "clase": "default_funcion",
    "archivo": "evaluacion/baseline/src/baseline_voto_individual.py",
    "nombre": "seed",
-   "linea": 612,
+   "linea": 680,
    "entorno": null,
    "asignado_a": null,
    "default": 7,
@@ -1673,33 +1676,33 @@
    "afecta_panel": {
     "afecta": true,
     "afecta_p_aprobacion": false,
-    "max_abs_dif": 0.1711,
+    "max_abs_dif": 0.1391,
     "alternativas": [
      40,
      10
     ],
     "por_caso": {
      "P1": {
-      "afecta": true,
-      "max_abs_dif": 0.0215,
-      "alt_que_mueve": 10,
-      "no_numericos": 2,
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
       "estructura": 0,
       "error": null
      },
      "P2": {
-      "afecta": true,
-      "max_abs_dif": 0.0215,
-      "alt_que_mueve": 10,
-      "no_numericos": 2,
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
       "estructura": 0,
       "error": null
      },
      "P3": {
       "afecta": true,
-      "max_abs_dif": 0.1711,
-      "alt_que_mueve": 10,
-      "no_numericos": 19,
+      "max_abs_dif": 0.1391,
+      "alt_que_mueve": 40,
+      "no_numericos": 2,
       "estructura": 0,
       "error": null
      }
@@ -1786,11 +1789,27 @@
    }
   },
   {
+   "id": "modelo/ensemble/src/ensemble.py::ENV:DISCIPLINA#2",
+   "clase": "entorno",
+   "archivo": "modelo/ensemble/src/ensemble.py",
+   "nombre": "DISCIPLINA",
+   "linea": 228,
+   "entorno": "DISCIPLINA",
+   "asignado_a": null,
+   "default": null,
+   "evaluable": true,
+   "expresion": "os.environ.get(\"DISCIPLINA\")",
+   "afecta_panel": {
+    "afecta": null,
+    "motivo": "no perturbable: sin default evaluable (una ruta, una clave o no hay default)"
+   }
+  },
+  {
    "id": "modelo/ensemble/src/ensemble.py::ENV:EXPEDIENTES",
    "clase": "entorno",
    "archivo": "modelo/ensemble/src/ensemble.py",
    "nombre": "EXPEDIENTES",
-   "linea": 254,
+   "linea": 284,
    "entorno": "EXPEDIENTES",
    "asignado_a": null,
    "default": null,
@@ -1806,7 +1825,7 @@
    "clase": "constante",
    "archivo": "modelo/ensemble/src/ensemble.py",
    "nombre": "DESVIO_MIN_INDIVIDUAL",
-   "linea": 296,
+   "linea": 326,
    "entorno": null,
    "asignado_a": "DESVIO_MIN_INDIVIDUAL",
    "default": 0.02,
@@ -1853,7 +1872,7 @@
    "clase": "constante",
    "archivo": "modelo/ensemble/src/ensemble.py",
    "nombre": "P_INCERTIDUMBRE",
-   "linea": 297,
+   "linea": 327,
    "entorno": null,
    "asignado_a": "P_INCERTIDUMBRE",
    "default": 0.01,
@@ -1900,7 +1919,7 @@
    "clase": "default_funcion",
    "archivo": "modelo/ensemble/src/ensemble.py",
    "nombre": "epsilon0",
-   "linea": 300,
+   "linea": 330,
    "entorno": null,
    "asignado_a": null,
    "default": 0.0,
@@ -1946,7 +1965,7 @@
    "clase": "default_funcion",
    "archivo": "modelo/ensemble/src/ensemble.py",
    "nombre": "n_sims",
-   "linea": 300,
+   "linea": 330,
    "entorno": null,
    "asignado_a": null,
    "default": 2000,
@@ -1993,7 +2012,7 @@
    "clase": "default_funcion",
    "archivo": "modelo/ensemble/src/ensemble.py",
    "nombre": "reparto_desvio",
-   "linea": 300,
+   "linea": 330,
    "entorno": null,
    "asignado_a": null,
    "default": 0.5,
@@ -2040,7 +2059,7 @@
    "clase": "default_funcion",
    "archivo": "modelo/ensemble/src/ensemble.py",
    "nombre": "seed",
-   "linea": 300,
+   "linea": 330,
    "entorno": null,
    "asignado_a": null,
    "default": 0,
@@ -2086,7 +2105,7 @@
    "clase": "default_funcion",
    "archivo": "modelo/ensemble/src/ensemble.py",
    "nombre": "tau",
-   "linea": 300,
+   "linea": 330,
    "entorno": null,
    "asignado_a": null,
    "default": 0.0,
@@ -2186,7 +2205,7 @@
    "evaluable": true,
    "expresion": "20",
    "afecta_panel": {
-    "afecta": false,
+    "afecta": null,
     "afecta_p_aprobacion": false,
     "max_abs_dif": 0.0,
     "alternativas": [
@@ -2200,7 +2219,7 @@
       "alt_que_mueve": null,
       "no_numericos": 0,
       "estructura": 0,
-      "error": null
+      "error": "timeout de 30 minutos"
      },
      "P2": {
       "afecta": false,
@@ -2208,7 +2227,7 @@
       "alt_que_mueve": null,
       "no_numericos": 0,
       "estructura": 0,
-      "error": null
+      "error": "timeout de 30 minutos"
      },
      "P3": {
       "afecta": false,
@@ -2216,9 +2235,15 @@
       "alt_que_mueve": null,
       "no_numericos": 0,
       "estructura": 0,
-      "error": null
+      "error": "timeout de 30 minutos"
      }
-    }
+    },
+    "errores": [
+     "P3 con 40: timeout de 30 minutos",
+     "P1 con 10: timeout de 30 minutos",
+     "P2 con 10: timeout de 30 minutos",
+     "P3 con 10: timeout de 30 minutos"
+    ]
    }
   },
   {
@@ -2233,7 +2258,7 @@
    "evaluable": true,
    "expresion": "730",
    "afecta_panel": {
-    "afecta": false,
+    "afecta": null,
     "afecta_p_aprobacion": false,
     "max_abs_dif": 0.0,
     "alternativas": [
@@ -2247,7 +2272,7 @@
       "alt_que_mueve": null,
       "no_numericos": 0,
       "estructura": 0,
-      "error": null
+      "error": "timeout de 30 minutos"
      },
      "P2": {
       "afecta": false,
@@ -2255,7 +2280,7 @@
       "alt_que_mueve": null,
       "no_numericos": 0,
       "estructura": 0,
-      "error": null
+      "error": "timeout de 30 minutos"
      },
      "P3": {
       "afecta": false,
@@ -2263,9 +2288,17 @@
       "alt_que_mueve": null,
       "no_numericos": 0,
       "estructura": 0,
-      "error": null
+      "error": "timeout de 30 minutos"
      }
-    }
+    },
+    "errores": [
+     "P1 con 1460: timeout de 30 minutos",
+     "P2 con 1460: timeout de 30 minutos",
+     "P3 con 1460: timeout de 30 minutos",
+     "P1 con 365: timeout de 30 minutos",
+     "P2 con 365: timeout de 30 minutos",
+     "P3 con 365: timeout de 30 minutos"
+    ]
    }
   },
   {
@@ -2693,7 +2726,7 @@
    "afecta_panel": {
     "afecta": true,
     "afecta_p_aprobacion": false,
-    "max_abs_dif": 0.0857,
+    "max_abs_dif": 0.07829999999999993,
     "alternativas": [
      2,
      0
@@ -2717,7 +2750,7 @@
      },
      "P3": {
       "afecta": true,
-      "max_abs_dif": 0.0857,
+      "max_abs_dif": 0.07829999999999993,
       "alt_que_mueve": 2,
       "no_numericos": 1,
       "estructura": 0,
@@ -2812,7 +2845,7 @@
       "afecta": true,
       "max_abs_dif": 221,
       "alt_que_mueve": false,
-      "no_numericos": 825,
+      "no_numericos": 823,
       "estructura": 60,
       "error": null
      }
@@ -2921,7 +2954,7 @@
       "afecta": true,
       "max_abs_dif": 2,
       "alt_que_mueve": false,
-      "no_numericos": 378,
+      "no_numericos": 370,
       "estructura": 0,
       "error": null
      }
@@ -4147,6 +4180,301 @@
    }
   },
   {
+   "id": "modelo/voto_individual/src/disciplina.py::CONDUCTAS",
+   "clase": "constante",
+   "archivo": "modelo/voto_individual/src/disciplina.py",
+   "nombre": "CONDUCTAS",
+   "linea": 73,
+   "entorno": null,
+   "asignado_a": "CONDUCTAS",
+   "default": [
+    "AFIRMATIVO",
+    "NEGATIVO",
+    "NO_ACOMPANA"
+   ],
+   "evaluable": true,
+   "expresion": "[\"AFIRMATIVO\", \"NEGATIVO\", \"NO_ACOMPANA\"]",
+   "afecta_panel": {
+    "afecta": null,
+    "motivo": "no perturbable: texto, fecha o contenedor (estructural)"
+   }
+  },
+  {
+   "id": "modelo/voto_individual/src/disciplina.py::PRESENTE_VOTOS",
+   "clase": "constante",
+   "archivo": "modelo/voto_individual/src/disciplina.py",
+   "nombre": "PRESENTE_VOTOS",
+   "linea": 79,
+   "entorno": null,
+   "asignado_a": "PRESENTE_VOTOS",
+   "default": [
+    "ABSTENCION",
+    "AFIRMATIVO",
+    "NEGATIVO"
+   ],
+   "evaluable": true,
+   "expresion": "{\"AFIRMATIVO\", \"NEGATIVO\", \"ABSTENCION\"}",
+   "afecta_panel": {
+    "afecta": null,
+    "motivo": "no perturbable: texto, fecha o contenedor (estructural)"
+   }
+  },
+  {
+   "id": "modelo/voto_individual/src/disciplina.py::LINAJE_BOLSA",
+   "clase": "constante",
+   "archivo": "modelo/voto_individual/src/disciplina.py",
+   "nombre": "LINAJE_BOLSA",
+   "linea": 80,
+   "entorno": null,
+   "asignado_a": "LINAJE_BOLSA",
+   "default": "OTRO / PROVINCIAL",
+   "evaluable": true,
+   "expresion": "\"OTRO / PROVINCIAL\"",
+   "afecta_panel": {
+    "afecta": null,
+    "motivo": "no perturbable: texto, fecha o contenedor (estructural)"
+   }
+  },
+  {
+   "id": "modelo/voto_individual/src/disciplina.py::MARGEN_DISPUTADA",
+   "clase": "constante",
+   "archivo": "modelo/voto_individual/src/disciplina.py",
+   "nombre": "MARGEN_DISPUTADA",
+   "linea": 81,
+   "entorno": null,
+   "asignado_a": "MARGEN_DISPUTADA",
+   "default": 0.05,
+   "evaluable": true,
+   "expresion": "0.05",
+   "afecta_panel": {
+    "afecta": false,
+    "afecta_p_aprobacion": false,
+    "max_abs_dif": 0.0,
+    "alternativas": [
+     0.1,
+     0.025
+    ],
+    "por_caso": {
+     "P1": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P2": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     },
+     "P3": {
+      "afecta": false,
+      "max_abs_dif": 0.0,
+      "alt_que_mueve": null,
+      "no_numericos": 0,
+      "estructura": 0,
+      "error": null
+     }
+    }
+   }
+  },
+  {
+   "id": "modelo/voto_individual/src/disciplina.py::UMBRALES",
+   "clase": "constante",
+   "archivo": "modelo/voto_individual/src/disciplina.py",
+   "nombre": "UMBRALES",
+   "linea": 82,
+   "entorno": null,
+   "asignado_a": "UMBRALES",
+   "default": [
+    0.02,
+    0.05,
+    0.1,
+    0.15
+   ],
+   "evaluable": true,
+   "expresion": "[0.02, 0.05, 0.10, 0.15]",
+   "afecta_panel": {
+    "afecta": null,
+    "motivo": "no perturbable: texto, fecha o contenedor (estructural)"
+   }
+  },
+  {
+   "id": "modelo/voto_individual/src/disciplina.py::PRESIDENCIAS_DIPUTADOS",
+   "clase": "constante",
+   "archivo": "modelo/voto_individual/src/disciplina.py",
+   "nombre": "PRESIDENCIAS_DIPUTADOS",
+   "linea": 89,
+   "entorno": null,
+   "asignado_a": "PRESIDENCIAS_DIPUTADOS",
+   "default": [
+    [
+     "PASCUAL",
+     "1999-12-10",
+     "2001-12-20"
+    ],
+    [
+     "CAMAÑO",
+     "2001-12-21",
+     "2005-12-09"
+    ],
+    [
+     "BALESTRINI",
+     "2005-12-10",
+     "2007-12-09"
+    ],
+    [
+     "FELLNER",
+     "2007-12-10",
+     "2011-12-09"
+    ],
+    [
+     "DOMINGUEZ",
+     "2011-12-10",
+     "2015-12-09"
+    ],
+    [
+     "MONZO",
+     "2015-12-10",
+     "2019-12-09"
+    ],
+    [
+     "MASSA",
+     "2019-12-10",
+     "2022-08-02"
+    ],
+    [
+     "MOREAU",
+     "2022-08-02",
+     "2023-12-09"
+    ],
+    [
+     "MENEM",
+     "2023-12-10",
+     null
+    ]
+   ],
+   "evaluable": true,
+   "expresion": "[ (\"PASCUAL\", \"1999-12-10\", \"2001-12-20\"), (\"CAMAÑO\", \"2001-12-21\", \"2005-12-09\"), # Eduardo Camaño (\"BALESTRINI\", \"2005-12-10\", \"2007-12-09\"), (\"FELLNER\", \"2007-12-10\", \"2011-12-09\"), (\"DOMINGUEZ\", \"2011-12-10\", \"2015-12-09\"), # Julián Domínguez (\"MONZO\", \"2015-12-10\", \"2019-12-09\"), # Emilio Monzó (\"MASSA\", \"2019-12-10\", \"2022-08-02\"), # Sergio Massa (\"MOREAU\", \"2022-08-02\", \"2023-12-09\"), # Cecilia Moreau (\"MENEM\", \"2023-12-10\", None), # Martín Menem ]",
+   "afecta_panel": {
+    "afecta": null,
+    "motivo": "no perturbable: texto, fecha o contenedor (estructural)"
+   }
+  },
+  {
+   "id": "modelo/voto_individual/src/disciplina.py::COLUMNAS_FICHA",
+   "clase": "constante",
+   "archivo": "modelo/voto_individual/src/disciplina.py",
+   "nombre": "COLUMNAS_FICHA",
+   "linea": 307,
+   "entorno": null,
+   "asignado_a": "COLUMNAS_FICHA",
+   "default": [
+    "n_votos",
+    "n_reciente",
+    "tasa_desvio",
+    "tasa_desvio_conducta",
+    "tasa_desvio_reciente",
+    "tasa_desvio_reciente_conducta"
+   ],
+   "evaluable": true,
+   "expresion": "(\"n_votos\", \"n_reciente\", \"tasa_desvio\", \"tasa_desvio_conducta\", \"tasa_desvio_reciente\", \"tasa_desvio_reciente_conducta\")",
+   "afecta_panel": {
+    "afecta": null,
+    "motivo": "no perturbable: texto, fecha o contenedor (estructural)"
+   }
+  },
+  {
+   "id": "modelo/voto_individual/src/disciplina.py::COLUMNAS_TABLA",
+   "clase": "constante",
+   "archivo": "modelo/voto_individual/src/disciplina.py",
+   "nombre": "COLUMNAS_TABLA",
+   "linea": 311,
+   "entorno": null,
+   "asignado_a": "COLUMNAS_TABLA",
+   "default": [
+    "acta_id",
+    "legislador_id",
+    "fecha",
+    "presente",
+    "desvio"
+   ],
+   "evaluable": true,
+   "expresion": "(\"acta_id\", \"legislador_id\", \"fecha\", \"presente\", \"desvio\")",
+   "afecta_panel": {
+    "afecta": null,
+    "motivo": "no perturbable: texto, fecha o contenedor (estructural)"
+   }
+  },
+  {
+   "id": "modelo/voto_individual/src/disciplina.py::_FICHA_CACHE",
+   "clase": "constante",
+   "archivo": "modelo/voto_individual/src/disciplina.py",
+   "nombre": "_FICHA_CACHE",
+   "linea": 397,
+   "entorno": null,
+   "asignado_a": "_FICHA_CACHE",
+   "default": {},
+   "evaluable": true,
+   "expresion": "{}",
+   "afecta_panel": {
+    "afecta": null,
+    "motivo": "no perturbable: texto, fecha o contenedor (estructural)"
+   }
+  },
+  {
+   "id": "modelo/voto_individual/src/disciplina.py::ENV:CANON",
+   "clase": "entorno",
+   "archivo": "modelo/voto_individual/src/disciplina.py",
+   "nombre": "CANON",
+   "linea": 495,
+   "entorno": "CANON",
+   "asignado_a": null,
+   "default": null,
+   "evaluable": false,
+   "expresion": "os.environ.get(\"CANON\", here.parents[3] / \"datos\" / \"canonica\" / \"data\" / \"clean\")",
+   "afecta_panel": {
+    "afecta": null,
+    "motivo": "no perturbable: sin default evaluable (una ruta, una clave o no hay default)"
+   }
+  },
+  {
+   "id": "modelo/voto_individual/src/disciplina.py::ENV:OUT",
+   "clase": "entorno",
+   "archivo": "modelo/voto_individual/src/disciplina.py",
+   "nombre": "OUT",
+   "linea": 496,
+   "entorno": "OUT",
+   "asignado_a": null,
+   "default": null,
+   "evaluable": false,
+   "expresion": "os.environ.get(\"OUT\", here.parents[1] / \"outputs\")",
+   "afecta_panel": {
+    "afecta": null,
+    "motivo": "no perturbable: sin default evaluable (una ruta, una clave o no hay default)"
+   }
+  },
+  {
+   "id": "modelo/voto_individual/src/disciplina.py::ENV:MIN_VOTOS",
+   "clase": "entorno",
+   "archivo": "modelo/voto_individual/src/disciplina.py",
+   "nombre": "MIN_VOTOS",
+   "linea": 497,
+   "entorno": "MIN_VOTOS",
+   "asignado_a": null,
+   "default": "50",
+   "evaluable": true,
+   "expresion": "os.environ.get(\"MIN_VOTOS\", \"50\")",
+   "afecta_panel": {
+    "afecta": null,
+    "motivo": "no perturbable: texto"
+   }
+  },
+  {
    "id": "rutas.py::ENV:CANON",
    "clase": "entorno",
    "archivo": "rutas.py",
@@ -4403,7 +4731,7 @@
       "afecta": true,
       "max_abs_dif": 1.0,
       "alt_que_mueve": 2.5,
-      "no_numericos": 12,
+      "no_numericos": 0,
       "estructura": 0,
       "error": null
      }
@@ -4497,7 +4825,7 @@
       "afecta": true,
       "max_abs_dif": 15,
       "alt_que_mueve": 365,
-      "no_numericos": 90,
+      "no_numericos": 91,
       "estructura": 0,
       "error": null
      }
@@ -4804,61 +5132,67 @@
    "archivo": "evaluacion/baseline/src/baseline_voto_individual.py",
    "ref": "datos/expedientes/data/clean/acta_expediente.parquet",
    "tipo": "literal",
-   "linea": 260
+   "linea": 269
   },
   {
    "archivo": "evaluacion/baseline/src/baseline_voto_individual.py",
    "ref": "datos/expedientes/data/clean/acta_expediente_todas.parquet",
    "tipo": "literal",
-   "linea": 208
+   "linea": 217
   },
   {
    "archivo": "evaluacion/baseline/src/baseline_voto_individual.py",
    "ref": "datos/expedientes/data/clean/dictamenes_firmas.parquet",
    "tipo": "literal",
-   "linea": 209
+   "linea": 218
   },
   {
    "archivo": "evaluacion/baseline/src/baseline_voto_individual.py",
    "ref": "datos/expedientes/data/clean/dictamenes_firmas_senado.parquet",
    "tipo": "literal",
-   "linea": 210
+   "linea": 219
   },
   {
    "archivo": "evaluacion/baseline/src/baseline_voto_individual.py",
    "ref": "datos/expedientes/data/clean/expedientes.parquet",
    "tipo": "literal",
-   "linea": 261
+   "linea": 270
   },
   {
    "archivo": "evaluacion/baseline/src/baseline_voto_individual.py",
    "ref": "datos/taxonomias/data/asignaciones.csv",
    "tipo": "literal",
-   "linea": 376
+   "linea": 385
   },
   {
    "archivo": "evaluacion/baseline/src/baseline_voto_individual.py",
    "ref": "evaluacion/baseline/outputs/baseline_voto_individual.json",
    "tipo": "literal",
-   "linea": 792
+   "linea": 871
   },
   {
    "archivo": "evaluacion/baseline/src/baseline_voto_individual.py",
    "ref": "variables/proyecto/data/origen_por_acta.parquet",
    "tipo": "literal",
-   "linea": 272
+   "linea": 281
   },
   {
    "archivo": "evaluacion/baseline/src/baseline_voto_individual.py",
    "ref": "variables/proyecto/data/tema_por_acta.parquet",
    "tipo": "literal",
-   "linea": 273
+   "linea": 282
+  },
+  {
+   "archivo": "evaluacion/baseline/src/baseline_voto_individual.py",
+   "ref": "rutas.CANONICA_CLEAN",
+   "tipo": "rutas",
+   "linea": 100
   },
   {
    "archivo": "evaluacion/baseline/src/baseline_voto_individual.py",
    "ref": "rutas.PROYECTO_ORIGEN_POR_ACTA",
    "tipo": "rutas",
-   "linea": 99
+   "linea": 100
   },
   {
    "archivo": "evaluacion/baseline/src/censo_estadisticos.py",
@@ -4930,13 +5264,19 @@
    "archivo": "modelo/ensemble/src/ensemble.py",
    "ref": "expedientes.parquet",
    "tipo": "literal",
-   "linea": 256
+   "linea": 286
   },
   {
    "archivo": "modelo/ensemble/src/ensemble.py",
    "ref": "padron_{}.csv",
    "tipo": "literal",
    "linea": 108
+  },
+  {
+   "archivo": "modelo/ensemble/src/ensemble.py",
+   "ref": "rutas.CANONICA_CLEAN",
+   "tipo": "rutas",
+   "linea": 124
   },
   {
    "archivo": "modelo/ensemble/src/estimar_beta_dictamen.py",
@@ -5033,6 +5373,48 @@
    "ref": "theta_sobre_tablas.json",
    "tipo": "literal",
    "linea": 74
+  },
+  {
+   "archivo": "modelo/voto_individual/src/disciplina.py",
+   "ref": "actas_canonico.parquet",
+   "tipo": "literal",
+   "linea": 181
+  },
+  {
+   "archivo": "modelo/voto_individual/src/disciplina.py",
+   "ref": "desvios_por_voto.parquet",
+   "tipo": "literal",
+   "linea": 523
+  },
+  {
+   "archivo": "modelo/voto_individual/src/disciplina.py",
+   "ref": "disciplina_individual.csv",
+   "tipo": "literal",
+   "linea": 519
+  },
+  {
+   "archivo": "modelo/voto_individual/src/disciplina.py",
+   "ref": "disciplina_por_anio.csv",
+   "tipo": "literal",
+   "linea": 520
+  },
+  {
+   "archivo": "modelo/voto_individual/src/disciplina.py",
+   "ref": "disciplina_por_periodo.csv",
+   "tipo": "literal",
+   "linea": 521
+  },
+  {
+   "archivo": "modelo/voto_individual/src/disciplina.py",
+   "ref": "set_pivote.json",
+   "tipo": "literal",
+   "linea": 524
+  },
+  {
+   "archivo": "modelo/voto_individual/src/disciplina.py",
+   "ref": "votos_resuelto.parquet",
+   "tipo": "literal",
+   "linea": 181
   },
   {
    "archivo": "variables/bloque/src/bloque.py",

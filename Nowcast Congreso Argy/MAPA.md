@@ -2,13 +2,13 @@
 
 <!-- GENERADO por indexar.py. No editar: los cambios se pierden. -->
 <!-- La prosa vive en el README.md de cada modulo (seccion `Buscar aca si`). -->
-<!-- 2026-10-01 18:28 UTC · 185 archivos · 41,205 LOC -->
+<!-- 2026-10-02 14:16 UTC · 186 archivos · 41,671 LOC -->
 
 ## Como usar este archivo
 
 Es el unico archivo del proyecto que hace falta leer para empezar. Para ubicar algo concreto: `python3 .mapa/buscar.py "<termino>"` devuelve archivo y linea sin abrir nada. Recien despues abrir los archivos que salgan, y solo esos.
 
-Rama `main` — ultimo commit: 2026-10-01 a283639 Merge branch 'main' of https://github.com/tresterciosadmin/Nowcast-Congreso · **hay cambios sin commitear**
+Rama `main` — ultimo commit: 2026-10-01 ff5e281 Auditoría D1.0: pre-registro de la ficha de desvío point-in-time · **hay cambios sin commitear**
 
 ## Donde buscar que
 
@@ -87,7 +87,7 @@ Rama `main` — ultimo commit: 2026-10-01 a283639 Merge branch 'main' of https:/
 | IC que re-muestrean leyes, no actas (`skill_ic_por_ley`, `dif_brier_ic_por_ley`) | `evaluacion/baseline/` |
 | la fuga del harness viejo (shift(1) por fila) y cuanto pesaba: `medir_fuga_historia.py` (0,161 -> 0,092 -> 0,074) | `evaluacion/baseline/` |
 | de donde salia el 11,06% de RECORD_POR_TEMA: `medir_record_por_tema_limpio.py` | `evaluacion/baseline/` |
-| que el harness mide al motor y no una copia: `tests/test_harness_es_el_motor.py` | `evaluacion/baseline/` |
+| que el harness mide al motor y no una copia: `tests/test_harness_es_el_motor.py` (desde el 2026-10-01 también en la rama de bloque, con la ficha de desvío AL DÍA del motor: auditoría D1.0; el detalle del censo guarda sus componentes en las columnas `ficha_*`) | `evaluacion/baseline/` |
 | el record por ORIGEN entre gobiernos (ADR-0033): **archivado en A7** (`coordinacion/archivo/A7-poda-2026-09/evaluacion/baseline/src/`); sus resultados siguen en `outputs/record_por_origen_*.json` | `evaluacion/baseline/` |
 | las reglas de combinacion de temas de la POSTURA (ADR-0024/0028): `--combinar-temas`, experimento cerrado | `evaluacion/baseline/` |
 | de donde sale el 0,99 del baseline de bloque, y por que el proyecto NO apunta a predecir la direccion del voto individual | `fase0/` |
@@ -114,6 +114,7 @@ Rama `main` — ultimo commit: 2026-10-01 a283639 Merge branch 'main' of https:/
 | separar INDISCIPLINA de AUSENTISMO (son dos tasas distintas) | `modelo/voto_individual/` |
 | el indice de disciplina por legislador y por periodo; presidentes de camara excluidos | `modelo/voto_individual/` |
 | por que el desvio tiene piso (0,02) y no techo: ningun legislador llega a 1,0 (max observado 0,944) | `modelo/voto_individual/` |
+| la ficha de desvío AL DÍA (point-in-time, auditoría 2026-09 D1.0): `disciplina.FichaAlDia` / `ficha_al_dia(fecha)`, la misma regla del CSV sólo con los votos anteriores a la fecha; es la que usa el motor (`ensemble.roster_nominal`) y el harness del censo. El CSV `disciplina_individual.csv` es la ficha de HOY (toda la historia) y ya no entra al número (`tests/test_ficha_al_dia.py`) | `modelo/voto_individual/` |
 | el significado, escrito a mano, de cada script y de cada dato de la maquinaria del cálculo (`data/mapa_modelo_semantica.json`) | `producto/dashboard/` |
 | por qué ya no hay paneles ni tablero HTML: `README.md` de la raíz («Los paneles HTML») y `coordinacion/QUE-SE-MIDE.md` | `producto/dashboard/` |
 | cómo era el generador del mapa: `git log -- producto/dashboard/src/generar_mapa_modelo.py` | `producto/dashboard/` |
@@ -148,8 +149,8 @@ Rama `main` — ultimo commit: 2026-10-01 a283639 Merge branch 'main' of https:/
 
 | Carpeta | Que es | Arch. | LOC | Bitacora |
 |---|---|---:|---:|---|
-| `modelo/ensemble/` _(src+tests)_ | La composicion final: el nowcast end-to-end de un proyecto. El punto de entrada vivo es `nowcast_puertas.py`, que corre la CADENA DE PUERTAS y devuelve un numero condicional a que las camaras voten. La formulacion v1 -P(llega al recinto) x P(mayoria dado recinto)- se dio de BAJA el 2026-08-22 (ADR-0012), junto con su backtest: los stubs de la v1 (`ensemble.componer` y compania) y `backtest_cadena.py` se eliminaron/archivaron en la auditoria 2026-09 (A7: su codigo esta en `coordinacion/archivo/A7-poda-2026-09/`). Desde el 2026-09-30 (auditoria A5) `nowcast()` da numero SOLO para mayoria simple: con una mayoria especial devuelve `p_aprobacion = None` y `motivo_sin_numero`, sin simular. | 30 | 7,659 | **vencida** |
-| `evaluacion/baseline/` _(src+tests)_ | El censo del motor sobre el voto individual. Desde el 28-09 (ADR-0034) el harness NO reimplementa nada del legislador: importa `record_legisladores`, `proyectar_postura` y `perfil_legislador` del motor y solo decide que votos existian (historia estricta: fecha anterior y OTRA ley). Un test lo compara contra `nowcast()` legislador por legislador. El baseline de BLOQUE -el ~0,99- se midio en `fase0/` y ahi quedo. | 21 | 5,274 | **vencida** |
+| `modelo/ensemble/` _(src+tests)_ | La composicion final: el nowcast end-to-end de un proyecto. El punto de entrada vivo es `nowcast_puertas.py`, que corre la CADENA DE PUERTAS y devuelve un numero condicional a que las camaras voten. La formulacion v1 -P(llega al recinto) x P(mayoria dado recinto)- se dio de BAJA el 2026-08-22 (ADR-0012), junto con su backtest: los stubs de la v1 (`ensemble.componer` y compania) y `backtest_cadena.py` se eliminaron/archivaron en la auditoria 2026-09 (A7: su codigo esta en `coordinacion/archivo/A7-poda-2026-09/`). Desde el 2026-09-30 (auditoria A5) `nowcast()` da numero SOLO para mayoria simple: con una mayoria especial devuelve `p_aprobacion = None` y `motivo_sin_numero`, sin simular. | 30 | 7,689 | **vencida** |
+| `evaluacion/baseline/` _(src+tests)_ | El censo del motor sobre el voto individual. Desde el 28-09 (ADR-0034) el harness NO reimplementa nada del legislador: importa `record_legisladores`, `proyectar_postura` y `perfil_legislador` del motor y solo decide que votos existian (historia estricta: fecha anterior y OTRA ley). Un test lo compara contra `nowcast()` legislador por legislador. El baseline de BLOQUE -el ~0,99- se midio en `fase0/` y ahi quedo. | 21 | 5,397 | **vencida** |
 | `variables/proyecto/` _(src+tests)_ | Feature store por proyecto: tema/materia, origen (Ejecutivo/oficialismo/aliados/oposicion), jefe de bloque, mayoria requerida, texto, y el ICG como modulador de coyuntura. La postura del gobierno por acta se midio aca y su modulo se archivo el 2026-09-10 sin consumidor: la medicion quedo en el ADR-0021 y en ESTADO. | 23 | 5,160 | **vencida** |
 | `datos/expedientes/` _(src+tests)_ | Registro de todo lo PRESENTADO (no solo lo votado): titulo, autor, tipo, fecha y cadena de vida del expediente. Denominador del embudo y enlace acta -> expediente. | 17 | 4,922 | **vencida** |
 | `datos/padron/` _(src+tests)_ | Padron OFICIAL de bancas a nivel LEGISLADOR: quien ocupa cada banca y en que ventana de mandato. Es la composicion real de la camara a una fecha (257 / 72). | 11 | 2,645 | ok |
@@ -159,11 +160,11 @@ Rama `main` — ultimo commit: 2026-10-01 a283639 Merge branch 'main' of https:/
 | `variables/embudo/` _(src+tests)_ | Supervivencia del proyecto: presentado -> comision -> dictamen -> recinto -> sancion. Estima P(llega al recinto). OJO: eso era 'la mitad de P(aprobacion)' en la formulacion v1, que se dio de baja el 2026-08-22 (ADR-0012) justamente porque medir la mortandad en el cajon es agenda politica y se decidio no modelarla; hoy el numero publicado NO la multiplica. | 5 | 1,222 | ok |
 | `datos/canonica/` _(src+tests)_ | La base propia y unica de votaciones nominales: todas las fuentes unificadas, deduplicadas y con entidades resueltas. Fuente de verdad de la que leen `variables/` y `modelo/`. | 7 | 1,032 | **vencida** |
 | `datos/senado/` _(src+tests)_ | Ingesta de votaciones nominales del Senado desde senado.gob.ar + reconstruccion del bloque historico contemporaneo a cada voto. Tapa el hueco 2015-2023. | 5 | 940 | ok |
+| `modelo/voto_individual/` _(src+tests)_ | No predice el voto medio (eso lo resuelve la regla de bloque ~0,99): modela el DESVIO del legislador respecto de su bloque y detecta pivotes (ADR-0003). | 3 | 910 | **vencida** |
 | `datos/bot_recoleccion/` _(src+tests)_ | El bot diario que trae lo nuevo de ambas camaras (proyectos con firmantes y giros, y votaciones) con upsert idempotente. Corre solo en GitHub Actions. | 7 | 880 | ok |
 | `./` | La raiz del proyecto: `CLAUDE.md`, `rutas.py`, `definiciones.py`, los scripts de regeneracion (`REGENERAR.ps1`, `verificar_*.py`) y este README. Los paneles HTML (tablero ejecutivo, mapa del modelo, panel de puertas) y sus `*_datos.js` se eliminaron en la auditoria 2026-09 (ítem A6): el estado vive en `coordinacion/`. | 4 | 827 | **vencida** |
 | `modelo/agregador_institucional/` _(src+tests)_ | Traduce posturas de bloque + asistencia en un resultado institucional: cuenta bancas, quorum, umbrales de mayoria y bandas. Mide la estructura, no la politica. | 2 | 757 | **vencida** |
 | `coordinacion/` _(AUDITORIA-2026-09)_ | Las bitacoras y el protocolo: que bloquea a otros, que se hizo, quien tomo que modulo y por que se decidio cada cosa. Aca NO hay codigo del producto. | 4 | 677 | **vencida** |
-| `modelo/voto_individual/` _(src+tests)_ | No predice el voto medio (eso lo resuelve la regla de bloque ~0,99): modela el DESVIO del legislador respecto de su bloque y detecta pivotes (ADR-0003). | 2 | 597 | ok |
 | `datos/seguimiento/` _(src+tests)_ | Dado un expediente ya conocido, baja su ficha oficial y extrae el estado de avance: giros, movimientos, fechas y PDF. Insumo del embudo. NO descubre proyectos nuevos. | 2 | 512 | ok |
 | `datos/taxonomias/` _(src+tests)_ | El registro unico de taxonomias asignadas: una fila por (objeto, taxonomia), en CSV versionado, consolidado desde todas las fuentes que existian sueltas. | 2 | 501 | **vencida** |
 | `datos/argentinadatos/` _(src+tests)_ | Ingesta de Diputados desde 2020 y Senado desde 2024 (hasta hoy: la API sirve tambien 2026) desde argentinadatos.com, normalizada al mismo esquema que CKAN. OJO: la API NO publica el expediente -- medido el 09-09, URGENTE P. | 3 | 496 | ok |
@@ -202,7 +203,7 @@ Buscar uno sin abrir nada: `python .mapa/buscar.py --dato <termino>`. Columna **
 | `datos/bot_recoleccion/data/clean/votaciones_nuevas.parquet` | 578×11 | 38 KB | si | `votaciones.py` | _(1 lo nombran)_ |
 | `datos/bot_recoleccion/data/estado_bot.json` | objeto: dae_normal, tp_diputados, actas_ | 21 KB | si | `dae_senado.py`, `tp_diputados.py` | _(1 lo nombran)_ |
 | `datos/canonica/data/clean/_decada_csv/votaciones-diputados.csv` | 383,744×4 | 4.9 MB | si | — | _(1 lo nombran)_ |
-| `datos/canonica/data/clean/votos_resuelto.parquet` _CANONICA_VOTOS_RESUELTO_ | 959,815×12 | 2.1 MB | si | `entity_resolution.py`, `asistencia.py` | `cobertura_canonica.py`, `export_base.py`, `padron_diputados_historico.py` +7 |
+| `datos/canonica/data/clean/votos_resuelto.parquet` _CANONICA_VOTOS_RESUELTO_ | 959,815×12 | 2.1 MB | si | `entity_resolution.py`, `test_ficha_al_dia.py` | `cobertura_canonica.py`, `export_base.py`, `padron_diputados_historico.py` +7 |
 | `datos/canonica/data/clean/_decada_csv/votaciones-senado.csv` | 144,792×4 | 1.8 MB | si | — | _(1 lo nombran)_ |
 | `datos/canonica/data/clean/votos_canonico.parquet` _CANONICA_VOTOS_ | 959,815×8 | 1.2 MB | si | `build.py`, `entity_resolution.py` | _(1 lo nombran)_ |
 | `datos/canonica/data/clean/_decada_csv/asuntos-senado.csv` | 2,011×19 | 1.0 MB | si | — | _(1 lo nombran)_ |
@@ -331,7 +332,7 @@ Buscar uno sin abrir nada: `python .mapa/buscar.py --dato <termino>`. Columna **
 | `modelo/agregador_institucional/outputs/backtest_agregador.json` | objeto: n_actas, brier, brier_baseline_t | 1 KB | si | — | — |
 | `modelo/agregador_institucional/outputs/backtest_agregador_dir_presentes.json` | objeto: n_actas, brier, brier_baseline_t | 1 KB | si | — | — |
 | `modelo/ensemble/outputs/panel_regresion.json` | objeto: proyecto_id, fecha, camara_orige | 199 KB | si | `test_panel_regresion.py` | `perturbar_panel.py`, `verificar_regeneracion.py` |
-| `modelo/ensemble/outputs/registro_parametros.json` | objeto: formato, generado_por, entrada,  | 128 KB | si | `registro_parametros.py` | _(2 lo nombran)_ |
+| `modelo/ensemble/outputs/registro_parametros.json` | objeto: formato, generado_por, entrada,  | 138 KB | si | `registro_parametros.py` | _(2 lo nombran)_ |
 | `modelo/ensemble/outputs/validacion_sobre_tablas_walkforward_corte50.json` | objeto: resumen, detalle | 36 KB | si | — | — |
 | `modelo/ensemble/outputs/validacion_sobre_tablas_walkforward.json` | objeto: resumen, detalle | 25 KB | si | `validar_sobre_tablas_walkforward.py` | — |
 | `modelo/ensemble/outputs/beta_dictamen.json` | objeto: M0_crudo, M1_offset, M2_offset_t | 6 KB | si | `estimar_beta_dictamen.py` | `verificar_regeneracion.py` |
@@ -411,24 +412,24 @@ Ordenados por cuantos otros archivos dependen de ellos. Tocar uno de arriba tien
 
 | Archivo | LOC | Lo usan | Simbolos |
 |---|---:|---:|---|
-| `rutas.py` | 212 | 37 | `_env`, `inventario` |
+| `rutas.py` | 212 | 39 | `_env`, `inventario` |
 | `variables/bloque/src/bloque.py` | 842 | 20 | `_canon_linaje`, `_norm_nombre`, `_cargar_padron_linaje_senado`, `_enriquecer_linaje_senado` |
 | `modelo/ensemble/src/nowcast_puertas.py` | 1020 | 18 | `_resolver_multietiqueta`, `_tema_auto`, `_bloque`, `era_de` |
-| `evaluacion/baseline/src/baseline_voto_individual.py` | 847 | 17 | `_norm_cond`, `_ContadorAvisos`, `perfil`, `_metricas` |
+| `evaluacion/baseline/src/baseline_voto_individual.py` | 893 | 18 | `_norm_cond`, `_ContadorAvisos`, `perfil`, `_metricas` |
 | `definiciones.py` | 261 | 16 | `periodo_parlamentario`, `gobierno_por_fecha`, `era_de`, `normalizar_mayoria_valor` |
-| `modelo/ensemble/src/ensemble.py` | 359 | 9 | `_cargar_simulador`, `_cargar_proyector`, `_root`, `_padron_csv` |
+| `modelo/ensemble/src/ensemble.py` | 389 | 10 | `_cargar_simulador`, `_cargar_proyector`, `_root`, `_padron_csv` |
 | `evaluacion/baseline/src/censo_estadisticos.py` | 350 | 9 | `skill_ic_desde_sumas`, `dif_brier_ic_desde_sumas`, `_sha16`, `_git_head` |
 | `modelo/agregador_institucional/src/agregador.py` | 496 | 6 | `umbral_aprobacion`, `_prob_conductas`, `simular_votacion`, `_linea_bloque_por_acta` |
 | `modelo/ensemble/src/puerta_d.py` | 244 | 6 | `camara_revisora`, `_padron_de`, `_clip01`, `_logit` |
 | `evaluacion/baseline/src/metrica_de_verdad.py` | 307 | 5 | `DestinoProtegido`, `cortes_de`, `_skill`, `_dif_brier` |
 | `variables/embudo/src/embudo.py` | 730 | 4 | `cargar_icg`, `_mes_rezagado`, `cargar`, `cargar_sqlite` |
-| `datos/canonica/src/entity_resolution.py` | 327 | 4 | `_strip`, `_name_key`, `_leg_id`, `_aplicar_alias` |
+| `modelo/voto_individual/src/disciplina.py` | 535 | 4 | `_sin_acentos`, `excluir_no_medibles`, `actas_disputadas`, `cargar` |
 
 ## Flujo interno
 
 - `modelo/ensemble/tests/` → `modelo/ensemble/src/` (18)
+- `modelo/ensemble/src/` → `./` (15)
 - `evaluacion/baseline/tests/` → `evaluacion/baseline/src/` (14)
-- `modelo/ensemble/src/` → `./` (14)
 - `evaluacion/baseline/src/` → `./` (11)
 - `variables/proyecto/tests/` → `variables/proyecto/src/` (10)
 - `evaluacion/baseline/tests/` → `./` (7)
@@ -437,13 +438,13 @@ Ordenados por cuantos otros archivos dependen de ellos. Tocar uno de arriba tien
 - `datos/expedientes/tests/` → `datos/expedientes/src/` (5)
 - `datos/padron/tests/` → `datos/padron/src/` (5)
 - `datos/proyectos/tests/` → `datos/proyectos/src/` (5)
-- `modelo/ensemble/src/` → `evaluacion/baseline/src/` (5)
+- `evaluacion/baseline/src/` → `modelo/ensemble/src/` (5)
 
 ## Se tocan juntos
 
 Segun el historial de git. Si vas a cambiar uno, mira el otro.
 
-- `Nowcast Congreso Argy/.mapa/mapa.json` + `Nowcast Congreso Argy/MAPA.md` (67 commits)
+- `Nowcast Congreso Argy/.mapa/mapa.json` + `Nowcast Congreso Argy/MAPA.md` (68 commits)
 - `Nowcast Congreso Argy/coordinacion/EN-HUMANO.md` + `Nowcast Congreso Argy/coordinacion/ESTADO-DEL-PROYECTO.md` (56 commits)
 - `Nowcast Congreso Argy/coordinacion/ESTADO-DEL-PROYECTO.md` + `Nowcast Congreso Argy/tablero_datos.js` (50 commits)
 - `Nowcast Congreso Argy/coordinacion/EN-HUMANO.md` + `Nowcast Congreso Argy/tablero_datos.js` (47 commits)
@@ -489,4 +490,4 @@ Segun el historial de git. Si vas a cambiar uno, mira el otro.
 
 ## Frescura
 
-- Bitacoras vencidas: `./`, `casos/`, `coordinacion/`, `datos/canonica/`, `datos/expedientes/`, `datos/taxonomias/`, `evaluacion/baseline/`, `modelo/agregador_institucional/`, `modelo/ensemble/`, `producto/dashboard/`, `tests/`, `variables/bloque/`, `variables/proyecto/`
+- Bitacoras vencidas: `./`, `casos/`, `coordinacion/`, `datos/canonica/`, `datos/expedientes/`, `datos/taxonomias/`, `evaluacion/baseline/`, `modelo/agregador_institucional/`, `modelo/ensemble/`, `modelo/voto_individual/`, `producto/dashboard/`, `tests/`, `variables/bloque/`, `variables/proyecto/`

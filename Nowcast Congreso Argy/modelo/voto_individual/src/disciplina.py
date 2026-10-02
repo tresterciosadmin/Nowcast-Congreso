@@ -69,7 +69,6 @@ from definiciones import normalizar_mayoria  # noqa: E402,F401
 from definiciones import periodo_parlamentario  # noqa: E402,F401
 
 log = logging.getLogger("disciplina")
-logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s: %(message)s")
 
 CONDUCTAS = ["AFIRMATIVO", "NEGATIVO", "NO_ACOMPANA"]
 # Para separar INDISCIPLINA de AUSENTISMO (URGENTE 1, 2026-08-13): "presente" = usó el
@@ -105,23 +104,32 @@ def _sin_acentos(s: pd.Series) -> pd.Series:
              .str.normalize("NFKD").str.encode("ascii", "ignore").str.decode("ascii"))
 
 
-def excluir_no_medibles(v: pd.DataFrame) -> pd.DataFrame:
+def excluir_no_medibles(v: pd.DataFrame, presidencia: str = "total") -> pd.DataFrame:
     """Saca (1) filas placeholder de las fuentes (bancas no incorporadas), (2) suspendidos
     (Art. 70 C.N., anotados en el nombre: no votar no es una decisión) y (3) al presidente
     de Diputados durante su presidencia. Las LICENCIAS quedan pendientes de la herramienta
-    de licencias/suspensiones (ver PLAN)."""
+    de licencias/suspensiones (ver PLAN).
+
+    `presidencia` decide con qué se mira si el presidente "no vota" (> 80% NO_ACOMPANA):
+    "total" (el CSV de siempre) mira TODA la presidencia, incluido lo posterior a cada acta;
+    "al_dia" (la ficha point-in-time, auditoría 2026-09 D1.0) decide acta por acta con lo
+    que hizo en la presidencia hasta esa fecha, así que nunca usa nada posterior."""
+    if presidencia not in ("total", "al_dia"):
+        raise ValueError(f"presidencia inválida: {presidencia!r}")
     antes = len(v)
-    nombre = _sin_acentos(v["legislador_nombre"])
-    v = v[~nombre.str.contains("NO INCORPORADO", na=False)]
+    # El nombre normalizado se calcula UNA vez, sobre los nombres distintos (2026-10-01, D1.0:
+    # el motor arma la ficha al día en cada proceso). Mismo resultado que normalizar fila por fila
+    # antes de cada filtro: los tres filtros miran el mismo valor de la fila.
+    crudo = v["legislador_nombre"].astype(str)
+    distintos = pd.Series(crudo.unique())
+    nombre = crudo.map(dict(zip(distintos, _sin_acentos(distintos))))
     # Placeholder de banca vacante: "Legislador a Designar" / "#, Legislador a Designar"
     # (1.023 votos fantasma al 100% de ausencia que se colaban en el ranking de díscolos,
     # detectado 2026-08-13). El filtro de "NO INCORPORADO" no lo cazaba.
-    nombre = _sin_acentos(v["legislador_nombre"])
-    v = v[~nombre.str.contains("DESIGNAR", na=False)]
-    nombre = _sin_acentos(v["legislador_nombre"])
-    v = v[~nombre.str.contains("SUSPENDID", na=False)]
+    fuera_nombre = (nombre.str.contains("NO INCORPORADO", na=False) | nombre.str.contains("DESIGNAR", na=False)
+                    | nombre.str.contains("SUSPENDID", na=False))
+    v, nombre = v[~fuera_nombre], nombre[~fuera_nombre]
     f = pd.to_datetime(v["fecha"], errors="coerce")
-    nombre = _sin_acentos(v["legislador_nombre"])
     fuera = pd.Series(False, index=v.index)
     for apellido, desde, hasta in PRESIDENCIAS_DIPUTADOS:
         m = (v["camara"] == "diputados") & nombre.str.contains(apellido, na=False)
@@ -133,8 +141,15 @@ def excluir_no_medibles(v: pd.DataFrame) -> pd.DataFrame:
         if m.any():
             for lid in v.loc[m, "legislador_id"].unique():
                 mi = m & (v["legislador_id"] == lid)
-                if (v.loc[mi, "conducta"] == "NO_ACOMPANA").mean() > 0.8:
-                    fuera |= mi
+                if presidencia == "total":
+                    if (v.loc[mi, "conducta"] == "NO_ACOMPANA").mean() > 0.8:
+                        fuera |= mi
+                    continue
+                # al día: la proporción acumulada hasta cada fecha (incluido ese día)
+                por_dia = (v.loc[mi, "conducta"].eq("NO_ACOMPANA")
+                           .groupby(f[mi]).agg(["sum", "size"]).sort_index())
+                prop = por_dia["sum"].cumsum() / por_dia["size"].cumsum()
+                fuera |= mi & f.isin(prop.index[prop > 0.8])
     v = v[~fuera]
     log.info("excluidos no medibles: %d filas (placeholders + suspendidos + presidencias)", antes - len(v))
     return v
@@ -162,7 +177,7 @@ def actas_disputadas(actas: pd.DataFrame, v: pd.DataFrame) -> set:
     return set(a.loc[disp.fillna(False), "acta_id"])
 
 
-def cargar(src: Path) -> tuple[pd.DataFrame, pd.DataFrame]:
+def cargar(src: Path, presidencia: str = "total") -> tuple[pd.DataFrame, pd.DataFrame]:
     fv, fa = src / "votos_resuelto.parquet", src / "actas_canonico.parquet"
     for f in (fv, fa):
         if not f.exists():
@@ -181,7 +196,7 @@ def cargar(src: Path) -> tuple[pd.DataFrame, pd.DataFrame]:
     # excluye lo que no tiene bloque asignable y los no-medibles estructurales.
     v = v[v["bloque_norm"].notna() & (v["bloque_norm"] != "SIN BLOQUE")].copy()
     v["conducta"] = np.where(v["voto"].isin(["AFIRMATIVO", "NEGATIVO"]), v["voto"], "NO_ACOMPANA")
-    v = excluir_no_medibles(v)
+    v = excluir_no_medibles(v, presidencia)
     if v.empty:
         raise ValueError("Base sin votos con bloque resuelto; nada que medir.")
     log.info("votos con bloque (todas las conductas): %d (%d actas)", len(v), v["acta_id"].nunique())
@@ -280,6 +295,117 @@ def indice_por_legislador(d: pd.DataFrame, disputadas: set) -> pd.DataFrame:
     return idx.sort_values("tasa_desvio", ascending=False)
 
 
+# ── LA FICHA AL DÍA (point-in-time) — auditoría 2026-09, D1.0, decisión de Franco ─────────
+# `disciplina_individual.csv` se calcula con TODA la historia (y su «reciente» se mide desde
+# el último año de cada legislador): un nowcast fechado en el pasado veía el futuro y ningún
+# backtest podía usarla. La ficha al día aplica LA MISMA REGLA que `indice_por_legislador`
+# (las seis columnas que lee `ensemble.roster_nominal`) sólo con los votos de fecha < F.
+# El desvío de cada voto sale de su propia acta (`marcar_desvios`), así que la tabla por voto
+# no trae nada de otra fecha; la exclusión del presidente se decide al día (`presidencia=
+# "al_dia"`). Los votos sin fecha válida quedan afuera: no tienen fecha de disponibilidad.
+# Una sola copia: la usan el motor (`roster_nominal`) y el harness del censo.
+COLUMNAS_FICHA = ("n_votos", "n_reciente", "tasa_desvio", "tasa_desvio_conducta",
+                  "tasa_desvio_reciente", "tasa_desvio_reciente_conducta")
+
+
+COLUMNAS_TABLA = ("acta_id", "legislador_id", "fecha", "presente", "desvio")
+
+
+def tabla_desvios_al_dia(src: Path | None = None, completa: bool = False) -> pd.DataFrame:
+    """La tabla por voto de la ficha point-in-time, desde la canónica (que viaja por git):
+    `cargar` con la exclusión del presidente al día + `marcar_desvios`, sin los votos sin
+    fecha, ordenada por legislador y fecha. Por defecto sólo las columnas que usa la ficha
+    (`COLUMNAS_TABLA`); `completa=True` deja todas (las que necesita `indice_por_legislador`)."""
+    src = Path(src) if src is not None else Path(__file__).resolve().parents[3] / "datos" / "canonica" / "data" / "clean"
+    v, _ = cargar(src, presidencia="al_dia")
+    d = marcar_desvios(v)
+    d["fecha"] = pd.to_datetime(d["fecha"], errors="coerce")
+    d = d[d["fecha"].notna()]
+    if not completa:
+        d = d[list(COLUMNAS_TABLA)]
+    d = d.copy()
+    d["anio"] = d["fecha"].dt.year.astype(int)
+    d["legislador_id"] = d["legislador_id"].astype(str)
+    return d.sort_values(["legislador_id", "fecha"], kind="mergesort").reset_index(drop=True)
+
+
+class FichaAlDia:
+    """La ficha de cada legislador a una fecha, sobre una tabla de `tabla_desvios_al_dia`.
+
+    `al(hasta, legisladores=None, excluir_ley=None)` -> {legislador_id: {columna: valor}} con
+    las seis `COLUMNAS_FICHA`, redondeadas como el CSV, sobre los votos con fecha < `hasta`
+    (de las dos cámaras, como el CSV) y, si se pasa `excluir_ley`, sin los de esa ley (la
+    regla del EXPEDIENTE del harness; `ley_de_acta` dice a qué ley pertenece cada acta). Un
+    legislador sin ningún voto anterior no figura (la escalera de `roster_nominal` cae al
+    linaje). Las medias se calculan sobre los mismos valores y en el mismo orden que
+    `indice_por_legislador` aplicado a la tabla recortada."""
+
+    def __init__(self, tabla: pd.DataFrame, ley_de_acta: dict | None = None):
+        t = tabla[list(COLUMNAS_TABLA)].copy()
+        t["legislador_id"] = t["legislador_id"].astype(str)
+        t = t.sort_values(["legislador_id", "fecha"], kind="mergesort").reset_index(drop=True)
+        # sólo arreglos numéricos (cada proceso del censo y del motor tiene su copia)
+        self._f = t["fecha"].values.astype("datetime64[ns]").astype(np.int64)
+        self._anio = t["fecha"].dt.year.values.astype(np.int64)
+        self._pres = t["presente"].values.astype(bool)
+        self._d = t["desvio"].values.astype(float)
+        cod, lids = pd.factorize(t["legislador_id"], sort=False)
+        cambia = np.r_[True, cod[1:] != cod[:-1]] if len(cod) else np.zeros(0, bool)
+        ini = np.flatnonzero(cambia)
+        fin = np.r_[ini[1:], len(cod)]
+        self._rango = {str(lids[cod[i]]): (int(i), int(j)) for i, j in zip(ini, fin)}
+        self._ley, self._ley_cod = None, {}
+        if ley_de_acta is not None:
+            cod_acta, actas = pd.factorize(t["acta_id"].astype(str), sort=False)
+            ley_de = pd.Series(actas).map(ley_de_acta)
+            ley_de = ley_de.where(ley_de.notna(), "acta:" + pd.Series(actas)).astype(str)
+            cod_ley, leyes = pd.factorize(ley_de, sort=False)
+            self._ley = cod_ley[cod_acta]
+            self._ley_cod = {str(x): i for i, x in enumerate(leyes)}
+
+    def _fila(self, idx: np.ndarray) -> dict:
+        d, p, a = self._d[idx], self._pres[idx], self._anio[idx]
+        rec = a >= (a.max() - 1)
+        dp, dr, drp = d[p], d[rec], d[rec & p]
+        return {"n_votos": int(idx.size), "n_reciente": int(rec.sum()),
+                "tasa_desvio": round(float(d.mean()), 4),
+                "tasa_desvio_conducta": round(float(dp.mean()), 4) if dp.size else np.nan,
+                "tasa_desvio_reciente": round(float(dr.mean()), 4) if dr.size else np.nan,
+                "tasa_desvio_reciente_conducta": round(float(drp.mean()), 4) if drp.size else np.nan}
+
+    def al(self, hasta, legisladores=None, excluir_ley: str | None = None) -> dict:
+        corte = pd.Timestamp(hasta).value
+        claves = self._rango.keys() if legisladores is None else (str(x) for x in legisladores)
+        out = {}
+        for lid in claves:
+            r = self._rango.get(lid)
+            if r is None:
+                continue
+            s, e = r
+            k = s + int(np.searchsorted(self._f[s:e], corte, side="left"))
+            if k == s:
+                continue
+            idx = np.arange(s, k)
+            if excluir_ley is not None and self._ley is not None and str(excluir_ley) in self._ley_cod:
+                idx = idx[self._ley[s:k] != self._ley_cod[str(excluir_ley)]]
+                if idx.size == 0:
+                    continue
+            out[lid] = self._fila(idx)
+        return out
+
+
+_FICHA_CACHE: dict = {}
+
+
+def ficha_al_dia(fecha, src: Path | None = None, legisladores=None) -> dict:
+    """La ficha de todos (o de `legisladores`) al día `fecha`, desde la canónica de `src`.
+    La tabla por voto se arma una vez por proceso y por canónica (≈ 12 s)."""
+    clave = str(Path(src).resolve()) if src is not None else "default"
+    if clave not in _FICHA_CACHE:
+        _FICHA_CACHE[clave] = FichaAlDia(tabla_desvios_al_dia(src))
+    return _FICHA_CACHE[clave].al(fecha, legisladores)
+
+
 def por_anio(d: pd.DataFrame) -> pd.DataFrame:
     g = (d.dropna(subset=["anio"])
            .groupby(["legislador_id", "anio"], observed=True)
@@ -362,6 +488,9 @@ def marcar_ausentista_outlier(idx: pd.DataFrame, min_votos: int) -> tuple[pd.Dat
 
 
 def main() -> None:
+    # Acá y no al importar: el motor importa este módulo (la ficha al día) y no tiene por
+    # qué heredar su configuración de logging.
+    logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s: %(message)s")
     here = Path(__file__).resolve()
     src = Path(os.environ.get("CANON", here.parents[3] / "datos" / "canonica" / "data" / "clean"))
     out = Path(os.environ.get("OUT", here.parents[1] / "outputs"))

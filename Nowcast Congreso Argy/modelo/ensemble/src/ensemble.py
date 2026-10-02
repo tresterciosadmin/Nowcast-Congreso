@@ -114,6 +114,42 @@ def _disciplina_csv(disciplina_path=None) -> Path:
         / "disciplina_individual.csv"))
 
 
+def _ficha_al_dia(fecha) -> dict:
+    """La ficha de desvío al día `fecha` (`disciplina.ficha_al_dia`, sobre la canónica de
+    `rutas.CANONICA_CLEAN`, la misma que lee el motor)."""
+    for p in (_root() / "modelo" / "voto_individual" / "src", _root()):
+        if str(p) not in sys.path:
+            sys.path.insert(0, str(p))
+    from disciplina import ficha_al_dia  # type: ignore
+    from rutas import CANONICA_CLEAN  # type: ignore
+    return ficha_al_dia(fecha, CANONICA_CLEAN)
+
+
+def desvio_de_ficha(f: dict, d_blo: float, min_votos: int = MIN_VOTOS_FICHA) -> tuple[float, str]:
+    """La ESCALERA del desvío individual: (desvío, fuente). Extraída de `roster_nominal` el
+    2026-10-01 (auditoría D1.0) para que el harness del censo use la misma copia.
+
+    `f` es la ficha del legislador (las columnas de `disciplina.COLUMNAS_FICHA`; vacía si no
+    tiene), `d_blo` el desvío de su linaje según la postura. Desvío de CONDUCTA (votó distinto
+    ESTANDO PRESENTE), con fallback a la mezclada si falta. Evita que un ausente crónico entre
+    como bisagra en la proyección (URGENTE 1, 2026-08-13)."""
+    import pandas as pd
+    d_rec = f.get("tasa_desvio_reciente_conducta")
+    if d_rec is None or pd.isna(d_rec):
+        d_rec = f.get("tasa_desvio_reciente")
+    d_gl = f.get("tasa_desvio_conducta")
+    if d_gl is None or pd.isna(d_gl):
+        d_gl = f.get("tasa_desvio")
+    n_r, n_v = f.get("n_reciente"), f.get("n_votos")
+    if d_rec is not None and pd.notna(d_rec) and (n_r or 0) >= min_votos:
+        desvio, fuente = float(d_rec), "ficha_reciente"
+    elif d_gl is not None and pd.notna(d_gl) and (n_v or 0) >= min_votos:
+        desvio, fuente = float(d_gl), "ficha_global"
+    else:
+        desvio, fuente = float(d_blo), "bloque"
+    return float(np.clip(desvio, 0.0, 1.0)), fuente
+
+
 def roster_nominal(camara: str, fecha, bloques: list[dict],
                    padron_dir=None, disciplina_path=None,
                    min_votos: int = MIN_VOTOS_FICHA, padron_file=None):
@@ -182,18 +218,26 @@ def roster_nominal(camara: str, fecha, bloques: list[dict],
         por_linaje[str(b.get("bloque"))] = {
             "linea": linea, "desvio": float(b.get("desvio", DESVIO_NEUTRO))}
 
-    # ficha individual (contrato de modelo/voto_individual)
+    # ficha individual (contrato de modelo/voto_individual). POR DEFECTO, LA FICHA AL DÍA
+    # (auditoría 2026-09, D1.0, decisión de Franco): la misma regla de `disciplina.py`, pero
+    # sólo con los votos ANTERIORES a la fecha del nowcast. Hasta el 2026-10-01 se leía
+    # `disciplina_individual.csv`, calculado con toda la historia: un nowcast fechado en el
+    # pasado veía el futuro. Con `disciplina_path` (o la variable DISCIPLINA) se lee ese CSV
+    # tal cual: lo usan los tests con fichas sintéticas.
     fichas = {}
-    dcsv = _disciplina_csv(disciplina_path)
-    if dcsv.exists():
-        di = pd.read_csv(dcsv, encoding="utf-8-sig")
-        for c in ("n_votos", "n_reciente", "n_presente", "tasa_desvio", "tasa_desvio_reciente",
-                  "tasa_desvio_conducta", "tasa_desvio_reciente_conducta"):
-            if c in di.columns:
-                di[c] = pd.to_numeric(di[c], errors="coerce")
-        fichas = di.set_index("legislador_id").to_dict("index")
+    if disciplina_path is not None or os.environ.get("DISCIPLINA"):
+        dcsv = _disciplina_csv(disciplina_path)
+        if dcsv.exists():
+            di = pd.read_csv(dcsv, encoding="utf-8-sig")
+            for c in ("n_votos", "n_reciente", "n_presente", "tasa_desvio", "tasa_desvio_reciente",
+                      "tasa_desvio_conducta", "tasa_desvio_reciente_conducta"):
+                if c in di.columns:
+                    di[c] = pd.to_numeric(di[c], errors="coerce")
+            fichas = di.set_index("legislador_id").to_dict("index")
+        else:
+            logger.warning("sin disciplina_individual (%s): todos al fallback de bloque", dcsv)
     else:
-        logger.warning("sin disciplina_individual (%s): todos al fallback de bloque", dcsv)
+        fichas = _ficha_al_dia(F)
 
     lineas, desvios, filas = [], [], []
     n_rec = n_glob = n_blo = n_sin_linea = 0
@@ -207,27 +251,13 @@ def roster_nominal(camara: str, fecha, bloques: list[dict],
         else:
             linea, d_blo = info["linea"], info["desvio"]
 
-        f = fichas.get(lid) or {}
-        # Desvío de CONDUCTA (votó distinto ESTANDO PRESENTE), con fallback a la
-        # mezclada si la planilla es vieja. Evita que un ausente crónico entre como
-        # bisagra en la proyección (URGENTE 1, 2026-08-13).
-        d_rec = f.get("tasa_desvio_reciente_conducta")
-        if d_rec is None or pd.isna(d_rec):
-            d_rec = f.get("tasa_desvio_reciente")
-        d_gl = f.get("tasa_desvio_conducta")
-        if d_gl is None or pd.isna(d_gl):
-            d_gl = f.get("tasa_desvio")
-        n_r, n_v = f.get("n_reciente"), f.get("n_votos")
-        if d_rec is not None and pd.notna(d_rec) and (n_r or 0) >= min_votos:
-            desvio, fuente = float(d_rec), "ficha_reciente"
+        desvio, fuente = desvio_de_ficha(fichas.get(lid) or {}, d_blo, min_votos)
+        if fuente == "ficha_reciente":
             n_rec += 1
-        elif d_gl is not None and pd.notna(d_gl) and (n_v or 0) >= min_votos:
-            desvio, fuente = float(d_gl), "ficha_global"
+        elif fuente == "ficha_global":
             n_glob += 1
         else:
-            desvio, fuente = float(d_blo), "bloque"
             n_blo += 1
-        desvio = float(np.clip(desvio, 0.0, 1.0))
         lineas.append(linea)
         desvios.append(desvio)
         filas.append({"legislador_id": lid, "legislador": r.get("legislador"),

@@ -20,7 +20,7 @@
 - IC que re-muestrean leyes, no actas (`skill_ic_por_ley`, `dif_brier_ic_por_ley`)
 - la fuga del harness viejo (shift(1) por fila) y cuanto pesaba: `medir_fuga_historia.py` (0,161 -> 0,092 -> 0,074)
 - de donde salia el 11,06% de RECORD_POR_TEMA: `medir_record_por_tema_limpio.py`
-- que el harness mide al motor y no una copia: `tests/test_harness_es_el_motor.py`
+- que el harness mide al motor y no una copia: `tests/test_harness_es_el_motor.py` (desde el 2026-10-01 también en la rama de bloque, con la ficha de desvío AL DÍA del motor: auditoría D1.0; el detalle del censo guarda sus componentes en las columnas `ficha_*`)
 - el record por ORIGEN entre gobiernos (ADR-0033): **archivado en A7** (`coordinacion/archivo/A7-poda-2026-09/evaluacion/baseline/src/`); sus resultados siguen en `outputs/record_por_origen_*.json`
 - las reglas de combinacion de temas de la POSTURA (ADR-0024/0028): `--combinar-temas`, experimento cerrado
 

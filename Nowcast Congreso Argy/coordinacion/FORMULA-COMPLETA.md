@@ -1,7 +1,21 @@
 # La fórmula completa del nowcast
 
-**Última actualización:** 2026-09-28 (ADR-0034, cierre de etapa) · **Regla:** ADR-0015 —
+**Última actualización:** 2026-10-01 (auditoría 2026-09, D1.0: la ficha de desvío al día) · **Regla:** ADR-0015 —
 quien toca el motor actualiza este archivo en el mismo commit.
+
+> **2026-10-01 — Auditoría 2026-09, ítem D1.0 (decisión de Franco: «eliminemos la fuga del sistema»): la ficha de
+> desvío pasa a ser POINT-IN-TIME.** *La función:* `ensemble.roster_nominal` ya no lee `disciplina_individual.csv`
+> —calculado con toda la historia, y con su «reciente» medido desde el último año de cada legislador: un nowcast
+> fechado en el pasado veía el futuro— sino la ficha **al día** de la fecha del nowcast (`disciplina.FichaAlDia`: la
+> misma regla de `indice_por_legislador`, sólo con los votos de fecha anterior; la exclusión del presidente de
+> Diputados también se decide al día; los votos sin fecha quedan afuera). La escalera reciente → global → linaje se
+> extrajo a `ensemble.desvio_de_ficha`, que ahora comparten el motor y el harness. *El motor:* cambia $d_i$, que
+> actúa en la rama de bloque de $P_i$ ($n_i=0$) y en la lealtad de β; en el panel de regresión (2026-06-01) **P no
+> se mueve (0,6132)** —todos los legisladores tienen récord en la era— y cambian 237 de 5.141 campos, todos
+> desvíos del desagregado. El harness del censo pasa a usar la misma ficha (antes ponía el desvío del linaje en la
+> rama de bloque), así que el censo cambia sólo en esa rama (medido en `ESTADO-EJECUCION.md`, D1.0). Ningún
+> contrato cambia de forma; se saca un supuesto implícito: «la ficha de hoy vale para cualquier fecha». *La
+> fórmula:* $d_i$ (§I.00 y fila 2 del tablero) se calcula sobre $\{\text{votos}: t<F\}$.
 
 > **2026-09-28 — FASES 3 y 4 de ADR-0034: se APAGA $\text{rec}_i^{\text{tema}}$ (fila 18) y
 > cambia el número publicado.** *La función:* `RECORD_POR_TEMA` pasa a `0` por defecto; el
@@ -62,7 +76,7 @@ quien toca el motor actualiza este archivo en el mismo commit.
 | # | término | qué hace | estado |
 |---|---|---|---|
 | 1 | $s_\ell$ — share del bloque | de qué lado va el bloque | ✅ **corre** |
-| 2 | $d_i$ — desvío / lealtad | si la persona sigue a su bloque | ✅ **corre** |
+| 2 | $d_i$ — desvío / lealtad | si la persona sigue a su bloque | ✅ **corre** — desde el 2026-10-01 con la ficha **al día** (auditoría D1.0); hasta entonces usaba toda la historia y un nowcast fechado en el pasado veía el futuro |
 | 3 | $\pi_i$ — presencia | si aparece a votar | ✅ **corre** |
 | 4 | $\text{rec}_i$ — récord propio | historial individual ($n_i\ge1$) en la era, condicionado por el origen del proyecto, encogido hacia el bloque | ✅ **corre** — **número publicado desde el 28-09: skill 0,1333** [0,057; 0,198] (IC re-muestreando leyes), era vigente **0,010** [−0,26; 0,25], sobre el censo con el harness que importa el motor e historia estricta (§II.5, ADR-0034). **El 0,1611 anterior estaba inflado por fuga.** El encogimiento sigue ganando con el harness limpio (cortar sin encoger: +2,8% de Brier); el umbral n≥1 vs n≥8 queda en el borde (+0,5%, IC [−0,01; 1,26]) |
 | 5 | umbrales y quórum | reglas del cuerpo | ✅ **corre en mayoría simple** · ⛔ **APAGADO para mayorías especiales desde el 30-09-2026 (auditoría 2026-09, A5, decisión 9):** `nowcast()` con `tipo_mayoria` ≠ SIMPLE devuelve `p_aprobacion = None` y `motivo_sin_numero`, sin simular. Contra resultados oficiales el modelo rinde peor que una moneda en dos tercios (Brier 0,30, 256 actas) y peor que una constante en tres cuartos (0,19) y absoluta (0,10): `coordinacion/QUE-SE-MIDE.md`. El término **no se borró**: los umbrales de §I.2b siguen implementados y los usan las mediciones |
@@ -122,7 +136,9 @@ $$\tilde P_i = \varepsilon_0 + (1-2\varepsilon_0)P_i, \qquad P_i^{(j)} = \sigma\
 
 $n_i$ = emitidos de $i$ en esa ventana; $s_\ell$ = share del linaje proyectado por
 `proyectar_postura` (730 días, `<`, condicionado por origen dentro del mismo gobierno,
-encogido $k=5$); $d_i$ = desvío de la ficha individual (sólo en la rama de bloque y en β).
+encogido $k=5$); $d_i$ = desvío de la ficha individual **al día**: la regla de `disciplina.py` sobre los votos con
+$t<F$ (desde el 2026-10-01, D1.0; antes, toda la historia), con la escalera reciente → global → linaje de
+`ensemble.desvio_de_ficha` (sólo en la rama de bloque y en β).
 **Lo que el censo NO mide:** β (el harness no lo aplica), ε₀ y τη (actúan en la
 simulación, no en $P_i$), la presencia $\pi_i$ (se evalúa sobre votos emitidos) y el paso
 de $P_i$ a la probabilidad de la cámara.

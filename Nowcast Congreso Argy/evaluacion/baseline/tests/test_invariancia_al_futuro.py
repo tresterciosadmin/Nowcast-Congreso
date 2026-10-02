@@ -28,6 +28,14 @@ QUÉ CORRE SIN ARGUMENTOS (lo que corre el CI; ≈ 2 minutos). Muestra DETERMIN�
      la ley. Sobre 8 actas con una acta anterior de su misma ley, al menos 1 tiene que mover alguna P_i (la
      sensibilidad medida en la auditoría fue del 48%: la probabilidad de 0 en 8 es ≈ 0,5%).
   4. LAS FUGAS SE SACAN: los parches van en try/finally y después se repite la prueba estricta sobre 1 acta.
+  5. LA FICHA DE DESVÍO AL DÍA (auditoría 2026-09, D1.0). La ficha sale de otra tabla que los votos (los desvíos
+     por voto de `disciplina.py`), así que `corromper` altera también esa tabla: invierte el desvío de toda fila de
+     fecha >= la del acta o de su misma ley. A la muestra se le suman, por regla fija, las 3 primeras actas
+     evaluables de Diputados después de cada recambio de gobierno (2015-12-10, 2019-12-10, 2023-12-10): ahí nadie
+     tiene récord en la era y TODOS van a la rama de bloque, donde la ficha decide el desvío. Guarda anti-vacuidad:
+     se comparan P_i de la rama de bloque y la corrupción toca filas de la ficha de esos legisladores. CONTROL
+     POSITIVO 3 — fuga SÓLO en la ficha, inyectada en el harness real: `Contexto._ficha_corte` ve el día del acta y
+     no excluye la ley; sobre esas 3 actas, al menos 1 tiene que mover alguna P_i.
 Regla 5 (`REGLAS-borrador.md`): un control tiene que poder fallar. Las secciones 2 y 3 son ese control: si el
 harness dejara de ver la fecha o la ley como lo hace el corte estricto, la sección 1 se pone en rojo; y si la
 prueba dejara de poder ver una fuga, las secciones 2 o 3 se ponen en rojo. Las actas de cada control se eligen por
@@ -38,8 +46,9 @@ MODO DE LA AUDITORÍA (la muestra grande, ≈ 17 min con 150 actas, y el JSON):
     python evaluacion/baseline/tests/test_invariancia_al_futuro.py                       # el test (rápido)
     python evaluacion/baseline/tests/test_invariancia_al_futuro.py --por-era 30 --salida X.json
 
-NO CUBRE: dictámenes ni taxonomías posteriores (β, TEMA_AUTO, RECORD_POR_TEMA no entran al harness), la ficha de
-desvío (`disciplina_individual.csv`, toda la historia) ni la presencia.
+NO CUBRE: dictámenes ni taxonomías posteriores (β, TEMA_AUTO, RECORD_POR_TEMA no entran al harness) ni la
+presencia. La ficha de desvío SÍ, desde D1.0 (sección 5): hasta el 2026-10-01 el harness no la usaba (ponía el
+desvío del linaje) y la del motor tenía toda la historia.
 """
 from __future__ import annotations
 
@@ -67,6 +76,7 @@ SEMILLA = 7
 UMBRAL = 1e-12
 N_CONTROL_FECHA, N_CONTROL_LEY, N_RESTAURADA = 3, 8, 1   # 1ª versión: 4, 8, 2 (no entraba en 4 minutos)
 MIN_COBERTURA = 0.5             # de los votantes de cada acta, cuántos se comparan como mínimo
+RECAMBIOS = ("2015-12-10", "2019-12-10", "2023-12-10")   # D1.0: las actas donde todos van a la rama de bloque
 
 
 # ═══════════════════════════════════════════════════════════════════════ la prueba
@@ -76,6 +86,20 @@ def corromper(votos: pd.DataFrame, fecha: pd.Timestamp, ley: str):
     m = (v["fecha"] >= fecha) | (v["_ley"] == ley)
     v.loc[m, "conducta"] = np.where(v.loc[m, "conducta"] == "AFIRMATIVO", "NEGATIVO", "AFIRMATIVO")
     return v, int(m.sum())
+
+
+def corromper_desvios(ctx: Contexto, fecha: pd.Timestamp, ley: str):
+    """D1.0: lo mismo sobre la tabla de la ficha de desvío (invierte el desvío de toda fila de fecha >= `fecha` o de
+    la ley `ley`). (tabla, máscara de las filas corrompidas). (None, None) si el contexto no tiene ficha."""
+    if ctx.desvios is None:
+        return None, None
+    d = ctx.desvios.copy()
+    acta = d["acta_id"].astype(str)
+    ley_fila = acta.map(ctx.ley_de_acta)
+    ley_fila = ley_fila.where(ley_fila.notna(), "acta:" + acta)
+    m = (d["fecha"] >= fecha) | (ley_fila == ley)
+    d.loc[m, "desvio"] = 1.0 - d.loc[m, "desvio"]
+    return d, m
 
 
 def comparar(a: dict | None, b: dict | None) -> tuple[int, float, int]:
@@ -91,6 +115,7 @@ def _vaciar(ctx: Contexto) -> None:
     """Los cachés del harness no saben qué corte está vigente: hay que vaciarlos al cambiar de escenario."""
     ctx._rec.clear()
     ctx._post.clear()
+    ctx._fic.clear()
     ctx._fecha_cache = None
 
 
@@ -125,6 +150,12 @@ def muestra_rapida(actas: pd.DataFrame) -> pd.DataFrame:
     return pd.concat(partes).sort_values(["fecha", "acta_id"])
 
 
+def primeras_de_cada_recambio(actas: pd.DataFrame) -> pd.DataFrame:
+    """D1.0: la primera acta evaluable de Diputados en o después de cada recambio de gobierno (regla fija)."""
+    dip = actas[actas["camara"] == "diputados"].sort_values(["fecha", "acta_id"])
+    return pd.concat([dip[dip["fecha"] >= pd.Timestamp(r)].head(1) for r in RECAMBIOS]).sort_values(["fecha", "acta_id"])
+
+
 def muestra_de(elegibles: pd.DataFrame, n: int) -> pd.DataFrame:
     """`n` actas de las que cumplen una condición, con semilla fija: la regla no mira el resultado."""
     return elegibles.sort_values(["fecha", "acta_id"]).sample(min(len(elegibles), n), random_state=SEMILLA) \
@@ -141,11 +172,18 @@ def verificar(ctx0: Contexto, muestra: pd.DataFrame, por_acta: dict, historia: s
         f = pd.Timestamp(r.fecha)
         base = ctx0.p_legisladores(r.acta_id, r.camara, f, votantes, historia, False)
         vc, n_cor = corromper(v, f, r.ley)
-        ctx1 = Contexto(vc, ctx0.ley_de_acta, ctx0.origen_map, ctx0.cond, ctx0.conf_area)
+        dc, m_desv = corromper_desvios(ctx0, f, r.ley)
+        ctx1 = Contexto(vc, ctx0.ley_de_acta, ctx0.origen_map, ctx0.cond, ctx0.conf_area, desvios=dc)
         n, mx, nd = comparar(base, ctx1.p_legisladores(r.acta_id, r.camara, f, votantes, historia, False))
+        # D1.0: cuántas P_i de la rama de bloque (donde actúa la ficha) se comparan, y cuántas filas de la ficha de
+        # esos legisladores se corrompieron
+        de_bloque = {str(k) for k, x in (base or {}).items() if x[1] == "bloque"}
+        n_desv_bloque = (int(ctx0.desvios.loc[m_desv, "legislador_id"].astype(str).isin(de_bloque).sum())
+                         if m_desv is not None else 0)
         filas.append({"acta_id": r.acta_id, "era": str(r.era), "camara": r.camara, "fecha": str(f.date()),
                       "votos_corrompidos": n_cor, "n": n, "n_votantes": len(votantes), "max_abs_dP": mx, "n_distintos": nd,
-                      "proyectable": base is not None})
+                      "proyectable": base is not None, "n_bloque": len(de_bloque),
+                      "desvios_corrompidos_de_bloque": n_desv_bloque})
         if progreso and k % 5 == 0:
             print(f"    {progreso}: {k}/{len(muestra)} actas · {time.time() - t0:.0f} s", flush=True)
     return filas
@@ -161,6 +199,17 @@ def fuga_por_la_fecha():
         yield
     finally:
         Contexto._hasta = original
+
+
+@contextmanager
+def fuga_en_la_ficha():
+    """D1.0: la fuga SÓLO en la ficha de desvío: ve el día del acta (y lo posterior a medianoche) y no excluye la ley."""
+    original = Contexto.__dict__["_ficha_corte"]
+    Contexto._ficha_corte = staticmethod(lambda fecha, ley, historia: (pd.Timestamp(fecha) + pd.Timedelta(days=1), None))
+    try:
+        yield
+    finally:
+        Contexto._ficha_corte = original
 
 
 @contextmanager
@@ -199,10 +248,11 @@ def test(fallos: list[str]) -> int:
           f"{principal['era'].nunique()} eras, {principal['camara'].nunique()} cámaras")
     sel_fecha = muestra_de(actas[actas["otras_el_mismo_dia"]], N_CONTROL_FECHA)
     sel_ley = muestra_de(actas[actas["ley_con_acta_anterior"]], N_CONTROL_LEY)
-    todas = (pd.concat([principal, sel_fecha, sel_ley]).drop_duplicates("acta_id")
+    sel_ficha = primeras_de_cada_recambio(actas)
+    todas = (pd.concat([principal, sel_fecha, sel_ley, sel_ficha]).drop_duplicates("acta_id")
              .sort_values(["fecha", "acta_id"]))
     print(f"  {len(principal)} estratificadas + {len(sel_fecha)} con otras actas el mismo día + {len(sel_ley)} con "
-          f"acta anterior de su ley = {len(todas)} actas distintas")
+          f"acta anterior de su ley + {len(sel_ficha)} primeras de un recambio = {len(todas)} actas distintas")
     filas = verificar(ctx0, todas, por_acta, "estricta", "estricta")
     movidas = [f for f in filas if f["n_distintos"] > 0]
     check(not movidas, "LA HISTORIA ESTRICTA VE EL FUTURO O LA MISMA LEY: corromperlos mueve P_i en "
@@ -219,6 +269,12 @@ def test(fallos: list[str]) -> int:
           f"{min(f['n'] / f['n_votantes'] for f in filas):.0%} de los votantes), "
           f"max|dP| = {max(f['max_abs_dP'] for f in filas):.3g} "
           f"({time.time() - t0:.0f} s desde el inicio)")
+    n_bloque = sum(f["n_bloque"] for f in filas)
+    n_desv = sum(f["desvios_corrompidos_de_bloque"] for f in filas)
+    print(f"  ficha al día (D1.0): {n_bloque} P_i de la rama de bloque comparadas; {n_desv} filas de su ficha "
+          "corrompidas")
+    check(n_bloque > 0 and n_desv > 0, "la prueba no compara ninguna P_i de la rama de bloque o no corrompe su "
+          f"ficha ({n_bloque} P_i, {n_desv} filas): la ficha al día no se está probando")
 
     # 2. control positivo: fuga por la fecha
     print("\n2. CONTROL POSITIVO — fuga por la FECHA inyectada en `Contexto._hasta`: la prueba la tiene que ver")
@@ -244,6 +300,18 @@ def test(fallos: list[str]) -> int:
           f"la fuga por la MISMA LEY no se detectó en ninguna de {len(filas)} actas: la prueba no puede ver la ley")
     print(f"  detectada en {detectadas} de {len(filas)} actas (sensibilidad de la auditoría: 48%)")
 
+    # 3b. control positivo: fuga sólo en la ficha de desvío (D1.0)
+    print("\n3b. CONTROL POSITIVO — fuga SÓLO en la ficha de desvío, inyectada en `Contexto._ficha_corte`")
+    _vaciar(ctx0)
+    with fuga_en_la_ficha():
+        filas = verificar(ctx0, sel_ficha, por_acta, "estricta", "fuga en la ficha")
+    _vaciar(ctx0)
+    detectadas = sum(1 for f in filas if f["n_distintos"] > 0)
+    check(len(filas) == len(RECAMBIOS) and detectadas >= 1,
+          f"la fuga en la FICHA no se detectó en ninguna de {len(filas)} actas: la prueba no puede ver la ficha")
+    print(f"  detectada en {detectadas} de {len(filas)} actas "
+          f"(max|dP| {max(f['max_abs_dP'] for f in filas):.3g})")
+
     # 4. las fugas se sacaron
     print("\n4. las fugas se sacaron: la prueba estricta vuelve a dar cero")
     filas = verificar(ctx0, principal.head(N_RESTAURADA), por_acta, "estricta")
@@ -267,7 +335,8 @@ def auditoria(por_era: int, salida: Path) -> int:
         f = pd.Timestamp(r.fecha)
         base = ctx0.p_legisladores(r.acta_id, r.camara, f, votantes, "estricta", False)
         vc, n_cor = corromper(v, f, r.ley)
-        ctx1 = Contexto(vc, ctx0.ley_de_acta, ctx0.origen_map, ctx0.cond, ctx0.conf_area)
+        dc, _m = corromper_desvios(ctx0, f, r.ley)
+        ctx1 = Contexto(vc, ctx0.ley_de_acta, ctx0.origen_map, ctx0.cond, ctx0.conf_area, desvios=dc)
         fila = {"acta_id": r.acta_id, "era": str(r.era), "camara": r.camara, "fecha": str(f.date()),
                 "votos_corrompidos": n_cor,
                 "n_mismo_dia_otras_actas": int(((v["fecha"] == f) & (v["acta_id"] != r.acta_id)).sum()),

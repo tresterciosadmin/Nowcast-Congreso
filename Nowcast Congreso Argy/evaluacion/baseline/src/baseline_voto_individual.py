@@ -97,7 +97,7 @@ HISTORIA_DEFAULT = "estricta"
 sys.path.insert(0, str(next(d for d in Path(__file__).resolve().parents
                             if (d / "rutas.py").is_file())))
 from rutas import RAIZ as REPO  # noqa: E402
-from rutas import PROYECTO_ORIGEN_POR_ACTA  # noqa: E402
+from rutas import CANONICA_CLEAN, PROYECTO_ORIGEN_POR_ACTA  # noqa: E402
 from definiciones import caracter_de_dictamen, era_de  # noqa: E402
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from censo_estadisticos import (dif_brier_ic_desde_sumas,  # noqa: E402
@@ -105,6 +105,14 @@ from censo_estadisticos import (dif_brier_ic_desde_sumas,  # noqa: E402
 sys.path.insert(0, str(REPO / "variables" / "bloque" / "src"))
 sys.path.insert(0, str(REPO / "modelo" / "ensemble" / "src"))
 import nowcast_puertas as NP  # noqa: E402
+from ensemble import desvio_de_ficha  # noqa: E402  (la escalera del desvío: una sola copia, la del motor)
+sys.path.insert(0, str(REPO / "modelo" / "voto_individual" / "src"))
+from disciplina import COLUMNAS_FICHA, FichaAlDia, tabla_desvios_al_dia  # noqa: E402  (la ficha al día, D1.0)
+
+# Lo que el detalle del censo guarda de la ficha de cada voto (sólo la variante principal):
+# las seis columnas de la ficha al día y el desvío del linaje de la postura. Con eso, `MIN_HIST`
+# y `MIN_VOTOS_FICHA` se recalculan sin correr el censo (fase D, D1).
+COLUMNAS_FICHA_DETALLE = COLUMNAS_FICHA + ("desvio_linaje",)
 
 # Lo importan los estimar_*.py viejos; es la constante del motor, no una copia.
 MIN_HIST_INDIVIDUAL = NP.MIN_HIST_INDIVIDUAL
@@ -462,7 +470,8 @@ class Contexto:
     pasarle todo — con el guard de era apagado se le pasa la cámara entera."""
 
     def __init__(self, votos: pd.DataFrame, leyes: dict, origen_map: dict, cond,
-                 conf_area: dict, combinar_temas: str | None = None, era_desde: str | None = None):
+                 conf_area: dict, combinar_temas: str | None = None, era_desde: str | None = None,
+                 desvios: pd.DataFrame | None = None):
         if era_desde is not None and not NP.GUARD_ERA:
             raise ValueError("`era_desde` (brazo sin corte por era) necesita GUARD_ERA prendido: con GUARD_ERA=0 en el "
                              "entorno el motor ya fija la fecha en ERA_FIJA y el brazo mediría otra cosa")
@@ -488,9 +497,15 @@ class Contexto:
         self.conf_area = conf_area
         self.combinar_temas = combinar_temas
         self.era_desde = era_desde        # None = el motor de hoy; una fecha = el récord acumula desde ahí
+        # LA FICHA AL DÍA (D1.0): la tabla de desvíos por voto de `disciplina.py`. Sin tabla
+        # (contextos sintéticos de los tests), la escalera cae al desvío del linaje para todos,
+        # que es lo que hace el motor con un legislador sin ficha.
+        self.desvios = desvios
+        self.ficha = FichaAlDia(desvios, self.ley_de_acta) if desvios is not None else None
         self._fecha_cache = None
         self._rec: dict = {}
         self._post: dict = {}
+        self._fic: dict = {}
         self.avisos = {"record_sin_votos_en_la_era": 0, "postura_saltada": 0}
 
     @classmethod
@@ -501,7 +516,7 @@ class Contexto:
         opa = pd.read_parquet(PROYECTO_ORIGEN_POR_ACTA)            # lo mismo que `nowcast`
         origen_map = dict(zip(opa["acta_id"].astype(str), opa["origen"]))
         return cls(votos, ley_por_acta(REPO), origen_map, cond, cargar_confianza_por_area(),
-                   combinar_temas, era_desde)
+                   combinar_temas, era_desde, desvios=tabla_desvios_al_dia(CANONICA_CLEAN))
 
     # ── lo que decide el harness: qué votos existían ──
     def _base(self, camara: str, hasta: pd.Timestamp) -> pd.DataFrame:
@@ -533,7 +548,30 @@ class Contexto:
         if fecha != self._fecha_cache:
             self._rec.clear()
             self._post.clear()
+            self._fic.clear()
             self._fecha_cache = fecha
+
+    @staticmethod
+    def _ficha_corte(fecha: pd.Timestamp, ley: str, historia: str) -> tuple[pd.Timestamp, str | None]:
+        """Qué ve la ficha de desvío: el mismo corte que el récord (`_hasta`) y, con historia
+        estricta, sin la misma ley (`_sin_ley`). Un método propio para que la invariancia al
+        futuro pueda inyectarle una fuga sólo a la ficha (control positivo de D1.0)."""
+        return Contexto._hasta(fecha, historia), (ley if historia == "estricta" else None)
+
+    def fichas(self, fecha, ley, historia, legisladores) -> dict:
+        """{legislador_id: ficha al día o None} de los `legisladores` de un acta (ver
+        `disciplina.FichaAlDia`). Se calcula sólo para los que faltan en el caché del corte."""
+        if self.ficha is None:
+            return {}
+        self._vaciar_si_cambia(fecha)
+        hasta, sin_ley = self._ficha_corte(fecha, ley, historia)
+        cache = self._fic.setdefault((hasta, sin_ley), {})
+        faltan = [str(x) for x in legisladores if str(x) not in cache]
+        if faltan:
+            nuevas = self.ficha.al(hasta, faltan, excluir_ley=sin_ley)
+            for x in faltan:
+                cache[x] = nuevas.get(x)
+        return cache
 
     def record(self, camara, fecha, ley, origen, areas, historia, record_por_tema):
         self._vaciar_si_cambia(fecha)
@@ -601,10 +639,12 @@ class Contexto:
 
     def p_legisladores(self, acta_id, camara, fecha, votantes: pd.DataFrame,
                        historia=HISTORIA_DEFAULT, record_por_tema=None) -> dict | None:
-        """{legislador_id: (p, fuente, share, desvio, record, n_emit)} para los
+        """{legislador_id: (p, fuente, share, desvio, record, n_emit, ficha)} para los
         `votantes` de un acta (columnas legislador_id, bloque_linaje). Es la P_i del
-        motor; el harness sólo eligió la historia. None si la postura no se pudo
-        proyectar (se cuenta)."""
+        motor; el harness sólo eligió la historia. `desvio` es el de la escalera del motor
+        (`ensemble.desvio_de_ficha`, con la ficha AL DÍA del acta: D1.0) y `ficha` trae sus
+        componentes y el desvío del linaje (para recalcular `MIN_HIST` y `MIN_VOTOS_FICHA`
+        sin correr el censo). None si la postura no se pudo proyectar (se cuenta)."""
         acta_id = str(acta_id)
         fecha = pd.Timestamp(fecha)
         ley = self.ley_de_acta.get(acta_id, "acta:" + acta_id)
@@ -615,6 +655,7 @@ class Contexto:
         if post is None:
             return None
         ind = self.record(camara, fecha, ley, origen, areas, historia, usar_tema)
+        fic = self.fichas(fecha, ley, historia, votantes["legislador_id"])
         out = {}
         for lid, lin in zip(votantes["legislador_id"], votantes["bloque_linaje"]):
             p = post.get(str(lin))
@@ -622,10 +663,12 @@ class Contexto:
                 continue
             rec = ind.get((camara, lid))
             p_rec, _n, pres, n_emit = rec if rec else (None, 0, 1.0, 0)
-            pf = NP.perfil_legislador(p["_share_afirm"], p["desvio"], record=p_rec,
+            f = fic.get(str(lid)) or {}
+            d_i, _fuente_d = desvio_de_ficha(f, p["desvio"])
+            pf = NP.perfil_legislador(p["_share_afirm"], d_i, record=p_rec,
                                       n_emitidos=n_emit, presencia=pres)
             out[lid] = (pf["p_afirma_si_vota"], pf["fuente_direccion"], p["_share_afirm"],
-                        p["desvio"], p_rec, n_emit)
+                        d_i, p_rec, n_emit, {**f, "desvio_linaje": p["desvio"]})
         return out
 
 
@@ -707,11 +750,14 @@ def correr(camara_filtro: str = "", muestra: int = 0, seed: int = 7, desde: str 
             cols["ley"].append(ctx.ley_de_acta.get(str(a.acta_id)))
             cols["origen"].append(_norm_cond(ctx.origen_map.get(str(a.acta_id))))
             for i, (nom, x) in enumerate(zip(nombres, res)):
-                p, fuente, share, desvio, rec, n_emit = x[lid]
+                p, fuente, share, desvio, rec, n_emit, ficha = x[lid]
                 pre = "" if i == 0 else f"__{nom}"
                 for c, val in (("p", p), ("fuente", fuente), ("share", share),
                                ("desvio", desvio), ("record", rec), ("n_prev", n_emit)):
                     extra.setdefault(c + pre, []).append(val)
+                if i == 0:   # los componentes de la ficha, sólo de la principal (D1.0)
+                    for c in COLUMNAS_FICHA_DETALLE:
+                        extra.setdefault(f"ficha_{c}", []).append(ficha.get(c, np.nan))
     d = pd.DataFrame({**cols, **extra})
     if d.empty:
         raise RuntimeError("no se evaluo ningun voto; revisa filtros y contratos")

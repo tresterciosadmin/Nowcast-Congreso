@@ -21,6 +21,7 @@
 - separar INDISCIPLINA de AUSENTISMO (son dos tasas distintas)
 - el indice de disciplina por legislador y por periodo; presidentes de camara excluidos
 - por que el desvio tiene piso (0,02) y no techo: ningun legislador llega a 1,0 (max observado 0,944)
+- la ficha de desvío AL DÍA (point-in-time, auditoría 2026-09 D1.0): `disciplina.FichaAlDia` / `ficha_al_dia(fecha)`, la misma regla del CSV sólo con los votos anteriores a la fecha; es la que usa el motor (`ensemble.roster_nominal`) y el harness del censo. El CSV `disciplina_individual.csv` es la ficha de HOY (toda la historia) y ya no entra al número (`tests/test_ficha_al_dia.py`)
 
 <!-- Las dos cosas de arriba las levanta `.mapa/indexar.py` al MAPA.md de la
      raiz: el `Resumen:` va a la columna "Que es" y las pistas al router
@@ -29,7 +30,7 @@
 ## Contrato
 - **Entradas:** `datos/canonica/data/clean/{votos_resuelto,actas_canonico}.parquet`
 - **Salida (contrato estable):** en `outputs/`:
-  - `disciplina_individual.csv` — índice por legislador (tasas global / disputadas / tramo reciente)
+  - `disciplina_individual.csv` — índice por legislador (tasas global / disputadas / tramo reciente), calculado con TODA la historia: es la ficha de hoy. **Desde el 2026-10-01 el motor no lo lee** (usa la ficha al día, `FichaAlDia`, sobre la canónica); lo siguen leyendo `agregador.backtest`, `variables/legislador` y los estimadores del ICG
   - `disciplina_por_periodo.csv` — legislador × período parlamentario × cámara (la unidad de análisis)
   - `disciplina_por_anio.csv` — legislador × año
   - `desvios_por_voto.parquet` — una fila por VOTO (conducta, línea, método, desvío): contrato para la columna `desvio` de datos/export

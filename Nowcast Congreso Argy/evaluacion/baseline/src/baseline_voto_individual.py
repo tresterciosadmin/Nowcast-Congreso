@@ -31,12 +31,14 @@ corta por fecha (`hasta`, estricto); el harness saca además los votos de la MIS
 test compara el harness contra `nowcast()` legislador por legislador
 (tests/test_harness_es_el_motor.py): si vuelven a divergir, falla.
 
-Dos diferencias con `nowcast()` que quedan, declaradas:
+Una diferencia con `nowcast()` que queda, declarada:
   1. las áreas del proyecto (para RECORD_POR_TEMA) salen de la clasificación del ACTA
      (`todas_ids` + confianza del registro); en producción, de `proyecto_taxonomias`.
-  2. en la rama de BLOQUE (sin ningún voto en la era: 0,3% de los votos) el desvío es el
-     del linaje; `nowcast` usa la ficha individual de `disciplina_individual.csv`, que no
-     es walk-forward (se calcula con toda la historia) y no se puede usar en un backtest.
+  (Había una segunda, resuelta el 2026-10-02 en la auditoría, ítem D1.0: en la rama de
+  BLOQUE —sin ningún voto en la era y el origen: 4,7% de los votos del censo— el harness
+  ponía el desvío del linaje y `nowcast` la ficha de `disciplina_individual.csv`, calculada
+  con toda la historia. Ahora los dos usan la ficha AL DÍA, `disciplina.FichaAlDia`, con la
+  misma escalera, `ensemble.desvio_de_ficha`; el harness le saca además la misma ley.)
 Y dos términos del motor que el harness NO mide: β del dictamen (prendido desde el
 14-09) y ε0+τη (actúan en la simulación, no en P_i).
 

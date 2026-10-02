@@ -1,5 +1,36 @@
 # Prompts de arranque para conversaciones nuevas (pegar tal cual)
 
+## Reanudación en D1 (generado el 2026-10-02, al cerrar D1.0)
+
+> Esta sección reemplaza a la de abajo para seguir la fase D desde D1. **Vale la de abajo en todo lo que ésta no cambia:** el alcance cerrado, cómo se trabaja, la PC (Windows, OneDrive, CRLF, el pull manual de los bots con su receta), los modelos y el revisor ciego. Si algo difiere del protocolo de la fase D en `ESTADO-EJECUCION.md`, vale el protocolo.
+
+---
+
+Estoy retomando el proyecto *Nowcast Congreso* (repo `Nowcast Congreso`, carpeta de trabajo `Nowcast Congreso Argy`) en **MODO AUDITORÍA**, **fase D en curso**. El protocolo de la fase está escrito, revisado por un revisor ciego y commiteado, y **D1.0 está hecho** (la ficha de desvío point-in-time en el motor y en el censo; lote `97cc229`, `2fb23c4`, `c9a8e76` y su cierre documental). Hoy toca **D1: los parámetros de $P_i$**.
+
+**Leé, en este orden, antes de hacer nada:** (1) `CLAUDE.md`, el bloque MODO AUDITORÍA; (2) en `coordinacion/AUDITORIA-2026-09/ESTADO-EJECUCION.md`: la tabla de la fase D, **«Fase D — protocolo walk-forward y criterios pre-registrados» completo** —es la regla de esta fase: §1 el walk-forward (reajuste anual con ventana creciente; Diputados desde 2006 y Senado desde 2007), §3 V0 y los contrastes, §4 el panel primario, §5 IC por ley y por mes y Holm sobre p\* = máx(p_ley; p_mes), margen ±1%, §6 el árbol del veredicto (**el veto E va en el paso 3, antes de cerrar A o B**, y la regla por término), §7 brazos y **un lote por ítem**, §8 la tabla por ítem (D1 tiene m = 7), §10 el §9.4 primario anidado— y **«D1.0 — la ficha de desvío point-in-time»** (qué cambió, sus 14 desvíos y la tabla de re-anclas); (3) `coordinacion/QUE-SE-MIDE.md` (actualizado con D1.0: es el «valor de hoy»); (4) `AUDITORIA-INTEGRAL-2026-09.md` §9.4, §9.9 y §9.10, y `05-consolidacion-y-anclaje.md` §5.3; (5) `PENDIENTES-POST-AUDITORIA.md`.
+
+**Mis decisiones de la fase D (2026-10-01; están en el protocolo):** (1) ficha de desvío point-in-time, «eliminemos la fuga del sistema» — hecho en D1.0; (2) **un lote de cambios al motor por ítem**: cada ítem cierra con su lote y la re-anclada completa, y el siguiente se mide contra el motor real; (3) δ en P_i, re-estimado y aplicado detrás de bandera (D3); (4) ψ implementado en el motor detrás de bandera apagada (D4).
+
+**Primera acción de D1:** escribir **su pre-registro** —las grillas del §8 (k del récord, `MIN_HIST`, `MIN_VOTOS_FICHA`, k y ventana de la postura, granularidad del origen, guard de era), el panel primario de cada uno medido con el control determinístico del §4 **antes** de mirar ningún Δ, el signo y el orden de magnitud esperados de cada contraste (los pide la alarma F) y los controles de cada brazo—, pasarlo por el `advisor`, commitearlo, y recién entonces medir. Cada veredicto lo revisa un subagente Opus que no ve mi veredicto (§11 del protocolo), de a uno.
+
+**Lo que dejó D1.0 (herramientas y trampas):**
+- **El censo vigente:** `evaluacion/baseline/outputs/censo_detalle_2026-10-02.parquet` (43 MB, ignorado por git: **no se borra**) y sus estadísticos `censo_estadisticos_2026-10-02.json` (en git). `censo_estadisticos.DETALLE`/`ESTADISTICOS` apuntan ahí. El del 28-09 (`DETALLE_2026_09_28`, `ESTADISTICOS_2026_09_28`) se conserva como **continuidad**. **El patrón de re-anclaje:** lo publicado se comprueba sobre su censo; lo vigente (`ANCLA_VIGENTE` de C1, `ANCLA_DELTA_VIGENTE` y `ANCLA_BANDA_VIGENTE` de C2, `ANCLA` de C3, `ANCLA_MOTOR` de B3, `ESPERADO_HOY` de A2) sobre el censo del motor de hoy, y se re-ancla a propósito en cada lote, citando la medición.
+- **El k del récord, `MIN_HIST` y `MIN_VOTOS_FICHA` se barren SIN censo:** el detalle guarda `share`, `record`, `n_prev` y las columnas `ficha_*` (las seis de la ficha y el desvío del linaje); `coordinacion/AUDITORIA-2026-09/medir_ficha_al_dia.py` tiene la recomposición vectorizada (`escalera`, `recalcular`), con su control (max|Δp| = 0 con los valores de hoy).
+- **El brazo del guard ya está re-corrido sobre el V0 de D1** (`censo_estadisticos_sin_corte_era_2026-10-02.json`; el detalle, `censo_detalle_sin_corte_era_2026-10-02.parquet`, ignorado): primario +3,23% [−2,33; +9,72], NO SE DISTINGUE. Es el insumo del guard en D1 (el compuesto WF y el contraste fijo de la simplificación).
+- **En el censo nuevo `estricta__general` es la variante PRINCIPAL:** sus columnas no llevan sufijo (sólo `p__estricta__general` es alias). El alias de `p` se deduce (`censo_estadisticos._alias_de_p`) y el brazo lee los dos formatos (`medir_sin_corte_por_era.leer_base`). Un script que pida `share__estricta__general` en el censo nuevo falla: usá `leer_base` o las columnas de la principal.
+- **Los brazos de D1 que corren censo** (k y ventana de la postura, origen por lado) son un parámetro del harness que viaja como argumento (la plantilla `era_desde`; el `Contexto` ya lleva `desvios=` y `_ficha_corte`), con B2 sobre cada brazo (≈ 3 min). Tiempos de hoy: un censo de brazo ≈ 16 min; el censo completo, 55 min; `perturbar_panel --medir`, 70–100 min (cada corrida arma la tabla de la ficha).
+- **Un dato para `MIN_VOTOS_FICHA`:** en la rama de bloque del **Senado** la ficha al día predice **peor** que el desvío del linaje que usaba el harness: +5,4% [+2,8; +9,0], con IC por ley y por mes; global fuera de muestra −0,08% [−0,37; +0,11].
+- **`test_defaults_fijados` deja un AVISO (no rompe)** por `baseline_voto_individual.py` y `censo_estadisticos.py`, que cambiaron después de la medición de `afecta_panel` y no se cargan en el panel: se limpia con la `perturbar_panel.py --medir` del lote de D1.
+- **La trampa del heredoc volvió a aparecer:** un `\n` dentro de un parche escrito por heredoc llegó como salto de línea real y rompió un test (se vio antes de commitear). Para texto con barras invertidas, la herramienta de archivos.
+- **La PC se suspendió dos veces durante corridas largas** (una B2 marcó 381 min y `afecta_panel` 701): las corridas se pausan, no se pierden. **D1 son unos 9 censos de brazo, una perturbación y un censo final: antes de lanzarlos dejá la PC sin suspenderse.**
+
+**Estado al cerrar D1.0:** `HEAD` = el commit de cierre documental de D1.0 (o posterior, con commits de los bots); `git status` limpio; `python -m pytest tests/ datos/proyectos/tests -q` → 54 pasan; los 65 `test_*.py` en 0 (≈ 9 min); checkout limpio de `c9a8e76` con Python 3.11 y los pines en verde (53 pasan y 1 se saltea; 65 en 0). **Falta mi confirmación en *Actions*.**
+
+**Empezá verificando** que `git status` esté limpio y que la suite dé 54 pasan, avisame si algo del estado del repo no coincide con `ESTADO-EJECUCION.md`, y **después escribí el pre-registro de D1**.
+
+---
+
 ## Reanudación desde la fase D (generado el 2026-10-01, al cerrar la fase C)
 
 > Esta sección reemplaza a las de abajo para seguir desde la fase D. Si algo difiere del informe (`AUDITORIA-INTEGRAL-2026-09.md`, §9), vale el informe. Cuando se cierre la fase D, se genera el de la fase E de la misma manera. **Incorpora mis dos decisiones del 2026-10-01 (el guard de era se resuelve en D1; el modelo principal de la fase D es Opus): ver «Decisiones mías ya tomadas» más abajo. La fase C está confirmada en *Actions* (todo verde).**

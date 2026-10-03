@@ -327,10 +327,14 @@ def matriz(par: str, valores: list, con_y: bool) -> tuple[pd.DataFrame, dict]:
             b = _leer(detalle_brazo(nombre_brazo(par, v)), [c for c in base_cols])
         lab = etiqueta(v)
         b = b.rename(columns={c: f"{c}::{lab}" for c in b.columns if c not in keys})
-        antes = len(m)
+        # contra V0 (no contra la intersección acumulada): qué votos de V0 le faltan al brazo y cuáles agrega
+        en_v0 = pd.MultiIndex.from_frame(v0[keys])
+        en_b = pd.MultiIndex.from_frame(b[keys])
+        faltan = ~en_v0.isin(en_b)
+        ctl[f"brazo {lab}"] = {"votos_del_brazo": int(len(b)), "votos_de_v0_que_le_faltan": int(faltan.sum()),
+                               "leyes_de_v0_que_le_faltan": int(ley_de(v0[faltan]).nunique()),
+                               "votos_que_agrega_sobre_v0": int((~en_b.isin(en_v0)).sum())}
         m = m.merge(b, on=keys, how="inner", validate="1:1")
-        ctl[f"brazo {lab}"] = {"votos_del_brazo": int(len(b)), "votos_que_caen_de_la_interseccion": int(antes - len(m)),
-                               "votos_que_el_brazo_agrega": int(len(b) - len(m))}
         if con_y:
             ctl[f"brazo {lab}"]["y_identico"] = bool((m[f"y::{lab}"] == m["y"]).all())
     ctl["votos_interseccion"] = int(len(m))

@@ -1,0 +1,458 @@
+{
+ "formato": 1,
+ "generador": "evaluacion/baseline/src/medir_d1_parametros_pi.py",
+ "generado": "2026-10-03",
+ "lee_y": false,
+ "detalle_v0": "censo_detalle_2026-10-02.parquet",
+ "parametros": {
+  "k_record": {
+   "grilla": [
+    "0",
+    "1",
+    "2.5",
+    "5",
+    "10",
+    "20",
+    "40"
+   ],
+   "v0": "5",
+   "controles_del_brazo": {
+    "votos_v0": 691845,
+    "control_positivo_max_abs_dp": 0.0
+   },
+   "donde_no_puede_actuar": {
+    "0": {
+     "votos_distintos": 643919,
+     "votos_distintos_oos": 541021,
+     "fuera_de_la_rama_del_record": 0
+    },
+    "1": {
+     "votos_distintos": 643924,
+     "votos_distintos_oos": 541022,
+     "fuera_de_la_rama_del_record": 0
+    },
+    "2.5": {
+     "votos_distintos": 643921,
+     "votos_distintos_oos": 541023,
+     "fuera_de_la_rama_del_record": 0
+    },
+    "10": {
+     "votos_distintos": 643919,
+     "votos_distintos_oos": 541021,
+     "fuera_de_la_rama_del_record": 0
+    },
+    "20": {
+     "votos_distintos": 643923,
+     "votos_distintos_oos": 541025,
+     "fuera_de_la_rama_del_record": 0
+    },
+    "40": {
+     "votos_distintos": 643923,
+     "votos_distintos_oos": 541025,
+     "fuera_de_la_rama_del_record": 0
+    },
+    "80": {
+     "votos_distintos": 643920,
+     "votos_distintos_oos": 541022,
+     "fuera_de_la_rama_del_record": 0
+    }
+   },
+   "panel_grilla_base": {
+    "votos_oos": 541027,
+    "fraccion_del_oos": 0.9388,
+    "leyes": 2941,
+    "diputados": 430908,
+    "senado": 110119,
+    "era_vigente": 87749,
+    "votos_todos_los_anios": 643929,
+    "oos_total": 576270
+   },
+   "panel_con_extension": {
+    "valores": [
+     "80"
+    ],
+    "votos_oos": 541027,
+    "fraccion_del_oos": 0.9388,
+    "leyes": 2941,
+    "diputados": 430908,
+    "senado": 110119,
+    "era_vigente": 87749,
+    "votos_todos_los_anios": 643929,
+    "oos_total": 576270
+   }
+  },
+  "min_hist": {
+   "grilla": [
+    "1",
+    "2",
+    "4",
+    "8",
+    "16"
+   ],
+   "v0": "1",
+   "controles_del_brazo": {
+    "votos_v0": 691845,
+    "control_positivo_max_abs_dp": 0.0
+   },
+   "donde_no_puede_actuar": {
+    "2": {
+     "votos_distintos": 12417,
+     "votos_distintos_oos": 11766,
+     "con_n_prev_mayor_o_igual_al_valor_o_en_bloque": 0
+    },
+    "4": {
+     "votos_distintos": 27429,
+     "votos_distintos_oos": 25066,
+     "con_n_prev_mayor_o_igual_al_valor_o_en_bloque": 0
+    },
+    "8": {
+     "votos_distintos": 58864,
+     "votos_distintos_oos": 52683,
+     "con_n_prev_mayor_o_igual_al_valor_o_en_bloque": 0
+    },
+    "16": {
+     "votos_distintos": 103155,
+     "votos_distintos_oos": 86490,
+     "con_n_prev_mayor_o_igual_al_valor_o_en_bloque": 0
+    },
+    "32": {
+     "votos_distintos": 170680,
+     "votos_distintos_oos": 143398,
+     "con_n_prev_mayor_o_igual_al_valor_o_en_bloque": 0
+    }
+   },
+   "panel_grilla_base": {
+    "votos_oos": 86490,
+    "fraccion_del_oos": 0.1501,
+    "leyes": 1846,
+    "diputados": 68047,
+    "senado": 18443,
+    "era_vigente": 11514,
+    "votos_todos_los_anios": 103155,
+    "oos_total": 576270
+   },
+   "panel_con_extension": {
+    "valores": [
+     "32"
+    ],
+    "votos_oos": 143398,
+    "fraccion_del_oos": 0.2488,
+    "leyes": 2247,
+    "diputados": 111643,
+    "senado": 31755,
+    "era_vigente": 25641,
+    "votos_todos_los_anios": 170680,
+    "oos_total": 576270
+   }
+  },
+  "min_votos_ficha": {
+   "grilla": [
+    "5",
+    "10",
+    "20",
+    "40",
+    "80"
+   ],
+   "v0": "20",
+   "controles_del_brazo": {
+    "votos_v0": 691845,
+    "control_positivo_max_abs_dp": 0.0
+   },
+   "donde_no_puede_actuar": {
+    "5": {
+     "votos_distintos": 9755,
+     "votos_distintos_oos": 7385,
+     "en_la_rama_del_record": 0
+    },
+    "10": {
+     "votos_distintos": 4756,
+     "votos_distintos_oos": 4684,
+     "en_la_rama_del_record": 0
+    },
+    "40": {
+     "votos_distintos": 1175,
+     "votos_distintos_oos": 1040,
+     "en_la_rama_del_record": 0
+    },
+    "80": {
+     "votos_distintos": 3647,
+     "votos_distintos_oos": 3487,
+     "en_la_rama_del_record": 0
+    },
+    "2": {
+     "votos_distintos": 13265,
+     "votos_distintos_oos": 10711,
+     "en_la_rama_del_record": 0
+    },
+    "160": {
+     "votos_distintos": 6811,
+     "votos_distintos_oos": 6616,
+     "en_la_rama_del_record": 0
+    }
+   },
+   "panel_grilla_base": {
+    "votos_oos": 10246,
+    "fraccion_del_oos": 0.0178,
+    "leyes": 365,
+    "diputados": 9246,
+    "senado": 1000,
+    "era_vigente": 6078,
+    "votos_todos_los_anios": 12729,
+    "oos_total": 576270
+   },
+   "panel_con_extension": {
+    "valores": [
+     "2",
+     "160"
+    ],
+    "votos_oos": 16630,
+    "fraccion_del_oos": 0.0289,
+    "leyes": 463,
+    "diputados": 14637,
+    "senado": 1993,
+    "era_vigente": 10888,
+    "votos_todos_los_anios": 19325,
+    "oos_total": 576270
+   }
+  },
+  "k_postura": {
+   "grilla": [
+    "1",
+    "2.5",
+    "5",
+    "10",
+    "20"
+   ],
+   "v0": "5",
+   "controles_del_brazo": {
+    "votos_v0": 691845,
+    "brazo 1": {
+     "votos_del_brazo": 691845,
+     "votos_de_v0_que_le_faltan": 0,
+     "leyes_de_v0_que_le_faltan": 0,
+     "votos_que_agrega_sobre_v0": 0
+    },
+    "brazo 2.5": {
+     "votos_del_brazo": 691845,
+     "votos_de_v0_que_le_faltan": 0,
+     "leyes_de_v0_que_le_faltan": 0,
+     "votos_que_agrega_sobre_v0": 0
+    },
+    "brazo 10": {
+     "votos_del_brazo": 691845,
+     "votos_de_v0_que_le_faltan": 0,
+     "leyes_de_v0_que_le_faltan": 0,
+     "votos_que_agrega_sobre_v0": 0
+    },
+    "brazo 20": {
+     "votos_del_brazo": 691845,
+     "votos_de_v0_que_le_faltan": 0,
+     "leyes_de_v0_que_le_faltan": 0,
+     "votos_que_agrega_sobre_v0": 0
+    },
+    "votos_interseccion": 691845,
+    "leyes_que_caen": 0
+   },
+   "donde_no_puede_actuar": {
+    "1": {
+     "votos_distintos": 392734,
+     "votos_distintos_oos": 363845,
+     "origen_desconocido": 0,
+     "record_o_n_prev_distinto": 0,
+     "ficha6_distinta": 0,
+     "desvio_linaje_distinto": 0
+    },
+    "2.5": {
+     "votos_distintos": 391899,
+     "votos_distintos_oos": 363106,
+     "origen_desconocido": 0,
+     "record_o_n_prev_distinto": 0,
+     "ficha6_distinta": 0,
+     "desvio_linaje_distinto": 0
+    },
+    "10": {
+     "votos_distintos": 392500,
+     "votos_distintos_oos": 363648,
+     "origen_desconocido": 0,
+     "record_o_n_prev_distinto": 0,
+     "ficha6_distinta": 0,
+     "desvio_linaje_distinto": 0
+    },
+    "20": {
+     "votos_distintos": 393535,
+     "votos_distintos_oos": 364636,
+     "origen_desconocido": 0,
+     "record_o_n_prev_distinto": 0,
+     "ficha6_distinta": 0,
+     "desvio_linaje_distinto": 0
+    }
+   },
+   "panel_grilla_base": {
+    "votos_oos": 364726,
+    "fraccion_del_oos": 0.6329,
+    "leyes": 1605,
+    "diputados": 285417,
+    "senado": 79309,
+    "era_vigente": 61230,
+    "votos_todos_los_anios": 393626,
+    "oos_total": 576270
+   }
+  },
+  "ventana_postura": {
+   "grilla": [
+    "365",
+    "548",
+    "730",
+    "1095",
+    "1460"
+   ],
+   "v0": "730",
+   "controles_del_brazo": {
+    "votos_v0": 691845,
+    "brazo 365": {
+     "votos_del_brazo": 691607,
+     "votos_de_v0_que_le_faltan": 238,
+     "leyes_de_v0_que_le_faltan": 2,
+     "votos_que_agrega_sobre_v0": 0
+    },
+    "brazo 548": {
+     "votos_del_brazo": 691845,
+     "votos_de_v0_que_le_faltan": 0,
+     "leyes_de_v0_que_le_faltan": 0,
+     "votos_que_agrega_sobre_v0": 0
+    },
+    "brazo 1095": {
+     "votos_del_brazo": 692121,
+     "votos_de_v0_que_le_faltan": 0,
+     "leyes_de_v0_que_le_faltan": 0,
+     "votos_que_agrega_sobre_v0": 276
+    },
+    "brazo 1460": {
+     "votos_del_brazo": 692713,
+     "votos_de_v0_que_le_faltan": 0,
+     "leyes_de_v0_que_le_faltan": 0,
+     "votos_que_agrega_sobre_v0": 868
+    },
+    "votos_interseccion": 691607,
+    "leyes_que_caen": 0
+   },
+   "donde_no_puede_actuar": {
+    "365": {
+     "votos_distintos": 639148,
+     "votos_distintos_oos": 555197,
+     "origen_desconocido": null,
+     "record_o_n_prev_distinto": 0,
+     "ficha6_distinta": 0,
+     "desvio_linaje_distinto": 645625
+    },
+    "548": {
+     "votos_distintos": 615098,
+     "votos_distintos_oos": 547034,
+     "origen_desconocido": null,
+     "record_o_n_prev_distinto": 0,
+     "ficha6_distinta": 0,
+     "desvio_linaje_distinto": 619123
+    },
+    "1095": {
+     "votos_distintos": 607762,
+     "votos_distintos_oos": 540780,
+     "origen_desconocido": null,
+     "record_o_n_prev_distinto": 0,
+     "ficha6_distinta": 0,
+     "desvio_linaje_distinto": 611692
+    },
+    "1460": {
+     "votos_distintos": 624168,
+     "votos_distintos_oos": 554166,
+     "origen_desconocido": null,
+     "record_o_n_prev_distinto": 0,
+     "ficha6_distinta": 0,
+     "desvio_linaje_distinto": 626179
+    }
+   },
+   "panel_grilla_base": {
+    "votos_oos": 569195,
+    "fraccion_del_oos": 0.9881,
+    "leyes": 2966,
+    "diputados": 452527,
+    "senado": 116668,
+    "era_vigente": 99736,
+    "votos_todos_los_anios": 658523,
+    "oos_total": 576039
+   }
+  },
+  "origen": {
+   "grilla": [
+    "fino",
+    "lado"
+   ],
+   "v0": "fino",
+   "controles_del_brazo": {
+    "votos_v0": 691845,
+    "brazo lado": {
+     "votos_del_brazo": 691845,
+     "votos_de_v0_que_le_faltan": 0,
+     "leyes_de_v0_que_le_faltan": 0,
+     "votos_que_agrega_sobre_v0": 0
+    },
+    "votos_interseccion": 691845,
+    "leyes_que_caen": 0
+   },
+   "donde_no_puede_actuar": {
+    "lado": {
+     "votos_distintos": 232101,
+     "votos_distintos_oos": 232101,
+     "origen_desconocido": 0,
+     "origen_oposicion": 0,
+     "ficha6_distinta": 0,
+     "desvio_linaje_distinto": 0
+    }
+   },
+   "panel_grilla_base": {
+    "votos_oos": 232101,
+    "fraccion_del_oos": 0.4028,
+    "leyes": 936,
+    "diputados": 182237,
+    "senado": 49864,
+    "era_vigente": 32053,
+    "votos_todos_los_anios": 232101,
+    "oos_total": 576270
+   }
+  },
+  "guard": {
+   "grilla": [
+    "prendido",
+    "sin_corte"
+   ],
+   "v0": "prendido",
+   "controles_del_brazo": {
+    "votos_v0": 691845,
+    "brazo sin_corte": {
+     "votos_del_brazo": 691845,
+     "votos_de_v0_que_le_faltan": 0,
+     "leyes_de_v0_que_le_faltan": 0,
+     "votos_que_agrega_sobre_v0": 0
+    },
+    "votos_interseccion": 691845,
+    "leyes_que_caen": 0
+   },
+   "donde_no_puede_actuar": {
+    "sin_corte": {
+     "votos_distintos": 116777,
+     "votos_distintos_oos": 116777,
+     "antes_de_2015-12-10": 0
+    }
+   },
+   "panel_grilla_base": {
+    "votos_oos": 116777,
+    "fraccion_del_oos": 0.2026,
+    "leyes": 1008,
+    "diputados": 89540,
+    "senado": 27237,
+    "era_vigente": 51824,
+    "votos_todos_los_anios": 116777,
+    "oos_total": 576270
+   }
+  }
+ }
+}

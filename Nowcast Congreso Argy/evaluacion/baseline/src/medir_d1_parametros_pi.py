@@ -589,6 +589,16 @@ def medir_parametro(t: pd.DataFrame, par: str, valores: list) -> dict:
     era = pd.cut(pd.to_datetime(t["fecha"]), ERAS, labels=ERA_LAB).astype(str).to_numpy()
     for e in ERA_LAB:
         res["descriptivo"][f"era={e}"] = contraste(t, e_c, e0, prim & (era == e))
+    if par == "guard":
+        # el contraste fijo «sin corte contra con corte» de C3 (la simplificación; pre-registro 2.9): INFORMATIVO, no
+        # entra a Holm ni al árbol. Como en C3, el denominador es el Brier de V0 sobre TODOS los votos de las actas
+        # desde 2015-12-10 (no sólo los del panel): e1 = e0_todos − e::prendido + e::sin_corte.
+        e0t = t["e0_todos"].to_numpy(float)
+        e1 = e0t - t["e::prendido"].to_numpy(float) + t["e::sin_corte"].to_numpy(float)
+        desde = oos & (f >= np.datetime64("2015-12-10"))
+        cf = contraste(t, e1, e0t, desde)
+        cf["votos_todos"] = int(t["n_todos"].to_numpy()[desde].sum())
+        res["contraste_fijo_simplificacion"] = {"actas_desde": "2015-12-10", "informativo": True, **cf}
     pr = res["primario"]
     if pr.get("actas"):
         res["primario"]["p_estrella"] = max(pr["por_ley"]["p"], pr["por_mes"]["p"])
@@ -621,7 +631,9 @@ def arbol(r: dict, rechaza: bool) -> dict:
     lado_bueno = il[1] < 0 and im[1] < 0
     lado_malo = il[0] > 0 and im[0] > 0
     if rechaza and lado_bueno:
-        danios = [k for k, s in r["subgrupos"].items() if s.get("actas") and s["por_ley"]["ic95"][0] > 0]
+        # el veto E sólo cuando la acción es un cambio: si el valor WF final es V0, A quiere decir «conservar»
+        cambia = r["valor_wf_final"] != r["v0"]
+        danios = [k for k, s in r["subgrupos"].items() if s.get("actas") and s["por_ley"]["ic95"][0] > 0] if cambia else []
         if danios:
             return {"salida": "E", "accion": "no se cambia; va a Franco", "danio_en": danios}
         return {"salida": "A", "accion": f"recalibrar al valor WF final ({r['valor_wf_final']})"
@@ -652,6 +664,7 @@ def valores_de(par: str, tabla: pd.DataFrame) -> list:
 def medir(reemplazar: bool) -> int:
     proteger(REPO / SALIDA, reemplazar)
     est, res, faltan_ext = {}, {}, {}
+    usados = {DETALLE_V0, DETALLE_V0_ORIGINAL}            # los parquets leídos (no viajan: su sha es el ancla, §10)
     for par, g in GRILLAS.items():
         t0 = time.time()
         valores = list(g["grilla"])
@@ -673,6 +686,10 @@ def medir(reemplazar: bool) -> int:
             borde["con_extension"] = [etiqueta(x) for x in ext]
             # la extensión es el borde nuevo de su lado: si algún año la elige, se dice y no se extiende más
             borde["vuelve_a_tocar"] = bool(any(v in ext for v in sel2["por_anio"].values()))
+        if g["tipo"] == "censo":
+            usados |= {detalle_brazo(nombre_brazo(par, v)) for v in valores if v != g["v0"]}
+        elif g["tipo"] == "guard":
+            usados.add(DETALLE_GUARD)
         est[par] = {"valores": [etiqueta(v) for v in valores], "tabla": tabla_a_json(t)}
         r = medir_parametro(t, par, valores)
         r["borde"], r["controles_de_la_matriz"] = borde, ctl
@@ -684,8 +701,14 @@ def medir(reemplazar: bool) -> int:
     if faltan_ext:
         print("FALTAN BRAZOS DE EXTENSIÓN:", faltan_ext, file=sys.stderr)
         return 4
+    import subprocess
+    sucio = subprocess.run(["git", "--no-optional-locks", "status", "--porcelain", "--", "modelo", "variables",
+                            "definiciones.py", "rutas.py", "evaluacion/baseline/src"],
+                           cwd=str(REPO), capture_output=True, text=True).stdout.splitlines()
     salida = {"formato": FORMATO, "generador": GENERADOR, "generado": date.today().isoformat(),
               "detalle_v0": DETALLE_V0.name, "detalle_v0_sha256_16": ce._sha16(DETALLE_V0),
+              "procedencia": {"head_sha_al_medir": ce._git_head(), "motor_o_runner_sin_commitear": sucio,
+                              "insumos_sha256_16": {p.name: ce._sha16(p) for p in sorted(usados)}},
               "metodo": {"n_boot": N_BOOT, "semilla": SEMILLA, "alfa": ALFA, "m_holm": M_HOLM, "margen_%": MARGEN,
                          "oos": OOS, "empate_relativo": EMPATE},
               "resultados": res, "veredicto": veredicto(res), "estadisticos_por_acta": est}

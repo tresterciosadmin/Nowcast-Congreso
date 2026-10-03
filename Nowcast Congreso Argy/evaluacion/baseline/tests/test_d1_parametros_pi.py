@@ -11,7 +11,10 @@ QUÉ FIJA (pre-registro de D1 en `coordinacion/AUDITORIA-2026-09/ESTADO-EJECUCIO
      - una alternativa peor → el WF elige V0 todos los años → Z;
      - el borde: si algún año elige el máximo de la grilla, `toca_borde` pide la extensión de arriba (y no la de
        abajo cuando no existe);
-     - Holm con m = 7 (los que faltan cuentan como p = 1) y el veto E cuando la alternativa daña a una cámara.
+     - Holm con m = 7 (los que faltan cuentan como p = 1) y el veto E cuando la alternativa daña a una cámara
+       (y no cuando el valor WF final es V0: ahí la acción es conservar, no un cambio);
+     - el contraste fijo del guard (la simplificación de C3): desde 2015-12-10, denominador = el Brier de V0 sobre
+       todos los votos, con IC por ley y por mes; informativo, no entra a Holm.
 No lee el detalle del censo: corre en el CI.
 
     python evaluacion/baseline/tests/test_d1_parametros_pi.py
@@ -109,6 +112,24 @@ def main() -> int:
     rE = D.medir_parametro(tE, par, vals)
     salE = D.arbol(rE, True)
     check(salE["salida"] == "E" and "senado" in salE.get("danio_en", []), f"mejora global que daña al Senado → E ({salE})")
+    rE["valor_wf_final"] = rE["v0"]
+    salE0 = D.arbol(rE, True)
+    check(salE0["salida"] == "A" and "es V0" in salE0["accion"],
+          f"con el valor WF final en V0 la acción es conservar: sin veto E ({salE0})")
+
+    tG = tabla("guard", {"sin_corte": 1.1})
+    rG = D.medir_parametro(tG, "guard", D.GRILLAS["guard"]["grilla"])
+    cf = rG.get("contraste_fijo_simplificacion", {})
+    fG = pd.to_datetime(tG["fecha"])
+    mG = D.es_oos(tG) & (fG >= pd.Timestamp("2015-12-10")).to_numpy()
+    esperado = 100 * (tG["e::sin_corte"] - tG["e::prendido"])[mG].sum() / tG["e0_todos"][mG].sum()
+    check(cf.get("informativo") and abs(cf["por_ley"]["dBrier_rel_%"] - round(esperado, 4)) < 1e-9
+          and "por_mes" in cf and cf["votos_todos"] == int(tG["n_todos"][mG].sum()),
+          f"guard: contraste fijo desde 2015-12-10 con denominador e0_todos ({cf.get('por_ley', {}).get('dBrier_rel_%')} "
+          f"contra {esperado:.4f}), con IC por mes")
+    vG = D.veredicto({"guard": rG})["por_parametro"]["guard"]
+    check(vG["p_estrella_holm"] == rG["primario"]["p_estrella"], "el contraste fijo no entra a Holm")
+    check("contraste_fijo_simplificacion" not in D.medir_parametro(t, par, vals), "sólo el guard lo lleva")
 
     t = tabla(par, {"10": 1.2})
     sel = D.seleccion_anual(t, par, vals)

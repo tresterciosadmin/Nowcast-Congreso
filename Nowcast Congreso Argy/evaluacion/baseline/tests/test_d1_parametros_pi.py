@@ -15,6 +15,8 @@ QUÉ FIJA (pre-registro de D1 en `coordinacion/AUDITORIA-2026-09/ESTADO-EJECUCIO
        (y no cuando el valor WF final es V0: ahí la acción es conservar, no un cambio);
      - el contraste fijo del guard (la simplificación de C3): desde 2015-12-10, denominador = el Brier de V0 sobre
        todos los votos, con IC por ley y por mes; informativo, no entra a Holm.
+  3. EL VEREDICTO DE D1, recalculado desde `d1_parametros_pi.json` (las tablas por acta que viajan por git): las siete
+     salidas del árbol, Holm, el valor WF final, Δ e IC de cada primario y el contraste fijo del guard.
 No lee el detalle del censo: corre en el CI.
 
     python evaluacion/baseline/tests/test_d1_parametros_pi.py
@@ -34,6 +36,21 @@ import medir_d1_parametros_pi as D  # noqa: E402
 from baseline_voto_individual import normalizar_brazo, valor_del_brazo  # noqa: E402
 
 FALLOS: list[str] = []
+
+# El veredicto de D1 (2026-10-03, `--medir` sobre e869db1; revisado a ciegas, coincide). La ventana queda en F
+# (en suspenso: decide Franco); el árbol del runner no sigue después de F, así que se ancla F.
+ESPERADO = {"k_record": "D", "min_hist": "C", "min_votos_ficha": "D", "k_postura": "D", "ventana_postura": "F",
+            "origen": "Z", "guard": "Z"}
+# parámetro: (valor WF final, Δ por ley %, IC por ley, IC por mes). Tolerancia: la tabla por acta va redondeada a 12
+# decimales y el CI corre en Linux.
+ANCLAS = {"k_record": ("40", -0.4968, [-1.1793, 0.2318], [-1.3459, 0.3991]),
+          "min_hist": ("2", 0.0338, [-0.3234, 0.3991], [-0.4194, 0.4721]),
+          "min_votos_ficha": ("5", 0.3832, [-1.1825, 11.2698], [-1.2429, 10.4353]),
+          "k_postura": ("10", 0.8995, [-0.0819, 2.3066], [-0.1018, 2.2751]),
+          "ventana_postura": ("2190", -2.5512, [-5.7875, -0.3635], [-5.5583, -0.3822]),
+          "origen": ("fino", 0.0, [0.0, 0.0], [0.0, 0.0]),
+          "guard": ("prendido", 0.0, [0.0, 0.0], [0.0, 0.0])}
+TOL = 2e-3
 
 
 def check(cond: bool, msg: str) -> None:
@@ -146,6 +163,32 @@ def main() -> int:
     check(rech == {"a": True, "b": True, "c": False}, f"Holm con m = 7: 0,001 ≤ 0,05/7; 0,008 ≤ 0,05/6; 0,02 > 0,05/5 ({rech})")
     rech = D.holm({"a": 0.001, "b": 0.013, "c": 0.002, "d": 0.0001})
     check(rech == {"d": True, "a": True, "c": True, "b": False}, f"Holm: el 4.º, 0,013 > 0,05/4 = 0,0125, se frena ({rech})")
+    print("3. el veredicto de D1, recalculado desde el JSON de git (`d1_parametros_pi.json`)")
+    if not D.SALIDA.exists():
+        check(False, f"falta {D.SALIDA.name}: el veredicto de D1 viaja por git")
+    else:
+        r = D.recalcular_desde_json()
+        g = r["guardado"]
+        salidas = {k: v["salida"] for k, v in r["veredicto"]["por_parametro"].items()}
+        check(salidas == ESPERADO, f"salidas del árbol: {salidas}")
+        check(salidas == {k: v["salida"] for k, v in g["veredicto"]["por_parametro"].items()},
+              "el recálculo da lo mismo que lo guardado")
+        rech = {k for k, v in r["veredicto"]["por_parametro"].items() if v["holm_rechaza"]}
+        check(rech == {"ventana_postura"}, f"Holm (m = 7) rechaza sólo la ventana ({rech})")
+        for par, (final, delta, ic_ley, ic_mes) in ANCLAS.items():
+            x, pr = r["resultados"][par], r["resultados"][par]["primario"]
+            ok = (x["valor_wf_final"] == final and abs(pr["por_ley"]["dBrier_rel_%"] - delta) < TOL
+                  and all(abs(a - b) < TOL for a, b in zip(pr["por_ley"]["ic95"] + pr["por_mes"]["ic95"], ic_ley + ic_mes))
+                  and x["trayectoria"] == g["resultados"][par]["trayectoria"])
+            check(ok, f"{par}: WF final {x['valor_wf_final']}, Δ {pr['por_ley']['dBrier_rel_%']}% "
+                      f"ley {pr['por_ley']['ic95']} mes {pr['por_mes']['ic95']}")
+        v = r["resultados"]["ventana_postura"]
+        check(v["global_oos"]["dBrier_rel_%"] < -2 and g["resultados"]["ventana_postura"]["borde"]["vuelve_a_tocar"],
+              f"ventana: F por el global OOS ({v['global_oos']['dBrier_rel_%']}% < −2%) y el valor vuelve a tocar el borde")
+        cf = r["resultados"]["guard"]["contraste_fijo_simplificacion"]
+        check(abs(cf["por_ley"]["dBrier_rel_%"] - 3.2307) < TOL and cf["leyes"] == 1055 and cf["votos_todos"] == 257543
+              and abs(cf["por_ley"]["ic95"][0] + 2.3266) < TOL and abs(cf["por_mes"]["ic95"][0] + 1.979) < TOL,
+              f"guard, contraste fijo (C3): {cf['por_ley']['dBrier_rel_%']}% ley {cf['por_ley']['ic95']} mes {cf['por_mes']['ic95']}")
     print(f"\n{'TODO OK' if not FALLOS else f'{len(FALLOS)} FALLAS'}")
     return 1 if FALLOS else 0
 

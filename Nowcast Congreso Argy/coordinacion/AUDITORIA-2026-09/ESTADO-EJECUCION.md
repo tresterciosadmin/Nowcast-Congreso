@@ -1279,6 +1279,8 @@ Panel OOS del protocolo: Diputados desde 2006, Senado desde 2007: **576.270 voto
 4. **Paneles distintos de las cifras del pre-registro, legítimos** (el panel se fija con la grilla final, 2.3 c): `MIN_VOTOS_FICHA` 13.562 = base ∪ {2} (verificado sin leer `y`; el «16.630 con la extensión» del pre-registro era con las dos extensiones, y sólo tocó el borde de abajo); ventana 575.134 sobre la intersección con el brazo de 182 (pierde 639 votos de V0, 12 leyes); k de la postura 365.006 con el brazo 40.
 5. El JSON de la medición pesa **12,6 MB** en git (las siete tablas por acta; formato del pre-registro, no se cambió).
 
+**Suite y checkout limpio.** PC: `pytest` **54 pasan**; `test_d1_parametros_pi.py` en 0 (con el §3). Checkout limpio (`git archive` de `8e5720f`, venv Python **3.11.0** nuevo con los pines): `pytest` **53 pasan, 1 saltado** (el de frescura del JSON del censo, como siempre) y **los 66 `test_*.py` en 0**, incluido el ancla de D1 (no depende de nada ignorado).
+
 ## Bitácora de alcance
 
 Todo cambio de alcance se escribe **acá antes de ejecutarse**. Sólo Franco lo autoriza, con la frase `CAMBIO DE ALCANCE:`.

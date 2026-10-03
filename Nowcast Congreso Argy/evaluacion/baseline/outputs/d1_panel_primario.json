@@ -250,6 +250,12 @@
      "leyes_de_v0_que_le_faltan": 0,
      "votos_que_agrega_sobre_v0": 0
     },
+    "brazo 40": {
+     "votos_del_brazo": 691845,
+     "votos_de_v0_que_le_faltan": 0,
+     "leyes_de_v0_que_le_faltan": 0,
+     "votos_que_agrega_sobre_v0": 0
+    },
     "votos_interseccion": 691845,
     "leyes_que_caen": 0
    },
@@ -285,6 +291,14 @@
      "record_o_n_prev_distinto": 0,
      "ficha6_distinta": 0,
      "desvio_linaje_distinto": 0
+    },
+    "40": {
+     "votos_distintos": 393906,
+     "votos_distintos_oos": 365006,
+     "origen_desconocido": 0,
+     "record_o_n_prev_distinto": 0,
+     "ficha6_distinta": 0,
+     "desvio_linaje_distinto": 0
     }
    },
    "panel_grilla_base": {
@@ -295,6 +309,19 @@
     "senado": 79309,
     "era_vigente": 61230,
     "votos_todos_los_anios": 393626,
+    "oos_total": 576270
+   },
+   "panel_con_extension": {
+    "valores": [
+     "40"
+    ],
+    "votos_oos": 365006,
+    "fraccion_del_oos": 0.6334,
+    "leyes": 1605,
+    "diputados": 285417,
+    "senado": 79589,
+    "era_vigente": 61230,
+    "votos_todos_los_anios": 393906,
     "oos_total": 576270
    }
   },
@@ -333,52 +360,94 @@
      "leyes_de_v0_que_le_faltan": 0,
      "votos_que_agrega_sobre_v0": 868
     },
-    "votos_interseccion": 691607,
-    "leyes_que_caen": 0
+    "brazo 182": {
+     "votos_del_brazo": 691206,
+     "votos_de_v0_que_le_faltan": 639,
+     "leyes_de_v0_que_le_faltan": 12,
+     "votos_que_agrega_sobre_v0": 0
+    },
+    "brazo 2190": {
+     "votos_del_brazo": 692715,
+     "votos_de_v0_que_le_faltan": 0,
+     "leyes_de_v0_que_le_faltan": 0,
+     "votos_que_agrega_sobre_v0": 870
+    },
+    "votos_interseccion": 691206,
+    "leyes_que_caen": 3
    },
    "donde_no_puede_actuar": {
     "365": {
-     "votos_distintos": 639148,
-     "votos_distintos_oos": 555197,
+     "votos_distintos": 638826,
+     "votos_distintos_oos": 554875,
      "origen_desconocido": null,
      "record_o_n_prev_distinto": 0,
      "ficha6_distinta": 0,
-     "desvio_linaje_distinto": 645625
+     "desvio_linaje_distinto": 645355
     },
     "548": {
-     "votos_distintos": 615098,
-     "votos_distintos_oos": 547034,
+     "votos_distintos": 614776,
+     "votos_distintos_oos": 546712,
      "origen_desconocido": null,
      "record_o_n_prev_distinto": 0,
      "ficha6_distinta": 0,
-     "desvio_linaje_distinto": 619123
+     "desvio_linaje_distinto": 618751
     },
     "1095": {
-     "votos_distintos": 607762,
-     "votos_distintos_oos": 540780,
+     "votos_distintos": 607439,
+     "votos_distintos_oos": 540457,
      "origen_desconocido": null,
      "record_o_n_prev_distinto": 0,
      "ficha6_distinta": 0,
-     "desvio_linaje_distinto": 611692
+     "desvio_linaje_distinto": 611320
     },
     "1460": {
-     "votos_distintos": 624168,
-     "votos_distintos_oos": 554166,
+     "votos_distintos": 623840,
+     "votos_distintos_oos": 553838,
      "origen_desconocido": null,
      "record_o_n_prev_distinto": 0,
      "ficha6_distinta": 0,
-     "desvio_linaje_distinto": 626179
+     "desvio_linaje_distinto": 625806
+    },
+    "182": {
+     "votos_distintos": 655532,
+     "votos_distintos_oos": 563156,
+     "origen_desconocido": null,
+     "record_o_n_prev_distinto": 0,
+     "ficha6_distinta": 0,
+     "desvio_linaje_distinto": 657185
+    },
+    "2190": {
+     "votos_distintos": 647492,
+     "votos_distintos_oos": 565590,
+     "origen_desconocido": null,
+     "record_o_n_prev_distinto": 0,
+     "ficha6_distinta": 0,
+     "desvio_linaje_distinto": 643177
     }
    },
    "panel_grilla_base": {
-    "votos_oos": 569195,
-    "fraccion_del_oos": 0.9881,
-    "leyes": 2966,
-    "diputados": 452527,
-    "senado": 116668,
-    "era_vigente": 99736,
-    "votos_todos_los_anios": 658523,
-    "oos_total": 576039
+    "votos_oos": 568867,
+    "fraccion_del_oos": 0.9882,
+    "leyes": 2963,
+    "diputados": 452287,
+    "senado": 116580,
+    "era_vigente": 99648,
+    "votos_todos_los_anios": 658195,
+    "oos_total": 575638
+   },
+   "panel_con_extension": {
+    "valores": [
+     "182",
+     "2190"
+    ],
+    "votos_oos": 575134,
+    "fraccion_del_oos": 0.9991,
+    "leyes": 2963,
+    "diputados": 456852,
+    "senado": 118282,
+    "era_vigente": 104860,
+    "votos_todos_los_anios": 674516,
+    "oos_total": 575638
    }
   },
   "origen": {

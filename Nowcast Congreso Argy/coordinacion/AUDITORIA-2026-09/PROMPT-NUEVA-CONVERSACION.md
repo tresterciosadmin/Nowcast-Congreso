@@ -1,5 +1,33 @@
 # Prompts de arranque para conversaciones nuevas (pegar tal cual)
 
+## Reanudación en D1: la decisión sobre la ventana de la postura (generado el 2026-10-03, noche)
+
+> Esta sección reemplaza a las de abajo para cerrar D1. **Valen las de abajo en todo lo que ésta no cambia** (alcance cerrado, cómo se trabaja, la PC, el pull manual de los bots, modelos y revisor ciego). Si algo difiere del protocolo de la fase D o del pre-registro de D1 en `ESTADO-EJECUCION.md`, vale el protocolo.
+
+---
+
+Estoy retomando *Nowcast Congreso* (repo `Nowcast Congreso`, carpeta `Nowcast Congreso Argy`) en **MODO AUDITORÍA**, **fase D, ítem D1 en curso**. D1 está **medido y revisado a ciegas** (los dos veredictos coinciden; commits `8bb9442` … `b1292b4`): k del récord D, `MIN_HIST` C, `MIN_VOTOS_FICHA` D, k de la postura D, origen Z, guard Z (se conserva prendido) → **los seis conservan V0**. **La ventana de la postura quedó en F (alarma)**: −2,55% de Brier OOS, pero el 89% viene de Diputados 2024 y el 73,6% de una sola ley (la Ley Bases); es la ventana de 2.190 días tapando el hueco de Diputados 2020–2023. Falta **mi decisión** (está abajo) y cerrar D1.
+
+**Leé antes de hacer nada:** (1) `CLAUDE.md`, el bloque MODO AUDITORÍA; (2) en `coordinacion/AUDITORIA-2026-09/ESTADO-EJECUCION.md`: el protocolo de la fase D (§6 el árbol, §7 el lote) y **«D1 — veredicto»** completo; (3) `coordinacion/AUDITORIA-2026-09/resultados/D1_revision_ciega.md`; (4) `coordinacion/QUE-SE-MIDE.md`; (5) `PENDIENTES-POST-AUDITORIA.md`.
+
+**Mi decisión sobre la ventana:** **[(a) o (b) — lo escribo yo al pegar este prompt]**
+- **(a) Conservar 730** (lo que recomendaron los dos agentes): D1 se cierra **sin lote**. Pasos: (1) una línea en `PENDIENTES-POST-AUDITORIA.md`: re-medir la ventana de la postura cuando se rellene el hueco de Diputados 2020–2023 (junto al ítem d4-b); (2) en `QUE-SE-MIDE.md`, el guard de era deja de ser «provisional, bajo revisión de Franco»: el WF dio Z → **se conserva prendido** (con el contraste fijo +3,23% [−2,33; +9,72] · [−1,98; +9,39], D) y se agregan las salidas de D1 a la tabla de términos; (3) cerrar D1 en `ESTADO-EJECUCION.md` (estado HECHO con la evidencia y mi decisión) y pasar a **D2** (su pre-registro, en conversación nueva).
+- **(b) Aceptar el mecanismo:** la ventana da **A → 2.190** y se corre **el lote completo del §7** (código del motor —`proyectar_postura(ventana_dias)` en la llamada del motor— con ADR-0015 y `FORMULA-COMPLETA.md`; `registro_parametros.py --escribir`; `perturbar_panel.py --medir` (70–100 min); `panel_regresion.json`; el censo del motor nuevo con `--salida` y el control «censo nuevo = el brazo 2.190, max|Δp| = 0»; re-anclas de B3, C1, C2 y C3; `QUE-SE-MIDE.md`). **Ojo:** el brazo de 2.190 evalúa **870 votos más** que V0 (actas que con 730 días se saltan), así que el lote cambia también la población del censo (691.845 votos hoy) y todas las cifras re-ancladas se mueven también por eso. 2.190 es un valor de borde (el protocolo no deja extender más).
+
+**Lo que hay en disco y no viaja por git (no se borra):** el detalle de V0 (`censo_detalle_2026-10-02.parquet`), los doce `censo_detalle_d1_<brazo>_sobre_2026-10-02.parquet` (k de la postura 1, 2,5, 10, 20, 40; ventana 182, 365, 548, 1.095, 1.460, 2.190; origen por lado) y el del guard. Sus sha256 están en `d1_parametros_pi.json` → `procedencia`.
+
+**Trampas de esta PC (nuevas en esta sesión):**
+- **Memoria: medí antes de elegir `--procesos`.** `(Get-CimInstance Win32_PerfFormattedData_PerfOS_Memory).AvailableMBytes` (`Get-Counter` falla: los nombres de los contadores están en castellano). El 2026-10-03 había 4,8 GB, no 8: los censos fueron con **3 procesos** (≈ 17–21 min cada uno) y la memoria bajó a 378 MB. Con 5 procesos hacen falta ≈ 8 GB libres.
+- **Mantener la PC despierta durante una corrida larga:** el lanzador `.ps1` llama a `SetThreadExecutionState(0x80000001)` (Add-Type sobre kernel32) y corre todo en serie como proceso independiente (`Start-Process powershell -File …`); así no depende de que la sesión esté activa.
+- **El JSON de `--brazo` en PowerShell 5.1** va sin espacios y con las comillas escapadas: `--brazo '{\"ventana_postura\":2190}'`.
+- `git commit -m @'…'@` (no `-F -`).
+
+**Estado al cerrar esta sesión:** `HEAD` = el commit de este documento (o posterior, con commits de los bots); `git status` limpio; sin `git push` (4 commits adelante de `origin/main` antes de este, 0 atrás); `python -m pytest tests/ datos/proyectos/tests -q` → 54 pasan; los 66 `test_*.py` en 0; checkout limpio de `8e5720f` con Python 3.11 y los pines en verde (53 + 1 saltado; 66 en 0). **Falta mi confirmación en *Actions*.**
+
+**Empezá verificando** que `git status` esté limpio y que la suite dé 54 pasan; avisame si algo no coincide con `ESTADO-EJECUCION.md`, y **después ejecutá la rama de mi decisión**.
+
+---
+
 ## Reanudación en D1: la medición y el veredicto (generado el 2026-10-03)
 
 > Esta sección reemplaza a las de abajo para seguir D1 desde la medición. **Vale la «Reanudación en D1» y la «Reanudación desde la fase D» en todo lo que ésta no cambia** (alcance cerrado, cómo se trabaja, la PC, el pull manual de los bots, modelos y revisor ciego). Si algo difiere del protocolo de la fase D o del pre-registro de D1 en `ESTADO-EJECUCION.md`, vale el protocolo.

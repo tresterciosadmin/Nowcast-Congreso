@@ -1268,7 +1268,7 @@ Panel OOS del protocolo: Diputados desde 2006, Senado desde 2007: **576.270 voto
 
 **Qué decide Franco (D1 no se cierra hasta entonces):**
 - **(a) Conservar 730** (lo que recomendamos los dos): F no se levanta; D1 se cierra **sin lote** (los siete conservan V0); se anota en el estacionamiento que la ventana se re-mide cuando se rellene el hueco de Diputados 2020–2023 (ítem d4-b).
-- **(b) Aceptar el mecanismo:** la ventana da A → **2.190** y se corre el lote completo del punto 7 (código con ADR-0015 y `FORMULA-COMPLETA.md`, registro, `perturbar_panel --medir`, `panel_regresion.json`, censo nuevo = el brazo 2.190 con max|Δp| = 0, re-anclas de B3, C1, C2 y C3, `QUE-SE-MIDE.md`). Es un valor de borde (el protocolo no permite extender más) y su ganancia descansa en una ley.
+- **(b) Aceptar el mecanismo:** la ventana da A → **2.190** y se corre el lote completo del punto 7 (código con ADR-0015 y `FORMULA-COMPLETA.md`, registro, `perturbar_panel --medir`, `panel_regresion.json`, censo nuevo = el brazo 2.190 con max|Δp| = 0, re-anclas de B3, C1, C2 y C3, `QUE-SE-MIDE.md`). Es un valor de borde (el protocolo no permite extender más) y su ganancia descansa en una ley. **Además cambia la población:** el brazo de 2.190 evalúa 870 votos que V0 salta (actas cuya postura de 730 días no tiene historia), así que con el motor en 2.190 el censo deja de tener 691.845 votos y todas las cifras re-ancladas (B3, C1, C2, C3) se mueven también por eso, no sólo por las P_i.
 
 **Ancla del CI:** `test_d1_parametros_pi.py` §3 recalcula desde el JSON de git las siete salidas (D, C, D, D, **F**, Z, Z), Holm, el valor WF final, Δ e IC de cada primario (tolerancia 2e-3) y el contraste fijo del guard. El árbol del runner no tiene camino después de F (hallazgo 2 del revisor): se ancla F; si Franco decide (b), el lote lo re-ancla.
 
@@ -1278,6 +1278,8 @@ Panel OOS del protocolo: Diputados desde 2006, Senado desde 2007: **576.270 voto
 3. **La corrida con código 4 imprimió los Δ de los tres parámetros sin censo** antes de tener los brazos de extensión de k de la postura y la ventana: es el diseño (sus extensiones se recalculan sin censo); de esos dos no se calculó ningún Δ.
 4. **Paneles distintos de las cifras del pre-registro, legítimos** (el panel se fija con la grilla final, 2.3 c): `MIN_VOTOS_FICHA` 13.562 = base ∪ {2} (verificado sin leer `y`; el «16.630 con la extensión» del pre-registro era con las dos extensiones, y sólo tocó el borde de abajo); ventana 575.134 sobre la intersección con el brazo de 182 (pierde 639 votos de V0, 12 leyes); k de la postura 365.006 con el brazo 40.
 5. El JSON de la medición pesa **12,6 MB** en git (las siete tablas por acta; formato del pre-registro, no se cambió).
+6. **El informe del revisor ciego quedó en el repo** (`resultados/D1_revision_ciega.md`); el de la revisión del protocolo se había guardado fuera. Motivo: el scratchpad es de la sesión y se pierde.
+7. **Pendiente al cerrar D1, en cualquiera de las dos ramas:** `QUE-SE-MIDE.md` todavía dice que el guard de era es provisional y está bajo revisión de Franco; con Z en el WF pasa a «se conserva prendido». Y se agregan las salidas de D1 a su tabla de términos.
 
 **Suite y checkout limpio.** PC: `pytest` **54 pasan**; `test_d1_parametros_pi.py` en 0 (con el §3). Checkout limpio (`git archive` de `8e5720f`, venv Python **3.11.0** nuevo con los pines): `pytest` **53 pasan, 1 saltado** (el de frescura del JSON del censo, como siempre) y **los 66 `test_*.py` en 0**, incluido el ancla de D1 (no depende de nada ignorado).
 

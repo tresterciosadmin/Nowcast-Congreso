@@ -1,5 +1,39 @@
 # Prompts de arranque para conversaciones nuevas (pegar tal cual)
 
+## Reanudación en D1: la medición y el veredicto (generado el 2026-10-03)
+
+> Esta sección reemplaza a las de abajo para seguir D1 desde la medición. **Vale la «Reanudación en D1» y la «Reanudación desde la fase D» en todo lo que ésta no cambia** (alcance cerrado, cómo se trabaja, la PC, el pull manual de los bots, modelos y revisor ciego). Si algo difiere del protocolo de la fase D o del pre-registro de D1 en `ESTADO-EJECUCION.md`, vale el protocolo.
+
+---
+
+Estoy retomando *Nowcast Congreso* (repo `Nowcast Congreso`, carpeta `Nowcast Congreso Argy`) en **MODO AUDITORÍA**, **fase D, ítem D1 en curso**. Ya están hechos y commiteados: el **pre-registro de D1** (`88afe26`), **el código de los brazos y el runner** (`0e4504e`) y **el panel primario, fijado sin leer `y`** (`8c18c8d`). Corrieron los nueve censos de brazo y todos sus controles se cumplieron (B2 sobre cada brazo, control positivo, anti-vacuidad, «donde no puede actuar»). **Todavía no se calculó ningún Δ.** Hoy toca **medir, derivar el veredicto y pasarlo por la revisión ciega**.
+
+**Leé, en este orden, antes de hacer nada:** (1) `CLAUDE.md`, el bloque MODO AUDITORÍA; (2) en `coordinacion/AUDITORIA-2026-09/ESTADO-EJECUCION.md`: el **protocolo de la fase D completo** (sobre todo §1, §4, §5, **§6 —el árbol, con el veto E en el paso 3— y §11**), **«D1 — pre-registro: los parámetros de $P_i$»** (las grillas, los paneles, el signo y orden de magnitud esperados, los umbrales de la alarma F y las aclaraciones: Z entra a Holm con p\* = 1; el veto E con el IC por ley) y **«D1 — avance»** (qué se construyó, los controles y los 5 desvíos); (3) `coordinacion/QUE-SE-MIDE.md`; (4) `PENDIENTES-POST-AUDITORIA.md`.
+
+**Lo que hay en disco y no viaja por git (no se borra):** el detalle de V0, `evaluacion/baseline/outputs/censo_detalle_2026-10-02.parquet`; los nueve `censo_detalle_d1_<brazo>_sobre_2026-10-02.parquet` (k de la postura 1, 2,5, 10, 20; ventana 365, 548, 1.095, 1.460; origen por lado) y el del guard, `censo_detalle_sin_corte_era_2026-10-02.parquet`.
+
+**Los pasos que faltan, en orden:**
+1. **Antes de `--medir`:** agregar al runner el IC por mes del contraste fijo del guard (informativo, pre-registro 2.9: el por ley ya dio D y no se ofrece quitarlo). Suite verde y commit.
+2. **`python evaluacion/baseline/src/medir_d1_parametros_pi.py --medir`** (minutos). Si un parámetro de censo toca un borde, el runner sale con **código 4** y dice qué brazo de extensión falta (k de la postura 0,5 o 40; ventana 182 o 2.190), **sin calcular ningún Δ OOS de ese parámetro**: correr `--censo <brazo>` (≈ 14 min, 5 procesos), B2 sobre él (`python evaluacion/baseline/tests/test_invariancia_al_futuro.py --brazo '<json>'`), `--panel --reemplazar` y commitear el panel extendido **antes** de volver a `--medir`.
+3. **El veredicto:** por parámetro, con el árbol del §6 y Holm m = 7; F se mira primero (umbral del pre-registro). Escribirlo en `ESTADO-EJECUCION.md` con todo lo del §10 (valor, panel, trayectoria anual, IC por ley y por mes contra V0 y contra V0 original, desde 2010, por era y cámara, MDE).
+4. **Revisión ciega (§11):** un subagente Opus, de a uno, que **no ve mi veredicto**: recibe el pre-registro, el protocolo y el JSON crudo (`d1_parametros_pi.json`), deriva el veredicto y audita los controles; escribe su resultado a un archivo apenas lo tiene. Si difiere, no se aplica nada y va a Franco.
+5. **Anclar** el JSON en `test_d1_parametros_pi.py` (el recálculo desde git tiene que dar el mismo veredicto) y commitear.
+6. **Si más de un contraste da A:** confirmación conjunta (un brazo con el valor WF de cada año de los que dieron A; el `brazo` acepta valores por año). **Si algo se recalibra:** el lote completo del §7 (código y ADR-0015, `FORMULA-COMPLETA.md`, registro, `perturbar_panel --medir`, `panel_regresion.json`, censo nuevo = el brazo con los valores finales, re-anclas, `QUE-SE-MIDE.md`). Si nada cambia, no hay lote y D1 se cierra con su evidencia.
+7. Checkout limpio con Python 3.11 y los pines antes de dar D1 por hecho.
+
+**Trampas de esta PC que aparecieron en D1:**
+- **Memoria.** 15,7 GB de RAM, ≈ 8 libres: **los censos van con `--procesos 5`** (con 7 se cayó por memoria). No corras un censo en paralelo con B2 ni con `perturbar_panel`.
+- **Corridas largas:**
+  - las tareas en segundo plano se cortan por tiempo (≈ 2 h): una corrida larga se lanza como proceso independiente (`Start-Process … -RedirectStandardOutput`) y se vigila con esperas de ≤ 25 min;
+  - el pedido de mantener la PC despierta se libera cuando la sesión queda inactiva, así que hay que volver a pedirlo.
+- **Commits desde PowerShell:** `git commit -F -` con un here-string no anda; usá `git commit -m @'…'@`.
+
+**Estado al cerrar esta sesión:** `HEAD` = el commit de este documento (o posterior, con commits de los bots); `git status` limpio; `python -m pytest tests/ datos/proyectos/tests -q` → 54 pasan; los 66 `test_*.py` en 0.
+
+**Empezá verificando** que `git status` esté limpio, que la suite dé 54 pasan y que los diez parquets de arriba estén en disco; avisame si algo no coincide con `ESTADO-EJECUCION.md`, y **después seguí con el paso 1**.
+
+---
+
 ## Reanudación en D1 (generado el 2026-10-02, al cerrar D1.0)
 
 > Esta sección reemplaza a la de abajo para seguir la fase D desde D1. **Vale la de abajo en todo lo que ésta no cambia:** el alcance cerrado, cómo se trabaja, la PC (Windows, OneDrive, CRLF, el pull manual de los bots con su receta), los modelos y el revisor ciego. Si algo difiere del protocolo de la fase D en `ESTADO-EJECUCION.md`, vale el protocolo.

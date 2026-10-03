@@ -1,7 +1,27 @@
 # La fórmula completa del nowcast
 
-**Última actualización:** 2026-10-01 (auditoría 2026-09, D1.0: la ficha de desvío al día) · **Regla:** ADR-0015 —
-quien toca el motor actualiza este archivo en el mismo commit.
+**Última actualización:** 2026-10-03 (auditoría 2026-09, D1: la ventana de la postura pasa a 2.190 días) · **Regla:**
+ADR-0015 — quien toca el motor actualiza este archivo en el mismo commit.
+
+> **2026-10-03 — Auditoría 2026-09, ítem D1 (decisión de Franco: opción (b)): la ventana de la postura pasa de 730
+> a 2.190 días.** *La función (nivel 1):* `bloque.proyectar_postura(ventana_dias)` tiene default **2190** (antes
+> 730): la línea, el desvío y el share de cada bloque —el incondicional y el condicionado por origen, que sigue
+> restringido al mismo gobierno— salen de los votos de los 6 años anteriores a la fecha, no de los 2. Lo eligió el
+> walk-forward de D1 todos los años (−2,55% de Brier fuera de muestra, IC por ley [−5,79; −0,36]); el 89% de la
+> mejora viene de Diputados 2024, donde 730 días miraban casi sólo el hueco 2020–2023 de la base (25 actas), y 2.190
+> es un valor de borde (`ESTADO-EJECUCION.md`, «D1 — veredicto»: los dos agentes recomendaban conservar 730; Franco
+> aceptó el mecanismo). *El motor (nivel 2):* lo leen las dos llamadas de `nowcast_puertas.nowcast` (cámara de
+> origen, paso B, y revisora, paso D), `puerta_d.posturas_revisora` (la usa `p_voto_revisora` cuando no recibe los bloques), el harness del
+> censo (sin brazo = el motor) y la CLI de `bloque`; **los estimadores** (`estimar_epsilon_tau`,
+> `estimar_beta_dictamen`, `estimar_theta_sobre_tablas`, `estimar_psi_arrastre`) pasan su propio 730 y **no
+> cambian**, igual que el piso del censo (`VENTANA_DIAS` del harness). **Mueve el número publicado:** en el panel de
+> regresión (2026-06-01) P pasa de 0,6132 a **0,6117** (paso B 0,8095 → 0,807; paso D 0,7575 → 0,758) y cambian 964
+> de 5.141 campos (shares de linaje, P de cada legislador, el orden de «a negociar»). El censo evalúa además 870
+> votos más (actas cuya postura de 730 días no tenía historia). Ningún contrato cambia de forma. **Supuesto que se
+> modifica:** la postura incondicional —a la que cae el modelo cuando la condicionada no tiene actas del gobierno, y
+> hacia la que encoge con k = 5— promedia ahora unos 6 años y en general dos o más gobiernos (antes, uno o dos); la
+> ganancia medida está justamente ahí (en un recambio sin historia del gobierno nuevo). *La fórmula (nivel 3):*
+> $s_\ell$ (§I.00 y la tabla de la postura) se calcula sobre $\{\text{votos}: F-2190\text{ d}\le t<F\}$.
 
 > **2026-10-01 — Auditoría 2026-09, ítem D1.0 (decisión de Franco: «eliminemos la fuga del sistema»): la ficha de
 > desvío pasa a ser POINT-IN-TIME.** *La función:* `ensemble.roster_nominal` ya no lee `disciplina_individual.csv`
@@ -135,7 +155,7 @@ $$\text{logit}\,P_i^{\text{dict}} \;=\; \text{logit}\,P_i + \beta_1 F_i + \beta_
 $$\tilde P_i = \varepsilon_0 + (1-2\varepsilon_0)P_i, \qquad P_i^{(j)} = \sigma\big(\text{logit}\,\tilde P_i + \tau\,\eta_j\big),\ \eta_j\sim N(0,1) \qquad(\texttt{INCERTIDUMBRE\_LEGISLADOR}, \text{en la simulación})$$
 
 $n_i$ = emitidos de $i$ en esa ventana; $s_\ell$ = share del linaje proyectado por
-`proyectar_postura` (730 días, `<`, condicionado por origen dentro del mismo gobierno,
+`proyectar_postura` (2.190 días desde el 2026-10-03, D1 —antes 730—, `<`, condicionado por origen dentro del mismo gobierno,
 encogido $k=5$); $d_i$ = desvío de la ficha individual **al día**: la regla de `disciplina.py` sobre los votos con
 $t<F$ (desde el 2026-10-01, D1.0; antes, toda la historia), con la escalera reciente → global → linaje de
 `ensemble.desvio_de_ficha` (sólo en la rama de bloque y en β).
@@ -265,7 +285,7 @@ $$s_{\ell} \;=\; \frac{n^{c}_{\ell}\, s^{c}_{\ell} \;+\; k\, s^{u}_{\ell}}{n^{c}
 | $n^{c}_{\ell}$ | actas de la ventana con ese tema/origen | — |
 | $s^{u}_{\ell}$ | share **incondicional** de la ventana | — |
 | $k$ | pseudo-conteo del encogimiento | ✅ 5,0 |
-| ventana | historia anterior a la fecha | ✅ 730 días |
+| ventana | historia anterior a la fecha | ✅ 2.190 días (desde el 2026-10-03, D1; antes 730) |
 
 Con pocas actas condicionadas manda el incondicional; con muchas, el condicionado.
 **Sin historia:** $s=0{,}5$ y $d=0{,}15$ — neutro explícito, no cero.
@@ -781,7 +801,8 @@ escrita como discrepancia abierta.** Lectura: lo que el legislador "recuerda" en
 es mayormente lo que recuerda su bloque, y eso el motor lo reaprende en semanas; lo que
 es de la persona no sobrevive al cambio de bloque/rol. **Siguiente codificación candidata:** el
 prior del share de bloque al arranque de la era (hoy encoge hacia una ventana de 730 días que
-mezcla gobiernos — en Ley Bases, LLA tenía share 0,615 sobre el proyecto de su propio
+mezcla gobiernos *(nota del 2026-10-03: desde D1 la ventana es de 2.190 días y mezcla todavía más; es el
+mecanismo que D1 midió, con la Ley Bases como caso principal)* — en Ley Bases, LLA tenía share 0,615 sobre el proyecto de su propio
 Ejecutivo) hacia el comportamiento relabelado del linaje. Detalle en el ADR-0033.
 
 ---
@@ -1957,7 +1978,7 @@ doctrina: un corrimiento agregado mueve el número sin decir sobre quién actuar
 | `INCERTIDUMBRE_INCOGNITA` | 0,35 | `nowcast_puertas` | $P\in[0{,}35;0{,}65]$ ⇒ incógnita |
 | `k_shrink` | 5,0 | `bloque`, `modulador_icg` | pseudo-conteo del encogimiento |
 | `MIN_DISPUTADAS` | 10 | `modulador_icg` | muestra sólida para el prior |
-| `ventana_dias` | 730 | `bloque` | historia para la postura |
+| `ventana_dias` | 2190 (D1, 2026-10-03; antes 730) | `bloque` | historia para la postura (los `estimar_*.py` pasan su propio 730) |
 | `MA_MED` / `MA_CORTO` | 6 / 3 | `icg_contexto` | medias móviles del ICG |
 | `PISO` / `TECHO` | 1,0 / 4,0 | `icg_contexto` | recorte del ICG |
 | `USAR_CORTO` | False | `modulador_icg` | capa corta del ICG, apagada |

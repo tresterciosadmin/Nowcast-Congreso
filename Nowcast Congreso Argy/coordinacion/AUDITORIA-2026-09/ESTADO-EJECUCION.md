@@ -1286,6 +1286,18 @@ Panel OOS del protocolo: Diputados desde 2006, Senado desde 2007: **576.270 voto
 
 **Suite y checkout limpio.** PC: `pytest` **54 pasan**; `test_d1_parametros_pi.py` en 0 (con el §3). Checkout limpio (`git archive` de `8e5720f`, venv Python **3.11.0** nuevo con los pines): `pytest` **53 pasan, 1 saltado** (el de frescura del JSON del censo, como siempre) y **los 66 `test_*.py` en 0**, incluido el ancla de D1 (no depende de nada ignorado).
 
+### D1 — lote: la ventana de la postura pasa a 2.190 días (2026-10-03; decisión de Franco, opción (b))
+
+**Commit 1 — el motor** (puntos 1, 2 y 4 del lote; el 4 va acá para que la suite quede verde entre commits, como en D1.0).
+- **Nivel 1 (la función):** `variables/bloque/src/bloque.py`: `proyectar_postura(ventana_dias)` pasa de **730 a 2190** (docstring con el motivo). Es el único cambio de código del motor. El harness sin brazo usa el default de la función, así que sigue siendo el motor; su `VENTANA_DIAS = 730` es el **piso del censo** (punto 4 del protocolo) y **no se mueve**: sólo se corrigió su comentario, que decía que era la ventana de la postura. Los cuatro `estimar_*.py` pasan su propio 730 y no cambian (nota 8 de «D1 — veredicto»).
+- **Nivel 2 (el motor):** lo leen las dos llamadas de `nowcast()` (paso B, cámara de origen; paso D, revisora), `puerta_d.posturas_revisora` cuando `p_voto_revisora` no recibe los bloques, el harness y la CLI de `bloque`; ningún bot corre el motor (`.github/workflows`: sólo ingesta, padrón, ICG y tests). **Mueve el número:** panel de regresión (2026-06-01, EJECUTIVO, `n_sims` 2.000, semilla 0) **P 0,6132 → 0,6117**; paso B 0,8095 → 0,807; paso D 0,7575 → 0,758; **964 de 5.141 campos** (916 de legisladores —shares de linaje y P—, 40 del orden de «a negociar», `afirmativos_esperados` 148,3 → 147,9). Ningún contrato cambia de forma. **Supuesto que se modifica:** la postura incondicional (la que manda cuando la condicionada no tiene actas del gobierno, y hacia la que encoge con k = 5) promedia ahora unos 6 años, en general dos o más gobiernos.
+- **Nivel 3 (la fórmula):** `FORMULA-COMPLETA.md`: entrada del 2026-10-03, §I.00 ($s_\ell$ con 2.190 días), la tabla de la postura, la tabla de parámetros y una nota en la discrepancia de la Ley Bases.
+- **Registro** (`registro_parametros.py --escribir`): un solo cambio, `bloque.py::proyectar_postura(ventana_dias)` 730 → 2190 (la medición: «D1 — veredicto» y la decisión de Franco); `ventana_dias` pasa a la lista de nombres con varios defaults (730 en el piso del censo y en `estimar_beta_dictamen`; 2190 en el motor).
+- **`panel_regresion.json`** regenerado con su comando (`test_panel_regresion`).
+- **Tests que cambian a propósito:** `test_incertidumbre_legislador` re-anclado a **0,6117** (lo prendido; lo apagado sigue en 0,9801 exacto); `variables/bloque/tests/test_bloque_origen.py` (sintético) suponía la ventana de 730 sin decirlo —con 2.190 la incondicional alcanza un acta de 2023 que el test reserva para probar el guard— y ahora la pasa **explícita** (8/8; lo que prueba no cambia).
+- **Runner de D1:** `DETALLE_V0` queda fijado al censo del 2026-10-02 (antes seguía a `censo_estadisticos.DETALLE`, que en el commit 2 pasa al motor nuevo); el docstring dice que `--controles` y los brazos describen al motor de D1.0 (histórico).
+- **Suite antes del commit:** `pytest` 54; de los 66 scripts fallaron sólo esos dos, y después de corregirlos pasan.
+
 ## Bitácora de alcance
 
 Todo cambio de alcance se escribe **acá antes de ejecutarse**. Sólo Franco lo autoriza, con la frase `CAMBIO DE ALCANCE:`.

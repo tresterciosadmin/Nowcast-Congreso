@@ -71,8 +71,8 @@ import pandas as pd
 
 logger = logging.getLogger("baseline_voto")
 
-VENTANA_DIAS = 730   # la de `proyectar_postura` por defecto; sólo la usan los bordes del censo
-K_SHRINK = 5.0       # idem (lo importan los estimar_*.py viejos)
+VENTANA_DIAS = 730   # el piso del censo (bordes de los tramos); NO es la ventana de la postura (2190 desde D1): no se mueve
+K_SHRINK = 5.0       # el k de `proyectar_postura` por defecto (lo importan los estimar_*.py viejos)
 
 # QUÉ CUENTA COMO HISTORIA (28-09-2026, ADR-0034 — la regla del EXPEDIENTE).
 #
@@ -450,7 +450,7 @@ ERA_LABELS = ["hasta 2011", "2011-2015", "2015-2019", "2019-2023", "desde 2023"]
 # valor puede ser uno solo o uno POR AÑO DEL ACTA ({año: valor}: la confirmación conjunta del protocolo).
 #   era_desde        el récord acumula desde esa fecha en vez de cortar por era (C3)
 #   k_postura        `proyectar_postura(k_shrink=…)`   (el motor: el default de la función, 5,0)
-#   ventana_postura  `proyectar_postura(ventana_dias=…)` (el motor: 730)
+#   ventana_postura  `proyectar_postura(ventana_dias=…)` (el motor: el default de la función; 2190 desde D1, antes 730)
 #   origen           "fino" (el motor: las 4 clases) | "lado" (GOBIERNO/OPOSICION, para el récord y la postura)
 CLAVES_BRAZO = ("era_desde", "k_postura", "ventana_postura", "origen")
 # `origen_lado` de `origen_por_acta` es exactamente esto (lo comprueba el runner de D1 contra el parquet)

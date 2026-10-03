@@ -4805,9 +4805,9 @@
    "linea": 480,
    "entorno": null,
    "asignado_a": null,
-   "default": 730,
+   "default": 2190,
    "evaluable": true,
-   "expresion": "730",
+   "expresion": "2190",
    "afecta_panel": {
     "afecta": true,
     "afecta_p_aprobacion": true,
@@ -5727,6 +5727,23 @@
     {
      "id": "modelo/ensemble/src/puerta_d.py::p_voto_revisora(tau)",
      "default": 0.0
+    }
+   ]
+  },
+  {
+   "nombre": "ventana_dias",
+   "valores": [
+    {
+     "id": "evaluacion/baseline/src/baseline_voto_individual.py::VENTANA_DIAS",
+     "default": 730
+    },
+    {
+     "id": "modelo/ensemble/src/estimar_beta_dictamen.py::VENTANA_DIAS",
+     "default": 730
+    },
+    {
+     "id": "variables/bloque/src/bloque.py::proyectar_postura(ventana_dias)",
+     "default": 2190
     }
    ]
   }

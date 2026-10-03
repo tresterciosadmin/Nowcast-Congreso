@@ -68,10 +68,12 @@ def main():
     chk(B._gobierno_por_fecha("2026-07-01") == "MILEI", "gobierno_por_fecha MILEI")
 
     votos = _votos()
-    kw = dict(padron_path="/no/existe", k_shrink=2.0, cond_por_acta=COND)
+    # la ventana de 730 días va EXPLÍCITA: desde la auditoría D1 (2026-10-03) el default es 2190 y alcanzaría la acta
+    # AF-2023, que este test reserva para el guard (con la ventana larga de abajo)
+    kw = dict(padron_path="/no/existe", k_shrink=2.0, cond_por_acta=COND, ventana_dias=730)
 
     # incondicional: mitad y mitad -> share ~0.5
-    esc0 = B.proyectar_postura(votos, F, "diputados", padron_path="/no/existe")
+    esc0 = B.proyectar_postura(votos, F, "diputados", padron_path="/no/existe", ventana_dias=730)
     s0, _, _ = _share(esc0)
     chk(abs(s0 - 0.5) < 0.01, "incondicional: 4 afirma / 4 niega -> share ~0,5")
 
@@ -95,14 +97,14 @@ def main():
     # guard del recambio: ventana LARGA que alcanza la acta AF-2023 etiquetada
     # GOBIERNO donde X negaba; con guard NO debe entrar al condicionado
     esc4 = B.proyectar_postura(votos, F, "diputados", origen="GOBIERNO",
-                               ventana_dias=1500, **kw)
+                               **{**kw, "ventana_dias": 1500})
     _, l4, n4 = _share(esc4)
     chk(n4 == 4 and l4 == "AFIRMATIVO",
         "guard de gobierno: la acta de la era AF NO entra aunque la ventana la cubra")
 
     # sin etiquetas de origen en el mapa -> cae a incondicional (aviso, no rompe)
     esc5 = B.proyectar_postura(votos, F, "diputados", origen="GOBIERNO",
-                               padron_path="/no/existe", k_shrink=2.0,
+                               padron_path="/no/existe", k_shrink=2.0, ventana_dias=730,
                                cond_por_acta=pd.DataFrame({"acta_id": ["zz"],
                                                            "tema_area": ["ECON"]}))
     s5, _, n5 = _share(esc5)

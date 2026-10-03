@@ -8,6 +8,10 @@
     python evaluacion/baseline/src/medir_d1_parametros_pi.py --panel               # el panel primario, SIN leer `y` (PC)
     python evaluacion/baseline/src/medir_d1_parametros_pi.py --medir               # selección anual, Δ y veredicto (PC)
 
+HISTÓRICO DESDE EL LOTE DE D1 (2026-10-03): la ventana de la postura del motor pasó a 2190. `--controles` (su «V0
+explícito» es 730) y los brazos (`brazo=None` = el motor) describen al motor de D1.0, que era V0 de este ítem;
+correrlos hoy ya no reproduce lo de entonces. El veredicto desde git (sin argumentos) no depende del motor.
+
 LA REGLA es el pre-registro de D1 y el protocolo de la fase D (`ESTADO-EJECUCION.md`); este archivo la ejecuta y no
 la cambia. Resumen: para cada parámetro y cada año Y de test (Diputados 2006–2026, Senado 2007–2026) se elige el
 valor de la grilla que minimiza la suma de Brier de los votos de ENTRENAMIENTO (actas < 1-ene-Y de las dos cámaras,
@@ -49,7 +53,8 @@ import censo_estadisticos as ce  # noqa: E402
 GENERADOR = "evaluacion/baseline/src/medir_d1_parametros_pi.py"
 OUT = REPO / "evaluacion" / "baseline" / "outputs"
 V0_TAG = "2026-10-02"                                     # el censo de V0 (el motor de D1.0)
-DETALLE_V0 = REPO / ce.DETALLE                            # censo_detalle_2026-10-02.parquet (ignorado por git)
+# Fijado al censo de V0 de D1 (no a `ce.DETALLE`, que pasa al motor de cada lote): ignorado por git, no se borra
+DETALLE_V0 = OUT / f"censo_detalle_{V0_TAG}.parquet"
 DETALLE_V0_ORIGINAL = OUT / "censo_detalle_2026-09-28.parquet"   # V0 original (continuidad)
 DETALLE_GUARD = OUT / f"censo_detalle_sin_corte_era_{V0_TAG}.parquet"
 SALIDA = OUT / "d1_parametros_pi.json"

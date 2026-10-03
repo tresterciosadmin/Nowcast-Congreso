@@ -478,7 +478,7 @@ def cargar_tema_por_acta(path=None):
 
 
 def proyectar_postura(votos: pd.DataFrame, fecha, camara: str,
-                      ventana_dias: int = 730, min_actas: int = 3,
+                      ventana_dias: int = 2190, min_actas: int = 3,
                       padron_path=None, tema=None, origen=None,
                       cond_por_acta=None, k_shrink: float = 5.0,
                       excluir_aux: bool = True, temas=None,
@@ -488,6 +488,11 @@ def proyectar_postura(votos: pd.DataFrame, fecha, camara: str,
     COMPOSICION (bancas) = padron OFICIAL vigente a la fecha (datos/padron): la camara
     real (257 Dip / 72 Sen). COMPORTAMIENTO (linea, desvio) = historia ANTERIOR a la
     fecha dentro de una ventana movil (walk-forward, sin leakage).
+
+    VENTANA (auditoría 2026-09, D1; decisión de Franco del 2026-10-03): `ventana_dias` pasó de 730 a 2190 días
+    (6 años). El walk-forward de D1 la eligió todos los años (−2,55% de Brier fuera de muestra), sobre todo porque
+    en Diputados 2024 la ventana de 730 días miraba el hueco 2020–2023 de la base (ver `ESTADO-EJECUCION.md`,
+    «D1 — veredicto»). Los estimadores que arman su propia postura pasan su 730 explícito y no cambian.
 
     v2 — DIRECCION CONDICIONADA POR TEMA/ORIGEN (2026-07-22): si se pasa `tema` (area,
     ej. 'TRAB') y/o `origen` del proyecto objetivo — fino (EJECUTIVO/OFICIALISMO/

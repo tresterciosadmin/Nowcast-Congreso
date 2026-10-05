@@ -5,7 +5,7 @@
 > Decisiones y su porqué: `AUDITORIA-INTEGRAL-2026-09.md` §9. Reglas del carril: §9.9. Definición numérica de "funcionando": §9.4.
 > Estados: `PENDIENTE` · `EN CURSO` · `HECHO` (con la evidencia: comando y salida, o sha del commit) · `DESCARTADO` (con el motivo escrito y la firma de Franco).
 
-**Última actualización:** 2026-10-05 (tarde) — **D1 HECHO: Franco confirmó *Actions* en verde después del lote; aceptó que B3 vigile la brecha motor–control. Próximo: D2, en conversación nueva (prompt en `PROMPT-NUEVA-CONVERSACION.md`).** Antes, 2026-10-05 — **lote de D1 hecho: la ventana de la postura en 2.190 días en el motor; censo nuevo (692.715 votos) = el brazo 2.190 (max|Δp| = 0); re-anclas de B3 (ahora con la brecha motor–control anclada), C1 (skill 0,1527), C2, C3 (el guard se sostiene) y ε₀/τ; `QUE-SE-MIDE.md` al día. Falta: checkout limpio con 3.11 y la confirmación de Franco en *Actions* para dar D1 por HECHO; después, D2 en conversación nueva** (ver «D1 — lote»). Antes, 2026-10-03 (noche, después) — **Franco eligió (b): la ventana de la postura pasa a 2.190 días con el lote del punto 7 (en curso, en esta misma conversación); confirmó Actions en verde.** Antes: **D1 medido y revisado a ciegas; los dos veredictos coinciden: seis parámetros conservan V0 (D, C, D, D, Z, Z) y la ventana de la postura queda en F (alarma) → decide Franco entre conservar 730 (recomendado) o aceptar el mecanismo y recalibrar a 2.190 con lote** (ver «D1 — veredicto»). Antes, 2026-10-03 — **D1 EN CURSO: brazos, nueve censos de brazo, controles (todos cumplidos) y panel primario hechos y commiteados; todavía no se calculó ningún Δ** (ver «D1 — avance»). Próximo: `--medir`, el veredicto y la revisión ciega, en conversación nueva. Antes, 2026-10-02 (tarde) — **D1.0 confirmado en *Actions* por Franco; D1 EN CURSO: pre-registro escrito, pasado por el `advisor` y commiteado antes de medir** (ver «D1 — pre-registro: los parámetros de $P_i$»). Antes, 2026-10-02 — **fase D en curso: protocolo walk-forward escrito, revisado por un revisor ciego (3 bloqueantes, 15 importantes y 11 menores, todos incorporados) y con cuatro decisiones de Franco (ficha de desvío point-in-time; un lote por ítem; δ en P_i y ψ en el motor detrás de bandera). D1.0 HECHO: la ficha de desvío es point-in-time en el motor y en el censo (lote completo: `97cc229`, `2fb23c4`, `c9a8e76`; checkout limpio con Python 3.11 en verde; a confirmar en *Actions*). Próximo: D1 (su pre-registro), en conversación nueva** (ver «Fase D — protocolo walk-forward y criterios pre-registrados» y «D1.0 — la ficha de desvío point-in-time»). Antes, 2026-10-01 — protocolo; 2026-09-30 — A1, A2 y A3 hechos (CI verde confirmado por Franco, también con los pines); A4 a A8 hechos; A9 hecho (Franco confirmó en *Actions*: los tres en verde); A10 hecho: **fase A CERRADA por Franco el 2026-09-30** (evidencia de salida abajo); **fase B en curso (2026-09-30): B1 hecho** (evidencia abajo); B2 hecho (evidencia abajo); B3 hecho: **fase B COMPLETA** (evidencia de salida en «Salida de la fase B»); **fase C en curso: C1 hecho** (2026-09-30, confirmado en *Actions* el 2026-10-01; evidencia en «C1 — la métrica de verdad con un solo comando»); **C2 hecho** (2026-10-01; evidencia en «C2 — la calibración declarada, por cámara y en mayoría simple»); **C3 hecho: fase C COMPLETA** (evidencia de salida en «Salida de la fase C»); **fase C confirmada en *Actions* por Franco (2026-10-01), que decidió: el guard de era se resuelve en D1 y el principal de la fase D es Opus** (ver «Decisiones de Franco al cierre de la fase C»); próximo: fase D, en conversación nueva (prompt en `PROMPT-NUEVA-CONVERSACION.md`).
+**Última actualización:** 2026-10-05 (noche) — **D2 EN CURSO: pre-registro escrito y pasado por el `advisor` antes de codificar y de medir** (ver «D2 — pre-registro»; la nota 8 de D1 queda confirmada: el estimador de ε₀/τ toma el offset del censo de V0). Antes, 2026-10-05 (tarde) — **D1 HECHO: Franco confirmó *Actions* en verde después del lote; aceptó que B3 vigile la brecha motor–control. Próximo: D2, en conversación nueva (prompt en `PROMPT-NUEVA-CONVERSACION.md`).** Antes, 2026-10-05 — **lote de D1 hecho: la ventana de la postura en 2.190 días en el motor; censo nuevo (692.715 votos) = el brazo 2.190 (max|Δp| = 0); re-anclas de B3 (ahora con la brecha motor–control anclada), C1 (skill 0,1527), C2, C3 (el guard se sostiene) y ε₀/τ; `QUE-SE-MIDE.md` al día. Falta: checkout limpio con 3.11 y la confirmación de Franco en *Actions* para dar D1 por HECHO; después, D2 en conversación nueva** (ver «D1 — lote»). Antes, 2026-10-03 (noche, después) — **Franco eligió (b): la ventana de la postura pasa a 2.190 días con el lote del punto 7 (en curso, en esta misma conversación); confirmó Actions en verde.** Antes: **D1 medido y revisado a ciegas; los dos veredictos coinciden: seis parámetros conservan V0 (D, C, D, D, Z, Z) y la ventana de la postura queda en F (alarma) → decide Franco entre conservar 730 (recomendado) o aceptar el mecanismo y recalibrar a 2.190 con lote** (ver «D1 — veredicto»). Antes, 2026-10-03 — **D1 EN CURSO: brazos, nueve censos de brazo, controles (todos cumplidos) y panel primario hechos y commiteados; todavía no se calculó ningún Δ** (ver «D1 — avance»). Próximo: `--medir`, el veredicto y la revisión ciega, en conversación nueva. Antes, 2026-10-02 (tarde) — **D1.0 confirmado en *Actions* por Franco; D1 EN CURSO: pre-registro escrito, pasado por el `advisor` y commiteado antes de medir** (ver «D1 — pre-registro: los parámetros de $P_i$»). Antes, 2026-10-02 — **fase D en curso: protocolo walk-forward escrito, revisado por un revisor ciego (3 bloqueantes, 15 importantes y 11 menores, todos incorporados) y con cuatro decisiones de Franco (ficha de desvío point-in-time; un lote por ítem; δ en P_i y ψ en el motor detrás de bandera). D1.0 HECHO: la ficha de desvío es point-in-time en el motor y en el censo (lote completo: `97cc229`, `2fb23c4`, `c9a8e76`; checkout limpio con Python 3.11 en verde; a confirmar en *Actions*). Próximo: D1 (su pre-registro), en conversación nueva** (ver «Fase D — protocolo walk-forward y criterios pre-registrados» y «D1.0 — la ficha de desvío point-in-time»). Antes, 2026-10-01 — protocolo; 2026-09-30 — A1, A2 y A3 hechos (CI verde confirmado por Franco, también con los pines); A4 a A8 hechos; A9 hecho (Franco confirmó en *Actions*: los tres en verde); A10 hecho: **fase A CERRADA por Franco el 2026-09-30** (evidencia de salida abajo); **fase B en curso (2026-09-30): B1 hecho** (evidencia abajo); B2 hecho (evidencia abajo); B3 hecho: **fase B COMPLETA** (evidencia de salida en «Salida de la fase B»); **fase C en curso: C1 hecho** (2026-09-30, confirmado en *Actions* el 2026-10-01; evidencia en «C1 — la métrica de verdad con un solo comando»); **C2 hecho** (2026-10-01; evidencia en «C2 — la calibración declarada, por cámara y en mayoría simple»); **C3 hecho: fase C COMPLETA** (evidencia de salida en «Salida de la fase C»); **fase C confirmada en *Actions* por Franco (2026-10-01), que decidió: el guard de era se resuelve en D1 y el principal de la fase D es Opus** (ver «Decisiones de Franco al cierre de la fase C»); próximo: fase D, en conversación nueva (prompt en `PROMPT-NUEVA-CONVERSACION.md`).
 **Dónde se trabaja:** `main`, commits chicos (uno por corrección), con la suite en verde **antes** de cada commit; sin `git push` (lo hace Franco). Los bots empujan a `main`: no se les toca el permiso. Rama sólo si una corrección no puede dejar la suite en verde entre commits (vida corta: se mergea en la misma sesión).
 **Punto de partida (para deshacer):** el tag local `auditoria-punto-de-partida` marca `main` antes de la primera corrección.
 
@@ -51,7 +51,7 @@ Método obligatorio: estimar con datos **anteriores** a *t* y evaluar **después
 | ítem | qué | estado |
 |---|---|---|
 | **D1** | **D1.0 HECHO (2026-10-02): la ficha de desvío es point-in-time en el motor y en el censo; lote completo y re-anclado (ver «D1.0 — la ficha de desvío point-in-time»); confirmado en *Actions* por Franco. D1 EN CURSO: pre-registro escrito y pasado por el `advisor` (ver «D1 — pre-registro: los parámetros de $P_i$»). Medido y revisado a ciegas el 2026-10-03 (los dos veredictos coinciden): k del récord D, `MIN_HIST` C, `MIN_VOTOS_FICHA` D, k de la postura D, origen Z, guard Z (se conserva prendido); ventana de la postura F (alarma: la mejora es un parche del hueco de Diputados 2020–23) → decide Franco (ver «D1 — veredicto»). Franco eligió (b) el 2026-10-03: la ventana pasa a 2.190 días; **lote completo hecho el 2026-10-05** (motor `34f2d14`; mediciones y re-anclas en «D1 — lote»; censo nuevo = brazo 2.190, max|Δp| = 0). Falta la confirmación en *Actions*.** Parámetros de $P_i$: `k_shrink` del récord y de la postura, ventana de 730 días, `MIN_HIST`, `MIN_VOTOS_FICHA`, granularidad del origen, guard de era. **Decisión de Franco (2026-10-01): el guard de era se resuelve acá**, con el brazo y el veredicto de C3 («no se distingue») como insumo. **Antes, D1.0 (decisión de Franco del 2026-10-01, opción (b) del protocolo): la ficha de desvío point-in-time, con su propio lote** | **HECHO** 2026-10-05 (lote de D1 confirmado en *Actions* por Franco; ver «D1 — lote») |
-| **D2** | Piso 0,02, ε₀ y τ | PENDIENTE |
+| **D2** | Piso 0,02, ε₀ y τ | **EN CURSO** (2026-10-05): pre-registro escrito, pasado por el `advisor` y commiteado antes de medir (ver «D2 — pre-registro: piso 0,02, ε₀ y τ») |
 | **D3** | β y δ (sobre el offset de D1). δ en P_i: re-estimado y aplicado detrás de bandera (decisión 3 de Franco, opción (a)) | PENDIENTE |
 | **D4** | θ y ψ (corregirlos y re-estimarlos). ψ implementado en el motor detrás de bandera apagada (decisión 4 de Franco, opción (a)) | PENDIENTE |
 | **D5** | Recheck de ε₀ y τ con β prendido | PENDIENTE |
@@ -1331,6 +1331,135 @@ Panel OOS del protocolo: Diputados desde 2006, Senado desde 2007: **576.270 voto
 **Suite y checkout limpio del lote.** PC: `pytest` **54**; los 66 scripts en 0 (`test_defaults_fijados` 58/58 después del desvío 14). **Checkout limpio de `c9624b4`** (`git archive`, venv Python **3.11.0** nuevo con los pines, sin ningún parquet del censo): `pytest` **53 pasan, 1 saltado** (el de frescura) y **los 66 `test_*.py` en 0**. **Criterio de salida de D1: cumplido** (veredicto revisado a ciegas; decisión de Franco; lote completo con su control «censo nuevo = brazo 2.190, max|Δp| = 0»). **Falta la confirmación de Franco en *Actions* para marcar D1 HECHO.**
 
 **Confirmación en *Actions* (2026-10-05):** Franco confirmó todo verde después del lote (sobre `bc0e5d5`, pusheado; `HEAD...origin/main` = 0 0). **D1 queda HECHO.** Próximo: D2 (piso 0,02, ε₀ y τ), en conversación nueva.
+
+### D2 — pre-registro: piso 0,02, ε₀ y τ (2026-10-05, escrito ANTES de codificar los brazos y de mirar ningún Δ; pasado por el `advisor`)
+
+**Estado de partida (verificado hoy):** `HEAD` `7cf9fd8`, `main`, árbol limpio; `git fetch`: `origin/main` en `bc0e5d5`, **`main` 1 adelante** (`7cf9fd8`, sólo documentación: «D1 HECHO»; **sin pushear**, lo pushea Franco) y 0 atrás; `python -m pytest tests/ datos/proyectos/tests -q` → **54 pasan**; el censo del 03-10 está en disco; 58,6 GB libres. **V0 de D2 = el motor después del lote de D1** (motor `34f2d14`; ventana de la postura 2.190): censo `censo_detalle_2026-10-03.parquet` (692.715 votos, 5.862 actas; sha256/16 `2b76688926893082`), estadísticos `censo_estadisticos_2026-10-03.json`, calibración por acta `calibracion_actas_2026-10-03.json` (5.858 actas de ≥ 20 votos). **V0 original** (se informa al lado) = el motor anterior a la fase D: `calibracion_actas_2026-09-28.json`, desde el censo del 28-09.
+
+**Qué es.** D2 decide tres parámetros de la capa 2 (piso, ε₀ y τ) y el mecanismo ε₀+τη contra el régimen del clip, con el protocolo de la fase D (puntos 1 a 8). Son **cinco contrastes primarios, m = 5** en Holm. **Este pre-registro no cambia ninguna regla del protocolo.** Donde el protocolo deja algo abierto, lo fija acá y lo dice («fijado acá»).
+
+**Lo que ya vi (no calculé ningún Δ de ninguna alternativa):**
+1. *Capa 2 en muestra con V0* (`calibracion_declarada.json` sobre el censo del 03-10, mayoría simple). Brier de P(aprobación): Diputados **0,0357** el modelo, 0,0241 la constante y **0,0244 el régimen del clip** (la columna `p_sin`: ε₀ = τ = 0); Senado 0,0173, 0,0149 y 0,0149. Log-loss del modelo contra el del clip: Diputados 0,166 contra 0,124; Senado 0,097 contra 0,079. Cobertura de la banda: Diputados 58,7%, Senado 66,3% (todas las actas, 63,5%). Sin τ, con el censo del 28-09: 14,8% (`tau_limpio_2026-09-28.json`). **De acá salen los signos esperados del mecanismo.**
+2. *ε₀ y τ en muestra con el offset de V0:* 0,035 (log-loss); τ sin ε₀ 1,1882, con ε₀ 1,156 (las cifras del lote de D1, reproducidas hoy; punto 1 a).
+3. *Fracción de las P_i del censo con mín(P_i, 1 − P_i) por debajo de cada piso* (sin `y`): < 0,01: 16,6% (114.748 votos) · < 0,02: 22,1% (153.154) · < 0,04: 33,2% (229.900) · < 0,08: 46,3% (320.376).
+4. *Las poblaciones* (punto 2) y el código: `ensemble.simular_con_guardas`, `agregador.simular_votacion`, `estimar_epsilon_tau.py` y `calibracion_declarada.py`.
+
+#### 1. Lo que hay que identificar antes de medir
+
+- **(a) Nota 8 de D1: confirmada.** `estimar_epsilon_tau.py` toma las P_i del censo que se le da: `panel_censo` con `--detalle` o los estadísticos con el JSON. Su `VENTANA_DIAS = 730` y su `K_SHRINK` sólo los usa `panel()`, es decir `--panel harness_viejo`, y D2 no lo usa. Medido hoy sobre el censo de V0, por los dos caminos: **692.715 votos, 5.862 actas, ε₀ 0,035, τ sin ε₀ 1,1882 (5.858 actas de ≥ 20 votos), τ con ε₀ 1,156**. Coincide con `ESPERADO_HOY` de `test_censo_estadisticos`. El runner de D2 lee las P_i de `censo_detalle_2026-10-03.parquet`, columna `p__estricta__general` (la de C2).
+- **(b) La variante de τ que produjo 1,19: `tau_mediana` sin ε₀** (el estimador con ε₀ = 0). La identifica el artefacto versionado de la re-estimación que fijó `TAU_DEFAULT` (ADR-0025, `modelo/ensemble/outputs/epsilon_tau_2026-09-16.json`): `tau_sin_epsilon` da **1,1899 → 1,19**; `tau_con_epsilon` da 1,1742. Con el offset de hoy pasa lo mismo: 1,1882 contra 1,156. **No se re-corre** `--panel harness_viejo`: desde el 16-09 cambiaron `perfil` (ADR-0034) y los datos, así que no se espera que dé exacto.
+- **(c) Fijado acá.** «Con ε₀ en V0» (fila de τ del §8) y «τ con el ε₀ del año» (fila del mecanismo) se refieren al **ε₀ con el que se simula junto con τ_Y**. **τ_Y se estima siempre con la variante (b).** Es la única lectura que deja coherentes las dos filas sea cual sea la variante, y es el procedimiento de producción del 16-09: τ sin ε₀, simulado con ε₀ = 0,035. Además se informa, sólo como descriptivo, la trayectoria de τ_Y estimado con ε₀_Y (la variante «con»); son momentos por acta y no requieren simular. Así el revisor ve si esta lectura importa.
+
+#### 2. Contrastes, grillas, paneles y lo que se espera (antes de medir)
+
+**Panel OOS de la capa 2.** Las actas de ≥ 20 votos emitidos de `calibracion_actas_2026-10-03.json`, de tipo SIMPLE, de Diputados desde 2006 y del Senado desde 2007:
+- **Brier de P(aprobación):** las que además tienen resultado oficial. Son **4.214 actas y 2.681 leyes** (Diputados 2.192, Senado 2.022; era vigente 507).
+- **Cobertura:** todas las SIMPLE, que es la población de la banda en C2: **4.230 actas**.
+
+Lo anterior al panel sólo entrena.
+
+| # | contraste | V0 · alternativa (extensión si toca el borde) | se elige o estima en entrenamiento con | pérdida del contraste | Δ esperado (signo · orden) |
+|---|---|---|---|---|---|
+| 1 | **piso** (`DESVIO_MIN_INDIVIDUAL`): WF contra V0 | 0,02 · grilla {0; 0,01; **0,02**; 0,04}; arriba se extiende a 0,08 y abajo no hay extensión. Se simula con ε₀ 0,035 y τ 1,19 | la suma de Brier de P(aprobación) en las actas SIMPLE con resultado del entrenamiento | Brier de P(aprobación), relativo | **≤ 0, \|Δ\| ≤ 3%**. P(aprobación) es subconfiada, y un piso más bajo deja P_i más extremas. El efecto está acotado porque ε₀ actúa después: el piso de p̃ pasa de 0,054 a 0,035. Lo más probable es que el WF elija 0 o 0,01; si cae en 0, es un borde no extensible y se dice |
+| 2 | **ε₀**: WF contra V0 | 0,035 · `estimar_epsilon`, el óptimo de log-loss en 0–0,30 cada 0,005 (arriba se extiende hasta 0,50 cada 0,005; abajo no). Se simula con τ 1,19 y piso 0,02 | log-loss de los votos del censo en las actas de entrenamiento, de todos los tipos (la población de V0) | Brier de P(aprobación), relativo | trayectoria cerca de 0,035 (0,02–0,06); **\|Δ\| ≤ 2%, signo incierto** (un ε₀ más alto da menos confianza y empeora) |
+| 3 | **τ**: WF contra V0 | 1,19 · `tau_mediana` en la variante (b). Se simula con ε₀ 0,035 (punto 1 c) y piso 0,02 | las actas de entrenamiento de ≥ 20 votos de todos los tipos (la población de V0) | error de cobertura \|c − 0,90\|, en pp | trayectoria 1,1–1,35; **\|Δ\| ≤ 3 pp, signo incierto** |
+| 4 | **mecanismo (i)**: WF contra el clip | ε₀_Y y τ_Y (la variante b) simulados juntos, piso 0,02 · régimen del clip: ε₀ = τ = 0, que activa solo `P_INCERTIDUMBRE` 0,01, piso 0,02 | lo de las filas 2 y 3 | Brier de P(aprobación), relativo | **> 0 y grande: +15% a +50%** (en muestra: Diputados +46%, Senado +16%, las dos +34%) → **B** |
+| 5 | **mecanismo (i′)**: ídem | ídem | ídem | error de cobertura, en pp | **≈ −40 a −55 pp** (el clip cubre ≈ 15%; V0, ≈ 63%) → **A** |
+
+- **Regla por término, lo esperado:** el mecanismo da A en (i′) y B en (i), que es el caso que el §6 llama A y B cruzados. **La salida esperada es E: no se cambia nada y va a Franco con las dos mediciones.**
+- **F no aplica en D2.** El paso 1 del árbol la define para la capa 1, y agregar una suspensión sería cambiar una regla. Los signos y órdenes de la tabla quedan escritos para el revisor ciego. La protección de D2 contra fugas es el control de invariancia de la selección (punto 4).
+- **Panel primario (punto 4 del protocolo).** Son las actas OOS donde alguna alternativa de la grilla final da una P (en los contrastes de Brier) o una banda (en los de cobertura) distinta de V0. Lo fija un paso que **no lee `y`**, y su resultado se commitea antes del paso que calcula los Δ. Lo esperado: en el piso, sólo actas con alguna P_i por debajo del piso más alto de la grilla; en ε₀, τ y el mecanismo, casi todo el panel, salvo los años en que el WF elija exactamente V0.
+
+#### 3. Cómo se mide
+
+1. **Un contraste por vez, con los otros en V0** (piso 0,02, ε₀ 0,035, τ 1,19, mecanismo prendido). El mecanismo mueve ε₀ y τ juntos.
+2. **Reajuste anual con ventana creciente** (punto 1 del protocolo). Para cada año *Y* de test (Diputados 2006–2026, Senado 2007–2026), el entrenamiento son las actas con fecha < 1-ene-*Y* de las dos cámaras (incluido lo anterior al panel OOS), **sin las actas de las leyes que tienen actas de test en *Y***. Se elige **un solo valor por año para las dos cámaras**. Si en un año el entrenamiento tiene < 20 actas o el ajuste falla, el término queda apagado ese año (ε₀ = 0, τ = 0, o el clip en el mecanismo) y se cuenta; se espera 0.
+3. **Empates** (diferencia de pérdida < 1e-12 relativa): **gana V0, de forma explícita.** No se usa el `idxmin` del estimador, que se queda con el valor más bajo. Si V0 no está entre los empatados, gana el más bajo. Esto vale para ε₀ y para el piso.
+4. **Orden fijo:** (a) la selección anual, sólo con el entrenamiento; (b) el borde: si en algún año el valor cae en un borde extensible, la grilla se extiende una vez y se rehacen todos los años; si vuelve a caer, se dice y no se extiende más; (c) la simulación de los brazos; (d) el panel primario, sin leer `y`, commiteado; (e) recién ahí los Δ.
+5. **Simulación** (punto 7 del protocolo):
+   - Se usa `calibracion_declarada.py --simular` generalizado: la columna, ε₀, τ y el piso se pasan como argumentos, cada uno con un valor o con `{año: valor}`, y el default es el motor de hoy.
+   - En todos los brazos, semilla 0 por acta. Son números aleatorios comunes: con τ > 0, η es el primer draw. Se usan 2.000 simulaciones para P y 1.000 para la banda, con `p_presente = 1` y `reparto_desvio = 1,0`, como en C2.
+   - Los brazos:
+     - **piso 0; 0,01; 0,04** (y 0,08 si hay extensión): P en **todas** las actas, porque las necesita la selección;
+     - **ε₀ WF:** P y banda;
+     - **τ WF:** banda, y P sólo como informativo;
+     - **mecanismo WF:** P y banda;
+     - **clip:** P y banda.
+6. **Estadística** (punto 5 del protocolo):
+   - **Brier:** ΔBrier relativo pareado, (alt − V0) / V0, sobre el panel primario; positivo = la alternativa empeora.
+   - **Cobertura (no es aditiva):** Δ = \|c_alt − 0,90\| − \|c_V0 − 0,90\|, en pp, con **las dos coberturas recalculadas en cada réplica**.
+   - IC 95% por ley y por mes: bootstrap de Poisson, 2.000 réplicas, semilla 7. El p de cada agrupamiento sale con la fórmula del protocolo, y **p\* = máx(p_ley; p_mes)**.
+   - **Holm a α = 0,05 sobre los cinco p\***. Un contraste en Z entra con p\* = 1 (m sigue siendo 5).
+   - Márgenes de equivalencia: ±1% (Brier) y ±1 pp (cobertura). MDE = 2,8 × el error estándar del agrupamiento más ancho.
+7. **Veto E (paso 3):** se evalúa sobre la era vigente (actas desde 2023-12-10) y sobre cada cámara, dentro del panel primario, con el IC por ley (como en D1). El IC por mes se informa al lado.
+8. **Las acciones** (§6; el mecanismo es un «término prendido»):
+   - **Fijado acá, la salida del mecanismo para la tabla de acciones:**
+     - E en cualquiera de los dos (el veto del paso 3) → **E**;
+     - A en un contraste y B en el otro → **E**;
+     - A con C, D o Z en el otro → **A**;
+     - B con C, D o Z en el otro → **B**;
+     - C en los dos → **C**; Z en los dos → **Z**;
+     - cualquier otra combinación → **D**.
+   - Las acciones para el mecanismo, con esa salida como (i):
+     - (i) A y (ii) A → **recalibrar** ε₀ y τ, cada uno sólo si su propio contraste (ii) da A;
+     - (i) B → **apagar la bandera** `INCERTIDUMBRE_LEGISLADOR` (el estimador y su código se conservan);
+     - (i) C → conservar V0 y presentarle a Franco que es equivalente a apagado;
+     - (i) D → conservar V0.
+   - **Si el mecanismo termina en E, no se aplica ninguno de los cinco contrastes, tampoco el del piso, y todo va a Franco con las mediciones.** *(Fijado acá. Motivo: el piso se mide con el mecanismo prendido, y si Franco decide otra cosa sobre el mecanismo, la medición del piso puede no describir el motor que resulte. No cambia la fila «hiperparámetro» del §6: sólo pospone su aplicación hasta la decisión de Franco.)*
+   - El piso es un hiperparámetro y sigue la fila «hiperparámetro» de la tabla del §6.
+9. **Confirmación conjunta:** si más de uno de los contrastes **que cambian un valor** da A (el piso, ε₀ (ii) y τ (ii); un A del mecanismo no mueve ningún valor: quiere decir que sigue prendido), se mide un brazo con el valor WF de cada año de cada parámetro en A, todos juntos, contra V0 y sin Holm.
+   - Se informan las dos pérdidas cuando alguno de los A es de cobertura.
+   - A → se adoptan todos.
+   - C o D → se adopta sólo el de menor p\*.
+   - B o E, o las dos pérdidas en sentidos opuestos → nada, y va a Franco.
+10. **Además se informa (no decide):**
+    - el Δ desde 2010;
+    - por cámara y por era;
+    - el AUC;
+    - **ε₀ en la capa 1**: Brier y log-loss de los votos OOS con ε₀_Y contra 0,035, con IC por ley;
+    - la trayectoria de τ_Y con ε₀_Y (punto 1 c);
+    - **contra V0 original**, sobre la intersección de actas con `calibracion_actas_2026-09-28.json`. En la capa 2, los valores de los parámetros de V0 y de V0 original son los mismos, así que ese Δ mide el cambio de offset de D1.0 y D1, no el parámetro.
+
+**Sesgos declarados.** ε₀ = 0,035 coincide con el óptimo en muestra del offset de hoy, y τ = 1,19 está a 0,002 del suyo: V0 se ajustó sobre este panel, y eso lo favorece en los contrastes (ii). El arranque del WF entrena con poco (punto 3 del protocolo).
+
+#### 4. Controles (antes de mirar ningún Δ; umbral: 0 fallas)
+
+| control | qué se exige |
+|---|---|
+| **la rama por defecto es el motor (control positivo del §7)** | el `--simular` generalizado, sin argumentos, reproduce **acta por acta y exacto** (P, `p_sin`, `b_lo`, `b_hi`, `b_medio`) `calibracion_actas_2026-10-03.json` desde su censo y **`calibracion_actas_2026-09-28.json` desde el censo del 28-09** (el detalle está en disco; es el que nombra el §7). Si el del 28-09 no da exacto, se escribe como desvío, con el motivo, antes de seguir |
+| **V0 explícito** | con ε₀ 0,035, τ 1,19 y piso 0,02 pasados como argumentos, y también con la forma `{año: valor de V0}`: idéntico al JSON del 03-10 |
+| **régimen del clip** | P con ε₀ = τ = 0 = la columna `p_sin` del JSON de V0, exacto |
+| **donde no puede actuar, max\|ΔP\| = 0** | piso: para cada valor *v*, las actas cuyas P_i cumplen todas mín(P_i, 1 − P_i) ≥ máx(*v*; 0,02) dan P y banda idénticas a V0 |
+| **invariancia de la selección** (la que hace de B2 en la capa 2; D2 no agrega insumos y las P_i del censo ya pasaron B2) | para cada año *Y* y cada uno de los tres estimadores: **corromper `y` (y con ella A y el resultado) en todas las actas con fecha ≥ 1-ene-*Y* y en las de las leyes con actas de test en *Y* no cambia el valor elegido para *Y***. **Control positivo:** corromper `y` en las actas de entrenamiento tiene que cambiar el valor elegido en algún año |
+| **piso anti-vacuidad** | cada control positivo y cada control de invariancia sólo cuenta si, en su muestra, el brazo da distinto que V0 en alguna acta (o la selección cambia, en el control positivo de la invariancia) |
+| **la regla, sobre tablas sintéticas** | `test_d2_capa2.py`: Z, A, B, C, D, E, A y B cruzados → E, empate → V0, borde, Holm, y **la fórmula del Δ de cobertura con su bootstrap** (dos coberturas recalculadas por réplica) |
+
+#### 5. Qué se construye y qué viaja por git
+
+- **`calibracion_declarada.py`:** los argumentos de `--simular` (la columna, ε₀, τ y el piso, con un valor o uno por año; el default es el motor de hoy). Sin argumentos se comporta igual que hoy y su JSON no cambia. Es instrumento de medición, no término.
+- **Un runner** `evaluacion/baseline/src/medir_d2_capa2.py`, con los pasos `--simular` (los brazos), `--controles`, `--panel` (sin `y`) y `--medir`. Sin argumentos, recalcula el veredicto desde git.
+- **Lo que viaja por git** (`evaluacion/baseline/outputs/d2_capa2.json`), por acta:
+  - **para las 5.862 actas del censo** (la población del estimador de ε₀ de V0, que incluye las 4 actas de menos de 20 votos): fecha, cámara y ley; **la suma de log-loss de sus votos en cada punto de la grilla de ε₀** (0–0,50 cada 0,005; las curvas de los estadísticos van por cámara, y excluir leyes año por año exige el nivel de acta); y n, A, Σp y Σp², que alcanzan para τ con cualquier ε₀;
+  - **para las 5.858 actas de ≥ 20 votos**: además, mes, tipo, `af` e `y`, y de cada brazo, P y si el recuento cae dentro de la banda.
+
+  Con eso, `test_d2_capa2.py` §3 recalcula en el CI la selección anual, el compuesto, los IC, los p, Holm y el veredicto, sin el detalle.
+- No se corren `resumen_censo_limpio.py` ni el `main()` de `medir_tau_limpio.py`. No se pisa ningún JSON versionado: los brazos se escriben en archivos nuevos y `--reemplazar` sólo actúa sobre archivos propios.
+
+#### 6. Revisión ciega, lote y lo que no hace
+
+- **Veredicto:** lo derivo yo con el árbol del §6, contraste por contraste, y después aplico las reglas del punto 3.8. **Revisión ciega (§11):** un subagente Opus que no ve mi veredicto recibe este pre-registro, el protocolo, el JSON **sin la clave `veredicto`**, los controles, el panel y los logs. Deriva el veredicto, audita los controles y escribe su informe en `resultados/D2_revision_ciega.md`. Si su veredicto difiere del mío, no se aplica nada y va a Franco.
+- **Lote, si algo cambia** (punto 7 del protocolo):
+  1. el código, con la presentación de ADR-0015 en tres niveles y `FORMULA-COMPLETA.md` en el mismo commit;
+  2. `registro_parametros.py --escribir`;
+  3. `perturbar_panel.py --medir`;
+  4. `panel_regresion.json`;
+  5. **el censo de votos no se mueve**: el piso, ε₀ y τ actúan después de P_i. En D2, la regla del paso 5 toma esta forma: **«`calibracion_actas` del motor nuevo = el brazo ganador, max|ΔP| = 0 acta por acta», con la banda incluida**;
+  6. las re-anclas: C2 cambia; B3, C1 y C3, y el ε₀/τ en muestra de `ESPERADO_HOY`, no deberían cambiar, porque las P_i son las mismas, y se verifica;
+  7. `QUE-SE-MIDE.md`.
+
+  Si nada cambia, no hay lote.
+- **Lo que no hace:** no toca el motor fuera del lote; no mide β, δ, θ, ψ ni el ICG; no cambia las P_i.
+- **Cómputo y PC:** cada pasada de simulación tarda ≈ 6–7 min (la de C2, con tres simulaciones por acta, tardó 6,4). En total son ≈ 10 pasadas más los controles: ≈ 1–1,5 h. Las corridas largas van con el lanzador desacoplado del lote de D1 y la PC sostenida despierta. Antes de cada una se miden la memoria libre y el disco.
 
 ## Bitácora de alcance
 

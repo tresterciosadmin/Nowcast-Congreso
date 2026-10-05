@@ -5,7 +5,7 @@
 > Decisiones y su porqué: `AUDITORIA-INTEGRAL-2026-09.md` §9. Reglas del carril: §9.9. Definición numérica de "funcionando": §9.4.
 > Estados: `PENDIENTE` · `EN CURSO` · `HECHO` (con la evidencia: comando y salida, o sha del commit) · `DESCARTADO` (con el motivo escrito y la firma de Franco).
 
-**Última actualización:** 2026-10-05 (cierre del día) — **CAMBIO DE ALCANCE de Franco: entra D2.0, la revisión de las actas de la canónica; D2 queda en pausa hasta entonces** (ver la bitácora de alcance). El récord individual por tema y el multitema, y la medición de pivotes y posturas de bloque, van al estacionamiento **para el final de la auditoría** (decisión de Franco): ahí se ve cómo se rediseñan y se incorporan. Antes, 2026-10-05 (noche, más tarde) — **D2 medido y revisado a ciegas; los dos veredictos coinciden: piso A, ε₀ A, τ B, mecanismo (i) B y (i′) A → E: no se aplica nada, decide Franco entre (a) conservar todo (recomendado), (b) apagar el mecanismo o (c) piso 0 con confirmación conjunta** (ver «D2 — veredicto»). Antes, 2026-10-05 (noche, después) — **D2 EN CURSO: simulador generalizado (reproduce acta por acta los JSON del 03-10 y del 28-09), brazos, selección anual, controles (todos cumplidos) y panel primario fijado sin leer `y`; todavía no se calculó ningún Δ** (ver «D2 — avance»). Antes, 2026-10-05 (noche) — **D2 EN CURSO: pre-registro escrito y pasado por el `advisor` antes de codificar y de medir** (ver «D2 — pre-registro»; la nota 8 de D1 queda confirmada: el estimador de ε₀/τ toma el offset del censo de V0). Antes, 2026-10-05 (tarde) — **D1 HECHO: Franco confirmó *Actions* en verde después del lote; aceptó que B3 vigile la brecha motor–control. Próximo: D2, en conversación nueva (prompt en `PROMPT-NUEVA-CONVERSACION.md`).** Antes, 2026-10-05 — **lote de D1 hecho: la ventana de la postura en 2.190 días en el motor; censo nuevo (692.715 votos) = el brazo 2.190 (max|Δp| = 0); re-anclas de B3 (ahora con la brecha motor–control anclada), C1 (skill 0,1527), C2, C3 (el guard se sostiene) y ε₀/τ; `QUE-SE-MIDE.md` al día. Falta: checkout limpio con 3.11 y la confirmación de Franco en *Actions* para dar D1 por HECHO; después, D2 en conversación nueva** (ver «D1 — lote»). Antes, 2026-10-03 (noche, después) — **Franco eligió (b): la ventana de la postura pasa a 2.190 días con el lote del punto 7 (en curso, en esta misma conversación); confirmó Actions en verde.** Antes: **D1 medido y revisado a ciegas; los dos veredictos coinciden: seis parámetros conservan V0 (D, C, D, D, Z, Z) y la ventana de la postura queda en F (alarma) → decide Franco entre conservar 730 (recomendado) o aceptar el mecanismo y recalibrar a 2.190 con lote** (ver «D1 — veredicto»). Antes, 2026-10-03 — **D1 EN CURSO: brazos, nueve censos de brazo, controles (todos cumplidos) y panel primario hechos y commiteados; todavía no se calculó ningún Δ** (ver «D1 — avance»). Próximo: `--medir`, el veredicto y la revisión ciega, en conversación nueva. Antes, 2026-10-02 (tarde) — **D1.0 confirmado en *Actions* por Franco; D1 EN CURSO: pre-registro escrito, pasado por el `advisor` y commiteado antes de medir** (ver «D1 — pre-registro: los parámetros de $P_i$»). Antes, 2026-10-02 — **fase D en curso: protocolo walk-forward escrito, revisado por un revisor ciego (3 bloqueantes, 15 importantes y 11 menores, todos incorporados) y con cuatro decisiones de Franco (ficha de desvío point-in-time; un lote por ítem; δ en P_i y ψ en el motor detrás de bandera). D1.0 HECHO: la ficha de desvío es point-in-time en el motor y en el censo (lote completo: `97cc229`, `2fb23c4`, `c9a8e76`; checkout limpio con Python 3.11 en verde; a confirmar en *Actions*). Próximo: D1 (su pre-registro), en conversación nueva** (ver «Fase D — protocolo walk-forward y criterios pre-registrados» y «D1.0 — la ficha de desvío point-in-time»). Antes, 2026-10-01 — protocolo; 2026-09-30 — A1, A2 y A3 hechos (CI verde confirmado por Franco, también con los pines); A4 a A8 hechos; A9 hecho (Franco confirmó en *Actions*: los tres en verde); A10 hecho: **fase A CERRADA por Franco el 2026-09-30** (evidencia de salida abajo); **fase B en curso (2026-09-30): B1 hecho** (evidencia abajo); B2 hecho (evidencia abajo); B3 hecho: **fase B COMPLETA** (evidencia de salida en «Salida de la fase B»); **fase C en curso: C1 hecho** (2026-09-30, confirmado en *Actions* el 2026-10-01; evidencia en «C1 — la métrica de verdad con un solo comando»); **C2 hecho** (2026-10-01; evidencia en «C2 — la calibración declarada, por cámara y en mayoría simple»); **C3 hecho: fase C COMPLETA** (evidencia de salida en «Salida de la fase C»); **fase C confirmada en *Actions* por Franco (2026-10-01), que decidió: el guard de era se resuelve en D1 y el principal de la fase D es Opus** (ver «Decisiones de Franco al cierre de la fase C»); próximo: fase D, en conversación nueva (prompt en `PROMPT-NUEVA-CONVERSACION.md`).
+**Última actualización:** 2026-10-05 (noche, D2.0) — **D2.0 EN CURSO: pre-registro escrito y pasado por el `advisor`; la regla de clasificación de las actas (código, sólo lee el título) commiteada con él antes de cruzar ninguna clase con el resultado; la muestra de validación la etiqueta un Opus ciego y Franco revisa los desacuerdos** (ver «D2.0 — pre-registro»). Antes, 2026-10-05 (cierre del día) — **CAMBIO DE ALCANCE de Franco: entra D2.0, la revisión de las actas de la canónica; D2 queda en pausa hasta entonces** (ver la bitácora de alcance). El récord individual por tema y el multitema, y la medición de pivotes y posturas de bloque, van al estacionamiento **para el final de la auditoría** (decisión de Franco): ahí se ve cómo se rediseñan y se incorporan. Antes, 2026-10-05 (noche, más tarde) — **D2 medido y revisado a ciegas; los dos veredictos coinciden: piso A, ε₀ A, τ B, mecanismo (i) B y (i′) A → E: no se aplica nada, decide Franco entre (a) conservar todo (recomendado), (b) apagar el mecanismo o (c) piso 0 con confirmación conjunta** (ver «D2 — veredicto»). Antes, 2026-10-05 (noche, después) — **D2 EN CURSO: simulador generalizado (reproduce acta por acta los JSON del 03-10 y del 28-09), brazos, selección anual, controles (todos cumplidos) y panel primario fijado sin leer `y`; todavía no se calculó ningún Δ** (ver «D2 — avance»). Antes, 2026-10-05 (noche) — **D2 EN CURSO: pre-registro escrito y pasado por el `advisor` antes de codificar y de medir** (ver «D2 — pre-registro»; la nota 8 de D1 queda confirmada: el estimador de ε₀/τ toma el offset del censo de V0). Antes, 2026-10-05 (tarde) — **D1 HECHO: Franco confirmó *Actions* en verde después del lote; aceptó que B3 vigile la brecha motor–control. Próximo: D2, en conversación nueva (prompt en `PROMPT-NUEVA-CONVERSACION.md`).** Antes, 2026-10-05 — **lote de D1 hecho: la ventana de la postura en 2.190 días en el motor; censo nuevo (692.715 votos) = el brazo 2.190 (max|Δp| = 0); re-anclas de B3 (ahora con la brecha motor–control anclada), C1 (skill 0,1527), C2, C3 (el guard se sostiene) y ε₀/τ; `QUE-SE-MIDE.md` al día. Falta: checkout limpio con 3.11 y la confirmación de Franco en *Actions* para dar D1 por HECHO; después, D2 en conversación nueva** (ver «D1 — lote»). Antes, 2026-10-03 (noche, después) — **Franco eligió (b): la ventana de la postura pasa a 2.190 días con el lote del punto 7 (en curso, en esta misma conversación); confirmó Actions en verde.** Antes: **D1 medido y revisado a ciegas; los dos veredictos coinciden: seis parámetros conservan V0 (D, C, D, D, Z, Z) y la ventana de la postura queda en F (alarma) → decide Franco entre conservar 730 (recomendado) o aceptar el mecanismo y recalibrar a 2.190 con lote** (ver «D1 — veredicto»). Antes, 2026-10-03 — **D1 EN CURSO: brazos, nueve censos de brazo, controles (todos cumplidos) y panel primario hechos y commiteados; todavía no se calculó ningún Δ** (ver «D1 — avance»). Próximo: `--medir`, el veredicto y la revisión ciega, en conversación nueva. Antes, 2026-10-02 (tarde) — **D1.0 confirmado en *Actions* por Franco; D1 EN CURSO: pre-registro escrito, pasado por el `advisor` y commiteado antes de medir** (ver «D1 — pre-registro: los parámetros de $P_i$»). Antes, 2026-10-02 — **fase D en curso: protocolo walk-forward escrito, revisado por un revisor ciego (3 bloqueantes, 15 importantes y 11 menores, todos incorporados) y con cuatro decisiones de Franco (ficha de desvío point-in-time; un lote por ítem; δ en P_i y ψ en el motor detrás de bandera). D1.0 HECHO: la ficha de desvío es point-in-time en el motor y en el censo (lote completo: `97cc229`, `2fb23c4`, `c9a8e76`; checkout limpio con Python 3.11 en verde; a confirmar en *Actions*). Próximo: D1 (su pre-registro), en conversación nueva** (ver «Fase D — protocolo walk-forward y criterios pre-registrados» y «D1.0 — la ficha de desvío point-in-time»). Antes, 2026-10-01 — protocolo; 2026-09-30 — A1, A2 y A3 hechos (CI verde confirmado por Franco, también con los pines); A4 a A8 hechos; A9 hecho (Franco confirmó en *Actions*: los tres en verde); A10 hecho: **fase A CERRADA por Franco el 2026-09-30** (evidencia de salida abajo); **fase B en curso (2026-09-30): B1 hecho** (evidencia abajo); B2 hecho (evidencia abajo); B3 hecho: **fase B COMPLETA** (evidencia de salida en «Salida de la fase B»); **fase C en curso: C1 hecho** (2026-09-30, confirmado en *Actions* el 2026-10-01; evidencia en «C1 — la métrica de verdad con un solo comando»); **C2 hecho** (2026-10-01; evidencia en «C2 — la calibración declarada, por cámara y en mayoría simple»); **C3 hecho: fase C COMPLETA** (evidencia de salida en «Salida de la fase C»); **fase C confirmada en *Actions* por Franco (2026-10-01), que decidió: el guard de era se resuelve en D1 y el principal de la fase D es Opus** (ver «Decisiones de Franco al cierre de la fase C»); próximo: fase D, en conversación nueva (prompt en `PROMPT-NUEVA-CONVERSACION.md`).
 **Dónde se trabaja:** `main`, commits chicos (uno por corrección), con la suite en verde **antes** de cada commit; sin `git push` (lo hace Franco). Los bots empujan a `main`: no se les toca el permiso. Rama sólo si una corrección no puede dejar la suite en verde entre commits (vida corta: se mergea en la misma sesión).
 **Punto de partida (para deshacer):** el tag local `auditoria-punto-de-partida` marca `main` antes de la primera corrección.
 
@@ -52,7 +52,7 @@ Método obligatorio: estimar con datos **anteriores** a *t* y evaluar **después
 |---|---|---|
 | **D1** | **D1.0 HECHO (2026-10-02): la ficha de desvío es point-in-time en el motor y en el censo; lote completo y re-anclado (ver «D1.0 — la ficha de desvío point-in-time»); confirmado en *Actions* por Franco. D1 EN CURSO: pre-registro escrito y pasado por el `advisor` (ver «D1 — pre-registro: los parámetros de $P_i$»). Medido y revisado a ciegas el 2026-10-03 (los dos veredictos coinciden): k del récord D, `MIN_HIST` C, `MIN_VOTOS_FICHA` D, k de la postura D, origen Z, guard Z (se conserva prendido); ventana de la postura F (alarma: la mejora es un parche del hueco de Diputados 2020–23) → decide Franco (ver «D1 — veredicto»). Franco eligió (b) el 2026-10-03: la ventana pasa a 2.190 días; **lote completo hecho el 2026-10-05** (motor `34f2d14`; mediciones y re-anclas en «D1 — lote»; censo nuevo = brazo 2.190, max|Δp| = 0). Falta la confirmación en *Actions*.** Parámetros de $P_i$: `k_shrink` del récord y de la postura, ventana de 730 días, `MIN_HIST`, `MIN_VOTOS_FICHA`, granularidad del origen, guard de era. **Decisión de Franco (2026-10-01): el guard de era se resuelve acá**, con el brazo y el veredicto de C3 («no se distingue») como insumo. **Antes, D1.0 (decisión de Franco del 2026-10-01, opción (b) del protocolo): la ficha de desvío point-in-time, con su propio lote** | **HECHO** 2026-10-05 (lote de D1 confirmado en *Actions* por Franco; ver «D1 — lote») |
 | **D2** | Piso 0,02, ε₀ y τ | **EN CURSO** (2026-10-05): pre-registro escrito, pasado por el `advisor` y commiteado antes de medir (ver «D2 — pre-registro: piso 0,02, ε₀ y τ»); simulador generalizado, brazos, selección, controles (todos cumplidos) y panel hechos (ver «D2 — avance»). **Medido y revisado a ciegas (los dos veredictos coinciden): piso A, ε₀ A (su final es V0), τ B, mecanismo (i) B y (i′) A → el mecanismo termina en E: no se aplica nada → decide Franco** (ver «D2 — veredicto») |
-| **D2.0** | **Revisión de las actas de la base canónica** (cambio de alcance del 2026-10-05, ver la bitácora): qué es cada acta (votación en general, artículo en particular, moción u otra), resultado, tipo de mayoría y si faltan rechazos por fuente y año; qué cambia de lo medido en C2, D1 y D2. Pre-registro antes de medir, como todo ítem | PENDIENTE |
+| **D2.0** | **Revisión de las actas de la base canónica** (cambio de alcance del 2026-10-05, ver la bitácora): qué es cada acta (votación en general, artículo en particular, moción u otra), resultado, tipo de mayoría y si faltan rechazos por fuente y año; qué cambia de lo medido en C2, D1 y D2. Pre-registro antes de medir, como todo ítem | **EN CURSO** (2026-10-05): pre-registro escrito, pasado por el `advisor` y commiteado con la regla de clasificación antes de cruzar ninguna clase con el resultado (ver «D2.0 — pre-registro»). La muestra la etiqueta un Opus ciego y Franco revisa los desacuerdos (decisión de Franco) |
 | **D3** | β y δ (sobre el offset de D1). δ en P_i: re-estimado y aplicado detrás de bandera (decisión 3 de Franco, opción (a)) | PENDIENTE |
 | **D4** | θ y ψ (corregirlos y re-estimarlos). ψ implementado en el motor detrás de bandera apagada (decisión 4 de Franco, opción (a)) | PENDIENTE |
 | **D5** | Recheck de ε₀ y τ con β prendido | PENDIENTE |
@@ -1606,6 +1606,283 @@ Las opciones:
 - **PC:** `pytest` **54**; los **67** `test_*.py` en 0.
 - **Checkout limpio de `e0e5e6c`** (`git archive`, venv Python **3.11.0** nuevo con los pines, sin ningún parquet ni archivo ignorado): `pytest` **53 pasan y 1 saltado** (el de frescura, como siempre); **los 67 `test_*.py` en 0**, incluido el ancla de D2 (`test_d2_capa2.py` §3 recalcula el veredicto sólo desde git).
 - Falta la confirmación de Franco en *Actions* y su decisión (a), (b) o (c).
+
+### D2.0 — pre-registro: la revisión de las actas de la canónica (2026-10-05, escrito ANTES de cruzar ninguna clase con el resultado y de medir nada; pasado por el `advisor`)
+
+**Estado de partida (verificado hoy).**
+- **Repo:** `HEAD` `58f1ee9`, `main`, árbol limpio. `git fetch`: `origin/main` en `2ed3367`; **`main` 5 adelante** (`b0fbf04` … `58f1ee9`, los commits de D2 y del cambio de alcance; **sin pushear, los pushea Franco**) y 0 atrás.
+- **Suite:** `pytest` **54 pasan**; los **67** `test_*.py` (bucle de `tests.yml`) en 0. Con el test nuevo de D2.0 pasan a **68**.
+- **Disco:** 50 GB libres. Cada corrida de la suite suma ≈ 87 MB en `%TEMP%` (estacionamiento, 2026-10-05).
+- **Canónica:** `actas_canonico.parquet` sha256/16 `fda52f44d2f51240`; `votos_canonico.parquet` `faf3aa65b1a26f82`. Las dos tocadas por última vez en `f11fc7c` (10-09), antes del censo del 03-10. El bot no la escribe: sólo abre un *issue* `canonica-pendiente`.
+
+**Lo que no coincide con el pedido de Franco** (son cifras, no cambian el ítem):
+1. `tipo_mayoria` tiene **20 textos distintos no nulos y 21 nulos**, no «11 variantes y 21 nulos». Uno de los 20 es el texto vacío (15 actas, todas de `argentinadatos` Senado). **Lo desconocido son 36 actas, no 21**, y las 36 caen hoy a SIMPLE.
+2. `resultado` está escrito de **15 formas**, no 11. Las que faltaban: «NEGATIVO - LEV. VOT.» 1 y «NEGATIVO - EMPATE» 1. Con ellas el total da 5.998; las que listó Franco suman 5.996.
+3. La canónica tiene **14 columnas** contando `schema_version`.
+
+**Qué es.** Lo pidió Franco con `CAMBIO DE ALCANCE:` el 2026-10-05 (bitácora). D2.0 revisa las actas de la base canónica en cinco frentes:
+- qué es cada acta;
+- su resultado;
+- su tipo de mayoría;
+- si faltan rechazos, por fuente y año;
+- qué cambia de lo medido en C2 y en la lectura de D2.
+
+**D2.0 mide e informa. No corrige ningún dato de `datos/canonica`** (regla de Franco: es la fuente de todo y los bots escriben ahí):
+- toda corrección va como **propuesta** a `resultados/D2_0_propuestas.csv`, con las columnas `acta_id`, campo, valor actual, valor propuesto y evidencia;
+- la «base revisada» es una **máscara** que arma el runner: nunca se escribe en la canónica;
+- **D2 sigue en pausa**: D2.0 dice si su salida cambia sobre la base revisada, y no decide nada de D2;
+- no toca el motor.
+
+**Lo que ya vi (no crucé ninguna clase con el resultado):**
+1. La tabla gruesa de Franco del 2026-10-05: clase por regex contra rechazadas. Es la única mirada al resultado por tipo de acta.
+2. La distribución de `resultado`, de `tipo_mayoria` (también tipo por fuente), de las actas por año y fuente y de la falta de expediente por fuente. **`argentinadatos` no trae expediente en ninguna acta**; `decada_votada` no lo trae en el 64%, `senado` en el 67% y `ckan_diputados` en el 12%. **`manual_2026` (17 actas) no tiene fecha.**
+3. **Muestras de títulos de cada fuente y de cada subtipo**, para escribir la regla. De ahí salieron tres cosas:
+   - la fuente `senado` marca `[EN PARTICULAR]` en 680 de sus 749 actas, también en votaciones únicas de una ley entera, en acuerdos y en DNU;
+   - en `decada_votada` Senado el título trae una cola «OBSERVACIONES: SOBRE TABLAS…» que describe el trámite y **a veces el resultado** («SE RECHAZA»);
+   - los disparadores sueltos «sobre tablas», «preferencia», «emplazamiento» y «cámara en comisión» aparecen en títulos de leyes;
+   - **un artículo de otra norma** («modifica el art. 3º de la ley 25.413», «art. 81 CN») mandaba a PARTICULAR la votación de una ley entera. Lo mostró un barrido sólo de títulos (84 casos con esa forma), y la regla lo corrige. Otro barrido («EN GENERAL» seguido de un nombre, como «General Pico») no mostró errores sistemáticos.
+4. El código del dedup de la canónica (`build.py`). Ya descarta las gemelas «misma cámara, misma fecha, mismo recuento exacto, ≥ 40 votos»; no ve las de recuento casi igual. `_sources/` (las fuentes antes del dedup) **no viaja por git** y sus archivos son del 11-09, posteriores al último commit de la canónica.
+5. El umbral del motor (`agregador.umbral_aprobacion`, con `emitidos = afirmativos + negativos`) y la normalización `definiciones.normalizar_mayoria_valor`.
+
+#### 1. Qué es cada acta: la regla, escrita antes de mirar resultados
+
+- **La regla es código:** `evaluacion/baseline/src/clasificar_actas_d2_0.py`, que se commitea con este pre-registro. Su docstring es el texto de la regla.
+  - **Entradas:** sólo `acta_id`, `camara`, `fecha`, `titulo` y `fuente`. Nunca resultado, tipo ni conteos.
+  - **Clases:** las cuatro de Franco (**GENERAL, PARTICULAR, MOCION, OTRA**), con un subtipo que dice qué regla decidió.
+  - **Orden:** la primera regla que se cumple.
+    1. moción o procedimiento;
+    2. lo que no es votar una ley: acuerdos y pliegos, decretos, juicio político, insistencia, internos;
+    3. «en general y en particular» en una votación;
+    4. «en general»;
+    5. «en particular», o un artículo, capítulo, título o inciso (no cuenta el de otra norma);
+    6. en conjunto, resolución o declaración, y los títulos que son sólo un recuento;
+    7. la marca del Senado, emparejada con su `[EN GENERAL]` de la misma sesión;
+    8. el resto: un título único en la sesión → GENERAL; repetido → OTRA.
+  - **El título se corta en «OBSERVACIONES»** antes de las reglas, por lo del punto 3 de arriba.
+- **Resultado sobre la canónica (congelado):** **GENERAL 3.223 · PARTICULAR 1.803 · MOCION 425 · OTRA 547.** Por subtipo; los marcados con † son **inferidos**: la regla los decide por la estructura de la sesión o por la marca de la fuente, no por una palabra del título:
+
+  | clase | subtipos (actas) |
+  |---|---|
+  | GENERAL | `general_y_particular` 1.570 · `general` 812 · `unica_sin_marca` † 479 · `senado_votacion_unica` † 332 · `senado_tag_general` 30 |
+  | PARTICULAR | `particular` 1.792 · `senado_particular_tras_general` † 11 |
+  | MOCION | `procedimiento` 425 |
+  | OTRA | `conjunto` 162 · `acuerdo_pliego` 140 · `decreto` 67 · `repetida_sin_marca` † 55 · `insistencia` 48 · `resolucion_declaracion` 29 · `juicio_desafuero` 24 · `interno` 17 · `sin_titulo` 5 |
+
+- **`evaluacion/baseline/tests/test_d2_0_actas.py` §1** fija la regla:
+  - 27 títulos sintéticos;
+  - barajar resultado, tipo, conteos y expediente no cambia ninguna clase;
+  - corre con sólo las cinco columnas;
+  - es determinista;
+  - fija los conteos sobre la canónica de sha `fda52f44d2f51240`. Si la canónica cambia, el ancla no aplica y se dice.
+- **Ninguna clase se cruza con `resultado` hasta que la validación (punto 2) esté commiteada.** La regla no se toca después de ver resultados. La única revisión permitida es la del punto 2.
+
+#### 2. La validación con una muestra a mano (decisión de Franco: Opus ciego y Franco revisa los desacuerdos)
+
+- **Muestra: 260 actas**, con semilla `default_rng(20261005)`, estratificada por **subtipo de la regla**. Los inferidos (†) van sobremuestreados para poder medirlos aparte. Reparto fijo por subtipo:
+
+  | clase (total) | subtipo: actas de la muestra |
+  |---|---|
+  | GENERAL (80) | `general` 14 · `general_y_particular` 18 · `senado_tag_general` 4 · `unica_sin_marca` † 24 · `senado_votacion_unica` † 20 |
+  | PARTICULAR (65) | `particular` 57 (la fuente `senado` ≥ 8) · `senado_particular_tras_general` † 8 |
+  | MOCION (55) | `procedimiento` 55 (la fuente `senado`: las 3) |
+  | OTRA (60) | `conjunto` 11 · `acuerdo_pliego` 10 · `decreto` 7 · `repetida_sin_marca` † 7 · `insistencia` 6 · `resolucion_declaracion` 5 · `juicio_desafuero` 5 · `interno` 5 · `sin_titulo` 4 |
+
+  - **Dentro de cada subtipo, el reparto entre fuentes** es proporcional, por restos mayores, con al menos 1 por fuente no vacía si alcanza.
+  - El reparto se calculó hoy: entra en todas las celdas.
+- **El paquete del etiquetador**, en orden al azar, trae:
+  - `acta_id`, cámara, fecha, fuente, **título completo** y expediente;
+  - **el contexto de la sesión:** los otros títulos de la misma cámara y fecha, tapados igual, ordenados por el número del `acta_id` (hasta 30 antes y 30 después), con el acta a etiquetar marcada. Se avisa que ese orden **puede no ser el de la sesión**. No agrega ningún resultado: sin él, los subtipos inferidos no se pueden etiquetar;
+  - lo que delata el resultado, tapado con `[…]`: las frases de recuento enteras (`\d+ AFIRMATIVOS`, `\d+ NEGATIVOS`, `\d+ ABSTENCIONES`, `\d+ AUSENTES`) y las palabras `AFIRMATIV…`, `NEGATIV…`, «SE RECHAZA», «SE APRUEBA», `APROBAD[OA]` y `RECHAZAD…`. Se informa cuántos títulos se taparon.
+
+  **No trae** la clase de la regla, el tipo, los conteos ni el resultado. Trae **las definiciones en prosa, no la regla.** Las definiciones son:
+  - *GENERAL:* la votación de una ley o proyecto **como un todo**, «en general» o «en general y en particular en una sola votación»; o el único voto de un proyecto cuando el título no dice más;
+  - *PARTICULAR:* la votación de **una parte** de una ley (uno o varios artículos, capítulos o títulos, o la incorporación de uno nuevo) después de la general;
+  - *MOCION:* una votación **de procedimiento**: apartamiento del reglamento, habilitación del tratamiento sobre tablas, preferencia, emplazamiento, moción de orden, vuelta o pase a comisión, reconsideración, cuarto intermedio, cuestión de privilegio, plan de labor;
+  - *OTRA:* cualquier otra cosa: acuerdos y pliegos, validez o rechazo de decretos, juicio político o desafuero, insistencia o aceptación de modificaciones, licencias y asuntos internos, resoluciones y declaraciones, votaciones en conjunto de varios proyectos;
+  - *INDETERMINABLE:* el título no alcanza para decidir.
+- **El etiquetador** es un subagente Opus **distinto** del revisor ciego del §11. Etiqueta a ciegas y escribe su archivo apenas termina.
+- **La revisión de Franco.** Recibe una planilla con el título, el mismo contexto de sesión, la etiqueta de la regla y la del etiquetador, **sin resultado**. Revisa:
+  - **todos los desacuerdos**, incluidos los que el etiquetador marcó INDETERMINABLE;
+  - **un 10% al azar de los acuerdos**, con un mínimo de 3 por clase.
+
+  **Escalada:** si en los acuerdos revisados de una clase Franco encuentra **más de un** error, revisa todos los acuerdos de esa clase. En las filas que revisó, la verdad es la etiqueta de Franco; en el resto, el acuerdo.
+- **Métricas** (el muestreo no es proporcional, así que todo se pondera por el tamaño de cada subtipo en la canónica dividido por su muestra):
+  - **precisión por subtipo:** acierta / etiquetadas, sin las INDETERMINABLE, con el IC de Wilson al 95%;
+  - **precisión por clase de la regla:** el promedio de sus subtipos ponderado por su tamaño, con IC de Wilson sobre el n efectivo de Kish;
+  - **la precisión de los subtipos explícitos y la de los inferidos (†), por separado**;
+  - **exhaustividad por clase verdadera**, con los mismos pesos. Se informa con su IC;
+  - **exactitud global ponderada;**
+  - la matriz de confusión, ponderada y cruda;
+  - la fracción de INDETERMINABLE por subtipo.
+- **Umbral (fijado ahora):** **precisión de clase de GENERAL, PARTICULAR y MOCION ≥ 0,90 como estimación puntual y con el extremo inferior de Wilson ≥ 0,80**, y exactitud global ponderada ≥ 0,90. OTRA es el resto: se informa, sin umbral. La exhaustividad se informa, sin umbral.
+  - **Subtipo inferido «no validado».** Si un subtipo inferido tiene **más del 20% de INDETERMINABLE aun con el contexto de sesión** (en la verdad final), se declara «no validado». Desde ahí, todo corte por clase se muestra **con y sin** ese subtipo.
+  - *Por qué pesa la precisión:* unas pocas mociones dentro de GENERAL o de PARTICULAR (Franco estimó que en las mociones se rechaza ≈ la mitad) mueven mucho su tasa de rechazo.
+- **Si no pasa:**
+  1. **una sola revisión** de la regla, con sólo los títulos de la muestra y los desacuerdos;
+  2. una **muestra nueva** con el mismo diseño, sin las actas ya muestreadas;
+  3. etiquetado y revisión otra vez.
+
+  Si vuelve a fallar, esa clase se declara **«no confiable»**: sus cortes se informan como descriptivos con la matriz de confusión, y lo demás de D2.0 sigue (resultado, tipo y rechazos no dependen de la clase).
+
+#### 3. El resultado: unificado y contrastado con los conteos
+
+- **Unificación** (las 15 formas, cobertura 100%):
+
+  | forma cruda | unificado |
+  |---|---|
+  | AFIRMATIVO · afirmativo · afirmativa | **AFIRMATIVO** |
+  | NEGATIVO · negativo · negativa | **NEGATIVO** |
+  | EMPATE · «NEGATIVO - EMPATE» | EMPATE |
+  | «NEGATIVO - CANCELADA LEV.VOT.» · «cancelada lev.vot.» · «NEGATIVO - LEV. VOT.» | CANCELADA |
+  | «NEGATIVO - AUSENTE» | AUSENTE |
+  | `''` · nulo | VACIO |
+
+  *(Hoy C2 ya deja fuera del Brier todo lo que no es afirmativo o negativo, pero lo cuenta en la cobertura de la banda.)*
+- **Conteos.**
+  - Se comparan los declarados del acta (`n_afirmativos`, `n_negativos`, `n_abstenciones`, `n_ausentes`) con el recuento desde `votos_canonico`, y se informa la concordancia.
+  - Para el contraste se usan **los declarados**; si faltan, el recuento, y se dice cuál se usó.
+- **El contraste**, con el umbral del motor importado (`agregador.umbral_aprobacion` y `afirmativos ≥ umbral`; no se reimplementa). Cada acta AFIRMATIVO o NEGATIVO cae en una de cuatro:
+  - **(a) cuadra** con el umbral de su tipo unificado (punto 4), sobre la base que ese tipo declara (emitidos, presentes = af + neg + abst, o miembros del cuerpo);
+  - **(b) no cuadra con su tipo, pero sí con otro** de {SIMPLE, ABSOLUTA, DOS_TERCIOS, DOS_TERCIOS_CUERPO, TRES_CUARTOS} o con otra base → **problema de tipo**. Es la trampa de las mociones: muchas piden dos tercios por reglamento, y una moción rechazada con 60% de afirmativos y el tipo vacío parece un error de resultado cuando es un error de tipo;
+  - **(c) no cuadra con ninguno** → **problema de resultado o de conteo**;
+  - **empate en el recuento** (af = neg) → aparte, porque el desempate del presidente no está en los conteos.
+
+  (a), (b) y (c) se informan por clase, fuente y año. Cada (b) y cada (c) va a `D2_0_propuestas.csv`.
+- **La base revisada son dos máscaras y una población:**
+  - **máscara de votos (V):** saca la copia de menor precedencia de cada duplicado entre fuentes (punto 5) y las actas sin fecha. Son problemas del acta como registro de votos;
+  - **máscara de resultado (R):** V, más todo lo que no es AFIRMATIVO ni NEGATIVO, el empate en el recuento y la categoría (c);
+  - **población SIMPLE revisada:** tipo unificado SIMPLE o SIMPLE_PRESENTES (punto 4), sin los DESCONOCIDOS ni la categoría (b).
+- **Dónde se aplica cada una:**
+  - el Brier de P(aprobación): SIMPLE revisada ∩ R;
+  - la cobertura de la banda: SIMPLE revisada ∩ V, sin la categoría (c) (sus conteos no son confiables).
+- **(b) sale de la población SIMPLE revisada** (no es confiablemente SIMPLE) y su tipo va como propuesta. **Ningún acta entra a SIMPLE por su resultado:** inferir el tipo desde el resultado sería circular.
+- **Dentro de SIMPLE, (b) sólo puede tener rechazos:** un acta SIMPLE que no cuadra con su umbral pero sí con otro es, por fuerza, NEGATIVO con af > neg. Sacarla es sacar justamente los rechazos anómalos que están detrás de la pregunta de Franco por el 97,5%. Por eso la sensibilidad **S2 ((b) adentro) se muestra al lado del primario**, no como nota.
+- **Como la exclusión depende del resultado, se informa partida en AF/NEG**, con lo que mueve la tasa de aprobación y la constante.
+
+#### 4. El tipo de mayoría: unificado
+
+- **El mapeo, escrito desde el significado de cada texto:**
+
+  | textos | unificado |
+  |---|---|
+  | Más de la mitad · SIMPLE · Más de la mitad — Votos Emitidos · MAS 1/2 VOTOS EMITIDOS | SIMPLE (emitidos) |
+  | MAS 1/2 LEGISLADORES PRESENTES | SIMPLE_PRESENTES |
+  | Más de la mitad — Miembros del Cuerpo · MAS 1/2 MIEMBROS DEL CUERPO · ABSOLUTA | ABSOLUTA (cuerpo) |
+  | La mitad más uno | AMBIGUO (¿de los presentes o del cuerpo?) |
+  | Dos tercios · Dos tercios Dos tercios — Votos Emitidos · DOS TERCIOS VOTOS EMITIDOS · Tipo Mayoria: Dos tercios | DOS_TERCIOS (emitidos) |
+  | DOS TERCIOS LEGISLADORES PRESENTES · DOS TERCIOS DE MIEMBROS PRESENTES | DOS_TERCIOS_PRESENTES |
+  | DOS TERCIOS MIEMBROS DEL CUERPO · DOS TERCIOS DE MIEMBROS DEL CUERPO | DOS_TERCIOS_CUERPO |
+  | Tres cuartos · Tres cuartos Tres cuartos — Votos Emitidos | TRES_CUARTOS |
+  | `''` · nulo (36) | DESCONOCIDO |
+
+- **Contra `normalizar_mayoria_valor`:** se informa cada diferencia, y va como propuesta, sin tocar `definiciones.py`. Las que ya se ven:
+  - los «PRESENTES» el motor los cuenta sobre emitidos;
+  - «La mitad más uno» el motor lo lleva a ABSOLUTA;
+  - los 36 desconocidos el motor los lleva a SIMPLE.
+- **El contraste del punto 3** usa la base del texto. AMBIGUO cuadra si cuadra con cualquiera de sus dos lecturas.
+- **Los 36 desconocidos:**
+  - en la base revisada **salen de la población SIMPLE**;
+  - sensibilidad **S1**: entran como SIMPLE (la regla de hoy);
+  - **no se infiere el tipo** ni desde el resultado ni desde los conteos. Desde el título, sólo como propuesta.
+
+#### 5. ¿Faltan rechazos?
+
+1. **Tasa de rechazo** (NEGATIVO / (AFIRMATIVO + NEGATIVO), en las actas que cuadran) por fuente × cámara × año × clase. Es descriptiva; donde la celda es chica, se dice.
+2. **Solapes entre fuentes, sobre `_sources/`** (antes del dedup: en la canónica los gemelos exactos ya no están).
+   - **Control previo:** el dedup de `build.py` aplicado a `_sources/` reproduce el conjunto de `acta_id` de la canónica. Si no, se dice y los solapes se leen con esa salvedad.
+   - **Solapes:**
+     - Diputados, `argentinadatos` contra `decada_votada` (2001–2014) y contra `ckan_diputados` (2011–2015);
+     - Senado, `argentinadatos` contra `decada_votada` (2005, 2009 y 2013);
+     - `manual_2026` contra `argentinadatos`.
+   - **Emparejamiento:** misma cámara y fecha, con |Δaf| + |Δneg| + |Δabst| ≤ 2. Es uno a uno, por menor distancia.
+   - **Se informa:**
+     - cuántas actas de cada fuente se emparejan;
+     - si el resultado coincide en los pares;
+     - **qué fracción de las no emparejadas de cada fuente es NEGATIVO, comparada dentro de la misma clase.** Una fuente sin mociones rechaza menos sin que le «falte» nada.
+   - **Lectura fijada ahora:** «la fuente X omite rechazos en el período P» si las no emparejadas de la otra fuente en P tienen ≥ 5 NEGATIVO y una tasa de rechazo mayor que la de los pares, con Fisher p < 0,05, dentro de la clase. Lo demás es descriptivo.
+3. **Duplicados que quedaron en la canónica:** misma cámara y fecha, **fuentes distintas**, |Δ| ≤ 2 y ≥ 40 votos. Se informan con los votos que entran dos veces al censo. En la misma fuente no cuentan como duplicado: dos artículos unánimes del mismo día dan el mismo recuento. Se listan aparte. **Las 17 de `manual_2026`:** se verifica que estén entre las actas sin fecha que el censo ya deja afuera, sin suponerlo.
+4. **Sin expediente** (el campo crudo) **y sin ley identificable** (`ley` del censo: las `acta:<id>`), por separado, por fuente y clase.
+5. **Las 142 actas que no entran al censo:** resultado y clase, descriptivo. *(Por qué 51 de ellas quedan afuera sigue en el estacionamiento; no se audita acá.)*
+6. **No hay** una cuenta oficial de votaciones nominales por año contra la cual comparar (`QUE-SE-MIDE.md` §3.3). D2.0 sólo compara las fuentes entre sí.
+
+#### 6. Qué cambia de lo medido: siempre dos columnas, «canónica tal cual» y «base revisada»
+
+- **C2** (desde `calibracion_actas_2026-10-03.json`, el JSON de la calibración vigente, motor `34f2d14`; no se re-simula).
+  - **Se recalcula** sobre la base revisada, por cámara: la tabla del §9.2 (Brier del modelo contra la constante, IC pareado por ley con 2.000 réplicas y semilla 7, AUC) y la cobertura de la banda.
+  - **El objetivo 3 conserva su regla exacta:** por cámara, mayoría simple, constante = tasa base del subconjunto. **La vara del §9.4 no se cambia.** Que la población revisada reemplace a la de hoy en las lecturas del §9.4 lo decide Franco. Hasta entonces van las dos columnas.
+  - **Por clase** (GENERAL, PARTICULAR, MOCION, OTRA): **descriptivo, no es una vara nueva**, cada clase con su propia constante.
+  - Sensibilidades S1 (desconocidos como SIMPLE) y S2 (la categoría (b) adentro).
+- **D2** (desde `d2_capa2.json`, `d2_curvas.json` y los brazos).
+  - **Los mismos cinco contrastes, m = 5 y el mismo árbol**, sobre la población revisada. La relectura **sólo puede sacar actas**: P guardada hay sólo para las actas de tipo SIMPLE, y ninguna entra. Se cuenta cuántas entrarían a SIMPLE (las de la sensibilidad S1 ya están simuladas).
+  - **La selección anual se rehace** con el entrenamiento revisado. **Qué exclusiones toma cada estimador:**
+    - ε₀ (log-loss de los votos) y τ (A, Σp y Σp² por acta) no usan el resultado: sólo la máscara V;
+    - el piso se elige por el Brier de P(aprobación) contra el resultado: SIMPLE revisada ∩ R, como su evaluación.
+
+    Si cambia algún valor anual de ε₀, τ o el mecanismo, se re-simulan sólo esos brazos (≈ 6 min cada uno, con `calibracion_declarada.py --simular` y `{año: valor}`). Los brazos del piso son de valor fijo y no se re-simulan.
+  - **Por clase:** el Δ con IC, descriptivo, sin Holm. No rescata ni hunde nada.
+  - **D2 sigue en pausa:** D2.0 informa si la salida sigue siendo E. Si no lo es, va a Franco.
+- **C1 y D1:** sólo descriptivo. El skill del voto individual por clase y sin los duplicados, desde `censo_estadisticos_2026-10-03.json` (n, Σy, Σp, Σp² por acta). No se re-corre nada de D1.
+
+#### 7. Controles (umbral: 0 fallas) y orden
+
+| control | qué se exige |
+|---|---|
+| **la regla no lee el resultado** | `test_d2_0_actas.py` §1 (hecho: barajar no cambia nada; corre con sólo cinco columnas) |
+| **cobertura de los mapeos** | las 15 formas de `resultado` y los 20 textos de `tipo_mayoria`, más el nulo, mapeados; 0 sin mapear |
+| **el umbral es el del motor** | casos sintéticos de (a), (b), (c) y empate con `agregador.umbral_aprobacion` importado |
+| **el detector de duplicados** | con tolerancia 0 y ≥ 40 votos sobre `_sources/` encuentra **exactamente** los pares fuertes de `build.actas_gemelas` (control positivo) |
+| **sin máscara se reproduce lo medido** | C2: la tabla y la cobertura de `calibracion_declarada.json`, exactas. D2: los cinco Δ, IC y salidas de `d2_capa2.json` (la tolerancia del ancla de D2) |
+| **insumos fijados** | sha256 de la canónica, de `votos_canonico`, de `_sources/`, de `calibracion_actas_2026-10-03.json` y de `d2_capa2.json` en la procedencia; el runner se niega a correr si cambian |
+| **anti-vacuidad** | la máscara saca ≥ 1 acta de la población de C2; si no saca ninguna, se dice («nada cambia») |
+
+**Orden; cada paso se commitea antes del siguiente:**
+1. este pre-registro y la regla;
+2. `--muestra` (sin resultado);
+3. las etiquetas del etiquetador;
+4. la revisión de Franco;
+5. `--validar`;
+6. recién entonces todo cruce de clase con resultado: `--actas`, `--duplicados`, `--medir`.
+
+**Mientras se etiqueta sólo se hace lo que no lee el resultado de ninguna forma nueva:**
+- escribir el runner;
+- los controles que reproducen números que ya existen: sin máscara = `calibracion_declarada.json` y `d2_capa2.json`, y el detector de duplicados = `build.actas_gemelas`;
+- la cobertura de los mapeos (que cada forma cruda tenga destino).
+
+**Ninguna tabla nueva que lea `resultado` se calcula antes de que `--validar` esté commiteado**: ni la unificación contra los conteos, ni (a)/(b)/(c), ni los solapes, ni las tasas por fuente. Así, si la validación falla, la única revisión permitida de la regla también se escribe sin haber visto qué actas son rechazos o anomalías.
+
+#### 8. Qué se construye, revisión ciega y lo que no hace
+
+- **Archivos:**
+  - `evaluacion/baseline/src/clasificar_actas_d2_0.py` (la regla, hecha);
+  - `evaluacion/baseline/src/revisar_actas_d2_0.py`, el runner, con `--muestra`, `--validar`, `--actas`, `--duplicados` y `--medir`; sin argumentos recalcula desde git;
+  - `evaluacion/baseline/tests/test_d2_0_actas.py` (§1 hecho; §2 cuando haya medición);
+  - `evaluacion/baseline/outputs/d2_0_actas.json`, una fila por acta: clase, subtipo, resultado y tipo unificados, (a)/(b)/(c), recuento contra declarado, duplicado, sin expediente, en el censo, motivo de exclusión;
+  - `evaluacion/baseline/outputs/d2_0_medicion.json` (las tablas);
+  - `coordinacion/AUDITORIA-2026-09/resultados/d2_0_muestra/`, con `muestra.csv`, `etiquetas_opus.csv`, `revision_franco.csv` y `validacion.json`;
+  - `resultados/D2_0_propuestas.csv`;
+  - `resultados/D2_0_revision_ciega.md`.
+  - `_sources/` no viaja por git: lo que se mide de ahí queda en `d2_0_medicion.json` con su sha.
+- **Revisión ciega (§11).** Un subagente Opus, **distinto del etiquetador**, que no ve mi lectura. Recibe este pre-registro, el protocolo y los JSON crudos, y rehace:
+  - los conteos;
+  - las exclusiones;
+  - la precisión de la clasificación;
+  - C2 sobre la base revisada;
+  - la relectura de D2 con el árbol.
+
+  Escribe `resultados/D2_0_revision_ciega.md`. Si su lectura difiere de la mía, va a Franco con las dos.
+- **Lo que no hace:**
+  - no escribe en `datos/canonica` ni en `definiciones.py`;
+  - no cambia el motor ni la vara del §9.4;
+  - no decide D2 (a/b/c);
+  - no rellena el hueco de Diputados 2020–23;
+  - no audita las 51 actas fuera del censo (estacionamiento);
+  - no toca el récord por tema ni los pivotes (estacionamiento, al final de la auditoría).
+- **Límites, declarados de antemano:**
+  1. la verdad de la muestra es un Opus más Franco en los desacuerdos y en un 10% de los acuerdos. Si la regla y el etiquetador se equivocan igual al leer el mismo título, el error sólo aparece en ese 10% (Franco lo aceptó);
+  2. muchas actas no traen en el título si son la general o una particular (los subtipos †): ahí la clase es una inferencia de la regla. La muestra los mide aparte y con el contexto de la sesión; si ni así se puede decidir, el subtipo queda «no validado» y los cortes van con y sin él;
+  3. sin una cuenta oficial de votaciones, «faltan rechazos» sólo se puede ver comparando fuentes donde se solapan;
+  4. la exclusión de (b) y de (c) depende del resultado, y por eso se informa partida;
+  5. `_sources/` es posterior al último build de la canónica (control del punto 5).
 
 ## Bitácora de alcance
 

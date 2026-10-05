@@ -664,8 +664,12 @@ def veredicto(res: dict) -> dict:
                         else "conservar (el WF final es V0; el óptimo cambió en el tiempo)",
                         "E": "no se cambia; va a Franco"}.get(s, "conservar V0"))
     cambian = [k for k in ("piso", "epsilon0", "tau") if isinstance(acc.get(k), str) and acc[k].startswith("recalibrar")]
+    # pre-registro 3.9: cuentan los A de los contrastes que cambian un valor (piso, ε₀ (ii), τ (ii)) aunque el valor
+    # final sea V0 — el brazo conjunto usa el valor WF de CADA AÑO, no el final. Con el mecanismo en E no se aplica.
+    en_a = [k for k in ("piso", "epsilon0", "tau") if por[k]["salida"] == "A"]
     return {"por_contraste": por, "m_holm": M_HOLM, "mecanismo": mec, "acciones": acc,
-            "confirmacion_conjunta_necesaria": len(cambian) > 1, "cambian": cambian}
+            "confirmacion_conjunta_necesaria": mec != "E" and len(en_a) > 1, "en_A_que_cambian_valor": en_a,
+            "cambian": cambian}
 
 
 def medir_desde_tablas(t: pd.DataFrame, sel: dict, panel_ids: dict) -> dict:

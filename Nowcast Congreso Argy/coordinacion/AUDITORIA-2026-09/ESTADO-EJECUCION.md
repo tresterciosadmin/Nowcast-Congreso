@@ -1611,7 +1611,7 @@ Las opciones:
 
 **Estado de partida (verificado hoy).**
 - **Repo:** `HEAD` `58f1ee9`, `main`, árbol limpio. `git fetch`: `origin/main` en `2ed3367`; **`main` 5 adelante** (`b0fbf04` … `58f1ee9`, los commits de D2 y del cambio de alcance; **sin pushear, los pushea Franco**) y 0 atrás.
-- **Suite:** `pytest` **54 pasan**; los **67** `test_*.py` (bucle de `tests.yml`) en 0. Con el test nuevo de D2.0 pasan a **68**.
+- **Suite:** `pytest` **54 pasan**; los **67** `test_*.py` (bucle de `tests.yml`) en 0. Con el test nuevo de D2.0 pasan a **68**. **Checkout limpio de `5994566`** (`git archive`, venv Python 3.11.0 nuevo con los pines, pandas 3.0.2): `test_d2_0_actas.py` TODO OK, `pytest` 53 pasan y 1 saltado (el de frescura), **68 scripts en 0**.
 - **Disco:** 50 GB libres. Cada corrida de la suite suma ≈ 87 MB en `%TEMP%` (estacionamiento, 2026-10-05).
 - **Canónica:** `actas_canonico.parquet` sha256/16 `fda52f44d2f51240`; `votos_canonico.parquet` `faf3aa65b1a26f82`. Las dos tocadas por última vez en `f11fc7c` (10-09), antes del censo del 03-10. El bot no la escribe: sólo abre un *issue* `canonica-pendiente`.
 
@@ -1692,7 +1692,13 @@ Las opciones:
 - **El paquete del etiquetador**, en orden al azar, trae:
   - `acta_id`, cámara, fecha, fuente, **título completo** y expediente;
   - **el contexto de la sesión:** los otros títulos de la misma cámara y fecha, tapados igual, ordenados por el número del `acta_id` (hasta 30 antes y 30 después), con el acta a etiquetar marcada. Se avisa que ese orden **puede no ser el de la sesión**. No agrega ningún resultado: sin él, los subtipos inferidos no se pueden etiquetar;
-  - lo que delata el resultado, tapado con `[…]`: las frases de recuento enteras (`\d+ AFIRMATIVOS`, `\d+ NEGATIVOS`, `\d+ ABSTENCIONES`, `\d+ AUSENTES`) y las palabras `AFIRMATIV…`, `NEGATIV…`, «SE RECHAZA», «SE APRUEBA», `APROBAD[OA]` y `RECHAZAD…`. Se informa cuántos títulos se taparon.
+  - **sin contexto, las actas sin fecha** (las de `manual_2026`: tampoco tienen un `acta_id` numérico). El paquete lo dice; no se las agrupa entre sí;
+  - lo que delata el resultado, tapado con `[…]` **en el acta y en su contexto**: las frases de recuento enteras (`\d+ AFIRMATIVOS`, `\d+ NEGATIVOS`, `\d+ ABSTENCIONES`, `\d+ AUSENTES`) y las palabras `AFIRMATIV…`, `NEGATIV…`, «SE RECHAZA», «SE APRUEBA», `APROBAD[OA]` y `RECHAZAD…`. Se informa cuántos títulos se taparon, en las actas y en el contexto.
+  - **Aislamiento**, el patrón de la revisión ciega de D2:
+    - el paquete va a una carpeta propia en `Archivos_Borrar/d2_0/`, con la prohibición explícita de leer el repo;
+    - la clave `acta_id` → clase de la regla queda en otro archivo, que el etiquetador nunca recibe;
+    - se lanza sólo ese subagente.
+  - El runner reproduce exacto el reparto de la tabla de arriba, y `test_d2_0_actas.py` §2 lo verifica.
 
   **No trae** la clase de la regla, el tipo, los conteos ni el resultado. Trae **las definiciones en prosa, no la regla.** Las definiciones son:
   - *GENERAL:* la votación de una ley o proyecto **como un todo**, «en general» o «en general y en particular en una sola votación»; o el único voto de un proyecto cuando el título no dice más;
@@ -1706,11 +1712,11 @@ Las opciones:
   - **un 10% al azar de los acuerdos**, con un mínimo de 3 por clase.
 
   **Escalada:** si en los acuerdos revisados de una clase Franco encuentra **más de un** error, revisa todos los acuerdos de esa clase. En las filas que revisó, la verdad es la etiqueta de Franco; en el resto, el acuerdo.
-- **Métricas** (el muestreo no es proporcional, así que todo se pondera por el tamaño de cada subtipo en la canónica dividido por su muestra):
-  - **precisión por subtipo:** acierta / etiquetadas, sin las INDETERMINABLE, con el IC de Wilson al 95%;
-  - **precisión por clase de la regla:** el promedio de sus subtipos ponderado por su tamaño, con IC de Wilson sobre el n efectivo de Kish;
+- **Métricas.** El muestreo no es proporcional. **Corrección antes de sortear** (lo vio el `advisor` después del commit del pre-registro): el estrato real del sorteo es la celda subtipo × fuente, así que **el peso de cada acta muestreada es N_celda / n_celda** (actas de la celda en la canónica / actas de la celda en la muestra), no el del subtipo. El n efectivo de Kish sale de esos pesos.
+  - **precisión por subtipo:** acierta / etiquetadas, sin las INDETERMINABLE, ponderada, con el IC de Wilson al 95% sobre el n efectivo de Kish;
+  - **precisión por clase de la regla:** ponderada con los mismos pesos, con IC de Wilson sobre el n efectivo de Kish;
   - **la precisión de los subtipos explícitos y la de los inferidos (†), por separado**;
-  - **exhaustividad por clase verdadera**, con los mismos pesos. Se informa con su IC;
+  - **exhaustividad por clase verdadera**, con los mismos pesos (N_celda / n_celda). Se informa con su IC;
   - **exactitud global ponderada;**
   - la matriz de confusión, ponderada y cruda;
   - la fracción de INDETERMINABLE por subtipo.

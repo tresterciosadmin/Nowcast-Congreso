@@ -1,5 +1,31 @@
 # Prompts de arranque para conversaciones nuevas (pegar tal cual)
 
+## Reanudación en D2: piso 0,02, ε₀ y τ (generado el 2026-10-05, al cerrar el lote de D1)
+
+> Esta sección reemplaza a las de abajo para seguir la fase D desde D2. **Valen las de abajo en todo lo que ésta no cambia** (alcance cerrado, cómo se trabaja, el pull manual de los bots, modelos y revisor ciego). Si algo difiere del protocolo de la fase D en `ESTADO-EJECUCION.md`, vale el protocolo.
+
+---
+
+Estoy retomando *Nowcast Congreso* (repo `Nowcast Congreso`, carpeta `Nowcast Congreso Argy`) en **MODO AUDITORÍA**, **fase D**. **D1 está cerrado** (si ya confirmé *Actions*; si no, confirmalo conmigo primero): seis parámetros de $P_i$ conservan V0 (el guard de era se conserva prendido) y **la ventana de la postura pasó de 730 a 2.190 días** por mi decisión (opción (b)), con el lote completo (`34f2d14` el motor, `c9624b4` las mediciones y re-anclas). Hoy toca **D2: piso 0,02, ε₀ y τ** (capa 2, P(aprobación) y cobertura de la banda; m = 5).
+
+**Leé, en este orden, antes de hacer nada:** (1) `CLAUDE.md`, el bloque MODO AUDITORÍA; (2) en `coordinacion/AUDITORIA-2026-09/ESTADO-EJECUCION.md`: el **protocolo de la fase D completo** (§1 a §11; para D2 importan sobre todo la capa 2 del §2, la tabla del §8 —filas de D2— y el §7 —generalizar `calibracion_declarada.py --simular` con control positivo acta por acta—), **«D1 — veredicto»** (sobre todo las notas 7 y 8) y **«D1 — lote»** (las re-anclas y los desvíos 9 a 14); (3) `coordinacion/QUE-SE-MIDE.md` (el «valor de hoy», con el límite 9); (4) `PENDIENTES-POST-AUDITORIA.md`.
+
+**V0 de D2 = el motor después del lote de D1:** su censo es `evaluacion/baseline/outputs/censo_detalle_2026-10-03.parquet` (692.715 votos, 5.862 actas; ignorado por git, **no se borra**), sus estadísticos `censo_estadisticos_2026-10-03.json` y el JSON por acta de la calibración `calibracion_actas_2026-10-03.json`. **Datos que ya están a la vista (en muestra; no deciden):** con este offset el ε₀ óptimo por log-loss es **0,035** (el valor de producción; con el motor de D1.0 era 0,055) y τ 1,188 (con ε₀, 1,156); P(aprobación) en mayoría simple sigue **peor que la constante** en las dos cámaras (Dip +0,0116 [+0,0080; +0,0156], Sen +0,0025 [+0,0014; +0,0037]); la banda cubre 63,5% (Dip 58,7%, Sen 66,3% en mayoría simple).
+
+**Primera acción de D2:** su **pre-registro** (grillas del §8: piso {0; 0,01; **0,02**; 0,04}, ε₀ por log-loss en 0–0,30, τ con `tau_mediana` en la variante que reproduce 1,19 —identificarla antes de medir—, el mecanismo ε₀+τη contra el régimen del clip; panel primario con el control del §4; signo y orden esperados; umbrales de F; controles del brazo; **y la nota 8 de D1: confirmar que el estimador de ε₀/τ toma el offset del censo de V0 (ventana 2.190) y no arma su propia postura a 730**), pasarlo por el `advisor`, commitearlo, y recién entonces medir. Revisión ciega del veredicto (§11) con un subagente Opus que reciba un paquete sin el veredicto.
+
+**Trampas de esta PC (aprendidas en D1):**
+- **Las corridas largas mueren con la sesión** (pasó tres veces). Lanzalas desacopladas: un `.py` chico que hace `subprocess.Popen(["powershell.exe", "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", script], creationflags=0x200 | 0x08000000 | 0x01000000, stdin/stdout/stderr=DEVNULL)` (grupo de procesos propio, sin ventana, fuera del job), con el `.ps1` llamando a `SetThreadExecutionState(0x80000001)` y escribiendo su propio log; pedí además mantener la PC despierta (`request_keep_awake`, `session_idle`). Las herramientas con caché (`perturbar_panel --cache`) se reanudan.
+- **Memoria:** medí `(Get-CimInstance Win32_PerfFormattedData_PerfOS_Memory).AvailableMBytes` antes de elegir `--procesos`; el censo completo con 3 procesos se cayó por memoria (Chrome usaba 4,5 GB) y con 2 tardó 46 min. Pedime cerrar Chrome si hace falta.
+- **El watcher:** si esperás un «exit=» en un log que se acumula, contá las ocurrencias nuevas; uno que buscaba la última línea terminó al instante por una línea vieja.
+- **Commits:** un mensaje con barras («/») hizo que la herramienta bloqueara el comando creyendo que era un `Remove-Item` sobre «/», y `git add -A .` también: usá `git commit -F <archivo>` y `git add` con rutas explícitas.
+
+**Estado al cerrar esta sesión:** `HEAD` = el commit de este documento (o posterior, con commits de los bots); `git status` limpio; `python -m pytest tests/ datos/proyectos/tests -q` → 54 pasan; los 66 `test_*.py` en 0; checkout limpio de `c9624b4` con Python 3.11 y los pines (ver «D1 — lote»). **Datos congelados durante el lote:** no se trajo nada de los bots desde el 2026-10-03; antes de mi próximo push hay que traerlo (receta del pull manual, abajo).
+
+**Empezá verificando** que `git status` esté limpio, que la suite dé 54 pasan y que el censo del 03-10 esté en disco; avisame si algo no coincide con `ESTADO-EJECUCION.md`, y **después escribí el pre-registro de D2**.
+
+---
+
 ## Reanudación en D1: la decisión sobre la ventana de la postura (generado el 2026-10-03, noche)
 
 > Esta sección reemplaza a las de abajo para cerrar D1. **Valen las de abajo en todo lo que ésta no cambia** (alcance cerrado, cómo se trabaja, la PC, el pull manual de los bots, modelos y revisor ciego). Si algo difiere del protocolo de la fase D o del pre-registro de D1 en `ESTADO-EJECUCION.md`, vale el protocolo.

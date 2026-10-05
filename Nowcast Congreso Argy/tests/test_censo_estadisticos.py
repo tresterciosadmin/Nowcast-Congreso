@@ -197,10 +197,11 @@ def test_epsilon_y_tau_se_recalculan_sin_el_detalle():
         _eps_tau(CE.cargar(ruta), esperado)
 
 
-# El motor de hoy (D1.0: la ficha de desvío al día), fijado DESPUÉS de medir: (ε₀ log-loss, τ sin ε₀, τ con ε₀).
-# Medido el 2026-10-02 sobre `censo_estadisticos_2026-10-02.json` (ESTADO-EJECUCION.md, D1.0): ε₀ igual que el
-# 28-09 (0,055); τ 1,197 → 1,201. En este censo `p` es la variante del motor (RECORD_POR_TEMA apagado).
-ESPERADO_HOY = {"estricta__general": (0.055, 1.201, 1.1535), "p": (0.055, 1.201, 1.1535)}
+# El motor de hoy (lote de D1: la ventana de la postura en 2190 días), fijado DESPUÉS de medir: (ε₀ log-loss, τ sin ε₀,
+# τ con ε₀). Medido el 2026-10-05 sobre `censo_estadisticos_2026-10-03.json` (ESTADO-EJECUCION.md, «D1 — lote»): ε₀
+# 0,055 → 0,035; τ 1,201 → 1,1882; τ con ε₀ 1,1535 → 1,156 (D1.0: (0,055; 1,201; 1,1535)). En este censo `p` es la
+# variante del motor (RECORD_POR_TEMA apagado).
+ESPERADO_HOY = {"estricta__general": (0.035, 1.1882, 1.156), "p": (0.035, 1.1882, 1.156)}
 
 
 def _eps_tau(est, esperado):

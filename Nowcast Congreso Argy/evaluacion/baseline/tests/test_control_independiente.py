@@ -17,7 +17,8 @@ EL PROBLEMA QUE RESUELVE EL CARGADOR `cargar_desde_git`. El control exacto lee e
 no puede depender de un archivo que el CI no tiene. Con lo que SÍ viaja por git —la canónica, `origen_por_acta` y
 el JSON de estadísticos de A2, que trae por acta la ley, el `n`, el Σy y las sumas del motor— se reconstruyen 696.792
 votos contra los 691.845 del censo (el harness descarta ≈ 0,7% y sin el detalle no se sabe cuáles), y el récord
-encogido con origen da 0,1353 contra 0,1335. Por eso en el CI el control se reproduce DENTRO DE 0,002 y contra su
+encogido con origen da 0,1353 contra 0,1335 (desde el lote de D1: 697.693 contra 692.715 votos, y 0,1350 contra
+0,1333). Por eso en el CI el control se reproduce DENTRO DE 0,002 y contra su
 propia ancla; **el 0,1335 exacto sólo se reproduce donde está el detalle** (sección 6, que se saltea si falta).
 
 INDEPENDENCIA, ACOTADA. El control no comparte código con el motor. Comparte con el harness la AGRUPACIÓN de actas
@@ -41,10 +42,12 @@ import pandas as pd
 RAIZ = Path(__file__).resolve().parents[3]
 CLEAN = RAIZ / "datos" / "canonica" / "data" / "clean"
 ORIGEN = RAIZ / "variables" / "proyecto" / "data" / "origen_por_acta.parquet"
-# El censo del motor de hoy (re-anclado a propósito en D1.0 de la auditoría: la ficha de desvío al día; antes, el
-# del 28-09). El control no depende del motor: sus anclas no cambian; la del motor sí (ANCLA_MOTOR).
-DETALLE = RAIZ / "evaluacion" / "baseline" / "outputs" / "censo_detalle_2026-10-02.parquet"
-ESTADISTICOS = RAIZ / "evaluacion" / "baseline" / "outputs" / "censo_estadisticos_2026-10-02.json"
+# El censo del motor de hoy (re-anclado a propósito: en D1.0 de la auditoría, la ficha de desvío al día —antes, el
+# del 28-09—; en el lote de D1, la ventana de la postura en 2190 días —antes, el del 2026-10-02—). El control no
+# depende del motor, pero sí de la POBLACIÓN del censo (D1 agregó 870 votos): sus anclas de población se movieron
+# una vez, en el lote de D1, citando la medición (`ESTADO-EJECUCION.md`, «D1 — lote»).
+DETALLE = RAIZ / "evaluacion" / "baseline" / "outputs" / "censo_detalle_2026-10-03.parquet"
+ESTADISTICOS = RAIZ / "evaluacion" / "baseline" / "outputs" / "censo_estadisticos_2026-10-03.json"
 SALIDA = RAIZ / "Archivos_Borrar" / "auditoria" / "control_independiente.json"
 
 ERAS = pd.to_datetime(["1990-01-01", "2011-12-10", "2015-12-10", "2019-12-10", "2023-12-10", "2030-01-01"])
@@ -58,16 +61,22 @@ PROHIBIDOS = {"modelo", "variables", "evaluacion", "definiciones", "rutas", "now
 
 # ── las anclas del test (fijadas en el pre-registro de B3, `ESTADO-EJECUCION.md`) ─────────────────────────────
 PRINCIPAL = "record_encogido_con_origen"
-ANCLA_GIT = 0.1353         # el control sobre lo que viaja por git (696.792 votos)
+ANCLA_GIT = 0.1350         # el control sobre lo que viaja por git (697.693 votos; 0,1353 con 696.792 hasta D1)
 TOL_ANCLA_GIT = 0.0005
-PUBLICADO = 0.1335         # el control exacto, con el detalle del censo (auditoría, 691.845 votos)
+PUBLICADO = 0.1335         # el control exacto que publicó la auditoría (691.845 votos): lo que se reproduce acotado
 TOL_PUBLICADO = 0.005      # lo que puede separar a la reconstrucción del exacto
-ANCLA_MOTOR = 0.1336       # el motor de hoy, recalculado desde las sumas del JSON (0,1333 hasta D1.0: medido el
-                           # 2026-10-02 sobre el censo nuevo, ESTADO-EJECUCION.md D1.0)
+EXACTO_VIGENTE = 0.1333    # el control exacto sobre el detalle del censo de hoy (692.715 votos; lote de D1)
+N_EVALUADOS_EXACTO = 692_715   # 691.845 hasta D1
+ANCLA_MOTOR = 0.1527       # el motor de hoy, recalculado desde las sumas del JSON (0,1336 desde D1.0 y 0,1333 antes;
+                           # medido el 2026-10-05 sobre el censo del lote de D1, ESTADO-EJECUCION.md «D1 — lote»)
 TOL_ANCLA_MOTOR = 0.0002
-TOL_MOTOR_CONTROL = 0.01   # cuánto pueden separarse el motor y el control independiente
+# Desde el lote de D1 el motor queda POR ENCIMA del control a propósito (la ventana de la postura en 2190 días, que
+# el control no modela): lo que se vigila es que esa brecha medida se mantenga, no que coincidan. Hasta D1 la brecha
+# anclada era 0 (el motor y el control coincidían dentro de la tolerancia).
+BRECHA_MOTOR_CONTROL = 0.0177  # motor − control, sobre lo que viaja por git (0,1527 − 0,1350)
+TOL_MOTOR_CONTROL = 0.01   # cuánto puede moverse esa brecha
 SEPARACION_FUGA = 0.05     # cuánto más tiene que dar el récord con fuga que el limpio
-N_EVALUADOS_GIT, N_LEYES = 696_792, 3_731
+N_EVALUADOS_GIT, N_LEYES = 697_693, 3_737   # 696.792 y 3.731 hasta D1
 
 
 # ══════════════════════════════════════════════════════════════════════ los cargadores
@@ -88,7 +97,7 @@ def _historia_cruda() -> pd.DataFrame:
 
 
 def cargar(detalle_path: Path) -> tuple[pd.DataFrame, pd.DataFrame]:
-    """(historia, evaluados) EXACTOS: los evaluados son los votos del detalle del censo (691.845)."""
+    """(historia, evaluados) EXACTOS: los evaluados son los votos del detalle del censo (692.715 desde D1)."""
     v = _historia_cruda()
     # OJO: la columna `p` del detalle es la variante que la BANDERA RECORD_POR_TEMA dejaba al momento de
     # generarlo (con el detalle del 28-09 13:58, prendida = con récord por tema). El motor "de hoy" es
@@ -112,7 +121,7 @@ def cargar(detalle_path: Path) -> tuple[pd.DataFrame, pd.DataFrame]:
 
 def cargar_desde_git() -> tuple[pd.DataFrame, pd.DataFrame, dict]:
     """(historia, evaluados, JSON) con SÓLO lo que viaja por git: la canónica, el origen y el JSON de estadísticos
-    (la ley de cada acta). Los evaluados son los votos emitidos de las actas del JSON: 696.792, no 691.845."""
+    (la ley de cada acta). Los evaluados son los votos emitidos de las actas del JSON: 697.693, no 692.715 (desde D1)."""
     j = json.loads(ESTADISTICOS.read_text(encoding="utf-8"))
     actas = pd.DataFrame(j["actas"]["filas"], columns=j["actas"]["columnas"])
     v = _historia_cruda()
@@ -262,9 +271,10 @@ def diagnosticar(skill_control: float, skill_motor: float, skill_limpio: float |
                  f"(tolerancia ± {TOL_PUBLICADO})")
     if abs(skill_motor - ANCLA_MOTOR) > TOL_ANCLA_MOTOR:
         d.append(f"el motor (sumas del JSON) se movió: {skill_motor:.4f} contra {ANCLA_MOTOR} ± {TOL_ANCLA_MOTOR}")
-    if abs(skill_motor - skill_control) > TOL_MOTOR_CONTROL:
-        d.append(f"el motor y el control independiente ya no coinciden: {skill_motor:.4f} contra {skill_control:.4f} "
-                 f"(diferencia > {TOL_MOTOR_CONTROL})")
+    if abs((skill_motor - skill_control) - BRECHA_MOTOR_CONTROL) > TOL_MOTOR_CONTROL:
+        d.append(f"el motor y el control independiente ya no guardan su brecha medida: {skill_motor:.4f} contra "
+                 f"{skill_control:.4f} (brecha {skill_motor - skill_control:+.4f}; anclada {BRECHA_MOTOR_CONTROL:+.4f} "
+                 f"± {TOL_MOTOR_CONTROL})")
     if skill_limpio is not None and skill_fuga is not None and skill_fuga - skill_limpio < SEPARACION_FUGA:
         d.append(f"el control de fuga ya no separa: con fuga {skill_fuga:.4f}, limpio {skill_limpio:.4f} "
                  f"(tiene que dar al menos {SEPARACION_FUGA} más)")
@@ -311,7 +321,7 @@ def test(fallos: list[str]) -> int:
     check(e["ley"].nunique() == N_LEYES, f"leyes {e['ley'].nunique():,} ≠ {N_LEYES:,}")
     print(f"  {len(e):,} votos, {e['ley'].nunique():,} leyes ({time.time() - t0:.0f} s)")
 
-    print("\n3. el control reproduce el 0,1335 (en el CI, acotado) y coincide con el motor")
+    print("\n3. el control reproduce el 0,1335 (en el CI, acotado) y guarda su brecha medida con el motor")
     pred = predictores(e, v)
     y = e["y"].to_numpy(float)
     skills = {k: skill_puntual(p, y) for k, p in pred.items()}
@@ -321,7 +331,7 @@ def test(fallos: list[str]) -> int:
     print(f"  {'MOTOR (sumas del JSON de A2)':<50} skill {skill_motor:>7.4f}")
     fuga = skills["CONTROL_POSITIVO_record_con_fuga_del_mismo_dia"]
     dif = diagnosticar(skills[PRINCIPAL], skill_motor, skills[PRINCIPAL], fuga)
-    check(not dif, "el control independiente y el motor ya no coinciden con lo anclado:\n      " + "\n      ".join(dif))
+    check(not dif, "el control independiente y el motor se apartaron de lo anclado:\n      " + "\n      ".join(dif))
 
     print("\n4. control positivo de fuga: el récord con fuga del mismo día tiene que dar más que el limpio")
     check(fuga - skills[PRINCIPAL] >= SEPARACION_FUGA,
@@ -356,8 +366,9 @@ def test(fallos: list[str]) -> int:
         y2 = e2["y"].to_numpy(float)
         ex = {k: skill_puntual(p, y2) for k, p in p2.items()}
         motor_ex = skill_puntual(e2["p__estricta__general"].to_numpy(float), y2)
-        check(len(e2) == 691_845, f"el detalle tiene {len(e2):,} votos evaluados, no 691.845")
-        check(abs(ex[PRINCIPAL] - PUBLICADO) <= 0.0001, f"el control exacto da {ex[PRINCIPAL]:.4f}, no {PUBLICADO}")
+        check(len(e2) == N_EVALUADOS_EXACTO, f"el detalle tiene {len(e2):,} votos evaluados, no {N_EVALUADOS_EXACTO:,}")
+        check(abs(ex[PRINCIPAL] - EXACTO_VIGENTE) <= 0.0001,
+              f"el control exacto da {ex[PRINCIPAL]:.4f}, no {EXACTO_VIGENTE}")
         check(abs(motor_ex - ANCLA_MOTOR) <= 0.0001, f"el motor sobre el detalle da {motor_ex:.4f}, no {ANCLA_MOTOR}")
         check(abs(ex["CONTROL_POSITIVO_record_con_fuga_del_mismo_dia"] - 0.2039) <= 0.0002,
               f"el control de fuga exacto da {ex['CONTROL_POSITIVO_record_con_fuga_del_mismo_dia']:.4f}, no 0,2039")

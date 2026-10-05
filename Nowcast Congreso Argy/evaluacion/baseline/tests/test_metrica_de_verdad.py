@@ -59,9 +59,10 @@ ESTADISTICOS_PUBLICADO = RAIZ / ce.ESTADISTICOS_2026_09_28  # el censo que publi
 TOL_IC_2000 = 0.010          # tres desvíos de la diferencia entre dos sorteos del bootstrap (pre-registro de C1)
 PLAN = (0.059, 0.200)        # el criterio del plan para C1 (informe §9.4)
 CONTINUIDAD = {"global": 0.1333}
-# El motor de hoy, fijado DESPUÉS de medir (D1.0, `metrica_de_verdad.py --verificar-motor 60` sobre el censo del
-# 2026-10-02; 2.000 réplicas, semilla 7): skill global e IC por ley.
-ANCLA_VIGENTE = {"global": (0.1336, 0.0624, 0.1975)}   # (skill, extremo inferior, extremo superior)
+# El motor de hoy, fijado DESPUÉS de medir (lote de D1, la ventana de la postura en 2190 días:
+# `metrica_de_verdad.py --verificar-motor 60` sobre el censo del 2026-10-03, 692.715 votos; 2.000 réplicas, semilla 7):
+# skill global e IC por ley. Desde D1.0 hasta el lote de D1: (0.1336, 0.0624, 0.1975).
+ANCLA_VIGENTE = {"global": (0.1527, 0.0991, 0.208)}   # (skill, extremo inferior, extremo superior)
 
 
 def _cmd(argv: list) -> int:

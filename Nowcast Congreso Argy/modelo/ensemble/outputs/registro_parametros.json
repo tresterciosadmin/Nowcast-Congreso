@@ -9,8 +9,8 @@
   "La clausura es una sobreaproximación (incluye lo que sólo se importa con una bandera prendida): `afecta_panel` dice cuáles mueven el número."
  ],
  "medicion_afecta_panel": {
-  "fecha": "2026-10-02",
-  "git_head": "88afe26747367ef14ac2ec71e920a48869eee0d4",
+  "fecha": "2026-10-05",
+  "git_head": "34f2d146050c525676bbf61c8fee31282d83b9fb",
   "fuentes_sha256": {
    "datos/canonica/src/alias_legislador.py": "37af4b7a651869f1b24d513ed2a7c33a6502badc19eac7a5a074b62f5b837878",
    "datos/expedientes/src/actas_ley.py": "8c6d0489b1f74013a7fcc51ae80ec77babf31d183b212c7cdd1db141b9d5b459",
@@ -19,7 +19,7 @@
    "datos/padron/src/padron_vigente.py": "3a1c437499ca10a45ba97c8c23163f1623e6e254601ef485c99539e967064260",
    "definiciones.py": "0d619b4e45a7e251f2df28fbf7a59df36871b1401e116abdafb946aa759ed519",
    "docs/taxonomias/loader.py": "b29731c33746df99d4a88c7539545d8e9c67c9baeeae5ee7949275b281bd36bb",
-   "evaluacion/baseline/src/baseline_voto_individual.py": "f01b9d8447851a454a4c1b5207734cb8cb7154b9ddd94abe0b02b46cd3a60650",
+   "evaluacion/baseline/src/baseline_voto_individual.py": "e4ba0200b7a75980df033ee36dec4871c6a596c4bea0fa48e99be9bb684f2359",
    "evaluacion/baseline/src/censo_estadisticos.py": "2c157dbf78816017c62e32172c7d6bee607e9b648c8fc06c4d9ff20691f9c725",
    "modelo/agregador_institucional/src/agregador.py": "14e4cd81b4789a7e947a62a1e480497379eb9bdf7bc5b1d8c932d19295d5fb49",
    "modelo/ensemble/src/beta_dictamen.py": "d4323891abf1a3f1fa7e45f6340134b632d7c9d4c2c010627af9e5303de50b66",
@@ -31,7 +31,7 @@
    "modelo/ensemble/src/sobre_tablas.py": "1e3efff6e0fdfb0f85935198a9dbcf9ad00dec5e50e8c8a964b21d5294334754",
    "modelo/voto_individual/src/disciplina.py": "0523f997e1ead0b3ae38e09f58bb8bcf82093faf996c0bdc60a3ac2e39645fc9",
    "rutas.py": "42bec83bff868054fede64748f4181d85ca920daf6a69b0692821d0b4c6db27f",
-   "variables/bloque/src/bloque.py": "4d17386ddcdf0b31db58630cbd4492cbaf7da1da6bb3db5a7cde28e14e1c3e0d",
+   "variables/bloque/src/bloque.py": "fe3898b3156d17bb7a128ed98548a8dfa88c8bc325adb882effdca47b9c42b84",
    "variables/proyecto/src/agente_taxonomias.py": "69172108b289523522a0edaa818941dd8bcca9dce05f2afbc3a0eb37625d9a56",
    "variables/proyecto/src/pdf_text.py": "0d209c6443144596a364589cf3a434177026339b1c7f05e352e9bedd03781a25",
    "variables/proyecto/src/tema_por_proyecto.py": "430a39215c0847d94a1c77cb956ec82101e86b91f0df8b116c80f3e46c130034"
@@ -58,9 +58,9 @@
   },
   "umbral": 1e-09,
   "p_aprobacion_base": {
-   "P1": 0.6132,
-   "P2": 0.6362,
-   "P3": 0.7501
+   "P1": 0.6117,
+   "P2": 0.6338,
+   "P3": 0.7543
   },
   "modulos_cargados": [
    "datos/canonica/src/alias_legislador.py",
@@ -170,8 +170,8 @@
   ],
   "resumen": {
    "afecta": 22,
-   "no_afecta": 87,
-   "sin_medir": 51
+   "no_afecta": 83,
+   "sin_medir": 55
   },
   "limite": "`afecta = false` dice «no mueve estos 3 casos» (n_sims 2000, seed 0), no «no afecta nunca». (1) Se perturba de a UN parámetro: no se ven las interacciones (`COMBINAR_TEMAS` sólo importa con `TEMA_AUTO`; `p_voto_revisora(delta)` queda anulado mientras `factor_encogimiento` sea 0, y hoy `nowcast()` no lo pasa: el gancho de δ no está conectado). (2) El panel no ejercita el estado `sin_dictamen` de las puertas A y C (ver `estado_de_las_puertas`): lo que sólo actúa ahí, como la vía `SOBRE_TABLAS`, sale `false` sin que se haya probado. (3) Los defaults que nowcast() pisa siempre salen `false` y es correcto: están muertos. (4) `max_abs_dif` es el máximo sobre CUALQUIER campo numérico de la salida (incluye conteos de legisladores), no sólo probabilidades; `afecta_p_aprobacion` dice si movió la probabilidad final."
  },
@@ -720,7 +720,7 @@
    "clase": "constante",
    "archivo": "evaluacion/baseline/src/censo_estadisticos.py",
    "nombre": "FORMATO",
-   "linea": 53,
+   "linea": 56,
    "entorno": null,
    "asignado_a": "FORMATO",
    "default": 1,
@@ -736,7 +736,7 @@
    "clase": "constante",
    "archivo": "evaluacion/baseline/src/censo_estadisticos.py",
    "nombre": "VARIANTES_POR_DEFECTO",
-   "linea": 57,
+   "linea": 60,
    "entorno": null,
    "asignado_a": "VARIANTES_POR_DEFECTO",
    "default": [
@@ -755,7 +755,7 @@
    "clase": "constante",
    "archivo": "evaluacion/baseline/src/censo_estadisticos.py",
    "nombre": "_CLIP",
-   "linea": 66,
+   "linea": 69,
    "entorno": null,
    "asignado_a": "_CLIP",
    "default": 1e-09,
@@ -771,7 +771,7 @@
    "clase": "default_funcion",
    "archivo": "evaluacion/baseline/src/censo_estadisticos.py",
    "nombre": "n_boot",
-   "linea": 73,
+   "linea": 76,
    "entorno": null,
    "asignado_a": null,
    "default": 300,
@@ -787,7 +787,7 @@
    "clase": "default_funcion",
    "archivo": "evaluacion/baseline/src/censo_estadisticos.py",
    "nombre": "seed",
-   "linea": 73,
+   "linea": 76,
    "entorno": null,
    "asignado_a": null,
    "default": 7,
@@ -803,7 +803,7 @@
    "clase": "default_funcion",
    "archivo": "evaluacion/baseline/src/censo_estadisticos.py",
    "nombre": "n_boot",
-   "linea": 90,
+   "linea": 93,
    "entorno": null,
    "asignado_a": null,
    "default": 300,
@@ -819,7 +819,7 @@
    "clase": "default_funcion",
    "archivo": "evaluacion/baseline/src/censo_estadisticos.py",
    "nombre": "seed",
-   "linea": 90,
+   "linea": 93,
    "entorno": null,
    "asignado_a": null,
    "default": 7,
@@ -835,7 +835,7 @@
    "clase": "default_funcion",
    "archivo": "evaluacion/baseline/src/censo_estadisticos.py",
    "nombre": "n_boot",
-   "linea": 304,
+   "linea": 307,
    "entorno": null,
    "asignado_a": null,
    "default": 300,
@@ -851,7 +851,7 @@
    "clase": "default_funcion",
    "archivo": "evaluacion/baseline/src/censo_estadisticos.py",
    "nombre": "seed",
-   "linea": 304,
+   "linea": 307,
    "entorno": null,
    "asignado_a": null,
    "default": 7,
@@ -867,7 +867,7 @@
    "clase": "default_funcion",
    "archivo": "evaluacion/baseline/src/censo_estadisticos.py",
    "nombre": "n_boot",
-   "linea": 318,
+   "linea": 321,
    "entorno": null,
    "asignado_a": null,
    "default": 300,
@@ -883,7 +883,7 @@
    "clase": "default_funcion",
    "archivo": "evaluacion/baseline/src/censo_estadisticos.py",
    "nombre": "seed",
-   "linea": 318,
+   "linea": 321,
    "entorno": null,
    "asignado_a": null,
    "default": 7,
@@ -991,7 +991,7 @@
    "evaluable": true,
    "expresion": "0.5",
    "afecta_panel": {
-    "afecta": false,
+    "afecta": null,
     "afecta_p_aprobacion": false,
     "max_abs_dif": 0.0,
     "alternativas": [
@@ -1005,7 +1005,7 @@
       "alt_que_mueve": null,
       "no_numericos": 0,
       "estructura": 0,
-      "error": null
+      "error": "código 1:     return f.write(data) |            ~~~~~~~^^^^^^ | OSError: [Errno 28] No space left on device"
      },
      "P2": {
       "afecta": false,
@@ -1021,9 +1021,13 @@
       "alt_que_mueve": null,
       "no_numericos": 0,
       "estructura": 0,
-      "error": null
+      "error": "código 1:            ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^ |   File \"pandas/_libs/lib.pyx\", line 3066, in pandas._libs.lib.map_infer | numpy._core._exceptions._ArrayMemoryError: Unable to allocate 6.87 MiB for an array with shape (900574,) and data type object"
      }
-    }
+    },
+    "errores": [
+     "P1 con 0.25: código 1:     return f.write(data) |            ~~~~~~~^^^^^^ | OSError: [Errno 28] No space left on device",
+     "P3 con 0.25: código 1:            ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^ |   File \"pandas/_libs/lib.pyx\", line 3066, in pandas._libs.lib.map_infer | numpy._core._exceptions._ArrayMemoryError: Unable to allocate 6.87 MiB for an array with shape (900574,) and data type object"
+    ]
    }
   },
   {
@@ -1084,7 +1088,7 @@
    "evaluable": true,
    "expresion": "400",
    "afecta_panel": {
-    "afecta": false,
+    "afecta": null,
     "afecta_p_aprobacion": false,
     "max_abs_dif": 0.0,
     "alternativas": [
@@ -1098,7 +1102,7 @@
       "alt_que_mueve": null,
       "no_numericos": 0,
       "estructura": 0,
-      "error": null
+      "error": "código 1:     return f.write(data) |            ~~~~~~~^^^^^^ | OSError: [Errno 28] No space left on device"
      },
      "P2": {
       "afecta": false,
@@ -1114,9 +1118,13 @@
       "alt_que_mueve": null,
       "no_numericos": 0,
       "estructura": 0,
-      "error": null
+      "error": "código 1:     return f.write(data) |            ~~~~~~~^^^^^^ | OSError: [Errno 28] No space left on device"
      }
-    }
+    },
+    "errores": [
+     "P1 con 800: código 1:     return f.write(data) |            ~~~~~~~^^^^^^ | OSError: [Errno 28] No space left on device",
+     "P3 con 200: código 1:     return f.write(data) |            ~~~~~~~^^^^^^ | OSError: [Errno 28] No space left on device"
+    ]
    }
   },
   {
@@ -1702,7 +1710,7 @@
    "afecta_panel": {
     "afecta": true,
     "afecta_p_aprobacion": false,
-    "max_abs_dif": 0.1391,
+    "max_abs_dif": 0.1373,
     "alternativas": [
      40,
      10
@@ -1726,7 +1734,7 @@
      },
      "P3": {
       "afecta": true,
-      "max_abs_dif": 0.1391,
+      "max_abs_dif": 0.1373,
       "alt_que_mueve": 40,
       "no_numericos": 2,
       "estructura": 0,
@@ -1884,7 +1892,7 @@
      },
      "P3": {
       "afecta": true,
-      "max_abs_dif": 0.39999999999997726,
+      "max_abs_dif": 0.4000000000000057,
       "alt_que_mueve": 0.04,
       "no_numericos": 0,
       "estructura": 0,
@@ -1998,7 +2006,7 @@
    "evaluable": true,
    "expresion": "2000",
    "afecta_panel": {
-    "afecta": false,
+    "afecta": null,
     "afecta_p_aprobacion": false,
     "max_abs_dif": 0.0,
     "alternativas": [
@@ -2028,9 +2036,12 @@
       "alt_que_mueve": null,
       "no_numericos": 0,
       "estructura": 0,
-      "error": null
+      "error": "código 3221225786: "
      }
-    }
+    },
+    "errores": [
+     "P3 con 1000: código 3221225786: "
+    ]
    }
   },
   {
@@ -2045,7 +2056,7 @@
    "evaluable": true,
    "expresion": "0.5",
    "afecta_panel": {
-    "afecta": false,
+    "afecta": null,
     "afecta_p_aprobacion": false,
     "max_abs_dif": 0.0,
     "alternativas": [
@@ -2059,7 +2070,7 @@
       "alt_que_mueve": null,
       "no_numericos": 0,
       "estructura": 0,
-      "error": null
+      "error": "código 3221225786: "
      },
      "P2": {
       "afecta": false,
@@ -2077,7 +2088,10 @@
       "estructura": 0,
       "error": null
      }
-    }
+    },
+    "errores": [
+     "P1 con 1.0: código 3221225786: "
+    ]
    }
   },
   {
@@ -2598,7 +2612,7 @@
    "afecta_panel": {
     "afecta": true,
     "afecta_p_aprobacion": false,
-    "max_abs_dif": 163,
+    "max_abs_dif": 148,
     "alternativas": [
      0.7,
      0.175
@@ -2606,26 +2620,26 @@
     "por_caso": {
      "P1": {
       "afecta": true,
-      "max_abs_dif": 36,
+      "max_abs_dif": 33,
       "alt_que_mueve": 0.175,
-      "no_numericos": 62,
+      "no_numericos": 59,
       "estructura": 108,
       "error": null
      },
      "P2": {
       "afecta": true,
-      "max_abs_dif": 36,
+      "max_abs_dif": 33,
       "alt_que_mueve": 0.175,
-      "no_numericos": 63,
+      "no_numericos": 60,
       "estructura": 108,
       "error": null
      },
      "P3": {
       "afecta": true,
-      "max_abs_dif": 163,
+      "max_abs_dif": 148,
       "alt_que_mueve": 0.7,
-      "no_numericos": 225,
-      "estructura": 0,
+      "no_numericos": 208,
+      "estructura": 6,
       "error": null
      }
     }
@@ -2692,7 +2706,7 @@
    "afecta_panel": {
     "afecta": true,
     "afecta_p_aprobacion": true,
-    "max_abs_dif": 15.400000000000006,
+    "max_abs_dif": 15.200000000000003,
     "alternativas": [
      0.5
     ],
@@ -2707,7 +2721,7 @@
      },
      "P2": {
       "afecta": true,
-      "max_abs_dif": 14.0,
+      "max_abs_dif": 13.0,
       "alt_que_mueve": 0.5,
       "no_numericos": 0,
       "estructura": 0,
@@ -2715,7 +2729,7 @@
      },
      "P3": {
       "afecta": true,
-      "max_abs_dif": 15.400000000000006,
+      "max_abs_dif": 15.200000000000003,
       "alt_que_mueve": 0.5,
       "no_numericos": 0,
       "estructura": 0,
@@ -2738,7 +2752,7 @@
    "afecta_panel": {
     "afecta": true,
     "afecta_p_aprobacion": false,
-    "max_abs_dif": 0.07829999999999993,
+    "max_abs_dif": 0.060799999999999965,
     "alternativas": [
      2,
      0
@@ -2762,7 +2776,7 @@
      },
      "P3": {
       "afecta": true,
-      "max_abs_dif": 0.07829999999999993,
+      "max_abs_dif": 0.060799999999999965,
       "alt_que_mueve": 2,
       "no_numericos": 1,
       "estructura": 0,
@@ -2857,8 +2871,8 @@
       "afecta": true,
       "max_abs_dif": 221,
       "alt_que_mueve": false,
-      "no_numericos": 823,
-      "estructura": 60,
+      "no_numericos": 850,
+      "estructura": 108,
       "error": null
      }
     }
@@ -2894,7 +2908,7 @@
    "afecta_panel": {
     "afecta": true,
     "afecta_p_aprobacion": true,
-    "max_abs_dif": 2,
+    "max_abs_dif": 1.0,
     "alternativas": [
      10.0,
      2.5
@@ -2902,9 +2916,9 @@
     "por_caso": {
      "P1": {
       "afecta": true,
-      "max_abs_dif": 1.0,
+      "max_abs_dif": 0.5871,
       "alt_que_mueve": 10.0,
-      "no_numericos": 21,
+      "no_numericos": 22,
       "estructura": 0,
       "error": null
      },
@@ -2912,15 +2926,15 @@
       "afecta": true,
       "max_abs_dif": 1.0,
       "alt_que_mueve": 10.0,
-      "no_numericos": 33,
+      "no_numericos": 34,
       "estructura": 0,
       "error": null
      },
      "P3": {
       "afecta": true,
-      "max_abs_dif": 2,
-      "alt_que_mueve": 2.5,
-      "no_numericos": 61,
+      "max_abs_dif": 0.4000000000000057,
+      "alt_que_mueve": 10.0,
+      "no_numericos": 78,
       "estructura": 0,
       "error": null
      }
@@ -2948,9 +2962,9 @@
     "por_caso": {
      "P1": {
       "afecta": true,
-      "max_abs_dif": 0.6000000000000227,
+      "max_abs_dif": 1.0,
       "alt_que_mueve": false,
-      "no_numericos": 334,
+      "no_numericos": 333,
       "estructura": 0,
       "error": null
      },
@@ -2958,7 +2972,7 @@
       "afecta": true,
       "max_abs_dif": 1.0,
       "alt_que_mueve": false,
-      "no_numericos": 340,
+      "no_numericos": 341,
       "estructura": 0,
       "error": null
      },
@@ -2966,7 +2980,7 @@
       "afecta": true,
       "max_abs_dif": 2,
       "alt_que_mueve": false,
-      "no_numericos": 370,
+      "no_numericos": 385,
       "estructura": 0,
       "error": null
      }
@@ -3004,8 +3018,8 @@
       "afecta": true,
       "max_abs_dif": 3,
       "alt_que_mueve": true,
-      "no_numericos": 45,
-      "estructura": 24,
+      "no_numericos": 19,
+      "estructura": 6,
       "error": null
      },
      "P3": {
@@ -3103,7 +3117,7 @@
      },
      "P3": {
       "afecta": true,
-      "max_abs_dif": 6.0,
+      "max_abs_dif": 7.0,
       "alt_que_mueve": 0.07,
       "no_numericos": 0,
       "estructura": 0,
@@ -3150,7 +3164,7 @@
      },
      "P3": {
       "afecta": true,
-      "max_abs_dif": 51.0,
+      "max_abs_dif": 53.0,
       "alt_que_mueve": 2.38,
       "no_numericos": 0,
       "estructura": 0,
@@ -3243,7 +3257,7 @@
      },
      "P3": {
       "afecta": true,
-      "max_abs_dif": 6.0,
+      "max_abs_dif": 7.0,
       "alt_que_mueve": 0.07,
       "no_numericos": 0,
       "estructura": 0,
@@ -3290,7 +3304,7 @@
      },
      "P3": {
       "afecta": true,
-      "max_abs_dif": 51.0,
+      "max_abs_dif": 53.0,
       "alt_que_mueve": 2.38,
       "no_numericos": 0,
       "estructura": 0,
@@ -3330,7 +3344,7 @@
       "afecta": true,
       "max_abs_dif": 18,
       "alt_que_mueve": true,
-      "no_numericos": 58,
+      "no_numericos": 59,
       "estructura": 131,
       "error": null
      },
@@ -3521,7 +3535,7 @@
     "por_caso": {
      "P1": {
       "afecta": true,
-      "max_abs_dif": 3.0,
+      "max_abs_dif": 4.0,
       "alt_que_mueve": 1000,
       "no_numericos": 0,
       "estructura": 0,
@@ -3529,7 +3543,7 @@
      },
      "P2": {
       "afecta": true,
-      "max_abs_dif": 4.0,
+      "max_abs_dif": 3.0,
       "alt_que_mueve": 1000,
       "no_numericos": 0,
       "estructura": 0,
@@ -3560,14 +3574,14 @@
    "afecta_panel": {
     "afecta": true,
     "afecta_p_aprobacion": true,
-    "max_abs_dif": 2.0,
+    "max_abs_dif": 1.0,
     "alternativas": [
      1
     ],
     "por_caso": {
      "P1": {
       "afecta": true,
-      "max_abs_dif": 2.0,
+      "max_abs_dif": 1.0,
       "alt_que_mueve": 1,
       "no_numericos": 0,
       "estructura": 0,
@@ -3575,7 +3589,7 @@
      },
      "P2": {
       "afecta": true,
-      "max_abs_dif": 2.0,
+      "max_abs_dif": 1.0,
       "alt_que_mueve": 1,
       "no_numericos": 0,
       "estructura": 0,
@@ -3583,7 +3597,7 @@
      },
      "P3": {
       "afecta": true,
-      "max_abs_dif": 2.0,
+      "max_abs_dif": 1.0,
       "alt_que_mueve": 1,
       "no_numericos": 0,
       "estructura": 0,
@@ -4717,7 +4731,7 @@
    "afecta_panel": {
     "afecta": true,
     "afecta_p_aprobacion": true,
-    "max_abs_dif": 1.0,
+    "max_abs_dif": 9,
     "alternativas": [
      10.0,
      2.5
@@ -4725,7 +4739,7 @@
     "por_caso": {
      "P1": {
       "afecta": true,
-      "max_abs_dif": 1.0,
+      "max_abs_dif": 0.09999999999999432,
       "alt_que_mueve": 10.0,
       "no_numericos": 0,
       "estructura": 0,
@@ -4733,17 +4747,17 @@
      },
      "P2": {
       "afecta": true,
-      "max_abs_dif": 0.10000000000002274,
-      "alt_que_mueve": 2.5,
+      "max_abs_dif": 0.09999999999999432,
+      "alt_que_mueve": 10.0,
       "no_numericos": 0,
       "estructura": 0,
       "error": null
      },
      "P3": {
       "afecta": true,
-      "max_abs_dif": 1.0,
+      "max_abs_dif": 9,
       "alt_que_mueve": 2.5,
-      "no_numericos": 0,
+      "no_numericos": 15,
       "estructura": 0,
       "error": null
      }
@@ -4811,33 +4825,33 @@
    "afecta_panel": {
     "afecta": true,
     "afecta_p_aprobacion": true,
-    "max_abs_dif": 15,
+    "max_abs_dif": 9,
     "alternativas": [
-     1460,
-     365
+     4380,
+     1095
     ],
     "por_caso": {
      "P1": {
       "afecta": true,
-      "max_abs_dif": 1.0,
-      "alt_que_mueve": 365,
-      "no_numericos": 4,
+      "max_abs_dif": 0.29999999999998295,
+      "alt_que_mueve": 4380,
+      "no_numericos": 0,
       "estructura": 0,
       "error": null
      },
      "P2": {
       "afecta": true,
-      "max_abs_dif": 1.0,
-      "alt_que_mueve": 1460,
-      "no_numericos": 9,
+      "max_abs_dif": 0.29999999999998295,
+      "alt_que_mueve": 4380,
+      "no_numericos": 0,
       "estructura": 0,
       "error": null
      },
      "P3": {
       "afecta": true,
-      "max_abs_dif": 15,
-      "alt_que_mueve": 365,
-      "no_numericos": 91,
+      "max_abs_dif": 9,
+      "alt_que_mueve": 4380,
+      "no_numericos": 15,
       "estructura": 0,
       "error": null
      }
@@ -5210,31 +5224,43 @@
    "archivo": "evaluacion/baseline/src/censo_estadisticos.py",
    "ref": ".json",
    "tipo": "literal",
-   "linea": 239
+   "linea": 242
   },
   {
    "archivo": "evaluacion/baseline/src/censo_estadisticos.py",
    "ref": "evaluacion/baseline/outputs/censo_detalle_2026-09-28.parquet",
    "tipo": "literal",
-   "linea": 50
+   "linea": 53
   },
   {
    "archivo": "evaluacion/baseline/src/censo_estadisticos.py",
    "ref": "evaluacion/baseline/outputs/censo_detalle_2026-10-02.parquet",
    "tipo": "literal",
-   "linea": 46
+   "linea": 49
+  },
+  {
+   "archivo": "evaluacion/baseline/src/censo_estadisticos.py",
+   "ref": "evaluacion/baseline/outputs/censo_detalle_2026-10-03.parquet",
+   "tipo": "literal",
+   "linea": 47
   },
   {
    "archivo": "evaluacion/baseline/src/censo_estadisticos.py",
    "ref": "evaluacion/baseline/outputs/censo_estadisticos_2026-09-28.json",
    "tipo": "literal",
-   "linea": 51
+   "linea": 54
   },
   {
    "archivo": "evaluacion/baseline/src/censo_estadisticos.py",
    "ref": "evaluacion/baseline/outputs/censo_estadisticos_2026-10-02.json",
    "tipo": "literal",
-   "linea": 47
+   "linea": 50
+  },
+  {
+   "archivo": "evaluacion/baseline/src/censo_estadisticos.py",
+   "ref": "evaluacion/baseline/outputs/censo_estadisticos_2026-10-03.json",
+   "tipo": "literal",
+   "linea": 48
   },
   {
    "archivo": "modelo/agregador_institucional/src/agregador.py",

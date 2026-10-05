@@ -52,10 +52,11 @@ import metrica_de_verdad as MV  # noqa: E402
 GENERADOR = "evaluacion/baseline/src/medir_sin_corte_por_era.py"
 ERA_DESDE = "1900-01-01"             # el récord acumula desde acá: nada se corta por era
 BASE, ARM = "estricta__general", "estricta__sin_corte_era"
-# El brazo sobre el motor de HOY (auditoría D1.0: re-corrido sobre el censo del 2026-10-02, con la ficha al día) y
-# el de C3 (sobre el censo del 28-09: su veredicto queda en git como evidencia; no se pisa).
-DETALLE_ARM = Path(ce.DETALLE).with_name("censo_detalle_sin_corte_era_2026-10-02.parquet")   # ignorado por git
-ESTADISTICOS = Path(ce.ESTADISTICOS).with_name("censo_estadisticos_sin_corte_era_2026-10-02.json")
+# El brazo sobre el motor de HOY (lote de D1: re-corrido sobre el censo del 2026-10-03, ventana de la postura en 2190)
+# y el de C3 (sobre el censo del 28-09: su veredicto queda en git como evidencia; no se pisa). El del 2026-10-02 (D1.0)
+# es el insumo del guard en D1 (`medir_d1_parametros_pi.DETALLE_GUARD`): queda en disco y en git, no se pisa.
+DETALLE_ARM = Path(ce.DETALLE).with_name("censo_detalle_sin_corte_era_2026-10-03.parquet")   # ignorado por git
+ESTADISTICOS = Path(ce.ESTADISTICOS).with_name("censo_estadisticos_sin_corte_era_2026-10-03.json")
 ESTADISTICOS_C3 = Path(ce.ESTADISTICOS).with_name("censo_estadisticos_sin_corte_era_2026-10-01.json")
 SALIDA = Path(ce.ESTADISTICOS).with_name("guard_era_sin_corte.json")
 PRIMARIO_DESDE = "2015-12-10"        # el primer recambio donde el guard corta (KIRCHNER arranca en 1900)

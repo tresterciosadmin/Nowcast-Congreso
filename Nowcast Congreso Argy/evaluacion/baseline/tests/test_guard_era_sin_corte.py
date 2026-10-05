@@ -66,18 +66,20 @@ ANCLA_C3 = {
     "secundario__desde_2015-12-10 & camara=senado": (4.99, 1.4, 8.99, 53420, 592),
 }
 RESULTADO_C3 = "NO_SE_DISTINGUE"
-# ── el brazo sobre el motor de hoy (D1.0), fijado DESPUÉS de medir; mismo formato ──
+# ── el brazo sobre el motor de hoy (lote de D1: la ventana de la postura en 2190 días), fijado DESPUÉS de medir; mismo
+# formato. Con este motor quitar el guard EMPEORA con IC que excluye 0: coincide con lo que D1 decidió (Z, «se conserva
+# prendido») y no reabre nada. Los de D1.0 (censo del 2026-10-02, NO_SE_DISTINGUE), en el comentario de cada fila ──
 ANCLA = {
-    "primario__desde_2015-12-10": (3.23, -2.33, 9.72, 257543, 1055),
-    "control__antes_de_2015-12-10": (0.0, 0.0, 0.0, 434302, 2684),
-    "secundario__global": (1.57, -1.14, 4.68, 691845, 3731),
-    "secundario__era=2015-2019": (8.91, -0.69, 19.49, 126454, 505),
-    "secundario__era=2019-2023": (12.94, -5.03, 21.45, 25755, 246),
-    "secundario__era=desde 2023": (-3.23, -7.04, 3.35, 105334, 312),
-    "secundario__desde_2015-12-10 & camara=diputados": (2.99, -3.21, 10.69, 204123, 540),
-    "secundario__desde_2015-12-10 & camara=senado": (4.8, 1.22, 8.82, 53420, 592),
+    "primario__desde_2015-12-10": (5.66, 0.4, 11.5, 257543, 1055),                  # D1.0: (3.23, -2.33, 9.72, …)
+    "control__antes_de_2015-12-10": (0.0, 0.0, 0.0, 435172, 2690),                  # D1.0: 434302 votos, 2684 leyes
+    "secundario__global": (2.69, 0.1, 5.53, 692715, 3737),                          # D1.0: (1.57, -1.14, 4.68, 691845, 3731)
+    "secundario__era=2015-2019": (9.23, -0.52, 19.8, 126454, 505),                  # D1.0: (8.91, -0.69, 19.49, …)
+    "secundario__era=2019-2023": (11.79, -3.63, 18.6, 25755, 246),                  # D1.0: (12.94, -5.03, 21.45, …)
+    "secundario__era=desde 2023": (1.27, -4.69, 6.16, 105334, 312),                 # D1.0: (-3.23, -7.04, 3.35, …)
+    "secundario__desde_2015-12-10 & camara=diputados": (5.69, -0.39, 12.38, 204123, 540),  # D1.0: (2.99, -3.21, 10.69, …)
+    "secundario__desde_2015-12-10 & camara=senado": (5.43, 1.88, 9.59, 53420, 592),        # D1.0: (4.8, 1.22, 8.82, …)
 }
-RESULTADO = "NO_SE_DISTINGUE"
+RESULTADO = "EL_GUARD_SE_SOSTIENE"   # D1.0: NO_SE_DISTINGUE
 
 
 def _cmd(argv: list) -> int:
@@ -136,7 +138,8 @@ def test(fallos: list[str]) -> int:
     print("1. los controles del brazo, desde los estadísticos de git")
     mal = controles_en_estadisticos(est)
     check(not mal, "controles del brazo: " + "; ".join(mal))
-    check(est["fuente"]["n_votos"] == 691_845 and est["fuente"]["n_actas"] == 5_856,
+    # la población del censo de hoy (lote de D1: la ventana de 2190 días suma 870 votos y 6 actas; antes, 691.845 y 5.856)
+    check(est["fuente"]["n_votos"] == 692_715 and est["fuente"]["n_actas"] == 5_862,
           f"el panel no tiene los votos y actas de siempre: {est['fuente']}")
     check(est["fuente"].get("era_desde_del_brazo") == R.ERA_DESDE, "el brazo no se generó con era_desde = 1900-01-01")
     check(R.N_BOOT >= 2000 and R.SEMILLA == 7, f"defaults del IC: {R.N_BOOT} réplicas, semilla {R.SEMILLA}")

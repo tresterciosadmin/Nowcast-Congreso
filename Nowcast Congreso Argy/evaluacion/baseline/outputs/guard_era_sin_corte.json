@@ -1,7 +1,7 @@
 {
  "formato": 1,
  "generador": "evaluacion/baseline/src/medir_sin_corte_por_era.py",
- "generado": "2026-10-02",
+ "generado": "2026-10-05",
  "metodo": {
   "n_boot": 2000,
   "semilla": 7,
@@ -13,30 +13,33 @@
   "alcance": "un solo brazo, el récord; la postura de bloque conserva su propio corte"
  },
  "procedencia": {
-  "head_sha_al_correr": "2fb23c4",
+  "head_sha_al_correr": "34f2d14",
   "motor_modificado_sin_commitear": [
    "\"Nowcast Congreso Argy/evaluacion/baseline/src/calibracion_declarada.py\"",
    "\"Nowcast Congreso Argy/evaluacion/baseline/src/censo_estadisticos.py\"",
-   "\"Nowcast Congreso Argy/evaluacion/baseline/src/medir_sin_corte_por_era.py\""
+   "\"Nowcast Congreso Argy/evaluacion/baseline/src/medir_sin_corte_por_era.py\"",
+   "\"Nowcast Congreso Argy/modelo/ensemble/outputs/registro_parametros.json\""
   ],
   "comando": [
    "medir_sin_corte_por_era.py",
    "--censo",
-   "--reemplazar"
+   "--reemplazar",
+   "--procesos",
+   "3"
   ],
   "estadisticos": {
-   "ruta": "evaluacion/baseline/outputs/censo_estadisticos_sin_corte_era_2026-10-02.json",
-   "sha256_lf": "f9c3c5db6b7e47ae9fd7fc9763172c64ec5750f5378c1d3327085e2741449d91",
-   "escrito_el": "2026-10-02",
-   "motor_head_sha_al_escribirlo": "2fb23c4",
+   "ruta": "evaluacion/baseline/outputs/censo_estadisticos_sin_corte_era_2026-10-03.json",
+   "sha256_lf": "e9a2e860626be7f7696b3ae9ea66eeeca58556f9d8c31990e48ce9185730baa1",
+   "escrito_el": "2026-10-05",
+   "motor_head_sha_al_escribirlo": "34f2d14",
    "fuente": {
-    "n_votos": 691845,
-    "n_actas": 5856,
-    "n_leyes": 3731,
-    "detalle": "evaluacion/baseline/outputs/censo_detalle_sin_corte_era_2026-10-02.parquet",
-    "detalle_sha256_16": "68398e5ea21ad8f6",
-    "detalle_base": "evaluacion/baseline/outputs/censo_detalle_2026-10-02.parquet",
-    "detalle_base_sha256_16": "566657546ba110f1",
+    "n_votos": 692715,
+    "n_actas": 5862,
+    "n_leyes": 3737,
+    "detalle": "evaluacion/baseline/outputs/censo_detalle_sin_corte_era_2026-10-03.parquet",
+    "detalle_sha256_16": "10355b78ca25f3c2",
+    "detalle_base": "evaluacion/baseline/outputs/censo_detalle_2026-10-03.parquet",
+    "detalle_base_sha256_16": "2b76688926893082",
     "era_desde_del_brazo": "1900-01-01"
    },
    "variantes": {
@@ -47,11 +50,11 @@
  },
  "dif_brier_pareado": {
   "primario__desde_2015-12-10": {
-   "dBrier": 0.00587,
-   "dBrier_rel_%": 3.23,
+   "dBrier": 0.009857,
+   "dBrier_rel_%": 5.66,
    "ic95_rel_%_ley": [
-    -2.33,
-    9.72
+    0.4,
+    11.5
    ],
    "n_votos": 257543,
    "n_leyes": 1055
@@ -63,65 +66,65 @@
     0.0,
     0.0
    ],
-   "n_votos": 434302,
-   "n_leyes": 2684
+   "n_votos": 435172,
+   "n_leyes": 2690
   },
   "secundario__global": {
-   "dBrier": 0.002185,
-   "dBrier_rel_%": 1.57,
+   "dBrier": 0.003665,
+   "dBrier_rel_%": 2.69,
    "ic95_rel_%_ley": [
-    -1.14,
-    4.68
+    0.1,
+    5.53
    ],
-   "n_votos": 691845,
-   "n_leyes": 3731
+   "n_votos": 692715,
+   "n_leyes": 3737
   },
   "secundario__era=2015-2019": {
-   "dBrier": 0.013947,
-   "dBrier_rel_%": 8.91,
+   "dBrier": 0.014304,
+   "dBrier_rel_%": 9.23,
    "ic95_rel_%_ley": [
-    -0.69,
-    19.49
+    -0.52,
+    19.8
    ],
    "n_votos": 126454,
    "n_leyes": 505
   },
   "secundario__era=2019-2023": {
-   "dBrier": 0.019246,
-   "dBrier_rel_%": 12.94,
+   "dBrier": 0.017834,
+   "dBrier_rel_%": 11.79,
    "ic95_rel_%_ley": [
-    -5.03,
-    21.45
+    -3.63,
+    18.6
    ],
    "n_votos": 25755,
    "n_leyes": 246
   },
   "secundario__era=desde 2023": {
-   "dBrier": -0.007097,
-   "dBrier_rel_%": -3.23,
+   "dBrier": 0.002569,
+   "dBrier_rel_%": 1.27,
    "ic95_rel_%_ley": [
-    -7.04,
-    3.35
+    -4.69,
+    6.16
    ],
    "n_votos": 105334,
    "n_leyes": 312
   },
   "secundario__desde_2015-12-10 & camara=diputados": {
-   "dBrier": 0.005946,
-   "dBrier_rel_%": 2.99,
+   "dBrier": 0.010802,
+   "dBrier_rel_%": 5.69,
    "ic95_rel_%_ley": [
-    -3.21,
-    10.69
+    -0.39,
+    12.38
    ],
    "n_votos": 204123,
    "n_leyes": 540
   },
   "secundario__desde_2015-12-10 & camara=senado": {
-   "dBrier": 0.005582,
-   "dBrier_rel_%": 4.8,
+   "dBrier": 0.006248,
+   "dBrier_rel_%": 5.43,
    "ic95_rel_%_ley": [
-    1.22,
-    8.82
+    1.88,
+    9.59
    ],
    "n_votos": 53420,
    "n_leyes": 592
@@ -130,19 +133,19 @@
  "skill": {
   "primario__desde_2015-12-10": {
    "con_corte": {
-    "skill": 0.0618,
+    "skill": 0.1,
     "skill_ic95_ley": [
-     -0.0793,
-     0.1927
+     -0.0013,
+     0.2031
     ],
     "n_votos": 257543,
     "n_leyes": 1055
    },
    "sin_corte": {
-    "skill": 0.0315,
+    "skill": 0.0491,
     "skill_ic95_ley": [
-     -0.0772,
-     0.1457
+     -0.0455,
+     0.1491
     ],
     "n_votos": 257543,
     "n_leyes": 1055
@@ -150,59 +153,59 @@
   },
   "control__antes_de_2015-12-10": {
    "con_corte": {
-    "skill": 0.171,
+    "skill": 0.1745,
     "skill_ic95_ley": [
-     0.1208,
-     0.2205
+     0.1255,
+     0.221
     ],
-    "n_votos": 434302,
-    "n_leyes": 2684
+    "n_votos": 435172,
+    "n_leyes": 2690
    },
    "sin_corte": {
-    "skill": 0.171,
+    "skill": 0.1745,
     "skill_ic95_ley": [
-     0.1208,
-     0.2205
+     0.1255,
+     0.221
     ],
-    "n_votos": 434302,
-    "n_leyes": 2684
+    "n_votos": 435172,
+    "n_leyes": 2690
    }
   },
   "secundario__global": {
    "con_corte": {
-    "skill": 0.1336,
+    "skill": 0.1527,
     "skill_ic95_ley": [
-     0.0624,
-     0.1975
+     0.0991,
+     0.208
     ],
-    "n_votos": 691845,
-    "n_leyes": 3731
+    "n_votos": 692715,
+    "n_leyes": 3737
    },
    "sin_corte": {
-    "skill": 0.12,
+    "skill": 0.1299,
     "skill_ic95_ley": [
-     0.0614,
-     0.1761
+     0.0792,
+     0.1805
     ],
-    "n_votos": 691845,
-    "n_leyes": 3731
+    "n_votos": 692715,
+    "n_leyes": 3737
    }
   },
   "secundario__era=2015-2019": {
    "con_corte": {
-    "skill": 0.0798,
+    "skill": 0.0886,
     "skill_ic95_ley": [
-     -0.0479,
-     0.2056
+     -0.0356,
+     0.2127
     ],
     "n_votos": 126454,
     "n_leyes": 505
    },
    "sin_corte": {
-    "skill": -0.0022,
+    "skill": 0.0046,
     "skill_ic95_ley": [
-     -0.1005,
-     0.0842
+     -0.0921,
+     0.0897
     ],
     "n_votos": 126454,
     "n_leyes": 505
@@ -210,19 +213,19 @@
   },
   "secundario__era=2019-2023": {
    "con_corte": {
-    "skill": 0.0115,
+    "skill": -0.0059,
     "skill_ic95_ley": [
-     -0.2359,
-     0.1021
+     -0.2231,
+     0.1041
     ],
     "n_votos": 25755,
     "n_leyes": 246
    },
    "sin_corte": {
-    "skill": -0.1164,
+    "skill": -0.1244,
     "skill_ic95_ley": [
-     -0.2348,
-     0.0233
+     -0.2491,
+     0.0336
     ],
     "n_votos": 25755,
     "n_leyes": 246
@@ -230,19 +233,19 @@
   },
   "secundario__era=desde 2023": {
    "con_corte": {
-    "skill": 0.0143,
+    "skill": 0.0901,
     "skill_ic95_ley": [
-     -0.2701,
-     0.2638
+     -0.1042,
+     0.2732
     ],
     "n_votos": 105334,
     "n_leyes": 312
    },
    "sin_corte": {
-    "skill": 0.0461,
+    "skill": 0.0786,
     "skill_ic95_ley": [
-     -0.1929,
-     0.242
+     -0.1087,
+     0.244
     ],
     "n_votos": 105334,
     "n_leyes": 312
@@ -250,19 +253,19 @@
   },
   "secundario__desde_2015-12-10 & camara=diputados": {
    "con_corte": {
-    "skill": 0.0374,
+    "skill": 0.0812,
     "skill_ic95_ley": [
-     -0.1242,
-     0.1857
+     -0.0373,
+     0.2032
     ],
     "n_votos": 204123,
     "n_leyes": 540
    },
    "sin_corte": {
-    "skill": 0.0086,
+    "skill": 0.0289,
     "skill_ic95_ley": [
-     -0.1211,
-     0.1417
+     -0.083,
+     0.1478
     ],
     "n_votos": 204123,
     "n_leyes": 540
@@ -270,19 +273,19 @@
   },
   "secundario__desde_2015-12-10 & camara=senado": {
    "con_corte": {
-    "skill": 0.0993,
+    "skill": 0.1081,
     "skill_ic95_ley": [
-     -0.0114,
-     0.1977
+     -0.0005,
+     0.2061
     ],
     "n_votos": 53420,
     "n_leyes": 592
    },
    "sin_corte": {
-    "skill": 0.056,
+    "skill": 0.0598,
     "skill_ic95_ley": [
-     -0.0318,
-     0.1334
+     -0.0275,
+     0.136
     ],
     "n_votos": 53420,
     "n_leyes": 592
@@ -291,36 +294,36 @@
  },
  "veredicto": {
   "primario": {
-   "dBrier": 0.00587,
-   "dBrier_rel_%": 3.23,
+   "dBrier": 0.009857,
+   "dBrier_rel_%": 5.66,
    "ic95_rel_%_ley": [
-    -2.33,
-    9.72
+    0.4,
+    11.5
    ],
    "n_votos": 257543,
    "n_leyes": 1055
   },
-  "resultado": "NO_SE_DISTINGUE",
-  "recomendacion": "dejar el guard como está (la bandera no se mueve sin evidencia) y subir el modelo principal a Opus para este veredicto (§9.10): el IC del primario incluye 0",
-  "recomendar_opus": true,
+  "resultado": "EL_GUARD_SE_SOSTIENE",
+  "recomendacion": "conservar el guard: sin el corte el Brier empeora (el IC excluye 0)",
+  "recomendar_opus": false,
   "decide": "Franco",
   "la_bandera_se_toca": false
  },
  "pc_solo": {
   "controles_del_brazo": {
-   "votos": 691845,
+   "votos": 692715,
    "mismo_conjunto_de_votos": true,
    "y_y_ley_identicos": true,
    "antes_de_2015-12-10": {
-    "votos": 434302,
+    "votos": 435172,
     "max_abs_dp": 0.0,
     "votos_distintos": 0
    },
    "desde_2015-12-10": {
     "votos": 257543,
-    "max_abs_dp": 0.9854014598540146,
-    "votos_distintos": 116777,
-    "fraccion_distintos": 0.4534
+    "max_abs_dp": 0.9790171532846714,
+    "votos_distintos": 119174,
+    "fraccion_distintos": 0.4627
    },
    "n_prev_brazo_menor_que_el_motor": 0,
    "n_prev_distinto_antes_de_2015-12-10": 0,
@@ -331,16 +334,16 @@
    "sumas_del_motor_iguales_a_las_de_A2": true
   },
   "efecto_en_los_votos_que_el_corte_toca": {
-   "dBrier": 0.012946,
-   "dBrier_rel_%": 7.23,
+   "dBrier": 0.021302,
+   "dBrier_rel_%": 12.0,
    "ic95_rel_%_ley": [
-    -5.53,
-    20.94
+    -0.0,
+    23.47
    ],
-   "votos_que_toca": 116777,
-   "fraccion_de_los_votos": 0.1688,
+   "votos_que_toca": 119174,
+   "fraccion_de_los_votos": 0.172,
    "n_leyes": 1008
   },
-  "minutos": 16.0
+  "minutos": 21.8
  }
 }

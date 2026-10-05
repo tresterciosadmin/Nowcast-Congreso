@@ -42,9 +42,12 @@ sys.path.insert(0, str(next(d for d in Path(__file__).resolve().parents
                             if (d / "rutas.py").is_file())))
 from rutas import RAIZ as REPO  # noqa: E402
 
-# El censo del motor de HOY (auditoría 2026-09, D1.0: la ficha de desvío al día; re-anclado a propósito).
-DETALLE = "evaluacion/baseline/outputs/censo_detalle_2026-10-02.parquet"
-ESTADISTICOS = "evaluacion/baseline/outputs/censo_estadisticos_2026-10-02.json"
+# El censo del motor de HOY (auditoría 2026-09, lote de D1: la ventana de la postura en 2190 días; re-anclado a
+# propósito). El del 2026-10-02 (D1.0, la ficha al día) fue V0 de D1: queda en git y en disco, no se pisa.
+DETALLE = "evaluacion/baseline/outputs/censo_detalle_2026-10-03.parquet"
+ESTADISTICOS = "evaluacion/baseline/outputs/censo_estadisticos_2026-10-03.json"
+DETALLE_2026_10_02 = "evaluacion/baseline/outputs/censo_detalle_2026-10-02.parquet"
+ESTADISTICOS_2026_10_02 = "evaluacion/baseline/outputs/censo_estadisticos_2026-10-02.json"
 # El censo del 28-09 (motor antes de la fase D): sus estadísticos siguen en git y son la CONTINUIDAD con lo
 # publicado (0,1333 y la tabla del §9.2). No se pisan: los tests que prueban esa continuidad los nombran acá.
 DETALLE_2026_09_28 = "evaluacion/baseline/outputs/censo_detalle_2026-09-28.parquet"

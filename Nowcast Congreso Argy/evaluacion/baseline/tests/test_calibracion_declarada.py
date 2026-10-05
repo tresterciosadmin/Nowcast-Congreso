@@ -70,20 +70,22 @@ ANCLA_DELTA = {       # (cámara, subconjunto) → (Δ, extremo inferior del IC,
     ("senado", "todas"): (0.00258, 0.00154, 0.00376),
     ("senado", "disputadas"): (0.00328, 0.00043, 0.00678),
 }
-# El motor de hoy, fijado DESPUÉS de medir (D1.0, `calibracion_declarada.py --simular` sobre el censo del 2026-10-02).
+# El motor de hoy, fijado DESPUÉS de medir (lote de D1, la ventana de la postura en 2190 días:
+# `calibracion_declarada.py --simular` sobre el censo del 2026-10-03). Los de D1.0 (censo del 2026-10-02), en el
+# comentario de cada fila.
 ANCLA_DELTA_VIGENTE = {
-    ('diputados', 'todas'): (0.01151, 0.0079, 0.01573),
-    ('diputados', 'disputadas'): (0.01266, 0.00683, 0.0189),
-    ('senado', 'todas'): (0.00258, 0.00154, 0.00376),
-    ('senado', 'disputadas'): (0.00327, 0.00042, 0.00679),
+    ('diputados', 'todas'): (0.01161, 0.00804, 0.01564),        # D1.0: (0.01151, 0.0079, 0.01573)
+    ('diputados', 'disputadas'): (0.01264, 0.0074, 0.01856),    # D1.0: (0.01266, 0.00683, 0.0189)
+    ('senado', 'todas'): (0.00247, 0.00144, 0.00368),           # D1.0: (0.00258, 0.00154, 0.00376)
+    ('senado', 'disputadas'): (0.00323, 0.00039, 0.0067),       # D1.0: (0.00327, 0.00042, 0.00679)
 }
 ANCLA_BANDA_VIGENTE = {
-    ('todas_las_actas', 'ambas'): (5852, 0.6329, 0.6114, 0.6542, 40.0, 6.94),
-    ('todas_las_actas', 'diputados'): (2858, 0.6039, 0.5692, 0.6385, 88.1, 10.53),
-    ('todas_las_actas', 'senado'): (2994, 0.6607, 0.6356, 0.684, 23.0, 3.5),
-    ('mayoria_simple', 'ambas'): (5414, 0.6252, 0.6017, 0.6484, 35.0, 8.3),
-    ('mayoria_simple', 'diputados'): (2547, 0.585, 0.5434, 0.6226, 87.0, 13.57),
-    ('mayoria_simple', 'senado'): (2867, 0.661, 0.6354, 0.6855, 23.0, 3.62),
+    ('todas_las_actas', 'ambas'): (5858, 0.6352, 0.6134, 0.6552, 39.0, 6.99),       # D1.0: (5852, 0.6329, …)
+    ('todas_las_actas', 'diputados'): (2864, 0.6058, 0.5709, 0.6374, 89.0, 10.65),  # D1.0: (2858, 0.6039, …)
+    ('todas_las_actas', 'senado'): (2994, 0.6633, 0.6382, 0.6867, 23.0, 3.48),      # D1.0: (2994, 0.6607, …)
+    ('mayoria_simple', 'ambas'): (5420, 0.6271, 0.6032, 0.6506, 34.0, 8.36),        # D1.0: (5414, 0.6252, …)
+    ('mayoria_simple', 'diputados'): (2553, 0.5868, 0.5481, 0.6258, 87.0, 13.72),   # D1.0: (2547, 0.585, …)
+    ('mayoria_simple', 'senado'): (2867, 0.6631, 0.6373, 0.6876, 23.0, 3.6),        # D1.0: (2867, 0.661, …)
 }
 ANCLA_BANDA = {       # (población, cámara) → (n_actas, cobertura, extremo inferior, extremo superior, ancho mediano, sesgo)
     ("todas_las_actas", "ambas"): (5852, 0.6364, 0.6148, 0.658, 40.0, 6.93),
@@ -229,7 +231,8 @@ def test(fallos: list[str]) -> int:
                                   "quorum_cuenta_abstenciones": (AGR, "QUORUM_CUENTA_ABSTENCIONES")}.items():
         check(par[clave] == reg[(arch, nombre)], f"se simuló con {clave} = {par[clave]}, el registro dice {reg[(arch, nombre)]}: regenerar")
     check(est["fuente"]["n_actas"] == len(a) == 5852, f"actas de C2: {len(a)}")
-    check(est_hoy["fuente"]["n_actas"] == len(a_hoy) == 5852, f"actas del motor de hoy: {len(a_hoy)}")
+    # lote de D1: la ventana de 2190 días suma 6 actas (5852 hasta entonces)
+    check(est_hoy["fuente"]["n_actas"] == len(a_hoy) == 5858, f"actas del motor de hoy: {len(a_hoy)}")
 
     print("\n6. el valor vigente: el motor de hoy (D1.0)")
     th = res_hoy["tabla_simple"]

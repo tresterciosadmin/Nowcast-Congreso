@@ -1,7 +1,7 @@
 {
  "formato": 1,
  "generador": "evaluacion/baseline/src/calibracion_declarada.py",
- "generado": "2026-10-02",
+ "generado": "2026-10-05",
  "metodo": {
   "n_boot": 2000,
   "semilla": 7,
@@ -15,11 +15,12 @@
   "declarada": 0.9
  },
  "procedencia": {
-  "head_sha_al_correr": "2fb23c4",
+  "head_sha_al_correr": "34f2d14",
   "motor_modificado_sin_commitear": [
    "\"Nowcast Congreso Argy/evaluacion/baseline/src/calibracion_declarada.py\"",
    "\"Nowcast Congreso Argy/evaluacion/baseline/src/censo_estadisticos.py\"",
-   "\"Nowcast Congreso Argy/evaluacion/baseline/src/medir_sin_corte_por_era.py\""
+   "\"Nowcast Congreso Argy/evaluacion/baseline/src/medir_sin_corte_por_era.py\"",
+   "\"Nowcast Congreso Argy/modelo/ensemble/outputs/registro_parametros.json\""
   ],
   "comando": [
    "calibracion_declarada.py",
@@ -27,10 +28,10 @@
    "--reemplazar"
   ],
   "actas": {
-   "ruta": "evaluacion/baseline/outputs/calibracion_actas_2026-10-02.json",
-   "sha256_lf": "736dd595710c4fd42519220e4192b06bcb11ffdb051d528a8da07ce4f16d921e",
-   "escrito_el": "2026-10-02",
-   "motor_head_sha_al_simular": "2fb23c4",
+   "ruta": "evaluacion/baseline/outputs/calibracion_actas_2026-10-03.json",
+   "sha256_lf": "239d51553c9068268667b2cd926251093a20180d93e2caa7d46ea11c1b762179",
+   "escrito_el": "2026-10-05",
+   "motor_head_sha_al_simular": "34f2d14",
    "parametros": {
     "epsilon0": 0.035,
     "tau": 1.19,
@@ -44,10 +45,10 @@
     "p_presente": 1.0
    },
    "fuente": {
-    "detalle": "evaluacion/baseline/outputs/censo_detalle_2026-10-02.parquet",
-    "detalle_sha256_16": "566657546ba110f1",
+    "detalle": "evaluacion/baseline/outputs/censo_detalle_2026-10-03.parquet",
+    "detalle_sha256_16": "2b76688926893082",
     "columna_p": "p__estricta__general",
-    "n_actas": 5852,
+    "n_actas": 5858,
     "poblacion": "actas de >= 20 votos emitidos del censo, en el orden del detalle"
    }
   }
@@ -55,51 +56,51 @@
  "tabla_simple": {
   "diputados": {
    "todas": {
-    "n": 2543,
-    "tasa_base": 0.9752,
-    "brier_constante": 0.0242,
+    "n": 2549,
+    "tasa_base": 0.9753,
+    "brier_constante": 0.0241,
     "brier_modelo": 0.0357,
-    "auc": 0.731,
-    "brier_recalibrado_cv": 0.0236,
+    "auc": 0.748,
+    "brier_recalibrado_cv": 0.0237,
     "brier_sin_eps0_tau": 0.0244,
-    "logloss_modelo": 0.1658,
-    "logloss_sin_eps0_tau": 0.1241,
+    "logloss_modelo": 0.1662,
+    "logloss_sin_eps0_tau": 0.1235,
     "modelo_menos_constante": {
-     "delta": 0.01151,
+     "delta": 0.01161,
      "ic95_ley": [
-      0.0079,
-      0.01573
+      0.00804,
+      0.01564
      ],
-     "delta_rel_%": 47.64,
+     "delta_rel_%": 48.18,
      "ic95_rel_%_ley": [
-      26.47,
-      85.62
+      26.31,
+      84.16
      ],
-     "n_leyes": 1656
+     "n_leyes": 1662
     }
    },
    "disputadas": {
-    "n": 1314,
-    "tasa_base": 0.9528,
-    "brier_constante": 0.045,
-    "brier_modelo": 0.0576,
-    "auc": 0.647,
-    "brier_recalibrado_cv": 0.0447,
-    "brier_sin_eps0_tau": 0.0472,
-    "logloss_modelo": 0.2333,
-    "logloss_sin_eps0_tau": 0.2307,
+    "n": 1320,
+    "tasa_base": 0.953,
+    "brier_constante": 0.0448,
+    "brier_modelo": 0.0574,
+    "auc": 0.67,
+    "brier_recalibrado_cv": 0.0445,
+    "brier_sin_eps0_tau": 0.0469,
+    "logloss_modelo": 0.2327,
+    "logloss_sin_eps0_tau": 0.2291,
     "modelo_menos_constante": {
-     "delta": 0.01266,
+     "delta": 0.01264,
      "ic95_ley": [
-      0.00683,
-      0.0189
+      0.0074,
+      0.01856
      ],
-     "delta_rel_%": 28.16,
+     "delta_rel_%": 28.24,
      "ic95_rel_%_ley": [
-      12.65,
-      53.57
+      13.7,
+      55.16
      ],
-     "n_leyes": 640
+     "n_leyes": 646
     }
    }
   },
@@ -108,22 +109,22 @@
     "n": 2851,
     "tasa_base": 0.9849,
     "brier_constante": 0.0149,
-    "brier_modelo": 0.0174,
-    "auc": 0.598,
+    "brier_modelo": 0.0173,
+    "auc": 0.587,
     "brier_recalibrado_cv": 0.0149,
     "brier_sin_eps0_tau": 0.0149,
-    "logloss_modelo": 0.0971,
+    "logloss_modelo": 0.0968,
     "logloss_sin_eps0_tau": 0.0794,
     "modelo_menos_constante": {
-     "delta": 0.00258,
+     "delta": 0.00247,
      "ic95_ley": [
-      0.00154,
-      0.00376
+      0.00144,
+      0.00368
      ],
-     "delta_rel_%": 17.36,
+     "delta_rel_%": 16.63,
      "ic95_rel_%_ley": [
-      8.74,
-      31.06
+      8.11,
+      30.03
      ],
      "n_leyes": 2012
     }
@@ -132,22 +133,22 @@
     "n": 885,
     "tasa_base": 0.9525,
     "brier_constante": 0.0452,
-    "brier_modelo": 0.0485,
-    "auc": 0.56,
-    "brier_recalibrado_cv": 0.0457,
+    "brier_modelo": 0.0484,
+    "auc": 0.542,
+    "brier_recalibrado_cv": 0.0454,
     "brier_sin_eps0_tau": 0.0466,
-    "logloss_modelo": 0.2031,
+    "logloss_modelo": 0.2033,
     "logloss_sin_eps0_tau": 0.2281,
     "modelo_menos_constante": {
-     "delta": 0.00327,
+     "delta": 0.00323,
      "ic95_ley": [
-      0.00042,
-      0.00679
+      0.00039,
+      0.0067
      ],
-     "delta_rel_%": 7.23,
+     "delta_rel_%": 7.14,
      "ic95_rel_%_ley": [
-      1.0,
-      17.25
+      0.84,
+      17.18
      ],
      "n_leyes": 485
     }
@@ -155,34 +156,34 @@
   },
   "ambas": {
    "todas": {
-    "n": 5394,
-    "tasa_base": 0.9803,
-    "brier_constante": 0.0193,
+    "n": 5400,
+    "tasa_base": 0.9804,
+    "brier_constante": 0.0192,
     "brier_modelo": 0.026,
-    "auc": 0.686,
+    "auc": 0.689,
     "brier_recalibrado_cv": null,
     "brier_sin_eps0_tau": 0.0194,
     "logloss_modelo": 0.1295,
-    "logloss_sin_eps0_tau": 0.1004,
+    "logloss_sin_eps0_tau": 0.1002,
     "modelo_menos_constante": {
-     "delta": 0.00677,
+     "delta": 0.00676,
      "ic95_ley": [
-      0.00479,
-      0.00897
+      0.00484,
+      0.00889
      ],
-     "delta_rel_%": 35.12,
+     "delta_rel_%": 35.14,
      "ic95_rel_%_ley": [
-      21.37,
-      54.06
+      22.07,
+      53.03
      ],
-     "n_leyes": 3402
+     "n_leyes": 3408
     }
    }
   },
   "rechazadas_en_simple": {
    "n": 106,
-   "p_mediana": 0.911,
-   "n_con_p_mayor_0_8": 79
+   "p_mediana": 0.908,
+   "n_con_p_mayor_0_8": 72
   }
  },
  "confiabilidad": {
@@ -203,29 +204,29 @@
     {
      "clase": "[0.20,0.50)",
      "n": 2,
-     "p_medio": 0.388,
+     "p_medio": 0.4052,
      "frec_real": 0.5
     },
     {
      "clase": "[0.50,0.80)",
-     "n": 383,
-     "p_medio": 0.717,
-     "frec_real": 0.9347
+     "n": 444,
+     "p_medio": 0.7292,
+     "frec_real": 0.9279
     },
     {
      "clase": "[0.80,0.95)",
-     "n": 1673,
-     "p_medio": 0.9017,
-     "frec_real": 0.9791
+     "n": 1633,
+     "p_medio": 0.9029,
+     "frec_real": 0.9822
     },
     {
      "clase": "[0.95,1.00)",
-     "n": 485,
-     "p_medio": 0.9699,
-     "frec_real": 0.9959
+     "n": 470,
+     "p_medio": 0.9704,
+     "frec_real": 0.9979
     }
    ],
-   "p_mayor_0_95_y_rechazada": 2,
+   "p_mayor_0_95_y_rechazada": 1,
    "p_menor_0_05_y_aprobada": 0
   },
   "senado": {
@@ -250,125 +251,125 @@
     },
     {
      "clase": "[0.50,0.80)",
-     "n": 82,
-     "p_medio": 0.7602,
-     "frec_real": 0.9878
+     "n": 78,
+     "p_medio": 0.7615,
+     "frec_real": 0.9872
     },
     {
      "clase": "[0.80,0.95)",
-     "n": 855,
-     "p_medio": 0.9283,
-     "frec_real": 0.9743
+     "n": 850,
+     "p_medio": 0.9285,
+     "frec_real": 0.9753
     },
     {
      "clase": "[0.95,1.00)",
-     "n": 1914,
-     "p_medio": 0.9661,
-     "frec_real": 0.9896
+     "n": 1923,
+     "p_medio": 0.966,
+     "frec_real": 0.9891
     }
    ],
-   "p_mayor_0_95_y_rechazada": 19,
+   "p_mayor_0_95_y_rechazada": 21,
    "p_menor_0_05_y_aprobada": 0
   }
  },
  "banda": {
   "todas_las_actas": {
    "ambas": {
-    "n_actas": 5852,
-    "cobertura_banda_90": 0.6329,
+    "n_actas": 5858,
+    "cobertura_banda_90": 0.6352,
     "ic95_ley": [
-     0.6114,
-     0.6542
+     0.6134,
+     0.6552
     ],
-    "observada_menos_declarada_pp": -26.7,
+    "observada_menos_declarada_pp": -26.5,
     "ic95_pp": [
-     -28.9,
-     -24.6
+     -28.7,
+     -24.5
     ],
-    "ancho_mediano_votos": 40.0,
-    "sesgo_medio_votos": 6.94,
-    "n_leyes": 3728
+    "ancho_mediano_votos": 39.0,
+    "sesgo_medio_votos": 6.99,
+    "n_leyes": 3734
    },
    "diputados": {
-    "n_actas": 2858,
-    "cobertura_banda_90": 0.6039,
+    "n_actas": 2864,
+    "cobertura_banda_90": 0.6058,
     "ic95_ley": [
-     0.5692,
-     0.6385
+     0.5709,
+     0.6374
     ],
-    "observada_menos_declarada_pp": -29.6,
+    "observada_menos_declarada_pp": -29.4,
     "ic95_pp": [
-     -33.1,
-     -26.2
+     -32.9,
+     -26.3
     ],
-    "ancho_mediano_votos": 88.1,
-    "sesgo_medio_votos": 10.53,
-    "n_leyes": 1915
+    "ancho_mediano_votos": 89.0,
+    "sesgo_medio_votos": 10.65,
+    "n_leyes": 1921
    },
    "senado": {
     "n_actas": 2994,
-    "cobertura_banda_90": 0.6607,
+    "cobertura_banda_90": 0.6633,
     "ic95_ley": [
-     0.6356,
-     0.684
+     0.6382,
+     0.6867
     ],
-    "observada_menos_declarada_pp": -23.9,
+    "observada_menos_declarada_pp": -23.7,
     "ic95_pp": [
-     -26.4,
-     -21.6
+     -26.2,
+     -21.3
     ],
     "ancho_mediano_votos": 23.0,
-    "sesgo_medio_votos": 3.5,
+    "sesgo_medio_votos": 3.48,
     "n_leyes": 2098
    }
   },
   "mayoria_simple": {
    "ambas": {
-    "n_actas": 5414,
-    "cobertura_banda_90": 0.6252,
+    "n_actas": 5420,
+    "cobertura_banda_90": 0.6271,
     "ic95_ley": [
-     0.6017,
-     0.6484
+     0.6032,
+     0.6506
     ],
-    "observada_menos_declarada_pp": -27.5,
+    "observada_menos_declarada_pp": -27.3,
     "ic95_pp": [
-     -29.8,
-     -25.2
+     -29.7,
+     -24.9
     ],
-    "ancho_mediano_votos": 35.0,
-    "sesgo_medio_votos": 8.3,
-    "n_leyes": 3407
+    "ancho_mediano_votos": 34.0,
+    "sesgo_medio_votos": 8.36,
+    "n_leyes": 3413
    },
    "diputados": {
-    "n_actas": 2547,
-    "cobertura_banda_90": 0.585,
+    "n_actas": 2553,
+    "cobertura_banda_90": 0.5868,
     "ic95_ley": [
-     0.5434,
-     0.6226
+     0.5481,
+     0.6258
     ],
-    "observada_menos_declarada_pp": -31.5,
+    "observada_menos_declarada_pp": -31.3,
     "ic95_pp": [
-     -35.7,
-     -27.7
+     -35.2,
+     -27.4
     ],
     "ancho_mediano_votos": 87.0,
-    "sesgo_medio_votos": 13.57,
-    "n_leyes": 1659
+    "sesgo_medio_votos": 13.72,
+    "n_leyes": 1665
    },
    "senado": {
     "n_actas": 2867,
-    "cobertura_banda_90": 0.661,
+    "cobertura_banda_90": 0.6631,
     "ic95_ley": [
-     0.6354,
-     0.6855
+     0.6373,
+     0.6876
     ],
-    "observada_menos_declarada_pp": -23.9,
+    "observada_menos_declarada_pp": -23.7,
     "ic95_pp": [
-     -26.5,
-     -21.5
+     -26.3,
+     -21.2
     ],
     "ancho_mediano_votos": 23.0,
-    "sesgo_medio_votos": 3.62,
+    "sesgo_medio_votos": 3.6,
     "n_leyes": 2016
    }
   }
@@ -376,24 +377,24 @@
  "objetivos_9_4": {
   "3_brier_menor_que_la_constante_con_ic_pareado_que_excluya_0": {
    "diputados": {
-    "delta": 0.01151,
-    "extremo_superior_ic": 0.01573,
+    "delta": 0.01161,
+    "extremo_superior_ic": 0.01564,
     "cumple": false
    },
    "senado": {
-    "delta": 0.00258,
-    "extremo_superior_ic": 0.00376,
+    "delta": 0.00247,
+    "extremo_superior_ic": 0.00368,
     "cumple": false
    },
    "cumple": false
   },
   "2_cobertura_85_95_con_asistencia_real": {
    "diputados": {
-    "cobertura": 0.585,
+    "cobertura": 0.5868,
     "en_85_95": false
    },
    "senado": {
-    "cobertura": 0.661,
+    "cobertura": 0.6631,
     "en_85_95": false
    },
    "en_85_95": false,

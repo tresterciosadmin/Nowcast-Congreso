@@ -33,6 +33,17 @@ import medir_d2_capa2 as D  # noqa: E402
 
 FALLOS: list[str] = []
 
+# El veredicto de D2 (2026-10-05, `--medir` sobre 2ed3367; revisado a ciegas, coincide en los cinco). El mecanismo
+# termina en E (A y B cruzados): por la regla 3.8 del pre-registro no se aplica nada y va a Franco.
+ESPERADO = {"piso": "A", "epsilon0": "A", "tau": "B", "mec_i": "B", "mec_i2": "A"}
+# contraste: (Δ por ley, IC por ley, IC por mes). Tolerancia: el CI corre en Linux.
+ANCLAS = {"piso": (-2.9389, [-4.4764, -1.9084], [-4.7686, -1.5435]),
+          "epsilon0": (-5.4821, [-7.4385, -4.0003], [-8.5734, -3.4181]),
+          "tau": (1.209, [0.7506, 1.6989], [0.6692, 1.781]),
+          "mec_i": (21.0902, [9.3933, 37.4423], [5.5494, 46.3296]),
+          "mec_i2": (-43.8298, [-47.0072, -40.7255], [-47.31, -40.285])}
+TOL = 2e-3
+
 
 def check(cond: bool, msg: str) -> None:
     print(("  ok    " if cond else "  FALLA ") + msg)
@@ -177,15 +188,29 @@ def main() -> int:
 
     print("3. el veredicto de D2, desde git")
     if not D.SALIDA.is_file():
-        print(f"  (todavía no se midió: falta {D.SALIDA.name})")
+        check(False, f"falta {D.SALIDA.name}: el veredicto de D2 viaja por git")
     else:
         r = D.recalcular_desde_json()
         g = r["guardado"]
         sal = {k: v["salida"] for k, v in r["veredicto"]["por_contraste"].items()}
+        check(sal == ESPERADO, f"salidas del árbol: {sal}")
+        check(r["veredicto"]["mecanismo"] == "E" and all(v["holm_rechaza"] for v in r["veredicto"]["por_contraste"].values()),
+              "Holm (m = 5) rechaza los cinco y el mecanismo termina en E")
+        for c, (dl, il, im) in ANCLAS.items():
+            pr = r["resultados"][c]["primario"]
+            check(abs(pr["por_ley"]["delta"] - dl) < TOL and all(abs(a - b) < TOL for a, b in
+                  zip(pr["por_ley"]["ic95"] + pr["por_mes"]["ic95"], il + im)),
+                  f"{c}: Δ {pr['por_ley']['delta']} ley {pr['por_ley']['ic95']} mes {pr['por_mes']['ic95']} (anclado)")
         check(sal == {k: v["salida"] for k, v in g["veredicto"]["por_contraste"].items()},
               f"el recálculo da lo mismo que lo guardado ({sal})")
         check({k: v for k, v in r["seleccion"]["anios"].items()} == g["seleccion"]["anios"],
               "la selección anual se reproduce desde las curvas y la tabla")
+        for c in D.CONTRASTES:
+            a, b = r["resultados"][c]["primario"], g["resultados"][c]["primario"]
+            ok = a["actas"] == b["actas"] and all(
+                abs(a[k]["delta"] - b[k]["delta"]) < 1e-6
+                and all(abs(x - z) < 1e-6 for x, z in zip(a[k]["ic95"], b[k]["ic95"])) for k in ("por_ley", "por_mes"))
+            check(ok, f"{c}: Δ e IC del primario iguales a lo guardado ({a['por_ley']['delta']} {a['por_ley']['ic95']})")
     print(f"\n{'TODO OK' if not FALLOS else f'{len(FALLOS)} FALLAS'}")
     return 1 if FALLOS else 0
 

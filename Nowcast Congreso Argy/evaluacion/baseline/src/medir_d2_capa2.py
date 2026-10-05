@@ -197,7 +197,10 @@ def tabla_a_json(t: pd.DataFrame) -> dict:
 
 
 def tabla_de_json(cols: dict) -> pd.DataFrame:
-    return pd.DataFrame(cols)
+    t = pd.DataFrame(cols)
+    if "oos" in t:   # viaja como 0/1: como máscara tiene que ser booleana (un 0/1 entero indexa por posición)
+        t["oos"] = t["oos"].astype(bool)
+    return t
 
 
 def cargar_curvas(ruta: Path = SALIDA_CURVAS) -> pd.DataFrame:
@@ -437,13 +440,13 @@ def compuesto_piso(t: pd.DataFrame, sel: dict) -> pd.Series:
         if r.get("piso") is None:
             continue
         b = "v0" if r["piso"] == V0["piso"] else f"piso={etiqueta(r['piso'])}"
-        m = t["oos"].to_numpy() & (anio == int(Y))
+        m = t["oos"].to_numpy(bool) & (anio == int(Y))
         p[m] = t.loc[m, f"p::{b}"]
     return p
 
 
 def poblaciones(t: pd.DataFrame) -> dict:
-    simple = (t["tipo"] == "SIMPLE").to_numpy() & t["oos"].to_numpy()
+    simple = (t["tipo"] == "SIMPLE").to_numpy(bool) & t["oos"].to_numpy(bool)
     out = {"cobertura": simple}
     if "y" in t:
         out["brier"] = simple & t["y"].notna().to_numpy()

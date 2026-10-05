@@ -1,5 +1,82 @@
 # Prompts de arranque para conversaciones nuevas (pegar tal cual)
 
+## Reanudación en D2.0: revisión de las actas de la canónica (generado el 2026-10-05, con D2 en pausa)
+
+> Esta sección reemplaza a las de abajo para seguir la fase D desde D2.0. **Valen las de abajo en todo lo que ésta no cambia** (alcance cerrado, cómo se trabaja, la PC, el pull manual de los bots, modelos y revisor ciego). Si algo difiere del protocolo de la fase D en `ESTADO-EJECUCION.md`, vale el protocolo.
+
+---
+
+Estoy retomando *Nowcast Congreso* (repo `Nowcast Congreso`, carpeta `Nowcast Congreso Argy`) en **MODO AUDITORÍA**, **fase D**. El principal de la fase D sigue siendo Opus (mi decisión del 2026-10-01).
+
+**Dónde quedamos.**
+- **D2 (piso 0,02, ε₀ y τ) está medido y revisado a ciegas, y en pausa.** Los dos veredictos coinciden: piso A, ε₀ A (su valor final es V0), τ B, el mecanismo ε₀+τη B en el Brier de P(aprobación) y A en la cobertura → **el mecanismo termina en E**. No se aplica nada y no hay lote.
+- **Mi decisión entre (a), (b) y (c) queda para después de D2.0.** Las opciones están en «D2 — veredicto».
+- **El 2026-10-05 di este cambio de alcance, textual:** «CAMBIO DE ALCANCE: antes de cerrar D2 se revisan las actas de la base canónica (qué es cada acta, tipo de votación, resultado, tipo de mayoría y si faltan rechazos por fuente y año). D2 queda en pausa hasta entonces.» Es el ítem **D2.0**.
+- **Motivo:** en mayoría simple se aprueba el 97,5% de las actas, y eso no me cierra. Es de donde viene toda la información y tiene que estar limpio.
+- **Dejé para el final de la auditoría** (en el estacionamiento; ahí vemos cómo se rediseñan y se incorporan):
+  - el récord individual por tema y el multitema;
+  - medir si los pivotes que marca el motor son los que después se apartan, y si la postura que predice para cada bloque es la que vota.
+
+  **No se tocan antes.**
+
+**Leé, en este orden, antes de hacer nada:**
+1. `CLAUDE.md`, el bloque MODO AUDITORÍA.
+2. En `coordinacion/AUDITORIA-2026-09/ESTADO-EJECUCION.md`:
+   - el **protocolo de la fase D** (§1 a §11);
+   - **«D2 — pre-registro», «D2 — avance» y «D2 — veredicto»**;
+   - la **fila D2.0** de la tabla y la **bitácora de alcance**.
+3. `coordinacion/AUDITORIA-2026-09/resultados/D2_revision_ciega.md`.
+4. `coordinacion/QUE-SE-MIDE.md`.
+5. `PENDIENTES-POST-AUDITORIA.md`, sobre todo las entradas del 2026-10-05.
+
+**Lo que ya está a la vista sobre las actas** (consulta de sólo lectura del 2026-10-05; **no decide**; la clasificación por título es una regex gruesa, sin validar):
+- `datos/canonica/data/clean/actas_canonico.parquet` tiene **5.998 actas** y 14 columnas: `acta_id, camara, fecha, periodo, titulo, expediente, tipo_mayoria, resultado, n_afirmativos, n_negativos, n_abstenciones, n_ausentes, fuente`.
+- **`resultado` está escrito de 11 formas:** AFIRMATIVO 4.622, afirmativo 701, afirmativa 279, NEGATIVO 237, negativo 90, negativa 24, '' 15, EMPATE 10, «NEGATIVO - AUSENTE» 9, «NEGATIVO - CANCELADA LEV.VOT.» 5, «cancelada lev.vot.» 2, nulo 2.
+- **`tipo_mayoria` tiene 11 variantes y 21 nulos.** En C2 y D2 lo desconocido cuenta como simple.
+- **`fuente`:** decada_votada 3.121, argentinadatos 1.112, ckan_diputados 999, senado 749, manual_2026 17.
+- **Por título:**
+
+  | tipo | actas | rechazadas |
+  |---|---:|---:|
+  | en general | ≈ 723 | ≈ 5 |
+  | en particular / artículos | ≈ 4.100 | ≈ 3% |
+  | mociones y procedimiento | ≈ 396 | ≈ 210 |
+  | resto | ≈ 780 | pocas |
+
+  Una ley con 40 artículos cuenta como 40 actas.
+
+**Primera acción: el pre-registro de D2.0.** Va pasado por el `advisor`, commiteado, y recién entonces se mide. Tiene que fijar:
+1. **La clasificación de cada acta** (en general, artículo en particular, moción, otra): regla escrita antes de mirar resultados, validada con una muestra a mano. **Preguntame quién etiqueta la muestra.**
+2. **El resultado:** unificado y contrastado con los conteos y el umbral de su tipo de mayoría. Salen las actas que no cuadran, las vacías, los empates y las canceladas.
+3. **El tipo de mayoría:** unificado; qué se hace con los 21 nulos.
+4. **Si faltan rechazos:** la tasa por fuente y año, los duplicados entre fuentes y las actas sin expediente.
+5. **Qué cambia de lo medido:** C2 y la lectura de D2 re-hechos sobre la base revisada, separando votación en general, artículos y mociones.
+6. **Controles y revisión ciega** (§11).
+
+**Regla de D2.0: no se corrige ningún dato de la canónica sin mi visto bueno.** Es la fuente de todo y los bots escriben ahí. D2.0 mide e informa; las correcciones se proponen.
+
+**Correcciones mías que no se repiten:**
+- **Nunca presentes el 0,99 de la Fase 0** («el legislador vota con su bloque») como regla obvia ni como base de comparación. Sale de conocer después qué votó el bloque: es un oráculo. Predecir la postura del bloque y de los pivotes **antes** de la votación es justamente el trabajo del motor.
+- **No digas que «el modelo no sirve».** Lo medido es acotado: la P(aprobación) de cada acta de mayoría simple no le gana hoy a la tasa base. El voto individual sí tiene skill (0,153 [0,099; 0,208]).
+- **La vara del §9.4 no se cambia en medio de la auditoría.**
+
+**Trampas de esta PC** (además de las de la sección de D2, abajo):
+- **`PYTHONUTF8=1` siempre.** Sin eso, un `print` con «Δ» revienta con cp1252 después de haber escrito los archivos.
+- **El hook `pre-commit` no está instalado:** al agregar un `.py`, corré `python .mapa/indexar.py .` y commiteá `MAPA.md` y `.mapa/mapa.json`.
+- **El pull de los bots, con la receta manual** (la de la sección de la fase D, abajo); el del 2026-10-05 fue el merge `3b7caf0`.
+- **Para esperar corridas, `until … grep` en segundo plano**, no `sleep`.
+- **Disco:** quedaban 52,3 GB.
+
+**Estado al cerrar esta sesión:**
+- `HEAD` = el commit de este documento (o posterior, con commits de los bots); `git status` limpio.
+- `python -m pytest tests/ datos/proyectos/tests -q` → 54 pasan; los **67** `test_*.py` en 0 (se sumó `test_d2_capa2.py`).
+- Checkout limpio de `e0e5e6c` con Python 3.11 y los pines: 53 pasan, 1 saltado y 67 en 0.
+- **Falta que yo pushee y confirme *Actions* en verde.**
+
+**Empezá verificando** que `git status` esté limpio, que la suite dé 54 pasan y que `HEAD...origin/main` esté como lo dejé. Avisame si algo no coincide con `ESTADO-EJECUCION.md`, y **después escribí el pre-registro de D2.0**.
+
+---
+
 ## Reanudación en D2: piso 0,02, ε₀ y τ (generado el 2026-10-05, al cerrar el lote de D1)
 
 > Esta sección reemplaza a las de abajo para seguir la fase D desde D2. **Valen las de abajo en todo lo que ésta no cambia** (alcance cerrado, cómo se trabaja, el pull manual de los bots, modelos y revisor ciego). Si algo difiere del protocolo de la fase D en `ESTADO-EJECUCION.md`, vale el protocolo.

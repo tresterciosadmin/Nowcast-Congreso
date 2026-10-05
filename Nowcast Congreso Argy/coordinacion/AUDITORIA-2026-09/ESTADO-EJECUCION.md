@@ -1565,19 +1565,29 @@ Lo anterior al panel sólo entrena.
   - las P se guardan con 4 decimales.
   - Límite que declara el revisor: no re-simuló ningún brazo.
 
-**Qué decide Franco (D2 no se cierra hasta entonces):**
-- **(a) Conservar todo como está: el mecanismo prendido, piso 0,02, ε₀ 0,035 y τ 1,19 — lo que recomiendo.**
+**Qué decide Franco (D2 no se cierra hasta entonces).** Contra los objetivos del §9.4:
+- **Objetivo 3** (Brier de P(aprobación) menor que la constante, con IC que excluya 0): **no lo cumple ninguna de las tres opciones.** El clip sólo iguala a la constante, en muestra y sin IC.
+- **Objetivo 2** (cobertura de la banda entre 85% y 95%): ninguna lo cumple, pero **(b) se aleja mucho más** (de 60,6% a 16,8%).
+
+Las opciones:
+- **(a) Conservar todo como está: el mecanismo prendido, piso 0,02, ε₀ 0,035 y τ 1,19 — lo que recomiendo** (el revisor ciego no recomienda: deja la decisión en Franco).
   - D2 se cierra sin lote.
-  - La banda conserva su ancho (≈ 60% de cobertura, contra ≈ 17% sin τ).
+  - La banda conserva su ancho.
   - El costo, ya conocido, es que P(aprobación) sigue peor que la constante.
   - El piso y el ε₀ bajo mejoran ese Brier, pero no lo llevan a la constante, y adoptarlos exige primero la confirmación conjunta.
-  - La tensión entre banda y P(aprobación) se anota en el estacionamiento como insumo de las mejoras posteriores.
+  - Al cerrar: la fila «ε₀ y τ» de `QUE-SE-MIDE.md` se actualiza con las salidas de D2.
 - **(b) Apagar el mecanismo (el clip).**
-  - P(aprobación) iguala a la constante en Brier, en muestra y sin IC, pero la banda pierde casi toda su cobertura (16,8%) y se aleja del objetivo 2.
-  - Lote completo (`INCERTIDUMBRE_LEGISLADOR` en 0, código con ADR-0015, `FORMULA-COMPLETA.md`, re-anclas de C2).
+  - P(aprobación) iguala a la constante en Brier, pero la banda pierde casi toda su cobertura.
+  - El clip es la corrección **agregada** que ADR-0016 y ADR-0025 vinieron a reemplazar.
+  - El piso no se midió en el régimen del clip.
+  - ε₀ y τ desaparecen del número, y D5 (el recheck de ε₀ y τ con β) deja de tener objeto.
+  - Lote completo: `INCERTIDUMBRE_LEGISLADOR` en 0, código con ADR-0015, `FORMULA-COMPLETA.md` y re-anclas de C2.
 - **(c) Conservar el mecanismo y recalibrar el piso a 0.**
-  - Antes, la confirmación conjunta de la regla 3.9 (un brazo con el piso y el ε₀ WF de cada año, ≈ 10 min); si da A, el lote.
-  - ε₀ no cambiaría ningún número: su valor final es 0,035.
+  - Antes, la confirmación conjunta de la regla 3.9: un brazo con el piso y el ε₀ WF de cada año (los dos dieron A; ≈ 10 min). Si da A, el lote.
+  - ε₀ no cambiaría su valor de producción: su final es 0,035.
+  - *(El indicador `confirmacion_conjunta_necesaria` del runner contaba sólo los parámetros con valor final distinto de V0. Se corrigió en `e0e5e6c` para que siga el texto 3.9; hoy da falso por la E.)*
+
+**Sea cual sea la opción**, la tensión entre la banda y P(aprobación) va al estacionamiento: está fuera del alcance de la auditoría (regla 1).
 
 **Ancla del CI:** `test_d2_capa2.py` §3 recalcula desde git (`d2_capa2.json`, `d2_curvas.json`, `d2_panel_primario.json`):
 - las cinco salidas (A, A, B, B, A) y la E del mecanismo;
@@ -1590,6 +1600,11 @@ Lo anterior al panel sólo entrena.
 5. **El camino del CI tenía un error, corregido después de medir.** `oos` viaja en el JSON como 0/1, y al recargarlo `compuesto_piso` lo usaba como índice entero, no como máscara. El recálculo daba el piso en C. La medición de la PC usaba el booleano y es correcta. Arreglo: `tabla_de_json` y los usos convierten a booleano. Con eso el recálculo reproduce exacto los cinco Δ e IC; el test lo fija.
 6. **El pre-registro decía que los años que sólo entrenan usan V0 en los brazos WF.** El Senado de 2006 usó el valor de 2006, porque la selección es una por año para las dos cámaras. Esas actas no se evalúan: inocuo (lo vio el revisor).
 7. **«Contra V0 original» en los contrastes del mecanismo** compara con la P de producción del 28-09 (el mecanismo prendido), no con el clip: no es el análogo y no se lee.
+
+**Suite y checkout limpio.**
+- **PC:** `pytest` **54**; los **67** `test_*.py` en 0.
+- **Checkout limpio de `e0e5e6c`** (`git archive`, venv Python **3.11.0** nuevo con los pines, sin ningún parquet ni archivo ignorado): `pytest` **53 pasan y 1 saltado** (el de frescura, como siempre); **los 67 `test_*.py` en 0**, incluido el ancla de D2 (`test_d2_capa2.py` §3 recalcula el veredicto sólo desde git).
+- Falta la confirmación de Franco en *Actions* y su decisión (a), (b) o (c).
 
 ## Bitácora de alcance
 

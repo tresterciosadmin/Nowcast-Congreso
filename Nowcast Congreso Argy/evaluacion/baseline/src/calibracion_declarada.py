@@ -3,6 +3,7 @@
 
     python evaluacion/baseline/src/calibracion_declarada.py              # → outputs/calibracion_declarada.json (segundos)
     python evaluacion/baseline/src/calibracion_declarada.py --simular    # regenera el JSON por acta con el motor de hoy (PC, ≈ 15 min)
+    python evaluacion/baseline/src/calibracion_declarada.py --simular --actas <propio>.json --epsilon0 0 --tau 0   # un brazo (D2)
 
 QUÉ DA. (a) P(aprobación) contra el RESULTADO OFICIAL de cada acta de mayoría simple, por cámara y en «ambas»: Brier del
 modelo contra el de una CONSTANTE (la tasa base del subconjunto), AUC, Brier recalibrado fuera de muestra (regresión
@@ -54,6 +55,7 @@ GENERADOR = "evaluacion/baseline/src/calibracion_declarada.py"
 # C2: reproduce la tabla del §9.2 y queda en git como continuidad; no se pisa). El del 2026-10-02 (D1.0) también queda.
 ACTAS = Path(ce.ESTADISTICOS).with_name("calibracion_actas_2026-10-03.json")
 ACTAS_2026_09_28 = Path(ce.ESTADISTICOS).with_name("calibracion_actas_2026-09-28.json")
+ACTAS_2026_10_02 = Path(ce.ESTADISTICOS).with_name("calibracion_actas_2026-10-02.json")
 SALIDA = Path(ce.ESTADISTICOS).with_name("calibracion_declarada.json")
 FORMATO = 1
 COL = "p__estricta__general"          # las P_i del motor de hoy en el censo
@@ -64,6 +66,7 @@ SEMILLA_RECAL = 3                     # `default_rng(3)` de simple_por_camara.py
 DECLARADA = 0.90
 CLIP = 1e-4
 COLUMNAS = ["acta_id", "camara", "ley", "fecha", "tipo", "n", "af", "y", "p", "p_sin", "b_lo", "b_hi", "b_medio"]
+PARTES = ("banda", "p", "p_sin")      # lo que simula `--simular` (los brazos de D2 pueden pedir menos)
 ENV_PROHIBIDAS = ("EPSILON0", "TAU", "QUORUM_ABSTENCIONES")
 CAMBIOS_DE_HOY = "evaluacion/baseline/src/calibracion_declarada.py"
 SI, NO = {"afirmativo", "afirmativa"}, {"negativo", "negativa"}
@@ -76,11 +79,43 @@ def _resultado_binario(txt):
     return 1 if t in SI else (0 if t in NO else None)
 
 
-def simular_actas(detalle: Path) -> dict:
-    """Re-corre la simulación del motor sobre cada acta de ≥ 20 votos emitidos del censo y devuelve el JSON por acta."""
+def valor_brazo(txt: str):
+    """Lo que acepta la CLI para ε₀, τ y el piso: un número (`0.035`) o un valor por año del acta (`{"2006": 0.04, …}`)."""
+    v = json.loads(txt)
+    if isinstance(v, dict):
+        return {int(a): float(x) for a, x in v.items()}
+    return float(v)
+
+
+def _del_anio(v, anio: int, nombre: str) -> float:
+    """El valor del brazo para el año del acta: el número, o la entrada del año (si falta, error: no se adivina)."""
+    if not isinstance(v, dict):
+        return float(v)
+    if anio not in v:
+        raise KeyError(f"{nombre}: el brazo no trae valor para {anio}")
+    return float(v[anio])
+
+
+def _json_brazo(v):
+    return {str(a): x for a, x in sorted(v.items())} if isinstance(v, dict) else v
+
+
+def simular_actas(detalle: Path, *, columna: str = COL, epsilon0=None, tau=None, piso=None,
+                  partes=PARTES) -> dict:
+    """Re-corre la simulación del motor sobre cada acta de ≥ 20 votos emitidos del censo y devuelve el JSON por acta.
+
+    BRAZOS (auditoría D2, punto 7 del protocolo de la fase D). `columna` (las P_i del censo), `epsilon0`, `tau` y `piso`
+    (`desvio_min` de `simular_con_guardas`, es decir `ensemble.DESVIO_MIN_INDIVIDUAL`) aceptan un valor o uno por año del
+    acta (`{año: valor}`); con el default (`None`) son los del motor de hoy, y el JSON es el mismo de siempre. ε₀ = τ = 0
+    es el régimen del clip (`simular_con_guardas` prende solo `P_INCERTIDUMBRE`). `p_sin` es siempre el régimen del clip
+    con el piso del brazo. `partes` elige qué se simula (`banda`, `p`, `p_sin`); lo que no se simula queda en `null`.
+    La semilla es la misma en todos los brazos (números aleatorios comunes): el contraste entre brazos es pareado."""
     sucias = [k for k in ENV_PROHIBIDAS if os.environ.get(k) not in (None, "")]
     if sucias:
         raise RuntimeError(f"variables de entorno que cambian el motor: {sucias}; sacarlas antes de simular")
+    desconocidas = set(partes) - set(PARTES)
+    if desconocidas:
+        raise ValueError(f"partes desconocidas: {sorted(desconocidas)}; valen {PARTES}")
     for sub in ("modelo/ensemble/src", "modelo/agregador_institucional/src"):
         sys.path.insert(0, str(REPO / sub))
     import agregador as AG  # noqa: E402
@@ -89,50 +124,61 @@ def simular_actas(detalle: Path) -> dict:
     from definiciones import normalizar_mayoria_valor  # noqa: E402
     for nm in ("agregador", "ensemble", "nowcast_puertas"):
         logging.getLogger(nm).setLevel(logging.WARNING)
+    eps = NP.EPSILON0 if epsilon0 is None else epsilon0
+    ta = NP.TAU if tau is None else tau
+    pis = ENS.DESVIO_MIN_INDIVIDUAL if piso is None else piso
 
     t0 = time.time()
-    d = pd.read_parquet(detalle, columns=["acta_id", "fecha", "camara", "ley", "y", COL])
+    d = pd.read_parquet(detalle, columns=["acta_id", "fecha", "camara", "ley", "y", columna])
     d["acta_id"] = d["acta_id"].astype(str)
     ac = pd.read_parquet(REPO / "datos" / "canonica" / "data" / "clean" / "actas_canonico.parquet",
                          columns=["acta_id", "tipo_mayoria", "resultado"])
     ac["acta_id"] = ac["acta_id"].astype(str)
     ac = ac.drop_duplicates("acta_id").set_index("acta_id")
-    par = {"epsilon0": NP.EPSILON0, "tau": NP.TAU, "reparto_desvio": NP.REPARTO_DESVIO,
-           "desvio_min_individual": ENS.DESVIO_MIN_INDIVIDUAL, "p_incertidumbre": ENS.P_INCERTIDUMBRE,
+    par = {"epsilon0": _json_brazo(eps), "tau": _json_brazo(ta), "reparto_desvio": NP.REPARTO_DESVIO,
+           "desvio_min_individual": _json_brazo(pis), "p_incertidumbre": ENS.P_INCERTIDUMBRE,
            "quorum_cuenta_abstenciones": AG.QUORUM_CUENTA_ABSTENCIONES,
            "n_sims_p_aprobacion": N_SIMS_P, "n_sims_banda": N_SIMS_BANDA, "semilla_simulacion": SEMILLA_SIM,
            "p_presente": 1.0}
+    if tuple(partes) != PARTES:
+        par["partes"] = list(partes)
     filas = []
     for k, (aid, g) in enumerate(d.groupby("acta_id", sort=False), 1):
         if len(g) < MIN_VOTANTES:
             continue
         cam = str(g["camara"].iloc[0])
+        anio = pd.Timestamp(g["fecha"].iloc[0]).year
+        e_a, t_a, p_a = (_del_anio(eps, anio, "epsilon0"), _del_anio(ta, anio, "tau"), _del_anio(pis, anio, "piso"))
         tipo_raw = ac["tipo_mayoria"].get(aid)
         tipo = normalizar_mayoria_valor(tipo_raw) if pd.notna(tipo_raw) else "SIMPLE"
-        lin, des = zip(*(NP.a_linea_y_desvio(p) for p in g[COL].to_numpy(float)))
+        lin, des = zip(*(NP.a_linea_y_desvio(p) for p in g[columna].to_numpy(float)))
         lin, des, pres = np.array(lin), np.array(des, float), np.ones(len(g))
-        kw = dict(seed=SEMILLA_SIM, p_presente=pres, reparto_desvio=NP.REPARTO_DESVIO)
-        # la banda, como `medir_tau_limpio.cobertura`: tipo «SIMPLE», 1.000 simulaciones, producción
-        b = ENS.simular_con_guardas(lin, des, "SIMPLE", cam, n_sims=N_SIMS_BANDA, epsilon0=NP.EPSILON0, tau=NP.TAU, **kw)
+        kw = dict(seed=SEMILLA_SIM, p_presente=pres, reparto_desvio=NP.REPARTO_DESVIO, desvio_min=p_a)
+        b = None
+        if "banda" in partes:   # la banda, como `medir_tau_limpio.cobertura`: tipo «SIMPLE», 1.000 simulaciones
+            b = ENS.simular_con_guardas(lin, des, "SIMPLE", cam, n_sims=N_SIMS_BANDA, epsilon0=e_a, tau=t_a, **kw)
         p = p_sin = None
         if tipo == "SIMPLE":   # P(aprobación), como `contraste_aprobacion.py`: 2.000 simulaciones, tipo real
-            p = float(ENS.simular_con_guardas(lin, des, tipo, cam, n_sims=N_SIMS_P, epsilon0=NP.EPSILON0,
-                                              tau=NP.TAU, **kw)["p_aprobacion"])
-            p_sin = float(ENS.simular_con_guardas(lin, des, tipo, cam, n_sims=N_SIMS_P, epsilon0=0.0,
-                                                  tau=0.0, **kw)["p_aprobacion"])
+            if "p" in partes:
+                p = float(ENS.simular_con_guardas(lin, des, tipo, cam, n_sims=N_SIMS_P, epsilon0=e_a,
+                                                  tau=t_a, **kw)["p_aprobacion"])
+            if "p_sin" in partes:
+                p_sin = float(ENS.simular_con_guardas(lin, des, tipo, cam, n_sims=N_SIMS_P, epsilon0=0.0,
+                                                      tau=0.0, **kw)["p_aprobacion"])
         ley = g["ley"].iloc[0]
         filas.append([aid, cam, ley if isinstance(ley, str) and ley else "acta:" + aid,
                       pd.Timestamp(g["fecha"].iloc[0]).strftime("%Y-%m-%d"), tipo, int(len(g)), int(g["y"].sum()),
                       _resultado_binario(ac["resultado"].get(aid)), p, p_sin,
-                      float(b["afirm_p5"]), float(b["afirm_p95"]), float(b["afirm_medio"])])
+                      *((float(b["afirm_p5"]), float(b["afirm_p95"]), float(b["afirm_medio"])) if b is not None
+                        else (None, None, None))])
         if k % 500 == 0:
             print(f"  {k} actas · {(time.time() - t0) / 60:.1f} min", flush=True)
     return {"formato": FORMATO, "generador": GENERADOR, "generado": date.today().isoformat(),
             "motor_head_sha": MV.git_head(), "motor_modificado_sin_commitear": MV.motor_modificado(),
             "parametros": par,
-            "fuente": {"detalle": detalle.relative_to(REPO).as_posix() if REPO in detalle.resolve().parents
+            "fuente": {"detalle": detalle.resolve().relative_to(REPO).as_posix() if REPO in detalle.resolve().parents
                        else detalle.as_posix(),
-                       "detalle_sha256_16": ce._sha16(detalle), "columna_p": COL, "n_actas": len(filas),
+                       "detalle_sha256_16": ce._sha16(detalle), "columna_p": columna, "n_actas": len(filas),
                        "poblacion": f"actas de >= {MIN_VOTANTES} votos emitidos del censo, en el orden del detalle"},
             "actas": {"columnas": COLUMNAS, "filas": filas}, "minutos": round((time.time() - t0) / 60, 1)}
 
@@ -388,13 +434,30 @@ def main(argv=None) -> int:
     ap.add_argument("--reemplazar", action="store_true", help="regenerar archivos de este comando (nunca uno ajeno)")
     ap.add_argument("--n-boot", type=int, default=N_BOOT)
     ap.add_argument("--semilla", type=int, default=SEMILLA)
+    # los brazos de D2 (sólo con --simular): un número o un JSON {año: valor}; sin ellos, el motor de hoy
+    ap.add_argument("--columna", default=None, help=f"columna de P_i del detalle (default: {COL})")
+    ap.add_argument("--epsilon0", type=valor_brazo, default=None, help="ε₀ del brazo: número o JSON {año: valor}")
+    ap.add_argument("--tau", type=valor_brazo, default=None, help="τ del brazo: número o JSON {año: valor}")
+    ap.add_argument("--piso", type=valor_brazo, default=None,
+                    help="piso de desvío (DESVIO_MIN_INDIVIDUAL) del brazo: número o JSON {año: valor}")
+    ap.add_argument("--partes", default=",".join(PARTES), help=f"qué simular, separado por comas (de {PARTES})")
     args = ap.parse_args(argv)
     raw = sys.argv[1:] if argv is None else list(argv)
+    partes = tuple(x.strip() for x in args.partes.split(",") if x.strip())
+    brazo = any(v is not None for v in (args.columna, args.epsilon0, args.tau, args.piso)) or partes != PARTES
 
     ruta_actas = Path(args.actas) if args.actas else REPO / ACTAS
     salida = Path(args.salida) if args.salida else REPO / SALIDA
+    if brazo:
+        # un brazo sólo simula y escribe su JSON por acta: nunca sobre los del motor (versionados), nunca la métrica
+        versionados = {(REPO / r).resolve() for r in (ACTAS, ACTAS_2026_09_28, ACTAS_2026_10_02)}
+        if not args.simular or not args.actas or ruta_actas.resolve() in versionados:
+            print("ERROR: los argumentos de brazo van con --simular y con un --actas propio (no uno versionado)",
+                  file=sys.stderr)
+            return 3
     try:
-        proteger(salida, args.reemplazar)
+        if not brazo:
+            proteger(salida, args.reemplazar)
         if args.simular:
             proteger(ruta_actas, args.reemplazar)
     except MV.DestinoProtegido as e:
@@ -405,8 +468,11 @@ def main(argv=None) -> int:
         if not detalle.is_file():
             print(f"ERROR: --simular necesita el detalle del censo y no está: {detalle}", file=sys.stderr)
             return 4
-        escribir_actas(simular_actas(detalle), ruta_actas)
+        escribir_actas(simular_actas(detalle, columna=args.columna or COL, epsilon0=args.epsilon0, tau=args.tau,
+                                     piso=args.piso, partes=partes), ruta_actas)
         print(f"-> {ruta_actas}")
+        if brazo:
+            return 0
     est, a = cargar_actas(ruta_actas)
     res = {"formato": FORMATO, "generador": GENERADOR, "generado": date.today().isoformat(),
            "metodo": {"n_boot": args.n_boot, "semilla": args.semilla, "semilla_recalibracion": SEMILLA_RECAL,

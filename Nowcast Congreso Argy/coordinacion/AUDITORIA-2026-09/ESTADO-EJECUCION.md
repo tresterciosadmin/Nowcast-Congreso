@@ -1906,6 +1906,29 @@ Las opciones:
 - **Tropiezo:** el `.gitignore` ignora `*.csv` en todo el repo, así que `4b4c777` quedó sin `muestra.csv` ni `muestra_clave.csv`. Van en este commit con `git add -f`, que es como viajan los otros 32 CSV versionados. El §2 del test, sin la clave, se saltaba en silencio.
 - **Próximo:** Franco completa `etiqueta_franco`. Después `--validar`, y recién entonces el cruce con el resultado.
 
+### 2026-10-06 — Franco: la base hay que rehacerla por acta individual, desde las fuentes oficiales, y el modelo pasa a un repo nuevo
+
+**Qué pasó.** Al revisar las actas de la muestra, Franco planteó que la base tiene que estar formada por **cada acta de votación individualizada**, como los PDF oficiales (Senado: proyecto, descripción, acta, hora, mayoría y voto de cada senador; Diputados: votaciones.hcdn.gob.ar). Pasó PDF de prueba: el BCRA (7-PE-2026), con la O.D. 211 de Diputados y sus actas 6, 7 y 8, y la O.D. 367/26 del Senado y sus actas 2 a 19; además Inviolabilidad e Zonas Frías.
+
+**Lo que se midió sobre la canónica (sólo lectura):**
+- **Cada fila ya es una votación:** ninguna acta tiene más votos que bancas y ningún legislador aparece dos veces en un acta.
+- **Lo que se pierde es la descripción.** La sesión del Senado del 07/08/2026 (Inviolabilidad, O.D. 104/26) son 5 filas con el mismo título, sin saber cuál es la general.
+- **Faltan actas:** las de esa sesión y todas las posteriores al último armado (10/09).
+- **En la fuente cruda de argentinadatos** hay 295 actas de Diputados duplicadas por la API. Las copias son idénticas voto por voto y el dedup de `build.py` las limpia, pero ese dedup por (acta, nombre) es silencioso.
+- **En `decada_votada`**, 14 actas con 25 votos contradictorios entre copias.
+
+**Decisiones de Franco** (respuestas a las preguntas a–f):
+- **(a)** todos los años, pero primero una muestra: sólo el mandato de Milei;
+- **(b)** los PDF los baja el agente;
+- **(c)** el esquema del acta individual, como se propuso;
+- **(d)** el proyecto sale de la OD: el nombre y el expediente del **dictamen de mayoría**. No se vincula al tema de la OD;
+- **(e)** la base nueva va aparte de la canónica, y el modelo se rehace sobre ella parte por parte;
+- **(f)** **la revisión de la planilla de D2.0 queda en pausa.**
+
+Después, Franco decidió **rehacer el modelo en otro repo y otra carpeta, desde cero, quedándose sólo con la fórmula y la idea madre**, y pidió el superprompt: `coordinacion/PROMPT-NUEVO-MODELO.md` (commit `1f87b0e` y su corrección).
+
+**Lo que NO se registró:** Franco no escribió la frase textual `CAMBIO DE ALCANCE:`, así que la bitácora de alcance no cambia. **No declaró cerrada la auditoría** (sólo él puede, E6). D2.0 y D2 quedan en pausa, con la planilla sin revisar; la muestra, las etiquetas del Opus ciego, la planilla y `actas_para_revisar.xlsx` quedan commiteados.
+
 ## Bitácora de alcance
 
 Todo cambio de alcance se escribe **acá antes de ejecutarse**. Sólo Franco lo autoriza, con la frase `CAMBIO DE ALCANCE:`.

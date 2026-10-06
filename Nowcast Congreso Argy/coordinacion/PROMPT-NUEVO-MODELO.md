@@ -25,17 +25,18 @@ Antes de hacer nada:
 
 ## 1. El objetivo del modelo (va textual al `README.md` y al `CLAUDE.md` del repo nuevo)
 
-> El objetivo del modelo es encontrar **la probabilidad de que un legislador apruebe o rechace cierto proyecto de ley**.
-> **El legislador es la unidad de medida del modelo, contra un acta de votación específica.** Esa probabilidad está
-> condicionada por:
-> - la **lealtad** que tiene ese legislador a su bloque;
-> - **cómo vota en ciertos temas**;
-> - **cómo salió la votación en la cámara precedente**, si corresponde;
-> - **de quién es el proyecto** (el origen);
-> - **la aprobación (ICG) del oficialismo**, que afecta a opositores y dialoguistas.
->
-> La idea es reconocer dentro del recinto, y dependiendo de cada acta, **cuáles son los legisladores «clave»** en esa
-> votación: los que no tienen su voto asegurado, es decir, los que **pivotean** entre votaciones diferentes.
+Palabras de Franco, sin tocar:
+
+> El objetivo del modelo es encontrar la probabilidad de que un legislador apruebe o rechace cierto proyecto de ley. El
+> legislador es la unidad del medida del modelo, contra un acta de votación específica. Esa probabilidad de aprobación
+> del legislador está condicionada por la lealtad que tiene ese legislador a su bloque, cómo vota en ciertos temas, como
+> salió la votación en la cámara precedente (si corresponde), de quien (el origen) es el proyecto, cual es la
+> aprobación (ICG) del oficialismo (afectando a opositores y dialoguistas). La idea es reconocer dentro del recinto y
+> dependiendo de cada acta, cuales son los legisladores "clave" en esa votación y que no tienen su voto asegurado, es
+> decir, pivotean entre votaciones diferentes.
+
+La idea madre del proyecto y las reglas de dominio están en el repo viejo, en
+`...\Nowcast Congreso Argy\docs\contexto\INSTRUCTIVO-MAESTRO.md` y `...\docs\contexto\Nowcast-Congreso_viabilidad_y_plan.md`.
 
 Consecuencias para el diseño:
 - **La predicción primaria es por legislador y por acta:** P(afirmativo | legislador i, acta a), con lo que se sabe
@@ -189,7 +190,18 @@ el esqueleto que hay que respetar.
 
 ### Fase A — La base nueva desde fuentes oficiales: muestra chica, sólo el mandato de Milei
 **Alcance:** las dos cámaras, desde el **10-12-2023** hasta hoy, **todas las actas de cada sesión** (generales,
-particulares, mociones y otras). Después de cerrar todas las fases se extiende a todos los años.
+particulares, mociones y otras).
+
+**[DECIDE FRANCO — antes de la Fase C] La muestra Milei y el walk-forward chocan.** Con la base empezando en dic-2023:
+- todo legislador arranca sin historia (récord, postura y lealtad necesitan votos anteriores; el modelo viejo usaba una
+  ventana de 6 años);
+- con la regla de ≥ 2 años completos de entrenamiento, sólo 2026 quedaría como año de test.
+
+Las opciones:
+- **(a)** La muestra Milei valida sólo **la cadena (A) y las variables (B)**, y antes de C y D la base se extiende hacia
+  atrás con la misma cadena;
+- **(b)** C y D corren sólo sobre Milei, con el arranque en frío declarado y un corte temporal **dentro del mandato**
+  (por mes o por sesión) en lugar del anual.
 - **A1 — Inventario de fuentes.** Qué publica cada sitio y desde cuándo, en qué formato (PDF o HTML), cómo se recorre, si
   hay límites de tasa y qué condiciones de uso tiene. Se mide la cobertura antes de bajar en masa. El crudo se guarda con
   la URL, la fecha de descarga y el sha256.
@@ -234,7 +246,8 @@ particulares, mociones y otras). Después de cerrar todas las fases se extiende 
 Cada una es su propio ítem, con su test de invariancia al futuro.
 - **B1** Lealtad al bloque: el desvío individual, encogido y con piso.
 - **B2** Récord individual.
-- **B3** Postura proyectada del bloque.
+- **B3** Postura proyectada del bloque. El modelo viejo excluía las actas de consenso, homenajes y trámite porque inflaban
+  el share: se vuelve a decidir.
 - **B4** Tema del proyecto: la taxonomía y cómo se asigna. [DECIDE FRANCO: reusar la taxonomía vieja o definirla de
   nuevo; el récord por tema y el multitema se rediseñan acá, no se prende lo que ya se midió peor].
 - **B5** Origen, desde el expediente.
@@ -266,12 +279,33 @@ Cada una es su propio ítem, con su test de invariancia al futuro.
 - **D0** El modelo base: la P_i de §4 sin términos extra.
 - **D1…** Un término por ítem, en este orden: lealtad, tema, origen, dictamen (β), cámara precedente (ψ), ICG (γ),
   sobre tablas (θ) e incertidumbre (ε₀, τ).
-- **Protocolo de cada término:**
-  - reajuste anual con ventana creciente, sin la misma ley;
-  - el contraste contra el modelo anterior;
-  - Holm sobre los contrastes de cada ítem y margen de equivalencia;
-  - un árbol de veredicto escrito antes de medir;
-  - revisión ciega.
+- **Protocolo de cada término** (el del repo viejo, que funcionó; el corte temporal depende de la decisión de la Fase A):
+  - **Walk-forward:** para cada período de test, el valor se elige o se estima sólo con datos anteriores y sin las actas
+    de las leyes que tienen actas en ese test. Las predicciones de test concatenadas forman el compuesto. Un empate exacto
+    (< 1e-12 relativo) lo gana el valor anterior. Si el valor elegido toca un borde de la grilla, ésta se extiende una
+    sola vez.
+  - **El contraste** se hace contra el modelo anterior (V0), sobre el panel donde el término puede actuar, fijado sin
+    leer el resultado. Si el término ya estaba prendido, también contra apagado.
+  - **IC 95%:** bootstrap de Poisson con 2.000 réplicas y semilla 7, re-muestreando leyes y, aparte, meses. p\* = máx(p de
+    ley; p de mes), y Holm a 0,05 sobre los contrastes primarios del ítem.
+  - **Márgenes de equivalencia:** ±1% relativo en el Brier y ±1 pp en la cobertura. MDE = 2,8 × el error estándar más
+    ancho.
+  - **El árbol de veredicto,** en orden fijo; gana la primera salida que se cumple:
+
+    | salida | cuándo |
+    |---|---|
+    | Z (sin cambio) | da idéntico a V0 |
+    | F (alarma) | mejora el Brier global más que máx(2%; 2 × lo esperado escrito antes): se revisan fugas antes de seguir |
+    | C (equivalente) | los dos IC dentro del margen |
+    | E (veto) | Holm rechaza, pero el cambio daña con IC < 0 a la era vigente o a una cámara: va a Franco |
+    | A (mejora) | Holm rechaza y los dos IC excluyen 0 del lado bueno |
+    | B (empeora) | Holm rechaza y los dos IC excluyen 0 del lado malo |
+    | D (sin poder) | todo lo demás |
+
+    Acciones: A → se adopta; B, C, D y Z → se conserva V0; E → decide Franco. Si dos contrastes del mismo término piden
+    acciones opuestas, el término va a E. Si más de un contraste del ítem da A, se mide **un brazo conjunto** antes de
+    adoptar.
+  - **Revisión ciega** del veredicto por un subagente Opus que no vio la conclusión.
 - **Un término entra sólo si mejora medido.** Si no, queda apagado y documentado; no se borra.
 - **Salida:** la fórmula final con cada término justificado por su medición.
 
@@ -293,14 +327,14 @@ Cada una es su propio ítem, con su test de invariancia al futuro.
 
 ## 7. El caso de control: 7-PE-2026, reforma de la Carta Orgánica del BCRA
 
-Los PDF están en `C:\Users\Franco\Downloads\`. Se copian a `tests/fixtures/` en la Fase 0, y la Fase A tiene que
+Los PDF están en **[RUTA — ver §10]**. Se copian a `tests/fixtures/` en la Fase 0, y la Fase A tiene que
 reproducir todo esto **bajando las fuentes por su cuenta**:
 
 | paso | documento | qué contiene |
 |---|---|---|
 | proyecto | 7-PE-2026 (mensaje 226/26 del 30/07/2026) | las URL de §2 |
 | OD Diputados | `144-211.pdf` — O.D. Nº 211/2026, impresa el 18/08/2026, Comisiones de Finanzas y de Presupuesto y Hacienda | **I. Dictamen de mayoría** (expedientes 7-PE-2026, 171-D-2025 y 2.888-D-2025), II y III dictámenes de minoría |
-| actas Diputados | `acta_online_5971/5972/5973.pdf` — 144° período ordinario, 5ª sesión especial, 6ª reunión, 26/08/2026 | **Acta 6** (18:14) «O.D. 211 … DICT. DE MAY. VOT. EN GRAL.» 144-102-9 · **Acta 7** (18:52) «TÍTULO I» 138-110-7 · **Acta 8** (18:54) «TÍTULO II». Base: votos emitidos, más de la mitad. Entre la 6 y la 7 cambian 10 diputados (Coletta, Frade, Juliano, Lousteau y Massot pasan de abstención a NO; Falcone y Zago de SI a NO; García Aresca, Gutiérrez y Schiaretti de SI a abstención) |
+| actas Diputados | `acta_online_5971/5972/5973.pdf` — 144° período ordinario, 5ª sesión especial, 6ª reunión, 26/08/2026 | **Acta 6** (18:14) «O.D. 211 … DICT. DE MAY. VOT. EN GRAL.» 144-102-9 · **Acta 7** (18:52) «TÍTULO I» 138-110-7 · **Acta 8** (18:54) «TÍTULO II». Base: votos emitidos, más de la mitad. Entre la 6 y la 7 cambian **11 diputados** (Coletta, Frade, Juliano, Lousteau y Massot pasan de abstención a NO; Falcone, Zago y Ferraro de SI a NO; García Aresca, Gutiérrez y Schiaretti de SI a abstención). Cuadra: 144 − 6 = 138, 102 + 8 = 110, 9 − 5 + 3 = 7 |
 | OD Senado | `51678.pdf` — O.D. Nº 367/2026, 09/09/2026, Comisiones de Economía Nacional e Inversión y de Presupuesto y Hacienda, sobre **CD-7/26** | dictamen que aconseja aprobar, 15 firmas y Fama en disidencia parcial |
 | actas Senado | `ACTA_2` … `ACTA_19.pdf` — 24/09/2026, «OD 367/26 - BCRA» | **2** en general (17:08) 46-22-0 · 3 art. 1 · 4 art. 2 · **5** art. S/N y 3, 66-2-0 · 6 art. 4 · 7 arts. 5 y 6 · 8 art. 7 · 9 arts. 8 a 11 · *10 a 12 no están en la carpeta: la Fase A tiene que encontrarlas* · 13 art. 15 · 14 arts. 16 y 17, 46-22 · 15 art. 18, 46-22 · **16** art. 19, 45-23 (Royon pasa de SI a NO) · 17 art. 20 · 18 art. 21 · **19** art. 22, 65-2-1, **con base «votos emitidos»** (las demás: «legisladores presentes») |
 
@@ -321,6 +355,9 @@ buenos.**
 - **No pongas el repo nuevo dentro de OneDrive.** En el repo viejo, `git pull` y `git merge` fallaban dentro de OneDrive
   («unable to unlink … Directory not empty») y había que hacer el pull a mano. [DECIDE FRANCO la ubicación.]
 - **Para esperar corridas largas,** `run_in_background` con un `until … grep`, no `sleep`.
+- **Leer PDF:** `pdftoppm` no está instalado, así que la herramienta `Read` con `pages` falla en los PDF largos. `pypdf` y
+  `pdfplumber` sí están instalados y extraen bien el texto de las actas y de las OD (en el Senado, el texto de la OD sale
+  con una palabra por línea: hay que normalizar los espacios).
 - **Disco:** quedaban ≈ 50 GB. Un test viejo dejaba copias de 87 MB en `%TEMP%`: los temporales se borran en un
   `finally`.
 - **Los nombres de comisión tienen comas** («FAMILIA, MUJER, NIÑEZ Y ADOLESCENCIA»). Se matchean contra el catálogo
@@ -333,11 +370,27 @@ buenos.**
 
 ---
 
-## 9. Decisiones abiertas para Franco (se preguntan en la Fase 0, antes de ejecutar lo que dependa de ellas)
+## 9. Decisiones abiertas para Franco (se preguntan antes de ejecutar lo que dependa de ellas)
 
-1. Nombre, ubicación (fuera de OneDrive) y remoto de GitHub del repo nuevo.
-2. El modelo: ¿Opus como principal, o Sonnet como principal y Opus como revisor y `advisor`?
-3. Las tres dudas del vínculo de A5.
-4. La taxonomía de temas (B4).
-5. La vara de «funciona» (C4).
-6. ¿Se puede leer el repo viejo como consulta, sin copiar datos ni código sin pasar por el plan?
+1. Las tres dudas del vínculo de A5.
+2. La taxonomía de temas (B4).
+3. La vara de «funciona» (C4).
+4. La muestra Milei frente al walk-forward: (a) o (b) (Fase A).
+
+Lo que ya decidió Franco al escribir este prompt está en §10.
+
+---
+
+## 10. Lo que Franco ya decidió para este arranque
+
+| tema | decisión |
+|---|---|
+| repo nuevo: nombre, carpeta y remoto | **[COMPLETAR]** |
+| modelo principal | **[COMPLETAR]** |
+| ¿se puede leer el repo viejo como consulta? | **[COMPLETAR]** (en sólo lectura; no se copian datos ni código sin pasar por el plan) |
+| dónde están los PDF de prueba de §7 | **[COMPLETAR]** |
+| el repo viejo | **[COMPLETAR]**: ¿la auditoría queda cerrada o en pausa? ¿los bots siguen corriendo ahí? |
+| muestra | sólo el mandato de Milei primero; después, todos los años |
+| fuentes | los PDF oficiales los baja el agente |
+| vínculo | acta → OD → dictamen de mayoría → expediente |
+| base vieja | queda aparte, sólo como contraste |

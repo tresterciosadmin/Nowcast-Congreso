@@ -199,10 +199,82 @@ def paquete(a: pd.DataFrame, m: pd.DataFrame) -> dict:
     return {"titulos_tapados_en_actas": int(tap_acta), "titulos_tapados_en_contexto": int(tap_ctx)}
 
 
+ETIQUETAS = ("GENERAL", "PARTICULAR", "MOCION", "OTRA", "INDETERMINABLE")
+SEMILLA_CONTROL = SEMILLA + 1   # el 10% al azar de los acuerdos que revisa Franco
+
+
+def leer_etiquetas() -> pd.DataFrame:
+    e = pd.read_csv(DIR_MUESTRA / "etiquetas_opus.csv", dtype={"nota": str})
+    g = pd.read_csv(DIR_MUESTRA / "muestra_clave.csv")
+    assert len(e) == len(g) == 260 and list(e["fila"]) == list(g["fila"]) and list(e["acta_id"]) == list(g["acta_id"]), \
+        "etiquetas_opus.csv no coincide fila por fila con la muestra"
+    e["etiqueta"] = e["etiqueta"].str.strip().str.upper()
+    assert e["etiqueta"].isin(ETIQUETAS).all(), sorted(set(e["etiqueta"]) - set(ETIQUETAS))
+    return g.merge(e[["fila", "etiqueta", "nota"]].rename(columns={"etiqueta": "etiqueta_opus", "nota": "nota_opus"}),
+                   on="fila")
+
+
+def a_revisar(t: pd.DataFrame) -> pd.DataFrame:
+    """Todos los desacuerdos (INDETERMINABLE incluido) y un 10% al azar de los acuerdos, mínimo 3 por clase."""
+    t = t.copy()
+    t["motivo"] = np.where(t["etiqueta_opus"] != t["clase"], "desacuerdo", "")
+    rng = np.random.default_rng(SEMILLA_CONTROL)
+    for cl in C.CLASES:
+        ac = t[(t["clase"] == cl) & (t["motivo"] == "")].sort_values("fila")
+        k = min(len(ac), max(3, int(np.ceil(0.10 * len(ac)))))
+        t.loc[rng.choice(ac.index.to_numpy(), size=k, replace=False), "motivo"] = "control de acuerdo"
+    return t
+
+
+def planilla() -> dict:
+    a = pd.read_parquet(C.CANONICA, columns=C.COLUMNAS_QUE_LEE + ["expediente"])
+    a["acta_id"] = a["acta_id"].astype(str)
+    t = a_revisar(leer_etiquetas())
+    mu = pd.read_csv(DIR_MUESTRA / "muestra.csv", dtype=str).fillna("")
+    mu["fila"] = mu["fila"].astype(int)
+    r = t[t["motivo"] != ""].merge(mu, on=["fila", "acta_id"], suffixes=("", "_m")).sort_values(["motivo", "fila"], ascending=[False, True])
+    r["contexto"] = [("\n".join((">> " if es else "   ") + tapar(tt)[0][:300] for es, tt in contexto(a, aid))
+                      or "(sin contexto: el acta no tiene fecha)") for aid in r["acta_id"]]
+    out = r[["fila", "acta_id", "camara", "fecha", "fuente", "expediente", "titulo_tapado", "contexto", "clase",
+             "etiqueta_opus", "nota_opus", "motivo"]].rename(columns={"clase": "etiqueta_regla"})
+    out["etiqueta_franco"] = ""
+    out["nota_franco"] = ""
+    ruta = DIR_MUESTRA / "revision_franco.xlsx"
+    with pd.ExcelWriter(ruta, engine="openpyxl") as w:
+        out.to_excel(w, index=False, sheet_name="revisar")
+        pd.DataFrame({"etiqueta": ETIQUETAS, "qué es": [
+            "la ley o proyecto como un todo (en general, o en general y en particular en una sola votación; o el único "
+            "voto del proyecto)", "una parte de la ley (artículos, capítulos, títulos) después de la general",
+            "procedimiento (apartamiento, sobre tablas, preferencia, emplazamiento, moción de orden, vuelta a "
+            "comisión, reconsideración…)", "otra cosa (acuerdos, decretos, juicio político, insistencia, internos, "
+            "resoluciones, en conjunto)", "ni el título ni el contexto alcanzan"]}).to_excel(
+            w, index=False, sheet_name="definiciones")
+        ws = w.sheets["revisar"]
+        from openpyxl.styles import Alignment
+        anchos = {"A": 6, "B": 26, "C": 10, "D": 11, "E": 14, "F": 14, "G": 60, "H": 80, "I": 14, "J": 14, "K": 30,
+                  "L": 18, "M": 16, "N": 30}
+        for col, an in anchos.items():
+            ws.column_dimensions[col].width = an
+        for fila in ws.iter_rows(min_row=2):
+            for celda in fila:
+                celda.alignment = Alignment(wrap_text=True, vertical="top")
+        ws.freeze_panes = "A2"
+    info = {"filas": int(len(out)), "desacuerdos": int((out["motivo"] == "desacuerdo").sum()),
+            "controles_de_acuerdo": int((out["motivo"] == "control de acuerdo").sum()),
+            "controles_por_clase": out[out["motivo"] == "control de acuerdo"]["etiqueta_regla"].value_counts().to_dict(),
+            "acuerdo_crudo": float((t["etiqueta_opus"] == t["clase"]).mean())}
+    print(json.dumps(info, ensure_ascii=False))
+    return info
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--muestra", action="store_true")
+    ap.add_argument("--planilla", action="store_true", help="la planilla de Franco, desde etiquetas_opus.csv")
     args = ap.parse_args(argv)
+    if args.planilla:
+        planilla()
+        return 0
     if not args.muestra:
         ap.print_help()
         return 0

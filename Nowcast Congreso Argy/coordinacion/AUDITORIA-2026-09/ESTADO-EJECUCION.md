@@ -1899,7 +1899,12 @@ Las opciones:
   - títulos tapados: 7 en las actas y 63 en el contexto;
   - `test_d2_0_actas.py` §2 verifica que el reparto es el de la tabla y que el sorteo se reproduce exacto desde la canónica y la semilla.
 - **Desvío menor, declarado:** el paquete del etiquetador va **partido en cuatro archivos de 65 actas** (`actas_1.md` … `actas_4.md`). Entero pesaba 630 KB y no entra de una vez en un subagente. El contexto de sesión no se achicó: siguen los 30 antes y 30 después. El etiquetador agrega sus filas al CSV al terminar cada archivo.
-- **Próximo:** el etiquetador (un solo subagente Opus, aislado en `Archivos_Borrar/d2_0/etiquetado/`), después la planilla de Franco.
+- **Paso 3, el etiquetador:** un solo subagente Opus, aislado en `Archivos_Borrar/d2_0/etiquetado/`, etiquetó las 260 (8 min): GENERAL 70, PARTICULAR 65, OTRA 58, MOCION 55, INDETERMINABLE 12; dejó 59 notas. Sus etiquetas están en `resultados/d2_0_muestra/etiquetas_opus.csv`.
+- **La planilla de Franco** (`revisar_actas_d2_0.py --planilla` → `resultados/d2_0_muestra/revision_franco.xlsx`), sin resultado:
+  - **59 filas: los 34 desacuerdos** (incluidos los INDETERMINABLE) **y 25 controles de acuerdo**, el 10% de cada clase con mínimo 3 (semilla 20261006): GENERAL 7, PARTICULAR 7, MOCION 6, OTRA 5;
+  - el acuerdo crudo entre la regla y el etiquetador es 86,9%, sin ponderar. **Todavía no es la precisión:** la verdad la pone Franco.
+- **Tropiezo:** el `.gitignore` ignora `*.csv` en todo el repo, así que `4b4c777` quedó sin `muestra.csv` ni `muestra_clave.csv`. Van en este commit con `git add -f`, que es como viajan los otros 32 CSV versionados. El §2 del test, sin la clave, se saltaba en silencio.
+- **Próximo:** Franco completa `etiqueta_franco`. Después `--validar`, y recién entonces el cruce con el resultado.
 
 ## Bitácora de alcance
 

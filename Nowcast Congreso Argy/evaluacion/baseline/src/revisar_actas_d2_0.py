@@ -267,13 +267,68 @@ def planilla() -> dict:
     return info
 
 
+def detalle() -> dict:
+    """Para Franco: las actas de su planilla con sus sesiones COMPLETAS, sin resultado, tipo, conteos ni votos (los
+    votos individuales suman el resultado). Pedido de Franco del 2026-10-06; no es un paso del pre-registro."""
+    a = pd.read_parquet(C.CANONICA, columns=C.COLUMNAS_QUE_LEE + ["expediente"])
+    a["acta_id"] = a["acta_id"].astype(str)
+    t = a_revisar(leer_etiquetas())   # las mismas 59 de la planilla (sin abrirla: Franco la tiene abierta)
+    pl = t[t["motivo"] != ""].sort_values(["motivo", "fila"], ascending=[False, True])
+    ai = a.set_index("acta_id")
+    filas, ses = [], []
+    for x in pl.itertuples(index=False):
+        r = ai.loc[x.acta_id]
+        fecha = "" if pd.isna(r["fecha"]) else str(r["fecha"])
+        s = a[(a["camara"] == r["camara"]) & (a["fecha"] == r["fecha"])] if fecha else a.iloc[0:0]
+        filas.append({"fila": x.fila, "acta_id": x.acta_id, "motivo": x.motivo, "camara": r["camara"],
+                      "fecha": fecha or "(sin fecha)", "fuente": r["fuente"],
+                      "expediente": "" if pd.isna(r["expediente"]) else str(r["expediente"]),
+                      "titulo_completo": tapar(r["titulo"])[0], "actas_en_la_sesion": len(s)})
+        if fecha:
+            s = s.assign(_n=s["acta_id"].map(_num)).sort_values(["_n", "acta_id"])
+            for k, y in enumerate(s.itertuples(index=False), 1):
+                ses.append({"fila_planilla": x.fila, "acta_de_la_planilla": x.acta_id, "camara": r["camara"],
+                            "fecha": fecha, "orden_por_id": k, "es_esta": ">>" if y.acta_id == x.acta_id else "",
+                            "acta_id": y.acta_id, "fuente": y.fuente,
+                            "expediente": "" if pd.isna(y.expediente) else str(y.expediente),
+                            "titulo": tapar(y.titulo)[0]})
+    ruta = DIR_MUESTRA / "actas_para_revisar.xlsx"
+    from openpyxl.styles import Alignment
+    with pd.ExcelWriter(ruta, engine="openpyxl") as w:
+        pd.DataFrame(filas).to_excel(w, index=False, sheet_name="actas")
+        pd.DataFrame(ses).to_excel(w, index=False, sheet_name="sesiones")
+        pd.DataFrame({"nota": [
+            "Las 59 actas de revision_franco.xlsx, con el título completo y la sesión ENTERA (misma cámara y fecha).",
+            "Sin resultado, tipo de mayoría, conteos ni votos individuales: los votos suman el resultado.",
+            "Lo que delata el resultado en el título va tapado con […], como en la planilla.",
+            "orden_por_id = el número del acta_id; puede no ser el orden real de la sesión.",
+            "Hoja 'sesiones': filtrá por fila_planilla para ver la sesión de cada acta; '>>' marca el acta."]}).to_excel(
+            w, index=False, sheet_name="leeme")
+        for hoja, anchos in {"actas": {"H": 100}, "sesiones": {"J": 100, "B": 26, "G": 26}}.items():
+            ws = w.sheets[hoja]
+            for col, an in anchos.items():
+                ws.column_dimensions[col].width = an
+            for fila in ws.iter_rows(min_row=2):
+                for celda in fila:
+                    celda.alignment = Alignment(wrap_text=True, vertical="top")
+            ws.freeze_panes = "A2"
+            ws.auto_filter.ref = ws.dimensions
+    info = {"actas": len(filas), "filas_de_sesion": len(ses)}
+    print(json.dumps(info, ensure_ascii=False))
+    return info
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--muestra", action="store_true")
     ap.add_argument("--planilla", action="store_true", help="la planilla de Franco, desde etiquetas_opus.csv")
+    ap.add_argument("--detalle", action="store_true", help="las actas de la planilla con su sesión entera, sin resultado")
     args = ap.parse_args(argv)
     if args.planilla:
         planilla()
+        return 0
+    if args.detalle:
+        detalle()
         return 0
     if not args.muestra:
         ap.print_help()

@@ -1,3 +1,5 @@
+> ⛔ **REEMPLAZADO (2026-10-06):** la versión final es `PROMPT-INICIAL.md`, en el repo `Nowcast Congreso 2.0`. Éste queda como borrador histórico.
+
 # SUPERPROMPT — Nowcast Legislativo, versión 2 (repo nuevo, desde cero)
 
 > Pegá este texto completo como primer mensaje de una conversación nueva de Claude Code, abierta en la carpeta del repo

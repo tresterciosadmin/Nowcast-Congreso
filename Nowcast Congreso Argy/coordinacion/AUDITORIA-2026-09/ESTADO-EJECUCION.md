@@ -1929,6 +1929,18 @@ Después, Franco decidió **rehacer el modelo en otro repo y otra carpeta, desde
 
 **Lo que NO se registró:** Franco no escribió la frase textual `CAMBIO DE ALCANCE:`, así que la bitácora de alcance no cambia. **No declaró cerrada la auditoría** (sólo él puede, E6). D2.0 y D2 quedan en pausa, con la planilla sin revisar; la muestra, las etiquetas del Opus ciego, la planilla y `actas_para_revisar.xlsx` quedan commiteados.
 
+### 2026-10-06 (más tarde) — Franco declara CERRADA la auditoría y el proyecto en este repo
+
+Textual: «Cerrada, la damos por muerta, sirvió para darnos cuenta que hay que empezar de nuevo. Dejamos a los bots corriendo, luego vemos de redirigirlos o volverlos a montar».
+
+- El modelo se rehace desde cero en `Nowcast Congreso 2.0`. El prompt de arranque es `PROMPT-INICIAL.md` en ese repo y reemplaza a `coordinacion/PROMPT-NUEVO-MODELO.md`.
+- Decisiones: Opus como principal y Opus como revisor; la versión 1 no se consulta; la muestra Milei valida la cadena y las variables, y para usar el modelo se extiende la base (opción (a)).
+- Los 24 PDF de prueba se movieron de Descargas a `tests/fixtures/` del repo nuevo, con su sha256.
+- **Este repo:**
+  - el bloque MODO AUDITORÍA de `CLAUDE.md` se reemplazó por la nota de cierre (E6);
+  - **no se generó el `PROMPT-POST-AUDITORIA.md`**: el proyecto no sigue acá, y lo útil del estacionamiento pasó al §11 del prompt nuevo;
+  - los bots siguen corriendo.
+
 ## Bitácora de alcance
 
 Todo cambio de alcance se escribe **acá antes de ejecutarse**. Sólo Franco lo autoriza, con la frase `CAMBIO DE ALCANCE:`.

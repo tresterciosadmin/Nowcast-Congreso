@@ -1611,7 +1611,7 @@ Las opciones:
 
 **Estado de partida (verificado hoy).**
 - **Repo:** `HEAD` `58f1ee9`, `main`, árbol limpio. `git fetch`: `origin/main` en `2ed3367`; **`main` 5 adelante** (`b0fbf04` … `58f1ee9`, los commits de D2 y del cambio de alcance; **sin pushear, los pushea Franco**) y 0 atrás.
-- **Suite:** `pytest` **54 pasan**; los **67** `test_*.py` (bucle de `tests.yml`) en 0. Con el test nuevo de D2.0 pasan a **68**. **Checkout limpio de `5994566`** (`git archive`, venv Python 3.11.0 nuevo con los pines, pandas 3.0.2): `test_d2_0_actas.py` TODO OK, `pytest` 53 pasan y 1 saltado (el de frescura), **68 scripts en 0**.
+- **Suite:** `pytest` **54 pasan**; los **67** `test_*.py` (bucle de `tests.yml`) en 0. Con el test nuevo de D2.0 pasan a **68**. **Checkout limpio de `5994566`** (`git archive`, venv Python 3.11.0 nuevo con los pines, pandas 3.0.2): `test_d2_0_actas.py` TODO OK, `pytest` 53 pasan y 1 saltado (el de frescura), **68 scripts en 0**. **Franco pusheó y confirmó *Actions* en verde (2026-10-05).**
 - **Disco:** 50 GB libres. Cada corrida de la suite suma ≈ 87 MB en `%TEMP%` (estacionamiento, 2026-10-05).
 - **Canónica:** `actas_canonico.parquet` sha256/16 `fda52f44d2f51240`; `votos_canonico.parquet` `faf3aa65b1a26f82`. Las dos tocadas por última vez en `f11fc7c` (10-09), antes del censo del 03-10. El bot no la escribe: sólo abre un *issue* `canonica-pendiente`.
 
@@ -1827,7 +1827,7 @@ Las opciones:
     Si cambia algún valor anual de ε₀, τ o el mecanismo, se re-simulan sólo esos brazos (≈ 6 min cada uno, con `calibracion_declarada.py --simular` y `{año: valor}`). Los brazos del piso son de valor fijo y no se re-simulan.
   - **Por clase:** el Δ con IC, descriptivo, sin Holm. No rescata ni hunde nada.
   - **D2 sigue en pausa:** D2.0 informa si la salida sigue siendo E. Si no lo es, va a Franco.
-- **C1 y D1:** sólo descriptivo. El skill del voto individual por clase y sin los duplicados, desde `censo_estadisticos_2026-10-03.json` (n, Σy, Σp, Σp² por acta). No se re-corre nada de D1.
+- **C1 y D1:** sólo descriptivo (**confirmado por Franco el 2026-10-05**). El skill del voto individual por clase y sin los duplicados, desde `censo_estadisticos_2026-10-03.json` (n, Σy, Σp, Σp² por acta). No se re-corre nada de D1.
 
 #### 7. Controles (umbral: 0 fallas) y orden
 
@@ -1889,6 +1889,17 @@ Las opciones:
   3. sin una cuenta oficial de votaciones, «faltan rechazos» sólo se puede ver comparando fuentes donde se solapan;
   4. la exclusión de (b) y de (c) depende del resultado, y por eso se informa partida;
   5. `_sources/` es posterior al último build de la canónica (control del punto 5).
+
+### D2.0 — avance (2026-10-05; pre-registro `5994566` y `b5757d3`; **ninguna clase cruzada con el resultado**)
+
+- **Confirmaciones de Franco:** pusheó y vio *Actions* en verde; C1 y D1 van sólo como descriptivos.
+- **Paso 2, la muestra** (`revisar_actas_d2_0.py --muestra`):
+  - 260 actas: GENERAL 80, PARTICULAR 65, MOCION 55, OTRA 60, con el reparto de la tabla del punto 2. `particular` de la fuente `senado` lleva 13 (≥ 8);
+  - `resultados/d2_0_muestra/muestra.csv` no trae clase ni resultado. La clave, con clase, subtipo y peso N_celda / n_celda, va aparte en `muestra_clave.csv`;
+  - títulos tapados: 7 en las actas y 63 en el contexto;
+  - `test_d2_0_actas.py` §2 verifica que el reparto es el de la tabla y que el sorteo se reproduce exacto desde la canónica y la semilla.
+- **Desvío menor, declarado:** el paquete del etiquetador va **partido en cuatro archivos de 65 actas** (`actas_1.md` … `actas_4.md`). Entero pesaba 630 KB y no entra de una vez en un subagente. El contexto de sesión no se achicó: siguen los 30 antes y 30 después. El etiquetador agrega sus filas al CSV al terminar cada archivo.
+- **Próximo:** el etiquetador (un solo subagente Opus, aislado en `Archivos_Borrar/d2_0/etiquetado/`), después la planilla de Franco.
 
 ## Bitácora de alcance
 

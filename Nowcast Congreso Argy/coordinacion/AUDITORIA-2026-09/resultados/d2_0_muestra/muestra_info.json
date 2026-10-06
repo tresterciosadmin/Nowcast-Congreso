@@ -1,0 +1,13 @@
+{
+ "semilla": 20261005,
+ "n": 260,
+ "por_clase": {
+  "GENERAL": 80,
+  "PARTICULAR": 65,
+  "OTRA": 60,
+  "MOCION": 55
+ },
+ "canonica_sha256_16": "fda52f44d2f51240",
+ "titulos_tapados_en_actas": 7,
+ "titulos_tapados_en_contexto": 63
+}

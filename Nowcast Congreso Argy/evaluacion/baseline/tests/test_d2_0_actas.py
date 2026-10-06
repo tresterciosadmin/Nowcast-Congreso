@@ -134,6 +134,28 @@ def main() -> int:
         check(cl == ANCLA_CLASES, f"conteo por clase: {cl}")
         check(st == ANCLA_SUBTIPOS, "conteo por subtipo (anclado)")
 
+    print("2. La muestra")
+    import revisar_actas_d2_0 as R
+    clave = R.DIR_MUESTRA / "muestra_clave.csv"
+    porsub = {"general": 14, "general_y_particular": 18, "senado_tag_general": 4, "unica_sin_marca": 24,
+              "senado_votacion_unica": 20, "particular": 57, "senado_particular_tras_general": 8,
+              "procedimiento": 55, "conjunto": 11, "acuerdo_pliego": 10, "decreto": 7, "repetida_sin_marca": 7,
+              "insistencia": 6, "resolucion_declaracion": 5, "juicio_desafuero": 5, "interno": 5, "sin_titulo": 4}
+    check(R.REPARTO == porsub and sum(porsub.values()) == 260, "el reparto por subtipo es el del pre-registro (260)")
+    if sha == SHA_CANONICA and clave.is_file():
+        rep = R.reparto_celdas(base.merge(a[C.COLUMNAS_QUE_LEE], on="acta_id"))
+        part = rep[(rep["subtipo"] == "particular") & (rep["fuente"] == "senado")]["n_celda"].sum()
+        check(rep.groupby("subtipo")["n_celda"].sum().to_dict() == porsub and part >= 8,
+              f"el reparto por celda suma la tabla y `particular` de `senado` tiene {part} (≥ 8)")
+        g = pd.read_csv(clave)
+        s2 = R.sortear(a[C.COLUMNAS_QUE_LEE + ["expediente"]].assign(acta_id=lambda d: d["acta_id"].astype(str)))
+        check(list(g["acta_id"]) == list(s2["acta_id"]) and list(g["subtipo"]) == list(s2["subtipo"])
+              and np.allclose(g["peso"], s2["peso"]), "el sorteo se reproduce exacto desde la canónica y la semilla")
+        check(np.allclose(g["peso"], g["N_celda"] / g["n_celda"]), "peso = N_celda / n_celda")
+        mu = pd.read_csv(R.DIR_MUESTRA / "muestra.csv")
+        check(list(mu["acta_id"]) == list(g["acta_id"]) and not {"clase", "subtipo", "resultado"} & set(mu.columns),
+              "muestra.csv: las mismas actas y sin clase ni resultado")
+
     print(f"\n{'TODO OK' if not FALLOS else f'{len(FALLOS)} FALLAS'}")
     return 1 if FALLOS else 0
 

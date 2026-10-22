@@ -5,7 +5,7 @@
  },
  "tp_diputados": {
   "periodo": 144,
-  "numero": 158
+  "numero": 159
  },
  "actas_diputados_2025": {
   "ids": [
@@ -237,10 +237,23 @@
    "argentinadatos:diputados:5994",
    "argentinadatos:diputados:5995",
    "argentinadatos:diputados:5999",
-   "argentinadatos:diputados:6000"
+   "argentinadatos:diputados:6000",
+   "argentinadatos:diputados:6011",
+   "argentinadatos:diputados:6012",
+   "argentinadatos:diputados:6013",
+   "argentinadatos:diputados:6014",
+   "argentinadatos:diputados:6015",
+   "argentinadatos:diputados:6016",
+   "argentinadatos:diputados:6017",
+   "argentinadatos:diputados:6018",
+   "argentinadatos:diputados:6019",
+   "argentinadatos:diputados:6020",
+   "argentinadatos:diputados:6021",
+   "argentinadatos:diputados:6022",
+   "argentinadatos:diputados:6023"
   ],
-  "n": 107,
-  "ultima_revision": "2026-10-21"
+  "n": 120,
+  "ultima_revision": "2026-10-22"
  },
  "actas_senado_2025": {
   "ids": [
@@ -626,6 +639,6 @@
    "argentinadatos:senado:2847"
   ],
   "n": 227,
-  "ultima_revision": "2026-10-21"
+  "ultima_revision": "2026-10-22"
  }
 }

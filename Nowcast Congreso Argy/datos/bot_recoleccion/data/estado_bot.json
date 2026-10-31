@@ -255,7 +255,7 @@
    "argentinadatos:diputados:6026"
   ],
   "n": 122,
-  "ultima_revision": "2026-10-30"
+  "ultima_revision": "2026-10-31"
  },
  "actas_senado_2025": {
   "ids": [
@@ -638,9 +638,33 @@
    "argentinadatos:senado:2844",
    "argentinadatos:senado:2845",
    "argentinadatos:senado:2846",
-   "argentinadatos:senado:2847"
+   "argentinadatos:senado:2847",
+   "argentinadatos:senado:2848",
+   "argentinadatos:senado:2849",
+   "argentinadatos:senado:2850",
+   "argentinadatos:senado:2851",
+   "argentinadatos:senado:2852",
+   "argentinadatos:senado:2853",
+   "argentinadatos:senado:2854",
+   "argentinadatos:senado:2855",
+   "argentinadatos:senado:2856",
+   "argentinadatos:senado:2857",
+   "argentinadatos:senado:2858",
+   "argentinadatos:senado:2859",
+   "argentinadatos:senado:2860",
+   "argentinadatos:senado:2861",
+   "argentinadatos:senado:2863",
+   "argentinadatos:senado:2865",
+   "argentinadatos:senado:2866",
+   "argentinadatos:senado:2867",
+   "argentinadatos:senado:2868",
+   "argentinadatos:senado:2869",
+   "argentinadatos:senado:2870",
+   "argentinadatos:senado:2871",
+   "argentinadatos:senado:2872",
+   "argentinadatos:senado:2873"
   ],
-  "n": 227,
-  "ultima_revision": "2026-10-30"
+  "n": 251,
+  "ultima_revision": "2026-10-31"
  }
 }

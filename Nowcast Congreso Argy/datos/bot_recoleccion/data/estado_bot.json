@@ -255,7 +255,7 @@
    "argentinadatos:diputados:6026"
   ],
   "n": 122,
-  "ultima_revision": "2026-11-20"
+  "ultima_revision": "2026-11-21"
  },
  "actas_senado_2025": {
   "ids": [
@@ -676,9 +676,12 @@
    "argentinadatos:senado:2882",
    "argentinadatos:senado:2883",
    "argentinadatos:senado:2884",
-   "argentinadatos:senado:2885"
+   "argentinadatos:senado:2885",
+   "argentinadatos:senado:2886",
+   "argentinadatos:senado:2888",
+   "argentinadatos:senado:2889"
   ],
-  "n": 265,
-  "ultima_revision": "2026-11-20"
+  "n": 268,
+  "ultima_revision": "2026-11-21"
  }
 }
